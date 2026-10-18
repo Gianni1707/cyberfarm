@@ -39,6 +39,6 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
     @Override
     public void extractRenderState(DroneEntity entity, DroneRenderState state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
-        state.hasHarvester = entity.hasHarvester();
+        state.taskMask = entity.getTaskMask();
     }
 }

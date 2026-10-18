@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.registry.ModBlockEntities;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
@@ -37,6 +38,10 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private static final int STATUS_TIMEOUT = 100;
 
     private @Nullable BoundingBox workArea;
+    /** Next layer the Quarry Module digs; unset means the top of the work area. */
+    private @Nullable Integer quarryLayer;
+    private @Nullable BlockPos transportSource;
+    private @Nullable BlockPos transportDestination;
     private @Nullable UUID droneId;
     private int droneStatus;
     private int droneEnergyPercent;
@@ -63,8 +68,38 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
                 pos.getX() + DEFAULT_RADIUS, pos.getY() + 3, pos.getZ() + DEFAULT_RADIUS);
     }
 
-    public void setWorkArea(BoundingBox area) {
+    /** Sets the work area; {@code null} goes back to the default square around the dock. */
+    public void setWorkArea(@Nullable BoundingBox area) {
         workArea = area;
+        quarryLayer = null;
+        setChanged();
+    }
+
+    public boolean hasCustomArea() {
+        return workArea != null;
+    }
+
+    public int getQuarryLayer() {
+        return quarryLayer != null ? quarryLayer : getWorkArea().maxY();
+    }
+
+    public void setQuarryLayer(int y) {
+        quarryLayer = y;
+        setChanged();
+    }
+
+    public @Nullable BlockPos getTransportSource() {
+        return transportSource;
+    }
+
+    public @Nullable BlockPos getTransportDestination() {
+        return transportDestination;
+    }
+
+    /** Sets the Transport Module route; pass nulls to clear it. */
+    public void setTransportRoute(@Nullable BlockPos source, @Nullable BlockPos destination) {
+        transportSource = source;
+        transportDestination = destination;
         setChanged();
     }
 
@@ -115,19 +150,25 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             case 1 -> area.getZSpan();
             case 2 -> droneStatus;
             case 3 -> droneEnergyPercent;
+            case 4 -> transportSource != null && transportDestination != null ? 1 : 0;
+            case 5 -> quarryLayer != null ? 1 : 0;
+            case 6 -> getQuarryLayer();
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 4;
+        return 7;
     }
 
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.storeNullable("work_area", BoundingBox.CODEC, workArea);
+        output.storeNullable("quarry_layer", Codec.INT, quarryLayer);
+        output.storeNullable("transport_source", BlockPos.CODEC, transportSource);
+        output.storeNullable("transport_destination", BlockPos.CODEC, transportDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
     }
 
@@ -135,6 +176,9 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         workArea = input.read("work_area", BoundingBox.CODEC).orElse(null);
+        quarryLayer = input.read("quarry_layer", Codec.INT).orElse(null);
+        transportSource = input.read("transport_source", BlockPos.CODEC).orElse(null);
+        transportDestination = input.read("transport_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
     }
 

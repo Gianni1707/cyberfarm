@@ -123,12 +123,30 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
         level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);
     }
 
-    @Override
-    protected boolean isItemValid(int index, ItemResource resource) {
+    /**
+     * Shared by the server and the GUI: frames go in the frame slot; a module only goes in a slot
+     * the current frame has unlocked, and only if no other slot holds the same module.
+     */
+    public static boolean canPlace(IntFunction<ItemStack> slots, int index, ItemResource resource) {
         if (index == FRAME_SLOT) {
             return resource.getItem() instanceof DroneFrameItem;
         }
-        return index < OUTPUT_SLOT && resource.getItem() instanceof DroneModuleItem;
+        if (index >= OUTPUT_SLOT || !(resource.getItem() instanceof DroneModuleItem)
+                || !(slots.apply(FRAME_SLOT).getItem() instanceof DroneFrameItem frame)
+                || index - FIRST_MODULE_SLOT >= frame.getModuleSlots()) {
+            return false;
+        }
+        for (int i = FIRST_MODULE_SLOT; i < OUTPUT_SLOT; i++) {
+            if (i != index && slots.apply(i).is(resource.getItem())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    protected boolean isItemValid(int index, ItemResource resource) {
+        return canPlace(this::getStack, index, resource);
     }
 
     @Override

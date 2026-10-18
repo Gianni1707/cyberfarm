@@ -368,6 +368,42 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
+    "item/quarry_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "....kkkkkkkk....",
+        "....kmbccbmk....",
+        "....kmmmmmmk....",
+        "....kkkkkkkk....",
+        "....kwlwlwlk....",
+        "....klwlwlwk....",
+        ".....kwlwlk.....",
+        ".....klwlwk.....",
+        "......kwlk......",
+        "......klwk......",
+        ".......kk.......",
+        "................",
+        "................",
+    ],
+    "item/transport_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        "...km......mk...",
+        "...km.kkkk.mk...",
+        "...km.kOOk.mk...",
+        "...kmkkOOkkmk...",
+        "...kl.kkkk.lk...",
+        "...kl......lk...",
+        "...kk......kk...",
+        "................",
+        "................",
+        "................",
+    ],
     "item/drone": [
         "................",
         ".kkk........kkk.",
@@ -503,6 +539,15 @@ def drone_texture():
     hx0, hy0, hx1, hy1 = head["bottom"]
     c.rect(hx0 + 1, hy0 + 1, hx1 - 1, hy1 - 1, "c")
     paint_box(c, 32, 6, 6, 1, 1, "w", top="l", seed=8)
+    # Quarry drill: base 2x1x2 and bit 1x2x1, steel with a cyan ring
+    paint_box(c, 48, 0, 2, 1, 2, "m", top="l", bottom="b", seed=9)
+    bit = paint_box(c, 56, 0, 1, 2, 1, "w", bottom="l", seed=10)
+    side_rows(c, bit, ["w", "l"])
+    # Transport claw: body 4x1x2 and two amber prongs 1x2x1
+    claw = paint_box(c, 32, 10, 4, 1, 2, "d", top="m", bottom="k", seed=11)
+    side_rows(c, claw, ["b"])
+    prong = paint_box(c, 44, 10, 1, 2, 1, "y", bottom="k", seed=12)
+    side_rows(c, prong, ["k", "y"])
     return c
 
 

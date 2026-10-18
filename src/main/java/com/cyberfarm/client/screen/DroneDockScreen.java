@@ -11,7 +11,8 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
     private static final String[] STATUS_KEYS = {"none", "idle", "charging", "working", "returning"};
 
     public DroneDockScreen(DroneDockMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 166);
+        super(menu, inventory, title, 176, DroneDockMenu.INVENTORY_Y + 82);
+        energyBarHeight = 70;
     }
 
     @Override
@@ -28,8 +29,13 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         graphics.text(font, Component.translatable("gui.cyberfarm.dock.drone"), x + 8, y + 20, TEXT_DIM, false);
         graphics.text(font, Component.translatable("gui.cyberfarm.dock.status." + key), x + 8, y + 30, statusColor, false);
         if (status != DroneEntity.STATUS_NONE) {
-            graphics.text(font, Component.translatable("gui.cyberfarm.dock.battery", menu.getDroneEnergyPercent()), x + 8, y + 44, TEXT, false);
+            graphics.text(font, Component.translatable("gui.cyberfarm.dock.battery", menu.getDroneEnergyPercent()), x + 8, y + 42, TEXT, false);
         }
-        graphics.text(font, Component.translatable("gui.cyberfarm.dock.area", menu.getAreaWidth(), menu.getAreaDepth()), x + 8, y + 58, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.dock.area", menu.getAreaWidth(), menu.getAreaDepth()), x + 8, y + 54, TEXT_DIM, false);
+        graphics.text(font, Component.translatable(menu.hasTransportRoute() ? "gui.cyberfarm.dock.route" : "gui.cyberfarm.dock.no_route"),
+                x + 8, y + 66, menu.hasTransportRoute() ? TEXT : TEXT_DIM, false);
+        if (menu.isQuarryStarted()) {
+            graphics.text(font, Component.translatable("gui.cyberfarm.dock.quarry", menu.getQuarryLayer()), x + 8, y + 78, TEXT_DIM, false);
+        }
     }
 }

@@ -28,10 +28,11 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 
 - **Drone Assembler**: slot Frame + 3 slot Modules (sbloccati in base al tier) + output. Costa 2.000 FE.
 - **Drone Dock**: base del drone (ricarica 500 FE/t, 9 slot di raccolto, area di lavoro).
-- **Survey Tool**: collega un dock e marca due angoli dell'area (max 33x33, entro 48 blocchi).
+- **Survey Tool**: collega un dock, marca due angoli dell'area (max 33x33, dislivello max 8, entro 48 blocchi) o due contenitori (percorso Transport). Shift+clic sulla dock la azzera.
 - **Telai**: Basic (T1: 20k FE, 80%, 1 slot) → Advanced (T2: 60k FE, 130%, 2 slot) → Elite (T3: 150k FE, 160%, 3 slot).
 - **Componenti di crafting**: Drone Core, Rotor, Battery Cell.
-- **Moduli funzione**: Harvester ✅ · Quarry (prossimo) · Transport (prossimo) · poi Planter, Logger, Fluid Siphon, Shearer/Milker.
+- **Moduli funzione**: Harvester ✅ · Quarry ✅ (strati fino al bedrock, solo con area marcata) · Transport ✅ (cassa → cassa, percorso col Survey Tool) · poi Planter, Logger, Fluid Siphon, Shearer/Milker.
+- **Logica**: ogni modulo è un `DroneTask` che trova il prossimo `DroneJob`; il drone alterna i moduli a ogni giro e concatena i lavori dello stesso tipo.
 - **Upgrade** (idea per il futuro): Cargo Pod, Range Booster, Silk Touch/Fortune Chip, Solar Skin.
 
 ### Energia
@@ -47,8 +48,8 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 
 ## Roadmap
 
-1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ← *implementato, da testare in gioco*
-2. Moduli Quarry e Transport, poi Planter/Logger, upgrade, cavi energetici.
+1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
+2. ✅ Moduli Quarry e Transport. Prossimi: Planter/Logger, upgrade, cavi energetici, JEI.
 3. Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, droni a metano.
 4. Endgame: Fission Reactor, Cooling Tower, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.

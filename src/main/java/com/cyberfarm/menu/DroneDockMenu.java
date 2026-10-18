@@ -14,10 +14,11 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 public class DroneDockMenu extends MachineMenu {
     public static final int CARGO_X = 98;
     public static final int CARGO_Y = 17;
+    public static final int INVENTORY_Y = 104;
 
     public DroneDockMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(DroneDockBlockEntity.CARGO_SLOTS),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 4), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 7), ContainerLevelAccess.NULL);
     }
 
     public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
@@ -27,7 +28,7 @@ public class DroneDockMenu extends MachineMenu {
                 addMachineSlot(items, row * 3 + col, CARGO_X + col * 18, CARGO_Y + row * 18);
             }
         }
-        addPlayerInventory(inventory, 84);
+        addPlayerInventory(inventory, INVENTORY_Y);
     }
 
     public int getAreaWidth() {
@@ -44,5 +45,17 @@ public class DroneDockMenu extends MachineMenu {
 
     public int getDroneEnergyPercent() {
         return extra(3);
+    }
+
+    public boolean hasTransportRoute() {
+        return extra(4) != 0;
+    }
+
+    public boolean isQuarryStarted() {
+        return extra(5) != 0;
+    }
+
+    public int getQuarryLayer() {
+        return extra(6);
     }
 }

@@ -25,6 +25,10 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> LINKED_DOCK = COMPONENTS.registerComponentType("linked_dock",
             builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
 
+    /** Survey Tool: the source container of the transport route being set. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> ROUTE_SOURCE = COMPONENTS.registerComponentType("route_source",
+            builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
+
     /** Survey Tool: the first corner of the area being marked. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> SURVEY_CORNER = COMPONENTS.registerComponentType("survey_corner",
             builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));

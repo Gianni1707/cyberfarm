@@ -18,7 +18,7 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame",
-    "harvester_module", "drone", "survey_tool",
+    "harvester_module", "quarry_module", "transport_module", "drone", "survey_tool",
 ]
 
 
@@ -149,6 +149,8 @@ def recipes():
     shaped("elite_frame", ["XBX", "EFE", "XBX"], {"X": "minecraft:diamond", "B": cell, "E": "minecraft:ender_eye", "F": f"{NS}:advanced_frame"})
 
     shaped("harvester_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:iron_hoe", "C": copper, "D": core})
+    shaped("quarry_module", ["IPI", "CDC"], {"I": iron, "P": "minecraft:diamond_pickaxe", "C": copper, "D": core})
+    shaped("transport_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core})
 
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})

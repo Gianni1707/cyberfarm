@@ -11,7 +11,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jspecify.annotations.Nullable;
 
 public class DroneAssemblerMenu extends MachineMenu {
@@ -26,8 +28,23 @@ public class DroneAssemblerMenu extends MachineMenu {
     private final @Nullable DroneAssemblerBlockEntity assembler;
 
     public DroneAssemblerMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, null, new ItemStacksResourceHandler(DroneAssemblerBlockEntity.SLOT_COUNT),
+        this(containerId, inventory, null, clientItems(),
                 new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 3), ContainerLevelAccess.NULL);
+    }
+
+    /** Client copy of the inventory with the same slot rules, so shift-click predicts the server. */
+    private static ItemStacksResourceHandler clientItems() {
+        return new ItemStacksResourceHandler(DroneAssemblerBlockEntity.SLOT_COUNT) {
+            @Override
+            public boolean isValid(int index, ItemResource resource) {
+                return DroneAssemblerBlockEntity.canPlace(i -> ItemUtil.getStack(this, i), index, resource);
+            }
+
+            @Override
+            protected int getCapacity(int index, ItemResource resource) {
+                return 1;
+            }
+        };
     }
 
     public DroneAssemblerMenu(int containerId, Inventory inventory, @Nullable DroneAssemblerBlockEntity assembler,

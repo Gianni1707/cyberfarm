@@ -1,10 +1,8 @@
 {
   "itemGroup.cyberfarm": "CyberFarm",
-
   "block.cyberfarm.combustion_generator": "Combustion Generator",
   "block.cyberfarm.drone_assembler": "Drone Assembler",
   "block.cyberfarm.drone_dock": "Drone Dock",
-
   "item.cyberfarm.drone_core": "Drone Core",
   "item.cyberfarm.rotor": "Rotor",
   "item.cyberfarm.battery_cell": "Battery Cell",
@@ -13,13 +11,14 @@
   "item.cyberfarm.elite_frame": "Elite Drone Frame",
   "item.cyberfarm.harvester_module": "Harvester Module",
   "item.cyberfarm.harvester_module.desc": "Harvests mature crops, melons and pumpkins, then replants.",
+  "item.cyberfarm.quarry_module": "Quarry Module",
+  "item.cyberfarm.quarry_module.desc": "Digs the surveyed area layer by layer, down to bedrock.",
+  "item.cyberfarm.transport_module": "Transport Module",
+  "item.cyberfarm.transport_module.desc": "Carries items from one container to another along the dock's route.",
   "item.cyberfarm.drone": "Drone",
   "item.cyberfarm.survey_tool": "Survey Tool",
-
   "entity.cyberfarm.drone": "Drone",
-
   "cyberfarm.guide.handbook": "Drone Engineer's Handbook",
-
   "tooltip.cyberfarm.module": "Function Module",
   "tooltip.cyberfarm.frame.tier": "Tier %s Frame",
   "tooltip.cyberfarm.frame.slots": "Module slots: %s",
@@ -32,8 +31,9 @@
   "tooltip.cyberfarm.survey.linked": "Linked dock: %s",
   "tooltip.cyberfarm.survey.unlinked": "Not linked to a dock",
   "tooltip.cyberfarm.survey.corner": "First corner: %s",
-  "tooltip.cyberfarm.survey.hint": "Click a dock, then two opposite corners",
-
+  "tooltip.cyberfarm.survey.source": "Route source: %s",
+  "tooltip.cyberfarm.survey.hint": "Click a dock, then two opposite corners for the area",
+  "tooltip.cyberfarm.survey.hint_route": "Click two containers for a transport route",
   "message.cyberfarm.drone.needs_dock": "Right-click a Drone Dock to deploy the drone",
   "message.cyberfarm.drone.dock_occupied": "This dock already has a drone",
   "message.cyberfarm.drone.deployed": "Drone deployed",
@@ -41,11 +41,14 @@
   "message.cyberfarm.survey.no_dock": "Right-click a Drone Dock first to link the tool",
   "message.cyberfarm.survey.corner": "First corner set at %s, now click the opposite corner",
   "message.cyberfarm.survey.dock_missing": "The linked Drone Dock is gone",
-  "message.cyberfarm.survey.too_big": "Area too big: max %s x %s blocks",
-  "message.cyberfarm.survey.too_far": "Area too far from the dock (max %s blocks)",
+  "message.cyberfarm.survey.too_big": "Area too big: max %s x %s blocks, corners at most %s blocks apart in height",
+  "message.cyberfarm.survey.too_far": "Too far from the dock (max %s blocks)",
   "message.cyberfarm.survey.area_set": "Work area set: %s x %s",
-  "message.cyberfarm.survey.cleared": "Corner cleared",
-
+  "message.cyberfarm.survey.cleared": "Pending corner or route cleared",
+  "message.cyberfarm.survey.reset": "Dock reset: default area, no transport route",
+  "message.cyberfarm.survey.source": "Route source set at %s, now click the destination container",
+  "message.cyberfarm.survey.same_container": "Source and destination must be different containers",
+  "message.cyberfarm.survey.route_set": "Transport route set: %s -> %s",
   "gui.cyberfarm.energy": "%s / %s FE",
   "gui.cyberfarm.fe_per_tick": "+%s FE/t",
   "gui.cyberfarm.generator.burning": "Generating",
@@ -64,7 +67,9 @@
   "gui.cyberfarm.dock.status.returning": "Returning",
   "gui.cyberfarm.dock.battery": "Battery: %s%%",
   "gui.cyberfarm.dock.area": "Area: %s x %s",
-
+  "gui.cyberfarm.dock.route": "Route: set",
+  "gui.cyberfarm.dock.no_route": "Route: none",
+  "gui.cyberfarm.dock.quarry": "Quarry at Y %s",
   "cyberfarm.configuration.title": "CyberFarm Configs",
   "cyberfarm.configuration.section.cyberfarm.common.toml": "CyberFarm Configs",
   "cyberfarm.configuration.section.cyberfarm.common.toml.title": "CyberFarm Configs",

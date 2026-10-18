@@ -21,7 +21,7 @@ and takes 5 seconds.
 
 1. Put a [drone frame](drone_frames.md) in the **Frame** slot.
 2. Put [function modules](modules.md) in the **Modules** slots. The frame tier decides how many
-   slots are unlocked: locked slots are greyed out.
+   slots are unlocked: locked slots are greyed out, so insert the frame first.
 3. Press **Assemble**. When the bar is full, take the finished <ItemLink id="drone" /> from the output slot.
 
 A drone needs **at least one module**, and the same module cannot be installed twice.

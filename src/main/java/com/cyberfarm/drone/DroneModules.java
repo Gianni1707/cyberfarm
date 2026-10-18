@@ -36,15 +36,16 @@ public record DroneModules(List<Item> parts) {
                 .findFirst();
     }
 
-    public List<DroneModuleItem> modules() {
+    /** The jobs this drone can do, in the order its modules were installed. */
+    public List<DroneTask> tasks() {
         return parts.stream()
                 .filter(DroneModuleItem.class::isInstance)
-                .map(DroneModuleItem.class::cast)
+                .map(item -> ((DroneModuleItem) item).getTask())
                 .toList();
     }
 
-    public boolean has(Item item) {
-        return parts.contains(item);
+    public int taskMask() {
+        return tasks().stream().mapToInt(DroneTask::bit).reduce(0, (a, b) -> a | b);
     }
 
     public int energyCapacity() {

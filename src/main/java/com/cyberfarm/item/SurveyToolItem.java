@@ -21,13 +21,21 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.neoforged.neoforge.capabilities.Capabilities;
 
 /**
- * Links to a Drone Dock (right-click the dock), then marks two opposite corners of the work area.
- * Sneak + right-click in the air clears the first corner.
+ * Configures a Drone Dock:
+ * <ul>
+ *   <li>right-click the dock to link the tool; sneak + right-click it to reset its area and route;</li>
+ *   <li>right-click two opposite corners to set the work area;</li>
+ *   <li>right-click two containers (source, then destination) to set the transport route.</li>
+ * </ul>
+ * Sneak + right-click in the air clears a half-set corner or route.
  */
 public class SurveyToolItem extends Item {
     public static final int MAX_AREA_SIZE = 33;
+    /** Max height difference between the two corners; the drone scans the whole box often. */
+    public static final int MAX_AREA_HEIGHT = 8;
     public static final int MAX_DOCK_DISTANCE = 48;
 
     public SurveyToolItem(Properties properties) {
@@ -43,10 +51,16 @@ public class SurveyToolItem extends Item {
         ItemStack stack = context.getItemInHand();
         BlockPos pos = context.getClickedPos();
 
-        if (level.getBlockEntity(pos) instanceof DroneDockBlockEntity) {
+        if (level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock) {
+            clearPending(stack);
             stack.set(ModDataComponents.LINKED_DOCK.get(), pos);
-            stack.remove(ModDataComponents.SURVEY_CORNER.get());
-            message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
+            if (player != null && player.isSecondaryUseActive()) {
+                dock.setWorkArea(null);
+                dock.setTransportRoute(null, null);
+                message(player, Component.translatable("message.cyberfarm.survey.reset"));
+            } else {
+                message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
+            }
             level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.6F);
             return InteractionResult.SUCCESS;
         }
@@ -56,40 +70,67 @@ public class SurveyToolItem extends Item {
             message(player, Component.translatable("message.cyberfarm.survey.no_dock"));
             return InteractionResult.FAIL;
         }
-
-        BlockPos corner = stack.get(ModDataComponents.SURVEY_CORNER.get());
-        if (corner == null) {
-            stack.set(ModDataComponents.SURVEY_CORNER.get(), pos);
-            message(player, Component.translatable("message.cyberfarm.survey.corner", pos.toShortString()));
-            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.2F);
-            return InteractionResult.SUCCESS;
-        }
-
-        stack.remove(ModDataComponents.SURVEY_CORNER.get());
         if (!(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
             stack.remove(ModDataComponents.LINKED_DOCK.get());
+            clearPending(stack);
             message(player, Component.translatable("message.cyberfarm.survey.dock_missing"));
             return InteractionResult.FAIL;
         }
-
-        int width = Math.abs(pos.getX() - corner.getX()) + 1;
-        int depth = Math.abs(pos.getZ() - corner.getZ()) + 1;
-        if (width > MAX_AREA_SIZE || depth > MAX_AREA_SIZE) {
-            message(player, Component.translatable("message.cyberfarm.survey.too_big", MAX_AREA_SIZE, MAX_AREA_SIZE));
-            return InteractionResult.FAIL;
-        }
-
-        // Covers both the farmland and the crops on it, whichever the player clicked.
-        BoundingBox area = new BoundingBox(
-                Math.min(pos.getX(), corner.getX()), Math.min(pos.getY(), corner.getY()) - 1, Math.min(pos.getZ(), corner.getZ()),
-                Math.max(pos.getX(), corner.getX()), Math.max(pos.getY(), corner.getY()) + 2, Math.max(pos.getZ(), corner.getZ()));
-        if (!area.inflatedBy(MAX_DOCK_DISTANCE).isInside(dockPos)) {
+        if (!pos.closerThan(dockPos, MAX_DOCK_DISTANCE)) {
             message(player, Component.translatable("message.cyberfarm.survey.too_far", MAX_DOCK_DISTANCE));
             return InteractionResult.FAIL;
         }
 
-        dock.setWorkArea(area);
+        boolean isContainer = level.getCapability(Capabilities.Item.BLOCK, pos, null) != null;
+        InteractionResult result = isContainer ? setRoute(level, player, stack, dock, pos) : setArea(level, player, stack, dock, pos);
+        if (result == InteractionResult.SUCCESS) {
+            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.2F);
+        }
+        return result;
+    }
+
+    private static InteractionResult setArea(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
+        BlockPos corner = stack.get(ModDataComponents.SURVEY_CORNER.get());
+        if (corner == null) {
+            stack.remove(ModDataComponents.ROUTE_SOURCE.get());
+            stack.set(ModDataComponents.SURVEY_CORNER.get(), pos);
+            message(player, Component.translatable("message.cyberfarm.survey.corner", pos.toShortString()));
+            return InteractionResult.SUCCESS;
+        }
+
+        stack.remove(ModDataComponents.SURVEY_CORNER.get());
+        int width = Math.abs(pos.getX() - corner.getX()) + 1;
+        int depth = Math.abs(pos.getZ() - corner.getZ()) + 1;
+        if (width > MAX_AREA_SIZE || depth > MAX_AREA_SIZE || Math.abs(pos.getY() - corner.getY()) > MAX_AREA_HEIGHT) {
+            message(player, Component.translatable("message.cyberfarm.survey.too_big", MAX_AREA_SIZE, MAX_AREA_SIZE, MAX_AREA_HEIGHT));
+            return InteractionResult.FAIL;
+        }
+
+        // Covers both the farmland and the crops on it, whichever the player clicked.
+        dock.setWorkArea(new BoundingBox(
+                Math.min(pos.getX(), corner.getX()), Math.min(pos.getY(), corner.getY()) - 1, Math.min(pos.getZ(), corner.getZ()),
+                Math.max(pos.getX(), corner.getX()), Math.max(pos.getY(), corner.getY()) + 2, Math.max(pos.getZ(), corner.getZ())));
         message(player, Component.translatable("message.cyberfarm.survey.area_set", width, depth));
+        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
+        return InteractionResult.SUCCESS;
+    }
+
+    private static InteractionResult setRoute(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
+        BlockPos source = stack.get(ModDataComponents.ROUTE_SOURCE.get());
+        if (source == null) {
+            stack.remove(ModDataComponents.SURVEY_CORNER.get());
+            stack.set(ModDataComponents.ROUTE_SOURCE.get(), pos);
+            message(player, Component.translatable("message.cyberfarm.survey.source", pos.toShortString()));
+            return InteractionResult.SUCCESS;
+        }
+        if (source.equals(pos)) {
+            message(player, Component.translatable("message.cyberfarm.survey.same_container"));
+            return InteractionResult.FAIL;
+        }
+
+        stack.remove(ModDataComponents.ROUTE_SOURCE.get());
+        dock.setTransportRoute(source, pos);
+        message(player, Component.translatable("message.cyberfarm.survey.route_set", source.toShortString(), pos.toShortString()));
         level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
         return InteractionResult.SUCCESS;
     }
@@ -97,14 +138,19 @@ public class SurveyToolItem extends Item {
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && stack.has(ModDataComponents.SURVEY_CORNER.get())) {
-            stack.remove(ModDataComponents.SURVEY_CORNER.get());
+        if (player.isShiftKeyDown() && (stack.has(ModDataComponents.SURVEY_CORNER.get()) || stack.has(ModDataComponents.ROUTE_SOURCE.get()))) {
+            clearPending(stack);
             if (!level.isClientSide()) {
                 message(player, Component.translatable("message.cyberfarm.survey.cleared"));
             }
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    private static void clearPending(ItemStack stack) {
+        stack.remove(ModDataComponents.SURVEY_CORNER.get());
+        stack.remove(ModDataComponents.ROUTE_SOURCE.get());
     }
 
     private static void message(Player player, Component text) {
@@ -125,6 +171,11 @@ public class SurveyToolItem extends Item {
         if (corner != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.corner", corner.toShortString()).withStyle(ChatFormatting.DARK_AQUA));
         }
+        BlockPos source = stack.get(ModDataComponents.ROUTE_SOURCE.get());
+        if (source != null) {
+            builder.accept(Component.translatable("tooltip.cyberfarm.survey.source", source.toShortString()).withStyle(ChatFormatting.DARK_AQUA));
+        }
         builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint").withStyle(ChatFormatting.DARK_GRAY));
+        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_route").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

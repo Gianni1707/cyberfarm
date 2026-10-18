@@ -6,6 +6,8 @@ import java.util.Set;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneModules;
+import com.cyberfarm.drone.DroneTask;
+import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
 
@@ -26,14 +28,9 @@ import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CropBlock;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -45,8 +42,8 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A farming drone bound to a Drone Dock. It charges at the dock, flies to mature crops inside the
- * dock's work area, harvests and replants them, then brings the harvest back.
+ * A drone bound to a Drone Dock. It charges at the dock, then does the jobs its function modules
+ * give it (harvest, quarry, transport), taking turns between modules, and brings everything back.
  */
 public class DroneEntity extends PathfinderMob {
     // Status codes shown in the dock GUI (0 means no drone)
@@ -63,20 +60,19 @@ public class DroneEntity extends PathfinderMob {
     /** The drone lines up this high above the pad before descending. */
     private static final double APPROACH_HEIGHT = 0.8;
     public static final int FLIGHT_COST = 2;
-    public static final int HARVEST_COST = 40;
     public static final int CARGO_SLOTS = 9;
     private static final int SCAN_INTERVAL = 40;
-    private static final int TARGET_TIMEOUT = 200;
-    private static final double HARVEST_REACH = 1.8;
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Boolean> DATA_HARVESTER = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
 
     private DroneModules modules = DroneModules.EMPTY;
     private int energy;
     private @Nullable BlockPos dockPos;
-    private @Nullable BlockPos target;
-    private int targetTicks;
+    private @Nullable DroneJob job;
+    private @Nullable DroneTask jobTask;
+    /** Round robin over the modules, so one busy module does not starve the others. */
+    private int nextTask;
     private int scanCooldown;
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final ItemStacksResourceHandler cargo = new ItemStacksResourceHandler(CARGO_SLOTS);
@@ -100,14 +96,14 @@ public class DroneEntity extends PathfinderMob {
         this.modules = modules;
         this.energy = Math.min(energy, modules.energyCapacity());
         this.dockPos = dockPos.immutable();
-        this.entityData.set(DATA_HARVESTER, modules.has(ModItems.HARVESTER_MODULE.get()));
+        this.entityData.set(DATA_TASKS, modules.taskMask());
     }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         builder.define(DATA_STATUS, STATUS_IDLE);
-        builder.define(DATA_HARVESTER, false);
+        builder.define(DATA_TASKS, 0);
     }
 
     @Override
@@ -123,8 +119,9 @@ public class DroneEntity extends PathfinderMob {
         this.travelFlying(input, this.getSpeed());
     }
 
-    public boolean hasHarvester() {
-        return entityData.get(DATA_HARVESTER);
+    /** Installed modules as a bit mask of {@link DroneTask#bit()}, synced to the client. */
+    public int getTaskMask() {
+        return entityData.get(DATA_TASKS);
     }
 
     public int getStatus() {
@@ -137,6 +134,55 @@ public class DroneEntity extends PathfinderMob {
 
     private int capacity() {
         return Math.max(1, modules.energyCapacity());
+    }
+
+    // ---------------------------------------------------------------- API for jobs
+
+    public ItemStacksResourceHandler getCargo() {
+        return cargo;
+    }
+
+    public void useEnergy(int amount) {
+        energy = Math.max(0, energy - amount);
+    }
+
+    public void markUnreachable(BlockPos pos) {
+        unreachable.add(pos.immutable());
+    }
+
+    public boolean isUnreachable(BlockPos pos) {
+        return unreachable.contains(pos);
+    }
+
+    public boolean isCargoFull() {
+        for (int i = 0; i < cargo.size(); i++) {
+            if (cargo.getResource(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean isCargoEmpty() {
+        return ResourceHandlerUtil.isEmpty(cargo);
+    }
+
+    /** Puts drops in the cargo; whatever does not fit falls on the ground at {@code pos}. */
+    public void collect(ServerLevel level, BlockPos pos, List<ItemStack> drops) {
+        for (ItemStack drop : drops) {
+            ItemStack rest = storeInCargo(drop);
+            if (!rest.isEmpty()) {
+                Block.popResource(level, pos, rest);
+            }
+        }
+    }
+
+    public void flyTo(Vec3 pos) {
+        double speed = modules.speed();
+        if (!navigation.moveTo(pos.x, pos.y, pos.z, speed)) {
+            // No path found: try a straight line.
+            moveControl.setWantedPosition(pos.x, pos.y, pos.z, speed);
+        }
     }
 
     // ---------------------------------------------------------------- AI
@@ -155,7 +201,7 @@ public class DroneEntity extends PathfinderMob {
 
         int status = getStatus();
         if (status == STATUS_WORKING || status == STATUS_RETURNING) {
-            energy = Math.max(0, energy - FLIGHT_COST);
+            useEnergy(FLIGHT_COST);
         }
         switch (status) {
             case STATUS_WORKING -> tickWorking(level, dock);
@@ -216,49 +262,45 @@ public class DroneEntity extends PathfinderMob {
         energy += charged;
         setStatus(charged > 0 ? STATUS_CHARGING : STATUS_IDLE);
 
-        // Finish charging while the dock can supply power; never leave below 30%.
-        if ((charged > 0 && energy < capacity()) || energy < capacity() * 3 / 10 || !hasHarvester()) {
+        // Finish charging while the dock can supply power; never leave below 30%,
+        // and wait while the dock is too full to take the cargo.
+        if ((charged > 0 && energy < capacity()) || energy < capacity() * 3 / 10 || !isCargoEmpty()) {
             return;
         }
         if (--scanCooldown > 0) {
             return;
         }
         scanCooldown = SCAN_INTERVAL;
-        target = findTarget(level, dock.getWorkArea());
-        if (target != null) {
-            targetTicks = 0;
-            setStatus(STATUS_WORKING);
+
+        List<DroneTask> tasks = modules.tasks();
+        for (int i = 0; i < tasks.size(); i++) {
+            DroneTask task = tasks.get((nextTask + i) % tasks.size());
+            DroneJob found = task.findJob(this, level, dock);
+            if (found != null) {
+                job = found;
+                jobTask = task;
+                nextTask = (tasks.indexOf(task) + 1) % tasks.size();
+                setStatus(STATUS_WORKING);
+                return;
+            }
         }
     }
 
     private void tickWorking(ServerLevel level, DroneDockBlockEntity dock) {
-        if (isCargoFull() || energy < capacity() / 10) {
-            startReturn();
+        if (job == null || jobTask == null || energy < capacity() / 10) {
+            startReturn(level);
             return;
         }
-        BoundingBox area = dock.getWorkArea();
-        if (target == null || !isHarvestable(level, target) || !area.isInside(target)) {
-            target = findTarget(level, area);
-            targetTicks = 0;
-            if (target == null) {
-                startReturn();
-                return;
+        switch (job.tick(this, level, dock)) {
+            case CONTINUE -> {}
+            case RETURN -> startReturn(level);
+            case DONE -> {
+                // Chain the next job of the same kind without flying home in between.
+                job = jobTask.findJob(this, level, dock);
+                if (job == null) {
+                    startReturn(level);
+                }
             }
-        }
-
-        Vec3 crop = Vec3.atCenterOf(target);
-        if (position().distanceTo(crop) <= HARVEST_REACH) {
-            harvest(level, target);
-            target = null;
-            return;
-        }
-        if (++targetTicks > TARGET_TIMEOUT) {
-            unreachable.add(target);
-            target = null;
-            return;
-        }
-        if (targetTicks % 10 == 1) {
-            flyTo(crop.add(0.0, 1.0, 0.0));
         }
     }
 
@@ -270,70 +312,14 @@ public class DroneEntity extends PathfinderMob {
         }
     }
 
-    private void flyTo(Vec3 pos) {
-        double speed = modules.speed();
-        if (!navigation.moveTo(pos.x, pos.y, pos.z, speed)) {
-            // No path found: try a straight line.
-            moveControl.setWantedPosition(pos.x, pos.y, pos.z, speed);
+    private void startReturn(ServerLevel level) {
+        if (job != null) {
+            job.stop(this, level);
         }
-    }
-
-    private void startReturn() {
-        target = null;
+        job = null;
+        jobTask = null;
         navigation.stop();
         setStatus(STATUS_RETURNING);
-    }
-
-    private @Nullable BlockPos findTarget(ServerLevel level, BoundingBox area) {
-        BlockPos best = null;
-        double bestDistance = Double.MAX_VALUE;
-        for (BlockPos pos : BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ())) {
-            if (!unreachable.contains(pos) && isHarvestable(level, pos)) {
-                double distance = pos.distToCenterSqr(position());
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    best = pos.immutable();
-                }
-            }
-        }
-        return best;
-    }
-
-    private static boolean isHarvestable(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        if (state.getBlock() instanceof CropBlock crop) {
-            return crop.isMaxAge(state);
-        }
-        return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN);
-    }
-
-    private void harvest(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
-        List<ItemStack> drops = Block.getDrops(state, level, pos, null);
-
-        // Replant with one of the seeds the crop dropped (wheat seeds, carrots, potatoes...).
-        BlockState replanted = null;
-        if (state.getBlock() instanceof CropBlock crop) {
-            for (ItemStack drop : drops) {
-                if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == crop) {
-                    drop.shrink(1);
-                    replanted = crop.getStateForAge(0);
-                    break;
-                }
-            }
-        }
-
-        level.destroyBlock(pos, false, this);
-        if (replanted != null) {
-            level.setBlock(pos, replanted, Block.UPDATE_ALL);
-        }
-        for (ItemStack drop : drops) {
-            ItemStack rest = storeInCargo(drop);
-            if (!rest.isEmpty()) {
-                Block.popResource(level, pos, rest);
-            }
-        }
-        energy = Math.max(0, energy - HARVEST_COST);
     }
 
     // ---------------------------------------------------------------- cargo
@@ -347,15 +333,6 @@ public class DroneEntity extends PathfinderMob {
             transaction.commit();
             return stack.copyWithCount(stack.getCount() - inserted);
         }
-    }
-
-    private boolean isCargoFull() {
-        for (int i = 0; i < cargo.size(); i++) {
-            if (cargo.getResource(i).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void unloadCargo(DroneDockBlockEntity dock) {
@@ -388,6 +365,9 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void dropAsItem(ServerLevel level) {
+        if (job != null) {
+            job.stop(this, level);
+        }
         spawnAtLocation(level, toItem());
         dropCargo(level);
         discard();
@@ -399,6 +379,9 @@ public class DroneEntity extends PathfinderMob {
             return super.mobInteract(player, hand);
         }
         if (level() instanceof ServerLevel level) {
+            if (job != null) {
+                job.stop(this, level);
+            }
             if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
                 unloadCargo(dock);
                 dock.releaseDrone(getUUID());
@@ -453,6 +436,8 @@ public class DroneEntity extends PathfinderMob {
         energy = input.getIntOr("energy", 0);
         dockPos = input.read("dock", BlockPos.CODEC).orElse(null);
         cargo.deserialize(input.childOrEmpty("cargo"));
-        entityData.set(DATA_HARVESTER, modules.has(ModItems.HARVESTER_MODULE.get()));
+        entityData.set(DATA_TASKS, modules.taskMask());
+        // Jobs are not saved: a reloaded drone flies home and starts over.
+        setStatus(STATUS_RETURNING);
     }
 }

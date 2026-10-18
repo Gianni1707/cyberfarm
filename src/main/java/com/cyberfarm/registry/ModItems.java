@@ -1,6 +1,7 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.item.DroneModuleItem;
@@ -34,7 +35,12 @@ public class ModItems {
             p -> new DroneFrameItem(p.rarity(Rarity.RARE), 3, 150_000, 160, 3));
 
     // Function modules
-    public static final DeferredItem<DroneModuleItem> HARVESTER_MODULE = ITEMS.registerItem("harvester_module", DroneModuleItem::new);
+    public static final DeferredItem<DroneModuleItem> HARVESTER_MODULE = ITEMS.registerItem("harvester_module",
+            p -> new DroneModuleItem(p, DroneTask.HARVEST));
+    public static final DeferredItem<DroneModuleItem> QUARRY_MODULE = ITEMS.registerItem("quarry_module",
+            p -> new DroneModuleItem(p, DroneTask.QUARRY));
+    public static final DeferredItem<DroneModuleItem> TRANSPORT_MODULE = ITEMS.registerItem("transport_module",
+            p -> new DroneModuleItem(p, DroneTask.TRANSPORT));
 
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);

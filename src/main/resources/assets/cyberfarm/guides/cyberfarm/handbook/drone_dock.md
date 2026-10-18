@@ -37,7 +37,22 @@ Without any setup the drone works a **9x9** area centred on the dock. To change 
 2. **Right-click the first corner** of your field.
 3. **Right-click the opposite corner**. The dock now uses that area.
 
-The area can be up to **33x33** blocks and must stay within 48 blocks of the dock.
-Sneak and right-click in the air to clear a corner you set by mistake.
+The area can be up to **33x33** blocks, the two corners can be at most **8 blocks** apart in
+height, and everything must stay within 48 blocks of the dock.
+
+## Setting a transport route
+
+For drones with a [Transport Module](modules.md):
+
+1. **Right-click the dock** to link the tool.
+2. **Right-click the source container** (chest, barrel, any modded inventory).
+3. **Right-click the destination container**. The route is saved on the dock.
+
+Clicking a container sets the route instead of an area corner.
+
+## Fixing mistakes
+
+- **Sneak + right-click in the air** clears a corner or route source you set by mistake.
+- **Sneak + right-click the dock** resets it: default 9x9 area and no transport route.
 
 <RecipeFor id="survey_tool" />
