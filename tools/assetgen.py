@@ -83,6 +83,32 @@ def dock_model():
     })
 
 
+def conduit_models():
+    texture = {"particle": tex("energy_conduit"), "conduit": tex("energy_conduit")}
+    all_faces = lambda: {d: {"texture": "#conduit"} for d in ("north", "east", "south", "west", "up", "down")}
+    core = {"from": [5, 5, 5], "to": [11, 11, 11], "faces": all_faces()}
+    # Arm pointing north; the blockstate rotates it to every other side
+    arm = {"from": [6, 6, 0], "to": [10, 10, 5], "faces": {
+        "north": {"texture": "#conduit", "cullface": "north"},
+        "east": {"texture": "#conduit"}, "west": {"texture": "#conduit"},
+        "up": {"texture": "#conduit"}, "down": {"texture": "#conduit"},
+    }}
+    write(ASSETS / "models/block/energy_conduit_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
+    write(ASSETS / "models/block/energy_conduit_side.json", {"textures": texture, "elements": [arm]})
+    # Item: core with arms east and west
+    write(ASSETS / "models/block/energy_conduit_inventory.json", {
+        "parent": "minecraft:block/block", "textures": texture,
+        "elements": [core,
+                     {"from": [0, 6, 6], "to": [5, 10, 10], "faces": all_faces()},
+                     {"from": [11, 6, 6], "to": [16, 10, 10], "faces": all_faces()}],
+    })
+    rotations = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+    parts = [{"apply": {"model": f"{NS}:block/energy_conduit_core"}}]
+    for direction, rotation in rotations.items():
+        parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/energy_conduit_side", **rotation}})
+    write(ASSETS / "blockstates/energy_conduit.json", {"multipart": parts})
+
+
 def block_loot(name):
     write(DATA / f"loot_table/blocks/{name}.json", {
         "type": "minecraft:block",
@@ -107,9 +133,13 @@ def blocks():
     dock_model()
     facing_blockstate("drone_dock")
 
-    names = ["combustion_generator", "drone_assembler", "drone_dock"]
+    conduit_models()
+    write(ASSETS / "items/energy_conduit.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/energy_conduit_inventory"}})
+
+    names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit"]
     for name in names:
-        write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
+        if name != "energy_conduit":
+            write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
         block_loot(name)
     write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names]})
 
@@ -167,6 +197,7 @@ def recipes():
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
+    shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("survey_tool", [" G ", "IRI", " I "], {"G": "minecraft:glass_pane", "I": iron, "R": redstone}, category="equipment")
 
     # The handbook is a GuideME guide: only craftable when GuideME is installed.

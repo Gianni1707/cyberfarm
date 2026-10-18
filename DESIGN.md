@@ -7,7 +7,7 @@
 
 1. **Droni modulari** che lavorano le farm al posto del giocatore, in stile *Steve's Carts*.
 2. **Energia a tier** che sale di complessità: combustione → biogas/metano → fissione nucleare.
-3. **Massima compatibilità**: energia **FE** (capability standard NeoForge), fluidi e item tramite capability NeoForge, ricette visibili in **JEI**, tag comuni (`c:`) per i materiali.
+3. **Massima compatibilità**: energia **FE** (capability standard NeoForge), fluidi e item tramite capability NeoForge, ricette visibili in **JEI** e **REI**, tag comuni (`c:`) per i materiali.
 4. **Stile visivo sci-fi pulito**: pannelli grigio antracite, bordi chiari, accenti ciano luminosi.
 5. **Tutto documentato** nel libro guida *Drone Engineer's Handbook*.
 
@@ -18,7 +18,7 @@
 | Logica droni | **Area + Dock**: l'area si marca con un tool e il drone parte dal dock, lavora e torna a scaricare e ricaricarsi. Niente programmazione vera (forse in futuro). |
 | Nucleare | **Pericoloso ma non troppo**: meltdown con esplosione moderata (potenza 6.0 di default), configurabile, con opzione per non distruggere blocchi. |
 | Energia | **FE**, interoperabile con le altre tech mod. |
-| Ricette | Integrazione **JEI** (plugin opzionale, la mod funziona anche senza). |
+| Ricette | Plugin opzionali **JEI** e **REI** (EMI legge quello JEI): categoria Drone Assembly, generatore come stazione dei combustibili, pagine info. In dev si sceglie il viewer con `recipe_viewer` in gradle.properties. |
 | Stile | Sci-fi pulito. |
 
 ## Contenuti
@@ -44,6 +44,8 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Idee future**: Range Booster, Solar Skin, filtri per Quarry/Transport.
 
 ### Energia
+- **Energy Conduit**: si collega da solo a cavi e blocchi FE di qualsiasi mod; non accumula, distribuisce subito
+  a turno tra le macchine della rete (1.000 FE/t per sorgente, reti fino a 1.024 cavi).
 - **Tier 1**: Combustion Generator, Bio-Digester (scarti organici → Biogas).
 - **Tier 2**: Methane Extractor (sotto un mob contenuto in una Containment Cage), Gas Turbine, Methane Canister.
 - **Tier 3**: Fission Reactor (multiblocco), Cooling Tower (multiblocco a cono), Steam Turbine. Risorse: Uranium Ore → Yellowcake → Fuel Rod → Depleted Rod.
@@ -57,7 +59,7 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 ## Roadmap
 
 1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
-2. ✅ Moduli Quarry e Transport, ✅ addon. Prossimi: Planter/Logger, cavi energetici, JEI.
+2. ✅ Moduli Quarry e Transport, ✅ addon, ✅ Energy Conduit, ✅ JEI + REI. Prossimi: Planter/Logger.
 3. Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, droni a metano.
 4. Endgame: Fission Reactor, Cooling Tower, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.

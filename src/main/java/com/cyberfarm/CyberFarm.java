@@ -55,6 +55,7 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {

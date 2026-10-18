@@ -4,6 +4,7 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.DroneAssemblerBlock;
 import com.cyberfarm.block.DroneDockBlock;
+import com.cyberfarm.block.EnergyConduitBlock;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -23,6 +24,10 @@ public class ModBlocks {
 
     public static final DeferredBlock<DroneDockBlock> DRONE_DOCK = BLOCKS.registerBlock("drone_dock",
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
+
+    public static final DeferredBlock<EnergyConduitBlock> ENERGY_CONDUIT = BLOCKS.registerBlock("energy_conduit",
+            EnergyConduitBlock::new,
+            p -> p.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion());
 
     private static BlockBehaviour.Properties machine(BlockBehaviour.Properties properties) {
         return properties

@@ -2,6 +2,7 @@
   "values": [
     "cyberfarm:combustion_generator",
     "cyberfarm:drone_assembler",
-    "cyberfarm:drone_dock"
+    "cyberfarm:drone_dock",
+    "cyberfarm:energy_conduit"
   ]
 }

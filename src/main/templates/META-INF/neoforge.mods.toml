@@ -89,6 +89,23 @@ Build modular drones in the Drone Assembler and let them run your farms, powered
     ordering="NONE"
     side="BOTH"
 
+# Recipe viewers: CyberFarm adds its Drone Assembly page and info pages to whichever is installed.
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    reason="Drone Assembly recipes and info pages"
+    versionRange="*"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.${mod_id}]]
+    modId="roughlyenoughitems"
+    type="optional"
+    reason="Drone Assembly recipes and info pages"
+    versionRange="*"
+    ordering="NONE"
+    side="CLIENT"
+
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.

@@ -2,7 +2,7 @@
 navigation:
   title: Addons
   parent: index.md
-  position: 6
+  position: 7
   icon: cyberfarm:speed_addon
 item_ids:
   - cyberfarm:speed_addon

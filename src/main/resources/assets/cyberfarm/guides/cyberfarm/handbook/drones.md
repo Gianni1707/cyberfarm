@@ -2,7 +2,7 @@
 navigation:
   title: Drones
   parent: index.md
-  position: 8
+  position: 9
   icon: cyberfarm:drone
 item_ids:
   - cyberfarm:drone

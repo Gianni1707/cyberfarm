@@ -28,7 +28,8 @@ Frames also need <ItemLink id="rotor" />s and a <ItemLink id="battery_cell" />.
 ## 2. Make power
 
 Place a <ItemLink id="combustion_generator" /> and feed it coal or any other furnace fuel.
-It pushes FE into every machine touching it.
+It pushes FE into every machine touching it, or into <ItemLink id="energy_conduit" />s that carry
+it further.
 
 ## 3. Build the drone
 

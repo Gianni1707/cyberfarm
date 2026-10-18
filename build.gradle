@@ -29,6 +29,11 @@ sourceSets.main.resources {
 repositories {
     // GuideME (in-game handbook) is published on Maven Central
     mavenCentral()
+    // JEI
+    maven { url = "https://maven.blamejared.com" }
+    // REI and its dependencies (Architectury, Cloth Config)
+    maven { url = "https://maven.shedaniel.me" }
+    maven { url = "https://maven.architectury.dev" }
 }
 
 base {
@@ -116,12 +121,17 @@ dependencies {
     // needed at compile time and CyberFarm still runs without it.
     localRuntime "org.appliedenergistics:guideme:${guideme_version}"
 
-    // Example optional mod dependency with JEI
-    // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
-    // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-    // compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
-    // We add the full version to localRuntime, not runtimeOnly, so that we do not publish a dependency on it
-    // localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+    // Recipe viewers: both are optional. We compile against their APIs only; the dev client runs
+    // one of them, picked with recipe_viewer in gradle.properties (jei or rei).
+    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei_version}"
+    if (project.recipe_viewer == "rei") {
+        localRuntime "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    } else {
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar

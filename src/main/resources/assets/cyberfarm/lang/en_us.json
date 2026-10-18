@@ -3,6 +3,7 @@
   "block.cyberfarm.combustion_generator": "Combustion Generator",
   "block.cyberfarm.drone_assembler": "Drone Assembler",
   "block.cyberfarm.drone_dock": "Drone Dock",
+  "block.cyberfarm.energy_conduit": "Energy Conduit",
   "item.cyberfarm.drone_core": "Drone Core",
   "item.cyberfarm.rotor": "Rotor",
   "item.cyberfarm.battery_cell": "Battery Cell",
@@ -101,5 +102,17 @@
   "cyberfarm.configuration.section.cyberfarm.common.toml.title": "CyberFarm Configs",
   "cyberfarm.configuration.nuclear": "Nuclear",
   "cyberfarm.configuration.meltdownDestroysBlocks": "Meltdown Destroys Blocks",
-  "cyberfarm.configuration.meltdownExplosionPower": "Meltdown Explosion Power"
+  "cyberfarm.configuration.meltdownExplosionPower": "Meltdown Explosion Power",
+  "category.cyberfarm.drone_assembly": "Drone Assembly",
+  "category.cyberfarm.drone_assembly.tier": "Tier %s: %s module slots, up to %s addons",
+  "category.cyberfarm.drone_assembly.cost": "Costs %s FE",
+  "info.block.cyberfarm.combustion_generator": "Burns any furnace fuel into FE (40 FE/t) and pushes it into every adjacent machine or Energy Conduit.",
+  "info.block.cyberfarm.drone_assembler": "Builds drones: put a frame, one to three function modules and optional addons, then press Assemble (2,000 FE). Put a finished drone back in the output slot to disassemble it.",
+  "info.block.cyberfarm.drone_dock": "Home of one drone: charges it, stores its cargo and keeps its work area and transport route. Right-click it with a drone to deploy it.",
+  "info.block.cyberfarm.energy_conduit": "Carries FE between generators and machines of any mod. Conduits connect by themselves and share power between all the machines they touch, up to 1,000 FE/t per source.",
+  "info.item.cyberfarm.drone": "Right-click a Drone Dock to deploy it. Sneak + right-click the flying drone with an empty hand to pick it up again.",
+  "info.item.cyberfarm.survey_tool": "Right-click a Drone Dock to link it, then two opposite corners to set the work area, or two containers to set a transport route. Sneak + right-click the dock to reset it.",
+  "info.item.cyberfarm.harvester_module": "The drone harvests mature crops, melons and pumpkins in its work area and replants them.",
+  "info.item.cyberfarm.quarry_module": "The drone digs its surveyed area layer by layer down to bedrock, in order, and unloads every 192 items. Never digs the default area around the dock.",
+  "info.item.cyberfarm.transport_module": "The drone carries items from the source container to the destination container of its dock's route: 16 items per trip, plus one stack per Stack Addon."
 }

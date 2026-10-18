@@ -240,6 +240,20 @@ def assembler_side():
     return c
 
 
+def energy_conduit():
+    """Sleeve texture: the core uses the centre (5..10), the arms the middle rows (6..9)."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "d", noise=3, seed=12)
+    c.rect(0, 7, 15, 8, "b")
+    for x in range(0, 16, 2):
+        c.set(x, 7, "c")
+        c.set(x + 1, 8, "c")
+    c.frame(5, 5, 10, 10, "k")
+    c.rect(0, 6, 15, 6, "m")
+    c.rect(0, 9, 15, 9, "D")
+    return c
+
+
 def dock_top():
     c = Canvas()
     c.rect(0, 0, 15, 15, "k")
@@ -638,6 +652,7 @@ def build_all():
         "block/drone_dock_top": dock_top(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
+        "block/energy_conduit": energy_conduit(),
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)

@@ -2,7 +2,7 @@
 navigation:
   title: Function Modules
   parent: index.md
-  position: 5
+  position: 6
   icon: cyberfarm:harvester_module
 item_ids:
   - cyberfarm:harvester_module

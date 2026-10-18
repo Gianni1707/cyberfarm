@@ -6,6 +6,7 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -20,6 +21,9 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneAssemblerBlockEntity>> DRONE_ASSEMBLER = BLOCK_ENTITIES.register("drone_assembler",
             () -> new BlockEntityType<>(DroneAssemblerBlockEntity::new, Set.of(ModBlocks.DRONE_ASSEMBLER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyConduitBlockEntity>> ENERGY_CONDUIT = BLOCK_ENTITIES.register("energy_conduit",
+            () -> new BlockEntityType<>(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
             () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));

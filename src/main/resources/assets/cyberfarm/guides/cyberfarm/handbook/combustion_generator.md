@@ -25,7 +25,7 @@ blaze rods, lava buckets...) and turns it into FE.
 | One coal | 32,000 FE |
 
 The generator **pushes power automatically** into every adjacent block that accepts FE:
-CyberFarm machines, but also machines and cables from other mods. It only burns fuel when its
+CyberFarm machines, [Energy Conduits](energy_conduit.md), and machines and cables from other mods. It only burns fuel when its
 buffer is not full, so no fuel is wasted.
 
 Lava buckets leave an empty bucket in the slot. Take it out to refuel.
