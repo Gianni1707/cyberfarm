@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone",
+    "G": "minecraft:gold_ingot"
+  },
+  "pattern": [
+    "IRI",
+    "RGR",
+    "IRI"
+  ],
+  "result": {
+    "id": "cyberfarm:drone_core",
+    "count": 2
+  }
+}

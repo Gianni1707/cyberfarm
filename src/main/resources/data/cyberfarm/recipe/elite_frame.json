@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "X": "minecraft:diamond",
+    "B": "cyberfarm:battery_cell",
+    "E": "minecraft:ender_eye",
+    "F": "cyberfarm:advanced_frame"
+  },
+  "pattern": [
+    "XBX",
+    "EFE",
+    "XBX"
+  ],
+  "result": {
+    "id": "cyberfarm:elite_frame"
+  }
+}

@@ -2,9 +2,14 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModCreativeTabs;
+import com.cyberfarm.registry.ModDataComponents;
+import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModItems;
+import com.cyberfarm.registry.ModMenus;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.resources.Identifier;
@@ -12,6 +17,10 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
@@ -21,12 +30,34 @@ public class CyberFarm {
     public CyberFarm(IEventBus modEventBus, ModContainer modContainer) {
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
+        ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        ModMenus.MENUS.register(modEventBus);
+        ModEntities.ENTITIES.register(modEventBus);
+        ModDataComponents.COMPONENTS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+
+        modEventBus.addListener(CyberFarm::registerCapabilities);
+        modEventBus.addListener(CyberFarm::registerAttributes);
+        NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     public static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(MODID, path);
+    }
+
+    // Exposes FE and items to other mods' cables, pipes and hoppers.
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getItems());
+    }
+
+    private static void registerAttributes(EntityAttributeCreationEvent event) {
+        event.put(ModEntities.DRONE.get(), DroneEntity.createAttributes().build());
     }
 }

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "D": "cyberfarm:drone_core",
+    "C": "minecraft:copper_ingot",
+    "T": "minecraft:crafting_table"
+  },
+  "pattern": [
+    "IDI",
+    "CTC",
+    "III"
+  ],
+  "result": {
+    "id": "cyberfarm:drone_assembler"
+  }
+}

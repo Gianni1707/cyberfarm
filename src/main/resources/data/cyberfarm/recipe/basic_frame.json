@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": "cyberfarm:rotor",
+    "D": "cyberfarm:drone_core",
+    "B": "cyberfarm:battery_cell"
+  },
+  "pattern": [
+    "R R",
+    " D ",
+    "RBR"
+  ],
+  "result": {
+    "id": "cyberfarm:basic_frame"
+  }
+}

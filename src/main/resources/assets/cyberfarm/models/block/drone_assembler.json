@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/drone_assembler_front",
+    "top": "cyberfarm:block/drone_assembler_top",
+    "side": "cyberfarm:block/drone_assembler_side",
+    "bottom": "cyberfarm:block/machine_bottom"
+  }
+}

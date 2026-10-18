@@ -27,7 +27,8 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // Add here additional repositories if required by some of the dependencies below.
+    // GuideME (in-game handbook) is published on Maven Central
+    mavenCentral()
 }
 
 base {
@@ -111,6 +112,10 @@ configurations {
 }
 
 dependencies {
+    // GuideME renders the Drone Engineer's Handbook. The guide is data-driven, so no API is
+    // needed at compile time and CyberFarm still runs without it.
+    localRuntime "org.appliedenergistics:guideme:${guideme_version}"
+
     // Example optional mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
     // compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"

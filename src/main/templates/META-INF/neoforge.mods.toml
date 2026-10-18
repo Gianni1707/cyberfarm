@@ -80,6 +80,15 @@ Build modular drones in the Drone Assembler and let them run your farms, powered
     ordering="NONE"
     side="BOTH"
 
+# The in-game handbook is a GuideME guide; without GuideME the mod works, just without the book.
+[[dependencies.${mod_id}]]
+    modId="guideme"
+    type="optional"
+    reason="Shows the Drone Engineer's Handbook"
+    versionRange="[26.1.15-beta,)"
+    ordering="NONE"
+    side="BOTH"
+
 # Features are specific properties of the game environment, that you may want to declare you require. This example declares
 # that your mod requires GL version 3.2 or higher. Other features will be added. They are side aware so declaring this won't
 # stop your mod loading on the server for example.

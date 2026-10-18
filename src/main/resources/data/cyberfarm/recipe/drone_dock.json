@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "D": "cyberfarm:drone_core",
+    "I": "minecraft:iron_ingot"
+  },
+  "pattern": [
+    "CDC",
+    "III"
+  ],
+  "result": {
+    "id": "cyberfarm:drone_dock"
+  }
+}

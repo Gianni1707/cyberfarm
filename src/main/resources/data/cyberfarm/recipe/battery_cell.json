@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": "minecraft:iron_nugget",
+    "C": "minecraft:copper_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    " N ",
+    "CRC",
+    "CRC"
+  ],
+  "result": {
+    "id": "cyberfarm:battery_cell"
+  }
+}

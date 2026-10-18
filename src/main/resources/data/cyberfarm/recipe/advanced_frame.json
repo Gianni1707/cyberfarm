@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "B": "cyberfarm:battery_cell",
+    "D": "cyberfarm:drone_core",
+    "F": "cyberfarm:basic_frame"
+  },
+  "pattern": [
+    "GBG",
+    "DFD",
+    "GBG"
+  ],
+  "result": {
+    "id": "cyberfarm:advanced_frame"
+  }
+}

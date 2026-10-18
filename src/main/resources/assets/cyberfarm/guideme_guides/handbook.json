@@ -1,0 +1,15 @@
+{
+  "item_settings": {
+    "display_name": {
+      "translate": "cyberfarm.guide.handbook"
+    },
+    "tooltip_lines": [
+      {
+        "text": "Everything about drones, power and machines",
+        "color": "dark_aqua"
+      }
+    ],
+    "model": "cyberfarm:item/handbook"
+  },
+  "default_language": "en_us"
+}

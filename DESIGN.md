@@ -24,16 +24,15 @@
 ## Contenuti
 
 ### Droni
-- **Drone Assembler**: l'officina dove si monta il drone. Ha slot tipizzati e un'anteprima 3D.
-- **Drone Dock**: base del drone (ricarica, inventario, punto di partenza).
-- **Survey Tool**: marca l'area di lavoro collegata a un dock.
-- Slot dei moduli:
-  - **Chassis** (tier e numero di slot): Light Frame → Reinforced Frame → Titanium Frame
-  - **Propulsion**: Basic Rotors, Quad Rotors, Ion Thrusters
-  - **Power Cell**: Battery (FE), Methane Tank, Micro-RTG (endgame)
-  - **Tool**: Harvester, Planter, Logger, Miner, Sprinkler, Shearer/Milker, Fluid Siphon
-  - **Upgrade**: Cargo Pod, Range Booster, Silk Touch Chip, Fortune Chip, Solar Skin
-- **Peso**: ogni modulo pesa, e più peso significa consumo maggiore e velocità minore.
+Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro che fa).
+
+- **Drone Assembler**: slot Frame + 3 slot Modules (sbloccati in base al tier) + output. Costa 2.000 FE.
+- **Drone Dock**: base del drone (ricarica 500 FE/t, 9 slot di raccolto, area di lavoro).
+- **Survey Tool**: collega un dock e marca due angoli dell'area (max 33x33, entro 48 blocchi).
+- **Telai**: Basic (T1: 20k FE, 80%, 1 slot) → Advanced (T2: 60k FE, 130%, 2 slot) → Elite (T3: 150k FE, 160%, 3 slot).
+- **Componenti di crafting**: Drone Core, Rotor, Battery Cell.
+- **Moduli funzione**: Harvester ✅ · Quarry (prossimo) · Transport (prossimo) · poi Planter, Logger, Fluid Siphon, Shearer/Milker.
+- **Upgrade** (idea per il futuro): Cargo Pod, Range Booster, Silk Touch/Fortune Chip, Solar Skin.
 
 ### Energia
 - **Tier 1**: Combustion Generator, Bio-Digester (scarti organici → Biogas).
@@ -42,17 +41,20 @@
 
 ### Libro guida
 **Drone Engineer's Handbook**. Capitoli: Getting Started · Drones · Modules · Energy · Nuclear.
-Candidati come libreria: **GuideME** (pagine in Markdown, anteprime 3D delle strutture, già usata da AE2) oppure **Patchouli** (JSON). Per 26.1.2 entrambe sono in beta. *Da decidere.*
+Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
+`assets/cyberfarm/guideme_guides/handbook.json` + pagine in `assets/cyberfarm/guides/cyberfarm/handbook/*.md`.
+Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di rame).
 
 ## Roadmap
 
-1. **MVP**: Drone Assembler, Light Frame, Harvester, Battery, Drone Dock, Survey Tool, Combustion Generator, libro con 3–4 pagine. ← *siamo qui (scheletro pronto)*
-2. Altri moduli (Planter, Logger, Miner, upgrade) e sistema di peso.
+1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ← *implementato, da testare in gioco*
+2. Moduli Quarry e Transport, poi Planter/Logger, upgrade, cavi energetici.
 3. Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, droni a metano.
 4. Endgame: Fission Reactor, Cooling Tower, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
 
 ## Asset
 
-- Texture generate da `tools/texgen.py` (pixel art ASCII → PNG, palette condivisa). Comando: `python tools/texgen.py`.
-- Modelli dei blocchi in JSON (formato Blockbench), modello del drone in Java.
+- Texture: `python tools/texgen.py` (disegnate in codice con palette condivisa; `--preview DIR` crea un foglio di anteprima).
+- JSON (blockstate, modelli, item, loot, tag, ricette): `python tools/assetgen.py`. Le traduzioni (`lang/en_us.json`) si scrivono a mano.
+- Modello 3D del drone in Java (`DroneModel`), GUI disegnate in codice (`MachineScreen`).
