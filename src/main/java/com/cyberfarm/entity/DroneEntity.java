@@ -12,10 +12,12 @@ import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -29,6 +31,8 @@ import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
@@ -59,9 +63,14 @@ public class DroneEntity extends PathfinderMob {
     private static final double LANDING_RADIUS = 2.5;
     /** The drone lines up this high above the pad before descending. */
     private static final double APPROACH_HEIGHT = 0.8;
-    public static final int FLIGHT_COST = 2;
     public static final int CARGO_SLOTS = 9;
     private static final int SCAN_INTERVAL = 40;
+    /** Cruise speed in blocks per tick of a 100% frame (3 blocks/s); the Basic frame flies at 80%. */
+    private static final double BASE_SPEED = 0.15;
+    /** Ticks pushing against a block before falling back to pathfinding... */
+    private static final int STUCK_LIMIT = 20;
+    /** ...and how long to pathfind before trying a straight line again. */
+    private static final int PATHFIND_TICKS = 60;
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
@@ -74,6 +83,8 @@ public class DroneEntity extends PathfinderMob {
     /** Round robin over the modules, so one busy module does not starve the others. */
     private int nextTask;
     private int scanCooldown;
+    private int stuckTicks;
+    private int pathfindTicks;
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final ItemStacksResourceHandler cargo = new ItemStacksResourceHandler(CARGO_SLOTS);
 
@@ -88,8 +99,9 @@ public class DroneEntity extends PathfinderMob {
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes()
                 .add(Attributes.MAX_HEALTH, 20.0)
-                .add(Attributes.FLYING_SPEED, 0.6)
-                .add(Attributes.MOVEMENT_SPEED, 0.3);
+                // Only used by the pathfinding fallback; normal flight is steered by hand.
+                .add(Attributes.FLYING_SPEED, 0.3)
+                .add(Attributes.MOVEMENT_SPEED, 0.2);
     }
 
     public void setup(DroneModules modules, int energy, BlockPos dockPos) {
@@ -142,6 +154,11 @@ public class DroneEntity extends PathfinderMob {
         return cargo;
     }
 
+    /** Uses the energy of one job (harvest, mined block), raised by the Fortune / Silk Touch addons. */
+    public void useJobEnergy(int baseAmount) {
+        useEnergy((int) Math.ceil(baseAmount * modules.jobCostMultiplier()));
+    }
+
     public void useEnergy(int amount) {
         energy = Math.max(0, energy - amount);
     }
@@ -163,6 +180,14 @@ public class DroneEntity extends PathfinderMob {
         return true;
     }
 
+    public int getCargoCount() {
+        int count = 0;
+        for (int i = 0; i < cargo.size(); i++) {
+            count += cargo.getAmountAsInt(i);
+        }
+        return count;
+    }
+
     public boolean isCargoEmpty() {
         return ResourceHandlerUtil.isEmpty(cargo);
     }
@@ -177,11 +202,69 @@ public class DroneEntity extends PathfinderMob {
         }
     }
 
-    public void flyTo(Vec3 pos) {
-        double speed = modules.speed();
-        if (!navigation.moveTo(pos.x, pos.y, pos.z, speed)) {
-            // No path found: try a straight line.
-            moveControl.setWantedPosition(pos.x, pos.y, pos.z, speed);
+    /** Items carried per Transport trip, from the Stack Addons. */
+    public int transportCapacity() {
+        return modules.transportCapacity();
+    }
+
+    /**
+     * The virtual tool used to work out drops: a diamond pickaxe with Silk Touch or Fortune
+     * from the installed addons. Crops use Fortune through their loot tables too.
+     */
+    public ItemStack miningTool(ServerLevel level) {
+        ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
+        var enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
+        if (modules.hasSilkTouch()) {
+            tool.enchant(enchantments.getOrThrow(Enchantments.SILK_TOUCH), 1);
+        } else if (modules.fortuneLevel() > 0) {
+            tool.enchant(enchantments.getOrThrow(Enchantments.FORTUNE), modules.fortuneLevel());
+        }
+        return tool;
+    }
+
+    public double cruiseSpeed() {
+        return BASE_SPEED * modules.speed();
+    }
+
+    /**
+     * Flies in a straight line toward {@code target}, accelerating smoothly, easing off near it and
+     * turning gradually. Call it every tick. Vanilla pathfinding re-plans between grid nodes and
+     * zig-zags, so it is only used for a few seconds after the drone gets stuck against a block.
+     */
+    public void flyTowards(Vec3 target) {
+        if (pathfindTicks > 0) {
+            pathfindTicks--;
+            if (tickCount % 10 == 0 || navigation.isDone()) {
+                navigation.moveTo(target.x, target.y, target.z, modules.speed());
+            }
+            return;
+        }
+        navigation.stop();
+        holdMoveControl();
+
+        Vec3 delta = target.subtract(position());
+        double distance = delta.length();
+        if (distance < 0.02) {
+            setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+        double speed = Math.min(cruiseSpeed(), distance * 0.3);
+        Vec3 desired = delta.scale(speed / distance);
+        setDeltaMovement(getDeltaMovement().lerp(desired, 0.5));
+        if (desired.horizontalDistanceSqr() > 1.0E-4) {
+            float yaw = (float) (Mth.atan2(desired.z, desired.x) * Mth.RAD_TO_DEG) - 90.0F;
+            setYRot(Mth.approachDegrees(getYRot(), yaw, 8.0F));
+            yBodyRot = getYRot();
+            yHeadRot = getYRot();
+        }
+
+        if (horizontalCollision || (verticalCollision && Math.abs(delta.y) > 0.5)) {
+            if (++stuckTicks > STUCK_LIMIT) {
+                stuckTicks = 0;
+                pathfindTicks = PATHFIND_TICKS;
+            }
+        } else if (stuckTicks > 0) {
+            stuckTicks--;
         }
     }
 
@@ -201,7 +284,7 @@ public class DroneEntity extends PathfinderMob {
 
         int status = getStatus();
         if (status == STATUS_WORKING || status == STATUS_RETURNING) {
-            useEnergy(FLIGHT_COST);
+            useEnergy(modules.flightCost());
         }
         switch (status) {
             case STATUS_WORKING -> tickWorking(level, dock);
@@ -225,12 +308,11 @@ public class DroneEntity extends PathfinderMob {
         Vec3 home = dockHover();
         double horizontal = home.subtract(position()).horizontalDistance();
         if (horizontal > LANDING_RADIUS) {
-            if (tickCount % 10 == 0 || navigation.isDone()) {
-                flyTo(home.add(0.0, APPROACH_HEIGHT, 0.0));
-            }
+            flyTowards(home.add(0.0, APPROACH_HEIGHT, 0.0));
             return false;
         }
 
+        pathfindTicks = 0;
         navigation.stop();
         holdMoveControl();
         // Line up above the pad first, then descend straight down

@@ -23,10 +23,12 @@ public abstract class DroneJob {
 
     protected enum Travel { MOVING, ARRIVED, FAILED }
 
-    private static final int TRAVEL_TIMEOUT = 200;
-    private static final double REACH = 1.8;
+    /** Ticks without getting closer before the drone gives up on a block. */
+    private static final int NO_PROGRESS_LIMIT = 100;
+    private static final double ARRIVAL_DISTANCE = 0.3;
 
-    private int travelTicks;
+    private double bestDistance = Double.MAX_VALUE;
+    private int noProgressTicks;
 
     public abstract Result tick(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock);
 
@@ -34,22 +36,24 @@ public abstract class DroneJob {
     public void stop(DroneEntity drone, ServerLevel level) {}
 
     /**
-     * Flies to the air just above {@code pos}. ARRIVED once the block is within reach;
-     * FAILED after a timeout, and the block is then skipped until the drone goes home.
+     * Flies to the air just above {@code pos} and keeps hovering there; call it every tick, also
+     * while working on the block. FAILED when the drone stops getting closer for a while: the
+     * block is then skipped until the drone goes home.
      */
     protected Travel travelTo(DroneEntity drone, BlockPos pos) {
-        Vec3 center = Vec3.atCenterOf(pos);
-        if (drone.position().distanceTo(center) <= REACH) {
-            travelTicks = 0;
+        Vec3 hover = Vec3.atCenterOf(pos).add(0.0, 1.0, 0.0);
+        drone.flyTowards(hover);
+        double distance = drone.position().distanceTo(hover);
+        if (distance <= ARRIVAL_DISTANCE) {
+            noProgressTicks = 0;
             return Travel.ARRIVED;
         }
-        if (++travelTicks > TRAVEL_TIMEOUT) {
-            travelTicks = 0;
+        if (distance < bestDistance - 0.25) {
+            bestDistance = distance;
+            noProgressTicks = 0;
+        } else if (++noProgressTicks > NO_PROGRESS_LIMIT) {
             drone.markUnreachable(pos);
             return Travel.FAILED;
-        }
-        if (travelTicks % 10 == 1) {
-            drone.flyTo(center.add(0.0, 1.0, 0.0));
         }
         return Travel.MOVING;
     }

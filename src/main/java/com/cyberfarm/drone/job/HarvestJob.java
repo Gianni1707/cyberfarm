@@ -62,7 +62,8 @@ public class HarvestJob extends DroneJob {
 
     private void harvest(DroneEntity drone, ServerLevel level) {
         BlockState state = level.getBlockState(target);
-        List<ItemStack> drops = Block.getDrops(state, level, target, null);
+        // The tool carries the Fortune / Silk Touch addons into the crop's loot table.
+        List<ItemStack> drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
 
         // Replant with one of the seeds the crop dropped (wheat seeds, carrots, potatoes...).
         BlockState replanted = null;
@@ -81,6 +82,6 @@ public class HarvestJob extends DroneJob {
             level.setBlock(target, replanted, Block.UPDATE_ALL);
         }
         drone.collect(level, target, drops);
-        drone.useEnergy(ENERGY_COST);
+        drone.useJobEnergy(ENERGY_COST);
     }
 }

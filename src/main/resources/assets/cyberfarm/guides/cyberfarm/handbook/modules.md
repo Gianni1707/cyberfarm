@@ -19,6 +19,16 @@ A drone with more than one module **takes turns**: after each trip back to the d
 the next module first, so no job is forgotten. You can see the installed modules on the drone
 itself: each one adds its own tool under the hull.
 
+## Power use
+
+Every module makes the drone use more power in flight, and some jobs cost energy too:
+
+| Module | Flight cost | Per job |
+| --- | --- | --- |
+| Harvester Module | +1 FE/t | 40 FE per harvest |
+| Quarry Module | +2 FE/t | 20 FE + 10 FE per point of hardness, per block |
+| Transport Module | +1 FE/t | none |
+
 ## Harvester Module
 
 <ItemImage id="cyberfarm:harvester_module" scale="2" float="left" />
@@ -27,7 +37,7 @@ The drone looks for **fully grown crops** in its work area, harvests them and **
 using one of the dropped seeds. It also harvests **melons and pumpkins**.
 
 Works with wheat, carrots, potatoes, beetroot and any modded crop built like the vanilla ones.
-Each harvest costs **40 FE**.
+A [Fortune Addon](addons.md) gives more crops and seeds.
 
 <br clear="all" />
 
@@ -42,13 +52,16 @@ to bedrock. The dock GUI shows the layer it is working on.
 
 <br clear="all" />
 
+- It digs **in order**: row by row along the layer, zig-zagging, and every other layer it walks
+  back the other way, so it never has to fly across the pit.
+- It flies back to unload after **192 items** (three stacks).
 - It **only works with a surveyed area**: the default area around the dock is never dug,
   so your base is safe. Mark the area with the [Survey Tool](drone_dock.md).
-- Blocks drop as if mined with a **diamond pickaxe**.
+- Blocks drop as if mined with a **diamond pickaxe**. Add Fortune or Silk Touch with [addons](addons.md).
 - It skips **liquids**, **unbreakable blocks** and anything with an inventory or a machine
   inside (chests, furnaces, CyberFarm machines).
 - The column right under the Drone Dock is never dug, so the dock stays on a pillar.
-- Harder blocks take longer and cost more power: from about 35 FE for dirt up to 520 FE for obsidian.
+- Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian.
 
 <RecipeFor id="quarry_module" />
 
@@ -56,9 +69,11 @@ to bedrock. The dock GUI shows the layer it is working on.
 
 <ItemImage id="cyberfarm:transport_module" scale="2" float="left" />
 
-The drone carries items **from one container to another**: it fills its 9 cargo slots at the
-**source**, flies to the **destination** and empties them there. It keeps going while the source
+The drone carries items **from one container to another**: it picks up a load at the
+**source**, flies to the **destination** and empties it there. It keeps going while the source
 has items and the destination has room.
+
+A load is **16 items**; each [Stack Addon](addons.md) adds a full stack (64 items), up to 9 stacks.
 
 <br clear="all" />
 

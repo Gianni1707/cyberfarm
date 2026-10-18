@@ -13,7 +13,8 @@ item_ids:
 # Drone Frames
 
 The frame is the base of every drone. Its **tier** decides how big the battery is,
-how fast the drone flies and how many function modules it can carry.
+how fast the drone flies, how many function modules it can carry and how many
+[addons](addons.md) fit in it.
 
 <ItemGrid>
   <ItemIcon id="basic_frame" />
@@ -21,13 +22,15 @@ how fast the drone flies and how many function modules it can carry.
   <ItemIcon id="elite_frame" />
 </ItemGrid>
 
-| Frame | Tier | Battery | Speed | Module slots |
-| --- | --- | --- | --- | --- |
-| Basic Drone Frame | 1 | 20,000 FE | 80% | 1 |
-| Advanced Drone Frame | 2 | 60,000 FE | 130% | 2 |
-| Elite Drone Frame | 3 | 150,000 FE | 160% | 3 |
+| Frame | Tier | Battery | Speed | Module slots | Addons | Flight cost |
+| --- | --- | --- | --- | --- | --- | --- |
+| Basic Drone Frame | 1 | 20,000 FE | 80% (2.4 blocks/s) | 1 | 4 | 2 FE/t |
+| Advanced Drone Frame | 2 | 60,000 FE | 130% (3.9 blocks/s) | 2 | 8 | 3 FE/t |
+| Elite Drone Frame | 3 | 150,000 FE | 160% (4.8 blocks/s) | 3 | 16 | 4 FE/t |
 
-Higher tiers are crafted from the tier below, so you never lose your progress.
+Speed Addons add 10% each on top of the frame speed. The flight cost is the frame's share of
+the drone's [power use](drones.md). Higher tiers are crafted from the tier
+below, so you never lose your progress.
 
 ## Recipes
 

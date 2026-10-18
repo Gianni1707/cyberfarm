@@ -2,12 +2,17 @@ package com.cyberfarm.block.entity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.IntFunction;
 
+import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneModules;
+import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
+import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.item.DroneModuleItem;
 import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -28,16 +33,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Builds a drone from a frame plus up to three function modules. The frame tier decides how many
- * module slots are usable. Assembly is started from the GUI and costs FE over time.
+ * Builds a drone from a frame, up to three function modules and up to four stacks of addons.
+ * The frame tier decides how many module slots are usable and how many addons fit.
+ * A finished drone put back in the output slot can be disassembled into its parts.
+ * Assembly is started from the GUI and costs FE over time.
  */
 public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     public static final int FRAME_SLOT = 0;
     public static final int FIRST_MODULE_SLOT = 1;
     public static final int MODULE_SLOTS = 3;
-    public static final int OUTPUT_SLOT = FIRST_MODULE_SLOT + MODULE_SLOTS;
+    public static final int FIRST_ADDON_SLOT = FIRST_MODULE_SLOT + MODULE_SLOTS;
+    public static final int ADDON_SLOTS = 4;
+    public static final int OUTPUT_SLOT = FIRST_ADDON_SLOT + ADDON_SLOTS;
     public static final int SLOT_COUNT = OUTPUT_SLOT + 1;
     public static final int CAPACITY = 20_000;
     public static final int MAX_INPUT = 500;
@@ -51,9 +61,18 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
         super(ModBlockEntities.DRONE_ASSEMBLER.get(), pos, state, SLOT_COUNT, CAPACITY, MAX_INPUT, 0);
     }
 
+    public static boolean isModuleSlot(int index) {
+        return index >= FIRST_MODULE_SLOT && index < FIRST_ADDON_SLOT;
+    }
+
+    public static boolean isAddonSlot(int index) {
+        return index >= FIRST_ADDON_SLOT && index < OUTPUT_SLOT;
+    }
+
     /**
      * Shared by the server and the GUI: a frame, at least one module, no duplicate modules,
-     * nothing in slots the frame tier has not unlocked, and an empty output slot.
+     * nothing in slots the frame tier has not unlocked, addons within the frame's limits,
+     * and an empty output slot.
      */
     public static boolean isValidLayout(IntFunction<ItemStack> slots) {
         if (!(slots.apply(FRAME_SLOT).getItem() instanceof DroneFrameItem frame) || !slots.apply(OUTPUT_SLOT).isEmpty()) {
@@ -69,11 +88,83 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
                 return false;
             }
         }
-        return !modules.isEmpty();
+        if (modules.isEmpty() || countAddons(slots, null) > frame.getAddonLimit()) {
+            return false;
+        }
+        for (AddonType type : AddonType.values()) {
+            int count = countAddons(slots, type);
+            if (count > type.getMaxPerDrone()) {
+                return false;
+            }
+            for (AddonType other : AddonType.values()) {
+                if (count > 0 && type.conflictsWith(other) && countAddons(slots, other) > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /** Addons in the addon slots; {@code type} null counts all of them. */
+    public static int countAddons(IntFunction<ItemStack> slots, @Nullable AddonType type) {
+        int count = 0;
+        for (int i = FIRST_ADDON_SLOT; i < OUTPUT_SLOT; i++) {
+            ItemStack stack = slots.apply(i);
+            if (stack.getItem() instanceof DroneAddonItem addon && (type == null || addon.getAddonType() == type)) {
+                count += stack.getCount();
+            }
+        }
+        return count;
     }
 
     public boolean canAssemble() {
         return isValidLayout(this::getStack);
+    }
+
+    /** A drone sits in the output slot and every part slot is free to receive its parts. */
+    public static boolean canDisassemble(IntFunction<ItemStack> slots) {
+        if (!(slots.apply(OUTPUT_SLOT).getItem() instanceof DroneItem)) {
+            return false;
+        }
+        for (int i = FRAME_SLOT; i < OUTPUT_SLOT; i++) {
+            if (!slots.apply(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Puts the parts of the drone in the output slot back into the frame, module and addon slots,
+     * so it can be changed and assembled again. Its charge moves into the assembler's buffer.
+     */
+    public void disassemble(ServerLevel level) {
+        if (assembling || !canDisassemble(this::getStack)) {
+            return;
+        }
+        ItemStack drone = getStack(OUTPUT_SLOT);
+        energy.generate(DroneItem.getEnergy(drone));
+        setStack(OUTPUT_SLOT, ItemStack.EMPTY);
+
+        int moduleSlot = FIRST_MODULE_SLOT;
+        Map<Item, Integer> addons = new LinkedHashMap<>();
+        for (Item part : DroneItem.getModules(drone).parts()) {
+            if (part instanceof DroneFrameItem) {
+                setStack(FRAME_SLOT, new ItemStack(part));
+            } else if (part instanceof DroneModuleItem && moduleSlot < FIRST_ADDON_SLOT) {
+                setStack(moduleSlot++, new ItemStack(part));
+            } else if (part instanceof DroneAddonItem) {
+                addons.merge(part, 1, Integer::sum);
+            }
+        }
+        // A drone is built from at most four addon stacks, so they always fit back.
+        int addonSlot = FIRST_ADDON_SLOT;
+        for (Map.Entry<Item, Integer> addon : addons.entrySet()) {
+            if (addonSlot < OUTPUT_SLOT) {
+                setStack(addonSlot++, new ItemStack(addon.getKey(), addon.getValue()));
+            }
+        }
+        level.playSound(null, worldPosition, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 0.8F);
     }
 
     public void startAssembly() {
@@ -105,13 +196,14 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     }
 
     private void finishAssembly(ServerLevel level, BlockPos pos) {
+        // Addons are stored once per item, so three Speed Addons appear three times.
         List<Item> parts = new ArrayList<>();
         for (int i = FRAME_SLOT; i < OUTPUT_SLOT; i++) {
             ItemStack stack = getStack(i);
-            if (!stack.isEmpty()) {
+            for (int n = 0; n < stack.getCount(); n++) {
                 parts.add(stack.getItem());
-                setStack(i, ItemStack.EMPTY);
             }
+            setStack(i, ItemStack.EMPTY);
         }
         ItemStack drone = new ItemStack(ModItems.DRONE.get());
         drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
@@ -125,23 +217,56 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
 
     /**
      * Shared by the server and the GUI: frames go in the frame slot; a module only goes in a slot
-     * the current frame has unlocked, and only if no other slot holds the same module.
+     * the current frame has unlocked, and only if no other slot holds the same module; an addon
+     * needs a frame and must not conflict with the addons already installed.
      */
     public static boolean canPlace(IntFunction<ItemStack> slots, int index, ItemResource resource) {
         if (index == FRAME_SLOT) {
             return resource.getItem() instanceof DroneFrameItem;
         }
-        if (index >= OUTPUT_SLOT || !(resource.getItem() instanceof DroneModuleItem)
-                || !(slots.apply(FRAME_SLOT).getItem() instanceof DroneFrameItem frame)
-                || index - FIRST_MODULE_SLOT >= frame.getModuleSlots()) {
+        if (index == OUTPUT_SLOT) {
+            // A finished drone can be put back to disassemble it
+            return resource.getItem() instanceof DroneItem;
+        }
+        if (!(slots.apply(FRAME_SLOT).getItem() instanceof DroneFrameItem frame)) {
             return false;
         }
-        for (int i = FIRST_MODULE_SLOT; i < OUTPUT_SLOT; i++) {
-            if (i != index && slots.apply(i).is(resource.getItem())) {
+        if (isModuleSlot(index)) {
+            if (!(resource.getItem() instanceof DroneModuleItem) || index - FIRST_MODULE_SLOT >= frame.getModuleSlots()) {
                 return false;
             }
+            for (int i = FIRST_MODULE_SLOT; i < FIRST_ADDON_SLOT; i++) {
+                if (i != index && slots.apply(i).is(resource.getItem())) {
+                    return false;
+                }
+            }
+            return true;
         }
-        return true;
+        if (isAddonSlot(index) && resource.getItem() instanceof DroneAddonItem addon) {
+            for (AddonType other : AddonType.values()) {
+                if (addon.getAddonType().conflictsWith(other) && countAddons(slots, other) > 0) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * How many of {@code resource} the slot may hold: 1 for frame and modules; for addons, what is
+     * already there plus the room left under the frame limit and the addon's own maximum.
+     */
+    public static int slotCapacity(IntFunction<ItemStack> slots, int index, ItemResource resource) {
+        if (!isAddonSlot(index) || !(resource.getItem() instanceof DroneAddonItem addon)) {
+            return 1;
+        }
+        int limit = slots.apply(FRAME_SLOT).getItem() instanceof DroneFrameItem frame ? frame.getAddonLimit() : 0;
+        AddonType type = addon.getAddonType();
+        int room = Math.min(limit - countAddons(slots, null), type.getMaxPerDrone() - countAddons(slots, type));
+        ItemStack current = slots.apply(index);
+        int here = current.is(resource.getItem()) ? current.getCount() : 0;
+        return Math.max(0, here + room);
     }
 
     @Override
@@ -150,8 +275,8 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    protected int getSlotLimit(int index) {
-        return 1;
+    protected int getSlotLimit(int index, ItemResource resource) {
+        return slotCapacity(this::getStack, index, resource);
     }
 
     @Override

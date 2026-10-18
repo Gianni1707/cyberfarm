@@ -18,7 +18,9 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame",
-    "harvester_module", "quarry_module", "transport_module", "drone", "survey_tool",
+    "harvester_module", "quarry_module", "transport_module",
+    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
+    "drone", "survey_tool",
 ]
 
 
@@ -151,6 +153,16 @@ def recipes():
     shaped("harvester_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:iron_hoe", "C": copper, "D": core})
     shaped("quarry_module", ["IPI", "CDC"], {"I": iron, "P": "minecraft:diamond_pickaxe", "C": copper, "D": core})
     shaped("transport_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core})
+
+    # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
+    def addon(name, special):
+        shaped(name, ["NXN", "RCR"], {"N": "minecraft:gold_nugget", "X": special, "R": redstone, "C": copper})
+
+    addon("speed_addon", "minecraft:sugar")
+    addon("stack_addon", "minecraft:chest")
+    addon("battery_addon", cell)
+    addon("fortune_addon", "minecraft:emerald")
+    addon("silk_touch_addon", "minecraft:diamond")
 
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})

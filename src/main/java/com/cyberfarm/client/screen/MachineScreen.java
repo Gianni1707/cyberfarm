@@ -93,12 +93,6 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         }
     }
 
-    protected boolean isHovering(int mouseX, int mouseY, int x, int y, int width, int height) {
-        int relX = mouseX - leftPos;
-        int relY = mouseY - topPos;
-        return relX >= x && relX < x + width && relY >= y && relY < y + height;
-    }
-
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.text(font, title, titleLabelX, titleLabelY, ACCENT, false);
@@ -108,7 +102,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
-        if (isHovering(mouseX, mouseY, energyBarX - 1, energyBarY - 1, ENERGY_BAR_WIDTH + 2, energyBarHeight + 2)) {
+        if (isHovering(energyBarX - 1, energyBarY - 1, ENERGY_BAR_WIDTH + 2, energyBarHeight + 2, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.energy",
                     String.format("%,d", menu.getEnergy()), String.format("%,d", menu.getEnergyCapacity())), mouseX, mouseY);
         }

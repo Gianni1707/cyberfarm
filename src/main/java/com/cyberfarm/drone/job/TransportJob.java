@@ -61,7 +61,8 @@ public class TransportJob extends DroneJob {
     }
 
     private Result pickUp(DroneEntity drone, ServerLevel level) {
-        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.getCargo(), resource -> true, Integer.MAX_VALUE, null);
+        // 16 items per trip, plus one stack per Stack Addon
+        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.getCargo(), resource -> true, drone.transportCapacity(), null);
         if (moved == 0) {
             return Result.DONE;
         }

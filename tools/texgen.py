@@ -34,6 +34,7 @@ PALETTE = {
     "r": "#a8321f",  # red
     "g": "#3fbf6f",  # green
     "y": "#e0b020",  # hazard yellow
+    "G": "#9dffb8",  # light green
     "v": "#8a4fd8",  # violet (elite tier)
     "V": "#d6b8ff",  # light violet
 }
@@ -461,6 +462,76 @@ ITEM_ASCII = {
 }
 
 
+# Addon chips: a shared cartridge with a 6x6 icon in the window
+ADDON_CHIP = [
+    "................",
+    "................",
+    "..kkkkkkkkkkkk..",
+    "..kllllllllllk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..kmmmmmmmmmmk..",
+    "..kkkkkkkkkkkk..",
+    "...y.y.y.y.y....",
+    "................",
+]
+
+ADDON_ICONS = {
+    "item/speed_addon": [
+        "c..c..",
+        ".c..c.",
+        "..c..c",
+        "..c..c",
+        ".c..c.",
+        "c..c..",
+    ],
+    "item/stack_addon": [
+        "OOOOOO",
+        "......",
+        "OOOOOO",
+        "......",
+        "OOOOOO",
+        "......",
+    ],
+    "item/battery_addon": [
+        "..gg..",
+        ".gggg.",
+        ".gGGg.",
+        ".gggg.",
+        ".gGGg.",
+        ".gggg.",
+    ],
+    "item/fortune_addon": [
+        "..gg..",
+        ".gGGg.",
+        "gGGGGg",
+        "gggggg",
+        ".gggg.",
+        "..gg..",
+    ],
+    "item/silk_touch_addon": [
+        "....VV",
+        "...VVv",
+        "..VVv.",
+        ".VVv..",
+        ".Vv...",
+        "v.....",
+    ],
+}
+
+
+def addon_chip(icon):
+    c = from_ascii(ADDON_CHIP)
+    c.ascii(5, 5, icon)
+    return c
+
+
 # --------------------------------------------------------------------------- drone entity
 
 def box_faces(u, v, w, h, d):
@@ -570,6 +641,8 @@ def build_all():
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)
+    for name, icon in ADDON_ICONS.items():
+        textures[name] = addon_chip(icon)
     # Higher frame tiers reuse the basic frame with their own accent colors
     for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"})):
         textures[name] = from_ascii(recolor(ITEM_ASCII["item/basic_frame"], mapping))

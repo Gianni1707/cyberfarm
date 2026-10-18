@@ -1,5 +1,7 @@
 package com.cyberfarm.item;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -85,10 +87,19 @@ public class DroneItem extends Item {
         }
         builder.accept(Component.translatable("tooltip.cyberfarm.energy",
                 String.format("%,d", getEnergy(stack)), String.format("%,d", modules.energyCapacity())).withStyle(ChatFormatting.AQUA));
+        builder.accept(Component.translatable("tooltip.cyberfarm.drone.upkeep", modules.flightCost()).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.drone.modules").withStyle(ChatFormatting.GRAY));
-        for (Item module : modules.parts()) {
-            builder.accept(Component.literal(" - ").append(Component.translatable(module.getDescriptionId())).withStyle(ChatFormatting.DARK_GRAY));
+        // Addons are stored once per item: show "Speed Addon x3" instead of three lines
+        Map<Item, Integer> counts = new LinkedHashMap<>();
+        for (Item part : modules.parts()) {
+            counts.merge(part, 1, Integer::sum);
         }
+        counts.forEach((part, count) -> {
+            Component name = Component.translatable(part.getDescriptionId());
+            builder.accept(Component.literal(" - ")
+                    .append(count > 1 ? Component.translatable("tooltip.cyberfarm.drone.part_count", name, count) : name)
+                    .withStyle(ChatFormatting.DARK_GRAY));
+        });
         builder.accept(Component.translatable("tooltip.cyberfarm.drone.deploy_hint").withStyle(ChatFormatting.DARK_AQUA));
     }
 

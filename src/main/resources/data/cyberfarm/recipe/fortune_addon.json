@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "X": "minecraft:emerald",
+    "R": "minecraft:redstone",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "NXN",
+    "RCR"
+  ],
+  "result": {
+    "id": "cyberfarm:fortune_addon"
+  }
+}

@@ -61,7 +61,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
             @Override
             protected int getCapacity(int index, ItemResource resource) {
-                return Math.min(super.getCapacity(index, resource), getSlotLimit(index));
+                return Math.min(super.getCapacity(index, resource), getSlotLimit(index, resource));
             }
 
             @Override
@@ -78,7 +78,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return true;
     }
 
-    protected int getSlotLimit(int index) {
+    protected int getSlotLimit(int index, ItemResource resource) {
         return Integer.MAX_VALUE;
     }
 
@@ -122,7 +122,14 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         energy.deserialize(input.childOrEmpty("energy"));
-        items.deserialize(input.childOrEmpty("items"));
+        // Deserializing straight into the handler would adopt the saved slot count, which breaks
+        // the menu when a machine gained slots in an update. Load into a copy, keep what fits.
+        ItemStacksResourceHandler saved = new ItemStacksResourceHandler(items.size());
+        saved.deserialize(input.childOrEmpty("items"));
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = i < saved.size() ? ItemUtil.getStack(saved, i) : ItemStack.EMPTY;
+            items.set(i, ItemResource.of(stack), stack.getCount());
+        }
     }
 
     @Override

@@ -2,7 +2,7 @@
 navigation:
   title: Drone Dock
   parent: index.md
-  position: 6
+  position: 7
   icon: cyberfarm:drone_dock
 item_ids:
   - cyberfarm:drone_dock

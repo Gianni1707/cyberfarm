@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "X": "minecraft:diamond",
+    "R": "minecraft:redstone",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "NXN",
+    "RCR"
+  ],
+  "result": {
+    "id": "cyberfarm:silk_touch_addon"
+  }
+}

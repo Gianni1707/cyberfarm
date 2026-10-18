@@ -6,8 +6,6 @@ import com.cyberfarm.entity.DroneEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -21,6 +19,8 @@ import org.jspecify.annotations.Nullable;
 public class MineJob extends DroneJob {
     /** Empty layers skipped per search, to keep each tick cheap. */
     private static final int LAYERS_PER_SEARCH = 4;
+    /** Items the drone carries before flying back to unload (three stacks). */
+    public static final int LOAD_LIMIT = 192;
 
     private final BlockPos target;
     private int progress;
@@ -32,7 +32,7 @@ public class MineJob extends DroneJob {
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         // Never dig the default area around the dock: the player must survey one on purpose.
-        if (!dock.hasCustomArea() || drone.isCargoFull()) {
+        if (!dock.hasCustomArea() || isLoadFull(drone)) {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
@@ -41,15 +41,39 @@ public class MineJob extends DroneJob {
             if (y < level.getMinY()) {
                 return null;
             }
-            BlockPos target = nearest(drone,
-                    BlockPos.betweenClosed(area.minX(), y, area.minZ(), area.maxX(), y, area.maxZ()),
-                    pos -> canMine(level, dock, pos));
+            BlockPos target = firstInLayer(drone, level, dock, area, y);
             if (target != null) {
                 return new MineJob(target);
             }
             dock.setQuarryLayer(y - 1);
         }
         return null;
+    }
+
+    /**
+     * The next block of the layer in serpentine order: rows along X, alternating direction, and
+     * the whole walk reversed on every other layer so the drone continues from where it stopped.
+     */
+    private static @Nullable BlockPos firstInLayer(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock, BoundingBox area, int y) {
+        int width = area.getXSpan();
+        int total = width * area.getZSpan();
+        boolean reversed = (y & 1) == 1;
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        for (int step = 0; step < total; step++) {
+            int index = reversed ? total - 1 - step : step;
+            int row = index / width;
+            int column = index % width;
+            int x = row % 2 == 0 ? area.minX() + column : area.maxX() - column;
+            pos.set(x, y, area.minZ() + row);
+            if (!drone.isUnreachable(pos) && canMine(level, dock, pos)) {
+                return pos.immutable();
+            }
+        }
+        return null;
+    }
+
+    private static boolean isLoadFull(DroneEntity drone) {
+        return drone.getCargoCount() >= LOAD_LIMIT || drone.isCargoFull();
     }
 
     private static boolean canMine(ServerLevel level, DroneDockBlockEntity dock, BlockPos pos) {
@@ -97,12 +121,13 @@ public class MineJob extends DroneJob {
         }
 
         stop(drone, level);
-        // Drops as if mined with a diamond pickaxe, so ores and obsidian drop correctly.
-        var drops = Block.getDrops(state, level, target, null, drone, new ItemStack(Items.DIAMOND_PICKAXE));
+        // Drops as if mined with a diamond pickaxe (plus Fortune / Silk Touch addons),
+        // so ores and obsidian drop correctly.
+        var drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
         level.destroyBlock(target, false, drone);
         drone.collect(level, target, drops);
-        drone.useEnergy(20 + (int) (hardness * 10));
-        return drone.isCargoFull() ? Result.RETURN : Result.DONE;
+        drone.useJobEnergy(20 + (int) (hardness * 10));
+        return isLoadFull(drone) ? Result.RETURN : Result.DONE;
     }
 
     @Override

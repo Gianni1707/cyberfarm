@@ -29,11 +29,19 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Drone Assembler**: slot Frame + 3 slot Modules (sbloccati in base al tier) + output. Costa 2.000 FE.
 - **Drone Dock**: base del drone (ricarica 500 FE/t, 9 slot di raccolto, area di lavoro).
 - **Survey Tool**: collega un dock, marca due angoli dell'area (max 33x33, dislivello max 8, entro 48 blocchi) o due contenitori (percorso Transport). Shift+clic sulla dock la azzera.
-- **Telai**: Basic (T1: 20k FE, 80%, 1 slot) → Advanced (T2: 60k FE, 130%, 2 slot) → Elite (T3: 150k FE, 160%, 3 slot).
+- **Telai**: Basic (T1: 20k FE, 80% = 2,4 blocchi/s, 1 modulo, 4 addon) → Advanced (T2: 60k FE, 130%, 2 moduli, 8 addon) → Elite (T3: 150k FE, 160%, 3 moduli, 16 addon).
 - **Componenti di crafting**: Drone Core, Rotor, Battery Cell.
 - **Moduli funzione**: Harvester ✅ · Quarry ✅ (strati fino al bedrock, solo con area marcata) · Transport ✅ (cassa → cassa, percorso col Survey Tool) · poi Planter, Logger, Fluid Siphon, Shearer/Milker.
 - **Logica**: ogni modulo è un `DroneTask` che trova il prossimo `DroneJob`; il drone alterna i moduli a ogni giro e concatena i lavori dello stesso tipo.
-- **Upgrade** (idea per il futuro): Cargo Pod, Range Booster, Silk Touch/Fortune Chip, Solar Skin.
+- **Addon** (4 slot nell'Assembler, ognuno una pila dello stesso addon; totale limitato dal telaio):
+  Speed (+10% velocità ciascuno) · Stack (+1 stack per viaggio del Transport; base 16 oggetti, max 9 stack) · Battery (+25% batteria del telaio) ·
+  Fortune (max 3) · Silk Touch (max 1, incompatibile con Fortune). Fortune/Silk valgono per Quarry e Harvester.
+- **Consumo in volo** = (telaio 2/3/4 FE/t + moduli: Harvester +1, Quarry +2, Transport +1) × (1 + % addon: Speed 10%, Stack 5%, Battery 5%), arrotondato per eccesso.
+- **Consumo per lavoro**: raccolto 40 FE, blocco scavato 20 FE + 10 × durezza; Fortune +25% per livello, Silk Touch +50%. Tutti i costi sono nei tooltip.
+- **Smontaggio**: drone nello slot di uscita dell'Assembler (altri slot vuoti) → pulsante Disassemble; i pezzi tornano negli slot, la carica va nel buffer dell'Assembler.
+- **Volo**: rettilineo con accelerazione e frenata, pathfinding solo come riserva quando il drone è bloccato.
+- **Quarry**: scava a serpentina riga per riga, invertendo il verso a ogni strato; torna a scaricare a 192 oggetti.
+- **Idee future**: Range Booster, Solar Skin, filtri per Quarry/Transport.
 
 ### Energia
 - **Tier 1**: Combustion Generator, Bio-Digester (scarti organici → Biogas).
@@ -49,7 +57,7 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 ## Roadmap
 
 1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
-2. ✅ Moduli Quarry e Transport. Prossimi: Planter/Logger, upgrade, cavi energetici, JEI.
+2. ✅ Moduli Quarry e Transport, ✅ addon. Prossimi: Planter/Logger, cavi energetici, JEI.
 3. Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, droni a metano.
 4. Endgame: Fission Reactor, Cooling Tower, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.

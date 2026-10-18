@@ -6,11 +6,13 @@ import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
@@ -18,12 +20,15 @@ import org.jspecify.annotations.Nullable;
 
 public class DroneAssemblerMenu extends MachineMenu {
     public static final int BUTTON_ASSEMBLE = 0;
-    public static final int FRAME_SLOT_X = 17;
-    public static final int FRAME_SLOT_Y = 45;
-    public static final int MODULE_SLOT_X = 53;
-    public static final int MODULE_SLOT_Y = 27;
-    public static final int OUTPUT_SLOT_X = 129;
-    public static final int OUTPUT_SLOT_Y = 45;
+    public static final int BUTTON_DISASSEMBLE = 1;
+    public static final int FRAME_SLOT_X = 12;
+    public static final int FRAME_SLOT_Y = 36;
+    public static final int MODULE_SLOT_X = 40;
+    public static final int MODULE_SLOT_Y = 18;
+    public static final int ADDON_SLOT_X = 66;
+    public static final int ADDON_SLOT_Y = 27;
+    public static final int OUTPUT_SLOT_X = 132;
+    public static final int OUTPUT_SLOT_Y = 37;
 
     private final @Nullable DroneAssemblerBlockEntity assembler;
 
@@ -42,7 +47,7 @@ public class DroneAssemblerMenu extends MachineMenu {
 
             @Override
             protected int getCapacity(int index, ItemResource resource) {
-                return 1;
+                return DroneAssemblerBlockEntity.slotCapacity(i -> ItemUtil.getStack(this, i), index, resource);
             }
         };
     }
@@ -55,17 +60,26 @@ public class DroneAssemblerMenu extends MachineMenu {
         for (int i = 0; i < DroneAssemblerBlockEntity.MODULE_SLOTS; i++) {
             addMachineSlot(items, DroneAssemblerBlockEntity.FIRST_MODULE_SLOT + i, MODULE_SLOT_X, MODULE_SLOT_Y + i * 18);
         }
+        for (int i = 0; i < DroneAssemblerBlockEntity.ADDON_SLOTS; i++) {
+            addMachineSlot(items, DroneAssemblerBlockEntity.FIRST_ADDON_SLOT + i, ADDON_SLOT_X + (i % 2) * 18, ADDON_SLOT_Y + (i / 2) * 18);
+        }
         addMachineSlot(items, DroneAssemblerBlockEntity.OUTPUT_SLOT, OUTPUT_SLOT_X, OUTPUT_SLOT_Y);
         addPlayerInventory(inventory, 102);
     }
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id == BUTTON_ASSEMBLE && assembler != null) {
-            assembler.startAssembly();
-            return true;
+        if (assembler == null || !(player.level() instanceof ServerLevel level)) {
+            return false;
         }
-        return false;
+        switch (id) {
+            case BUTTON_ASSEMBLE -> assembler.startAssembly();
+            case BUTTON_DISASSEMBLE -> assembler.disassemble(level);
+            default -> {
+                return false;
+            }
+        }
+        return true;
     }
 
     public float getProgress() {
@@ -77,12 +91,23 @@ public class DroneAssemblerMenu extends MachineMenu {
         return extra(2) != 0;
     }
 
-    public boolean canAssemble() {
-        return DroneAssemblerBlockEntity.isValidLayout(index -> getSlot(index).getItem());
+    private ItemStack slotItem(int index) {
+        return getSlot(index).getItem();
     }
 
-    /** Module slots unlocked by the frame currently in the frame slot (0 if none). */
-    public int getUnlockedModuleSlots() {
-        return getSlot(DroneAssemblerBlockEntity.FRAME_SLOT).getItem().getItem() instanceof DroneFrameItem frame ? frame.getModuleSlots() : 0;
+    public boolean canAssemble() {
+        return DroneAssemblerBlockEntity.isValidLayout(this::slotItem);
+    }
+
+    public boolean canDisassemble() {
+        return DroneAssemblerBlockEntity.canDisassemble(this::slotItem);
+    }
+
+    public @Nullable DroneFrameItem getFrame() {
+        return slotItem(DroneAssemblerBlockEntity.FRAME_SLOT).getItem() instanceof DroneFrameItem frame ? frame : null;
+    }
+
+    public int getAddonCount() {
+        return DroneAssemblerBlockEntity.countAddons(this::slotItem, null);
     }
 }
