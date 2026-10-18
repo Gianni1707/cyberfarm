@@ -1,0 +1,12 @@
+{
+  "itemGroup.cyberfarm": "CyberFarm",
+
+  "item.cyberfarm.drone_core": "Drone Core",
+
+  "cyberfarm.configuration.title": "CyberFarm Configs",
+  "cyberfarm.configuration.section.cyberfarm.common.toml": "CyberFarm Configs",
+  "cyberfarm.configuration.section.cyberfarm.common.toml.title": "CyberFarm Configs",
+  "cyberfarm.configuration.nuclear": "Nuclear",
+  "cyberfarm.configuration.meltdownDestroysBlocks": "Meltdown Destroys Blocks",
+  "cyberfarm.configuration.meltdownExplosionPower": "Meltdown Explosion Power"
+}
