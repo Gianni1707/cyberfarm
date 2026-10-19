@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Coolant Mixer
-  parent: generators.md
-  position: 9
+  parent: nuclear.md
+  position: 3
   icon: cyberfarm:coolant_mixer
 item_ids:
   - cyberfarm:coolant_mixer

@@ -12,6 +12,7 @@ import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.menu.ReactorMenu;
+import com.cyberfarm.radiation.Radiation;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
@@ -89,6 +90,9 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
     private int heat;
     private int boost;
     private int coolantWear;
+    private List<BlockPos> renderPorts = List.of();
+    /** Game time of the last scan, -1 before the first: a MIN_VALUE start would overflow the subtraction. */
+    private long renderPortsTime = -1;
 
     public ReactorControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.REACTOR_CONTROLLER.get(), pos, state, FUEL_SLOTS + WASTE_SLOTS, 0, 0, 0);
@@ -207,6 +211,20 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         return getBlockState().getValue(ReactorControllerBlock.FORMED);
     }
 
+    /** Client side: the ports of the formed tower, for the renderer to draw their hatches. Rescanned every second. */
+    public List<BlockPos> portsForRender() {
+        if (level != null && (renderPortsTime < 0 || level.getGameTime() - renderPortsTime >= 20)) {
+            List<BlockPos> found = scan(level, worldPosition, getBlockState().getValue(MachineBlock.FACING));
+            renderPorts = found != null ? found : List.of();
+            renderPortsTime = level.getGameTime();
+        }
+        return renderPorts;
+    }
+
+    public static BlockPos floorCentreOf(BlockPos controller, Direction facing) {
+        return floorCentre(controller, facing);
+    }
+
     // ---------------------------------------------------------------- tick
 
     @Override
@@ -313,6 +331,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
             setStack(i, ItemStack.EMPTY);
         }
         BlockPos core = floorCentre(pos, facing).above();
+        Radiation.meltdown(level, core);
         level.explode(null, core.getX() + 0.5, core.getY() + 0.5, core.getZ() + 0.5,
                 Config.MELTDOWN_EXPLOSION_POWER.get().floatValue(),
                 Config.MELTDOWN_DESTROYS_BLOCKS.get() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
@@ -331,12 +350,19 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         moveSpentRods();
     }
 
-    /** Spent rods become Depleted Fuel Rods in the waste slots; they wait in place while those are full. */
+    /**
+     * Spent rods become Depleted Fuel Rods in the waste slots. While those are full the spent rods
+     * wait in place and the reactor leaks radiation.
+     */
     private void moveSpentRods() {
         for (int i = 0; i < FUEL_SLOTS; i++) {
             ItemStack rod = getStack(i);
-            if (rod.getItem() instanceof FuelRodItem && FuelRodItem.isSpent(rod) && addWaste()) {
-                setStack(i, ItemStack.EMPTY);
+            if (rod.getItem() instanceof FuelRodItem && FuelRodItem.isSpent(rod)) {
+                if (addWaste()) {
+                    setStack(i, ItemStack.EMPTY);
+                } else if (level instanceof ServerLevel serverLevel) {
+                    Radiation.add(serverLevel, worldPosition, Radiation.REACTOR_LEAK / 5);
+                }
             }
         }
     }

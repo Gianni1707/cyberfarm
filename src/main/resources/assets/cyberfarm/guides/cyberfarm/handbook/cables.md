@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Cables
-  position: 2
+  position: 3
   icon: cyberfarm:energy_conduit
 ---
 

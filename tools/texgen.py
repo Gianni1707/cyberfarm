@@ -444,6 +444,216 @@ def bucket(fluid, gas):
     return c
 
 
+def cooling_tower(glow):
+    """Skin of the formed reactor: white panels, seams, a grey footing and glowing cyan bands.
+
+    32 px wide (8 segments around the tower) and 64 high (the 7 blocks, top of the texture at the rim).
+    With glow, only the cyan pixels: the renderer draws them full-bright.
+    """
+    c = Canvas(32, 64)
+    c.rect(0, 0, 31, 63, "#e6ecf0", noise=5, seed=60)
+    for y in range(7, 64, 9):
+        c.rect(0, y, 31, y, "#c3ccd3")
+    c.rect(0, 0, 0, 63, "#c3ccd3")
+    c.rect(16, 0, 16, 63, "#d2d9de")
+    c.rect(0, 58, 31, 63, "#9aa4ac", noise=4, seed=61)
+    c.rect(0, 57, 31, 57, "#7d8a96")
+    # Cyan bands: one around the base, one under the rim, dashes in between
+    c.rect(0, 53, 31, 54, "c")
+    c.rect(0, 3, 31, 3, "c")
+    c.rect(0, 4, 31, 4, "b")
+    for x in (4, 20):
+        c.rect(x, 24, x + 7, 24, "c")
+        c.rect(x + 2, 24, x + 5, 24, "C")
+    for x in (8, 24):
+        c.set(x, 40, "C")
+    return c.glow_mask() if glow else c
+
+
+HAZMAT = "#e8c21f"
+HAZMAT_DARK = "#a8860f"
+
+
+def vitrified_waste():
+    """Treated waste: dark green glass with faint glowing streaks."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "#1d3322", noise=6, seed=70)
+    for x0, y0, length in ((2, 3, 5), (8, 9, 6), (4, 12, 4), (11, 2, 3)):
+        for i in range(length):
+            c.set(x0 + i, y0 + i // 2, "3")
+    for x, y in ((5, 4), (11, 10), (6, 13)):
+        c.set(x, y, "4")
+    c.frame(0, 0, 15, 15, "#14261a")
+    return c
+
+
+def waste_reprocessor_front():
+    c = panel(71)
+    c.rect(3, 3, 12, 9, "K")
+    c.rect(4, 4, 11, 8, "#1d3322")
+    c.rect(5, 6, 10, 7, "4")
+    c.rect(6, 6, 9, 6, "5")
+    for x in range(3, 13):
+        c.set(x, 11, "y" if (x // 2) % 2 == 0 else "K")
+        c.set(x, 12, "K" if (x // 2) % 2 == 0 else "y")
+    return c
+
+
+def hazmat_item(piece):
+    """Inventory icons of the yellow Hazmat Suit."""
+    c = Canvas()
+    if piece == "helmet":
+        c.rect(3, 3, 12, 12, "k")
+        c.rect(4, 4, 11, 11, HAZMAT)
+        c.rect(4, 4, 11, 4, "#f4dc6a")
+        c.rect(5, 6, 10, 9, "K")
+        c.rect(6, 7, 9, 8, "b")
+        c.set(6, 7, "c")
+        c.rect(3, 12, 12, 12, HAZMAT_DARK)
+    elif piece == "suit":
+        c.rect(2, 2, 13, 14, "k")
+        c.rect(3, 3, 12, 13, HAZMAT)
+        c.rect(6, 2, 9, 4, "k")
+        c.rect(6, 3, 9, 3, None)
+        c.rect(1, 3, 2, 9, "k")
+        c.rect(13, 3, 14, 9, "k")
+        c.rect(7, 5, 8, 13, HAZMAT_DARK)
+        c.rect(3, 10, 12, 10, "K")
+        c.set(10, 6, "c")
+    elif piece == "pants":
+        c.rect(3, 2, 12, 14, "k")
+        c.rect(4, 3, 11, 13, HAZMAT)
+        c.rect(7, 7, 8, 14, None)
+        c.rect(7, 7, 8, 7, "k")
+        c.rect(6, 8, 6, 13, "k")
+        c.rect(9, 8, 9, 13, "k")
+        c.rect(4, 3, 11, 3, "K")
+        c.rect(4, 12, 6, 13, HAZMAT_DARK)
+        c.rect(9, 12, 11, 13, HAZMAT_DARK)
+    else:  # boots
+        for x0 in (2, 9):
+            c.rect(x0, 6, x0 + 5, 13, "k")
+            c.rect(x0 + 1, 7, x0 + 4, 12, HAZMAT)
+            c.rect(x0 + 1, 11, x0 + 4, 12, "K")
+    return c
+
+
+HAZMAT_SHADE = "#c9a414"
+HAZMAT_SEAM = "#8f720b"
+SUIT_GREY = "#4a5058"
+SUIT_GREY_DARK = "#2e3238"
+REFLECTIVE = "#dfe5ea"
+
+
+def _suit_box(c, u, v, w, h, d, seed):
+    """A box of the suit: yellow, shaded sides, a darker back and seams along every face edge."""
+    faces = box_faces(u, v, w, h, d)
+    for name, (x0, y0, x1, y1) in faces.items():
+        base = {"right": HAZMAT_SHADE, "left": HAZMAT_SHADE, "back": HAZMAT_SHADE, "bottom": HAZMAT_SEAM}.get(name, HAZMAT)
+        c.rect(x0, y0, x1, y1, base, noise=3, seed=seed + len(name))
+        # Seams only on the helmet: on the suit they clash with the zip, on 4-pixel limbs they look like stripes
+        if x1 - x0 >= 7 and y1 - y0 == x1 - x0:
+            c.frame(x0, y0, x1, y1, HAZMAT_SEAM)
+    return faces
+
+
+def _band(c, faces, row, color, names=("right", "front", "left", "back")):
+    """A horizontal band at the given row of the side faces (row 0 is the top row of each face)."""
+    for name in names:
+        if name in faces:
+            x0, y0, x1, y1 = faces[name]
+            if y0 + row <= y1:
+                c.rect(x0, y0 + row, x1, y0 + row, color)
+
+
+def hazmat_layer(leggings):
+    """Worn Hazmat Suit in the vanilla humanoid armor layout (64x32).
+
+    Helmet with a dark visor, respirator and filters; suit with a zip, a radiation patch, reflective
+    stripes and grey gloves; boots in grey rubber. The leggings layer has the trousers and the belt.
+    """
+    c = Canvas(64, 32)
+    if leggings:
+        legs = _suit_box(c, 0, 16, 4, 12, 4, 80)
+        waist = _suit_box(c, 16, 16, 8, 12, 4, 81)
+        # Above the boots, which cover the lower half
+        _band(c, legs, 3, REFLECTIVE)
+        _band(c, legs, 4, "#ffffff")
+        _band(c, waist, 0, SUIT_GREY_DARK)
+        _band(c, waist, 1, SUIT_GREY)
+        return c
+
+    # Helmet
+    head = _suit_box(c, 0, 0, 8, 8, 8, 82)
+    x0, y0, x1, y1 = head["front"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 4, SUIT_GREY_DARK)      # visor frame
+    c.rect(x0 + 2, y0 + 2, x1 - 2, y0 + 4, "#16242c")           # dark glass
+    c.set(x0 + 2, y0 + 2, "c")                                  # reflection
+    c.set(x0 + 3, y0 + 2, "b")
+    c.rect(x0 + 3, y0 + 5, x1 - 3, y0 + 7, SUIT_GREY)           # respirator
+    c.set(x0 + 3, y0 + 6, SUIT_GREY_DARK)
+    c.set(x1 - 3, y0 + 6, SUIT_GREY_DARK)
+    for side in ("right", "left"):                              # filter canisters
+        sx0, sy0, sx1, sy1 = head[side]
+        c.rect(sx0 + 2, sy0 + 4, sx0 + 5, sy0 + 7, SUIT_GREY)
+        c.rect(sx0 + 3, sy0 + 5, sx0 + 4, sy0 + 6, SUIT_GREY_DARK)
+
+    # Suit body
+    body = _suit_box(c, 16, 16, 8, 12, 4, 83)
+    fx0, fy0, fx1, fy1 = body["front"]
+    c.rect(fx0 + 3, fy0, fx0 + 4, fy1, HAZMAT_SEAM)             # zip
+    c.rect(fx0 + 5, fy0 + 2, fx0 + 6, fy0 + 3, SUIT_GREY_DARK)  # radiation patch
+    c.set(fx0 + 5, fy0 + 2, "#e8c21f")
+    _band(c, body, 9, SUIT_GREY_DARK)                           # belt
+    _band(c, body, 6, REFLECTIVE, ("front", "back"))
+
+    # Arms: reflective stripes and grey gloves
+    arms = _suit_box(c, 40, 16, 4, 12, 4, 84)
+    _band(c, arms, 5, REFLECTIVE)
+    _band(c, arms, 6, "#ffffff")
+    for row in range(9, 12):
+        _band(c, arms, row, SUIT_GREY if row < 11 else SUIT_GREY_DARK)
+
+    # Boots: grey rubber up the shin
+    boots = _suit_box(c, 0, 16, 4, 12, 4, 85)
+    for row in range(6, 12):
+        _band(c, boots, row, SUIT_GREY if row < 11 else SUIT_GREY_DARK)
+    _band(c, boots, 6, SUIT_GREY_DARK)
+    return c
+
+
+def geiger_counter():
+    c = Canvas()
+    c.rect(2, 4, 11, 14, "k")
+    c.rect(3, 5, 10, 13, HAZMAT)
+    c.rect(4, 6, 9, 9, "K")
+    c.rect(5, 7, 8, 8, "#c4ff9a")
+    c.set(7, 8, "r")
+    c.set(6, 7, "K")
+    c.rect(4, 11, 5, 12, "K")
+    c.rect(8, 11, 9, 12, "r")
+    c.rect(12, 6, 12, 10, "K")
+    c.rect(13, 2, 13, 7, "m")
+    c.rect(12, 1, 14, 2, "l")
+    return c
+
+
+def radiation_icon():
+    """Mob effect icon (18x18): the radiation trefoil, three black blades on yellow."""
+    c = Canvas(18, 18)
+    c.disc(8.5, 8.5, 8.4, "k")
+    c.disc(8.5, 8.5, 7.5, "#e8c21f")
+    for y in range(18):
+        for x in range(18):
+            dx, dy = x + 0.5 - 9.0, 9.0 - (y + 0.5)
+            r = math.hypot(dx, dy)
+            angle = math.degrees(math.atan2(dy, dx)) % 360
+            blade = any(min(abs(angle - centre), 360 - abs(angle - centre)) <= 30 for centre in (90, 210, 330))
+            if (2.6 <= r <= 6.6 and blade) or r <= 1.6:
+                c.set(x, y, "K")
+    return c
+
+
 def raw_uranium():
     """A lump of dark ore rock with glowing uranium crystals, shaped like the vanilla raw ores."""
     return from_ascii([
@@ -1128,6 +1338,18 @@ def build_all():
         "item/steam_bucket": bucket("#aebfcb", gas=True),
         "item/coolant_bucket": bucket("#1fb8a8", gas=False),
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
+        "entity/cooling_tower": cooling_tower(False),
+        "block/vitrified_waste": vitrified_waste(),
+        "block/waste_reprocessor_front": waste_reprocessor_front(),
+        "item/hazmat_helmet": hazmat_item("helmet"),
+        "item/hazmat_suit": hazmat_item("suit"),
+        "item/hazmat_pants": hazmat_item("pants"),
+        "item/hazmat_boots": hazmat_item("boots"),
+        "item/geiger_counter": geiger_counter(),
+        "entity/equipment/humanoid/hazmat": hazmat_layer(False),
+        "entity/equipment/humanoid_leggings/hazmat": hazmat_layer(True),
+        "mob_effect/radiation_sickness": radiation_icon(),
+        "entity/cooling_tower_glow": cooling_tower(True),
         "item/raw_uranium": raw_uranium(),
         "item/uranium_ingot": uranium_ingot(),
         "item/fuel_rod": fuel_rod(False),

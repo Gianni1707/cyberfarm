@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "cyberfarm:block/reactor_port_formed"
+    "all": "cyberfarm:block/vitrified_waste"
   }
 }

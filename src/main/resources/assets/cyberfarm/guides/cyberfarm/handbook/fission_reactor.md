@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Fission Reactor
-  parent: generators.md
-  position: 8
+  parent: nuclear.md
+  position: 2
   icon: cyberfarm:reactor_controller
 item_ids:
   - cyberfarm:reactor_controller
@@ -16,103 +16,103 @@ A cooling tower 5 blocks wide and 7 high. Uranium **Fuel Rods** heat its core, *
 the heat away and leaves as **Steam** for [Steam Turbines](steam_turbine.md).
 
 <GameScene zoom={3} interactive={true}>
-  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="1" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_controller" x="2" y="1" z="0" p:facing="north" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="1" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_port" x="0" y="1" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_port" x="4" y="1" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="1" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="1" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="1" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="2" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="2" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="2" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="2" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="2" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="2" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="3" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="3" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="4" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="4" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="5" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="5" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="6" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="6" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="6" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="0" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="1" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="2" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="3" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="1" y="6" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="2" y="6" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="3" y="6" z="4" p:formed="true" />
-  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="4" p:formed="true" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="0" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="0" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="0" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="0" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="0" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="1" z="0" />
+  <Block id="cyberfarm:reactor_controller" x="2" y="1" z="0" p:facing="north" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="1" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="1" />
+  <Block id="cyberfarm:reactor_port" x="0" y="1" z="2" />
+  <Block id="cyberfarm:reactor_port" x="4" y="1" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="1" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="1" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="1" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="1" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="1" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="2" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="2" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="2" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="2" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="2" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="2" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="2" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="2" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="3" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="3" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="3" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="3" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="4" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="4" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="4" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="4" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="5" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="5" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="5" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="5" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="6" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="6" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="6" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="0" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="1" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="2" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="3" />
+  <Block id="cyberfarm:reactor_casing" x="0" y="6" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="1" y="6" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="2" y="6" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="3" y="6" z="4" />
+  <Block id="cyberfarm:reactor_casing" x="4" y="6" z="4" />
 </GameScene>
 
 ## Building the tower
@@ -132,8 +132,11 @@ Seen from the side, layer by layer from the bottom:
   or hoppers. Two are enough: one for water in, one for steam out.
 - The inside must be **empty**.
 
-When the tower is complete it powers up with a deep chime: casings and ports light up with cyan
-lines, and you can **right-click any block of the tower** to open the reactor.
+When the tower is complete it powers up with a deep chime and **turns into a real cooling tower**: the
+blocky casings disappear into one smooth, curved shell of white panels with glowing cyan bands,
+wide at the base, narrow in the middle and flared at the rim. The controller becomes a **panel** on
+the surface and every port a glowing **hatch**, right where a pipe or cable plugged into the port
+enters the tower. You can **right-click any block of the tower** to open the reactor.
 
 ## The reactor GUI
 
@@ -179,6 +182,7 @@ details).
 
 - Above **80%** an **alarm** rings and the GUI flashes *OVERHEATING*. Turn the power down, add
   water or coolant, or make room for the steam.
-- At **100%** the core **melts down**: the rods are destroyed and the tower **explodes**.
+- At **100%** the core **melts down**: the rods are destroyed, the tower **explodes** and the area
+  around it becomes heavily [radioactive](radiation.md) for a long time.
 
 An idle core cools down slowly by itself.

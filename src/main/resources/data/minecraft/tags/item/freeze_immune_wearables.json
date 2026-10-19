@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "cyberfarm:hazmat_helmet",
+    "cyberfarm:hazmat_suit",
+    "cyberfarm:hazmat_pants",
+    "cyberfarm:hazmat_boots"
+  ]
+}

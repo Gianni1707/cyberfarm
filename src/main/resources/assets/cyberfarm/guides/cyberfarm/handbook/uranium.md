@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Uranium and Fuel Rods
-  parent: generators.md
-  position: 7
+  parent: nuclear.md
+  position: 1
   icon: cyberfarm:uranium_ingot
 item_ids:
   - cyberfarm:uranium_ore
@@ -10,7 +10,6 @@ item_ids:
   - cyberfarm:raw_uranium
   - cyberfarm:uranium_ingot
   - cyberfarm:fuel_rod
-  - cyberfarm:depleted_fuel_rod
 ---
 
 # Uranium and Fuel Rods
@@ -43,7 +42,9 @@ A Fuel Rod lasts **40 minutes** in a [Fission Reactor](fission_reactor.md) at 10
 durability bar shows the fuel left. At higher power it burns proportionally faster. A spent rod
 becomes a **Depleted Fuel Rod** in the reactor's waste slots.
 
-Depleted Fuel Rods are **nuclear waste**: take them out of the reactor (by hand or with a hopper
-under a Reactor Port) and keep them stored, away from where you live.
+Depleted Fuel Rods are **nuclear waste**: carried, stored or dropped they make the area
+[radioactive](radiation.md). Take them out of the reactor (by hand or with a hopper under a Reactor
+Port) and treat them in a [Waste Reprocessor](waste_reprocessor.md). If the reactor's waste slots
+fill up, it starts leaking radiation.
 
 Uranium uses the common `c:` tags, so ore processors and machines from other mods handle it too.

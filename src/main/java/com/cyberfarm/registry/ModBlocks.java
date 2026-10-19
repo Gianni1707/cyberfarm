@@ -17,6 +17,7 @@ import com.cyberfarm.block.ReactorCasingBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ReactorPortBlock;
 import com.cyberfarm.block.SteamTurbineBlock;
+import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -73,17 +74,23 @@ public class ModBlocks {
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops().lightLevel(state -> 3));
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
-            ReactorControllerBlock::new, p -> machine(p).lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));
+            ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));
     public static final DeferredBlock<ReactorCasingBlock> REACTOR_CASING = BLOCKS.registerBlock("reactor_casing",
-            ReactorCasingBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
+            ReactorCasingBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
     public static final DeferredBlock<ReactorPortBlock> REACTOR_PORT = BLOCKS.registerBlock("reactor_port",
-            ReactorPortBlock::new, p -> machine(p).lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
+            ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = BLOCKS.registerBlock("steam_turbine",
             SteamTurbineBlock::new, ModBlocks::machine);
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
             CoolantMixerBlock::new, ModBlocks::machine);
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::machine);
+
+    public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
+            WasteReprocessorBlock::new, ModBlocks::machine);
+    /** Treated nuclear waste: inert glass, safe to store or build with. */
+    public static final DeferredBlock<Block> VITRIFIED_WASTE = BLOCKS.registerSimpleBlock("vitrified_waste",
+            p -> p.mapColor(MapColor.COLOR_GREEN).strength(3.0F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().lightLevel(state -> 2));
 
     // Coolant pools in the world; Cryo Coolant slows and freezes harder
     public static final DeferredBlock<CoolantBlock> COOLANT = BLOCKS.registerBlock("coolant",

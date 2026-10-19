@@ -1,7 +1,7 @@
 ---
 navigation:
   title: Drones
-  position: 3
+  position: 4
   icon: cyberfarm:drone
 ---
 

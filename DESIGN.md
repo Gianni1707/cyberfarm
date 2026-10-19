@@ -117,8 +117,16 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
    Cryo Coolant sono liquidi veri, piazzabili, scorrono come l'acqua (texture dell'acqua vanilla colorate). Il movimento dentro è quello dell'acqua
    (`CoolantFluidType.move`: NeoForge lascia il movimento nei fluidi delle mod al loro tipo) al 70% / 50%: chi ci entra rallenta e
    gela piano (danno solo da congelato del tutto; Cryo rallenta e gela di più, il cuoio protegge dal gelo).
-3. Scorie e Waste Reprocessor, contaminazione, Radiation Sickness, effetti sul mondo.
-4. Hazmat Suit, Geiger Counter. Il capitolo **Nuclear** dell'Handbook si aggiorna a ogni fase (pagine già presenti per fasi 1 e 2).
+3. ✅ (da testare in gioco) Contaminazione per chunk (`RadiationData`, cala del 2% + 0,1 ogni 5 s). Fonti: barre esaurite
+   addosso, nei contenitori vicino ai giocatori o a terra (2,5 per barra ogni 5 s), reattore con scorie piene (perde),
+   meltdown (400 su 5x5 chunk). Radiation Sickness da 20 / 100 / 300 Rad (danno che ignora l'armatura, fame, debolezza,
+   nausea) per giocatori e mob; da 50 Rad il terreno appassisce (config `radiationWorldEffects`). Waste Reprocessor:
+   barra esaurita → Vitrified Waste (+ 1/3 lingotto di uranio), 40 FE/t, 10 s.
+4. ✅ (da testare in gioco) Hazmat Suit (4 pezzi, 25% ciascuno, protegge anche dal gelo del refrigerante) e Geiger Counter
+   (ticchettio e livello in Rad sopra la hotbar, mai silenziato dal Muffler).
+5. ✅ (da testare in gioco) Aspetto: a torre formata i casing spariscono e il controller disegna una vera torre di
+   raffreddamento (iperboloide liscio, pannelli bianchi futuristici con fasce azzurre luminose). Anche porte e controller
+   spariscono: la torre li disegna come portelli luminosi e pannello a filo della superficie, dove entrano tubi e cavi.
 
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
@@ -132,8 +140,10 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
 
 ### Libro guida
 **Drone Engineer's Handbook**. Sezioni: Getting Started, Muffler e Water Pump alla radice · **Generators** (Combustion, Gas Power, Bio-Digester,
-Methane Extractor, Gas Turbine, Nuclear Power, Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine) ·
-**Cables** (Energy Conduit, Gas Pipe) · **Drones** (Assembler, Frames, Modules, Addons, Dock, Using Drones).
+Methane Extractor, Gas Turbine) ·
+**Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
+Reprocessor, Hazmat Suit and Geiger Counter) · **Cables** (Energy Conduit, Gas Pipe) · **Drones** (Assembler, Frames,
+Modules, Addons, Dock, Using Drones).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
 `assets/cyberfarm/guideme_guides/handbook.json` + pagine in `assets/cyberfarm/guides/cyberfarm/handbook/*.md`.

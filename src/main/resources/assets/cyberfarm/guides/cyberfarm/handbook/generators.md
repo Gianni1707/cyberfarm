@@ -34,9 +34,10 @@ shovel fuel, move on to [Gas Power](gas_power.md): a [Bio-Digester](bio_digester
 waste into Biogas and a [Methane Extractor](methane_extractor.md) draws Methane from a captured
 mob, both burned by the Gas Turbine.
 
-The most powerful option is [Nuclear Power](nuclear.md): a [Fission Reactor](fission_reactor.md)
+The most powerful option is in the [Nuclear](nuclear.md) section: a [Fission Reactor](fission_reactor.md)
 burning uranium [Fuel Rods](uranium.md) makes steam for [Steam Turbines](steam_turbine.md), cooled
-with the help of the [Coolant Mixer](coolant_mixer.md).
+with the help of the [Coolant Mixer](coolant_mixer.md). Its waste must be treated in a
+[Waste Reprocessor](waste_reprocessor.md), or the area turns [radioactive](radiation.md).
 
 Generators push their FE into adjacent machines by themselves; to reach machines further away,
 use [Energy Conduits](energy_conduit.md).

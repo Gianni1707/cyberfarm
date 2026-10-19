@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/waste_reprocessor_front",
+    "top": "cyberfarm:block/machine_top",
+    "side": "cyberfarm:block/machine_side",
+    "bottom": "cyberfarm:block/machine_bottom"
+  }
+}

@@ -1,12 +1,11 @@
 ---
 navigation:
-  title: Nuclear Power
-  parent: generators.md
-  position: 6
+  title: Nuclear
+  position: 2
   icon: cyberfarm:reactor_controller
 ---
 
-# Nuclear Power
+# Nuclear
 
 The most powerful energy in CyberFarm, and the most demanding. A **Fission Reactor** shaped like a
 cooling tower burns uranium **Fuel Rods**; its core heats water into **Steam**, and **Steam Turbines**
@@ -38,10 +37,10 @@ makes is more than the water and coolant can carry away, the core gets hotter. A
 sounds; at **100%** the core **melts down** and explodes. Watch the temperature bar, and turn the
 power down (or off) when something goes wrong.
 
+Spent rods are **nuclear waste**: left untreated they make the area [radioactive](radiation.md).
+Treat them in a [Waste Reprocessor](waste_reprocessor.md), and wear a [Hazmat Suit](hazmat_suit.md)
+when things go wrong.
+
 ## Pages
 
-- [Uranium and Fuel Rods](uranium.md): mining, smelting and fuel
-- [Fission Reactor](fission_reactor.md): the tower, power, heat and meltdown
-- [Coolant Mixer](coolant_mixer.md): better coolants, buckets and freezing pools
-- [Steam Turbine](steam_turbine.md): steam into FE
-- [Water Pump](water_pump.md): endless water for the reactor
+<SubPages icons={true} />

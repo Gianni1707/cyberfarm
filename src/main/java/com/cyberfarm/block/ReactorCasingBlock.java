@@ -9,7 +9,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** Shell of the Fission Reactor tower; lights up when formed, and opens the reactor GUI when right-clicked. */
+/**
+ * Shell of the Fission Reactor tower. Once formed it becomes invisible inside the smooth tower the
+ * controller draws, and opens the reactor GUI when right-clicked.
+ */
 public class ReactorCasingBlock extends CyberFrameBlock {
     public ReactorCasingBlock(Properties properties) {
         super(properties);

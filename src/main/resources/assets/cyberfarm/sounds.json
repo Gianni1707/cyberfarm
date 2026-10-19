@@ -199,6 +199,26 @@
     ],
     "subtitle": "subtitles.cyberfarm.coolant_mixer.work"
   },
+  "waste_reprocessor.work": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/power1",
+        "pitch": 0.7,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.waste_reprocessor.work"
+  },
+  "geiger.click": {
+    "sounds": [
+      {
+        "name": "minecraft:random/click",
+        "pitch": 2.0,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.geiger.click"
+  },
   "steam_turbine.work": {
     "sounds": [
       {

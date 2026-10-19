@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Steam Turbine
-  parent: generators.md
-  position: 10
+  parent: nuclear.md
+  position: 4
   icon: cyberfarm:steam_turbine
 item_ids:
   - cyberfarm:steam_turbine

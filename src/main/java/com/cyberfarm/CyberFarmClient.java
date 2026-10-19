@@ -3,6 +3,7 @@ package com.cyberfarm;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.model.DroneModel;
+import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
@@ -13,7 +14,9 @@ import com.cyberfarm.client.screen.MethaneExtractorScreen;
 import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
 import com.cyberfarm.client.screen.ReactorScreen;
+import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModMenus;
@@ -87,6 +90,10 @@ public class CyberFarmClient {
     private static MufflerBlockEntity.@Nullable Category categoryOf(SoundInstance sound) {
         Identifier id = sound.getIdentifier();
         if (id.getNamespace().equals(CyberFarm.MODID)) {
+            // The Geiger Counter is a warning, never muffled
+            if (id.getPath().startsWith("geiger.")) {
+                return null;
+            }
             return id.getPath().startsWith("drone.") ? MufflerBlockEntity.Category.DRONES : MufflerBlockEntity.Category.MACHINES;
         }
         if (ClientConfig.isExtraMuted(id)) {
@@ -110,10 +117,12 @@ public class CyberFarmClient {
         event.register(ModMenus.STEAM_TURBINE.get(), GasTurbineScreen::new);
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
+        event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */
