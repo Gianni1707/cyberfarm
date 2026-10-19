@@ -32,6 +32,8 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
     public static final int ENERGY_PER_TICK = 40;
     private static final int CAPACITY = 40_000;
     private static final int MAX_INPUT = 1_000;
+    /** One treated rod in this many gives back an Uranium Ingot. */
+    public static final int URANIUM_CHANCE = 3;
 
     private int progress;
 
@@ -49,7 +51,7 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
                 ItemStack input = getStack(INPUT);
                 setStack(INPUT, input.copyWithCount(input.getCount() - 1));
                 grow(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get());
-                if (level.getRandom().nextInt(3) == 0) {
+                if (level.getRandom().nextInt(URANIUM_CHANCE) == 0) {
                     grow(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
                 }
                 level.playSound(null, pos, ModSounds.REPROCESSOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);

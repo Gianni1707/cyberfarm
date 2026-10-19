@@ -59,7 +59,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity implements 
     public static final double COOLANT_FACTOR = 2.5;
     public static final double CRYO_FACTOR = 6.0;
     /** Heat moved per mB of coolant worn out. */
-    private static final int COOLANT_WEAR = 400;
+    public static final int COOLANT_WEAR = 400;
     public static final int MELTDOWN_HEAT = 200_000;
     public static final int ALARM_PERMILLE = 800;
     private static final int PASSIVE_COOLING = 20;

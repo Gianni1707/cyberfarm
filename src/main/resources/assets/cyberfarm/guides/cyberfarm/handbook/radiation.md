@@ -21,8 +21,8 @@ area around it **radioactive**. Treat it in a [Waste Reprocessor](waste_reproces
 
 Radiation builds up chunk by chunk (16x16 columns of the world):
 
-- Depleted Fuel Rods **carried** by a player, **stored** in a chest or any container, or **lying on
-  the ground**: every rod adds a little every few seconds.
+- Depleted Fuel Rods **carried** by a player, **stored** in a chest or any container (storage
+  blocks of other mods included), or **lying on the ground**: every rod adds a little every few seconds.
 - A Fission Reactor whose **waste slots are full**: the spent rods wait in the core and it **leaks**.
 - A **meltdown**: heavy contamination over a 5x5 chunk area, worst at the core.
 
