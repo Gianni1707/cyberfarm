@@ -18,7 +18,7 @@ turn the steam into FE, just like a real power plant.
   <ItemIcon id="reactor_casing" />
   <ItemIcon id="reactor_port" />
   <ItemIcon id="coolant_mixer" />
-  <ItemIcon id="steam_turbine" />
+  <ItemIcon id="turbine_controller" />
   <ItemIcon id="water_pump" />
 </ItemGrid>
 

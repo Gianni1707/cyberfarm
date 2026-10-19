@@ -358,15 +358,62 @@ def reactor_controller(state):
     return c
 
 
-def steam_turbine_front():
-    c = panel(51)
-    c.disc(7.5, 7.5, 6.2, "K")
-    c.disc(7.5, 7.5, 5.2, "D")
-    for i in range(-4, 5):
-        c.set(round(7.5 + i), round(7.5 + i), "w")
-        c.set(round(7.5 + i), round(7.5 - i), "w")
-        c.set(round(7.5 + i), 7, "l")
-    c.disc(7.5, 7.5, 1.6, "c")
+TURBINE_WHITE = "#dfe5e9"
+
+
+def turbine_casing(formed):
+    """White turbine plating with a cyan stripe; the stripe lights up once the hall is formed."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "#8f989f")
+    c.rect(1, 1, 14, 14, TURBINE_WHITE, noise=4, seed=61)
+    c.rect(1, 1, 14, 1, "#f4f7f9")
+    c.rect(1, 7, 14, 8, "b" if formed else "#9aa4ab")
+    if formed:
+        c.rect(4, 7, 11, 8, "c")
+    for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
+        c.set(x, y, "m")
+    return c
+
+
+def turbine_port(formed):
+    c = turbine_casing(formed)
+    c.disc(7.5, 7.5, 5.2, "K")
+    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
+    c.disc(7.5, 7.5, 3.0, "s")
+    c.rect(7, 4, 8, 11, "m")
+    c.rect(4, 7, 11, 8, "m")
+    return c
+
+
+def turbine_controller(state):
+    """state: 'off' (incomplete), 'formed' (ready) or 'on' (spinning): a screen with the rotor on it."""
+    c = turbine_casing(state != "off")
+    c.rect(2, 2, 13, 12, "K")
+    c.rect(3, 3, 12, 11, "s")
+    blade = "c" if state == "on" else "b" if state == "formed" else "r"
+    for i in range(-3, 4):
+        c.set(round(7.5 + i), round(7 + i), blade)
+        c.set(round(7.5 + i), round(7 - i), blade)
+    c.disc(7.5, 7, 1.1, "w" if state != "off" else "m")
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
+    return c
+
+
+def multiblock_projector():
+    """Handheld projector: a dark body with a cyan lens throwing a beam up-right."""
+    c = Canvas()
+    c.rect(2, 8, 10, 13, "k")
+    c.rect(3, 9, 9, 12, "m")
+    c.rect(3, 9, 9, 9, "l")
+    c.rect(4, 13, 6, 15, "k")
+    c.rect(5, 13, 5, 14, "s")
+    c.disc(10.5, 9.5, 2.2, "k")
+    c.disc(10.5, 9.5, 1.3, "c")
+    c.set(10, 9, "w")
+    for i in range(1, 5):
+        c.set(11 + i, 8 - i, "b")
+        c.set(12 + i, 8 - i, "c") if 12 + i < 16 else None
+        c.set(11 + i, 9 - i, "c")
     return c
 
 
@@ -1316,6 +1363,14 @@ def build_all():
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/muffler": muffler(),
         "block/uranium_ore_overlay": uranium_ore_overlay(),
+        "block/turbine_casing": turbine_casing(False),
+        "block/turbine_casing_formed": turbine_casing(True),
+        "block/turbine_port": turbine_port(False),
+        "block/turbine_port_formed": turbine_port(True),
+        "block/turbine_controller": turbine_controller("off"),
+        "block/turbine_controller_formed": turbine_controller("formed"),
+        "block/turbine_controller_on": turbine_controller("on"),
+        "item/multiblock_projector": multiblock_projector(),
         "block/reactor_casing": reactor_casing(False),
         "block/reactor_casing_formed": reactor_casing(True),
         "block/reactor_port": reactor_port(False),
@@ -1323,7 +1378,6 @@ def build_all():
         "block/reactor_controller": reactor_controller("off"),
         "block/reactor_controller_formed": reactor_controller("formed"),
         "block/reactor_controller_on": reactor_controller("on"),
-        "block/steam_turbine_front": steam_turbine_front(),
         "block/water_pump_front": water_pump_front(),
         "block/water_pump_top": water_pump_top(),
         "block/coolant_mixer_front": coolant_mixer_front(),

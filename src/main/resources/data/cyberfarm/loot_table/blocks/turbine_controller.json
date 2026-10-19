@@ -12,10 +12,10 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "cyberfarm:steam_turbine"
+          "name": "cyberfarm:turbine_controller"
         }
       ]
     }
   ],
-  "random_sequence": "cyberfarm:blocks/steam_turbine"
+  "random_sequence": "cyberfarm:blocks/turbine_controller"
 }

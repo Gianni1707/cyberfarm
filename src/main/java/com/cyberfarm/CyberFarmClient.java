@@ -5,6 +5,7 @@ import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
+import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
 import com.cyberfarm.client.screen.DroneAssemblerScreen;
@@ -14,6 +15,7 @@ import com.cyberfarm.client.screen.MethaneExtractorScreen;
 import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
 import com.cyberfarm.client.screen.ReactorScreen;
+import com.cyberfarm.client.screen.TurbineScreen;
 import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -65,6 +67,8 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
+        NeoForge.EVENT_BUS.addListener(com.cyberfarm.client.ProjectionRenderer::extract);
+        NeoForge.EVENT_BUS.addListener(com.cyberfarm.client.ProjectionRenderer::submit);
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -114,7 +118,7 @@ public class CyberFarmClient {
         event.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
         event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
         event.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
-        event.register(ModMenus.STEAM_TURBINE.get(), GasTurbineScreen::new);
+        event.register(ModMenus.TURBINE.get(), TurbineScreen::new);
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
@@ -123,6 +127,7 @@ public class CyberFarmClient {
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */

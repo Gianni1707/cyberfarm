@@ -20,7 +20,7 @@ FLAT_ITEMS = [
     "basic_frame", "advanced_frame", "elite_frame",
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
-    "drone", "survey_tool", "mob_capsule_filled",
+    "drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
@@ -176,7 +176,7 @@ def blocks():
 
     names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit", "gas_pipe",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
-             "reactor_controller", "reactor_casing", "reactor_port", "steam_turbine", "water_pump", "coolant_mixer",
+             "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
@@ -248,11 +248,26 @@ def nuclear_blocks():
             for lit in ("false", "true"):
                 # Formed, the tower draws the controller as a panel on its surface
                 model = "reactor_controller" if formed == "false" else "reactor_controller_hidden"
-                variants[f"facing={facing},formed={formed},lit={lit}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
+                for size in range(3):
+                    variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/reactor_controller.json", {"variants": variants})
 
-    orientable("steam_turbine", "steam_turbine_front", "machine_top")
-    facing_blockstate("steam_turbine")
+    # Steam Turbine: the same scheme, its formed hall drawn by the controller as a cylinder
+    for part in ("casing", "port"):
+        write(ASSETS / f"models/block/turbine_{part}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(f"turbine_{part}")}})
+        write(ASSETS / f"models/block/turbine_{part}_hidden.json", {"textures": {"particle": tex(f"turbine_{part}_formed")}})
+        write(ASSETS / f"blockstates/turbine_{part}.json", {"variants": {
+            "formed=false": {"model": f"{NS}:block/turbine_{part}"}, "formed=true": {"model": f"{NS}:block/turbine_{part}_hidden"}}})
+    orientable("turbine_controller", "turbine_controller", "turbine_casing", side="turbine_casing", bottom="turbine_casing")
+    write(ASSETS / "models/block/turbine_controller_hidden.json", {"textures": {"particle": tex("turbine_controller_formed")}})
+    variants = {}
+    for facing, rot in FACING_ROTATION.items():
+        for formed in ("false", "true"):
+            for lit in ("false", "true"):
+                for size in range(3):
+                    model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
+                    variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
+    write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
     orientable("water_pump", "water_pump_front", "water_pump_top")
     facing_blockstate("water_pump")
     orientable("coolant_mixer", "coolant_mixer_front", "machine_top")
@@ -386,7 +401,13 @@ def recipes():
     shaped("reactor_port", ["H", "X", "B"], {"H": "minecraft:hopper", "X": casing, "B": "minecraft:bucket"})
     shaped("reactor_controller", ["IUI", "DXD", "IRI"],
            {"I": iron, "U": uranium, "D": "minecraft:diamond", "X": casing, "R": "minecraft:redstone_block"})
-    shaped("steam_turbine", ["ICI", "CTC", "ICI"], {"I": iron, "C": "minecraft:copper_block", "T": f"{NS}:gas_turbine"})
+    turbine_casing = f"{NS}:turbine_casing"
+    shaped("turbine_casing", ["CIC", "I I", "CIC"], {"C": copper, "I": iron}, count=8)
+    shaped("turbine_port", ["E", "X", "B"], {"E": f"{NS}:energy_conduit", "X": turbine_casing, "B": "minecraft:bucket"})
+    shaped("turbine_controller", ["IDI", "RTR", "IXI"],
+           {"I": iron, "D": "minecraft:diamond", "R": redstone, "T": f"{NS}:gas_turbine", "X": turbine_casing})
+    shaped("multiblock_projector", ["GLG", "IRI", " I "],
+           {"G": "minecraft:glass_pane", "L": "minecraft:glowstone_dust", "I": iron, "R": redstone}, category="equipment")
     shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": core})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")

@@ -6,6 +6,7 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
+import com.cyberfarm.multiblock.TowerSize;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
@@ -38,14 +39,10 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     private static final RenderType PANEL = RenderTypes.entityCutout(CyberFarm.id("textures/block/reactor_controller_formed.png"));
     private static final RenderType PANEL_ON = RenderTypes.entityCutout(CyberFarm.id("textures/block/reactor_controller_on.png"));
 
-    private static final float HEIGHT = 7.0F;
-    private static final float WAIST_RADIUS = 1.6F;
-    private static final float WAIST_HEIGHT = 4.6F;
-    /** Hyperbola steepness: makes the base 3.4 blocks wide in radius, enough to cover the corners. */
-    private static final float CURVE = 2.453F;
     private static final float WALL = 0.22F;
     private static final int SEGMENTS = 40;
-    private static final int ROWS = 28;
+    /** Rows of the surface per block of height. */
+    private static final int ROWS_PER_BLOCK = 4;
     /** Texture repeats every this many segments around the tower. */
     private static final int SEGMENTS_PER_TILE = 8;
     private static final int INNER_COLOR = 0xFF8C969E;
@@ -55,6 +52,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     public static class State extends BlockEntityRenderState {
         boolean formed;
         boolean lit;
+        TowerSize size = TowerSize.SMALL;
         Direction facing = Direction.NORTH;
         int towerLight;
         /** Ports relative to the floor centre of the tower. */
@@ -74,22 +72,15 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         state.formed = block.getValue(ReactorControllerBlock.FORMED);
         state.facing = block.getValue(MachineBlock.FACING);
         state.lit = block.getValue(ReactorControllerBlock.LIT);
-        BlockPos floor = floorCentre(entity.getBlockPos(), state.facing);
+        state.size = TowerSize.byOrdinal(block.getValue(ReactorControllerBlock.SIZE));
+        BlockPos floor = state.size.floorCentre(entity.getBlockPos(), state.facing);
         state.ports = state.formed ? entity.portsForRender().stream().map(port -> port.subtract(floor)).toList() : List.of();
         // The controller sits inside solid shell blocks: take the light above the rim instead
         if (entity.getLevel() != null) {
-            state.towerLight = LevelRenderer.getLightCoords(entity.getLevel(), floorCentre(entity.getBlockPos(), state.facing).above(8));
+            state.towerLight = LevelRenderer.getLightCoords(entity.getLevel(), floor.above(state.size.height() + 1));
         }
     }
 
-    private static BlockPos floorCentre(BlockPos controller, Direction facing) {
-        return controller.relative(facing.getOpposite(), 2).below();
-    }
-
-    private static float radius(float height) {
-        float t = (height - WAIST_HEIGHT) / CURVE;
-        return WAIST_RADIUS * (float) Math.sqrt(1.0F + t * t);
-    }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
@@ -98,19 +89,20 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         }
         Direction back = state.facing.getOpposite();
         poseStack.pushPose();
-        poseStack.translate(back.getStepX() * 2 + 0.5F, -1.0F, back.getStepZ() * 2 + 0.5F);
+        TowerSize size = state.size;
+        poseStack.translate(back.getStepX() * size.base() + 0.5F, -1.0F, back.getStepZ() * size.base() + 0.5F);
         int light = state.towerLight;
-        collector.submitCustomGeometry(poseStack, SHELL, (pose, buffer) -> drawTower(pose, buffer, light, false));
-        collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> drawTower(pose, buffer, LightCoordsUtil.FULL_BRIGHT, true));
+        collector.submitCustomGeometry(poseStack, SHELL, (pose, buffer) -> drawTower(pose, buffer, size, light, false));
+        collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> drawTower(pose, buffer, size, LightCoordsUtil.FULL_BRIGHT, true));
         // The controller sits in the middle of its side, on the second layer
-        BlockPos controller = BlockPos.ZERO.relative(state.facing, 2).above();
+        BlockPos controller = BlockPos.ZERO.relative(state.facing, size.base()).above();
         collector.submitCustomGeometry(poseStack, state.lit ? PANEL_ON : PANEL,
-                (pose, buffer) -> inset(pose, buffer, controller, state.facing, 1.0F, light));
+                (pose, buffer) -> inset(pose, buffer, size, controller, state.facing, 1.0F, light));
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (BlockPos port : state.ports) {
                 Direction axis = outward(port);
                 if (axis != null) {
-                    inset(pose, buffer, port, axis, 0.8F, LightCoordsUtil.FULL_BRIGHT);
+                    inset(pose, buffer, size, port, axis, 0.8F, LightCoordsUtil.FULL_BRIGHT);
                 }
             }
         });
@@ -118,19 +110,22 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     }
 
     /** The outer skin; for the full shell also the inner skin, the rim and the floor inside. */
-    private static void drawTower(PoseStack.Pose pose, VertexConsumer buffer, int light, boolean glowOnly) {
-        for (int row = 0; row < ROWS; row++) {
-            float h0 = HEIGHT * row / ROWS;
-            float h1 = HEIGHT * (row + 1) / ROWS;
-            float r0 = radius(h0);
-            float r1 = radius(h1);
+    private static void drawTower(PoseStack.Pose pose, VertexConsumer buffer, TowerSize size, int light, boolean glowOnly) {
+        float height = size.height();
+        int rows = size.height() * ROWS_PER_BLOCK;
+        for (int row = 0; row < rows; row++) {
+            float h0 = height * row / rows;
+            float h1 = height * (row + 1) / rows;
+            float r0 = size.radius(h0);
+            float r1 = size.radius(h1);
             for (int i = 0; i < SEGMENTS; i++) {
                 float a0 = (float) (Math.PI * 2 * i / SEGMENTS);
                 float a1 = (float) (Math.PI * 2 * (i + 1) / SEGMENTS);
                 float u0 = (float) (i % SEGMENTS_PER_TILE) / SEGMENTS_PER_TILE;
                 float u1 = u0 + 1.0F / SEGMENTS_PER_TILE;
-                float v0 = 1.0F - h0 / HEIGHT;
-                float v1 = 1.0F - h1 / HEIGHT;
+                // The skin stretches with the tower: bigger towers have bigger panels
+                float v0 = 1.0F - h0 / height;
+                float v1 = 1.0F - h1 / height;
                 quad(pose, buffer, a0, a1, r0, r1, h0, h1, u0, u1, v0, v1, 0xFFFFFFFF, light, 1.0F);
                 if (!glowOnly) {
                     quad(pose, buffer, a0, a1, r0 - WALL, r1 - WALL, h0, h1, u0, u1, v0, v1, INNER_COLOR, light, -1.0F);
@@ -141,12 +136,12 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
             return;
         }
         // Rim on top, and the floor inside the tower
-        float rim = radius(HEIGHT);
-        float floor = radius(1.0F) - WALL;
+        float rim = size.radius(height);
+        float floor = size.radius(1.0F) - WALL;
         for (int i = 0; i < SEGMENTS; i++) {
             float a0 = (float) (Math.PI * 2 * i / SEGMENTS);
             float a1 = (float) (Math.PI * 2 * (i + 1) / SEGMENTS);
-            ring(pose, buffer, a0, a1, rim - WALL, rim, HEIGHT, 0.0F, 0.02F, light);
+            ring(pose, buffer, a0, a1, rim - WALL, rim, height, 0.0F, 0.02F, light);
             ring(pose, buffer, a0, a1, 0.0F, floor, 1.0F, 0.0F, 0.0F, light);
         }
     }
@@ -170,15 +165,15 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
      * enters. Its bottom and top edges follow the surface radius at their own height, so the plate
      * leans with the slope of the tower instead of sticking out of it.
      */
-    private static void inset(PoseStack.Pose pose, VertexConsumer buffer, BlockPos block, Direction side, float size, int light) {
+    private static void inset(PoseStack.Pose pose, VertexConsumer buffer, TowerSize tower, BlockPos block, Direction side, float size, int light) {
         float middle = block.getY() + 0.5F;
         float half = size / 2;
         float bottom = middle - half;
         float top = middle + half;
         // Offset of the block's centre across the axis
         float across = side.getAxis() == Direction.Axis.X ? block.getZ() : block.getX();
-        float alongBottom = along(bottom, across);
-        float alongTop = along(top, across);
+        float alongBottom = along(tower, bottom, across);
+        float alongTop = along(tower, top, across);
         float ax = side.getStepX();
         float az = side.getStepZ();
         // Tangent along the surface, to the right when looking at the plate from outside
@@ -195,8 +190,8 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     }
 
     /** How far out along the axis the surface is at {@code height}, for a line {@code across} off the centre. */
-    private static float along(float height, float across) {
-        float r = radius(height);
+    private static float along(TowerSize tower, float height, float across) {
+        float r = tower.radius(height);
         return (float) Math.sqrt(Math.max(0.0F, r * r - across * across)) + INSET_OFFSET;
     }
 
@@ -253,8 +248,10 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     // The tower is much bigger than the controller block: keep drawing it while any part is in view
     @Override
     public AABB getRenderBoundingBox(ReactorControllerBlockEntity entity) {
-        BlockPos floor = floorCentre(entity.getBlockPos(), entity.getBlockState().getValue(MachineBlock.FACING));
-        return new AABB(floor).inflate(4.0, 0.0, 4.0).expandTowards(0.0, 8.0, 0.0);
+        BlockState block = entity.getBlockState();
+        TowerSize size = TowerSize.byOrdinal(block.getValue(ReactorControllerBlock.SIZE));
+        BlockPos floor = size.floorCentre(entity.getBlockPos(), block.getValue(MachineBlock.FACING));
+        return new AABB(floor).inflate(size.base() + 2, 0.0, size.base() + 2).expandTowards(0.0, size.height() + 1, 0.0);
     }
 
     @Override

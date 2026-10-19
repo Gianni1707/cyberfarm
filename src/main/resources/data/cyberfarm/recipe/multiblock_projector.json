@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "G": "minecraft:glass_pane",
+    "L": "minecraft:glowstone_dust",
+    "I": "minecraft:iron_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "GLG",
+    "IRI",
+    " I "
+  ],
+  "result": {
+    "id": "cyberfarm:multiblock_projector"
+  }
+}

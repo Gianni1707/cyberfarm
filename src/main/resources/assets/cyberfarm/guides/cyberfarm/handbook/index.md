@@ -36,6 +36,9 @@ The endgame power plant: [uranium](uranium.md), the [Fission Reactor](fission_re
 [Coolant Mixer](coolant_mixer.md), the [Steam Turbine](steam_turbine.md), [waste and radiation](radiation.md),
 the [Waste Reprocessor](waste_reprocessor.md) and the [Hazmat Suit and Geiger Counter](hazmat_suit.md).
 
+The [Multiblock Projector](multiblock_projector.md) shows any of these structures in the world
+before you build it.
+
 ### [Cables](cables.md)
 Moving power and gas: the [Energy Conduit](energy_conduit.md) and the [Gas Pipe](gas_pipe.md).
 

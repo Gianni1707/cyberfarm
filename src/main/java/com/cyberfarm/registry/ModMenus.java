@@ -10,6 +10,7 @@ import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.menu.MethaneExtractorMenu;
 import com.cyberfarm.menu.MufflerMenu;
 import com.cyberfarm.menu.ReactorMenu;
+import com.cyberfarm.menu.TurbineMenu;
 import com.cyberfarm.menu.WasteReprocessorMenu;
 
 import net.minecraft.core.registries.Registries;
@@ -36,8 +37,8 @@ public class ModMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
 
-    public static final DeferredHolder<MenuType<?>, MenuType<GasTurbineMenu>> STEAM_TURBINE = MENUS.register("steam_turbine",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> GasTurbineMenu.steam(id, inventory)));
+    public static final DeferredHolder<MenuType<?>, MenuType<TurbineMenu>> TURBINE = MENUS.register("turbine",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new TurbineMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CoolantMixerMenu>> COOLANT_MIXER = MENUS.register("coolant_mixer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));

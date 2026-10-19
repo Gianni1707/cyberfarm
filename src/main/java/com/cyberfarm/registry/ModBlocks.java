@@ -16,7 +16,7 @@ import com.cyberfarm.block.MufflerBlock;
 import com.cyberfarm.block.ReactorCasingBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ReactorPortBlock;
-import com.cyberfarm.block.SteamTurbineBlock;
+import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
@@ -79,8 +79,12 @@ public class ModBlocks {
             ReactorCasingBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
     public static final DeferredBlock<ReactorPortBlock> REACTOR_PORT = BLOCKS.registerBlock("reactor_port",
             ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
-    public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = BLOCKS.registerBlock("steam_turbine",
-            SteamTurbineBlock::new, ModBlocks::machine);
+    public static final DeferredBlock<TurbineControllerBlock> TURBINE_CONTROLLER = BLOCKS.registerBlock("turbine_controller",
+            TurbineControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(TurbineControllerBlock.LIT) ? 10 : 0));
+    public static final DeferredBlock<ReactorCasingBlock> TURBINE_CASING = BLOCKS.registerBlock("turbine_casing",
+            ReactorCasingBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
+    public static final DeferredBlock<ReactorPortBlock> TURBINE_PORT = BLOCKS.registerBlock("turbine_port",
+            ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
             CoolantMixerBlock::new, ModBlocks::machine);
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",

@@ -37,4 +37,12 @@ public class ModDataComponents {
     /** Survey Tool: the first corner of the area being marked. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> SURVEY_CORNER = COMPONENTS.registerComponentType("survey_corner",
             builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
+
+    /** Multiblock Projector: the chosen structure, and where and which way it is pinned. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> PROJECTOR_BLUEPRINT = COMPONENTS.registerComponentType("projector_blueprint",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> PROJECTOR_ANCHOR = COMPONENTS.registerComponentType("projector_anchor",
+            builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> PROJECTOR_FACING = COMPONENTS.registerComponentType("projector_facing",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 }

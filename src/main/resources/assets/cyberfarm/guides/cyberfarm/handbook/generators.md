@@ -17,7 +17,7 @@ standard, generators from other mods work just as well.
   <ItemIcon id="methane_extractor" />
   <ItemIcon id="gas_turbine" />
   <ItemIcon id="reactor_controller" />
-  <ItemIcon id="steam_turbine" />
+  <ItemIcon id="turbine_controller" />
 </ItemGrid>
 
 ## Power tiers
@@ -27,7 +27,7 @@ standard, generators from other mods work just as well.
 | 1 | [Combustion Generator](combustion_generator.md) | any furnace fuel | 40 FE/t |
 | 2 | [Gas Turbine](gas_turbine.md) | Biogas | 30 FE/t |
 | 2 | [Gas Turbine](gas_turbine.md) | Methane | 80 FE/t |
-| 3 | [Fission Reactor](fission_reactor.md) + [Steam Turbine](steam_turbine.md) | Uranium Fuel Rods | up to 800 FE/t per turbine |
+| 3 | [Fission Reactor](fission_reactor.md) + [Steam Turbine](steam_turbine.md) | Uranium Fuel Rods | up to 9,600 FE/t per turbine |
 
 Start with a **Combustion Generator** and coal. When you want power that does not need you to
 shovel fuel, move on to [Gas Power](gas_power.md): a [Bio-Digester](bio_digester.md) turns farm

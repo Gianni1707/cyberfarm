@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/turbine_port"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/turbine_port_hidden"
+    }
+  }
+}

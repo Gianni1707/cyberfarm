@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/turbine_casing"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/turbine_casing_hidden"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/turbine_controller",
+    "top": "cyberfarm:block/turbine_casing",
+    "side": "cyberfarm:block/turbine_casing",
+    "bottom": "cyberfarm:block/turbine_casing"
+  }
+}

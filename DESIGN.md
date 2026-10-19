@@ -89,7 +89,16 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
 - **Temperatura**: sopra l'80% allarme sonoro e avviso nella GUI; al 100% **meltdown**: esplosione (config esistente
   `meltdownExplosionPower`, `meltdownDestroysBlocks`) e forte contaminazione della zona.
 
-**Steam Turbine** — blocco singolo come la Gas Turbine: vapore → FE. Accetta anche il vapore di altre mod (`c:steam`).
+**Taglie dei multiblocchi** — reattore e turbina in 3 taglie; le grandi sono gradualmente migliori:
+- Reattore: Small 5×5×7 (2 barre, max 200%, 150 calore/t), Medium 7×7×11 (4 barre, 350%, 250), Large 9×9×15 (8 barre, 500%, 400);
+  Coolant ×2,5, Cryo ×6. Il controller riconosce la taglia da solo (prova dalla più grande).
+- **Steam Turbine** (multiblocco, sostituisce il vecchio blocco singolo): sala orizzontale di Turbine Casing/Port, controller al centro
+  del fronte, interno vuoto per il rotore. Small 3×3×4 (200 mB/t, 4 FE/mB), Medium 5×5×6 (600, 5), Large 7×7×8 (1600, 6).
+  Il rotore accelera e rallenta gradualmente; formata diventa un cilindro bianco/azzurro con rotore animato. Accetta `c:steam`.
+
+**Multiblock Projector** — ispirato al Projector di Immersive Engineering: si sceglie la struttura (sneak + click destro),
+la proiezione segue lo sguardo e si fissa con click destro su un blocco (su un controller si allinea); blocchi fantasma
+per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 
 **Scorie e Waste Reprocessor**
 - Le Depleted Fuel Rod sono radioattive: in inventario, in una cassa o a terra contaminano la zona attorno.
@@ -154,7 +163,8 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
 2. ✅ Moduli Quarry, Transport, Planter, Logger e Taxi, ✅ addon e smontaggio, ✅ Energy Conduit, ✅ JEI + REI.
 3. ✅ Gas: Bio-Digester, Methane Extractor + Mob Capsule, Gas Turbine, Gas Pipe ✅ testato in gioco.
-4. Endgame: reattore a fissione (torre), scorie e radiazioni, raffreddamento, meltdown.
+4. ✅ Endgame: reattore a fissione (torre), scorie e radiazioni, raffreddamento, meltdown.
+   ✅ Reattore e Steam Turbine multiblocco in 3 taglie + Multiblock Projector, testati in gioco.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
 
 ## Asset

@@ -15,6 +15,7 @@ import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.block.entity.ReactorPortBlockEntity;
+import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
@@ -50,14 +51,14 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MufflerBlockEntity>> MUFFLER = BLOCK_ENTITIES.register("muffler",
             () -> new BlockEntityType<>(MufflerBlockEntity::new, Set.of(ModBlocks.MUFFLER.get())));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasTurbineBlockEntity>> STEAM_TURBINE = BLOCK_ENTITIES.register("steam_turbine",
-            () -> new BlockEntityType<>(GasTurbineBlockEntity::steam, Set.of(ModBlocks.STEAM_TURBINE.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineControllerBlockEntity>> TURBINE_CONTROLLER = BLOCK_ENTITIES.register("turbine_controller",
+            () -> new BlockEntityType<>(TurbineControllerBlockEntity::new, Set.of(ModBlocks.TURBINE_CONTROLLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> new BlockEntityType<>(ReactorControllerBlockEntity::new, Set.of(ModBlocks.REACTOR_CONTROLLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorPortBlockEntity>> REACTOR_PORT = BLOCK_ENTITIES.register("reactor_port",
-            () -> new BlockEntityType<>(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get())));
+            () -> new BlockEntityType<>(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get(), ModBlocks.TURBINE_PORT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolantMixerBlockEntity>> COOLANT_MIXER = BLOCK_ENTITIES.register("coolant_mixer",
             () -> new BlockEntityType<>(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));

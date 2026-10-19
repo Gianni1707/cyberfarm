@@ -13,6 +13,7 @@ import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.item.GeigerCounterItem;
 import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.item.MobCapsuleItem;
+import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.item.SurveyToolItem;
 
 import net.minecraft.world.item.BlockItem;
@@ -48,7 +49,9 @@ public class ModItems {
     public static final DeferredItem<BlockItem> REACTOR_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CONTROLLER);
     public static final DeferredItem<BlockItem> REACTOR_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CASING);
     public static final DeferredItem<BlockItem> REACTOR_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_PORT);
-    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
+    public static final DeferredItem<BlockItem> TURBINE_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_CONTROLLER);
+    public static final DeferredItem<BlockItem> TURBINE_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_CASING);
+    public static final DeferredItem<BlockItem> TURBINE_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_PORT);
     public static final DeferredItem<BlockItem> WASTE_REPROCESSOR = ITEMS.registerSimpleBlockItem(ModBlocks.WASTE_REPROCESSOR);
     public static final DeferredItem<BlockItem> VITRIFIED_WASTE = ITEMS.registerSimpleBlockItem(ModBlocks.VITRIFIED_WASTE);
     public static final DeferredItem<HazmatSuitItem> HAZMAT_HELMET = ITEMS.registerItem("hazmat_helmet", p -> new HazmatSuitItem(p, ArmorType.HELMET));
@@ -108,4 +111,5 @@ public class ModItems {
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
+    public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
 }

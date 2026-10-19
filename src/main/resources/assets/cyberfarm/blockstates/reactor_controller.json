@@ -1,62 +1,182 @@
 {
   "variants": {
-    "facing=north,formed=false,lit=false": {
+    "facing=north,formed=false,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller"
     },
-    "facing=north,formed=false,lit=true": {
+    "facing=north,formed=false,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller"
     },
-    "facing=north,formed=true,lit=false": {
+    "facing=north,formed=false,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller"
+    },
+    "facing=north,formed=false,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller"
+    },
+    "facing=north,formed=false,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller"
+    },
+    "facing=north,formed=false,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller"
+    },
+    "facing=north,formed=true,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller_hidden"
     },
-    "facing=north,formed=true,lit=true": {
+    "facing=north,formed=true,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller_hidden"
     },
-    "facing=east,formed=false,lit=false": {
+    "facing=north,formed=true,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden"
+    },
+    "facing=north,formed=true,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller_hidden"
+    },
+    "facing=north,formed=true,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller_hidden"
+    },
+    "facing=north,formed=true,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden"
+    },
+    "facing=east,formed=false,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 90
     },
-    "facing=east,formed=false,lit=true": {
+    "facing=east,formed=false,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 90
     },
-    "facing=east,formed=true,lit=false": {
+    "facing=east,formed=false,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 90
+    },
+    "facing=east,formed=false,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 90
+    },
+    "facing=east,formed=false,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 90
+    },
+    "facing=east,formed=false,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 90
+    },
+    "facing=east,formed=true,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 90
     },
-    "facing=east,formed=true,lit=true": {
+    "facing=east,formed=true,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 90
     },
-    "facing=south,formed=false,lit=false": {
+    "facing=east,formed=true,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 90
+    },
+    "facing=east,formed=true,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 90
+    },
+    "facing=east,formed=true,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 90
+    },
+    "facing=east,formed=true,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 90
+    },
+    "facing=south,formed=false,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 180
     },
-    "facing=south,formed=false,lit=true": {
+    "facing=south,formed=false,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 180
     },
-    "facing=south,formed=true,lit=false": {
+    "facing=south,formed=false,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 180
+    },
+    "facing=south,formed=false,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 180
+    },
+    "facing=south,formed=false,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 180
+    },
+    "facing=south,formed=false,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 180
+    },
+    "facing=south,formed=true,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 180
     },
-    "facing=south,formed=true,lit=true": {
+    "facing=south,formed=true,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 180
     },
-    "facing=west,formed=false,lit=false": {
+    "facing=south,formed=true,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 180
+    },
+    "facing=south,formed=true,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 180
+    },
+    "facing=south,formed=true,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 180
+    },
+    "facing=south,formed=true,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 180
+    },
+    "facing=west,formed=false,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 270
     },
-    "facing=west,formed=false,lit=true": {
+    "facing=west,formed=false,lit=false,size=1": {
       "model": "cyberfarm:block/reactor_controller",
       "y": 270
     },
-    "facing=west,formed=true,lit=false": {
+    "facing=west,formed=false,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 270
+    },
+    "facing=west,formed=false,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 270
+    },
+    "facing=west,formed=false,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 270
+    },
+    "facing=west,formed=false,lit=true,size=2": {
+      "model": "cyberfarm:block/reactor_controller",
+      "y": 270
+    },
+    "facing=west,formed=true,lit=false,size=0": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 270
     },
-    "facing=west,formed=true,lit=true": {
+    "facing=west,formed=true,lit=false,size=1": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 270
+    },
+    "facing=west,formed=true,lit=false,size=2": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 270
+    },
+    "facing=west,formed=true,lit=true,size=0": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 270
+    },
+    "facing=west,formed=true,lit=true,size=1": {
+      "model": "cyberfarm:block/reactor_controller_hidden",
+      "y": 270
+    },
+    "facing=west,formed=true,lit=true,size=2": {
       "model": "cyberfarm:block/reactor_controller_hidden",
       "y": 270
     }
