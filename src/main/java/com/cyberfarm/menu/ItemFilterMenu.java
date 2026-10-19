@@ -1,13 +1,10 @@
 package com.cyberfarm.menu;
 
 import com.cyberfarm.block.entity.ItemFilter;
-import com.cyberfarm.block.entity.ItemPipeBlockEntity;
-import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerInput;
@@ -16,13 +13,13 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.world.level.block.Block;
 
 /**
- * Item Pipe filter GUI. The 9 filter slots are ghost slots: clicking one with an item copies it as a
- * sample, clicking it empty-handed clears it; no item is ever taken from the player.
+ * Item filter GUI (the Drone Dock's filter). The 9 filter slots are ghost slots: clicking one with an
+ * item copies it as a sample, clicking it empty-handed clears it; no item is ever taken from the player.
  */
-public class ItemPipeMenu extends MachineMenu {
+public class ItemFilterMenu extends MachineMenu {
     public static final int FILTER_X = 8;
     public static final int FILTER_Y = 20;
     public static final int BUTTON_WHITELIST = 0;
@@ -31,18 +28,24 @@ public class ItemPipeMenu extends MachineMenu {
     public static final int BUTTON_TAG_PREVIOUS = 3;
     public static final int BUTTON_TAG_NEXT = 4;
 
-    private final @Nullable ItemPipeBlockEntity pipe;
+    private final ItemFilter filter;
     private final Container samples;
 
-    public ItemPipeMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, null, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 4), ContainerLevelAccess.NULL);
+    /** Client side: a blank filter, filled in by the server's slot and data sync. */
+    public ItemFilterMenu(int containerId, Inventory inventory) {
+        this(containerId, inventory, new ItemFilter(() -> {}), new SimpleContainerData(ItemFilter.DATA_SLOTS),
+                ContainerLevelAccess.NULL, ModBlocks.DRONE_DOCK.get());
     }
 
-    public ItemPipeMenu(int containerId, Inventory inventory, @Nullable ItemPipeBlockEntity pipe, ContainerData data, ContainerLevelAccess access) {
-        super(ModMenus.ITEM_PIPE.get(), containerId, data, access,
-                pipe != null ? pipe.getBlockState().getBlock() : ModBlocks.ITEM_PIPE.get());
-        this.pipe = pipe;
-        this.samples = pipe != null ? pipe.filter().items() : new SimpleContainer(ItemFilter.SLOTS);
+    /** {@code block} is the block holding the filter: the menu closes when it is gone. */
+    public ItemFilterMenu(int containerId, Inventory inventory, ItemFilter filter, ContainerLevelAccess access, Block block) {
+        this(containerId, inventory, filter, filter.data(), access, block);
+    }
+
+    private ItemFilterMenu(int containerId, Inventory inventory, ItemFilter filter, ContainerData data, ContainerLevelAccess access, Block block) {
+        super(ModMenus.ITEM_FILTER.get(), containerId, data, access, block);
+        this.filter = filter;
+        this.samples = filter.items();
         for (int i = 0; i < ItemFilter.SLOTS; i++) {
             addSlot(new Slot(samples, i, FILTER_X + i * 18, FILTER_Y) {
                 @Override
@@ -93,10 +96,6 @@ public class ItemPipeMenu extends MachineMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (pipe == null) {
-            return false;
-        }
-        ItemFilter filter = pipe.filter();
         switch (id) {
             case BUTTON_WHITELIST -> filter.toggleWhitelist();
             case BUTTON_COMPONENTS -> filter.toggleComponents();
@@ -107,7 +106,6 @@ public class ItemPipeMenu extends MachineMenu {
                 return false;
             }
         }
-        pipe.setChanged();
         return true;
     }
 

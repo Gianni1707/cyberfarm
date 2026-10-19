@@ -53,7 +53,7 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
         registerDefaultState(state);
     }
 
-    /** How much can enter the network through this pipe per tick (FE, mB or items per second for item pipes). */
+    /** How much can enter the network through this pipe per tick (FE or mB). */
     public int rate() {
         return rate;
     }

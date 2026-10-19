@@ -86,7 +86,7 @@ def dock_model():
     })
 
 
-PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe", "item_pipe") for tier in ("", "advanced_", "elite_")]
+PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe") for tier in ("", "advanced_", "elite_")]
 
 
 def pipe_models(name):
@@ -113,12 +113,6 @@ def pipe_models(name):
     parts = [{"apply": {"model": f"{NS}:block/{name}_core"}}]
     for direction, rotation in rotations.items():
         parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
-    if "item_pipe" in name:
-        # Pulling collar on the arms set to extract
-        write(ASSETS / "models/block/item_pipe_extract.json", {"textures": {"particle": tex("item_pipe_extract"), "collar": tex("item_pipe_extract")},
-            "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
-        for direction, rotation in rotations.items():
-            parts.append({"when": {direction: "true", f"extract_{direction}": "true"}, "apply": {"model": f"{NS}:block/item_pipe_extract", **rotation}})
     write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
     write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_inventory"}})
 
@@ -393,9 +387,8 @@ def recipes():
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
-    shaped("item_pipe", ["III", "GHG", "III"], {"I": iron, "G": "minecraft:glass", "H": "minecraft:hopper"}, count=8)
     # Higher tiers: 8 pipes around an upgrade core
-    for kind in ("energy_conduit", "gas_pipe", "item_pipe"):
+    for kind in ("energy_conduit", "gas_pipe"):
         shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": redstone}, count=8)
         shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": f"{NS}:uranium_ingot"}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)

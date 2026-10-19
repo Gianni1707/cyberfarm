@@ -67,6 +67,7 @@ to bedrock. The dock GUI shows the layer it is working on.
 - It skips **liquids**, **unbreakable blocks** and anything with an inventory or a machine
   inside (chests, furnaces, CyberFarm machines).
 - The column right under the Drone Dock is never dug, so the dock stays on a pillar.
+- The [dock filter](drone_dock.md) decides which drops are **kept**; the others are thrown away.
 - Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian.
 
 <RecipeFor id="quarry_module" />
@@ -80,12 +81,14 @@ The drone carries items **from one container to another**: it picks up a load at
 has items and the destination has room.
 
 A load is **16 items**; each [Stack Addon](addons.md) adds a full stack (64 items), up to 9 stacks.
+While loaded, the drone carries the item **in its claw**, so you can see what it is moving.
 
 <br clear="all" />
 
 Set the route with the [Survey Tool](drone_dock.md): click the source container, then the
 destination. Any inventory works, including ones from other mods. Items that do not fit in the
-destination are brought back to the dock.
+destination are brought back to the dock. The [dock filter](drone_dock.md) decides **which items**
+are moved.
 
 <RecipeFor id="transport_module" />
 

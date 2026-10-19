@@ -11,7 +11,6 @@ import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
-import com.cyberfarm.block.ItemPipeBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MufflerBlock;
 import com.cyberfarm.block.ReactorCasingBlock;
@@ -62,13 +61,6 @@ public class ModBlocks {
     public static final DeferredBlock<GasPipeBlock> ELITE_GAS_PIPE = BLOCKS.registerBlock("elite_gas_pipe",
             p -> new GasPipeBlock(p, 16_000), ModBlocks::pipe);
 
-    /** Item Pipes: rate is items per second. */
-    public static final DeferredBlock<ItemPipeBlock> ITEM_PIPE = BLOCKS.registerBlock("item_pipe",
-            p -> new ItemPipeBlock(p, 8), ModBlocks::pipe);
-    public static final DeferredBlock<ItemPipeBlock> ADVANCED_ITEM_PIPE = BLOCKS.registerBlock("advanced_item_pipe",
-            p -> new ItemPipeBlock(p, 32), ModBlocks::pipe);
-    public static final DeferredBlock<ItemPipeBlock> ELITE_ITEM_PIPE = BLOCKS.registerBlock("elite_item_pipe",
-            p -> new ItemPipeBlock(p, 128), ModBlocks::pipe);
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
             BioDigesterBlock::new, ModBlocks::machine);

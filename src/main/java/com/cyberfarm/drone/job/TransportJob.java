@@ -14,7 +14,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Transport Module: carries items from the source container to the destination container of the
- * dock's route (set with the Survey Tool). Works with any inventory from any mod.
+ * dock's route (set with the Survey Tool), only the items the dock filter lets through. Works with
+ * any inventory from any mod.
  */
 public class TransportJob extends DroneJob {
     private enum Phase { PICKUP, DROPOFF }
@@ -39,7 +40,7 @@ public class TransportJob extends DroneJob {
         ResourceHandler<ItemResource> to = inventory(level, destination);
         // Only fly if at least one item could actually go from the source to the destination.
         try (Transaction simulation = Transaction.openRoot()) {
-            if (ResourceHandlerUtil.move(from, to, resource -> true, 1, simulation) == 0) {
+            if (ResourceHandlerUtil.move(from, to, resource -> dock.filter().test(resource.toStack()), 1, simulation) == 0) {
                 return null;
             }
         }
@@ -56,13 +57,13 @@ public class TransportJob extends DroneJob {
         return switch (travelTo(drone, stop)) {
             case MOVING -> Result.CONTINUE;
             case FAILED -> drone.isCargoEmpty() ? Result.DONE : Result.RETURN;
-            case ARRIVED -> phase == Phase.PICKUP ? pickUp(drone, level) : dropOff(drone, level);
+            case ARRIVED -> phase == Phase.PICKUP ? pickUp(drone, level, dock) : dropOff(drone, level);
         };
     }
 
-    private Result pickUp(DroneEntity drone, ServerLevel level) {
+    private Result pickUp(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         // 16 items per trip, plus one stack per Stack Addon
-        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.getCargo(), resource -> true, drone.transportCapacity(), null);
+        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.getCargo(), resource -> dock.filter().test(resource.toStack()), drone.transportCapacity(), null);
         if (moved == 0) {
             return Result.DONE;
         }

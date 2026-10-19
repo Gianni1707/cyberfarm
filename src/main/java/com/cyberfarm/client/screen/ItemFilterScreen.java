@@ -3,7 +3,7 @@ package com.cyberfarm.client.screen;
 import java.util.List;
 
 import com.cyberfarm.block.entity.ItemFilter;
-import com.cyberfarm.menu.ItemPipeMenu;
+import com.cyberfarm.menu.ItemFilterMenu;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -15,14 +15,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 
 /** Filter GUI: 9 ghost slots, three mode switches and a tag picker. */
-public class ItemPipeScreen extends MachineScreen<ItemPipeMenu> {
+public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
     private static final int BUTTON_Y = 42;
     private static final int BUTTON_WIDTH = 52;
     private static final int BUTTON_HEIGHT = 14;
     private static final int TAG_Y = 62;
     private static final int ARROW = 12;
 
-    public ItemPipeScreen(ItemPipeMenu menu, Inventory inventory, Component title) {
+    public ItemFilterScreen(ItemFilterMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 166);
     }
 
@@ -37,10 +37,10 @@ public class ItemPipeScreen extends MachineScreen<ItemPipeMenu> {
             }
         }
         if (isHovering(8, TAG_Y, ARROW, ARROW, mouseX, mouseY)) {
-            return ItemPipeMenu.BUTTON_TAG_PREVIOUS;
+            return ItemFilterMenu.BUTTON_TAG_PREVIOUS;
         }
         if (isHovering(imageWidth - 8 - ARROW, TAG_Y, ARROW, ARROW, mouseX, mouseY)) {
-            return ItemPipeMenu.BUTTON_TAG_NEXT;
+            return ItemFilterMenu.BUTTON_TAG_NEXT;
         }
         return -1;
     }
@@ -120,7 +120,7 @@ public class ItemPipeScreen extends MachineScreen<ItemPipeMenu> {
             graphics.setTooltipForNextFrame(font, Component.translatable(hints[button]), mouseX, mouseY);
         } else if (isHovering(8, TAG_Y, imageWidth - 16, ARROW, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.filter.tag.hint"), mouseX, mouseY);
-        } else if (isHovering(ItemPipeMenu.FILTER_X - 1, ItemPipeMenu.FILTER_Y - 1, ItemFilter.SLOTS * 18, 18, mouseX, mouseY)
+        } else if (isHovering(ItemFilterMenu.FILTER_X - 1, ItemFilterMenu.FILTER_Y - 1, ItemFilter.SLOTS * 18, 18, mouseX, mouseY)
                 && (hoveredSlot == null || !hoveredSlot.hasItem())) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.filter.slots.hint"), mouseX, mouseY);
         }
