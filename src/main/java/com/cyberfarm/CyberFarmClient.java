@@ -10,7 +10,9 @@ import com.cyberfarm.client.screen.DroneAssemblerScreen;
 import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.client.screen.GasTurbineScreen;
 import com.cyberfarm.client.screen.MethaneExtractorScreen;
+import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
+import com.cyberfarm.client.screen.ReactorScreen;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
@@ -105,6 +107,9 @@ public class CyberFarmClient {
         event.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
         event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
         event.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
+        event.register(ModMenus.STEAM_TURBINE.get(), GasTurbineScreen::new);
+        event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
+        event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -133,11 +138,21 @@ public class CyberFarmClient {
     private static void registerFluidModels(RegisterFluidModelsEvent event) {
         event.register(gasModel("biogas"), ModFluids.BIOGAS);
         event.register(gasModel("methane"), ModFluids.METHANE);
+        event.register(gasModel("steam"), ModFluids.STEAM);
+        event.register(liquidModel(0xFF1FB8A8), ModFluids.COOLANT, ModFluids.FLOWING_COOLANT);
+        event.register(liquidModel(0xFF9FE4FF), ModFluids.CRYO_COOLANT, ModFluids.FLOWING_CRYO_COOLANT);
     }
 
     private static FluidModel.Unbaked gasModel(String name) {
         return new FluidModel.Unbaked(new Material(CyberFarm.id("block/" + name + "_still")),
                 new Material(CyberFarm.id("block/" + name + "_flow")), null, (FluidTintSource) null);
+    }
+
+    /** Coolants look like water, animated and see-through, tinted in their own colour. */
+    private static FluidModel.Unbaked liquidModel(int color) {
+        return new FluidModel.Unbaked(new Material(Identifier.withDefaultNamespace("block/water_still")),
+                new Material(Identifier.withDefaultNamespace("block/water_flow")),
+                new Material(Identifier.withDefaultNamespace("block/water_overlay")), (FluidTintSource) state -> color);
     }
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

@@ -1,6 +1,7 @@
 {
   "values": [
     "cyberfarm:biogas",
-    "cyberfarm:methane"
+    "cyberfarm:methane",
+    "cyberfarm:steam"
   ]
 }

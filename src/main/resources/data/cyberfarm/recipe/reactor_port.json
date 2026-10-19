@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "minecraft:hopper",
+    "X": "cyberfarm:reactor_casing",
+    "B": "minecraft:bucket"
+  },
+  "pattern": [
+    "H",
+    "X",
+    "B"
+  ],
+  "result": {
+    "id": "cyberfarm:reactor_port"
+  }
+}

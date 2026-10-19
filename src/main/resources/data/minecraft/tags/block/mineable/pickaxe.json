@@ -8,6 +8,14 @@
     "cyberfarm:bio_digester",
     "cyberfarm:gas_turbine",
     "cyberfarm:methane_extractor",
-    "cyberfarm:cyber_frame"
+    "cyberfarm:cyber_frame",
+    "cyberfarm:reactor_controller",
+    "cyberfarm:reactor_casing",
+    "cyberfarm:reactor_port",
+    "cyberfarm:steam_turbine",
+    "cyberfarm:water_pump",
+    "cyberfarm:coolant_mixer",
+    "cyberfarm:uranium_ore",
+    "cyberfarm:deepslate_uranium_ore"
   ]
 }

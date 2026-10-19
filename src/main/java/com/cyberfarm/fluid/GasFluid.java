@@ -5,7 +5,6 @@ import java.util.function.Supplier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
@@ -19,13 +18,15 @@ import net.neoforged.neoforge.fluids.FluidType;
 
 /**
  * A gas: a real NeoForge fluid, so tanks and pipes of any mod can hold and move it, but it never
- * exists as a block in the world and has no bucket.
+ * exists as a block in the world: its bucket is only poured into machines and tanks.
  */
 public class GasFluid extends Fluid {
     private final Supplier<FluidType> type;
+    private final Supplier<? extends Item> bucket;
 
-    public GasFluid(Supplier<FluidType> type) {
+    public GasFluid(Supplier<FluidType> type, Supplier<? extends Item> bucket) {
         this.type = type;
+        this.bucket = bucket;
     }
 
     @Override
@@ -35,7 +36,7 @@ public class GasFluid extends Fluid {
 
     @Override
     public Item getBucket() {
-        return Items.AIR;
+        return bucket.get();
     }
 
     @Override

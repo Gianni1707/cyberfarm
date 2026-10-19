@@ -140,5 +140,73 @@
       }
     ],
     "subtitle": "subtitles.cyberfarm.drone_assembler.work"
+  },
+  "reactor.activate": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/activate",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.reactor.activate"
+  },
+  "reactor.deactivate": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/deactivate",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.reactor.deactivate"
+  },
+  "reactor.hum": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/ambient",
+        "pitch": 0.5,
+        "volume": 0.9
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.reactor.hum"
+  },
+  "reactor.alarm": {
+    "sounds": [
+      {
+        "name": "minecraft:note/pling",
+        "pitch": 1.6,
+        "volume": 1.0
+      },
+      {
+        "name": "minecraft:note/bell",
+        "pitch": 1.4,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.reactor.alarm"
+  },
+  "coolant_mixer.work": {
+    "sounds": [
+      {
+        "name": "minecraft:block/brewing_stand/brew1",
+        "pitch": 1.3,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/brewing_stand/brew2",
+        "pitch": 1.3,
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.coolant_mixer.work"
+  },
+  "steam_turbine.work": {
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.5,
+        "volume": 0.25
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.steam_turbine.work"
   }
 }

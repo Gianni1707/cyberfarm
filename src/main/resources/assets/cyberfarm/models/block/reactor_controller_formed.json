@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/reactor_controller_formed",
+    "top": "cyberfarm:block/reactor_casing_formed",
+    "side": "cyberfarm:block/reactor_casing_formed",
+    "bottom": "cyberfarm:block/reactor_casing_formed"
+  }
+}

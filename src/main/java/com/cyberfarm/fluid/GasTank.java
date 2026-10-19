@@ -95,7 +95,25 @@ public class GasTank extends FluidStacksResourceHandler {
 
     public int fluidCode() {
         Fluid fluid = fluid();
-        return fluid == ModFluids.BIOGAS.get() ? 1 : fluid == ModFluids.METHANE.get() ? 2 : fluid == Fluids.EMPTY ? 0 : 3;
+        if (fluid == Fluids.EMPTY) {
+            return 0;
+        }
+        if (fluid == ModFluids.BIOGAS.get()) {
+            return 1;
+        }
+        if (fluid == ModFluids.METHANE.get()) {
+            return 2;
+        }
+        if (ModFluids.isSteam(getResource(0))) {
+            return 4;
+        }
+        if (fluid == ModFluids.COOLANT.get()) {
+            return 6;
+        }
+        if (fluid == ModFluids.CRYO_COOLANT.get()) {
+            return 7;
+        }
+        return fluid == Fluids.WATER ? 5 : 3;
     }
 
     public static boolean isFuelGas(FluidResource resource) {
