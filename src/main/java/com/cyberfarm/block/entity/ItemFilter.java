@@ -1,0 +1,132 @@
+package com.cyberfarm.block.entity;
+
+import java.util.Comparator;
+import java.util.List;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jspecify.annotations.Nullable;
+
+/**
+ * Item Pipe filter, with the usual options of other mods: up to 9 sample items, as a whitelist or a
+ * blacklist, matched by item (optionally with components), by mod, or by a tag picked from the
+ * sample's tags. The default is an empty blacklist: everything passes.
+ */
+public class ItemFilter {
+    public static final int SLOTS = 9;
+
+    private final SimpleContainer items;
+    private boolean whitelist;
+    private boolean matchComponents;
+    private boolean matchMod;
+    private @Nullable TagKey<Item> tag;
+
+    public ItemFilter(Runnable onChanged) {
+        items = new SimpleContainer(SLOTS) {
+            @Override
+            public void setChanged() {
+                super.setChanged();
+                // The tag is picked from the first sample: drop it when that sample no longer has it
+                if (tag != null && !tagsOf(firstSample()).contains(tag)) {
+                    tag = null;
+                }
+                onChanged.run();
+            }
+        };
+    }
+
+    public SimpleContainer items() {
+        return items;
+    }
+
+    public boolean test(ItemStack stack) {
+        boolean match = tag != null && stack.is(tag);
+        for (int i = 0; i < SLOTS && !match; i++) {
+            ItemStack sample = items.getItem(i);
+            if (sample.isEmpty()) {
+                continue;
+            }
+            match = matchMod
+                    ? BuiltInRegistries.ITEM.getKey(sample.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace())
+                    : matchComponents ? ItemStack.isSameItemSameComponents(sample, stack) : sample.is(stack.getItem());
+        }
+        return whitelist == match;
+    }
+
+    public boolean whitelist() {
+        return whitelist;
+    }
+
+    public boolean matchComponents() {
+        return matchComponents;
+    }
+
+    public boolean matchMod() {
+        return matchMod;
+    }
+
+    public void toggleWhitelist() {
+        whitelist = !whitelist;
+    }
+
+    public void toggleComponents() {
+        matchComponents = !matchComponents;
+    }
+
+    public void toggleMod() {
+        matchMod = !matchMod;
+    }
+
+    /** Tags of the first sample item, sorted so client and server agree on the order. */
+    public static List<TagKey<Item>> tagsOf(ItemStack sample) {
+        return sample.typeHolder().tags().sorted(Comparator.comparing((TagKey<Item> key) -> key.location().toString())).toList();
+    }
+
+    public ItemStack firstSample() {
+        for (int i = 0; i < SLOTS; i++) {
+            if (!items.getItem(i).isEmpty()) {
+                return items.getItem(i);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    /** Index of the chosen tag among the first sample's tags, or -1 for none. */
+    public int tagIndex() {
+        return tag == null ? -1 : tagsOf(firstSample()).indexOf(tag);
+    }
+
+    /** Steps through "no tag" and the first sample's tags, in a loop. */
+    public void cycleTag(int step) {
+        List<TagKey<Item>> tags = tagsOf(firstSample());
+        int index = Math.floorMod(tagIndex() + 1 + step, tags.size() + 1) - 1;
+        tag = index < 0 ? null : tags.get(index);
+    }
+
+    public void save(ValueOutput output) {
+        for (int i = 0; i < SLOTS; i++) {
+            output.store("filter_" + i, ItemStack.OPTIONAL_CODEC, items.getItem(i));
+        }
+        output.putBoolean("whitelist", whitelist);
+        output.putBoolean("match_components", matchComponents);
+        output.putBoolean("match_mod", matchMod);
+        output.storeNullable("tag", Identifier.CODEC, tag == null ? null : tag.location());
+    }
+
+    public void load(ValueInput input) {
+        for (int i = 0; i < SLOTS; i++) {
+            items.setItem(i, input.read("filter_" + i, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
+        }
+        whitelist = input.getBooleanOr("whitelist", false);
+        matchComponents = input.getBooleanOr("match_components", false);
+        matchMod = input.getBooleanOr("match_mod", false);
+        tag = input.read("tag", Identifier.CODEC).map(id -> TagKey.create(Registries.ITEM, id)).orElse(null);
+    }
+}

@@ -24,14 +24,20 @@ use the info page (the "i" tab) of any CyberFarm machine for a quick explanation
 New here? Read [Getting Started](getting_started.md): your first drone, step by step.
 Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
 Need water for your machines? A [Water Pump](water_pump.md) gives an endless supply.
-Then the handbook has three sections:
+Then the handbook has four sections:
 
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
 with the [Bio-Digester](bio_digester.md), the [Methane Extractor](methane_extractor.md) and the
-[Gas Turbine](gas_turbine.md), and finally [Nuclear Power](nuclear.md): [uranium](uranium.md), the
-[Fission Reactor](fission_reactor.md), the [Coolant Mixer](coolant_mixer.md) and the
-[Steam Turbine](steam_turbine.md).
+[Gas Turbine](gas_turbine.md).
+
+### [Nuclear](nuclear.md)
+The endgame power plant: [uranium](uranium.md), the [Fission Reactor](fission_reactor.md), the
+[Coolant Mixer](coolant_mixer.md), the [Steam Turbine](steam_turbine.md), [waste and radiation](radiation.md),
+the [Waste Reprocessor](waste_reprocessor.md) and the [Hazmat Suit and Geiger Counter](hazmat_suit.md).
+
+The [Multiblock Projector](multiblock_projector.md) shows any of these structures in the world
+before you build it.
 
 ### [Cables](cables.md)
 Moving power and gas: the [Energy Conduit](energy_conduit.md) and the [Gas Pipe](gas_pipe.md).

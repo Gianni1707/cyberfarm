@@ -3,18 +3,23 @@ package com.cyberfarm.registry;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneTask;
+import com.cyberfarm.item.DepletedFuelRodItem;
 import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.item.DroneModuleItem;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.FuelRodItem;
+import com.cyberfarm.item.GeigerCounterItem;
+import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.item.MobCapsuleItem;
+import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.item.SurveyToolItem;
 
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -26,7 +31,14 @@ public class ModItems {
     public static final DeferredItem<BlockItem> DRONE_ASSEMBLER = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_ASSEMBLER);
     public static final DeferredItem<BlockItem> DRONE_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_DOCK);
     public static final DeferredItem<BlockItem> ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ENERGY_CONDUIT);
+    public static final DeferredItem<BlockItem> ADVANCED_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ENERGY_CONDUIT);
+    public static final DeferredItem<BlockItem> ELITE_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_PIPE);
+    public static final DeferredItem<BlockItem> ADVANCED_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_GAS_PIPE);
+    public static final DeferredItem<BlockItem> ELITE_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_GAS_PIPE);
+    public static final DeferredItem<BlockItem> ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ITEM_PIPE);
+    public static final DeferredItem<BlockItem> ADVANCED_ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ITEM_PIPE);
+    public static final DeferredItem<BlockItem> ELITE_ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ITEM_PIPE);
     public static final DeferredItem<BlockItem> BIO_DIGESTER = ITEMS.registerSimpleBlockItem(ModBlocks.BIO_DIGESTER);
     public static final DeferredItem<BlockItem> GAS_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TURBINE);
     public static final DeferredItem<BlockItem> METHANE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_EXTRACTOR);
@@ -40,11 +52,20 @@ public class ModItems {
     public static final DeferredItem<Item> RAW_URANIUM = ITEMS.registerSimpleItem("raw_uranium");
     public static final DeferredItem<Item> URANIUM_INGOT = ITEMS.registerSimpleItem("uranium_ingot");
     public static final DeferredItem<FuelRodItem> FUEL_ROD = ITEMS.registerItem("fuel_rod", FuelRodItem::new);
-    public static final DeferredItem<Item> DEPLETED_FUEL_ROD = ITEMS.registerItem("depleted_fuel_rod", p -> new Item(p.stacksTo(16)));
+    public static final DeferredItem<DepletedFuelRodItem> DEPLETED_FUEL_ROD = ITEMS.registerItem("depleted_fuel_rod", DepletedFuelRodItem::new);
     public static final DeferredItem<BlockItem> REACTOR_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CONTROLLER);
     public static final DeferredItem<BlockItem> REACTOR_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CASING);
     public static final DeferredItem<BlockItem> REACTOR_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_PORT);
-    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
+    public static final DeferredItem<BlockItem> TURBINE_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_CONTROLLER);
+    public static final DeferredItem<BlockItem> TURBINE_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_CASING);
+    public static final DeferredItem<BlockItem> TURBINE_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_PORT);
+    public static final DeferredItem<BlockItem> WASTE_REPROCESSOR = ITEMS.registerSimpleBlockItem(ModBlocks.WASTE_REPROCESSOR);
+    public static final DeferredItem<BlockItem> VITRIFIED_WASTE = ITEMS.registerSimpleBlockItem(ModBlocks.VITRIFIED_WASTE);
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_HELMET = ITEMS.registerItem("hazmat_helmet", p -> new HazmatSuitItem(p, ArmorType.HELMET));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_SUIT = ITEMS.registerItem("hazmat_suit", p -> new HazmatSuitItem(p, ArmorType.CHESTPLATE));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", p -> new HazmatSuitItem(p, ArmorType.LEGGINGS));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", p -> new HazmatSuitItem(p, ArmorType.BOOTS));
+    public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
 
@@ -97,4 +118,5 @@ public class ModItems {
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
+    public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
 }

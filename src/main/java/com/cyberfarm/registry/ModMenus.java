@@ -8,8 +8,11 @@ import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.menu.MethaneExtractorMenu;
+import com.cyberfarm.menu.ItemPipeMenu;
 import com.cyberfarm.menu.MufflerMenu;
 import com.cyberfarm.menu.ReactorMenu;
+import com.cyberfarm.menu.TurbineMenu;
+import com.cyberfarm.menu.WasteReprocessorMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -35,14 +38,20 @@ public class ModMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
 
-    public static final DeferredHolder<MenuType<?>, MenuType<GasTurbineMenu>> STEAM_TURBINE = MENUS.register("steam_turbine",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> GasTurbineMenu.steam(id, inventory)));
+    public static final DeferredHolder<MenuType<?>, MenuType<TurbineMenu>> TURBINE = MENUS.register("turbine",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new TurbineMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CoolantMixerMenu>> COOLANT_MIXER = MENUS.register("coolant_mixer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<WasteReprocessorMenu>> WASTE_REPROCESSOR = MENUS.register("waste_reprocessor",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new WasteReprocessorMenu(id, inventory)));
+
     public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR = MENUS.register("reactor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ItemPipeMenu>> ITEM_PIPE = MENUS.register("item_pipe",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ItemPipeMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MufflerMenu>> MUFFLER = MENUS.register("muffler",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));

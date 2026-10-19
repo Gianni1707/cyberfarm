@@ -11,12 +11,14 @@ import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
+import com.cyberfarm.block.ItemPipeBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MufflerBlock;
 import com.cyberfarm.block.ReactorCasingBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ReactorPortBlock;
-import com.cyberfarm.block.SteamTurbineBlock;
+import com.cyberfarm.block.TurbineControllerBlock;
+import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -41,13 +43,32 @@ public class ModBlocks {
     public static final DeferredBlock<DroneDockBlock> DRONE_DOCK = BLOCKS.registerBlock("drone_dock",
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
 
+    // Cables and pipes in three tiers, rates comparable to Immersive Engineering and Mekanism
     public static final DeferredBlock<EnergyConduitBlock> ENERGY_CONDUIT = BLOCKS.registerBlock("energy_conduit",
-            EnergyConduitBlock::new,
+            p -> new EnergyConduitBlock(p, 2_000),
             p -> p.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion());
 
+    public static final DeferredBlock<EnergyConduitBlock> ADVANCED_ENERGY_CONDUIT = BLOCKS.registerBlock("advanced_energy_conduit",
+            p -> new EnergyConduitBlock(p, 16_000), ModBlocks::pipe);
+    public static final DeferredBlock<EnergyConduitBlock> ELITE_ENERGY_CONDUIT = BLOCKS.registerBlock("elite_energy_conduit",
+            p -> new EnergyConduitBlock(p, 128_000), ModBlocks::pipe);
+
     public static final DeferredBlock<GasPipeBlock> GAS_PIPE = BLOCKS.registerBlock("gas_pipe",
-            GasPipeBlock::new,
+            p -> new GasPipeBlock(p, 1_000),
             p -> p.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion());
+
+    public static final DeferredBlock<GasPipeBlock> ADVANCED_GAS_PIPE = BLOCKS.registerBlock("advanced_gas_pipe",
+            p -> new GasPipeBlock(p, 4_000), ModBlocks::pipe);
+    public static final DeferredBlock<GasPipeBlock> ELITE_GAS_PIPE = BLOCKS.registerBlock("elite_gas_pipe",
+            p -> new GasPipeBlock(p, 16_000), ModBlocks::pipe);
+
+    /** Item Pipes: rate is items per second. */
+    public static final DeferredBlock<ItemPipeBlock> ITEM_PIPE = BLOCKS.registerBlock("item_pipe",
+            p -> new ItemPipeBlock(p, 8), ModBlocks::pipe);
+    public static final DeferredBlock<ItemPipeBlock> ADVANCED_ITEM_PIPE = BLOCKS.registerBlock("advanced_item_pipe",
+            p -> new ItemPipeBlock(p, 32), ModBlocks::pipe);
+    public static final DeferredBlock<ItemPipeBlock> ELITE_ITEM_PIPE = BLOCKS.registerBlock("elite_item_pipe",
+            p -> new ItemPipeBlock(p, 128), ModBlocks::pipe);
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
             BioDigesterBlock::new, ModBlocks::machine);
@@ -73,17 +94,27 @@ public class ModBlocks {
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops().lightLevel(state -> 3));
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
-            ReactorControllerBlock::new, p -> machine(p).lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));
+            ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));
     public static final DeferredBlock<ReactorCasingBlock> REACTOR_CASING = BLOCKS.registerBlock("reactor_casing",
-            ReactorCasingBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
+            ReactorCasingBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
     public static final DeferredBlock<ReactorPortBlock> REACTOR_PORT = BLOCKS.registerBlock("reactor_port",
-            ReactorPortBlock::new, p -> machine(p).lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
-    public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = BLOCKS.registerBlock("steam_turbine",
-            SteamTurbineBlock::new, ModBlocks::machine);
+            ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
+    public static final DeferredBlock<TurbineControllerBlock> TURBINE_CONTROLLER = BLOCKS.registerBlock("turbine_controller",
+            TurbineControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(TurbineControllerBlock.LIT) ? 10 : 0));
+    public static final DeferredBlock<ReactorCasingBlock> TURBINE_CASING = BLOCKS.registerBlock("turbine_casing",
+            ReactorCasingBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 4 : 0));
+    public static final DeferredBlock<ReactorPortBlock> TURBINE_PORT = BLOCKS.registerBlock("turbine_port",
+            ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
             CoolantMixerBlock::new, ModBlocks::machine);
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::machine);
+
+    public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
+            WasteReprocessorBlock::new, ModBlocks::machine);
+    /** Treated nuclear waste: inert glass, safe to store or build with. */
+    public static final DeferredBlock<Block> VITRIFIED_WASTE = BLOCKS.registerSimpleBlock("vitrified_waste",
+            p -> p.mapColor(MapColor.COLOR_GREEN).strength(3.0F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().lightLevel(state -> 2));
 
     // Coolant pools in the world; Cryo Coolant slows and freezes harder
     public static final DeferredBlock<CoolantBlock> COOLANT = BLOCKS.registerBlock("coolant",
@@ -94,6 +125,10 @@ public class ModBlocks {
     private static BlockBehaviour.Properties liquid(BlockBehaviour.Properties properties) {
         return properties.mapColor(MapColor.ICE).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.DESTROY)
                 .noLootTable().liquid().sound(SoundType.EMPTY);
+    }
+
+    private static BlockBehaviour.Properties pipe(BlockBehaviour.Properties properties) {
+        return properties.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion();
     }
 
     private static BlockBehaviour.Properties machine(BlockBehaviour.Properties properties) {

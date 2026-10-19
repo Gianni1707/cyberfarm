@@ -23,12 +23,8 @@ public class GasTurbineScreen extends MachineScreen<GasTurbineMenu> {
         graphics.text(font, Component.translatable(running ? "gui.cyberfarm.generator.burning" : "gui.cyberfarm.generator.idle"),
                 x + 38, y + 22, running ? WARM : TEXT_DIM, false);
         graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", menu.getGenerating()), x + 38, y + 34, TEXT, false);
-        if (menu.isSteam()) {
-            graphics.text(font, Component.translatable("gui.cyberfarm.turbine.steam", GasTurbineBlockEntity.FE_PER_MB_STEAM), x + 38, y + 50, TEXT_DIM, false);
-        } else {
-            graphics.text(font, Component.translatable("gui.cyberfarm.turbine.biogas", GasTurbineBlockEntity.FE_PER_MB_BIOGAS), x + 38, y + 50, TEXT_DIM, false);
-            graphics.text(font, Component.translatable("gui.cyberfarm.turbine.methane", GasTurbineBlockEntity.FE_PER_MB_METHANE), x + 38, y + 60, TEXT_DIM, false);
-        }
+        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.biogas", GasTurbineBlockEntity.FE_PER_MB_BIOGAS), x + 38, y + 50, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.methane", GasTurbineBlockEntity.FE_PER_MB_METHANE), x + 38, y + 60, TEXT_DIM, false);
     }
 
     @Override

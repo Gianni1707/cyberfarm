@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "cyberfarm:advanced_item_pipe",
+    "D": "minecraft:diamond",
+    "U": "cyberfarm:uranium_ingot"
+  },
+  "pattern": [
+    "PPP",
+    "DUD",
+    "PPP"
+  ],
+  "result": {
+    "id": "cyberfarm:elite_item_pipe",
+    "count": 8
+  }
+}

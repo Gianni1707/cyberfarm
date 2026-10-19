@@ -1,0 +1,41 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "cyberfarm:block/advanced_energy_conduit",
+    "conduit": "cyberfarm:block/advanced_energy_conduit"
+  },
+  "elements": [
+    {
+      "from": [
+        5,
+        5,
+        5
+      ],
+      "to": [
+        11,
+        11,
+        11
+      ],
+      "faces": {
+        "north": {
+          "texture": "#conduit"
+        },
+        "east": {
+          "texture": "#conduit"
+        },
+        "south": {
+          "texture": "#conduit"
+        },
+        "west": {
+          "texture": "#conduit"
+        },
+        "up": {
+          "texture": "#conduit"
+        },
+        "down": {
+          "texture": "#conduit"
+        }
+      }
+    }
+  ]
+}

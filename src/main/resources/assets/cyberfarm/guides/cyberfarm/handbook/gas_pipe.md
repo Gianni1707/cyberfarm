@@ -6,6 +6,8 @@ navigation:
   icon: cyberfarm:gas_pipe
 item_ids:
   - cyberfarm:gas_pipe
+  - cyberfarm:advanced_gas_pipe
+  - cyberfarm:elite_gas_pipe
 ---
 
 # Gas Pipe
@@ -22,6 +24,13 @@ stripe, conduits a cyan one.
   CyberFarm or from any other mod.
 - They **store nothing**: what a machine pushes in goes straight to the blocks on the network,
   which take turns.
-- Up to **1,000 mB/t** enters the network from each machine pushing into it.
+- From each machine pushing into it, up to **1,000 mB/t** enters the network through a basic
+  pipe, **4,000** through an Advanced one and **16,000** through an Elite one. The steam of a Large
+  reactor needs Advanced pipes.
+- All tiers join into one network.
 
 <RecipeFor id="gas_pipe" />
+
+<RecipeFor id="advanced_gas_pipe" />
+
+<RecipeFor id="elite_gas_pipe" />

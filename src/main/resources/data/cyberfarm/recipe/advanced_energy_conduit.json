@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "cyberfarm:energy_conduit",
+    "G": "minecraft:gold_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PPP",
+    "GRG",
+    "PPP"
+  ],
+  "result": {
+    "id": "cyberfarm:advanced_energy_conduit",
+    "count": 8
+  }
+}

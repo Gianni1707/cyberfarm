@@ -1,17 +1,18 @@
 package com.cyberfarm.block.entity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.cyberfarm.Config;
-import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
-import com.cyberfarm.block.ReactorPortBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.menu.ReactorMenu;
+import com.cyberfarm.multiblock.Multiblock;
+import com.cyberfarm.multiblock.PortOwner;
+import com.cyberfarm.multiblock.TowerSize;
+import com.cyberfarm.radiation.Radiation;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
@@ -41,28 +42,20 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Fission Reactor controller: the brain of a cooling-tower multiblock, 5x5 at the base and 7 high.
- * Burning Fuel Rods heat the core; water from the ports absorbs the heat and leaves as Steam,
- * which the ports push out to Steam Turbines. Seen from the side, relative to the floor centre:
- *
- * <pre>
- *   y6   ■ ■ ■ ■ ■    open rim
- *   y3-5   ■ ■ ■      3x3 waist, hollow
- *   y1-2 ■ ■ ■ ■ ■    5x5 ring with the controller (y1, middle of a side) and ports; 3x3 core inside
- *   y0   ■ ■ ■ ■ ■    floor
- * </pre>
- * Shell blocks are Reactor Casings or Reactor Ports; the inside must be empty.
+ * Fission Reactor controller: the brain of a cooling-tower multiblock in three sizes (see
+ * {@link TowerSize}). Burning Fuel Rods heat the core; water from the ports absorbs the heat and
+ * leaves as Steam, which the ports push out to Steam Turbines. Bigger towers burn more rods, take
+ * more power and move more heat. Shell blocks are Reactor Casings or Reactor Ports; the inside must
+ * be empty.
  */
-public class ReactorControllerBlockEntity extends MachineBlockEntity {
-    public static final int FUEL_SLOTS = 4;
+public class ReactorControllerBlockEntity extends MachineBlockEntity implements PortOwner {
+    /** Room for the largest tower's rods; smaller towers only burn the first ones. */
+    public static final int FUEL_SLOTS = 8;
     public static final int WASTE_SLOTS = 4;
     public static final int TANK_CAPACITY = 16_000;
     /** Heat of one rod per tick at 100% power; each mB of water absorbs one unit and becomes one mB of steam. */
     public static final int HEAT_PER_ROD = 50;
     public static final int BOOST_STEP = 50;
-    public static final int MAX_BOOST = 500;
-    /** Heat the primary loop moves to the water per tick with plain water; coolants multiply it. */
-    public static final int BASE_TRANSFER = 200;
     public static final double COOLANT_FACTOR = 2.5;
     public static final double CRYO_FACTOR = 6.0;
     /** Heat moved per mB of coolant worn out. */
@@ -70,7 +63,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
     public static final int MELTDOWN_HEAT = 200_000;
     public static final int ALARM_PERMILLE = 800;
     private static final int PASSIVE_COOLING = 20;
-    private static final int PORT_OUTPUT = 1_000;
+    private static final int PORT_OUTPUT = 2_500;
     private static final int CHECK_INTERVAL = 20;
     private static final int HUM_INTERVAL = 80;
 
@@ -89,6 +82,9 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
     private int heat;
     private int boost;
     private int coolantWear;
+    private List<BlockPos> renderPorts = List.of();
+    /** Game time of the last scan, -1 before the first: a MIN_VALUE start would overflow the subtraction. */
+    private long renderPortsTime = -1;
 
     public ReactorControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.REACTOR_CONTROLLER.get(), pos, state, FUEL_SLOTS + WASTE_SLOTS, 0, 0, 0);
@@ -96,78 +92,55 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
 
     // ---------------------------------------------------------------- structure
 
-    private enum Shape { SHELL, EMPTY, ANY }
-
-    /** Floor centre of the tower: two blocks behind the controller's face, one block down. */
-    private static BlockPos floorCentre(BlockPos controller, Direction facing) {
-        return controller.relative(facing.getOpposite(), 2).below();
-    }
-
-    private static Shape shapeAt(int dx, int dy, int dz) {
-        int ring = Math.max(Math.abs(dx), Math.abs(dz));
-        return switch (dy) {
-            case 0 -> Shape.SHELL;
-            case 3, 4, 5 -> ring == 2 ? Shape.ANY : ring == 1 ? Shape.SHELL : Shape.EMPTY;
-            default -> ring == 2 ? Shape.SHELL : Shape.EMPTY;
-        };
-    }
-
     private static boolean isShellBlock(BlockState state) {
         return state.is(ModBlocks.REACTOR_CASING.get()) || state.is(ModBlocks.REACTOR_PORT.get());
     }
 
-    /** The ports of a complete tower, or null when the structure is not complete. */
-    private static @Nullable List<BlockPos> scan(Level level, BlockPos controller, Direction facing) {
-        BlockPos floor = floorCentre(controller, facing);
-        List<BlockPos> found = new ArrayList<>();
-        for (int dy = 0; dy <= 6; dy++) {
-            for (int dx = -2; dx <= 2; dx++) {
-                for (int dz = -2; dz <= 2; dz++) {
-                    BlockPos pos = floor.offset(dx, dy, dz);
-                    BlockState state = level.getBlockState(pos);
-                    switch (shapeAt(dx, dy, dz)) {
-                        case SHELL -> {
-                            if (pos.equals(controller)) {
-                                continue;
-                            }
-                            if (!isShellBlock(state)) {
-                                return null;
-                            }
-                            if (state.is(ModBlocks.REACTOR_PORT.get())) {
-                                found.add(pos.immutable());
-                            }
-                        }
-                        case EMPTY -> {
-                            if (!state.isAir()) {
-                                return null;
-                            }
-                        }
-                        case ANY -> {}
-                    }
-                }
-            }
-        }
-        return found;
+    private static boolean isPort(BlockState state) {
+        return state.is(ModBlocks.REACTOR_PORT.get());
     }
 
-    /** Whether {@code pos} is a shell block of the tower driven by this controller. */
-    private static boolean inShell(BlockPos controller, Direction facing, BlockPos pos) {
-        BlockPos rel = pos.subtract(floorCentre(controller, facing));
-        return Math.abs(rel.getX()) <= 2 && Math.abs(rel.getZ()) <= 2 && rel.getY() >= 0 && rel.getY() <= 6
-                && shapeAt(rel.getX(), rel.getY(), rel.getZ()) == Shape.SHELL;
+    private record Found(TowerSize size, List<BlockPos> ports) {}
+
+    /** The largest tower complete around this controller, with its ports, or null. */
+    private static @Nullable Found scan(Level level, BlockPos controller, Direction facing) {
+        TowerSize[] sizes = TowerSize.values();
+        for (int i = sizes.length - 1; i >= 0; i--) {
+            List<BlockPos> found = Multiblock.scan(level, controller, sizes[i].cells(controller, facing),
+                    ReactorControllerBlockEntity::isShellBlock, ReactorControllerBlockEntity::isPort);
+            if (found != null) {
+                return new Found(sizes[i], found);
+            }
+        }
+        return null;
+    }
+
+    /** Size of the formed tower from the block state (also on clients), or null when incomplete. */
+    private static @Nullable TowerSize sizeOf(BlockState state) {
+        return state.getValue(ReactorControllerBlock.FORMED) ? TowerSize.byOrdinal(state.getValue(ReactorControllerBlock.SIZE)) : null;
+    }
+
+    public @Nullable TowerSize size() {
+        return sizeOf(getBlockState());
     }
 
     /**
      * Right-clicking a casing or port of a formed tower opens its controller. The controller sits on
-     * the second layer, so it is at most 4 blocks away sideways and between 5 below and 1 above.
+     * the second layer, at most a large tower's width away sideways.
      */
     public static InteractionResult openFromShell(Level level, BlockPos clicked, Player player) {
-        for (BlockPos pos : BlockPos.betweenClosed(clicked.offset(-4, -5, -4), clicked.offset(4, 1, 4))) {
+        int reach = TowerSize.LARGE.base() * 2;
+        int below = TowerSize.LARGE.height() - 2;
+        for (BlockPos pos : BlockPos.betweenClosed(clicked.offset(-reach, -below, -reach), clicked.offset(reach, 1, reach))) {
             BlockState state = level.getBlockState(pos);
-            if (state.getBlock() instanceof ReactorControllerBlock && state.getValue(ReactorControllerBlock.FORMED)
-                    && inShell(pos, state.getValue(MachineBlock.FACING), clicked)) {
-                if (!level.isClientSide() && level.getBlockEntity(pos) instanceof ReactorControllerBlockEntity controller) {
-                    player.openMenu(controller);
+            if (!(state.getBlock() instanceof ReactorControllerBlock)) {
+                continue;
+            }
+            TowerSize size = sizeOf(state);
+            BlockPos controller = pos.immutable();
+            if (size != null && Multiblock.isShell(size.cells(controller, state.getValue(MachineBlock.FACING)), clicked)) {
+                if (!level.isClientSide() && level.getBlockEntity(controller) instanceof ReactorControllerBlockEntity entity) {
+                    player.openMenu(entity);
                 }
                 return InteractionResult.SUCCESS;
             }
@@ -175,36 +148,19 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         return InteractionResult.PASS;
     }
 
-    /** Lights up (or turns off) every casing and port of the tower. */
-    private void setShellFormed(Level level, Direction facing, boolean formed) {
-        BlockPos floor = floorCentre(worldPosition, facing);
-        for (BlockPos pos : BlockPos.betweenClosed(floor.offset(-2, 0, -2), floor.offset(2, 6, 2))) {
-            BlockState state = level.getBlockState(pos);
-            if (state.is(ModBlocks.REACTOR_CASING.get()) && state.getValue(CyberFrameBlock.FORMED) != formed) {
-                level.setBlock(pos, state.setValue(CyberFrameBlock.FORMED, formed), Block.UPDATE_CLIENTS);
-            } else if (state.is(ModBlocks.REACTOR_PORT.get()) && state.getValue(ReactorPortBlock.FORMED) != formed) {
-                // Full update, so pipes and cables next to the port connect or disconnect
-                level.setBlock(pos, state.setValue(ReactorPortBlock.FORMED, formed), Block.UPDATE_ALL);
-            }
-        }
-    }
-
-    private void setPorts(Level level, List<BlockPos> newPorts) {
-        for (BlockPos port : ports) {
-            if (!newPorts.contains(port) && level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) {
-                entity.setController(null);
-            }
-        }
-        for (BlockPos port : newPorts) {
-            if (level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) {
-                entity.setController(worldPosition);
-            }
-        }
-        ports = newPorts;
-    }
-
+    @Override
     public boolean isFormed() {
         return getBlockState().getValue(ReactorControllerBlock.FORMED);
+    }
+
+    /** Client side: the ports of the formed tower, for the renderer to draw their hatches. Rescanned every second. */
+    public List<BlockPos> portsForRender() {
+        if (level != null && (renderPortsTime < 0 || level.getGameTime() - renderPortsTime >= 20)) {
+            Found found = scan(level, worldPosition, getBlockState().getValue(MachineBlock.FACING));
+            renderPorts = found != null ? found.ports() : List.of();
+            renderPortsTime = level.getGameTime();
+        }
+        return renderPorts;
     }
 
     // ---------------------------------------------------------------- tick
@@ -214,30 +170,37 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         Direction facing = state.getValue(MachineBlock.FACING);
         if (--checkCooldown <= 0) {
             checkCooldown = CHECK_INTERVAL;
-            List<BlockPos> found = scan(level, pos, facing);
-            boolean formed = found != null;
+            Found found = scan(level, pos, facing);
+            TowerSize previous = sizeOf(state);
+            TowerSize size = found != null ? found.size() : null;
             // Ports first, so their pipes find the capabilities when the shell update reaches them
-            setPorts(level, formed ? found : List.of());
-            if (formed != state.getValue(ReactorControllerBlock.FORMED)) {
-                state = state.setValue(ReactorControllerBlock.FORMED, formed).setValue(ReactorControllerBlock.LIT, false);
+            ports = Multiblock.rebindPorts(level, pos, ports, found != null ? found.ports() : List.of());
+            if (previous != null && previous != size) {
+                Multiblock.setFormed(level, previous.cells(pos, facing), false);
+            }
+            if (size != previous) {
+                state = state.setValue(ReactorControllerBlock.FORMED, size != null).setValue(ReactorControllerBlock.LIT, false)
+                        .setValue(ReactorControllerBlock.SIZE, size != null ? size.ordinal() : state.getValue(ReactorControllerBlock.SIZE));
                 level.setBlock(pos, state, Block.UPDATE_ALL);
-                level.playSound(null, pos, (formed ? ModSounds.REACTOR_ACTIVATE : ModSounds.REACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                setShellFormed(level, facing, formed);
-            } else if (formed) {
+                level.playSound(null, pos, (size != null ? ModSounds.REACTOR_ACTIVATE : ModSounds.REACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+            if (size != null) {
                 // Re-applied while formed, for casings placed back or shared with a broken neighbour
-                setShellFormed(level, facing, true);
+                Multiblock.setFormed(level, size.cells(pos, facing), true);
             }
             moveSpentRods();
         }
         heat = Math.max(0, heat - PASSIVE_COOLING);
-        if (!state.getValue(ReactorControllerBlock.FORMED)) {
+        TowerSize size = sizeOf(state);
+        if (size == null) {
             steamRate = 0;
             activeRods = 0;
             return;
         }
+        boost = Math.min(boost, size.maxBoost());
 
         activeRods = 0;
-        for (int i = 0; i < FUEL_SLOTS; i++) {
+        for (int i = 0; i < size.rods(); i++) {
             ItemStack rod = getStack(i);
             if (rod.getItem() instanceof FuelRodItem && !FuelRodItem.isSpent(rod)) {
                 activeRods++;
@@ -250,7 +213,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
             burnProgress += boost;
             if (burnProgress >= 2_000) {
                 burnProgress -= 2_000;
-                burnRods();
+                burnRods(size.rods());
             }
         }
 
@@ -269,7 +232,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         steamRate = absorbed;
 
         if (heat >= MELTDOWN_HEAT) {
-            meltdown(level, pos, facing);
+            meltdown(level, pos, facing, size);
             return;
         }
         if (temperaturePermille() >= ALARM_PERMILLE && level.getGameTime() % 20 == 0) {
@@ -277,7 +240,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         }
         boolean running = produced > 0;
         if (running && level.getGameTime() % HUM_INTERVAL == 0) {
-            level.playSound(null, floorCentre(pos, facing).above(3), ModSounds.REACTOR_HUM.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.playSound(null, size.floorCentre(pos, facing).above(size.height() / 2), ModSounds.REACTOR_HUM.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         if (running != state.getValue(ReactorControllerBlock.LIT)) {
             level.setBlock(pos, state.setValue(ReactorControllerBlock.LIT, running), Block.UPDATE_CLIENTS);
@@ -287,40 +250,47 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         }
     }
 
-    /** Heat the primary loop can move per tick: plain water, or more with Coolant or Cryo Coolant. */
+    /** Heat the primary loop can move per tick: more in bigger towers, and with Coolant or Cryo Coolant. */
     public int transferCapacity() {
+        TowerSize size = size();
+        if (size == null) {
+            return 0;
+        }
         FluidResource loop = coolant.getResource(0);
         double factor = coolant.amount() == 0 ? 1.0
                 : loop.is(ModFluids.CRYO_COOLANT_TYPE.get()) ? CRYO_FACTOR : COOLANT_FACTOR;
-        return (int) (BASE_TRANSFER * factor);
+        return (int) (size.baseTransfer() * factor);
     }
 
     public int temperaturePermille() {
         return (int) Math.min(1000L, (long) heat * 1000 / MELTDOWN_HEAT);
     }
 
-    /** Power from the GUI, in steps of {@link #BOOST_STEP}%, from 0 (control rods in) to {@link #MAX_BOOST}%. */
+    /** Power from the GUI, in steps of {@link #BOOST_STEP}%, from 0 (control rods in) to the tower's maximum. */
     public void changeBoost(int steps) {
-        boost = Math.clamp(boost + steps * BOOST_STEP, 0, MAX_BOOST);
+        TowerSize size = size();
+        int max = size != null ? size.maxBoost() : TowerSize.SMALL.maxBoost();
+        boost = Math.clamp(boost + steps * BOOST_STEP, 0, max);
         setChanged();
     }
 
     /** The core overheated: the rods melt and the core blows up (power and block damage from the common config). */
-    private void meltdown(ServerLevel level, BlockPos pos, Direction facing) {
+    private void meltdown(ServerLevel level, BlockPos pos, Direction facing, TowerSize size) {
         heat = 0;
         boost = 0;
         for (int i = 0; i < FUEL_SLOTS; i++) {
             setStack(i, ItemStack.EMPTY);
         }
-        BlockPos core = floorCentre(pos, facing).above();
+        BlockPos core = size.floorCentre(pos, facing).above();
+        Radiation.meltdown(level, core);
         level.explode(null, core.getX() + 0.5, core.getY() + 0.5, core.getZ() + 0.5,
-                Config.MELTDOWN_EXPLOSION_POWER.get().floatValue(),
+                Config.MELTDOWN_EXPLOSION_POWER.get().floatValue() * size.explosionScale(),
                 Config.MELTDOWN_DESTROYS_BLOCKS.get() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
     }
 
     /** One second of burning: every active rod loses a point of fuel. */
-    private void burnRods() {
-        for (int i = 0; i < FUEL_SLOTS; i++) {
+    private void burnRods(int usable) {
+        for (int i = 0; i < usable; i++) {
             ItemStack rod = getStack(i);
             if (rod.getItem() instanceof FuelRodItem && !FuelRodItem.isSpent(rod)) {
                 ItemStack burnt = rod.copy();
@@ -331,12 +301,19 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         moveSpentRods();
     }
 
-    /** Spent rods become Depleted Fuel Rods in the waste slots; they wait in place while those are full. */
+    /**
+     * Spent rods become Depleted Fuel Rods in the waste slots. While those are full the spent rods
+     * wait in place and the reactor leaks radiation.
+     */
     private void moveSpentRods() {
         for (int i = 0; i < FUEL_SLOTS; i++) {
             ItemStack rod = getStack(i);
-            if (rod.getItem() instanceof FuelRodItem && FuelRodItem.isSpent(rod) && addWaste()) {
-                setStack(i, ItemStack.EMPTY);
+            if (rod.getItem() instanceof FuelRodItem && FuelRodItem.isSpent(rod)) {
+                if (addWaste()) {
+                    setStack(i, ItemStack.EMPTY);
+                } else if (level instanceof ServerLevel serverLevel) {
+                    Radiation.add(serverLevel, worldPosition, Radiation.REACTOR_LEAK / 5);
+                }
             }
         }
     }
@@ -359,9 +336,12 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
+        TowerSize size = sizeOf(state);
         if (level != null) {
-            setPorts(level, List.of());
-            setShellFormed(level, state.getValue(MachineBlock.FACING), false);
+            ports = Multiblock.rebindPorts(level, pos, ports, List.of());
+            if (size != null) {
+                Multiblock.setFormed(level, size.cells(pos, state.getValue(MachineBlock.FACING)), false);
+            }
         }
     }
 
@@ -415,12 +395,14 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
         }
     };
 
-    public ResourceHandler<ItemResource> getAutomationItems() {
+    @Override
+    public ResourceHandler<ItemResource> portItems() {
         return automationItems;
     }
 
     /** What ports expose for fluids: water and coolant go in, steam comes out. */
-    public ResourceHandler<FluidResource> getAutomationFluids() {
+    @Override
+    public ResourceHandler<FluidResource> portFluids() {
         return automationFluids;
     }
 
@@ -442,13 +424,16 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity {
             case 10 -> boost;
             case 11 -> transferCapacity();
             case 12 -> activeRods * HEAT_PER_ROD * boost / 100;
+            case 13 -> size() != null ? size().ordinal() + 1 : 0;
+            case 14 -> size() != null ? size().rods() : 0;
+            case 15 -> size() != null ? size().maxBoost() : 0;
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 13;
+        return 16;
     }
 
     @Override

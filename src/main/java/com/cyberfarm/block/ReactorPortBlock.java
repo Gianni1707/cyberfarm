@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.block.entity.ReactorPortBlockEntity;
 import com.mojang.serialization.MapCodec;
 
@@ -16,7 +15,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
-/** Shell block of the Fission Reactor that pipes, cables and hoppers can connect to. */
+/** Shell block of the Fission Reactor or Steam Turbine that pipes, cables and hoppers can connect to. */
 public class ReactorPortBlock extends BaseEntityBlock {
     public static final MapCodec<ReactorPortBlock> CODEC = simpleCodec(ReactorPortBlock::new);
     public static final BooleanProperty FORMED = CyberFrameBlock.FORMED;
@@ -38,7 +37,7 @@ public class ReactorPortBlock extends BaseEntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        return state.getValue(FORMED) ? ReactorControllerBlockEntity.openFromShell(level, pos, player) : InteractionResult.PASS;
+        return state.getValue(FORMED) ? ReactorCasingBlock.openController(level, pos, player) : InteractionResult.PASS;
     }
 
     @Override

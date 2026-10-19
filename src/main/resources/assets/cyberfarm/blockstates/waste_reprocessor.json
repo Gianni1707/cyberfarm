@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/waste_reprocessor"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/waste_reprocessor",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/waste_reprocessor",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/waste_reprocessor",
+      "y": 270
+    }
+  }
+}

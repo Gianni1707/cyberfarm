@@ -12,15 +12,15 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 
 /** Gas Pipe: carries biogas, methane and any other fluid between tanks and machines of any mod. */
 public class GasPipeBlock extends NetworkPipeBlock {
-    public static final MapCodec<GasPipeBlock> CODEC = simpleCodec(GasPipeBlock::new);
+    private final MapCodec<GasPipeBlock> codec = simpleCodec(properties -> new GasPipeBlock(properties, rate()));
 
-    public GasPipeBlock(Properties properties) {
-        super(properties);
+    public GasPipeBlock(Properties properties, int rate) {
+        super(properties, rate);
     }
 
     @Override
     protected MapCodec<GasPipeBlock> codec() {
-        return CODEC;
+        return codec;
     }
 
     @Override

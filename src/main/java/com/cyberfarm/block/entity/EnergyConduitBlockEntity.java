@@ -2,6 +2,7 @@ package com.cyberfarm.block.entity;
 
 import java.util.List;
 
+import com.cyberfarm.block.NetworkPipeBlock;
 import com.cyberfarm.energy.ConduitNetwork;
 import com.cyberfarm.registry.ModBlockEntities;
 
@@ -17,9 +18,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * energy into. Energy is passed on immediately, taking turns between machines so none starves.
  */
 public class EnergyConduitBlockEntity extends BlockEntity {
-    /** FE that can enter the network per insertion, i.e. per pushing machine per tick. */
-    public static final int TRANSFER_RATE = 1_000;
-
     private List<ConduitNetwork.Endpoint> endpoints = List.of();
     private int cachedVersion = -1;
     private int nextEndpoint;
@@ -32,12 +30,12 @@ public class EnergyConduitBlockEntity extends BlockEntity {
 
         @Override
         public long getCapacityAsLong() {
-            return TRANSFER_RATE;
+            return rate();
         }
 
         @Override
         public int insert(int amount, TransactionContext transaction) {
-            return distribute(Math.min(amount, TRANSFER_RATE), transaction);
+            return distribute(Math.min(amount, rate()), transaction);
         }
 
         @Override
@@ -48,6 +46,11 @@ public class EnergyConduitBlockEntity extends BlockEntity {
 
     public EnergyConduitBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ENERGY_CONDUIT.get(), pos, state);
+    }
+
+    /** FE that can enter the network per insertion, i.e. per pushing machine per tick: set by the tier. */
+    private int rate() {
+        return getBlockState().getBlock() instanceof NetworkPipeBlock pipe ? pipe.rate() : 0;
     }
 
     public EnergyHandler getEnergyHandler() {

@@ -17,6 +17,10 @@ public class Config {
             .comment("Explosion power of a reactor meltdown (TNT = 4.0). Kept moderate on purpose: dangerous, not world-ending.")
             .defineInRange("meltdownExplosionPower", 6.0, 0.0, 20.0);
 
+    public static final ModConfigSpec.BooleanValue RADIATION_WORLD_EFFECTS = BUILDER
+            .comment("Whether contaminated land withers: grass dries to dirt, plants wilt, leaves fall.")
+            .define("radiationWorldEffects", true);
+
     static {
         BUILDER.pop();
     }

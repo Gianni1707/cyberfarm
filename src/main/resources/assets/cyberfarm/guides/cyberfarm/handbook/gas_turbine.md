@@ -12,14 +12,14 @@ item_ids:
 
 <BlockImage id="cyberfarm:gas_turbine" scale="4" float="left" />
 
-Burns **Biogas** or **Methane** into FE, 10 mB per tick.
+Burns **Biogas** or **Methane** into FE, 20 mB per tick.
 
 <br clear="all" />
 
 | Fuel | Energy | Output |
 | --- | --- | --- |
-| Biogas | 3 FE per mB | 30 FE/t |
-| Methane | 8 FE per mB | 80 FE/t |
+| Biogas | 3 FE per mB | 60 FE/t |
+| Methane | 8 FE per mB | 160 FE/t |
 
 - Holds **16,000 mB** of gas and **50,000 FE**. It only burns gas when its energy buffer has
   room, so no gas is wasted.

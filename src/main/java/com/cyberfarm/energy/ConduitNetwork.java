@@ -11,12 +11,11 @@ import com.cyberfarm.block.NetworkPipeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Finds the machines reached by a group of connected pipes of one kind (Energy Conduits or Gas
- * Pipes). Results are cached by each pipe and thrown away whenever any pipe, or a block next to
+ * Finds the machines reached by a group of connected pipes of one kind (Energy Conduits, Gas Pipes
+ * or Item Pipes, of any tier). Results are cached by each pipe and thrown away whenever any pipe, or a block next to
  * one, changes.
  */
 public final class ConduitNetwork {
@@ -40,7 +39,9 @@ public final class ConduitNetwork {
 
     /** Walks the pipes of the same block as {@code start} and lists the machine sides they touch. */
     public static List<Endpoint> findEndpoints(Level level, BlockPos start) {
-        Block pipe = level.getBlockState(start).getBlock();
+        if (!(level.getBlockState(start).getBlock() instanceof NetworkPipeBlock pipe)) {
+            return List.of();
+        }
         List<Endpoint> endpoints = new ArrayList<>();
         Set<BlockPos> visited = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
@@ -50,7 +51,7 @@ public final class ConduitNetwork {
         while (!queue.isEmpty() && visited.size() <= MAX_CONDUITS) {
             BlockPos pos = queue.poll();
             BlockState state = level.getBlockState(pos);
-            if (!(pipe instanceof NetworkPipeBlock) || !state.is(pipe)) {
+            if (!pipe.sameKind(state)) {
                 continue;
             }
             for (Direction direction : Direction.values()) {
@@ -61,7 +62,7 @@ public final class ConduitNetwork {
                 if (!level.isLoaded(neighbor)) {
                     continue;
                 }
-                if (level.getBlockState(neighbor).is(pipe)) {
+                if (pipe.sameKind(level.getBlockState(neighbor))) {
                     if (visited.add(neighbor)) {
                         queue.add(neighbor);
                     }

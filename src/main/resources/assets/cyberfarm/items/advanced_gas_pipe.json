@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "cyberfarm:block/advanced_gas_pipe_inventory"
+  }
+}

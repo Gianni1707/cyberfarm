@@ -17,8 +17,9 @@ import org.jspecify.annotations.Nullable;
 
 public class ReactorMenu extends MachineMenu {
     public static final int FUEL_X = 50;
-    public static final int WASTE_X = 112;
-    public static final int SLOTS_Y = 20;
+    public static final int FUEL_Y = 20;
+    public static final int WASTE_X = 50;
+    public static final int WASTE_Y = 62;
     public static final int BUTTON_BOOST_DOWN = 0;
     public static final int BUTTON_BOOST_UP = 1;
 
@@ -26,7 +27,7 @@ public class ReactorMenu extends MachineMenu {
 
     public ReactorMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, null, clientItems(),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 13), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 16), ContainerLevelAccess.NULL);
     }
 
     /** Client copy with the same slot rules, so shift-click predicts the server. */
@@ -50,12 +51,12 @@ public class ReactorMenu extends MachineMenu {
         super(ModMenus.REACTOR.get(), containerId, data, access, ModBlocks.REACTOR_CONTROLLER.get());
         this.reactor = reactor;
         for (int i = 0; i < ReactorControllerBlockEntity.FUEL_SLOTS; i++) {
-            addMachineSlot(items, i, FUEL_X + (i % 2) * 18, SLOTS_Y + (i / 2) * 18);
+            addMachineSlot(items, i, FUEL_X + (i % 4) * 18, FUEL_Y + (i / 4) * 18);
         }
         for (int i = 0; i < ReactorControllerBlockEntity.WASTE_SLOTS; i++) {
-            addMachineSlot(items, ReactorControllerBlockEntity.FUEL_SLOTS + i, WASTE_X + (i % 2) * 18, SLOTS_Y + (i / 2) * 18);
+            addMachineSlot(items, ReactorControllerBlockEntity.FUEL_SLOTS + i, WASTE_X + i * 18, WASTE_Y);
         }
-        addPlayerInventory(inventory, 114);
+        addPlayerInventory(inventory, 136);
     }
 
     @Override
@@ -118,5 +119,19 @@ public class ReactorMenu extends MachineMenu {
 
     public int getHeatProduced() {
         return extra(12);
+    }
+
+    /** 0 while the tower is incomplete, then 1 small, 2 medium, 3 large. */
+    public int getSize() {
+        return extra(13);
+    }
+
+    /** How many of the fuel slots the tower burns. */
+    public int getUsableRods() {
+        return extra(14);
+    }
+
+    public int getMaxBoost() {
+        return extra(15);
     }
 }
