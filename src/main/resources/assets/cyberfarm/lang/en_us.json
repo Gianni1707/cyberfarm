@@ -132,5 +132,6 @@
   "message.cyberfarm.taxi.busy": "This drone is busy",
   "message.cyberfarm.taxi.no_destination": "No destination: sneak + right-click a block with the Survey Tool",
   "message.cyberfarm.taxi.low_energy": "Not enough charge for the trip: needs %s FE",
-  "info.item.cyberfarm.taxi_module": "The drone waits above its dock with a hook. Right-click it to grab the hook: it climbs above the terrain, flies to the dock's taxi destination and drops you off, then flies home. Set the destination by sneak + right-clicking a block with the Survey Tool. Sneak to let go: you get Slow Falling."
+  "info.item.cyberfarm.taxi_module": "The drone waits above its dock with a hook. Right-click it to grab the hook: it climbs above the terrain, flies to the dock's taxi destination and drops you off, then flies home. Set the destination by sneak + right-clicking a block with the Survey Tool. Sneak to let go: you get Slow Falling.",
+  "gui.cyberfarm.no_power": "No power!"
 }

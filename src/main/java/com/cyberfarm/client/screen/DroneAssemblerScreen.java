@@ -69,6 +69,10 @@ public class DroneAssemblerScreen extends MachineScreen<DroneAssemblerMenu> {
                 x + DroneAssemblerMenu.ADDON_SLOT_X - 2, y + 17, addons > addonLimit ? WARM : TEXT_DIM, false);
 
         drawProgressBar(graphics, x + PROGRESS_X, y + PROGRESS_Y, PROGRESS_WIDTH, 6, menu.getProgress(), ACCENT);
+        // Assembly waits for power without any other hint, so say it
+        if (menu.isAssembling() && menu.getEnergy() < DroneAssemblerBlockEntity.ENERGY_PER_TICK) {
+            graphics.text(font, Component.translatable("gui.cyberfarm.no_power"), x + PROGRESS_X - 2, y + PROGRESS_Y + 9, WARM, false);
+        }
         if (menu.isAssembling()) {
             int ox = x + DroneAssemblerMenu.OUTPUT_SLOT_X;
             int oy = y + DroneAssemblerMenu.OUTPUT_SLOT_Y;
