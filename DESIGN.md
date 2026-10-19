@@ -33,7 +33,7 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Survey Tool**: collega un dock, marca due angoli dell'area (max 33x33, dislivello max 8, entro 48 blocchi) o due contenitori (percorso Transport). Shift+clic sulla dock la azzera.
 - **Telai**: Basic (T1: 20k FE, 80% = 2,4 blocchi/s, 1 modulo, 4 addon) → Advanced (T2: 60k FE, 130%, 2 moduli, 8 addon) → Elite (T3: 150k FE, 160%, 3 moduli, 16 addon).
 - **Componenti di crafting**: Drone Core, Rotor, Battery Cell. **Cyber Frame**: blocco strutturale dei multiblocchi; si illumina (texture "formed") quando la struttura è completa.
-- **Moduli funzione**: Harvester ✅ · Quarry ✅ (strati fino al bedrock, solo con area marcata) · Transport ✅ (cassa → cassa, percorso col Survey Tool) · Planter ✅ (semi dalla Dock su terra arata) · Logger ✅ (abbatte alberi interi e ripianta) · Taxi ✅ (giocatore appeso all'uncino, destinazione con Shift+clic del Survey Tool, solo andata, rotta in quota) · poi Fluid Siphon, Shearer/Milker.
+- **Moduli funzione**: Harvester ✅ · Quarry ✅ (strati fino al bedrock, solo con area marcata) · Transport ✅ (cassa → cassa, percorso col Survey Tool) · Planter ✅ (semi dalla Dock su terra arata) · Logger ✅ (abbatte alberi interi e ripianta) · Taxi ✅ (giocatore appeso all'uncino, destinazione con Shift+clic del Survey Tool, solo andata, rotta in quota) · Rancher ✅ (tosa ogni mob tosabile via `IShearable`, munge mucche e capre con secchi vuoti dalla Dock) · Fertilizer ✅ (qualsiasi fertilizzante: tag `c:fertilizers` + farina d'ossa, usato tramite fake player su colture, steli e arbusti; non su erba e muschio) · poi Fluid Siphon.
 - **Logica**: ogni modulo è un `DroneTask` che trova il prossimo `DroneJob`; il drone alterna i moduli a ogni giro e concatena i lavori dello stesso tipo.
 - **Addon** (4 slot nell'Assembler, ognuno una pila dello stesso addon; totale limitato dal telaio):
   Speed (+10% velocità ciascuno) · Stack (+1 stack per viaggio del Transport; base 16 oggetti, max 9 stack) · Battery (+25% batteria del telaio) ·
@@ -87,7 +87,8 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
   - **Coolant**: ×2,5, prodotto da un **Coolant Mixer** (acqua + ghiaccio blu/lapis + FE);
   - **Cryo Coolant**: ×6, Coolant + materiale raro nel Coolant Mixer.
 - **Temperatura**: sopra l'80% allarme sonoro e avviso nella GUI; al 100% **meltdown**: esplosione (config esistente
-  `meltdownExplosionPower`, `meltdownDestroysBlocks`) e forte contaminazione della zona.
+  `meltdownExplosionPower`, `meltdownDestroysBlocks`) e forte contaminazione della zona. Rompere la torre o il controller
+  sopra l'80% non lo evita: il meltdown parte lo stesso (dal controller, l'esplosione al tick successivo).
 
 **Taglie dei multiblocchi** — reattore e turbina in 3 taglie; le grandi sono gradualmente migliori:
 - Reattore: Small 5×5×7 (2 barre, max 200%, 150 calore/t), Medium 7×7×11 (4 barre, 350%, 250), Large 9×9×15 (8 barre, 500%, 400);
@@ -152,7 +153,7 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 **Drone Engineer's Handbook**. Sezioni: Getting Started, Muffler e Water Pump alla radice · **Generators** (Combustion, Gas Power, Bio-Digester,
 Methane Extractor, Gas Turbine) ·
 **Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
-Reprocessor, Hazmat Suit and Geiger Counter) · **Cables** (Energy Conduit, Gas Pipe) · **Drones** (Assembler, Frames,
+Reprocessor, Hazmat Suit and Geiger Counter) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
 Modules, Addons, Dock, Using Drones).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
@@ -170,7 +171,14 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    ✅ Bilanciamento energia (confrontato con Mekanism, Immersive Engineering, Oritech): porte del reattore 2.500 mB/t di vapore,
    Gas Turbine 20 mB/t (biogas 60, metano 160 FE/t), Water Pump 500 mB/t a 40 FE/t.
    ✅ Cavi in 3 tier (base / Advanced oro / Elite viola), i tier si uniscono nella stessa rete e la portata è quella del cavo
-   toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe 1.000 / 4.000 / 16.000 mB/t.
+   toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe e Liquid Pipe 1.000 / 4.000 / 16.000 mB/t.
+   Gas Pipe solo gas (`FluidType.isLighterThanAir`: biogas, metano, vapore), Liquid Pipe solo liquidi (acqua, lava,
+   coolant); i due tipi non si uniscono, così la linea dell'acqua e quella del vapore corrono affiancate.
+   ✅ Uscita dai blocchi per ogni cavo (Energy Conduit, Gas Pipe, Liquid Pipe): click destro sul braccio verso un blocco →
+   il cavo tira da lì ogni tick fino alla portata del tier (collare arancione); la rete non rimanda mai niente in un
+   blocco da cui tira. Serve per batterie, serbatoi e magazzini passivi.
+   ✅ Liquid Tank e Gas Tank: 32.000 mB di un solo fluido (liquidi o gas, come i tubi), passivi; secchi su Liquid Tank;
+   click destro mostra il contenuto. Rompendoli si svuotano.
    Niente tubi per item: gli oggetti li sposta il drone col Transport Module (l'Item Pipe è stato tolto).
    ✅ Filtro della Drone Dock (pulsante Filter nella sua GUI): 9 campioni fantasma, whitelist/blacklist, NBT esatto o
    qualsiasi, per item o per mod, tag scelto tra quelli del primo campione. Il Quarry tiene solo i drop che passano (gli

@@ -26,8 +26,11 @@ public final class ConduitNetwork {
 
     private ConduitNetwork() {}
 
-    /** A machine side that receives from the network. */
-    public record Endpoint(BlockPos pos, Direction side) {}
+    /**
+     * A machine side the network touches. {@code source}: a pipe arm pulls from it, so the network
+     * never sends anything back into it.
+     */
+    public record Endpoint(BlockPos pos, Direction side, boolean source) {}
 
     public static int version() {
         return version;
@@ -67,7 +70,7 @@ public final class ConduitNetwork {
                         queue.add(neighbor);
                     }
                 } else {
-                    endpoints.add(new Endpoint(neighbor, direction.getOpposite()));
+                    endpoints.add(new Endpoint(neighbor, direction.getOpposite(), state.getValue(NetworkPipeBlock.EXTRACT.get(direction))));
                 }
             }
         }

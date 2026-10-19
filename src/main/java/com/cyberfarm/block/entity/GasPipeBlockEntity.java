@@ -2,15 +2,19 @@ package com.cyberfarm.block.entity;
 
 import java.util.List;
 
+import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.NetworkPipeBlock;
 import com.cyberfarm.energy.ConduitNetwork;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -18,7 +22,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * Fluid handler of a Gas Pipe: whatever is pushed in goes straight to the tanks and machines on
  * the network, taking turns between them. Works with any fluid and any mod's fluid blocks.
  */
-public class GasPipeBlockEntity extends BlockEntity {
+public class GasPipeBlockEntity extends BlockEntity implements NetworkPipeBlock.Puller {
     private List<ConduitNetwork.Endpoint> endpoints = List.of();
     private int cachedVersion = -1;
     private int nextEndpoint;
@@ -46,12 +50,12 @@ public class GasPipeBlockEntity extends BlockEntity {
 
         @Override
         public boolean isValid(int index, FluidResource resource) {
-            return true;
+            return carries(resource);
         }
 
         @Override
         public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
-            return distribute(resource, Math.min(amount, rate()), transaction);
+            return carries(resource) ? distribute(resource, Math.min(amount, rate()), transaction) : 0;
         }
 
         @Override
@@ -67,6 +71,19 @@ public class GasPipeBlockEntity extends BlockEntity {
     /** mB that can enter the network per insertion, i.e. per pushing machine per tick: set by the tier. */
     private int rate() {
         return getBlockState().getBlock() instanceof NetworkPipeBlock pipe ? pipe.rate() : 0;
+    }
+
+    private boolean carries(FluidResource resource) {
+        return getBlockState().getBlock() instanceof GasPipeBlock pipe && pipe.carries(resource);
+    }
+
+    /** Pulls up to the tier's rate out of the tank or machine on {@code side} into the network. */
+    @Override
+    public void pull(ServerLevel level, BlockPos pos, Direction side) {
+        ResourceHandler<FluidResource> source = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(side), side.getOpposite());
+        if (source != null) {
+            ResourceHandlerUtil.move(source, handler, this::carries, rate(), null);
+        }
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {
@@ -94,7 +111,7 @@ public class GasPipeBlockEntity extends BlockEntity {
         int moved = 0;
         for (int i = 0; i < count && moved < amount; i++) {
             ConduitNetwork.Endpoint target = targets.get((start + i) % count);
-            ResourceHandler<FluidResource> receiver = level.getCapability(Capabilities.Fluid.BLOCK, target.pos(), target.side());
+            ResourceHandler<FluidResource> receiver = target.source() ? null : level.getCapability(Capabilities.Fluid.BLOCK, target.pos(), target.side());
             if (receiver != null && receiver != handler) {
                 moved += receiver.insert(resource, amount - moved, transaction);
             }

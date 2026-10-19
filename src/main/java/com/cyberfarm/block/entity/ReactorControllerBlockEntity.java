@@ -21,6 +21,8 @@ import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
@@ -178,6 +180,11 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity implements 
             if (previous != null && previous != size) {
                 Multiblock.setFormed(level, previous.cells(pos, facing), false);
             }
+            if (previous != null && size == null && temperaturePermille() >= ALARM_PERMILLE) {
+                // Breaking a hot tower does not save it: the core melts down anyway
+                meltdown(level, pos, facing, previous);
+                return;
+            }
             if (size != previous) {
                 state = state.setValue(ReactorControllerBlock.FORMED, size != null).setValue(ReactorControllerBlock.LIT, false)
                         .setValue(ReactorControllerBlock.SIZE, size != null ? size.ordinal() : state.getValue(ReactorControllerBlock.SIZE));
@@ -276,12 +283,19 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity implements 
 
     /** The core overheated: the rods melt and the core blows up (power and block damage from the common config). */
     private void meltdown(ServerLevel level, BlockPos pos, Direction facing, TowerSize size) {
+        meltRods();
+        explode(level, size.floorCentre(pos, facing).above(), size);
+    }
+
+    private void meltRods() {
         heat = 0;
         boost = 0;
         for (int i = 0; i < FUEL_SLOTS; i++) {
             setStack(i, ItemStack.EMPTY);
         }
-        BlockPos core = size.floorCentre(pos, facing).above();
+    }
+
+    private static void explode(ServerLevel level, BlockPos core, TowerSize size) {
         Radiation.meltdown(level, core);
         level.explode(null, core.getX() + 0.5, core.getY() + 0.5, core.getZ() + 0.5,
                 Config.MELTDOWN_EXPLOSION_POWER.get().floatValue() * size.explosionScale(),
@@ -335,8 +349,16 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity implements 
 
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
-        super.preRemoveSideEffects(pos, state);
         TowerSize size = sizeOf(state);
+        if (level instanceof ServerLevel serverLevel && size != null && temperaturePermille() >= ALARM_PERMILLE) {
+            // Breaking a hot controller melts the core down too. The rods melt instead of dropping; the
+            // blast waits for the next tick, so it does not hit the controller while it is being removed.
+            meltRods();
+            BlockPos core = size.floorCentre(pos, state.getValue(MachineBlock.FACING)).above();
+            MinecraftServer server = serverLevel.getServer();
+            server.schedule(new TickTask(server.getTickCount(), () -> explode(serverLevel, core, size)));
+        }
+        super.preRemoveSideEffects(pos, state);
         if (level != null) {
             ports = Multiblock.rebindPorts(level, pos, ports, List.of());
             if (size != null) {

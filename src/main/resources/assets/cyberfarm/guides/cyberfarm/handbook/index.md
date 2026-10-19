@@ -42,7 +42,8 @@ The [Multiblock Projector](multiblock_projector.md) shows any of these structure
 before you build it.
 
 ### [Cables](cables.md)
-Moving power and gas: the [Energy Conduit](energy_conduit.md) and the [Gas Pipe](gas_pipe.md).
+Moving power and fluids: the [Energy Conduit](energy_conduit.md), the [Gas Pipe](gas_pipe.md) and the
+[Liquid Pipe](liquid_pipe.md), plus [Liquid and Gas Tanks](fluid_tanks.md) to store fluids.
 
 ### [Drones](drone_systems.md)
 Building and running drones: the [Drone Assembler](drone_assembler.md),

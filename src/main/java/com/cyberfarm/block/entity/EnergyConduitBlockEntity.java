@@ -7,17 +7,20 @@ import com.cyberfarm.energy.ConduitNetwork;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Holds the cached list of machines its network reaches, and the FE handler other blocks push
  * energy into. Energy is passed on immediately, taking turns between machines so none starves.
  */
-public class EnergyConduitBlockEntity extends BlockEntity {
+public class EnergyConduitBlockEntity extends BlockEntity implements NetworkPipeBlock.Puller {
     private List<ConduitNetwork.Endpoint> endpoints = List.of();
     private int cachedVersion = -1;
     private int nextEndpoint;
@@ -53,6 +56,15 @@ public class EnergyConduitBlockEntity extends BlockEntity {
         return getBlockState().getBlock() instanceof NetworkPipeBlock pipe ? pipe.rate() : 0;
     }
 
+    /** Pulls up to the tier's rate out of the block on {@code side} (a battery, any mod's storage) into the network. */
+    @Override
+    public void pull(ServerLevel level, BlockPos pos, Direction side) {
+        EnergyHandler source = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(side), side.getOpposite());
+        if (source != null) {
+            EnergyHandlerUtil.move(source, handler, rate(), null);
+        }
+    }
+
     public EnergyHandler getEnergyHandler() {
         return handler;
     }
@@ -78,7 +90,7 @@ public class EnergyConduitBlockEntity extends BlockEntity {
         int moved = 0;
         for (int i = 0; i < count && moved < amount; i++) {
             ConduitNetwork.Endpoint target = targets.get((start + i) % count);
-            EnergyHandler receiver = level.getCapability(Capabilities.Energy.BLOCK, target.pos(), target.side());
+            EnergyHandler receiver = target.source() ? null : level.getCapability(Capabilities.Energy.BLOCK, target.pos(), target.side());
             if (receiver != null && receiver != handler) {
                 moved += receiver.insert(amount - moved, transaction);
             }

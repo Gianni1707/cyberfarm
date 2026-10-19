@@ -14,9 +14,10 @@ item_ids:
 
 <BlockImage id="cyberfarm:gas_pipe" p:east="true" p:west="true" scale="4" float="left" />
 
-Pipes carry **gas** (and any other fluid) from the machines that make it to the machines and
-tanks that use or store it. Power and gas lines are easy to tell apart: pipes have an amber
-stripe, conduits a cyan one.
+Pipes carry **gas** (biogas, methane, Steam, gases of other mods) from the machines that make it
+to the machines and tanks that use or store it. **Liquids** such as water and coolant need a
+[Liquid Pipe](liquid_pipe.md). Lines are easy to tell apart: gas pipes have an amber stripe,
+liquid pipes a blue one, conduits a cyan one.
 
 <br clear="all" />
 
@@ -27,7 +28,8 @@ stripe, conduits a cyan one.
 - From each machine pushing into it, up to **1,000 mB/t** enters the network through a basic
   pipe, **4,000** through an Advanced one and **16,000** through an Elite one. The steam of a Large
   reactor needs Advanced pipes.
-- All tiers join into one network.
+- All tiers join into one network. A Gas Pipe never joins a Liquid Pipe, so a water line and a
+  steam line can run side by side.
 
 <RecipeFor id="gas_pipe" />
 

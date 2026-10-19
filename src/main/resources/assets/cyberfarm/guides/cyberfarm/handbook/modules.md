@@ -11,6 +11,8 @@ item_ids:
   - cyberfarm:planter_module
   - cyberfarm:logger_module
   - cyberfarm:taxi_module
+  - cyberfarm:rancher_module
+  - cyberfarm:fertilizer_module
 ---
 
 # Function Modules
@@ -34,6 +36,8 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Planter Module | +1 FE/t | 10 FE per seed |
 | Logger Module | +2 FE/t | 20 FE per log, 5 FE per leaf block |
 | Taxi Module | +2 FE/t | 50 FE per trip |
+| Rancher Module | +1 FE/t | 15 FE per shearing or milking |
+| Fertilizer Module | +1 FE/t | 10 FE per use |
 
 ## Harvester Module
 
@@ -147,3 +151,37 @@ it** to grab the hook: you hang below it with one hand while it carries you to t
 - Speed Addons make the trip faster.
 
 <RecipeFor id="taxi_module" />
+
+## Rancher Module
+
+<ItemImage id="cyberfarm:rancher_module" scale="2" float="left" />
+
+The drone looks after the animals in its work area: it **shears** every sheep (and mooshroom,
+and any shearable mob from other mods) and **milks** cows and goats. Wool, milk and the rest go
+back to the dock.
+
+<br clear="all" />
+
+- Milking needs **empty buckets**: put them in the dock, the drone takes up to 16 per trip and
+  brings back the milk buckets.
+- It chases the animal and hovers just above it, so fence the herd inside the work area.
+- Sheep are sheared again once their wool grows back.
+
+<RecipeFor id="rancher_module" />
+
+## Fertilizer Module
+
+<ItemImage id="cyberfarm:fertilizer_module" scale="2" float="left" />
+
+The drone **grows the crops, stems and saplings** of its work area with fertilizer from the dock,
+until they are fully grown. It works with **any fertilizer**: bone meal, or fertilizers from
+other mods (everything in the `c:fertilizers` tag).
+
+<br clear="all" />
+
+- Put the fertilizer in the dock: the drone takes up to 64 per trip.
+- Grass and moss are left alone, so your lawn does not fill with flowers.
+- A fertilizer that does not work on a plant is not wasted: the drone skips that plant.
+- Pairs well with a Harvester and a Planter on the same field.
+
+<RecipeFor id="fertilizer_module" />

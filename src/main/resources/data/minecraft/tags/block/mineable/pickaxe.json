@@ -6,6 +6,9 @@
     "cyberfarm:gas_pipe",
     "cyberfarm:advanced_gas_pipe",
     "cyberfarm:elite_gas_pipe",
+    "cyberfarm:liquid_pipe",
+    "cyberfarm:advanced_liquid_pipe",
+    "cyberfarm:elite_liquid_pipe",
     "cyberfarm:combustion_generator",
     "cyberfarm:drone_assembler",
     "cyberfarm:drone_dock",
@@ -23,6 +26,8 @@
     "cyberfarm:coolant_mixer",
     "cyberfarm:waste_reprocessor",
     "cyberfarm:vitrified_waste",
+    "cyberfarm:liquid_tank",
+    "cyberfarm:gas_tank",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore"
   ]

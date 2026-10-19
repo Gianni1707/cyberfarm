@@ -851,6 +851,51 @@ def gas_pipe():
     return c
 
 
+def liquid_pipe():
+    """Like the gas pipe, with a blue stripe: liquids, not gases."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "l", noise=3, seed=28)
+    c.rect(0, 7, 15, 8, "b")
+    for x in range(1, 16, 3):
+        c.set(x, 7, "c")
+        c.set(x, 8, "c")
+    c.frame(5, 5, 10, 10, "k")
+    c.rect(0, 6, 15, 6, "w")
+    c.rect(0, 9, 15, 9, "m")
+    return c
+
+
+def pipe_extract():
+    """The pulling collar where a pipe arm meets a block it pulls from: orange hazard ring."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "o", noise=4, seed=34)
+    c.frame(0, 0, 15, 15, "k")
+    for i in range(0, 16, 4):
+        c.rect(i, 0, i + 1, 15, "y")
+    return c
+
+
+def tank_side(fluid, light, accent):
+    """Tank wall: a steel frame around a tall window showing the fluid, with level marks."""
+    c = panel(61 if accent == "y" else 62)
+    c.rect(3, 2, 12, 13, "K")
+    c.rect(4, 3, 11, 12, "s")
+    c.rect(4, 6, 11, 12, fluid, noise=6, seed=63)
+    c.rect(4, 6, 11, 6, light)
+    for y in (4, 7, 10):
+        c.set(12, y, accent)
+    c.rect(3, 14, 12, 14, accent)
+    return c
+
+
+def tank_top():
+    c = panel(64)
+    c.disc(7.5, 7.5, 4.5, "K")
+    c.disc(7.5, 7.5, 3.5, "m")
+    c.rect(6, 6, 9, 9, "l")
+    return c
+
+
 def gas_texture(base, light, seed):
     """Swirly gas fill used for both the still and the flowing texture."""
     c = Canvas()
@@ -1333,6 +1378,12 @@ def drone_texture():
     paint_box(c, 8, 40, 1, 11, 1, "k", top="m", seed=14)
     paint_box(c, 12, 40, 3, 1, 1, "l", top="w", bottom="m", seed=15)
     paint_box(c, 20, 40, 1, 1, 1, "c", seed=16)
+    # Rancher shear blades 1x1x4: steel with a dark edge
+    blade = paint_box(c, 32, 40, 1, 1, 4, "w", top="l", bottom="k", seed=17)
+    side_rows(c, blade, ["w"])
+    # Fertilizer canister 2x3x2: white with a green band and a dark cap
+    can = paint_box(c, 44, 40, 2, 3, 2, "w", top="k", bottom="m", seed=18)
+    side_rows(c, can, ["w", "g", "w"])
     # Logger saw blade 0x5x5 (a flat disc): steel with dark teeth
     for name, (x0, y0, x1, y1) in box_faces(48, 10, 0, 5, 5).items():
         c.rect(x0, y0, x1, y1, "w")
@@ -1342,6 +1393,49 @@ def drone_texture():
 
 
 # --------------------------------------------------------------------------- output
+ITEM_ASCII.update({
+    # Rancher Module: open shears over a tuft of wool
+    "item/rancher_module": [
+        "................",
+        "..kk........kk..",
+        ".kwwk......kwwk.",
+        ".kwlk......klwk.",
+        "..kwwk....kwwk..",
+        "...kwwk..kwwk...",
+        "....kwwkkwwk....",
+        ".....kwwwwk.....",
+        "......kcck......",
+        ".....kmkkmk.....",
+        "....kmk..kmk....",
+        "...kok....kok...",
+        "..kook....kook..",
+        "..kook....kook..",
+        "...kk......kk...",
+        "................",
+    ],
+    # Fertilizer Module: a white canister with a green band, dripping
+    "item/fertilizer_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        ".....kkkkkk.....",
+        "....kwwwwwlk....",
+        "....kwwwwwlk....",
+        "....kggggggk....",
+        "....kgGggggk....",
+        "....kggggggk....",
+        "....kwwwwwlk....",
+        "....kwwwwwlk....",
+        "....kkkkkkkk....",
+        "......kmmk......",
+        ".......kk.......",
+        ".......GG.......",
+        "........G.......",
+    ],
+})
+for _name, _rows in list(ITEM_ASCII.items())[-2:]:
+    assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
+
 
 def saw_icon():
     """Logger Module icon: a circular saw blade with teeth and a glowing hub."""
@@ -1433,6 +1527,11 @@ def build_all():
         "block/methane_extractor_top_formed": extractor_top(True),
         "block/methane_extractor_side_formed": extractor_side(True),
         **{f"block/{tier}gas_pipe": tier_rims(gas_pipe(), tier) for tier in TIER_RIMS},
+        **{f"block/{tier}liquid_pipe": tier_rims(liquid_pipe(), tier) for tier in TIER_RIMS},
+        "block/pipe_extract": pipe_extract(),
+        "block/liquid_tank_side": tank_side("#2a4f9a", "#7fb0ff", "c"),
+        "block/gas_tank_side": tank_side("#c9a54a", "#ffe6a0", "y"),
+        "block/tank_top": tank_top(),
         "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas_texture("#6cc4dc", "#d4f4ff", 3),

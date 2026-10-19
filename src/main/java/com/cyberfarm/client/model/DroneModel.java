@@ -32,6 +32,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private final ModelPart seedTank;
     private final ModelPart saw;
     private final ModelPart hook;
+    private final ModelPart shears;
+    private final ModelPart sprayer;
     private final ModelPart[] rotors = new ModelPart[ARMS];
 
     public DroneModel(ModelPart root) {
@@ -43,6 +45,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         this.seedTank = body.getChild("seed_tank");
         this.saw = body.getChild("saw");
         this.hook = body.getChild("hook");
+        this.shears = body.getChild("shears");
+        this.sprayer = body.getChild("sprayer");
         for (int i = 0; i < ARMS; i++) {
             rotors[i] = body.getChild("arm" + i).getChild("motor").getChild("rotor");
         }
@@ -111,6 +115,17 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(20, 40).addBox(0.5F, 11.0F, -0.5F, 1.0F, 1.0F, 1.0F),
                 PartPose.ZERO);
 
+        // Rancher: a pair of shear blades on the left side, opposite the saw
+        body.addOrReplaceChild("shears", CubeListBuilder.create()
+                        .texOffs(32, 40).addBox(-0.5F, -1.5F, -2.0F, 1.0F, 1.0F, 4.0F)
+                        .texOffs(32, 40).addBox(-0.5F, 0.5F, -2.0F, 1.0F, 1.0F, 4.0F),
+                PartPose.offset(-4.6F, 0.5F, 0.0F));
+
+        // Fertilizer: a white canister on the left shoulder
+        body.addOrReplaceChild("sprayer", CubeListBuilder.create()
+                        .texOffs(44, 40).addBox(-4.5F, -5.0F, 0.0F, 2.0F, 3.0F, 2.0F),
+                PartPose.ZERO);
+
         return LayerDefinition.create(mesh, 64, 64);
     }
 
@@ -138,5 +153,9 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         saw.visible = state.has(DroneTask.LOG);
         saw.xRot = state.ageInTicks * 1.2F;
         hook.visible = state.has(DroneTask.TAXI);
+        shears.visible = state.has(DroneTask.RANCH);
+        // The blades snip open and shut
+        shears.yRot = Mth.sin(state.ageInTicks * 0.5F) * 0.15F;
+        sprayer.visible = state.has(DroneTask.FERTILIZE);
     }
 }
