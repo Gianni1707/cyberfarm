@@ -240,6 +240,102 @@ def assembler_side():
     return c
 
 
+def cyber_frame():
+    """Structural frame: thick beveled border, recessed centre, cyan corner lights."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "m", noise=4, seed=20)
+    c.rect(1, 1, 14, 1, "l")
+    c.rect(1, 1, 1, 14, "l")
+    c.rect(4, 4, 11, 11, "k")
+    c.rect(5, 5, 10, 10, "D", noise=3, seed=21)
+    c.rect(5, 7, 10, 8, "d")
+    c.rect(7, 5, 8, 10, "d")
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        c.set(x, y, "c")
+    return c
+
+
+def digester_front():
+    c = panel(22)
+    c.rect(3, 2, 12, 12, "K")
+    c.rect(4, 3, 11, 6, "s")
+    c.rect(4, 7, 11, 11, "#4f9a2f", noise=8, seed=22)
+    for x, y in ((5, 9), (8, 8), (10, 10), (6, 6), (9, 5)):
+        c.set(x, y, "G")
+    c.rect(3, 13, 12, 13, "g")
+    return c
+
+
+def digester_top():
+    c = panel(23)
+    c.disc(7.5, 7.5, 5.2, "K")
+    c.disc(7.5, 7.5, 4.2, "D")
+    c.rect(4, 7, 11, 8, "m")
+    c.rect(7, 7, 8, 8, "g")
+    return c
+
+
+def turbine_front():
+    c = panel(24)
+    c.disc(7.5, 7.5, 6.2, "K")
+    c.disc(7.5, 7.5, 5.2, "s")
+    for i in range(-4, 5):
+        c.set(round(7.5 + i), round(7.5 + i), "l")
+        c.set(round(7.5 + i), round(7.5 - i), "l")
+    c.disc(7.5, 7.5, 1.6, "O")
+    return c
+
+
+def extractor_bottom():
+    """The shower head: faces down into the chamber."""
+    c = panel(25)
+    c.rect(3, 3, 12, 12, "K")
+    c.rect(4, 4, 11, 11, "D")
+    for y in range(4, 12, 2):
+        for x in range(4, 12, 2):
+            c.set(x + (y // 2) % 2, y, "c")
+    return c
+
+
+def extractor_top():
+    c = panel(26)
+    c.disc(7.5, 7.5, 3.6, "K")
+    c.disc(7.5, 7.5, 2.6, "b")
+    c.rect(7, 7, 8, 8, "s")
+    return c
+
+
+def extractor_side():
+    c = cyber_frame()
+    c.rect(5, 7, 10, 8, "#7fd4e8")
+    return c
+
+
+def gas_pipe():
+    """Like the conduit sleeve, with an amber stripe so gas and power lines are told apart."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "m", noise=3, seed=27)
+    c.rect(0, 7, 15, 8, "y")
+    for x in range(0, 16, 3):
+        c.set(x, 7, "O")
+        c.set(x, 8, "O")
+    c.frame(5, 5, 10, 10, "k")
+    c.rect(0, 6, 15, 6, "l")
+    c.rect(0, 9, 15, 9, "d")
+    return c
+
+
+def gas_texture(base, light, seed):
+    """Swirly gas fill used for both the still and the flowing texture."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, base, noise=10, seed=seed)
+    for i in range(16):
+        c.set((i * 5 + seed) % 16, (i * 3) % 16, light)
+        c.set((i * 7 + seed) % 16, (i * 11 + 4) % 16, light)
+    return c
+
+
 def energy_conduit():
     """Sleeve texture: the core uses the centre (5..10), the arms the middle rows (6..9)."""
     c = Canvas()
@@ -453,6 +549,42 @@ ITEM_ASCII = {
         ".....kl..kc.....",
         "......kllk......",
         ".......kk.......",
+        "................",
+    ],
+    "item/mob_capsule": [
+        "................",
+        "......kkkk......",
+        ".....kmllmk.....",
+        "....kmkkkkmk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kmkkkkmk....",
+        "....kbccccbk....",
+        ".....kbbbbk.....",
+        "......kkkk......",
+        "................",
+        "................",
+    ],
+    "item/mob_capsule_filled": [
+        "................",
+        "......kkkk......",
+        ".....kmllmk.....",
+        "....kmkkkkmk....",
+        "....kw.gg.mk....",
+        "....kwgGGgmk....",
+        "....kwgkkgmk....",
+        "....kwggggmk....",
+        "....kw.gg.mk....",
+        "....kwg..gmk....",
+        "....kmkkkkmk....",
+        "....kbccccbk....",
+        ".....kbbbbk.....",
+        "......kkkk......",
+        "................",
         "................",
     ],
     "item/drone": [
@@ -716,6 +848,19 @@ def build_all():
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
         "block/energy_conduit": energy_conduit(),
+        "block/cyber_frame": cyber_frame(),
+        "block/bio_digester_front": digester_front(),
+        "block/bio_digester_top": digester_top(),
+        "block/gas_turbine_front": turbine_front(),
+        "block/gas_turbine_top": generator_top(),
+        "block/methane_extractor_bottom": extractor_bottom(),
+        "block/methane_extractor_top": extractor_top(),
+        "block/methane_extractor_side": extractor_side(),
+        "block/gas_pipe": gas_pipe(),
+        "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
+        "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),
+        "block/methane_still": gas_texture("#6cc4dc", "#d4f4ff", 3),
+        "block/methane_flow": gas_texture("#6cc4dc", "#d4f4ff", 4),
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)

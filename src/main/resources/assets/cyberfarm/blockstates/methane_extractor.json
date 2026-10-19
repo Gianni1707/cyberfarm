@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/methane_extractor"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/methane_extractor"
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/methane_extractor"
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/methane_extractor"
+    }
+  }
+}

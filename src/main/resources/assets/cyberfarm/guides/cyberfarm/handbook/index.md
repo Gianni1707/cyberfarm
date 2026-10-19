@@ -24,12 +24,13 @@ use the info page (the "i" tab) of any CyberFarm machine for a quick explanation
 1. [Getting Started](getting_started.md): your first drone, step by step
 2. [Combustion Generator](combustion_generator.md): your first power source
 3. [Energy Conduit](energy_conduit.md): carrying power to your machines
-4. [Drone Assembler](drone_assembler.md): where drones are built
-5. [Drone Frames](drone_frames.md): the tiers of drone bases
-6. [Function Modules](modules.md): what a drone can do
-7. [Addons](addons.md): speed, bigger loads, battery, fortune and silk touch
-8. [Drone Dock](drone_dock.md): home base, charging, work area and routes
-9. [Drones](drones.md): deploying, changing, recovering
+4. [Gas Power](gas_power.md): biogas, methane and the gas turbine
+5. [Drone Assembler](drone_assembler.md): where drones are built
+6. [Drone Frames](drone_frames.md): the tiers of drone bases
+7. [Function Modules](modules.md): what a drone can do
+8. [Addons](addons.md): speed, bigger loads, battery, fortune and silk touch
+9. [Drone Dock](drone_dock.md): home base, charging, work area and routes
+10. [Drones](drones.md): deploying, changing, recovering
 
 ## Chapters
 

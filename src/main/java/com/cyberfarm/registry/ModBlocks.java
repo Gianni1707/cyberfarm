@@ -1,11 +1,16 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.DroneAssemblerBlock;
 import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
+import com.cyberfarm.block.GasPipeBlock;
+import com.cyberfarm.block.GasTurbineBlock;
+import com.cyberfarm.block.MethaneExtractorBlock;
 
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -28,6 +33,22 @@ public class ModBlocks {
     public static final DeferredBlock<EnergyConduitBlock> ENERGY_CONDUIT = BLOCKS.registerBlock("energy_conduit",
             EnergyConduitBlock::new,
             p -> p.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion());
+
+    public static final DeferredBlock<GasPipeBlock> GAS_PIPE = BLOCKS.registerBlock("gas_pipe",
+            GasPipeBlock::new,
+            p -> p.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion());
+
+    public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
+            BioDigesterBlock::new, ModBlocks::machine);
+
+    public static final DeferredBlock<GasTurbineBlock> GAS_TURBINE = BLOCKS.registerBlock("gas_turbine",
+            GasTurbineBlock::new, ModBlocks::machine);
+
+    public static final DeferredBlock<MethaneExtractorBlock> METHANE_EXTRACTOR = BLOCKS.registerBlock("methane_extractor",
+            MethaneExtractorBlock::new, ModBlocks::machine);
+
+    /** Structural sci-fi frame, used by multiblocks such as the Methane Extractor chamber. */
+    public static final DeferredBlock<Block> CYBER_FRAME = BLOCKS.registerSimpleBlock("cyber_frame", ModBlocks::machine);
 
     private static BlockBehaviour.Properties machine(BlockBehaviour.Properties properties) {
         return properties

@@ -3,6 +3,11 @@
     "cyberfarm:combustion_generator",
     "cyberfarm:drone_assembler",
     "cyberfarm:drone_dock",
-    "cyberfarm:energy_conduit"
+    "cyberfarm:energy_conduit",
+    "cyberfarm:gas_pipe",
+    "cyberfarm:bio_digester",
+    "cyberfarm:gas_turbine",
+    "cyberfarm:methane_extractor",
+    "cyberfarm:cyber_frame"
   ]
 }

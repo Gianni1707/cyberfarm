@@ -20,7 +20,7 @@ FLAT_ITEMS = [
     "basic_frame", "advanced_frame", "elite_frame",
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
-    "drone", "survey_tool",
+    "drone", "survey_tool", "mob_capsule_filled",
 ]
 
 
@@ -83,8 +83,9 @@ def dock_model():
     })
 
 
-def conduit_models():
-    texture = {"particle": tex("energy_conduit"), "conduit": tex("energy_conduit")}
+def pipe_models(name):
+    """Core, arm and inventory models plus a multipart blockstate for a NetworkPipeBlock."""
+    texture = {"particle": tex(name), "conduit": tex(name)}
     all_faces = lambda: {d: {"texture": "#conduit"} for d in ("north", "east", "south", "west", "up", "down")}
     core = {"from": [5, 5, 5], "to": [11, 11, 11], "faces": all_faces()}
     # Arm pointing north; the blockstate rotates it to every other side
@@ -93,20 +94,21 @@ def conduit_models():
         "east": {"texture": "#conduit"}, "west": {"texture": "#conduit"},
         "up": {"texture": "#conduit"}, "down": {"texture": "#conduit"},
     }}
-    write(ASSETS / "models/block/energy_conduit_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
-    write(ASSETS / "models/block/energy_conduit_side.json", {"textures": texture, "elements": [arm]})
+    write(ASSETS / f"models/block/{name}_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
+    write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": [arm]})
     # Item: core with arms east and west
-    write(ASSETS / "models/block/energy_conduit_inventory.json", {
+    write(ASSETS / f"models/block/{name}_inventory.json", {
         "parent": "minecraft:block/block", "textures": texture,
         "elements": [core,
                      {"from": [0, 6, 6], "to": [5, 10, 10], "faces": all_faces()},
                      {"from": [11, 6, 6], "to": [16, 10, 10], "faces": all_faces()}],
     })
     rotations = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
-    parts = [{"apply": {"model": f"{NS}:block/energy_conduit_core"}}]
+    parts = [{"apply": {"model": f"{NS}:block/{name}_core"}}]
     for direction, rotation in rotations.items():
-        parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/energy_conduit_side", **rotation}})
-    write(ASSETS / "blockstates/energy_conduit.json", {"multipart": parts})
+        parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
+    write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
+    write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_inventory"}})
 
 
 def block_loot(name):
@@ -133,14 +135,39 @@ def blocks():
     dock_model()
     facing_blockstate("drone_dock")
 
-    conduit_models()
-    write(ASSETS / "items/energy_conduit.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/energy_conduit_inventory"}})
+    pipe_models("energy_conduit")
+    pipe_models("gas_pipe")
 
-    names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit"]
+    orientable("bio_digester", "bio_digester_front", "bio_digester_top")
+    facing_blockstate("bio_digester")
+    orientable("gas_turbine", "gas_turbine_front", "gas_turbine_top")
+    facing_blockstate("gas_turbine")
+
+    # The extractor is the chamber's "shower head": its bottom face looks into the chamber
+    write(ASSETS / "models/block/methane_extractor.json", {
+        "parent": "minecraft:block/cube",
+        "textures": {"particle": tex("methane_extractor_side"), "up": tex("methane_extractor_top"),
+                     "down": tex("methane_extractor_bottom"), "north": tex("methane_extractor_side"),
+                     "east": tex("methane_extractor_side"), "south": tex("methane_extractor_side"),
+                     "west": tex("methane_extractor_side")},
+    })
+    write(ASSETS / "blockstates/methane_extractor.json",
+          {"variants": {f"facing={f}": {"model": f"{NS}:block/methane_extractor"} for f in FACING_ROTATION}})
+
+    write(ASSETS / "models/block/cyber_frame.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("cyber_frame")}})
+    write(ASSETS / "blockstates/cyber_frame.json", {"variants": {"": {"model": f"{NS}:block/cyber_frame"}}})
+
+    names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit", "gas_pipe",
+             "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame"]
     for name in names:
-        if name != "energy_conduit":
+        if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
         block_loot(name)
+
+    # Common fluid tags, so other mods recognise our gases
+    write(RES / "data/c/tags/fluid/gaseous.json", {"values": [f"{NS}:biogas", f"{NS}:methane"]})
+    write(RES / "data/c/tags/fluid/biogas.json", {"values": [f"{NS}:biogas"]})
+    write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
     write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names]})
 
 
@@ -150,6 +177,12 @@ def items():
     for name in FLAT_ITEMS:
         write(ASSETS / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{name}"}})
         write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{name}"}})
+    write(ASSETS / "models/item/mob_capsule.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/mob_capsule"}})
+    write(ASSETS / "items/mob_capsule.json", {"model": {
+        "type": "minecraft:condition", "property": "minecraft:has_component", "component": f"{NS}:captured_mob",
+        "on_true": {"type": "minecraft:model", "model": f"{NS}:item/mob_capsule_filled"},
+        "on_false": {"type": "minecraft:model", "model": f"{NS}:item/mob_capsule"},
+    }})
     # Model used by GuideME for the handbook (see guideme_guides/handbook.json). GuideME bakes it on
     # demand, so it only exists if something references it: the items/ definition makes the game load it.
     write(ASSETS / "models/item/handbook.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/handbook"}})
@@ -201,6 +234,12 @@ def recipes():
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
+    shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
+    shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
+    shaped("bio_digester", ["ICI", "GXG", "ICI"], {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
+    shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": core})
+    shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core, "G": "minecraft:glass"})
+    shaped("mob_capsule", ["IGI", "GEG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "E": "minecraft:ender_pearl"})
     shaped("survey_tool", [" G ", "IRI", " I "], {"G": "minecraft:glass_pane", "I": iron, "R": redstone}, category="equipment")
 
     # The handbook is a GuideME guide: only craftable when GuideME is installed.

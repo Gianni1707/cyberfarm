@@ -2,16 +2,22 @@ package com.cyberfarm;
 
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.DroneRenderer;
+import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
 import com.cyberfarm.client.screen.DroneAssemblerScreen;
 import com.cyberfarm.client.screen.DroneDockScreen;
+import com.cyberfarm.client.screen.GasTurbineScreen;
+import com.cyberfarm.client.screen.MethaneExtractorScreen;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModEntities;
+import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModMenus;
 
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
 import net.neoforged.api.distmarker.Dist;
@@ -19,7 +25,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
@@ -36,12 +44,16 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
+        modEventBus.addListener(CyberFarmClient::registerFluidModels);
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenus.COMBUSTION_GENERATOR.get(), CombustionGeneratorScreen::new);
         event.register(ModMenus.DRONE_ASSEMBLER.get(), DroneAssemblerScreen::new);
         event.register(ModMenus.DRONE_DOCK.get(), DroneDockScreen::new);
+        event.register(ModMenus.BIO_DIGESTER.get(), BioDigesterScreen::new);
+        event.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
+        event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -64,6 +76,17 @@ public class CyberFarmClient {
                 }
             }
         });
+    }
+
+    /** Gases never appear in the world, but tanks and recipe viewers of any mod draw them with these textures. */
+    private static void registerFluidModels(RegisterFluidModelsEvent event) {
+        event.register(gasModel("biogas"), ModFluids.BIOGAS);
+        event.register(gasModel("methane"), ModFluids.METHANE);
+    }
+
+    private static FluidModel.Unbaked gasModel(String name) {
+        return new FluidModel.Unbaked(new Material(CyberFarm.id("block/" + name + "_still")),
+                new Material(CyberFarm.id("block/" + name + "_flow")), null, (FluidTintSource) null);
     }
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

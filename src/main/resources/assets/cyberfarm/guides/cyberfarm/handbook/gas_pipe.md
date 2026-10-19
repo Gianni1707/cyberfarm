@@ -1,0 +1,27 @@
+---
+navigation:
+  title: Gas Pipe
+  parent: gas_power.md
+  position: 1
+  icon: cyberfarm:gas_pipe
+item_ids:
+  - cyberfarm:gas_pipe
+---
+
+# Gas Pipe
+
+<BlockImage id="cyberfarm:gas_pipe" p:east="true" p:west="true" scale="4" float="left" />
+
+Pipes carry **gas** (and any other fluid) from the machines that make it to the machines and
+tanks that use or store it. Power and gas lines are easy to tell apart: pipes have an amber
+stripe, conduits a cyan one.
+
+<br clear="all" />
+
+- Pipes **connect by themselves** to other Gas Pipes and to any block that holds fluids, from
+  CyberFarm or from any other mod.
+- They **store nothing**: what a machine pushes in goes straight to the blocks on the network,
+  which take turns.
+- Up to **1,000 mB/t** enters the network from each machine pushing into it.
+
+<RecipeFor id="gas_pipe" />

@@ -1,9 +1,12 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.menu.BioDigesterMenu;
 import com.cyberfarm.menu.CombustionGeneratorMenu;
 import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.menu.DroneDockMenu;
+import com.cyberfarm.menu.GasTurbineMenu;
+import com.cyberfarm.menu.MethaneExtractorMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -19,6 +22,15 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<DroneAssemblerMenu>> DRONE_ASSEMBLER = MENUS.register("drone_assembler",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new DroneAssemblerMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<BioDigesterMenu>> BIO_DIGESTER = MENUS.register("bio_digester",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new BioDigesterMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<GasTurbineMenu>> GAS_TURBINE = MENUS.register("gas_turbine",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new GasTurbineMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<DroneDockMenu>> DRONE_DOCK = MENUS.register("drone_dock",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new DroneDockMenu(id, inventory)));

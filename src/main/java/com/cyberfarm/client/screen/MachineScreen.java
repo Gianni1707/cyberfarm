@@ -53,7 +53,10 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         for (Slot slot : menu.slots) {
             drawSlot(graphics, x + slot.x, y + slot.y);
         }
-        drawEnergyBar(graphics, x + energyBarX, y + energyBarY, energyBarHeight);
+        // Machines that use no power (Bio-Digester, Methane Extractor) have no energy bar
+        if (menu.getEnergyCapacity() > 0) {
+            drawEnergyBar(graphics, x + energyBarX, y + energyBarY, energyBarHeight);
+        }
         extractMachineBackground(graphics, x, y);
     }
 
@@ -83,6 +86,33 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         }
     }
 
+    protected static final int TANK_WIDTH = 16;
+    private static final int[] TANK_COLORS = {0, 0xFF6FBF3F, 0xFF7FD4E8, 0xFF8090A0};
+    private static final String[] TANK_NAMES = {"gui.cyberfarm.tank.empty", "fluid.cyberfarm.biogas", "fluid.cyberfarm.methane", "gui.cyberfarm.tank.other"};
+
+    /** Fluid gauge; {@code fluid} is the code sent by {@code GasTank#fluidCode}. */
+    protected static void drawTank(GuiGraphicsExtractor graphics, int x, int y, int height, int amount, int capacity, int fluid) {
+        graphics.fill(x - 1, y - 1, x + TANK_WIDTH + 1, y + height + 1, SLOT_BORDER);
+        graphics.fill(x, y, x + TANK_WIDTH, y + height, SLOT_BG);
+        int filled = capacity <= 0 ? 0 : (int) ((long) height * Math.min(amount, capacity) / capacity);
+        if (filled > 0 && fluid > 0 && fluid < TANK_COLORS.length) {
+            graphics.fill(x, y + height - filled, x + TANK_WIDTH, y + height, TANK_COLORS[fluid]);
+            graphics.fill(x + 2, y + height - filled, x + 4, y + height, 0x40FFFFFF);
+        }
+        for (int i = 1; i < 4; i++) {
+            int tickY = y + height * i / 4;
+            graphics.fill(x, tickY, x + 4, tickY + 1, PANEL_LIGHT);
+        }
+    }
+
+    protected void tankTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int x, int y, int height, int amount, int capacity, int fluid) {
+        if (isHovering(x - 1, y - 1, TANK_WIDTH + 2, height + 2, mouseX, mouseY)) {
+            Component name = Component.translatable(TANK_NAMES[Math.max(0, Math.min(fluid, TANK_NAMES.length - 1))]);
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.tank",
+                    name, String.format("%,d", amount), String.format("%,d", capacity)), mouseX, mouseY);
+        }
+    }
+
     /** Draws a horizontal progress bar ({@code progress} from 0 to 1). */
     protected static void drawProgressBar(GuiGraphicsExtractor graphics, int x, int y, int width, int height, float progress, int color) {
         graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, SLOT_BORDER);
@@ -102,7 +132,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
-        if (isHovering(energyBarX - 1, energyBarY - 1, ENERGY_BAR_WIDTH + 2, energyBarHeight + 2, mouseX, mouseY)) {
+        if (menu.getEnergyCapacity() > 0 && isHovering(energyBarX - 1, energyBarY - 1, ENERGY_BAR_WIDTH + 2, energyBarHeight + 2, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.energy",
                     String.format("%,d", menu.getEnergy()), String.format("%,d", menu.getEnergyCapacity())), mouseX, mouseY);
         }

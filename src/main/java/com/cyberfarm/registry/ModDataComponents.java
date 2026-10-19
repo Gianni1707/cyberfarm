@@ -6,6 +6,7 @@ import com.cyberfarm.drone.DroneModules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -20,6 +21,10 @@ public class ModDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DroneModules>> DRONE_MODULES = COMPONENTS.registerComponentType("drone_modules",
             builder -> builder.persistent(DroneModules.CODEC).networkSynchronized(DroneModules.STREAM_CODEC));
+
+    /** Mob Capsule: the saved data of the captured mob. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CAPTURED_MOB = COMPONENTS.registerComponentType("captured_mob",
+            builder -> builder.persistent(CompoundTag.CODEC).networkSynchronized(ByteBufCodecs.COMPOUND_TAG));
 
     /** Survey Tool: the dock it is configuring. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> LINKED_DOCK = COMPONENTS.registerComponentType("linked_dock",

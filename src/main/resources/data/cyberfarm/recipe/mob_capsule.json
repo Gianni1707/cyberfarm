@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_nugget",
+    "G": "minecraft:glass",
+    "E": "minecraft:ender_pearl"
+  },
+  "pattern": [
+    "IGI",
+    "GEG",
+    "IGI"
+  ],
+  "result": {
+    "id": "cyberfarm:mob_capsule"
+  }
+}

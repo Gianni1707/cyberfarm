@@ -47,7 +47,11 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Energy Conduit**: si collega da solo a cavi e blocchi FE di qualsiasi mod; non accumula, distribuisce subito
   a turno tra le macchine della rete (1.000 FE/t per sorgente, reti fino a 1.024 cavi).
 - **Tier 1**: Combustion Generator, Bio-Digester (scarti organici → Biogas).
-- **Tier 2**: Methane Extractor (sotto un mob contenuto in una Containment Cage), Gas Turbine, Methane Canister.
+- **Tier 2** ✅: Bio-Digester (compostabili e carne marcia → Biogas), Methane Extractor (multiblocco "doccia" 3x3x4:
+  pavimento e tetto di Cyber Frame, pareti con angoli in Cyber Frame e vetro al centro, estrattore al centro del tetto;
+  mob caricato con la Mob Capsule; zombie 10 mB/t, mostri 5, animali 2), Gas Turbine (biogas 3 FE/mB, metano 8 FE/mB,
+  10 mB/t), Gas Pipe. Gas = fluidi NeoForge standard con tag `c:gaseous`/`c:biogas`/`c:methane`.
+  Da fare: Methane Canister / droni a metano; compatibilità diretta con i gas di Mekanism.
 - **Tier 3**: Fission Reactor (multiblocco), Cooling Tower (multiblocco a cono), Steam Turbine. Risorse: Uranium Ore → Yellowcake → Fuel Rod → Depleted Rod.
 
 ### Libro guida
@@ -60,7 +64,7 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 
 1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
 2. ✅ Moduli Quarry e Transport, ✅ addon, ✅ Energy Conduit, ✅ JEI + REI. Prossimi: Planter/Logger.
-3. Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, droni a metano.
+3. ✅ Fluidi: Bio-Digester, Methane Extractor, Gas Turbine, Gas Pipe. Resta: droni a metano.
 4. Endgame: Fission Reactor, Cooling Tower, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
 

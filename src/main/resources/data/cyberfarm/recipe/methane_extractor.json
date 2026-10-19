@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "H": "minecraft:hopper",
+    "C": "minecraft:copper_ingot",
+    "D": "cyberfarm:drone_core",
+    "G": "minecraft:glass"
+  },
+  "pattern": [
+    "IHI",
+    "CDC",
+    "IGI"
+  ],
+  "result": {
+    "id": "cyberfarm:methane_extractor"
+  }
+}
