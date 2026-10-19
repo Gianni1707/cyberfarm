@@ -15,7 +15,9 @@ You assemble a drone from a **frame**, one or more **function modules** and opti
 Drones and machines run on **FE** (Forge Energy), so they work with power from any other tech mod.
 
 Using **JEI** or **REI**? Look up the Drone Assembler to see what each frame tier can hold, and
-use the info page (the "i" tab) of any CyberFarm machine for a quick explanation.
+the uses of any machine to see what it takes, what it makes and its numbers: organics for the
+Bio-Digester, mobs for the Methane Extractor, fuels for the turbines, rods and coolants for the
+reactor and more. The info page (the "i" tab) of any CyberFarm machine gives a quick explanation.
 
 <br clear="all" />
 

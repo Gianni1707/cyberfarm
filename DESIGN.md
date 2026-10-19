@@ -175,6 +175,9 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    all'inventario più vicino con spazio, gli hopper possono spingere dentro.
    ✅ Filtro dell'Item Pipe (sul tubo che estrae, click destro di nuovo per aprirlo; sneak + click destro smette di estrarre):
    9 campioni fantasma, whitelist/blacklist, NBT esatto o qualsiasi, per item o per mod, tag scelto tra quelli del primo campione.
+   ✅ Pagine JEI e REI per le macchine (`compat/MachineExample`, una categoria generica per viewer): Bio-Digester (organici
+   raggruppati per mB), Methane Extractor (uova spawn per gruppo: zombie, mostri, animali), Gas Turbine, Water Pump, Coolant
+   Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.
 
 ## Asset
 
