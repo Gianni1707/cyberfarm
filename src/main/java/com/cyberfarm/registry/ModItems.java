@@ -44,6 +44,12 @@ public class ModItems {
             p -> new DroneModuleItem(p, DroneTask.QUARRY, 2));
     public static final DeferredItem<DroneModuleItem> TRANSPORT_MODULE = ITEMS.registerItem("transport_module",
             p -> new DroneModuleItem(p, DroneTask.TRANSPORT, 1));
+    public static final DeferredItem<DroneModuleItem> PLANTER_MODULE = ITEMS.registerItem("planter_module",
+            p -> new DroneModuleItem(p, DroneTask.PLANT, 1));
+    public static final DeferredItem<DroneModuleItem> LOGGER_MODULE = ITEMS.registerItem("logger_module",
+            p -> new DroneModuleItem(p, DroneTask.LOG, 2));
+    public static final DeferredItem<DroneModuleItem> TAXI_MODULE = ITEMS.registerItem("taxi_module",
+            p -> new DroneModuleItem(p, DroneTask.TAXI, 2));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",

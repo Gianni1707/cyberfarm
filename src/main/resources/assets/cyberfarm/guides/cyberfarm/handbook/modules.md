@@ -8,6 +8,9 @@ item_ids:
   - cyberfarm:harvester_module
   - cyberfarm:quarry_module
   - cyberfarm:transport_module
+  - cyberfarm:planter_module
+  - cyberfarm:logger_module
+  - cyberfarm:taxi_module
 ---
 
 # Function Modules
@@ -28,6 +31,9 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Harvester Module | +1 FE/t | 40 FE per harvest |
 | Quarry Module | +2 FE/t | 20 FE + 10 FE per point of hardness, per block |
 | Transport Module | +1 FE/t | none |
+| Planter Module | +1 FE/t | 10 FE per seed |
+| Logger Module | +2 FE/t | 20 FE per log, 5 FE per leaf block |
+| Taxi Module | +2 FE/t | 50 FE per trip |
 
 ## Harvester Module
 
@@ -82,3 +88,59 @@ destination. Any inventory works, including ones from other mods. Items that do 
 destination are brought back to the dock.
 
 <RecipeFor id="transport_module" />
+
+## Planter Module
+
+<ItemImage id="cyberfarm:planter_module" scale="2" float="left" />
+
+The drone plants seeds on **empty farmland** in its work area. It loads up to a stack of seeds
+**from its dock** before each trip, so it works perfectly with a Harvester: harvested seeds go to
+the dock and the Planter puts them back in the ground. You can also fill the dock with a hopper.
+
+<br clear="all" />
+
+- Plants anything that grows on farmland: wheat seeds, carrots, potatoes, beetroot seeds,
+  melon and pumpkin seeds, and modded crops.
+- It **never tills soil**: hoe the field once and it will keep it planted.
+- Seeds it did not use go back to the dock.
+
+<RecipeFor id="planter_module" />
+
+## Logger Module
+
+<ItemImage id="cyberfarm:logger_module" scale="2" float="left" />
+
+The drone finds the **trees** in its work area (a log standing on soil), parks next to the trunk
+and fells the whole tree **from the top down**, leaves included, so it also collects saplings
+and apples. Then it **replants a sapling** where the trunk stood.
+
+<br clear="all" />
+
+- Works with every vanilla tree and with modded trees using the standard log and leaf tags.
+- Leaves you placed yourself are never touched.
+- Fortune gives more saplings and apples; Silk Touch collects the leaf blocks themselves.
+- A big tree can drop more than the 9 cargo slots hold: the rest falls on the ground.
+
+<RecipeFor id="logger_module" />
+
+## Taxi Module
+
+<ItemImage id="cyberfarm:taxi_module" scale="2" float="left" />
+
+A personal air taxi. The drone **waits above its dock** with a cable and a hook. **Right-click
+it** to grab the hook: you hang below it with one hand while it carries you to the dock's
+**taxi destination**, then it flies home by itself.
+
+<br clear="all" />
+
+1. With the [Survey Tool](drone_dock.md) linked to the dock, **sneak + right-click the block**
+   you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
+2. Right-click the waiting drone.
+3. It climbs above the terrain, flies straight to the destination and puts you down gently.
+
+- Trips are **one way**: put a second dock with its own Taxi drone at the destination to fly back.
+- Before taking off the drone checks it has enough charge for the trip and the way back.
+- **Sneak** to let go mid-flight: you get **Slow Falling**, so you land safely.
+- Speed Addons make the trip faster.
+
+<RecipeFor id="taxi_module" />

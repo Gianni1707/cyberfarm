@@ -23,7 +23,10 @@ public final class InfoPages {
                 page(ModItems.SURVEY_TOOL.get()),
                 page(ModItems.HARVESTER_MODULE.get()),
                 page(ModItems.QUARRY_MODULE.get()),
-                page(ModItems.TRANSPORT_MODULE.get()));
+                page(ModItems.TRANSPORT_MODULE.get()),
+                page(ModItems.PLANTER_MODULE.get()),
+                page(ModItems.LOGGER_MODULE.get()),
+                page(ModItems.TAXI_MODULE.get()));
     }
 
     private static Page page(Item item) {

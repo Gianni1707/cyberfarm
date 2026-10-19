@@ -41,7 +41,11 @@ public abstract class DroneJob {
      * block is then skipped until the drone goes home.
      */
     protected Travel travelTo(DroneEntity drone, BlockPos pos) {
-        Vec3 hover = Vec3.atCenterOf(pos).add(0.0, 1.0, 0.0);
+        return travelTo(drone, pos, Vec3.atCenterOf(pos).add(0.0, 1.0, 0.0));
+    }
+
+    /** Like {@link #travelTo(DroneEntity, BlockPos)}, hovering at {@code hover} instead of above the block. */
+    protected Travel travelTo(DroneEntity drone, BlockPos pos, Vec3 hover) {
         drone.flyTowards(hover);
         double distance = drone.position().distanceTo(hover);
         if (distance <= ARRIVAL_DISTANCE) {

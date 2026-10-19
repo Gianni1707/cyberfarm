@@ -1,6 +1,7 @@
 package com.cyberfarm.block.entity;
 
 import java.util.UUID;
+import java.util.function.Predicate;
 
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
@@ -42,6 +43,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private @Nullable Integer quarryLayer;
     private @Nullable BlockPos transportSource;
     private @Nullable BlockPos transportDestination;
+    private @Nullable BlockPos taxiDestination;
     private @Nullable UUID droneId;
     private int droneStatus;
     private int droneEnergyPercent;
@@ -96,6 +98,16 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         return transportDestination;
     }
 
+    public @Nullable BlockPos getTaxiDestination() {
+        return taxiDestination;
+    }
+
+    /** Where a Taxi drone carries players; null clears it. */
+    public void setTaxiDestination(@Nullable BlockPos destination) {
+        taxiDestination = destination;
+        setChanged();
+    }
+
     /** Sets the Transport Module route; pass nulls to clear it. */
     public void setTransportRoute(@Nullable BlockPos source, @Nullable BlockPos destination) {
         transportSource = source;
@@ -142,6 +154,29 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         }
     }
 
+    /** Takes up to {@code max} items of the first stack matching {@code filter}, e.g. seeds for a Planter. */
+    public ItemStack withdraw(Predicate<ItemStack> filter, int max) {
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = getStack(i);
+            if (!stack.isEmpty() && filter.test(stack)) {
+                int taken = Math.min(max, stack.getCount());
+                setStack(i, taken == stack.getCount() ? ItemStack.EMPTY : stack.copyWithCount(stack.getCount() - taken));
+                return stack.copyWithCount(taken);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public boolean contains(Predicate<ItemStack> filter) {
+        for (int i = 0; i < items.size(); i++) {
+            ItemStack stack = getStack(i);
+            if (!stack.isEmpty() && filter.test(stack)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     protected int getExtraData(int id) {
         BoundingBox area = getWorkArea();
@@ -169,6 +204,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("quarry_layer", Codec.INT, quarryLayer);
         output.storeNullable("transport_source", BlockPos.CODEC, transportSource);
         output.storeNullable("transport_destination", BlockPos.CODEC, transportDestination);
+        output.storeNullable("taxi_destination", BlockPos.CODEC, taxiDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
     }
 
@@ -179,6 +215,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         quarryLayer = input.read("quarry_layer", Codec.INT).orElse(null);
         transportSource = input.read("transport_source", BlockPos.CODEC).orElse(null);
         transportDestination = input.read("transport_destination", BlockPos.CODEC).orElse(null);
+        taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
     }
 

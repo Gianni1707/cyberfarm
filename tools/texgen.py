@@ -419,6 +419,42 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
+    "item/planter_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "....kkkkkkkk....",
+        "....kwGGGGmk....",
+        "....kGgyggGk....",
+        "....kggggygk....",
+        "....kgyggggk....",
+        "....kgggyggk....",
+        "....kkkkkkkk....",
+        ".....kmmmmk.....",
+        "......kmmk......",
+        ".......kk.......",
+        ".......gg.......",
+        "......g..g......",
+        "................",
+    ],
+    "item/taxi_module": [
+        "................",
+        "....kkkkkkkk....",
+        "....kmbccbmk....",
+        "....kkkkkkkk....",
+        ".......kk.......",
+        ".......mk.......",
+        ".......mk.......",
+        ".......mk.......",
+        ".......mk.......",
+        "......kllk......",
+        ".....kl..lk.....",
+        ".....kl...k.....",
+        ".....kl..kc.....",
+        "......kllk......",
+        ".......kk.......",
+        "................",
+    ],
     "item/drone": [
         "................",
         ".kkk........kkk.",
@@ -633,10 +669,37 @@ def drone_texture():
     side_rows(c, claw, ["b"])
     prong = paint_box(c, 44, 10, 1, 2, 1, "y", bottom="k", seed=12)
     side_rows(c, prong, ["k", "y"])
+    # Planter seed tank 3x2x1: green glass with a light rim
+    tank = paint_box(c, 0, 40, 3, 2, 1, "g", top="m", seed=13)
+    side_rows(c, tank, ["G", "g"])
+    # Taxi cable 1x11x1 and hook (bar 3x1x1, tip 1x1x1): dark cable, steel hook with a cyan tip
+    paint_box(c, 8, 40, 1, 11, 1, "k", top="m", seed=14)
+    paint_box(c, 12, 40, 3, 1, 1, "l", top="w", bottom="m", seed=15)
+    paint_box(c, 20, 40, 1, 1, 1, "c", seed=16)
+    # Logger saw blade 0x5x5 (a flat disc): steel with dark teeth
+    for name, (x0, y0, x1, y1) in box_faces(48, 10, 0, 5, 5).items():
+        c.rect(x0, y0, x1, y1, "w")
+        c.frame(x0, y0, x1, y1, "k")
+        c.set((x0 + x1) // 2, (y0 + y1) // 2, "m")
     return c
 
 
 # --------------------------------------------------------------------------- output
+
+def saw_icon():
+    """Logger Module icon: a circular saw blade with teeth and a glowing hub."""
+    c = Canvas()
+    c.disc(7.5, 7.5, 6.9, "k")
+    c.disc(7.5, 7.5, 6.0, "w")
+    c.disc(7.5, 7.5, 4.6, "l")
+    for i in range(12):
+        angle = math.tau * i / 12
+        c.set(round(7.5 + 7.2 * math.cos(angle)), round(7.5 + 7.2 * math.sin(angle)), "k")
+        c.set(round(7.5 + 5.4 * math.cos(angle)), round(7.5 + 5.4 * math.sin(angle)), "m")
+    c.disc(7.5, 7.5, 2.0, "k")
+    c.disc(7.5, 7.5, 1.2, "c")
+    return c
+
 
 def build_all():
     textures = {
@@ -656,6 +719,7 @@ def build_all():
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)
+    textures["item/logger_module"] = saw_icon()
     for name, icon in ADDON_ICONS.items():
         textures[name] = addon_chip(icon)
     # Higher frame tiers reuse the basic frame with their own accent colors

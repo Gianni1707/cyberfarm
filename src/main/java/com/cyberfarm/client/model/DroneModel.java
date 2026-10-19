@@ -17,8 +17,8 @@ import net.minecraft.util.Mth;
 
 /**
  * Quadcopter drone: flat hull with a glowing core, four diagonal arms with spinning rotors and
- * landing skids. Under the hull, one tool per installed module: harvester head (centre),
- * drill (front) and cargo claw (back). Texture layout: 64x64.
+ * landing skids. One tool per installed module: harvester head (centre, below), drill (front),
+ * cargo claw (back), seed tank (top), saw (right side) and taxi hook (hanging). Texture layout: 64x64.
  */
 public class DroneModel extends EntityModel<DroneRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(CyberFarm.id("drone"), "main");
@@ -28,6 +28,9 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private final ModelPart harvester;
     private final ModelPart drill;
     private final ModelPart claw;
+    private final ModelPart seedTank;
+    private final ModelPart saw;
+    private final ModelPart hook;
     private final ModelPart[] rotors = new ModelPart[ARMS];
 
     public DroneModel(ModelPart root) {
@@ -36,6 +39,9 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         this.harvester = body.getChild("harvester");
         this.drill = body.getChild("drill");
         this.claw = body.getChild("claw");
+        this.seedTank = body.getChild("seed_tank");
+        this.saw = body.getChild("saw");
+        this.hook = body.getChild("hook");
         for (int i = 0; i < ARMS; i++) {
             rotors[i] = body.getChild("arm" + i).getChild("motor").getChild("rotor");
         }
@@ -87,6 +93,23 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(44, 10).addBox(1.0F, 2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
                 PartPose.offset(0.0F, 0.0F, 3.0F));
 
+        // Planter: green seed tank on top, behind the core
+        body.addOrReplaceChild("seed_tank", CubeListBuilder.create()
+                        .texOffs(0, 40).addBox(-1.5F, -4.0F, 2.5F, 3.0F, 2.0F, 1.0F),
+                PartPose.ZERO);
+
+        // Logger: circular saw on the right side, spinning around its own axle
+        body.addOrReplaceChild("saw", CubeListBuilder.create()
+                        .texOffs(48, 10).addBox(0.0F, -2.5F, -2.5F, 0.0F, 5.0F, 5.0F),
+                PartPose.offset(4.6F, 0.5F, 0.0F));
+
+        // Taxi: a cable with a hook the passenger holds on to
+        body.addOrReplaceChild("hook", CubeListBuilder.create()
+                        .texOffs(8, 40).addBox(-0.5F, 1.0F, -0.5F, 1.0F, 11.0F, 1.0F)
+                        .texOffs(12, 40).addBox(-1.5F, 12.0F, -0.5F, 3.0F, 1.0F, 1.0F)
+                        .texOffs(20, 40).addBox(0.5F, 11.0F, -0.5F, 1.0F, 1.0F, 1.0F),
+                PartPose.ZERO);
+
         return LayerDefinition.create(mesh, 64, 64);
     }
 
@@ -104,5 +127,9 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         drill.visible = state.has(DroneTask.QUARRY);
         drill.yRot = state.ageInTicks * 0.8F;
         claw.visible = state.has(DroneTask.TRANSPORT);
+        seedTank.visible = state.has(DroneTask.PLANT);
+        saw.visible = state.has(DroneTask.LOG);
+        saw.xRot = state.ageInTicks * 1.2F;
+        hook.visible = state.has(DroneTask.TAXI);
     }
 }

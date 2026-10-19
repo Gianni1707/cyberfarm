@@ -3,7 +3,9 @@ package com.cyberfarm.drone;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.HarvestJob;
+import com.cyberfarm.drone.job.LogJob;
 import com.cyberfarm.drone.job.MineJob;
+import com.cyberfarm.drone.job.PlantJob;
 import com.cyberfarm.drone.job.TransportJob;
 import com.cyberfarm.entity.DroneEntity;
 
@@ -14,7 +16,11 @@ import org.jspecify.annotations.Nullable;
 public enum DroneTask {
     HARVEST(HarvestJob::find),
     QUARRY(MineJob::find),
-    TRANSPORT(TransportJob::find);
+    TRANSPORT(TransportJob::find),
+    PLANT(PlantJob::find),
+    LOG(LogJob::find),
+    /** Taxi trips start when a player right-clicks the waiting drone, never on their own. */
+    TAXI((drone, level, dock) -> null);
 
     @FunctionalInterface
     public interface JobFinder {

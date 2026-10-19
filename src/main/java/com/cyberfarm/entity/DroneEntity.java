@@ -3,24 +3,31 @@ package com.cyberfarm.entity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.drone.job.DroneJob;
+import com.cyberfarm.drone.job.TaxiJob;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
@@ -47,7 +54,8 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * A drone bound to a Drone Dock. It charges at the dock, then does the jobs its function modules
- * give it (harvest, quarry, transport), taking turns between modules, and brings everything back.
+ * give it (harvest, quarry, transport, plant, log), taking turns between modules, and brings
+ * everything back. With a Taxi Module it also carries players hanging from its hook.
  */
 public class DroneEntity extends PathfinderMob {
     // Status codes shown in the dock GUI (0 means no drone)
@@ -63,6 +71,12 @@ public class DroneEntity extends PathfinderMob {
     private static final double LANDING_RADIUS = 2.5;
     /** The drone lines up this high above the pad before descending. */
     private static final double APPROACH_HEIGHT = 0.8;
+    /** A Taxi drone waits for passengers this high above its parking spot. */
+    private static final double TAXI_WAIT_HEIGHT = 2.7;
+    /** How far below the drone a hanging passenger's feet are. */
+    public static final double PASSENGER_DROP = 2.5;
+    /** Beyond this horizontal distance the drone climbs over the terrain before heading home. */
+    private static final double LONG_TRIP = 16.0;
     public static final int CARGO_SLOTS = 9;
     private static final int SCAN_INTERVAL = 40;
     /** Cruise speed in blocks per tick of a 100% frame (3 blocks/s); the Basic frame flies at 80%. */
@@ -84,6 +98,7 @@ public class DroneEntity extends PathfinderMob {
     private int nextTask;
     private int scanCooldown;
     private int stuckTicks;
+    private double returnAltitude = Double.NaN;
     private int pathfindTicks;
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final ItemStacksResourceHandler cargo = new ItemStacksResourceHandler(CARGO_SLOTS);
@@ -190,6 +205,37 @@ public class DroneEntity extends PathfinderMob {
 
     public boolean isCargoEmpty() {
         return ResourceHandlerUtil.isEmpty(cargo);
+    }
+
+    /** True while the drone is parked on (or right above) its dock. */
+    public boolean isAtDock() {
+        if (dockPos == null) {
+            return false;
+        }
+        Vec3 home = dockHover();
+        return home.subtract(position()).horizontalDistance() < 1.0 && Math.abs(getY() - home.y) < TAXI_WAIT_HEIGHT + 0.5;
+    }
+
+    /** Removes and returns one item of the first cargo stack matching {@code filter}, or EMPTY. */
+    public ItemStack takeOneFromCargo(Predicate<ItemStack> filter) {
+        for (int i = 0; i < cargo.size(); i++) {
+            ItemStack stack = ItemUtil.getStack(cargo, i);
+            if (!stack.isEmpty() && filter.test(stack)) {
+                cargo.set(i, ItemResource.of(stack), stack.getCount() - 1);
+                return stack.copyWithCount(1);
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public boolean cargoContains(Predicate<ItemStack> filter) {
+        for (int i = 0; i < cargo.size(); i++) {
+            ItemStack stack = ItemUtil.getStack(cargo, i);
+            if (!stack.isEmpty() && filter.test(stack)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Puts drops in the cargo; whatever does not fit falls on the ground at {@code pos}. */
@@ -308,10 +354,22 @@ public class DroneEntity extends PathfinderMob {
         Vec3 home = dockHover();
         double horizontal = home.subtract(position()).horizontalDistance();
         if (horizontal > LANDING_RADIUS) {
-            flyTowards(home.add(0.0, APPROACH_HEIGHT, 0.0));
+            Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
+            if (horizontal > LONG_TRIP && level() instanceof ServerLevel level) {
+                // Long way home (e.g. after a taxi trip): climb over the terrain first, then cruise
+                if (Double.isNaN(returnAltitude)) {
+                    returnAltitude = TaxiJob.cruiseAltitude(level, position(), approach) - PASSENGER_DROP;
+                }
+                flyTowards(getY() < returnAltitude - 0.5
+                        ? new Vec3(getX(), returnAltitude, getZ())
+                        : new Vec3(home.x, returnAltitude, home.z));
+            } else {
+                flyTowards(approach);
+            }
             return false;
         }
 
+        returnAltitude = Double.NaN;
         pathfindTicks = 0;
         navigation.stop();
         holdMoveControl();
@@ -337,7 +395,11 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void tickDocked(ServerLevel level, DroneDockBlockEntity dock) {
-        flyHome();
+        if (isWaitingForPassenger(dock)) {
+            flyTowards(dockHover().add(0.0, TAXI_WAIT_HEIGHT, 0.0));
+        } else {
+            flyHome();
+        }
         unloadCargo(dock);
 
         int charged = dock.charge(capacity() - energy);
@@ -365,6 +427,38 @@ public class DroneEntity extends PathfinderMob {
                 setStatus(STATUS_WORKING);
                 return;
             }
+        }
+    }
+
+    private boolean isWaitingForPassenger(DroneDockBlockEntity dock) {
+        return modules.tasks().contains(DroneTask.TAXI) && dock.getTaxiDestination() != null && energy >= capacity() * 3 / 10;
+    }
+
+    /** A player right-clicked the waiting Taxi drone: check the trip, then let them grab the hook. */
+    private void startTaxi(ServerLevel level, Player player) {
+        if (job != null || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.busy"));
+            return;
+        }
+        BlockPos destination = dock.getTaxiDestination();
+        if (destination == null) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.no_destination"));
+            return;
+        }
+        Vec3 dropOff = TaxiJob.dropOffPoint(destination);
+        double cruiseY = TaxiJob.cruiseAltitude(level, position(), dropOff);
+        // Up, across and down, there and back again
+        double route = (cruiseY - getY()) + dropOff.subtract(position()).horizontalDistance() + (cruiseY - dropOff.y);
+        int needed = (int) Math.ceil(2 * route / (cruiseSpeed() * 0.9) * modules.flightCost()) + TaxiJob.TRIP_COST;
+        if (energy < needed) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)));
+            return;
+        }
+        if (player.startRiding(this)) {
+            job = new TaxiJob(destination, player.getUUID(), cruiseY);
+            jobTask = DroneTask.TAXI;
+            setStatus(STATUS_WORKING);
+            level.playSound(null, blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 1.0F, 1.2F);
         }
     }
 
@@ -406,7 +500,7 @@ public class DroneEntity extends PathfinderMob {
 
     // ---------------------------------------------------------------- cargo
 
-    private ItemStack storeInCargo(ItemStack stack) {
+    public ItemStack storeInCargo(ItemStack stack) {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
@@ -457,7 +551,13 @@ public class DroneEntity extends PathfinderMob {
 
     @Override
     protected InteractionResult mobInteract(Player player, InteractionHand hand) {
-        if (!player.isShiftKeyDown() || !player.getItemInHand(hand).isEmpty()) {
+        if (!player.isShiftKeyDown() && modules.tasks().contains(DroneTask.TAXI) && !isVehicle()) {
+            if (level() instanceof ServerLevel level) {
+                startTaxi(level, player);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        if (!player.isShiftKeyDown() || !player.getItemInHand(hand).isEmpty() || isVehicle()) {
             return super.mobInteract(player, hand);
         }
         if (level() instanceof ServerLevel level) {
@@ -498,6 +598,28 @@ public class DroneEntity extends PathfinderMob {
     @Override
     public boolean isPushable() {
         return false;
+    }
+
+    // ---------------------------------------------------------------- taxi passenger
+
+    /**
+     * The passenger hangs from the hook below the drone instead of sitting on it. Vanilla lowers
+     * every passenger by its own vehicle attachment (0.6 for players, made for sitting), so that
+     * offset is added back to keep the hand right on the hook.
+     */
+    @Override
+    protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
+        return new Vec3(0.0, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, 0.0);
+    }
+
+    @Override
+    public boolean shouldRiderSit() {
+        return false;
+    }
+
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
+        return passenger instanceof Player && getPassengers().isEmpty();
     }
 
     // ---------------------------------------------------------------- save data

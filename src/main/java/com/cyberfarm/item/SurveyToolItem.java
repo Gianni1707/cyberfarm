@@ -29,6 +29,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
  *   <li>right-click the dock to link the tool; sneak + right-click it to reset its area and route;</li>
  *   <li>right-click two opposite corners to set the work area;</li>
  *   <li>right-click two containers (source, then destination) to set the transport route.</li>
+ *   <li>sneak + right-click any block to make it the Taxi destination.</li>
  * </ul>
  * Sneak + right-click in the air clears a half-set corner or route.
  */
@@ -37,6 +38,8 @@ public class SurveyToolItem extends Item {
     /** Max height difference between the two corners; the drone scans the whole box often. */
     public static final int MAX_AREA_HEIGHT = 8;
     public static final int MAX_DOCK_DISTANCE = 48;
+    /** Taxi destinations can be much further away than work areas. */
+    public static final int MAX_TAXI_DISTANCE = 256;
 
     public SurveyToolItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -57,6 +60,7 @@ public class SurveyToolItem extends Item {
             if (player != null && player.isSecondaryUseActive()) {
                 dock.setWorkArea(null);
                 dock.setTransportRoute(null, null);
+                dock.setTaxiDestination(null);
                 message(player, Component.translatable("message.cyberfarm.survey.reset"));
             } else {
                 message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
@@ -75,6 +79,9 @@ public class SurveyToolItem extends Item {
             clearPending(stack);
             message(player, Component.translatable("message.cyberfarm.survey.dock_missing"));
             return InteractionResult.FAIL;
+        }
+        if (player != null && player.isSecondaryUseActive()) {
+            return setTaxiDestination(level, player, dockPos, dock, pos);
         }
         if (!pos.closerThan(dockPos, MAX_DOCK_DISTANCE)) {
             message(player, Component.translatable("message.cyberfarm.survey.too_far", MAX_DOCK_DISTANCE));
@@ -135,6 +142,21 @@ public class SurveyToolItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    private static InteractionResult setTaxiDestination(ServerLevel level, Player player, BlockPos dockPos, DroneDockBlockEntity dock, BlockPos pos) {
+        if (!pos.closerThan(dockPos, MAX_TAXI_DISTANCE)) {
+            message(player, Component.translatable("message.cyberfarm.survey.too_far", MAX_TAXI_DISTANCE));
+            return InteractionResult.FAIL;
+        }
+        if (!level.getBlockState(pos.above()).isAir() || !level.getBlockState(pos.above(2)).isAir()) {
+            message(player, Component.translatable("message.cyberfarm.survey.taxi_blocked"));
+            return InteractionResult.FAIL;
+        }
+        dock.setTaxiDestination(pos);
+        message(player, Component.translatable("message.cyberfarm.survey.taxi_set", pos.toShortString()));
+        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -177,5 +199,6 @@ public class SurveyToolItem extends Item {
         }
         builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint").withStyle(ChatFormatting.DARK_GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_route").withStyle(ChatFormatting.DARK_GRAY));
+        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_taxi").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

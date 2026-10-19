@@ -50,9 +50,15 @@ For drones with a [Transport Module](modules.md):
 
 Clicking a container sets the route instead of an area corner.
 
+## Setting a taxi destination
+
+For drones with a [Taxi Module](modules.md): with the tool linked to the dock, **sneak +
+right-click the block** where passengers should land. It can be up to 256 blocks away and needs
+two blocks of air above it.
+
 ## Fixing mistakes
 
 - **Sneak + right-click in the air** clears a corner or route source you set by mistake.
-- **Sneak + right-click the dock** resets it: default 9x9 area and no transport route.
+- **Sneak + right-click the dock** resets it: default 9x9 area, no transport route, no taxi destination.
 
 <RecipeFor id="survey_tool" />
