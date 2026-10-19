@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModCreativeTabs;
@@ -46,6 +47,7 @@ public class CyberFarm {
         modEventBus.addListener(CyberFarm::registerAttributes);
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -69,6 +71,20 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.METHANE_EXTRACTOR.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
+        // The reactor is reached through its ports (and the controller itself), only while the tower is formed
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),
+                (be, side) -> be.isFormed() ? be.getAutomationItems() : null);
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),
+                (be, side) -> be.isFormed() ? be.getAutomationFluids() : null);
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {

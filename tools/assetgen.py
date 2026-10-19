@@ -21,6 +21,8 @@ FLAT_ITEMS = [
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
     "drone", "survey_tool", "mob_capsule_filled",
+    "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
+    "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
 ]
 
 
@@ -168,18 +170,114 @@ def blocks():
     write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler"}})
     block_loot("muffler")
 
+    nuclear_blocks()
+    coolant_blocks()
+
     names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit", "gas_pipe",
-             "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame"]
+             "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
+             "reactor_controller", "reactor_casing", "reactor_port", "steam_turbine", "water_pump", "coolant_mixer"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
         block_loot(name)
 
     # Common fluid tags, so other mods recognise our gases
-    write(RES / "data/c/tags/fluid/gaseous.json", {"values": [f"{NS}:biogas", f"{NS}:methane"]})
     write(RES / "data/c/tags/fluid/biogas.json", {"values": [f"{NS}:biogas"]})
     write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
-    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names]})
+    ores = ["uranium_ore", "deepslate_uranium_ore"]
+    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores]})
+    write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
+    write(RES / "data/c/tags/fluid/steam.json", {"values": [f"{NS}:steam"]})
+    write(RES / "data/c/tags/fluid/gaseous.json", {"values": [f"{NS}:biogas", f"{NS}:methane", f"{NS}:steam"]})
+    # Common material tags, so other mods' machines process our uranium and ours take theirs
+    for kind in ("block", "item"):
+        write(RES / f"data/c/tags/{kind}/ores/uranium.json", {"values": [f"{NS}:{n}" for n in ores]})
+        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": [f"#c:ores/uranium"]})
+    write(RES / "data/c/tags/item/raw_materials/uranium.json", {"values": [f"{NS}:raw_uranium"]})
+    write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium"]})
+    write(RES / "data/c/tags/item/ingots/uranium.json", {"values": [f"{NS}:uranium_ingot"]})
+    write(RES / "data/c/tags/item/ingots.json", {"replace": False, "values": ["#c:ingots/uranium"]})
+    uranium_worldgen()
+
+
+def nuclear_blocks():
+    # Ores: vanilla stone or deepslate under a transparent overlay of uranium specks
+    for name, base in (("uranium_ore", "minecraft:block/stone"), ("deepslate_uranium_ore", "minecraft:block/deepslate")):
+        faces = {d: {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": d} for d in ("down", "up", "north", "south", "west", "east")}
+        over = {d: {"uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": d} for d in faces}
+        write(ASSETS / f"models/block/{name}.json", {
+            "parent": "minecraft:block/block",
+            "textures": {"particle": base, "base": base, "overlay": tex("uranium_ore_overlay")},
+            "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces},
+                         {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}],
+        })
+        write(ASSETS / f"blockstates/{name}.json", {"variants": {"": {"model": f"{NS}:block/{name}"}}})
+        write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
+        write(DATA / f"loot_table/blocks/{name}.json", {
+            "type": "minecraft:block",
+            "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "entries": [{"type": "minecraft:alternatives", "children": [
+                {"type": "minecraft:item", "name": f"{NS}:{name}", "conditions": [{"condition": "minecraft:match_tool", "predicate": {
+                    "predicates": {"minecraft:enchantments": [{"enchantments": "minecraft:silk_touch", "levels": {"min": 1}}]}}}]},
+                {"type": "minecraft:item", "name": f"{NS}:raw_uranium", "functions": [
+                    {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune", "formula": "minecraft:ore_drops"},
+                    {"function": "minecraft:explosion_decay"}]},
+            ]}]}],
+            "random_sequence": f"{NS}:blocks/{name}",
+        })
+
+    # Casing and port: plain cubes that light up when the tower is formed
+    for name in ("reactor_casing", "reactor_port"):
+        for model in (name, f"{name}_formed"):
+            write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
+        write(ASSETS / f"blockstates/{name}.json", {"variants": {
+            "formed=false": {"model": f"{NS}:block/{name}"}, "formed=true": {"model": f"{NS}:block/{name}_formed"}}})
+
+    # Controller: incomplete, formed (ready) and burning
+    orientable("reactor_controller", "reactor_controller", "reactor_casing", side="reactor_casing", bottom="reactor_casing")
+    orientable("reactor_controller_formed", "reactor_controller_formed", "reactor_casing_formed",
+               side="reactor_casing_formed", bottom="reactor_casing_formed")
+    orientable("reactor_controller_on", "reactor_controller_on", "reactor_casing_formed",
+               side="reactor_casing_formed", bottom="reactor_casing_formed")
+    variants = {}
+    for facing, rot in FACING_ROTATION.items():
+        for formed in ("false", "true"):
+            for lit in ("false", "true"):
+                model = "reactor_controller" if formed == "false" else "reactor_controller_on" if lit == "true" else "reactor_controller_formed"
+                variants[f"facing={facing},formed={formed},lit={lit}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
+    write(ASSETS / "blockstates/reactor_controller.json", {"variants": variants})
+
+    orientable("steam_turbine", "steam_turbine_front", "machine_top")
+    facing_blockstate("steam_turbine")
+    orientable("water_pump", "water_pump_front", "water_pump_top")
+    facing_blockstate("water_pump")
+    orientable("coolant_mixer", "coolant_mixer_front", "machine_top")
+    facing_blockstate("coolant_mixer")
+
+
+def coolant_blocks():
+    """Coolant pools in the world: the fluid renderer draws them, the model only gives the particle texture."""
+    for name in ("coolant", "cryo_coolant"):
+        write(ASSETS / f"models/block/{name}.json", {"textures": {"particle": tex(f"{name}_still")}})
+        write(ASSETS / f"blockstates/{name}.json", {"variants": {"": {"model": f"{NS}:block/{name}"}}})
+
+
+def uranium_worldgen():
+    """Rare uranium veins deep in the Overworld, more common towards the bottom of the world."""
+    write(DATA / "worldgen/configured_feature/uranium_ore.json", {"type": "minecraft:ore", "config": {
+        "discard_chance_on_air_exposure": 0.3, "size": 5, "targets": [
+            {"state": {"Name": f"{NS}:uranium_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:stone_ore_replaceables"}},
+            {"state": {"Name": f"{NS}:deepslate_uranium_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:deepslate_ore_replaceables"}},
+        ]}})
+    write(DATA / "worldgen/placed_feature/uranium_ore.json", {"feature": f"{NS}:uranium_ore", "placement": [
+        {"type": "minecraft:count", "count": 4},
+        {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:trapezoid",
+                                                      "min_inclusive": {"absolute": -64}, "max_inclusive": {"absolute": 16}}},
+        {"type": "minecraft:biome"},
+    ]})
+    write(DATA / "neoforge/biome_modifier/uranium_ore.json", {
+        "type": "neoforge:add_features", "biomes": "#minecraft:is_overworld",
+        "features": f"{NS}:uranium_ore", "step": "underground_ores"})
 
 
 # --------------------------------------------------------------------------- items
@@ -250,6 +348,24 @@ def recipes():
     shaped("bio_digester", ["ICI", "GXG", "ICI"], {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
     shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": core})
     shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core, "G": "minecraft:glass"})
+    # Nuclear
+    uranium = f"{NS}:uranium_ingot"
+    casing = f"{NS}:reactor_casing"
+    for source, suffix in ((f"{NS}:raw_uranium", ""), (f"{NS}:uranium_ore", "_from_ore"), (f"{NS}:deepslate_uranium_ore", "_from_deepslate_ore")):
+        for kind, time in (("smelting", 200), ("blasting", 100)):
+            write(DATA / f"recipe/uranium_ingot{suffix}_{kind}.json", {
+                "type": f"minecraft:{kind}", "category": "misc", "cookingtime": time, "experience": 1.0,
+                "group": "uranium_ingot", "ingredient": source, "result": {"id": uranium}})
+    shaped("fuel_rod", ["IUI", "IUI", "IUI"], {"I": iron, "U": uranium})
+    shaped("reactor_casing", ["CIC", "I I", "CIC"], {"C": "minecraft:light_gray_concrete", "I": iron}, count=8)
+    shaped("reactor_port", ["H", "X", "B"], {"H": "minecraft:hopper", "X": casing, "B": "minecraft:bucket"})
+    shaped("reactor_controller", ["IUI", "DXD", "IRI"],
+           {"I": iron, "U": uranium, "D": "minecraft:diamond", "X": casing, "R": "minecraft:redstone_block"})
+    shaped("steam_turbine", ["ICI", "CTC", "ICI"], {"I": iron, "C": "minecraft:copper_block", "T": f"{NS}:gas_turbine"})
+    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": core})
+    shaped("coolant_mixer", ["IBI", "GXG", "IDI"],
+           {"I": iron, "B": "minecraft:bucket", "G": "minecraft:glass", "X": "minecraft:cauldron", "D": core})
+
     shaped("muffler", ["WIW", "INI", "WIW"], {"W": "#minecraft:wool", "I": iron, "N": "minecraft:note_block"})
     shaped("mob_capsule",["IGI", "GEG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "E": "minecraft:ender_pearl"})
     shaped("survey_tool", [" G ", "IRI", " I "], {"G": "minecraft:glass_pane", "I": iron, "R": redstone}, category="equipment")
@@ -281,6 +397,12 @@ def sounds():
         "methane_extractor.deactivate": files("block/beacon/deactivate", pitch=1.2),
         "combustion_generator.crackle": files("block/furnace/fire_crackle", 5, pitch=1.2, volume=0.6),
         "drone_assembler.work": files("block/smithing_table/smithing_table", 3),
+        "reactor.activate": files("block/beacon/activate", pitch=0.6),
+        "reactor.deactivate": files("block/beacon/deactivate", pitch=0.6),
+        "reactor.hum": files("block/beacon/ambient", pitch=0.5, volume=0.9),
+        "reactor.alarm": files("note/pling", pitch=1.6, volume=1.0) + files("note/bell", pitch=1.4, volume=0.8),
+        "coolant_mixer.work": files("block/brewing_stand/brew", 2, pitch=1.3, volume=0.4),
+        "steam_turbine.work": files("random/fizz", pitch=0.5, volume=0.25),
     }
     write(ASSETS / "sounds.json", {name: {"sounds": entries, "subtitle": f"subtitles.{NS}.{name}"}
                                    for name, entries in events.items()})

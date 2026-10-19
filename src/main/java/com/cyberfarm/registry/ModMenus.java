@@ -3,11 +3,13 @@ package com.cyberfarm.registry;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.BioDigesterMenu;
 import com.cyberfarm.menu.CombustionGeneratorMenu;
+import com.cyberfarm.menu.CoolantMixerMenu;
 import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.menu.MethaneExtractorMenu;
 import com.cyberfarm.menu.MufflerMenu;
+import com.cyberfarm.menu.ReactorMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -32,6 +34,15 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<GasTurbineMenu>> STEAM_TURBINE = MENUS.register("steam_turbine",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> GasTurbineMenu.steam(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CoolantMixerMenu>> COOLANT_MIXER = MENUS.register("coolant_mixer",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR = MENUS.register("reactor",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MufflerMenu>> MUFFLER = MENUS.register("muffler",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));

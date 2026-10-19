@@ -17,7 +17,9 @@
 |---|---|
 | Logica droni | **Area + Dock**: l'area si marca con un tool e il drone parte dal dock, lavora e torna a scaricare e ricaricarsi. Niente programmazione vera (forse in futuro). |
 | Nucleare | **Pericoloso ma non troppo**: meltdown con esplosione moderata (potenza 6.0 di default), configurabile, con opzione per non distruggere blocchi. |
-| Energia | **FE**, interoperabile con le altre tech mod. |
+| Energia | **FE**, interoperabile con le altre tech mod. I droni vanno **solo a corrente**; i gas servono solo ai generatori. |
+| Mekanism | Compatibile **solo a livello di tubi**: i suoi tubi per fluidi trasportano i nostri gas, che non sostituiscono i suoi. |
+| Nucleare, realismo | Come una centrale vera: il reattore scalda il refrigerante, il **vapore** va a una **Steam Turbine** che fa FE. |
 | Ricette | Plugin opzionali **JEI** e **REI** (EMI legge quello JEI): categoria Drone Assembly, generatore come stazione dei combustibili, pagine info. In dev si sceglie il viewer con `recipe_viewer` in gradle.properties. |
 | Stile | Sci-fi pulito. |
 
@@ -52,8 +54,71 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
   a struttura completa suono + estrattore e frame illuminati, GUI apribile da ogni blocco della camera (Shift per piazzare);
   mob caricato con la Mob Capsule, che cattura qualsiasi mob tranne boss e droni; zombie 10 mB/t, mostri 5, animali 2), Gas Turbine (biogas 3 FE/mB, metano 8 FE/mB,
   10 mB/t), Gas Pipe. Gas = fluidi NeoForge standard con tag `c:gaseous`/`c:biogas`/`c:methane`.
-  Da fare: Methane Canister / droni a metano; compatibilità diretta con i gas di Mekanism.
-- **Tier 3**: Fission Reactor (multiblocco), Cooling Tower (multiblocco a cono), Steam Turbine. Risorse: Uranium Ore → Yellowcake → Fuel Rod → Depleted Rod.
+  I gas servono solo ai generatori: i droni vanno sempre e solo a corrente. Mekanism: compatibile solo a livello di tubi
+  (i suoi tubi per fluidi trasportano biogas e metano), i nostri gas non sostituiscono i suoi.
+- **Tier 3 — Nucleare** (in progettazione, vedi sotto).
+
+### Nucleare (Tier 3) — progetto
+
+**Risorse**
+- **Uranium Ore** (+ deepslate) nell'Overworld in profondità (Y -64..16), raro → Raw Uranium → fornace → **Uranium Ingot**
+  (tag `c:ores/uranium`, `c:raw_materials/uranium`, `c:ingots/uranium`).
+- **Fuel Rod**: lingotti di uranio in un involucro di ferro. Brucia per un tempo fisso, poi diventa **Depleted Fuel Rod** (le scorie).
+
+**Fission Reactor** — multiblocco a torre di raffreddamento, 5x5 di base e 7 di altezza:
+```
+y6   ■ ■ ■ ■ ■     bordo superiore aperto: da qui esce il vapore
+y5     ■ ■ ■
+y4     ■ ■ ■       "vita" stretta (anello 3x3)
+y3     ■ ■ ■
+y2   ■ ■ ■ ■ ■     base: anello 5x5 (Reactor Casing) con Controller e porte
+y1   ■ ■ ■ ■ ■     interno 3x3 vuoto = nocciolo
+y0   ■ ■ ■ ■ ■     pavimento 5x5
+```
+- Blocchi: **Reactor Controller** (uno, nella base), **Reactor Casing** e **Reactor Port** (porte per tubi, cavi e tramogge).
+  Come l'Extractor: struttura completa = suono, involucro con texture "formed" illuminata, GUI apribile da ogni blocco.
+  Da acceso: nuvole di vapore dalla cima.
+- GUI: slot per le Fuel Rod, slot di uscita per le scorie, **potenza (boost)** regolabile, barra della **temperatura**,
+  serbatoio del refrigerante e del vapore.
+- **Calore**: lo producono le barre attive × potenza. Il refrigerante lo assorbe ed evapora in **Steam** (fluido gas,
+  tag `c:steam`). Il vapore prodotto è proporzionale al calore assorbito, qualunque sia il refrigerante.
+- **Refrigeranti**: più si spinge la potenza, più calore va tolto; oltre un certo boost l'acqua non basta più.
+  - **Water**: calore assorbito ×1 per mB (anche da pompe di altre mod);
+  - **Coolant**: ×2,5, prodotto da un **Coolant Mixer** (acqua + ghiaccio blu/lapis + FE);
+  - **Cryo Coolant**: ×6, Coolant + materiale raro nel Coolant Mixer.
+- **Temperatura**: sopra l'80% allarme sonoro e avviso nella GUI; al 100% **meltdown**: esplosione (config esistente
+  `meltdownExplosionPower`, `meltdownDestroysBlocks`) e forte contaminazione della zona.
+
+**Steam Turbine** — blocco singolo come la Gas Turbine: vapore → FE. Accetta anche il vapore di altre mod (`c:steam`).
+
+**Scorie e Waste Reprocessor**
+- Le Depleted Fuel Rod sono radioattive: in inventario, in una cassa o a terra contaminano la zona attorno.
+  Se lo slot scorie del reattore è pieno, il reattore si ferma e perde radiazioni.
+- **Waste Reprocessor** (macchina a FE): Depleted Fuel Rod → **Vitrified Waste** (blocco inerte e sicuro) + un po' di
+  uranio recuperato.
+
+**Radiazioni**
+- Contaminazione per chunk, salvata nel mondo, che cala lentamente nel tempo. Fonti: scorie non trattate, reattore che perde, meltdown.
+- **Radiation Sickness** (effetto): debolezza, fame, nausea e danno nel tempo, più forte con livelli alti; colpisce giocatori e mob.
+- **Effetti sul mondo** nelle zone contaminate: erba → terra, colture → arbusti secchi, foglie che cadono.
+- **Hazmat Suit**: armatura in 4 pezzi; il set completo protegge del tutto, i pezzi singoli in parte.
+- **Geiger Counter**: in mano ticchetta più veloce dove c'è più radiazione e mostra il livello sopra la hotbar.
+
+**Fasi di sviluppo**
+1. ✅ (da testare in gioco) Uranio (minerale, worldgen, lingotti, Fuel Rod), Fission Reactor multiblocco con acqua, Steam e
+   Steam Turbine, più una **Water Pump** (2+ sorgenti d'acqua accanto, 250 mB/t, 20 FE/t). Numeri: 50 mB/t d'acqua → 50 mB/t di
+   vapore per barra, Fuel Rod da 40 minuti (3 lingotti); Steam Turbine 4 FE/mB fino a 200 mB/t (800 FE/t).
+2. ✅ (da testare in gioco) Potenza da Off a 500% (step 50%, parte da Off), calore e temperatura, circuito primario:
+   acqua 200 calore/t, Coolant 500, Cryo Coolant 1200 (usura 1 mB ogni 400 calore); l'acqua secondaria diventa vapore
+   1:1. Le barre bruciano anche senza raffreddamento: allarme all'80%, meltdown a 200.000 di calore (esplosione da config,
+   barre distrutte). Coolant Mixer: acqua + lapis → Coolant, Coolant + ghiaccio blu → Cryo Coolant (500 mB, 20 FE/t).
+   Secchi di tutti i fluidi della mod: si riempiono con un secchio vuoto su una macchina/serbatoio con ≥1000 mB e si
+   versano con clic destro in macchine, porte e serbatoi. I gas (secchio capovolto) non si piazzano nel mondo; Coolant e
+   Cryo Coolant sono liquidi veri, piazzabili, scorrono come l'acqua (texture dell'acqua vanilla colorate). Il movimento dentro è quello dell'acqua
+   (`CoolantFluidType.move`: NeoForge lascia il movimento nei fluidi delle mod al loro tipo) al 70% / 50%: chi ci entra rallenta e
+   gela piano (danno solo da congelato del tutto; Cryo rallenta e gela di più, il cuoio protegge dal gelo).
+3. Scorie e Waste Reprocessor, contaminazione, Radiation Sickness, effetti sul mondo.
+4. Hazmat Suit, Geiger Counter. Il capitolo **Nuclear** dell'Handbook si aggiorna a ogni fase (pagine già presenti per fasi 1 e 2).
 
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
@@ -66,8 +131,10 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
   Other machines: mod id o id del suono; di default i forni vanilla).
 
 ### Libro guida
-**Drone Engineer's Handbook**. Sezioni: Getting Started · **Generators** (Combustion, Gas Power, Bio-Digester, Methane Extractor, Gas Turbine) ·
-**Cables** (Energy Conduit, Gas Pipe) · **Drones** (Assembler, Frames, Modules, Addons, Dock, Using Drones) · Nuclear (da fare).
+**Drone Engineer's Handbook**. Sezioni: Getting Started, Muffler e Water Pump alla radice · **Generators** (Combustion, Gas Power, Bio-Digester,
+Methane Extractor, Gas Turbine, Nuclear Power, Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine) ·
+**Cables** (Energy Conduit, Gas Pipe) · **Drones** (Assembler, Frames, Modules, Addons, Dock, Using Drones).
+La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
 `assets/cyberfarm/guideme_guides/handbook.json` + pagine in `assets/cyberfarm/guides/cyberfarm/handbook/*.md`.
 Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di rame).
@@ -76,8 +143,8 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 
 1. **MVP**: Drone Assembler, telai T1–T3, Harvester Module, Drone Dock, Survey Tool, Combustion Generator, libro guida. ✅ testato in gioco
 2. ✅ Moduli Quarry, Transport, Planter, Logger e Taxi, ✅ addon e smontaggio, ✅ Energy Conduit, ✅ JEI + REI.
-3. ✅ Gas: Bio-Digester, Methane Extractor + Mob Capsule, Gas Turbine, Gas Pipe (build ok, da testare in gioco). Resta: droni a metano.
-4. Endgame: Fission Reactor, Cooling Tower, meltdown.
+3. ✅ Gas: Bio-Digester, Methane Extractor + Mob Capsule, Gas Turbine, Gas Pipe ✅ testato in gioco.
+4. Endgame: reattore a fissione (torre), scorie e radiazioni, raffreddamento, meltdown.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
 
 ## Asset

@@ -21,7 +21,7 @@ Burns **Biogas** or **Methane** into FE, 10 mB per tick.
 | Biogas | 3 FE per mB | 30 FE/t |
 | Methane | 8 FE per mB | 80 FE/t |
 
-- Holds **8,000 mB** of gas and **50,000 FE**. It only burns gas when its energy buffer has
+- Holds **16,000 mB** of gas and **50,000 FE**. It only burns gas when its energy buffer has
   room, so no gas is wasted.
 - Like the [Combustion Generator](combustion_generator.md), it **pushes power** into adjacent
   machines and [Energy Conduits](energy_conduit.md), up to 400 FE/t per side.

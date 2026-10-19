@@ -5,6 +5,7 @@ import java.util.Set;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
 import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
+import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
@@ -12,6 +13,9 @@ import com.cyberfarm.block.entity.GasPipeBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
+import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
+import com.cyberfarm.block.entity.ReactorPortBlockEntity;
+import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -44,6 +48,21 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MufflerBlockEntity>> MUFFLER = BLOCK_ENTITIES.register("muffler",
             () -> new BlockEntityType<>(MufflerBlockEntity::new, Set.of(ModBlocks.MUFFLER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasTurbineBlockEntity>> STEAM_TURBINE = BLOCK_ENTITIES.register("steam_turbine",
+            () -> new BlockEntityType<>(GasTurbineBlockEntity::steam, Set.of(ModBlocks.STEAM_TURBINE.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
+            () -> new BlockEntityType<>(ReactorControllerBlockEntity::new, Set.of(ModBlocks.REACTOR_CONTROLLER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorPortBlockEntity>> REACTOR_PORT = BLOCK_ENTITIES.register("reactor_port",
+            () -> new BlockEntityType<>(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolantMixerBlockEntity>> COOLANT_MIXER = BLOCK_ENTITIES.register("coolant_mixer",
+            () -> new BlockEntityType<>(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP = BLOCK_ENTITIES.register("water_pump",
+            () -> new BlockEntityType<>(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
             () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));

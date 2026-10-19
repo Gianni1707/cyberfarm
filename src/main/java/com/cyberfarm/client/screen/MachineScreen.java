@@ -91,8 +91,9 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     }
 
     protected static final int TANK_WIDTH = 16;
-    private static final int[] TANK_COLORS = {0, 0xFF6FBF3F, 0xFF7FD4E8, 0xFF8090A0};
-    private static final String[] TANK_NAMES = {"gui.cyberfarm.tank.empty", "fluid.cyberfarm.biogas", "fluid.cyberfarm.methane", "gui.cyberfarm.tank.other"};
+    private static final int[] TANK_COLORS = {0, 0xFF6FBF3F, 0xFF7FD4E8, 0xFF8090A0, 0xFFE4EAEE, 0xFF3F6FE4, 0xFF1FB8A8, 0xFFA8E8FF};
+    private static final String[] TANK_NAMES = {"gui.cyberfarm.tank.empty", "fluid.cyberfarm.biogas", "fluid.cyberfarm.methane", "gui.cyberfarm.tank.other",
+            "fluid.cyberfarm.steam", "block.minecraft.water", "fluid.cyberfarm.coolant", "fluid.cyberfarm.cryo_coolant"};
 
     /** Fluid gauge; {@code fluid} is the code sent by {@code GasTank#fluidCode}. */
     protected static void drawTank(GuiGraphicsExtractor graphics, int x, int y, int height, int amount, int capacity, int fluid) {

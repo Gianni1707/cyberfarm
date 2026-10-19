@@ -7,6 +7,8 @@ import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.item.DroneModuleItem;
+import com.cyberfarm.item.FluidBucketItem;
+import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.item.SurveyToolItem;
 
@@ -31,6 +33,27 @@ public class ModItems {
     public static final DeferredItem<BlockItem> CYBER_FRAME = ITEMS.registerSimpleBlockItem(ModBlocks.CYBER_FRAME);
     public static final DeferredItem<BlockItem> MUFFLER = ITEMS.registerSimpleBlockItem(ModBlocks.MUFFLER);
     public static final DeferredItem<MobCapsuleItem> MOB_CAPSULE = ITEMS.registerItem("mob_capsule", MobCapsuleItem::new);
+
+    // Nuclear
+    public static final DeferredItem<BlockItem> URANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.URANIUM_ORE);
+    public static final DeferredItem<BlockItem> DEEPSLATE_URANIUM_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_URANIUM_ORE);
+    public static final DeferredItem<Item> RAW_URANIUM = ITEMS.registerSimpleItem("raw_uranium");
+    public static final DeferredItem<Item> URANIUM_INGOT = ITEMS.registerSimpleItem("uranium_ingot");
+    public static final DeferredItem<FuelRodItem> FUEL_ROD = ITEMS.registerItem("fuel_rod", FuelRodItem::new);
+    public static final DeferredItem<Item> DEPLETED_FUEL_ROD = ITEMS.registerItem("depleted_fuel_rod", p -> new Item(p.stacksTo(16)));
+    public static final DeferredItem<BlockItem> REACTOR_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CONTROLLER);
+    public static final DeferredItem<BlockItem> REACTOR_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CASING);
+    public static final DeferredItem<BlockItem> REACTOR_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_PORT);
+    public static final DeferredItem<BlockItem> STEAM_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_TURBINE);
+    public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
+    public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
+
+    // Buckets of the mod's fluids (creative): gases are held upside down
+    public static final DeferredItem<FluidBucketItem> BIOGAS_BUCKET = ITEMS.registerItem("biogas_bucket", p -> new FluidBucketItem(ModFluids.BIOGAS.get(), p));
+    public static final DeferredItem<FluidBucketItem> METHANE_BUCKET = ITEMS.registerItem("methane_bucket", p -> new FluidBucketItem(ModFluids.METHANE.get(), p));
+    public static final DeferredItem<FluidBucketItem> STEAM_BUCKET = ITEMS.registerItem("steam_bucket", p -> new FluidBucketItem(ModFluids.STEAM.get(), p));
+    public static final DeferredItem<FluidBucketItem> COOLANT_BUCKET = ITEMS.registerItem("coolant_bucket", p -> new FluidBucketItem(ModFluids.COOLANT.get(), p));
+    public static final DeferredItem<FluidBucketItem> CRYO_COOLANT_BUCKET = ITEMS.registerItem("cryo_coolant_bucket", p -> new FluidBucketItem(ModFluids.CRYO_COOLANT.get(), p));
 
     // Crafting components
     public static final DeferredItem<Item> DRONE_CORE = ITEMS.registerSimpleItem("drone_core");

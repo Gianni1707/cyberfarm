@@ -297,6 +297,213 @@ def muffler():
     return c
 
 
+# --------------------------------------------------------------------------- nuclear
+
+URANIUM = "#5fdc3a"
+URANIUM_DARK = "#2f7a22"
+CONCRETE = "#a7adb2"
+
+
+def uranium_ore_overlay():
+    """Transparent overlay drawn over vanilla stone or deepslate: glowing uranium specks."""
+    c = Canvas()
+    for cx, cy in ((3, 3), (11, 4), (6, 9), (12, 11), (3, 13)):
+        c.rect(cx, cy, cx + 1, cy + 1, URANIUM_DARK)
+        c.set(cx, cy, URANIUM)
+        c.set(cx + 1, cy + 1, "G")
+    return c
+
+
+def reactor_casing(formed):
+    """Cooling-tower concrete with seams; once formed, cyan status lines light up along the seams."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "#7d848a")
+    c.rect(1, 1, 14, 14, CONCRETE, noise=6, seed=50)
+    for y in (5, 10):
+        c.rect(1, y, 14, y, "#8c9298")
+    c.rect(1, 1, 14, 1, "#c3c8cc")
+    if formed:
+        c.rect(3, 5, 12, 5, "b")
+        c.rect(5, 5, 10, 5, "c")
+        for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+            c.set(x, y, "c")
+    return c
+
+
+def reactor_port(formed):
+    c = reactor_casing(formed)
+    c.disc(7.5, 7.5, 5.2, "K")
+    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
+    c.disc(7.5, 7.5, 3.0, "s")
+    c.rect(7, 4, 8, 11, "m")
+    c.rect(4, 7, 11, 8, "m")
+    return c
+
+
+def reactor_controller(state):
+    """state: 'off' (incomplete), 'formed' (ready) or 'on' (burning)."""
+    c = reactor_casing(state != "off")
+    c.rect(2, 2, 13, 11, "K")
+    c.rect(3, 3, 12, 10, "s")
+    if state == "off":
+        c.set(7, 6, "r")
+        c.set(8, 6, "r")
+    else:
+        # Radiation trefoil on the screen, green when burning
+        lit = URANIUM if state == "on" else "b"
+        c.disc(7.5, 6.5, 1.2, lit)
+        for (x0, y0, x1, y1) in ((6, 3, 9, 4), (3, 7, 5, 9), (10, 7, 12, 9)):
+            c.rect(x0, y0, x1, y1, lit)
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
+    return c
+
+
+def steam_turbine_front():
+    c = panel(51)
+    c.disc(7.5, 7.5, 6.2, "K")
+    c.disc(7.5, 7.5, 5.2, "D")
+    for i in range(-4, 5):
+        c.set(round(7.5 + i), round(7.5 + i), "w")
+        c.set(round(7.5 + i), round(7.5 - i), "w")
+        c.set(round(7.5 + i), 7, "l")
+    c.disc(7.5, 7.5, 1.6, "c")
+    return c
+
+
+def water_pump_front():
+    c = panel(52)
+    c.rect(3, 3, 12, 12, "K")
+    c.rect(4, 4, 11, 11, "#2a4f9a", noise=8, seed=52)
+    for x, y in ((5, 9), (8, 6), (10, 10), (6, 5)):
+        c.set(x, y, "#7fb0ff")
+    c.rect(3, 13, 12, 13, "b")
+    return c
+
+
+def water_pump_top():
+    c = panel(53)
+    c.disc(7.5, 7.5, 5.2, "K")
+    c.disc(7.5, 7.5, 4.2, "#2a4f9a")
+    c.rect(4, 7, 11, 8, "m")
+    return c
+
+
+# Uranium shades for the item sprites: outline, dark, mid, light, glow; then rock greys
+URANIUM_SHADES = {"1": "#14200d", "2": "#26501a", "3": "#3c8a24", "4": "#62d13a", "5": "#c4ff9a",
+                  "6": "#2b2c28", "7": "#454640", "8": "#62635b", "9": "#7f8077"}
+PALETTE.update(URANIUM_SHADES)
+
+
+def coolant_mixer_front():
+    c = panel(54)
+    c.rect(3, 3, 12, 12, "K")
+    c.rect(4, 4, 7, 11, "#1fb8a8", noise=8, seed=54)
+    c.rect(8, 4, 11, 11, "#a8e8ff", noise=6, seed=55)
+    c.rect(7, 4, 8, 11, "m")
+    c.rect(3, 13, 12, 13, "c")
+    return c
+
+
+# The vanilla bucket's shape: A..L are its metal greys, P..T the five shades of the fluid
+BUCKET_TEMPLATE = [
+    "................",
+    ".....AAAAAA.....",
+    "...AAEEHHHHAA...",
+    "..AEPQSRRQQPEA..",
+    "..APSTTSRTRSPA..",
+    "..AAAPRSSRPAAA..",
+    "..AJIAAAAAABFA..",
+    "..AJJJJIIFBBFA..",
+    "..AJJLJIIFBBIA..",
+    "..AIJLJIIFBBIA..",
+    "..ABJLJIIFBBIA..",
+    "...AJJJIIFBFA...",
+    "...AIJJIFFBFA...",
+    "....AIJIFBFA....",
+    ".....AAAAAA.....",
+    "................",
+]
+BUCKET_METAL = {"A": "#353535", "B": "#727272", "E": "#787878", "F": "#969696",
+                "H": "#989898", "I": "#a8a8a8", "J": "#d8d8d8", "L": "#ffffff"}
+
+
+def bucket(fluid, gas):
+    """A bucket of a CyberFarm fluid. Gases are held upside down, trapped against the bucket's bottom."""
+    base = rgba(fluid)
+    shades = {}
+    for key, factor in zip("PQRST", (0.55, 0.7, 0.82, 0.95, 1.12)):
+        shades[key] = tuple(max(0, min(255, int(ch * factor))) for ch in base[:3]) + (255,)
+    rows = BUCKET_TEMPLATE[::-1] if gas else BUCKET_TEMPLATE
+    c = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in BUCKET_METAL:
+                c.set(x, y, BUCKET_METAL[ch])
+            elif ch in shades:
+                c.set(x, y, shades[ch])
+    return c
+
+
+def raw_uranium():
+    """A lump of dark ore rock with glowing uranium crystals, shaped like the vanilla raw ores."""
+    return from_ascii([
+        "................",
+        "................",
+        "......6666......",
+        "....66799866....",
+        "...6798888976...",
+        "..679834487976..",
+        "..6783455438976.",
+        ".67884554437876.",
+        ".67983443987876.",
+        ".678898778834476",
+        ".6778877783455 6".replace(" ", "4"),
+        "..677787778344 6".replace(" ", "4"),
+        "..66777777733766",
+        "....6667777666..",
+        ".......6666.....",
+        "................",
+    ])
+
+
+def uranium_ingot():
+    """The vanilla gold ingot shape, shaded in glowing uranium green."""
+    return from_ascii([
+        "................",
+        "................",
+        "..........11....",
+        ".......111331...",
+        "....1114444441..",
+        ".11134444444431.",
+        "1544444444445541",
+        "1354444445554231",
+        "1345445554322231",
+        "1343554322223331",
+        "134343222233311.",
+        ".133432233111...",
+        "..13333111......",
+        "...1111.........",
+        "................",
+        "................",
+    ])
+
+
+def fuel_rod(depleted):
+    """Steel rod with a uranium window; a depleted rod is dark with a hazard band."""
+    c = Canvas()
+    for i in range(12):
+        x, y = 2 + i, 13 - i
+        c.rect(x, y - 1, x + 1, y, "k")
+        c.set(x, y - 1, "l" if not depleted else "m")
+    for i in range(3, 9):
+        x, y = 2 + i, 13 - i
+        c.set(x + 1, y, "#3a3f2a" if depleted else URANIUM)
+        c.set(x, y - 1, "y" if depleted and i in (4, 7) else ("#5c6146" if depleted else "G"))
+    c.rect(1, 13, 2, 14, "w")
+    c.rect(13, 1, 14, 2, "w")
+    return c
+
+
 def digester_front():
     c = panel(22)
     c.rect(3, 2, 12, 12, "K")
@@ -898,6 +1105,33 @@ def build_all():
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/muffler": muffler(),
+        "block/uranium_ore_overlay": uranium_ore_overlay(),
+        "block/reactor_casing": reactor_casing(False),
+        "block/reactor_casing_formed": reactor_casing(True),
+        "block/reactor_port": reactor_port(False),
+        "block/reactor_port_formed": reactor_port(True),
+        "block/reactor_controller": reactor_controller("off"),
+        "block/reactor_controller_formed": reactor_controller("formed"),
+        "block/reactor_controller_on": reactor_controller("on"),
+        "block/steam_turbine_front": steam_turbine_front(),
+        "block/water_pump_front": water_pump_front(),
+        "block/water_pump_top": water_pump_top(),
+        "block/coolant_mixer_front": coolant_mixer_front(),
+        "block/coolant_still": gas_texture("#178f84", "#4fe0d0", 7),
+        "block/coolant_flow": gas_texture("#178f84", "#4fe0d0", 8),
+        "block/cryo_coolant_still": gas_texture("#8fd8f5", "#ffffff", 9),
+        "block/cryo_coolant_flow": gas_texture("#8fd8f5", "#ffffff", 10),
+        "block/steam_still": gas_texture("#d8dee3", "#ffffff", 5),
+        "block/steam_flow": gas_texture("#d8dee3", "#ffffff", 6),
+        "item/biogas_bucket": bucket("#5fa83a", gas=True),
+        "item/methane_bucket": bucket("#6cc4dc", gas=True),
+        "item/steam_bucket": bucket("#aebfcb", gas=True),
+        "item/coolant_bucket": bucket("#1fb8a8", gas=False),
+        "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
+        "item/raw_uranium": raw_uranium(),
+        "item/uranium_ingot": uranium_ingot(),
+        "item/fuel_rod": fuel_rod(False),
+        "item/depleted_fuel_rod": fuel_rod(True),
         "block/bio_digester_front": digester_front(),
         "block/bio_digester_top": digester_top(),
         "block/gas_turbine_front": turbine_front(),
