@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Combustion Generator
-  parent: index.md
-  position: 2
+  parent: generators.md
+  position: 1
   icon: cyberfarm:combustion_generator
 item_ids:
   - cyberfarm:combustion_generator

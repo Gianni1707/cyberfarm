@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Function Modules
-  parent: index.md
-  position: 6
+  parent: drone_systems.md
+  position: 3
   icon: cyberfarm:harvester_module
 item_ids:
   - cyberfarm:harvester_module

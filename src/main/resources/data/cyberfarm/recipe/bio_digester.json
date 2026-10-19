@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot",
+    "G": "minecraft:glass",
+    "X": "minecraft:composter"
+  },
+  "pattern": [
+    "ICI",
+    "GXG",
+    "ICI"
+  ],
+  "result": {
+    "id": "cyberfarm:bio_digester"
+  }
+}

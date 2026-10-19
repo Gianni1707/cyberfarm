@@ -18,10 +18,10 @@ import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
+import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -164,7 +164,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
                 setStack(addonSlot++, new ItemStack(addon.getKey(), addon.getValue()));
             }
         }
-        level.playSound(null, worldPosition, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 0.8F);
+        level.playSound(null, worldPosition, ModSounds.ASSEMBLER_WORK.get(), SoundSource.BLOCKS, 1.0F, 0.8F);
     }
 
     public void startAssembly() {
@@ -212,7 +212,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
 
         assembling = false;
         progress = 0;
-        level.playSound(null, pos, SoundEvents.SMITHING_TABLE_USE, SoundSource.BLOCKS, 1.0F, 1.2F);
+        level.playSound(null, pos, ModSounds.ASSEMBLER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.2F);
     }
 
     /**

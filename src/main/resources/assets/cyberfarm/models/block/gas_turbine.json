@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/gas_turbine_front",
+    "top": "cyberfarm:block/gas_turbine_top",
+    "side": "cyberfarm:block/machine_side",
+    "bottom": "cyberfarm:block/machine_bottom"
+  }
+}

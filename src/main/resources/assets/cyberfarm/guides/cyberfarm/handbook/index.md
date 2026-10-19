@@ -21,16 +21,19 @@ use the info page (the "i" tab) of any CyberFarm machine for a quick explanation
 
 ## Where to start
 
-1. [Getting Started](getting_started.md): your first drone, step by step
-2. [Combustion Generator](combustion_generator.md): your first power source
-3. [Energy Conduit](energy_conduit.md): carrying power to your machines
-4. [Drone Assembler](drone_assembler.md): where drones are built
-5. [Drone Frames](drone_frames.md): the tiers of drone bases
-6. [Function Modules](modules.md): what a drone can do
-7. [Addons](addons.md): speed, bigger loads, battery, fortune and silk touch
-8. [Drone Dock](drone_dock.md): home base, charging, work area and routes
-9. [Drones](drones.md): deploying, changing, recovering
+New here? Read [Getting Started](getting_started.md): your first drone, step by step.
+Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
+Then the handbook has three sections:
 
-## Chapters
+### [Generators](generators.md)
+Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
+with the [Bio-Digester](bio_digester.md), the [Methane Extractor](methane_extractor.md) and the
+[Gas Turbine](gas_turbine.md).
 
-<SubPages icons={true} />
+### [Cables](cables.md)
+Moving power and gas: the [Energy Conduit](energy_conduit.md) and the [Gas Pipe](gas_pipe.md).
+
+### [Drones](drone_systems.md)
+Building and running drones: the [Drone Assembler](drone_assembler.md),
+[Drone Frames](drone_frames.md), [Function Modules](modules.md), [Addons](addons.md),
+the [Drone Dock](drone_dock.md) and [Using Drones](drones.md).

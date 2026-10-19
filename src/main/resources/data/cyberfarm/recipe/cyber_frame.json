@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "ICI",
+    "C C",
+    "ICI"
+  ],
+  "result": {
+    "id": "cyberfarm:cyber_frame",
+    "count": 8
+  }
+}

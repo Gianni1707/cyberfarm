@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Addons
-  parent: index.md
-  position: 7
+  parent: drone_systems.md
+  position: 4
   icon: cyberfarm:speed_addon
 item_ids:
   - cyberfarm:speed_addon
@@ -45,7 +45,7 @@ How many addons fit depends on the [frame](drone_frames.md):
 
 Without Stack Addons a Transport drone carries only **16 items** per trip.
 
-The percentages add up: see how the total is worked out on the [Drones](drones.md) page.
+The percentages add up: see how the total is worked out on the [Using Drones](drones.md) page.
 
 ## Recipes
 

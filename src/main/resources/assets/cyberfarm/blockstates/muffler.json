@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/muffler"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/muffler",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/muffler",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/muffler",
+      "y": 270
+    }
+  }
+}

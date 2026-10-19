@@ -2,14 +2,17 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModCreativeTabs;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModEntities;
+import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModMenus;
+import com.cyberfarm.registry.ModSounds;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.resources.Identifier;
@@ -34,11 +37,15 @@ public class CyberFarm {
         ModMenus.MENUS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
         ModDataComponents.COMPONENTS.register(modEventBus);
+        ModFluids.FLUID_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        ModSounds.SOUNDS.register(modEventBus);
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
+        NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -56,6 +63,12 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.METHANE_EXTRACTOR.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getEnergy());
     }
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {

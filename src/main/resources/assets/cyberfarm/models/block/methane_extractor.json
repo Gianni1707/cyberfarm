@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "particle": "cyberfarm:block/methane_extractor_side",
+    "up": "cyberfarm:block/methane_extractor_top",
+    "down": "cyberfarm:block/methane_extractor_bottom",
+    "north": "cyberfarm:block/methane_extractor_side",
+    "east": "cyberfarm:block/methane_extractor_side",
+    "south": "cyberfarm:block/methane_extractor_side",
+    "west": "cyberfarm:block/methane_extractor_side"
+  }
+}

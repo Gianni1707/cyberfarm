@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/bio_digester"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/bio_digester",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/bio_digester",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/bio_digester",
+      "y": 270
+    }
+  }
+}

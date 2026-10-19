@@ -6,16 +6,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.cyberfarm.block.EnergyConduitBlock;
+import com.cyberfarm.block.NetworkPipeBlock;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Finds the machines reached by a group of connected Energy Conduits. Results are cached by each
- * conduit and thrown away whenever any conduit, or a block next to one, changes.
+ * Finds the machines reached by a group of connected pipes of one kind (Energy Conduits or Gas
+ * Pipes). Results are cached by each pipe and thrown away whenever any pipe, or a block next to
+ * one, changes.
  */
 public final class ConduitNetwork {
     /** Bigger networks are cut off, to keep a single search cheap. */
@@ -25,7 +27,7 @@ public final class ConduitNetwork {
 
     private ConduitNetwork() {}
 
-    /** A machine side that receives energy from the network. */
+    /** A machine side that receives from the network. */
     public record Endpoint(BlockPos pos, Direction side) {}
 
     public static int version() {
@@ -36,8 +38,9 @@ public final class ConduitNetwork {
         version++;
     }
 
-    /** Walks the conduits connected to {@code start} and lists the machine sides they touch. */
+    /** Walks the pipes of the same block as {@code start} and lists the machine sides they touch. */
     public static List<Endpoint> findEndpoints(Level level, BlockPos start) {
+        Block pipe = level.getBlockState(start).getBlock();
         List<Endpoint> endpoints = new ArrayList<>();
         Set<BlockPos> visited = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
@@ -47,18 +50,18 @@ public final class ConduitNetwork {
         while (!queue.isEmpty() && visited.size() <= MAX_CONDUITS) {
             BlockPos pos = queue.poll();
             BlockState state = level.getBlockState(pos);
-            if (!(state.getBlock() instanceof EnergyConduitBlock)) {
+            if (!(pipe instanceof NetworkPipeBlock) || !state.is(pipe)) {
                 continue;
             }
             for (Direction direction : Direction.values()) {
-                if (!state.getValue(EnergyConduitBlock.CONNECTIONS.get(direction))) {
+                if (!state.getValue(NetworkPipeBlock.CONNECTIONS.get(direction))) {
                     continue;
                 }
                 BlockPos neighbor = pos.relative(direction);
                 if (!level.isLoaded(neighbor)) {
                     continue;
                 }
-                if (level.getBlockState(neighbor).getBlock() instanceof EnergyConduitBlock) {
+                if (level.getBlockState(neighbor).is(pipe)) {
                     if (visited.add(neighbor)) {
                         queue.add(neighbor);
                     }
