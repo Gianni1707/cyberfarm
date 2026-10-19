@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Methane Extractor
-  parent: gas_power.md
-  position: 3
+  parent: generators.md
+  position: 4
   icon: cyberfarm:methane_extractor
 item_ids:
   - cyberfarm:methane_extractor
@@ -61,7 +61,9 @@ structure where a mob is shut in, giving off **Methane**.
   side. The centre stays empty: that is where the mob goes.
 - **Roof**: 8 Cyber Frame Blocks around the **Methane Extractor** in the middle.
 
-The extractor GUI says **Chamber ready** when the structure is right.
+When the structure is right the chamber powers up with a chime: the extractor and every
+Cyber Frame light up with cyan energy lines, and the GUI says **Chamber ready**. A finished chamber opens the GUI from any of its blocks
+(sneak to place blocks against it instead).
 
 ## Putting a mob inside
 

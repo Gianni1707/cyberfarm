@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Energy Conduit
-  parent: index.md
-  position: 3
+  parent: cables.md
+  position: 1
   icon: cyberfarm:energy_conduit
 item_ids:
   - cyberfarm:energy_conduit

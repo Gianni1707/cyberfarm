@@ -1,16 +1,28 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,formed=false": {
       "model": "cyberfarm:block/methane_extractor"
     },
-    "facing=east": {
+    "facing=north,formed=true": {
+      "model": "cyberfarm:block/methane_extractor_formed"
+    },
+    "facing=east,formed=false": {
       "model": "cyberfarm:block/methane_extractor"
     },
-    "facing=south": {
+    "facing=east,formed=true": {
+      "model": "cyberfarm:block/methane_extractor_formed"
+    },
+    "facing=south,formed=false": {
       "model": "cyberfarm:block/methane_extractor"
     },
-    "facing=west": {
+    "facing=south,formed=true": {
+      "model": "cyberfarm:block/methane_extractor_formed"
+    },
+    "facing=west,formed=false": {
       "model": "cyberfarm:block/methane_extractor"
+    },
+    "facing=west,formed=true": {
+      "model": "cyberfarm:block/methane_extractor_formed"
     }
   }
 }

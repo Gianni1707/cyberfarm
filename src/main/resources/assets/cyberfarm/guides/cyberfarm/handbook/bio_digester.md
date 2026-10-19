@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Bio-Digester
-  parent: gas_power.md
-  position: 2
+  parent: generators.md
+  position: 3
   icon: cyberfarm:bio_digester
 item_ids:
   - cyberfarm:bio_digester

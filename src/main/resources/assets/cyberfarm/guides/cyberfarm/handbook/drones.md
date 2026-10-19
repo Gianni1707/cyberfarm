@@ -1,14 +1,14 @@
 ---
 navigation:
-  title: Drones
-  parent: index.md
-  position: 10
+  title: Using Drones
+  parent: drone_systems.md
+  position: 6
   icon: cyberfarm:drone
 item_ids:
   - cyberfarm:drone
 ---
 
-# Drones
+# Using Drones
 
 <ItemImage id="cyberfarm:drone" scale="2" float="left" />
 

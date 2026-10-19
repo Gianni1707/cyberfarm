@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Gas Power
-  parent: index.md
-  position: 4
+  parent: generators.md
+  position: 2
   icon: cyberfarm:gas_turbine
 ---
 
@@ -30,4 +30,3 @@ A typical setup: a Bio-Digester and a Methane Extractor push their gas into
 [Gas Pipes](gas_pipe.md), which carry it to a [Gas Turbine](gas_turbine.md); the turbine pushes
 FE into [Energy Conduits](energy_conduit.md) that power your drones' docks.
 
-<SubPages icons={true} />

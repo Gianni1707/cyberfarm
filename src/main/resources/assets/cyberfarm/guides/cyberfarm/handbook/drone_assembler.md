@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Drone Assembler
-  parent: index.md
-  position: 5
+  parent: drone_systems.md
+  position: 1
   icon: cyberfarm:drone_assembler
 item_ids:
   - cyberfarm:drone_assembler

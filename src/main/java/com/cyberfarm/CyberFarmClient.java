@@ -1,5 +1,7 @@
 package com.cyberfarm;
 
+import com.cyberfarm.block.entity.MufflerBlockEntity;
+import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.screen.BioDigesterScreen;
@@ -8,30 +10,40 @@ import com.cyberfarm.client.screen.DroneAssemblerScreen;
 import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.client.screen.GasTurbineScreen;
 import com.cyberfarm.client.screen.MethaneExtractorScreen;
+import com.cyberfarm.client.screen.MufflerScreen;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModMenus;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import org.jspecify.annotations.Nullable;
 
 // Client-only entry point: never loaded on a dedicated server.
 @Mod(value = CyberFarm.MODID, dist = Dist.CLIENT)
@@ -39,12 +51,50 @@ public class CyberFarmClient {
     public CyberFarmClient(IEventBus modEventBus, ModContainer container) {
         // Mods screen > CyberFarm > Config
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
 
         modEventBus.addListener(CyberFarmClient::registerScreens);
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
+        NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
+        NeoForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
+    }
+
+    private static void startDroneSound(EntityJoinLevelEvent event) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof DroneEntity drone) {
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new DroneSoundInstance(drone));
+        }
+    }
+
+    /** Silences a sound when a Muffler nearby is set to silence its kind. Players' own sounds have no kind. */
+    private static void muffleSounds(PlaySoundEvent event) {
+        SoundInstance sound = event.getSound();
+        // The drone hum checks the muffler itself every tick, so it can come back when the drone flies away
+        if (sound == null || sound.isRelative() || sound instanceof DroneSoundInstance) {
+            return;
+        }
+        MufflerBlockEntity.Category category = categoryOf(sound);
+        Level level = Minecraft.getInstance().level;
+        if (category != null && level != null && MufflerBlockEntity.isMuffled(level, sound.getX(), sound.getY(), sound.getZ(), category)) {
+            event.setSound(null);
+        }
+    }
+
+    private static MufflerBlockEntity.@Nullable Category categoryOf(SoundInstance sound) {
+        Identifier id = sound.getIdentifier();
+        if (id.getNamespace().equals(CyberFarm.MODID)) {
+            return id.getPath().startsWith("drone.") ? MufflerBlockEntity.Category.DRONES : MufflerBlockEntity.Category.MACHINES;
+        }
+        if (ClientConfig.isExtraMuted(id)) {
+            return MufflerBlockEntity.Category.OTHER_MACHINES;
+        }
+        return switch (sound.getSource()) {
+            case HOSTILE -> MufflerBlockEntity.Category.MONSTERS;
+            case NEUTRAL -> MufflerBlockEntity.Category.ANIMALS;
+            default -> null;
+        };
     }
 
     private static void registerScreens(RegisterMenuScreensEvent event) {
@@ -54,6 +104,7 @@ public class CyberFarmClient {
         event.register(ModMenus.BIO_DIGESTER.get(), BioDigesterScreen::new);
         event.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
         event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
+        event.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {

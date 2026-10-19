@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Drone Frames
-  parent: index.md
-  position: 6
+  parent: drone_systems.md
+  position: 2
   icon: cyberfarm:basic_frame
 item_ids:
   - cyberfarm:basic_frame

@@ -25,6 +25,7 @@ public final class InfoPages {
                 page(ModItems.METHANE_EXTRACTOR.get()),
                 page(ModItems.CYBER_FRAME.get()),
                 page(ModItems.MOB_CAPSULE.get()),
+                page(ModItems.MUFFLER.get()),
                 page(ModItems.DRONE.get()),
                 page(ModItems.SURVEY_TOOL.get()),
                 page(ModItems.HARVESTER_MODULE.get()),

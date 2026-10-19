@@ -144,18 +144,29 @@ def blocks():
     facing_blockstate("gas_turbine")
 
     # The extractor is the chamber's "shower head": its bottom face looks into the chamber
-    write(ASSETS / "models/block/methane_extractor.json", {
-        "parent": "minecraft:block/cube",
-        "textures": {"particle": tex("methane_extractor_side"), "up": tex("methane_extractor_top"),
-                     "down": tex("methane_extractor_bottom"), "north": tex("methane_extractor_side"),
-                     "east": tex("methane_extractor_side"), "south": tex("methane_extractor_side"),
-                     "west": tex("methane_extractor_side")},
-    })
-    write(ASSETS / "blockstates/methane_extractor.json",
-          {"variants": {f"facing={f}": {"model": f"{NS}:block/methane_extractor"} for f in FACING_ROTATION}})
+    for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):
+        side = tex("methane_extractor_side" + suffix)
+        write(ASSETS / f"models/block/{model}.json", {
+            "parent": "minecraft:block/cube",
+            "textures": {"particle": side, "up": tex("methane_extractor_top" + suffix),
+                         "down": tex("methane_extractor_bottom" + suffix),
+                         "north": side, "east": side, "south": side, "west": side},
+        })
+    write(ASSETS / "blockstates/methane_extractor.json", {"variants": {
+        f"facing={f},formed={formed}": {"model": f"{NS}:block/methane_extractor{'_formed' if formed == 'true' else ''}"}
+        for f in FACING_ROTATION for formed in ("false", "true")}})
 
-    write(ASSETS / "models/block/cyber_frame.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("cyber_frame")}})
-    write(ASSETS / "blockstates/cyber_frame.json", {"variants": {"": {"model": f"{NS}:block/cyber_frame"}}})
+    for model in ("cyber_frame", "cyber_frame_formed"):
+        write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
+    write(ASSETS / "blockstates/cyber_frame.json", {"variants": {
+        "formed=false": {"model": f"{NS}:block/cyber_frame"},
+        "formed=true": {"model": f"{NS}:block/cyber_frame_formed"}}})
+
+    # Soft block, not a machine: no pickaxe needed
+    write(ASSETS / "models/block/muffler.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("muffler")}})
+    facing_blockstate("muffler")
+    write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler"}})
+    block_loot("muffler")
 
     names = ["combustion_generator", "drone_assembler", "drone_dock", "energy_conduit", "gas_pipe",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame"]
@@ -239,7 +250,8 @@ def recipes():
     shaped("bio_digester", ["ICI", "GXG", "ICI"], {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
     shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": core})
     shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core, "G": "minecraft:glass"})
-    shaped("mob_capsule", ["IGI", "GEG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "E": "minecraft:ender_pearl"})
+    shaped("muffler", ["WIW", "INI", "WIW"], {"W": "#minecraft:wool", "I": iron, "N": "minecraft:note_block"})
+    shaped("mob_capsule",["IGI", "GEG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "E": "minecraft:ender_pearl"})
     shaped("survey_tool", [" G ", "IRI", " I "], {"G": "minecraft:glass_pane", "I": iron, "R": redstone}, category="equipment")
 
     # The handbook is a GuideME guide: only craftable when GuideME is installed.
@@ -251,8 +263,32 @@ def recipes():
     })
 
 
+# --------------------------------------------------------------------------- sounds
+
+def sounds():
+    """CyberFarm sound events, built from vanilla audio files with their own pitch and volume."""
+    def files(path, count=1, **attrs):
+        names = [path] if count == 1 else [f"{path}{i}" for i in range(1, count + 1)]
+        return [{"name": f"minecraft:{n}", **attrs} for n in names]
+
+    events = {
+        "drone.fly": files("mob/bee/loop1", pitch=1.5, volume=0.5),
+        "drone.takeoff": files("block/beacon/power1", pitch=1.8, volume=0.4),
+        "drone.land": files("block/iron_trapdoor/close", 4, pitch=1.5, volume=0.5),
+        "methane_extractor.work": files("block/bubble_column/upwards_ambient", 5, pitch=0.7, volume=0.5)
+                                  + files("random/fizz", pitch=0.6, volume=0.15),
+        "methane_extractor.activate": files("block/beacon/activate", pitch=1.2),
+        "methane_extractor.deactivate": files("block/beacon/deactivate", pitch=1.2),
+        "combustion_generator.crackle": files("block/furnace/fire_crackle", 5, pitch=1.2, volume=0.6),
+        "drone_assembler.work": files("block/smithing_table/smithing_table", 3),
+    }
+    write(ASSETS / "sounds.json", {name: {"sounds": entries, "subtitle": f"subtitles.{NS}.{name}"}
+                                   for name, entries in events.items()})
+
+
 if __name__ == "__main__":
     blocks()
     items()
     recipes()
+    sounds()
     print("assets and data written")

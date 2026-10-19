@@ -7,6 +7,7 @@ import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.menu.MethaneExtractorMenu;
+import com.cyberfarm.menu.MufflerMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
@@ -31,6 +32,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<MufflerMenu>> MUFFLER = MENUS.register("muffler",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<DroneDockMenu>> DRONE_DOCK = MENUS.register("drone_dock",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new DroneDockMenu(id, inventory)));

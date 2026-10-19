@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
@@ -11,6 +12,7 @@ import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModMenus;
+import com.cyberfarm.registry.ModSounds;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.resources.Identifier;
@@ -38,10 +40,12 @@ public class CyberFarm {
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        ModSounds.SOUNDS.register(modEventBus);
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
+        NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }

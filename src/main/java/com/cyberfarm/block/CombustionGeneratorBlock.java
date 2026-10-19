@@ -2,12 +2,12 @@ package com.cyberfarm.block;
 
 import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
+import com.cyberfarm.registry.ModSounds;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -57,7 +57,7 @@ public class CombustionGeneratorBlock extends MachineBlock {
             return;
         }
         if (random.nextDouble() < 0.1) {
-            level.playLocalSound(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 0.6F, 1.2F, false);
+            level.playLocalSound(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, ModSounds.GENERATOR_CRACKLE.get(), SoundSource.BLOCKS, 1.0F, 1.0F, false);
         }
         // Exhaust smoke from the vent on top
         double x = pos.getX() + 0.5 + (random.nextDouble() - 0.5) * 0.3;

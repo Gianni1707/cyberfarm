@@ -11,6 +11,7 @@ import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
+import com.cyberfarm.block.entity.MufflerBlockEntity;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -40,6 +41,9 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MethaneExtractorBlockEntity>> METHANE_EXTRACTOR = BLOCK_ENTITIES.register("methane_extractor",
             () -> new BlockEntityType<>(MethaneExtractorBlockEntity::new, Set.of(ModBlocks.METHANE_EXTRACTOR.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MufflerBlockEntity>> MUFFLER = BLOCK_ENTITIES.register("muffler",
+            () -> new BlockEntityType<>(MufflerBlockEntity::new, Set.of(ModBlocks.MUFFLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
             () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));

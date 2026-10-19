@@ -2,15 +2,19 @@ package com.cyberfarm.block.entity;
 
 import java.util.List;
 
+import com.cyberfarm.block.CyberFrameBlock;
+import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.menu.MethaneExtractorMenu;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
+import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Mob;
@@ -22,6 +26,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -46,6 +51,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     public static final int ANIMAL_RATE = 2;
     private static final int OUTPUT_PER_SIDE = 200;
     private static final int CHECK_INTERVAL = 20;
+    private static final int WORK_SOUND_INTERVAL = 50;
 
     private final GasTank tank = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private boolean formed;
@@ -85,6 +91,16 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         return true;
     }
 
+    /** Lights up (or turns off) the Cyber Frames of the chamber under {@code top}. */
+    private static void setFramesFormed(Level level, BlockPos top, boolean formed) {
+        for (BlockPos pos : BlockPos.betweenClosed(top.offset(-1, -3, -1), top.offset(1, 0, 1))) {
+            BlockState frame = level.getBlockState(pos);
+            if (frame.is(ModBlocks.CYBER_FRAME.get()) && frame.getValue(CyberFrameBlock.FORMED) != formed) {
+                level.setBlock(pos, frame.setValue(CyberFrameBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+            }
+        }
+    }
+
     private static boolean isFrame(Level level, BlockPos pos) {
         return level.getBlockState(pos).is(ModBlocks.CYBER_FRAME.get());
     }
@@ -114,12 +130,22 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         if (--checkCooldown <= 0) {
             checkCooldown = CHECK_INTERVAL;
             formed = isStructureValid(level, pos);
+            boolean changed = state.getValue(MethaneExtractorBlock.FORMED) != formed;
+            if (changed) {
+                level.setBlock(pos, state.setValue(MethaneExtractorBlock.FORMED, formed), Block.UPDATE_ALL);
+                level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
+            // Re-applied while formed, so a frame shared with a broken neighbour chamber lights up again
+            if (formed || changed) {
+                setFramesFormed(level, pos, formed);
+            }
             List<Mob> mobs = formed ? mobsInside(level) : List.of();
             mobCount = mobs.size();
             rate = mobs.stream().mapToInt(MethaneExtractorBlockEntity::rateOf).sum();
         }
-        if (rate > 0) {
-            tank.fill(ModFluids.METHANE.get(), rate);
+        // Bubbles from the chamber every couple of seconds while gas is actually being drawn
+        if (rate > 0 && tank.fill(ModFluids.METHANE.get(), rate) > 0 && level.getGameTime() % WORK_SOUND_INTERVAL == 0) {
+            level.playSound(null, pos.below(2), ModSounds.EXTRACTOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         tank.pushToNeighbors(level, pos, OUTPUT_PER_SIDE);
     }
@@ -154,6 +180,14 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     @Override
     protected int getExtraDataCount() {
         return 5;
+    }
+
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level != null) {
+            setFramesFormed(level, pos, false);
+        }
     }
 
     @Override

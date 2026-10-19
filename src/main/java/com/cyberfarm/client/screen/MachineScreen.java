@@ -30,6 +30,8 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     protected int energyBarX = 158;
     protected int energyBarY = 17;
     protected int energyBarHeight = 52;
+    /** False for settings-only GUIs that have no player inventory. */
+    protected boolean showInventory = true;
 
     protected MachineScreen(T menu, Inventory inventory, Component title, int width, int height) {
         super(menu, inventory, title, width, height);
@@ -48,7 +50,9 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         graphics.fill(x + 1, y + imageHeight - 2, x + imageWidth - 1, y + imageHeight - 1, PANEL_DARK);
         // Cyan header line under the title, and a divider above the player inventory
         graphics.fill(x + 6, y + 15, x + imageWidth - 6, y + 16, ACCENT_DIM);
-        graphics.fill(x + 6, y + inventoryLabelY - 3, x + imageWidth - 6, y + inventoryLabelY - 2, PANEL_LIGHT);
+        if (showInventory) {
+            graphics.fill(x + 6, y + inventoryLabelY - 3, x + imageWidth - 6, y + inventoryLabelY - 2, PANEL_LIGHT);
+        }
 
         for (Slot slot : menu.slots) {
             drawSlot(graphics, x + slot.x, y + slot.y);
@@ -126,7 +130,9 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.text(font, title, titleLabelX, titleLabelY, ACCENT, false);
-        graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TEXT_DIM, false);
+        if (showInventory) {
+            graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TEXT_DIM, false);
+        }
     }
 
     @Override

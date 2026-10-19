@@ -12,6 +12,7 @@ import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.TaxiJob;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
+import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -156,6 +157,12 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void setStatus(int status) {
+        int previous = getStatus();
+        if (status == STATUS_WORKING && (previous == STATUS_IDLE || previous == STATUS_CHARGING)) {
+            playSound(ModSounds.DRONE_TAKEOFF.get(), 1.0F, 1.0F);
+        } else if (status == STATUS_IDLE && previous == STATUS_RETURNING) {
+            playSound(ModSounds.DRONE_LAND.get(), 1.0F, 1.0F);
+        }
         entityData.set(DATA_STATUS, status);
     }
 

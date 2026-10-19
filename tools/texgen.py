@@ -256,6 +256,47 @@ def cyber_frame():
     return c
 
 
+def cyber_frame_formed():
+    """A frame of a formed multiblock: energy lines along the border and a glowing core."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "d", noise=4, seed=20)
+    c.rect(1, 1, 14, 1, "m")
+    c.rect(1, 1, 1, 14, "m")
+    c.frame(2, 2, 13, 13, "b")
+    for x, y in ((7, 2), (8, 2), (7, 13), (8, 13), (2, 7), (2, 8), (13, 7), (13, 8)):
+        c.set(x, y, "c")
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        c.set(x, y, "C")
+    c.frame(3, 3, 12, 12, "K")
+    c.rect(4, 4, 11, 11, "s")
+    c.rect(7, 4, 8, 11, "b")
+    c.rect(4, 7, 11, 8, "b")
+    c.rect(6, 6, 9, 9, "c")
+    c.rect(7, 7, 8, 8, "C")
+    return c
+
+
+def muffler():
+    """Padded sound-dampening panel with a covered speaker grille."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=40)
+    for i in range(1, 15, 4):  # quilted padding seams
+        c.rect(i, 1, i, 14, "d")
+        c.rect(1, i, 14, i, "d")
+    c.disc(7.5, 7.5, 5.2, "K")
+    c.disc(7.5, 7.5, 4.3, "s")
+    for y in range(4, 12, 2):
+        for x in range(4, 12, 2):
+            if math.hypot(x + 0.5 - 7.5, y + 0.5 - 7.5) < 4.0:
+                c.set(x + 1, y + 1, "m")
+    c.rect(5, 7, 10, 8, "b")
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        c.set(x, y, "l")
+    return c
+
+
 def digester_front():
     c = panel(22)
     c.rect(3, 2, 12, 12, "K")
@@ -287,28 +328,34 @@ def turbine_front():
     return c
 
 
-def extractor_bottom():
+def extractor_bottom(formed):
     """The shower head: faces down into the chamber."""
     c = panel(25)
     c.rect(3, 3, 12, 12, "K")
     c.rect(4, 4, 11, 11, "D")
     for y in range(4, 12, 2):
         for x in range(4, 12, 2):
-            c.set(x + (y // 2) % 2, y, "c")
+            c.set(x + (y // 2) % 2, y, "C" if formed else "b")
     return c
 
 
-def extractor_top():
+def extractor_top(formed):
     c = panel(26)
     c.disc(7.5, 7.5, 3.6, "K")
-    c.disc(7.5, 7.5, 2.6, "b")
-    c.rect(7, 7, 8, 8, "s")
+    c.disc(7.5, 7.5, 2.6, "c" if formed else "b")
+    c.rect(7, 7, 8, 8, "C" if formed else "s")
     return c
 
 
-def extractor_side():
+def extractor_side(formed):
+    """Status strip: red while the chamber is incomplete, cyan once it is formed."""
+    if formed:
+        c = cyber_frame_formed()
+        c.rect(4, 7, 11, 8, "c")
+        c.rect(6, 7, 9, 8, "C")
+        return c
     c = cyber_frame()
-    c.rect(5, 7, 10, 8, "#7fd4e8")
+    c.rect(5, 7, 10, 8, "r")
     return c
 
 
@@ -849,13 +896,18 @@ def build_all():
         "block/drone_dock_beacon": dock_beacon(),
         "block/energy_conduit": energy_conduit(),
         "block/cyber_frame": cyber_frame(),
+        "block/cyber_frame_formed": cyber_frame_formed(),
+        "block/muffler": muffler(),
         "block/bio_digester_front": digester_front(),
         "block/bio_digester_top": digester_top(),
         "block/gas_turbine_front": turbine_front(),
         "block/gas_turbine_top": generator_top(),
-        "block/methane_extractor_bottom": extractor_bottom(),
-        "block/methane_extractor_top": extractor_top(),
-        "block/methane_extractor_side": extractor_side(),
+        "block/methane_extractor_bottom": extractor_bottom(False),
+        "block/methane_extractor_top": extractor_top(False),
+        "block/methane_extractor_side": extractor_side(False),
+        "block/methane_extractor_bottom_formed": extractor_bottom(True),
+        "block/methane_extractor_top_formed": extractor_top(True),
+        "block/methane_extractor_side_formed": extractor_side(True),
         "block/gas_pipe": gas_pipe(),
         "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),

@@ -1,8 +1,8 @@
 ---
 navigation:
   title: Gas Pipe
-  parent: gas_power.md
-  position: 1
+  parent: cables.md
+  position: 2
   icon: cyberfarm:gas_pipe
 item_ids:
   - cyberfarm:gas_pipe
