@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "G": "minecraft:glass"
+  },
+  "pattern": [
+    "III",
+    "GGG",
+    "III"
+  ],
+  "result": {
+    "id": "cyberfarm:liquid_pipe",
+    "count": 8
+  }
+}

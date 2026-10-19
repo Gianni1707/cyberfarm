@@ -18,7 +18,7 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame",
-    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module",
+    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
     "drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
@@ -86,7 +86,7 @@ def dock_model():
     })
 
 
-PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe") for tier in ("", "advanced_", "elite_")]
+PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe", "liquid_pipe") for tier in ("", "advanced_", "elite_")]
 
 
 def pipe_models(name):
@@ -113,6 +113,9 @@ def pipe_models(name):
     parts = [{"apply": {"model": f"{NS}:block/{name}_core"}}]
     for direction, rotation in rotations.items():
         parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
+    # Pulling collar on the arms set to extract (shared by every pipe)
+    for direction, rotation in rotations.items():
+        parts.append({"when": {direction: "true", f"extract_{direction}": "true"}, "apply": {"model": f"{NS}:block/pipe_extract", **rotation}})
     write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
     write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_inventory"}})
 
@@ -143,6 +146,8 @@ def blocks():
 
     for pipe in PIPES:
         pipe_models(pipe)
+    write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
+        "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
 
     orientable("bio_digester", "bio_digester_front", "bio_digester_top")
     facing_blockstate("bio_digester")
@@ -180,7 +185,7 @@ def blocks():
     names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
-             "waste_reprocessor", "vitrified_waste"]
+             "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -273,6 +278,10 @@ def nuclear_blocks():
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
     orientable("water_pump", "water_pump_front", "water_pump_top")
     facing_blockstate("water_pump")
+    for tank in ("liquid_tank", "gas_tank"):
+        write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
+            "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
+        facing_blockstate(tank)
     orientable("coolant_mixer", "coolant_mixer_front", "machine_top")
     facing_blockstate("coolant_mixer")
     orientable("waste_reprocessor", "waste_reprocessor_front", "machine_top")
@@ -371,6 +380,8 @@ def recipes():
     shaped("planter_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:dispenser", "C": copper, "D": core})
     shaped("logger_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:iron_axe", "C": copper, "D": core})
     shaped("taxi_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:lead", "C": copper, "D": core})
+    shaped("rancher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:shears", "C": copper, "D": core})
+    shaped("fertilizer_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bone_block", "C": copper, "D": core})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
@@ -387,8 +398,9 @@ def recipes():
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
+    shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)
     # Higher tiers: 8 pipes around an upgrade core
-    for kind in ("energy_conduit", "gas_pipe"):
+    for kind in ("energy_conduit", "gas_pipe", "liquid_pipe"):
         shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": redstone}, count=8)
         shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": f"{NS}:uranium_ingot"}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
@@ -415,6 +427,8 @@ def recipes():
            {"I": iron, "D": "minecraft:diamond", "R": redstone, "T": f"{NS}:gas_turbine", "X": turbine_casing})
     shaped("multiblock_projector", ["GLG", "IRI", " I "],
            {"G": "minecraft:glass_pane", "L": "minecraft:glowstone_dust", "I": iron, "R": redstone}, category="equipment")
+    shaped("liquid_tank", ["IGI", "GBG", "IGI"], {"I": iron, "G": "minecraft:glass", "B": "minecraft:bucket"})
+    shaped("gas_tank", ["CGC", "GBG", "CGC"], {"C": copper, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": core})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")

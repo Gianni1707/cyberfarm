@@ -2,11 +2,18 @@ package com.cyberfarm.block;
 
 import java.util.Map;
 
+import com.google.common.collect.Maps;
+
 import com.cyberfarm.energy.ConduitNetwork;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -16,12 +23,18 @@ import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Shared base of conduits and pipes: connects by itself to pipes of the same kind (any tier) and to
@@ -31,6 +44,19 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  */
 public abstract class NetworkPipeBlock extends BaseEntityBlock {
     public static final Map<Direction, BooleanProperty> CONNECTIONS = PipeBlock.PROPERTY_BY_DIRECTION;
+    /** Per side: the pipe pulls out of the block there (right-click the arm to switch). */
+    public static final Map<Direction, BooleanProperty> EXTRACT = Maps.newEnumMap(Map.of(
+            Direction.NORTH, BooleanProperty.create("extract_north"),
+            Direction.EAST, BooleanProperty.create("extract_east"),
+            Direction.SOUTH, BooleanProperty.create("extract_south"),
+            Direction.WEST, BooleanProperty.create("extract_west"),
+            Direction.UP, BooleanProperty.create("extract_up"),
+            Direction.DOWN, BooleanProperty.create("extract_down")));
+
+    /** A pipe's block entity, which pulls from the blocks its arms are set to extract from. */
+    public interface Puller {
+        void pull(ServerLevel level, BlockPos pos, Direction side);
+    }
 
     private static final VoxelShape CORE = Block.box(5, 5, 5, 11, 11, 11);
     private static final Map<Direction, VoxelShape> ARMS = Map.of(
@@ -48,6 +74,9 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
         this.rate = rate;
         BlockState state = stateDefinition.any();
         for (BooleanProperty property : CONNECTIONS.values()) {
+            state = state.setValue(property, false);
+        }
+        for (BooleanProperty property : EXTRACT.values()) {
             state = state.setValue(property, false);
         }
         registerDefaultState(state);
@@ -69,6 +98,7 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         CONNECTIONS.values().forEach(builder::add);
+        EXTRACT.values().forEach(builder::add);
     }
 
     @Override
@@ -85,9 +115,57 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
             Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         // Any change next to a pipe may change which blocks the network reaches.
         ConduitNetwork.invalidate();
-        return level instanceof Level realLevel
-                ? state.setValue(CONNECTIONS.get(direction), connectsTo(realLevel, pos, direction))
-                : state;
+        if (!(level instanceof Level realLevel)) {
+            return state;
+        }
+        BlockState updated = state.setValue(CONNECTIONS.get(direction), connectsTo(realLevel, pos, direction));
+        // Pulling stops when the block is gone
+        return isMachineSide(updated, level, pos, direction) ? updated : updated.setValue(EXTRACT.get(direction), false);
+    }
+
+    /** Whether {@code side} leads to a machine or tank (not another pipe), so it can be set to pull. */
+    public boolean isMachineSide(BlockState state, LevelReader level, BlockPos pos, Direction side) {
+        return state.getValue(CONNECTIONS.get(side)) && !sameKind(level.getBlockState(pos.relative(side)));
+    }
+
+    private static boolean isPulling(BlockState state) {
+        return EXTRACT.values().stream().anyMatch(state::getValue);
+    }
+
+    /** Right-click an arm touching a machine or tank: the pipe starts (or stops) pulling out of it. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        Vec3 offset = hit.getLocation().subtract(Vec3.atCenterOf(pos));
+        Direction side = Direction.getApproximateNearest(offset.x, offset.y, offset.z);
+        if (!isMachineSide(state, level, pos, side)) {
+            return InteractionResult.PASS;
+        }
+        if (!level.isClientSide()) {
+            boolean extract = !state.getValue(EXTRACT.get(side));
+            level.setBlock(pos, state.setValue(EXTRACT.get(side), extract), Block.UPDATE_ALL);
+            // The network now treats that block as a source, not a destination
+            ConduitNetwork.invalidate();
+            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_ON, SoundSource.BLOCKS, 0.6F, extract ? 1.4F : 0.8F);
+            player.sendOverlayMessage(Component.translatable(extract ? "message.cyberfarm.pipe.extract" : "message.cyberfarm.pipe.normal"));
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** Only pipes with an arm set to extract tick. */
+    @Override
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        if (level.isClientSide() || !isPulling(state)) {
+            return null;
+        }
+        return (tickLevel, pos, tickState, entity) -> {
+            if (entity instanceof Puller puller) {
+                for (Direction side : Direction.values()) {
+                    if (tickState.getValue(EXTRACT.get(side))) {
+                        puller.pull((ServerLevel) tickLevel, pos, side);
+                    }
+                }
+            }
+        };
     }
 
     private boolean connectsTo(Level level, BlockPos pos, Direction direction) {

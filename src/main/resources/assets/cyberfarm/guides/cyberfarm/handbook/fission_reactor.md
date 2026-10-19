@@ -171,7 +171,7 @@ Reactor Ports are where the outside world connects:
 | In | Out |
 | --- | --- |
 | Fuel Rods (hoppers, pipes of other mods) | Depleted Fuel Rods |
-| Water and coolant (Gas Pipes) | Steam, pushed out by itself |
+| Water and coolant ([Liquid Pipes](liquid_pipe.md)) | Steam, pushed out by itself ([Gas Pipes](gas_pipe.md)) |
 
 ## Power, heat and cooling
 
@@ -199,3 +199,6 @@ details).
   around it becomes heavily [radioactive](radiation.md) for a long time.
 
 An idle core cools down slowly by itself.
+
+**No escape**: breaking a block of the tower, or the controller, while the temperature is above
+80% does not save you. The core melts down anyway. Turn the power to Off and let it cool first.

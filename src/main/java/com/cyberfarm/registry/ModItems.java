@@ -36,6 +36,9 @@ public class ModItems {
     public static final DeferredItem<BlockItem> GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_PIPE);
     public static final DeferredItem<BlockItem> ADVANCED_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_GAS_PIPE);
     public static final DeferredItem<BlockItem> ELITE_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_GAS_PIPE);
+    public static final DeferredItem<BlockItem> LIQUID_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.LIQUID_PIPE);
+    public static final DeferredItem<BlockItem> ADVANCED_LIQUID_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_LIQUID_PIPE);
+    public static final DeferredItem<BlockItem> ELITE_LIQUID_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_LIQUID_PIPE);
     public static final DeferredItem<BlockItem> BIO_DIGESTER = ITEMS.registerSimpleBlockItem(ModBlocks.BIO_DIGESTER);
     public static final DeferredItem<BlockItem> GAS_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TURBINE);
     public static final DeferredItem<BlockItem> METHANE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_EXTRACTOR);
@@ -65,6 +68,8 @@ public class ModItems {
     public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
+    public static final DeferredItem<BlockItem> LIQUID_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.LIQUID_TANK);
+    public static final DeferredItem<BlockItem> GAS_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TANK);
 
     // Buckets of the mod's fluids (creative): gases are held upside down
     public static final DeferredItem<FluidBucketItem> BIOGAS_BUCKET = ITEMS.registerItem("biogas_bucket", p -> new FluidBucketItem(ModFluids.BIOGAS.get(), p));
@@ -99,6 +104,10 @@ public class ModItems {
             p -> new DroneModuleItem(p, DroneTask.LOG, 2));
     public static final DeferredItem<DroneModuleItem> TAXI_MODULE = ITEMS.registerItem("taxi_module",
             p -> new DroneModuleItem(p, DroneTask.TAXI, 2));
+    public static final DeferredItem<DroneModuleItem> RANCHER_MODULE = ITEMS.registerItem("rancher_module",
+            p -> new DroneModuleItem(p, DroneTask.RANCH, 1));
+    public static final DeferredItem<DroneModuleItem> FERTILIZER_MODULE = ITEMS.registerItem("fertilizer_module",
+            p -> new DroneModuleItem(p, DroneTask.FERTILIZE, 1));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",

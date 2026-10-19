@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "minecraft:copper_ingot",
+    "G": "minecraft:glass",
+    "B": "minecraft:bucket"
+  },
+  "pattern": [
+    "CGC",
+    "GBG",
+    "CGC"
+  ],
+  "result": {
+    "id": "cyberfarm:gas_tank"
+  }
+}

@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 /** Gas Pipe: carries biogas, methane and any other fluid between tanks and machines of any mod. */
@@ -19,8 +20,13 @@ public class GasPipeBlock extends NetworkPipeBlock {
     }
 
     @Override
-    protected MapCodec<GasPipeBlock> codec() {
+    protected MapCodec<? extends GasPipeBlock> codec() {
         return codec;
+    }
+
+    /** Gas Pipes carry what is lighter than air (gases, Steam); Liquid Pipes the rest. */
+    public boolean carries(FluidResource resource) {
+        return resource.getFluidType().isLighterThanAir();
     }
 
     @Override

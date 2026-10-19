@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/gas_tank"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/gas_tank",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/gas_tank",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/gas_tank",
+      "y": 270
+    }
+  }
+}

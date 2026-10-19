@@ -9,6 +9,7 @@ import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
+import com.cyberfarm.block.entity.FluidTankBlockEntity;
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
@@ -37,7 +38,8 @@ public class ModBlockEntities {
             () -> new BlockEntityType<>(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get(), ModBlocks.ADVANCED_ENERGY_CONDUIT.get(), ModBlocks.ELITE_ENERGY_CONDUIT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasPipeBlockEntity>> GAS_PIPE = BLOCK_ENTITIES.register("gas_pipe",
-            () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get())));
+            () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get(),
+                    ModBlocks.LIQUID_PIPE.get(), ModBlocks.ADVANCED_LIQUID_PIPE.get(), ModBlocks.ELITE_LIQUID_PIPE.get())));
 
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioDigesterBlockEntity>> BIO_DIGESTER = BLOCK_ENTITIES.register("bio_digester",
@@ -66,6 +68,9 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WasteReprocessorBlockEntity>> WASTE_REPROCESSOR = BLOCK_ENTITIES.register("waste_reprocessor",
             () -> new BlockEntityType<>(WasteReprocessorBlockEntity::new, Set.of(ModBlocks.WASTE_REPROCESSOR.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK = BLOCK_ENTITIES.register("fluid_tank",
+            () -> new BlockEntityType<>(FluidTankBlockEntity::new, Set.of(ModBlocks.LIQUID_TANK.get(), ModBlocks.GAS_TANK.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP = BLOCK_ENTITIES.register("water_pump",
             () -> new BlockEntityType<>(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));

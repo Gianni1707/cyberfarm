@@ -9,7 +9,9 @@ import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.DroneAssemblerBlock;
 import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
+import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.GasPipeBlock;
+import com.cyberfarm.block.LiquidPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MufflerBlock;
@@ -61,6 +63,13 @@ public class ModBlocks {
     public static final DeferredBlock<GasPipeBlock> ELITE_GAS_PIPE = BLOCKS.registerBlock("elite_gas_pipe",
             p -> new GasPipeBlock(p, 16_000), ModBlocks::pipe);
 
+    public static final DeferredBlock<LiquidPipeBlock> LIQUID_PIPE = BLOCKS.registerBlock("liquid_pipe",
+            p -> new LiquidPipeBlock(p, 1_000), ModBlocks::pipe);
+    public static final DeferredBlock<LiquidPipeBlock> ADVANCED_LIQUID_PIPE = BLOCKS.registerBlock("advanced_liquid_pipe",
+            p -> new LiquidPipeBlock(p, 4_000), ModBlocks::pipe);
+    public static final DeferredBlock<LiquidPipeBlock> ELITE_LIQUID_PIPE = BLOCKS.registerBlock("elite_liquid_pipe",
+            p -> new LiquidPipeBlock(p, 16_000), ModBlocks::pipe);
+
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
             BioDigesterBlock::new, ModBlocks::machine);
@@ -101,6 +110,10 @@ public class ModBlocks {
             CoolantMixerBlock::new, ModBlocks::machine);
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::machine);
+    public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
+            p -> new FluidTankBlock(p, false), ModBlocks::machine);
+    public static final DeferredBlock<FluidTankBlock> GAS_TANK = BLOCKS.registerBlock("gas_tank",
+            p -> new FluidTankBlock(p, true), ModBlocks::machine);
 
     public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
             WasteReprocessorBlock::new, ModBlocks::machine);

@@ -24,6 +24,9 @@ public final class InfoPages {
                 page(ModItems.GAS_PIPE.get()),
                 page(ModItems.ADVANCED_GAS_PIPE.get()),
                 page(ModItems.ELITE_GAS_PIPE.get()),
+                page(ModItems.LIQUID_PIPE.get()),
+                page(ModItems.ADVANCED_LIQUID_PIPE.get()),
+                page(ModItems.ELITE_LIQUID_PIPE.get()),
                 page(ModItems.BIO_DIGESTER.get()),
                 page(ModItems.GAS_TURBINE.get()),
                 page(ModItems.METHANE_EXTRACTOR.get()),
@@ -37,6 +40,8 @@ public final class InfoPages {
                 page(ModItems.TURBINE_CASING.get()),
                 page(ModItems.TURBINE_PORT.get()),
                 page(ModItems.WATER_PUMP.get()),
+                page(ModItems.LIQUID_TANK.get()),
+                page(ModItems.GAS_TANK.get()),
                 page(ModItems.COOLANT_MIXER.get()),
                 page(ModItems.FUEL_ROD.get()),
                 page(ModItems.DEPLETED_FUEL_ROD.get()),
@@ -57,7 +62,9 @@ public final class InfoPages {
                 page(ModItems.TRANSPORT_MODULE.get()),
                 page(ModItems.PLANTER_MODULE.get()),
                 page(ModItems.LOGGER_MODULE.get()),
-                page(ModItems.TAXI_MODULE.get()));
+                page(ModItems.TAXI_MODULE.get()),
+                page(ModItems.RANCHER_MODULE.get()),
+                page(ModItems.FERTILIZER_MODULE.get()));
     }
 
     private static Page page(Item item) {
