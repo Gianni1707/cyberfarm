@@ -8,6 +8,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
@@ -15,20 +16,44 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Item Pipe filter, with the usual options of other mods: up to 9 sample items, as a whitelist or a
- * blacklist, matched by item (optionally with components), by mod, or by a tag picked from the
- * sample's tags. The default is an empty blacklist: everything passes.
+ * Item filter of the Drone Dock, with the usual options of other mods: up to 9 sample items, as a
+ * whitelist or a blacklist, matched by item (optionally with components), by mod, or by a tag picked
+ * from the sample's tags. The default is an empty blacklist: everything passes.
  */
 public class ItemFilter {
     public static final int SLOTS = 9;
+    /** GUI data: the 4 energy slots every machine menu starts with, then the 4 filter settings. */
+    public static final int DATA_SLOTS = MachineBlockEntity.ENERGY_DATA_SLOTS + 4;
 
     private final SimpleContainer items;
+    private final Runnable onChanged;
+    private final ContainerData data = new ContainerData() {
+        @Override
+        public int get(int id) {
+            return switch (id - MachineBlockEntity.ENERGY_DATA_SLOTS) {
+                case 0 -> whitelist ? 1 : 0;
+                case 1 -> matchComponents ? 1 : 0;
+                case 2 -> matchMod ? 1 : 0;
+                case 3 -> tagIndex();
+                default -> 0;
+            };
+        }
+
+        @Override
+        public void set(int id, int value) {}
+
+        @Override
+        public int getCount() {
+            return DATA_SLOTS;
+        }
+    };
     private boolean whitelist;
     private boolean matchComponents;
     private boolean matchMod;
     private @Nullable TagKey<Item> tag;
 
     public ItemFilter(Runnable onChanged) {
+        this.onChanged = onChanged;
         items = new SimpleContainer(SLOTS) {
             @Override
             public void setChanged() {
@@ -44,6 +69,10 @@ public class ItemFilter {
 
     public SimpleContainer items() {
         return items;
+    }
+
+    public ContainerData data() {
+        return data;
     }
 
     public boolean test(ItemStack stack) {
@@ -74,14 +103,17 @@ public class ItemFilter {
 
     public void toggleWhitelist() {
         whitelist = !whitelist;
+        onChanged.run();
     }
 
     public void toggleComponents() {
         matchComponents = !matchComponents;
+        onChanged.run();
     }
 
     public void toggleMod() {
         matchMod = !matchMod;
+        onChanged.run();
     }
 
     /** Tags of the first sample item, sorted so client and server agree on the order. */
@@ -108,6 +140,7 @@ public class ItemFilter {
         List<TagKey<Item>> tags = tagsOf(firstSample());
         int index = Math.floorMod(tagIndex() + 1 + step, tags.size() + 1) - 1;
         tag = index < 0 ? null : tags.get(index);
+        onChanged.run();
     }
 
     public void save(ValueOutput output) {

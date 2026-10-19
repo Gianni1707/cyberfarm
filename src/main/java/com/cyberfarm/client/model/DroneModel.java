@@ -12,6 +12,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.util.Mth;
 
@@ -111,6 +112,12 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                 PartPose.ZERO);
 
         return LayerDefinition.create(mesh, 64, 64);
+    }
+
+    /** Moves the pose to the Transport claw, following the body's hover and sway. */
+    public void translateToClaw(PoseStack pose) {
+        body.translateAndRotate(pose);
+        claw.translateAndRotate(pose);
     }
 
     @Override

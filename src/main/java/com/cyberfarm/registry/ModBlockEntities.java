@@ -11,7 +11,6 @@ import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
-import com.cyberfarm.block.entity.ItemPipeBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
@@ -40,9 +39,6 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasPipeBlockEntity>> GAS_PIPE = BLOCK_ENTITIES.register("gas_pipe",
             () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get())));
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemPipeBlockEntity>> ITEM_PIPE = BLOCK_ENTITIES.register("item_pipe",
-            () -> new BlockEntityType<>(ItemPipeBlockEntity::new,
-                    Set.of(ModBlocks.ITEM_PIPE.get(), ModBlocks.ADVANCED_ITEM_PIPE.get(), ModBlocks.ELITE_ITEM_PIPE.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioDigesterBlockEntity>> BIO_DIGESTER = BLOCK_ENTITIES.register("bio_digester",
             () -> new BlockEntityType<>(BioDigesterBlockEntity::new, Set.of(ModBlocks.BIO_DIGESTER.get())));

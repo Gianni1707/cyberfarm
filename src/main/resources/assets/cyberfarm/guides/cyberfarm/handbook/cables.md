@@ -7,7 +7,8 @@ navigation:
 
 # Cables
 
-Cables carry power, fluids and items between your machines. Every kind **connects by itself** to
+Cables carry power and fluids between your machines (to move items, use a drone with a
+[Transport Module](modules.md)). Every kind **connects by itself** to
 cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
 mod. Each kind comes in **three tiers**, told apart by the rims of the sleeve: plain, **gold** and
 **violet**.
@@ -19,19 +20,14 @@ mod. Each kind comes in **three tiers**, told apart by the rims of the sleeve: p
   <ItemIcon id="gas_pipe" />
   <ItemIcon id="advanced_gas_pipe" />
   <ItemIcon id="elite_gas_pipe" />
-  <ItemIcon id="item_pipe" />
-  <ItemIcon id="advanced_item_pipe" />
-  <ItemIcon id="elite_item_pipe" />
 </ItemGrid>
 
 | Cable | Carries | Basic | Advanced | Elite |
 | --- | --- | --- | --- | --- |
 | [Energy Conduit](energy_conduit.md) | FE | 2,000 FE/t | 16,000 FE/t | 128,000 FE/t |
 | [Gas Pipe](gas_pipe.md) | gas, water, coolants, Steam, any fluid | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
-| [Item Pipe](item_pipe.md) | items | 8 items/s | 32 items/s | 128 items/s |
 
-The rate is how much can enter the network **from each source**: a generator, tank or inventory
-pushing in, or an inventory an Item Pipe pulls from. It is set by the pipe the source touches, so
+The rate is how much can enter the network **from each source**: a generator or tank pushing in. It is set by the pipe the source touches, so
 tiers can be mixed in one network: put a better pipe right where a big producer connects.
 
 As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:

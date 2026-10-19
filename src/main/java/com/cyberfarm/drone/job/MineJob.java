@@ -12,7 +12,8 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jspecify.annotations.Nullable;
 
 /**
- * Quarry Module: digs the surveyed area layer by layer, from the top of the area down to bedrock.
+ * Quarry Module: digs the surveyed area layer by layer, from the top of the area down to bedrock,
+ * keeping only the drops the dock filter lets through.
  * The current layer is stored on the dock. Skips fluids, unbreakable blocks, blocks with an
  * inventory or other block entity, and the column under the dock.
  */
@@ -101,11 +102,11 @@ public class MineJob extends DroneJob {
         return switch (travelTo(drone, target)) {
             case MOVING -> Result.CONTINUE;
             case FAILED -> Result.DONE;
-            case ARRIVED -> dig(drone, level);
+            case ARRIVED -> dig(drone, level, dock);
         };
     }
 
-    private Result dig(DroneEntity drone, ServerLevel level) {
+    private Result dig(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         BlockState state = level.getBlockState(target);
         float hardness = state.getDestroySpeed(level, target);
         int needed = miningTicks(hardness);
@@ -125,7 +126,8 @@ public class MineJob extends DroneJob {
         // so ores and obsidian drop correctly.
         var drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
         level.destroyBlock(target, false, drone);
-        drone.collect(level, target, drops);
+        // The dock filter decides what the drone keeps; the rest is thrown away
+        drone.collect(level, target, drops.stream().filter(dock.filter()::test).toList());
         drone.useJobEnergy(20 + (int) (hardness * 10));
         return isLoadFull(drone) ? Result.RETURN : Result.DONE;
     }

@@ -36,9 +36,6 @@ public class ModItems {
     public static final DeferredItem<BlockItem> GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_PIPE);
     public static final DeferredItem<BlockItem> ADVANCED_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_GAS_PIPE);
     public static final DeferredItem<BlockItem> ELITE_GAS_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_GAS_PIPE);
-    public static final DeferredItem<BlockItem> ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ITEM_PIPE);
-    public static final DeferredItem<BlockItem> ADVANCED_ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ITEM_PIPE);
-    public static final DeferredItem<BlockItem> ELITE_ITEM_PIPE = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ITEM_PIPE);
     public static final DeferredItem<BlockItem> BIO_DIGESTER = ITEMS.registerSimpleBlockItem(ModBlocks.BIO_DIGESTER);
     public static final DeferredItem<BlockItem> GAS_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TURBINE);
     public static final DeferredItem<BlockItem> METHANE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_EXTRACTOR);

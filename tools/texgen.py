@@ -837,30 +837,6 @@ def tier_rims(c, tier):
     return c
 
 
-def item_pipe():
-    """Steel sleeve with a green stripe and arrow marks: items, not power or gas."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "l", noise=3, seed=33)
-    c.rect(0, 7, 15, 8, "g")
-    for x in range(1, 16, 4):
-        c.set(x, 7, "G")
-        c.set(x + 1, 8, "G")
-    c.frame(5, 5, 10, 10, "k")
-    c.rect(0, 6, 15, 6, "w")
-    c.rect(0, 9, 15, 9, "m")
-    return c
-
-
-def item_pipe_extract():
-    """The pulling collar where a pipe meets an inventory: orange hazard ring."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "o", noise=4, seed=34)
-    c.frame(0, 0, 15, 15, "k")
-    for i in range(0, 16, 4):
-        c.rect(i, 0, i + 1, 15, "y")
-    return c
-
-
 def gas_pipe():
     """Like the conduit sleeve, with an amber stripe so gas and power lines are told apart."""
     c = Canvas()
@@ -1397,8 +1373,6 @@ def build_all():
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
         **{f"block/{tier}energy_conduit": tier_rims(energy_conduit(), tier) for tier in TIER_RIMS},
-        **{f"block/{tier}item_pipe": tier_rims(item_pipe(), tier) for tier in TIER_RIMS},
-        "block/item_pipe_extract": item_pipe_extract(),
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/muffler": muffler(),

@@ -14,8 +14,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Finds the machines reached by a group of connected pipes of one kind (Energy Conduits, Gas Pipes
- * or Item Pipes, of any tier). Results are cached by each pipe and thrown away whenever any pipe, or a block next to
+ * Finds the machines reached by a group of connected pipes of one kind (Energy Conduits or Gas Pipes,
+ * of any tier). Results are cached by each pipe and thrown away whenever any pipe, or a block next to
  * one, changes.
  */
 public final class ConduitNetwork {

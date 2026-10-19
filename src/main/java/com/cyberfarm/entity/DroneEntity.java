@@ -89,6 +89,8 @@ public class DroneEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
+    /** One item of the first cargo stack, so clients can draw it hanging from the Transport claw. */
+    private static final EntityDataAccessor<ItemStack> DATA_CARRIED = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.ITEM_STACK);
 
     private DroneModules modules = DroneModules.EMPTY;
     private int energy;
@@ -132,6 +134,7 @@ public class DroneEntity extends PathfinderMob {
         super.defineSynchedData(builder);
         builder.define(DATA_STATUS, STATUS_IDLE);
         builder.define(DATA_TASKS, 0);
+        builder.define(DATA_CARRIED, ItemStack.EMPTY);
     }
 
     @Override
@@ -235,6 +238,21 @@ public class DroneEntity extends PathfinderMob {
         return ItemStack.EMPTY;
     }
 
+    /** Sent only when it changes: ItemStack has no equals, so a plain set would resend it every tick. */
+    private void syncCarriedItem() {
+        ItemStack shown = ItemStack.EMPTY;
+        for (int i = 0; i < cargo.size() && shown.isEmpty(); i++) {
+            shown = ItemUtil.getStack(cargo, i).copyWithCount(1);
+        }
+        if (!ItemStack.matches(shown, entityData.get(DATA_CARRIED))) {
+            entityData.set(DATA_CARRIED, shown);
+        }
+    }
+
+    public ItemStack getCarriedItem() {
+        return entityData.get(DATA_CARRIED);
+    }
+
     public boolean cargoContains(Predicate<ItemStack> filter) {
         for (int i = 0; i < cargo.size(); i++) {
             ItemStack stack = ItemUtil.getStack(cargo, i);
@@ -326,6 +344,7 @@ public class DroneEntity extends PathfinderMob {
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
+        syncCarriedItem();
         if (dockPos == null || !level.isLoaded(dockPos)) {
             return;
         }

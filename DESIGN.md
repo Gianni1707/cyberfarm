@@ -43,7 +43,7 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Smontaggio**: drone nello slot di uscita dell'Assembler (altri slot vuoti) → pulsante Disassemble; i pezzi tornano negli slot, la carica va nel buffer dell'Assembler.
 - **Volo**: rettilineo con accelerazione e frenata, pathfinding solo come riserva quando il drone è bloccato.
 - **Quarry**: scava a serpentina riga per riga, invertendo il verso a ogni strato; torna a scaricare a 192 oggetti.
-- **Idee future**: Range Booster, Solar Skin, filtri per Quarry/Transport.
+- **Idee future**: Range Booster, Solar Skin.
 
 ### Energia
 - **Energy Conduit**: si collega da solo a cavi e blocchi FE di qualsiasi mod; non accumula, distribuisce subito
@@ -170,11 +170,12 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    ✅ Bilanciamento energia (confrontato con Mekanism, Immersive Engineering, Oritech): porte del reattore 2.500 mB/t di vapore,
    Gas Turbine 20 mB/t (biogas 60, metano 160 FE/t), Water Pump 500 mB/t a 40 FE/t.
    ✅ Cavi in 3 tier (base / Advanced oro / Elite viola), i tier si uniscono nella stessa rete e la portata è quella del cavo
-   toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe 1.000 / 4.000 / 16.000 mB/t,
-   **Item Pipe** (nuovo) 8 / 32 / 128 oggetti/s: click destro sul braccio verso un inventario per estrarre, consegna
-   all'inventario più vicino con spazio, gli hopper possono spingere dentro.
-   ✅ Filtro dell'Item Pipe (sul tubo che estrae, click destro di nuovo per aprirlo; sneak + click destro smette di estrarre):
-   9 campioni fantasma, whitelist/blacklist, NBT esatto o qualsiasi, per item o per mod, tag scelto tra quelli del primo campione.
+   toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe 1.000 / 4.000 / 16.000 mB/t.
+   Niente tubi per item: gli oggetti li sposta il drone col Transport Module (l'Item Pipe è stato tolto).
+   ✅ Filtro della Drone Dock (pulsante Filter nella sua GUI): 9 campioni fantasma, whitelist/blacklist, NBT esatto o
+   qualsiasi, per item o per mod, tag scelto tra quelli del primo campione. Il Quarry tiene solo i drop che passano (gli
+   altri vengono buttati), il Transport sposta solo gli oggetti che passano. Un filtro per dock, condiviso dai due moduli.
+   ✅ Il drone col Transport Module mostra l'oggetto che trasporta appeso alla pinza (primo stack del carico, sincronizzato ai client).
    ✅ Pagine JEI e REI per le macchine (`compat/MachineExample`, una categoria generica per viewer): Bio-Digester (organici
    raggruppati per mB), Methane Extractor (uova spawn per gruppo: zombie, mostri, animali), Gas Turbine, Water Pump, Coolant
    Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.

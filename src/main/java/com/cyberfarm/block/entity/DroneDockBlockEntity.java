@@ -5,12 +5,15 @@ import java.util.function.Predicate;
 
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
+import com.cyberfarm.menu.ItemFilterMenu;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -45,6 +48,8 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private @Nullable BlockPos transportDestination;
     private @Nullable BlockPos taxiDestination;
     private @Nullable UUID droneId;
+    /** What the Quarry keeps (the rest is thrown away) and what the Transport carries. */
+    private final ItemFilter filter = new ItemFilter(this::setChanged);
     private int droneStatus;
     private int droneEnergyPercent;
     private long lastStatusTick;
@@ -113,6 +118,16 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         transportSource = source;
         transportDestination = destination;
         setChanged();
+    }
+
+    public ItemFilter filter() {
+        return filter;
+    }
+
+    public void openFilter(Player player) {
+        player.openMenu(new SimpleMenuProvider((id, inventory, user) -> new ItemFilterMenu(id, inventory, filter,
+                ContainerLevelAccess.create(level, worldPosition), getBlockState().getBlock()),
+                Component.translatable("gui.cyberfarm.dock.filter_title")));
     }
 
     public boolean hasLiveDrone(ServerLevel level) {
@@ -206,6 +221,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("transport_destination", BlockPos.CODEC, transportDestination);
         output.storeNullable("taxi_destination", BlockPos.CODEC, taxiDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
+        filter.save(output.child("filter"));
     }
 
     @Override
@@ -217,6 +233,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         transportDestination = input.read("transport_destination", BlockPos.CODEC).orElse(null);
         taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
+        filter.load(input.childOrEmpty("filter"));
     }
 
     @Override
