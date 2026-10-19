@@ -275,7 +275,7 @@
   "subtitles.cyberfarm.waste_reprocessor.work": "Waste Reprocessor hums",
   "subtitles.cyberfarm.geiger.click": "Geiger Counter clicks",
   "cyberfarm.configuration.radiationWorldEffects": "Radiation Withers Land",
-  "info.item.cyberfarm.depleted_fuel_rod": "Nuclear waste. Carried, stored in a chest or left on the ground it contaminates the chunk; enough contamination makes everything nearby sick and the land wither. Treat it in a Waste Reprocessor. A reactor with full waste slots leaks radiation.",
+  "info.item.cyberfarm.depleted_fuel_rod": "Nuclear waste. Carried, stored in a chest or any other mod's storage, or left on the ground it contaminates the chunk; enough contamination makes everything nearby sick and the land wither. Treat it in a Waste Reprocessor. A reactor with full waste slots leaks radiation.",
   "info.block.cyberfarm.waste_reprocessor": "Treats a Depleted Fuel Rod with 40 FE/t in 10 seconds: a harmless block of Vitrified Waste, and an Uranium Ingot one time in three. Waste inside it is shielded.",
   "info.block.cyberfarm.vitrified_waste": "Treated nuclear waste: inert glass, safe to store or to build with.",
   "info.item.cyberfarm.hazmat_suit": "Hazmat Suit: helmet, suit, pants and boots. Each piece keeps out a quarter of the radiation, the full suit all of it. It also keeps the cold of coolant pools out.",

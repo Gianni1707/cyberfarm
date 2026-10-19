@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.cyberfarm.Config;
+import com.cyberfarm.block.entity.MachineBlockEntity;
+import com.cyberfarm.block.entity.ReactorPortBlockEntity;
 import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.registry.ModEffects;
 import com.cyberfarm.registry.ModItems;
@@ -27,7 +29,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * Nuclear contamination. Untreated waste, a leaking reactor or a meltdown add radiation to the chunk
@@ -115,13 +120,36 @@ public final class Radiation {
                         continue;
                     }
                     for (BlockEntity entity : chunk.getBlockEntities().values()) {
-                        if (entity instanceof Container container) {
-                            data.add(chunkPos, PER_ROD * countWaste(container));
-                        }
+                        data.add(chunkPos, PER_ROD * countStoredWaste(level, entity));
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Waste stored in a block: vanilla containers directly (each half of a double chest once), any
+     * other mod's storage through its item capability. CyberFarm machines shield the waste they hold.
+     */
+    private static long countStoredWaste(ServerLevel level, BlockEntity entity) {
+        if (entity instanceof Container container) {
+            return countWaste(container);
+        }
+        if (entity instanceof MachineBlockEntity || entity instanceof ReactorPortBlockEntity) {
+            return 0;
+        }
+        // shortcut: storage networks that expose the same items through several blocks count them more than once; dedupe by handler if that proves too harsh
+        ResourceHandler<ItemResource> items = level.getCapability(Capabilities.Item.BLOCK, entity.getBlockPos(), entity.getBlockState(), entity, null);
+        if (items == null) {
+            return 0;
+        }
+        long rods = 0;
+        for (int i = 0; i < items.size(); i++) {
+            if (items.getResource(i).is(ModItems.DEPLETED_FUEL_ROD.get())) {
+                rods += items.getAmountAsLong(i);
+            }
+        }
+        return rods;
     }
 
     private static int countWaste(Container container) {

@@ -127,7 +127,8 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
    (`CoolantFluidType.move`: NeoForge lascia il movimento nei fluidi delle mod al loro tipo) al 70% / 50%: chi ci entra rallenta e
    gela piano (danno solo da congelato del tutto; Cryo rallenta e gela di più, il cuoio protegge dal gelo).
 3. ✅ (da testare in gioco) Contaminazione per chunk (`RadiationData`, cala del 2% + 0,1 ogni 5 s). Fonti: barre esaurite
-   addosso, nei contenitori vicino ai giocatori o a terra (2,5 per barra ogni 5 s), reattore con scorie piene (perde),
+   addosso, nei contenitori vicino ai giocatori (anche i magazzini di altre mod, letti tramite la capability degli item;
+   le macchine CyberFarm schermano) o a terra (2,5 per barra ogni 5 s), reattore con scorie piene (perde),
    meltdown (400 su 5x5 chunk). Radiation Sickness da 20 / 100 / 300 Rad (danno che ignora l'armatura, fame, debolezza,
    nausea) per giocatori e mob; da 50 Rad il terreno appassisce (config `radiationWorldEffects`). Waste Reprocessor:
    barra esaurita → Vitrified Waste (+ 1/3 lingotto di uranio), 40 FE/t, 10 s.
