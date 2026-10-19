@@ -26,7 +26,7 @@ public class GasTurbineBlockEntity extends MachineBlockEntity {
 
     public static final int CAPACITY = 50_000;
     public static final int OUTPUT_PER_TICK = 400;
-    public static final int BURN_PER_TICK = 10;
+    public static final int BURN_PER_TICK = 20;
     public static final int FE_PER_MB_BIOGAS = 3;
     public static final int FE_PER_MB_METHANE = 8;
 

@@ -2,6 +2,7 @@ package com.cyberfarm.block.entity;
 
 import java.util.List;
 
+import com.cyberfarm.block.NetworkPipeBlock;
 import com.cyberfarm.energy.ConduitNetwork;
 import com.cyberfarm.registry.ModBlockEntities;
 
@@ -18,9 +19,6 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * the network, taking turns between them. Works with any fluid and any mod's fluid blocks.
  */
 public class GasPipeBlockEntity extends BlockEntity {
-    /** mB that can enter the network per insertion, i.e. per pushing machine per tick. */
-    public static final int TRANSFER_RATE = 1_000;
-
     private List<ConduitNetwork.Endpoint> endpoints = List.of();
     private int cachedVersion = -1;
     private int nextEndpoint;
@@ -43,7 +41,7 @@ public class GasPipeBlockEntity extends BlockEntity {
 
         @Override
         public long getCapacityAsLong(int index, FluidResource resource) {
-            return TRANSFER_RATE;
+            return rate();
         }
 
         @Override
@@ -53,7 +51,7 @@ public class GasPipeBlockEntity extends BlockEntity {
 
         @Override
         public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
-            return distribute(resource, Math.min(amount, TRANSFER_RATE), transaction);
+            return distribute(resource, Math.min(amount, rate()), transaction);
         }
 
         @Override
@@ -64,6 +62,11 @@ public class GasPipeBlockEntity extends BlockEntity {
 
     public GasPipeBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.GAS_PIPE.get(), pos, state);
+    }
+
+    /** mB that can enter the network per insertion, i.e. per pushing machine per tick: set by the tier. */
+    private int rate() {
+        return getBlockState().getBlock() instanceof NetworkPipeBlock pipe ? pipe.rate() : 0;
     }
 
     public ResourceHandler<FluidResource> getFluidHandler() {

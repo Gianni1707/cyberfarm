@@ -24,9 +24,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
- * Shared base of conduits and pipes: connects by itself to pipes of the same kind and to any block
- * that handles what it carries, from any mod. Pipes store nothing; their block entity passes
- * whatever is pushed in straight to the blocks on the network.
+ * Shared base of conduits and pipes: connects by itself to pipes of the same kind (any tier) and to
+ * any block that handles what it carries, from any mod. Pipes store nothing; their block entity
+ * passes whatever is pushed in straight to the blocks on the network, up to the {@link #rate()} of
+ * the pipe it was pushed into.
  */
 public abstract class NetworkPipeBlock extends BaseEntityBlock {
     public static final Map<Direction, BooleanProperty> CONNECTIONS = PipeBlock.PROPERTY_BY_DIRECTION;
@@ -40,13 +41,26 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
             Direction.DOWN, Block.box(6, 0, 6, 10, 5, 10),
             Direction.UP, Block.box(6, 11, 6, 10, 16, 10));
 
-    protected NetworkPipeBlock(Properties properties) {
+    private final int rate;
+
+    protected NetworkPipeBlock(Properties properties, int rate) {
         super(properties);
+        this.rate = rate;
         BlockState state = stateDefinition.any();
         for (BooleanProperty property : CONNECTIONS.values()) {
             state = state.setValue(property, false);
         }
         registerDefaultState(state);
+    }
+
+    /** How much can enter the network through this pipe per tick (FE, mB or items per second for item pipes). */
+    public int rate() {
+        return rate;
+    }
+
+    /** Pipes of the same kind, whatever their tier, join into one network. */
+    public boolean sameKind(BlockState state) {
+        return state.getBlock().getClass() == getClass();
     }
 
     /** Whether the block at {@code pos} can exchange what this pipe carries through {@code side}. */
@@ -78,7 +92,7 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
 
     private boolean connectsTo(Level level, BlockPos pos, Direction direction) {
         BlockPos neighbor = pos.relative(direction);
-        return level.getBlockState(neighbor).is(this) || canConnectToMachine(level, neighbor, direction.getOpposite());
+        return sameKind(level.getBlockState(neighbor)) || canConnectToMachine(level, neighbor, direction.getOpposite());
     }
 
     @Override

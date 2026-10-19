@@ -8,6 +8,7 @@ import com.cyberfarm.menu.DroneAssemblerMenu;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.menu.MethaneExtractorMenu;
+import com.cyberfarm.menu.ItemPipeMenu;
 import com.cyberfarm.menu.MufflerMenu;
 import com.cyberfarm.menu.ReactorMenu;
 import com.cyberfarm.menu.TurbineMenu;
@@ -48,6 +49,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR = MENUS.register("reactor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ItemPipeMenu>> ITEM_PIPE = MENUS.register("item_pipe",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ItemPipeMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MufflerMenu>> MUFFLER = MENUS.register("muffler",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));

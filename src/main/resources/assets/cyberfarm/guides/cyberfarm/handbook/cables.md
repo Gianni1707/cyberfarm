@@ -7,23 +7,45 @@ navigation:
 
 # Cables
 
-Cables carry power and gas between your machines. Both kinds **connect by themselves** to cables of
-the same kind and to any block that accepts what they carry, from CyberFarm or any other mod.
+Cables carry power, fluids and items between your machines. Every kind **connects by itself** to
+cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
+mod. Each kind comes in **three tiers**, told apart by the rims of the sleeve: plain, **gold** and
+**violet**.
 
 <ItemGrid>
   <ItemIcon id="energy_conduit" />
+  <ItemIcon id="advanced_energy_conduit" />
+  <ItemIcon id="elite_energy_conduit" />
   <ItemIcon id="gas_pipe" />
+  <ItemIcon id="advanced_gas_pipe" />
+  <ItemIcon id="elite_gas_pipe" />
+  <ItemIcon id="item_pipe" />
+  <ItemIcon id="advanced_item_pipe" />
+  <ItemIcon id="elite_item_pipe" />
 </ItemGrid>
 
-| Cable | Carries | Rate |
-| --- | --- | --- |
-| [Energy Conduit](energy_conduit.md) | FE | 1,000 FE/t per source |
-| [Gas Pipe](gas_pipe.md) | Biogas, Methane, water, coolants, Steam and any other fluid | 1,000 mB/t per source |
+| Cable | Carries | Basic | Advanced | Elite |
+| --- | --- | --- | --- | --- |
+| [Energy Conduit](energy_conduit.md) | FE | 2,000 FE/t | 16,000 FE/t | 128,000 FE/t |
+| [Gas Pipe](gas_pipe.md) | gas, water, coolants, Steam, any fluid | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
+| [Item Pipe](item_pipe.md) | items | 8 items/s | 32 items/s | 128 items/s |
 
-Cables **store nothing**: whatever a machine pushes in goes straight to the machines on the other
-end, taking turns between them so none is left without. A network can be up to 1,024 cables long.
+The rate is how much can enter the network **from each source**: a generator, tank or inventory
+pushing in, or an inventory an Item Pipe pulls from. It is set by the pipe the source touches, so
+tiers can be mixed in one network: put a better pipe right where a big producer connects.
 
-The two kinds never connect to each other, so an Energy Conduit and a Gas Pipe can run side by side.
+As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:
+
+- **Basic** carries all the gas power and a Small Steam Turbine (800 FE/t).
+- **Advanced** carries a Large Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
+- **Elite** joins several turbines into one line.
+
+Cables **store nothing**: whatever comes in goes straight to the blocks on the other end. A
+network can be up to 1,024 cables long. Different kinds never connect to each other, so they can
+run side by side.
+
+**Upgrading**: 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds
+and a uranium ingot make 8 Elite ones.
 
 ## Pages
 

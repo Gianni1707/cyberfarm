@@ -47,13 +47,13 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 
 ### Energia
 - **Energy Conduit**: si collega da solo a cavi e blocchi FE di qualsiasi mod; non accumula, distribuisce subito
-  a turno tra le macchine della rete (1.000 FE/t per sorgente, reti fino a 1.024 cavi).
+  a turno tra le macchine della rete (2.000 / 16.000 / 128.000 FE/t per sorgente secondo il tier, reti fino a 1.024 cavi).
 - **Tier 1** ✅: Combustion Generator (brucia i combustibili della fornace).
 - **Tier 2** ✅: Bio-Digester (compostabili e carne marcia → Biogas, senza corrente), Methane Extractor (multiblocco "doccia" 3x3x4:
   pavimento e tetto di Cyber Frame, pareti con angoli in Cyber Frame e vetro al centro, estrattore al centro del tetto;
   a struttura completa suono + estrattore e frame illuminati, GUI apribile da ogni blocco della camera (Shift per piazzare);
   mob caricato con la Mob Capsule, che cattura qualsiasi mob tranne boss e droni; zombie 10 mB/t, mostri 5, animali 2), Gas Turbine (biogas 3 FE/mB, metano 8 FE/mB,
-  10 mB/t), Gas Pipe. Gas = fluidi NeoForge standard con tag `c:gaseous`/`c:biogas`/`c:methane`.
+  20 mB/t), Gas Pipe (1.000 / 4.000 / 16.000 mB/t per sorgente secondo il tier). Gas = fluidi NeoForge standard con tag `c:gaseous`/`c:biogas`/`c:methane`.
   I gas servono solo ai generatori: i droni vanno sempre e solo a corrente. Mekanism: compatibile solo a livello di tubi
   (i suoi tubi per fluidi trasportano biogas e metano), i nostri gas non sostituiscono i suoi.
 - **Tier 3 — Nucleare** (in progettazione, vedi sotto).
@@ -115,7 +115,7 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 
 **Fasi di sviluppo**
 1. ✅ (da testare in gioco) Uranio (minerale, worldgen, lingotti, Fuel Rod), Fission Reactor multiblocco con acqua, Steam e
-   Steam Turbine, più una **Water Pump** (2+ sorgenti d'acqua accanto, 250 mB/t, 20 FE/t). Numeri: 50 mB/t d'acqua → 50 mB/t di
+   Steam Turbine, più una **Water Pump** (2+ sorgenti d'acqua accanto, 500 mB/t, 40 FE/t). Numeri: 50 mB/t d'acqua → 50 mB/t di
    vapore per barra, Fuel Rod da 40 minuti (3 lingotti); Steam Turbine 4 FE/mB fino a 200 mB/t (800 FE/t).
 2. ✅ (da testare in gioco) Potenza da Off a 500% (step 50%, parte da Off), calore e temperatura, circuito primario:
    acqua 200 calore/t, Coolant 500, Cryo Coolant 1200 (usura 1 mB ogni 400 calore); l'acqua secondaria diventa vapore
@@ -166,6 +166,14 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 4. ✅ Endgame: reattore a fissione (torre), scorie e radiazioni, raffreddamento, meltdown.
    ✅ Reattore e Steam Turbine multiblocco in 3 taglie + Multiblock Projector, testati in gioco.
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
+   ✅ Bilanciamento energia (confrontato con Mekanism, Immersive Engineering, Oritech): porte del reattore 2.500 mB/t di vapore,
+   Gas Turbine 20 mB/t (biogas 60, metano 160 FE/t), Water Pump 500 mB/t a 40 FE/t.
+   ✅ Cavi in 3 tier (base / Advanced oro / Elite viola), i tier si uniscono nella stessa rete e la portata è quella del cavo
+   toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe 1.000 / 4.000 / 16.000 mB/t,
+   **Item Pipe** (nuovo) 8 / 32 / 128 oggetti/s: click destro sul braccio verso un inventario per estrarre, consegna
+   all'inventario più vicino con spazio, gli hopper possono spingere dentro.
+   ✅ Filtro dell'Item Pipe (sul tubo che estrae, click destro di nuovo per aprirlo; sneak + click destro smette di estrarre):
+   9 campioni fantasma, whitelist/blacklist, NBT esatto o qualsiasi, per item o per mod, tag scelto tra quelli del primo campione.
 
 ## Asset
 

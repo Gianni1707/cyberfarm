@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": "cyberfarm:gas_pipe",
+    "G": "minecraft:gold_ingot",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    "PPP",
+    "GRG",
+    "PPP"
+  ],
+  "result": {
+    "id": "cyberfarm:advanced_gas_pipe",
+    "count": 8
+  }
+}

@@ -11,6 +11,7 @@ import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
+import com.cyberfarm.block.entity.ItemPipeBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
@@ -34,10 +35,14 @@ public class ModBlockEntities {
             () -> new BlockEntityType<>(DroneAssemblerBlockEntity::new, Set.of(ModBlocks.DRONE_ASSEMBLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyConduitBlockEntity>> ENERGY_CONDUIT = BLOCK_ENTITIES.register("energy_conduit",
-            () -> new BlockEntityType<>(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get())));
+            () -> new BlockEntityType<>(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get(), ModBlocks.ADVANCED_ENERGY_CONDUIT.get(), ModBlocks.ELITE_ENERGY_CONDUIT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasPipeBlockEntity>> GAS_PIPE = BLOCK_ENTITIES.register("gas_pipe",
-            () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get())));
+            () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ItemPipeBlockEntity>> ITEM_PIPE = BLOCK_ENTITIES.register("item_pipe",
+            () -> new BlockEntityType<>(ItemPipeBlockEntity::new,
+                    Set.of(ModBlocks.ITEM_PIPE.get(), ModBlocks.ADVANCED_ITEM_PIPE.get(), ModBlocks.ELITE_ITEM_PIPE.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioDigesterBlockEntity>> BIO_DIGESTER = BLOCK_ENTITIES.register("bio_digester",
             () -> new BlockEntityType<>(BioDigesterBlockEntity::new, Set.of(ModBlocks.BIO_DIGESTER.get())));

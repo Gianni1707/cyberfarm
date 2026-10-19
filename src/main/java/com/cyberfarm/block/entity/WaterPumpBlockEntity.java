@@ -23,8 +23,8 @@ import org.jspecify.annotations.Nullable;
  * pumps water with FE and pushes it into adjacent pipes and machines, e.g. a Fission Reactor port.
  */
 public class WaterPumpBlockEntity extends MachineBlockEntity {
-    public static final int RATE = 250;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int RATE = 500;
+    public static final int ENERGY_PER_TICK = 40;
     private static final int CAPACITY = 10_000;
     private static final int MAX_INPUT = 200;
     private static final int CHECK_INTERVAL = 20;

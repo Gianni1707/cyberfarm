@@ -66,7 +66,8 @@ up a big rotor; the rotor drives the generator. The scene shows the Small turbin
   **in the middle of the front**, facing out. The hall runs straight back from it.
 - Swap any shell blocks for <ItemLink id="turbine_port" />s: steam goes in, FE comes out. One port
   for a steam pipe and one for an [Energy Conduit](energy_conduit.md) is enough; the controller
-  itself also gives power to cables touching it.
+  itself also gives power to cables touching it. Medium and Large turbines make more than a basic
+  conduit carries: use **Advanced** conduits (16,000 FE/t) at their ports.
 
 Complete, the blocks disappear into one smooth **white and cyan cylinder**: the controller becomes a
 panel on the front, every port a glowing hatch, and at the back you can see the **rotor**. A

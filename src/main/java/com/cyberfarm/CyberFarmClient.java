@@ -11,6 +11,7 @@ import com.cyberfarm.client.screen.CombustionGeneratorScreen;
 import com.cyberfarm.client.screen.DroneAssemblerScreen;
 import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.client.screen.GasTurbineScreen;
+import com.cyberfarm.client.screen.ItemPipeScreen;
 import com.cyberfarm.client.screen.MethaneExtractorScreen;
 import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
@@ -119,6 +120,7 @@ public class CyberFarmClient {
         event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
         event.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
         event.register(ModMenus.TURBINE.get(), TurbineScreen::new);
+        event.register(ModMenus.ITEM_PIPE.get(), ItemPipeScreen::new);
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);

@@ -63,7 +63,7 @@ public class ReactorControllerBlockEntity extends MachineBlockEntity implements 
     public static final int MELTDOWN_HEAT = 200_000;
     public static final int ALARM_PERMILLE = 800;
     private static final int PASSIVE_COOLING = 20;
-    private static final int PORT_OUTPUT = 1_000;
+    private static final int PORT_OUTPUT = 2_500;
     private static final int CHECK_INTERVAL = 20;
     private static final int HUM_INTERVAL = 80;
 

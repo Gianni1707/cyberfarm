@@ -143,6 +143,8 @@ Blocks outside a narrower ring do not matter; everything inside the rings must b
 - Swap any shell blocks for <ItemLink id="reactor_port" />s where you want to connect pipes, cables
   or hoppers. Two are enough: one for water in, one for steam out.
 - The inside must be **empty**.
+- A Large tower makes more steam than a basic [Gas Pipe](gas_pipe.md) carries (1,000 mB/t): use
+  **Advanced** pipes at its steam port.
 
 When the tower is complete it powers up with a deep chime and **turns into a real cooling tower**: the
 blocky casings disappear into one smooth, curved shell of white panels with glowing cyan bands,

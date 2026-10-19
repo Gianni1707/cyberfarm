@@ -12,15 +12,15 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 
 /** Energy Conduit: carries FE between generators and machines of any mod. */
 public class EnergyConduitBlock extends NetworkPipeBlock {
-    public static final MapCodec<EnergyConduitBlock> CODEC = simpleCodec(EnergyConduitBlock::new);
+    private final MapCodec<EnergyConduitBlock> codec = simpleCodec(properties -> new EnergyConduitBlock(properties, rate()));
 
-    public EnergyConduitBlock(Properties properties) {
-        super(properties);
+    public EnergyConduitBlock(Properties properties, int rate) {
+        super(properties, rate);
     }
 
     @Override
     protected MapCodec<EnergyConduitBlock> codec() {
-        return CODEC;
+        return codec;
     }
 
     @Override

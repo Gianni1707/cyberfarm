@@ -17,8 +17,9 @@ source blocks** (the same rule as an infinite water source) and give it power.
 
 <br clear="all" />
 
-- Pumps **250 mB/t** with **20 FE/t** and pushes it into adjacent [Gas Pipes](gas_pipe.md) and machines.
-- One pump feeds a reactor with 4 rods up to 125% power; add pumps for more.
+- Pumps **500 mB/t** with **40 FE/t** and pushes it into adjacent [Gas Pipes](gas_pipe.md) and machines.
+- One pump feeds 500 heat per tick: enough for a Small tower and a Medium one up to 250%. A Large tower
+  at full power (2,000 heat) needs 4 pumps.
 - It has no GUI: **right-click** it to see what it is doing.
 
 <RecipeFor id="water_pump" />

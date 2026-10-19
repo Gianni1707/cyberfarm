@@ -97,12 +97,11 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         // The controller sits in the middle of its side, on the second layer
         BlockPos controller = BlockPos.ZERO.relative(state.facing, size.base()).above();
         collector.submitCustomGeometry(poseStack, state.lit ? PANEL_ON : PANEL,
-                (pose, buffer) -> inset(pose, buffer, size, controller, state.facing, 1.0F, light));
+                (pose, buffer) -> inset(pose, buffer, size, controller, 1.0F, light));
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (BlockPos port : state.ports) {
-                Direction axis = outward(port);
-                if (axis != null) {
-                    inset(pose, buffer, size, port, axis, 0.8F, LightCoordsUtil.FULL_BRIGHT);
+                if (outward(port) != null) {
+                    inset(pose, buffer, size, port, 0.8F, LightCoordsUtil.FULL_BRIGHT);
                 }
             }
         });
@@ -160,50 +159,35 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     }
 
     /**
-     * A square plate facing {@code side}, lying on the tower's surface where the line through the
-     * middle of {@code block} along that side crosses it: exactly where a pipe plugged into the block
-     * enters. Its bottom and top edges follow the surface radius at their own height, so the plate
-     * leans with the slope of the tower instead of sticking out of it.
+     * A square plate wrapped onto the tower's curved surface, centred where the line from the axis
+     * through the middle of {@code block} crosses it. Each edge follows the surface radius at its own
+     * height, so the plate lies flush on the curve and the slope instead of sticking out of it.
      */
-    private static void inset(PoseStack.Pose pose, VertexConsumer buffer, TowerSize tower, BlockPos block, Direction side, float size, int light) {
-        float middle = block.getY() + 0.5F;
+    private static void inset(PoseStack.Pose pose, VertexConsumer buffer, TowerSize tower, BlockPos block, float size, int light) {
         float half = size / 2;
-        float bottom = middle - half;
-        float top = middle + half;
-        // Offset of the block's centre across the axis
-        float across = side.getAxis() == Direction.Axis.X ? block.getZ() : block.getX();
-        float alongBottom = along(tower, bottom, across);
-        float alongTop = along(tower, top, across);
-        float ax = side.getStepX();
-        float az = side.getStepZ();
-        // Tangent along the surface, to the right when looking at the plate from outside
-        float tx = -az;
-        float tz = ax;
-        float bx = point(side, Direction.Axis.X, ax, alongBottom, across);
-        float bz = point(side, Direction.Axis.Z, az, alongBottom, across);
-        float ux = point(side, Direction.Axis.X, ax, alongTop, across);
-        float uz = point(side, Direction.Axis.Z, az, alongTop, across);
-        plate(pose, buffer, bx - tx * half, bottom, bz - tz * half, 1.0F, 1.0F, light, ax, az);
-        plate(pose, buffer, bx + tx * half, bottom, bz + tz * half, 0.0F, 1.0F, light, ax, az);
-        plate(pose, buffer, ux + tx * half, top, uz + tz * half, 0.0F, 0.0F, light, ax, az);
-        plate(pose, buffer, ux - tx * half, top, uz - tz * half, 1.0F, 0.0F, light, ax, az);
+        float bottom = block.getY() + 0.5F - half;
+        float centre = (float) Math.atan2(block.getZ(), block.getX());
+        // Same width in blocks wherever the plate sits: the angle it spans shrinks with the radius
+        float span = half / tower.radius(block.getY() + 0.5F);
+        int columns = 4;
+        for (int i = 0; i < columns; i++) {
+            float a0 = centre - span + 2 * span * i / columns;
+            float a1 = centre - span + 2 * span * (i + 1) / columns;
+            float u0 = 1.0F - (float) i / columns;
+            float u1 = 1.0F - (float) (i + 1) / columns;
+            plate(pose, buffer, a0, bottom, tower, u0, 1.0F, light);
+            plate(pose, buffer, a1, bottom, tower, u1, 1.0F, light);
+            plate(pose, buffer, a1, bottom + size, tower, u1, 0.0F, light);
+            plate(pose, buffer, a0, bottom + size, tower, u0, 0.0F, light);
+        }
     }
 
-    /** How far out along the axis the surface is at {@code height}, for a line {@code across} off the centre. */
-    private static float along(TowerSize tower, float height, float across) {
-        float r = tower.radius(height);
-        return (float) Math.sqrt(Math.max(0.0F, r * r - across * across)) + INSET_OFFSET;
-    }
-
-    /** One horizontal coordinate of a point on the plate's centre line. */
-    private static float point(Direction side, Direction.Axis axis, float step, float along, float across) {
-        return side.getAxis() == axis ? step * along : across;
-    }
-
-    private static void plate(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float u, float v, int light,
-            float nx, float nz) {
-        buffer.addVertex(pose, x, y, z).setColor(0xFFFFFFFF).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
-                .setNormal(pose, nx, 0.0F, nz);
+    private static void plate(PoseStack.Pose pose, VertexConsumer buffer, float angle, float y, TowerSize tower, float u, float v, int light) {
+        float r = tower.radius(y) + INSET_OFFSET;
+        float c = (float) Math.cos(angle);
+        float sn = (float) Math.sin(angle);
+        buffer.addVertex(pose, c * r, y, sn * r).setColor(0xFFFFFFFF).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
+                .setNormal(pose, c, 0.0F, sn);
     }
 
     private static void quad(PoseStack.Pose pose, VertexConsumer buffer, float a0, float a1, float r0, float r1, float h0, float h1,

@@ -823,6 +823,44 @@ def extractor_side(formed):
     return c
 
 
+# Pipe tiers are told apart by the rims of the sleeve: plain, gold, violet
+TIER_RIMS = {"": None, "advanced_": ("O", "o"), "elite_": ("V", "v")}
+
+
+def tier_rims(c, tier):
+    """Colours the sleeve's edge rows and the core frame with the tier's accent."""
+    rims = TIER_RIMS[tier]
+    if rims:
+        c.rect(0, 6, 15, 6, rims[0])
+        c.rect(0, 9, 15, 9, rims[1])
+        c.frame(5, 5, 10, 10, rims[1])
+    return c
+
+
+def item_pipe():
+    """Steel sleeve with a green stripe and arrow marks: items, not power or gas."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "l", noise=3, seed=33)
+    c.rect(0, 7, 15, 8, "g")
+    for x in range(1, 16, 4):
+        c.set(x, 7, "G")
+        c.set(x + 1, 8, "G")
+    c.frame(5, 5, 10, 10, "k")
+    c.rect(0, 6, 15, 6, "w")
+    c.rect(0, 9, 15, 9, "m")
+    return c
+
+
+def item_pipe_extract():
+    """The pulling collar where a pipe meets an inventory: orange hazard ring."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "o", noise=4, seed=34)
+    c.frame(0, 0, 15, 15, "k")
+    for i in range(0, 16, 4):
+        c.rect(i, 0, i + 1, 15, "y")
+    return c
+
+
 def gas_pipe():
     """Like the conduit sleeve, with an amber stripe so gas and power lines are told apart."""
     c = Canvas()
@@ -1358,7 +1396,9 @@ def build_all():
         "block/drone_dock_top": dock_top(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
-        "block/energy_conduit": energy_conduit(),
+        **{f"block/{tier}energy_conduit": tier_rims(energy_conduit(), tier) for tier in TIER_RIMS},
+        **{f"block/{tier}item_pipe": tier_rims(item_pipe(), tier) for tier in TIER_RIMS},
+        "block/item_pipe_extract": item_pipe_extract(),
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/muffler": muffler(),
@@ -1418,7 +1458,7 @@ def build_all():
         "block/methane_extractor_bottom_formed": extractor_bottom(True),
         "block/methane_extractor_top_formed": extractor_top(True),
         "block/methane_extractor_side_formed": extractor_side(True),
-        "block/gas_pipe": gas_pipe(),
+        **{f"block/{tier}gas_pipe": tier_rims(gas_pipe(), tier) for tier in TIER_RIMS},
         "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas_texture("#6cc4dc", "#d4f4ff", 3),

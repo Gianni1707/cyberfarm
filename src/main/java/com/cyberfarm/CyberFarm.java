@@ -70,6 +70,7 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ITEM_PIPE.get(), (be, side) -> be.getItemHandler(side));
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.METHANE_EXTRACTOR.get(), (be, side) -> be.getTank());
