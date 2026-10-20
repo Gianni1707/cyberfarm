@@ -10,7 +10,7 @@ navigation:
 Cables carry power and fluids between your machines (to move items, use a drone with a
 [Transport Module](modules.md)). Every kind **connects by itself** to
 cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
-mod. Each kind comes in **three tiers**, told apart by the rims of the sleeve: plain, **gold** and
+mod. Each kind comes in **three tiers**, told apart by the ring where two cables meet: grey, **gold** and
 **violet**.
 
 <ItemGrid>
