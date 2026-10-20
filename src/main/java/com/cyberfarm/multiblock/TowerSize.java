@@ -11,7 +11,7 @@ import net.minecraft.core.Direction;
  * {@code rings[y]} blocks from the axis (layer 0 is the full floor); inside a ring it is empty,
  * outside it, up to the base, anything goes. The controller sits in the middle of one side of layer 1.
  */
-public enum TowerSize {
+public enum TowerSize implements Multiblock.Shape {
     SMALL(new int[] {2, 2, 2, 1, 1, 1, 2}, 2, 200, 150, 1.0F),
     MEDIUM(new int[] {3, 3, 3, 3, 2, 2, 2, 2, 2, 3, 3}, 4, 350, 250, 1.3F),
     LARGE(new int[] {4, 4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4}, 8, 500, 400, 1.6F);
@@ -61,6 +61,7 @@ public enum TowerSize {
         return controller.relative(facing.getOpposite(), base()).below();
     }
 
+    @Override
     public List<Multiblock.Cell> cells(BlockPos controller, Direction facing) {
         BlockPos floor = floorCentre(controller, facing);
         int base = base();
@@ -85,10 +86,10 @@ public enum TowerSize {
         float waistRadius = rings[height() / 2] + 0.6F;
         float waistHeight = height() * 0.66F;
         float baseRadius = base() + 1.4F;
-        float k = (float) Math.sqrt(Math.pow(baseRadius / waistRadius, 2) - 1);
-        float curve = waistHeight / k;
-        float t = (height - waistHeight) / curve;
-        return waistRadius * (float) Math.sqrt(1.0F + t * t);
+        float flare = (float) Math.sqrt(Math.pow(baseRadius / waistRadius, 2) - 1);
+        float curve = waistHeight / flare;
+        float fromWaist = (height - waistHeight) / curve;
+        return waistRadius * (float) Math.sqrt(1.0F + fromWaist * fromWaist);
     }
 
     public static TowerSize byOrdinal(int ordinal) {

@@ -179,6 +179,11 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    blocco da cui tira. Serve per batterie, serbatoi e magazzini passivi.
    ✅ Liquid Tank e Gas Tank: 32.000 mB di un solo fluido (liquidi o gas, come i tubi), passivi; secchi su Liquid Tank;
    click destro mostra il contenuto. Rompendoli si svuotano.
+   ✅ Restyle: cavi "tubo pulito" (involucro chiaro, fascia colorata per tipo: azzurro energia, ambra gas, blu liquidi;
+   anello nel colore del tier dove due cavi si toccano). I tratti dritti sono un tubo continuo: il blockstate mostra il
+   giunto centrale solo a incroci, curve ed estremità, altrimenti un segmento `_middle` unisce le due braccia. Serbatoi: l'oblò di ogni lato mostra il fluido vero al suo livello
+   (`FluidTankRenderer`, texture e tinta dal modello del fluido, gas semitrasparenti; contenuto sincronizzato al client
+   al massimo ogni 5 tick). Multiblock Projector: icona a tablet con il profilo della torre su griglia.
    Niente tubi per item: gli oggetti li sposta il drone col Transport Module (l'Item Pipe è stato tolto).
    ✅ Filtro della Drone Dock (pulsante Filter nella sua GUI): 9 campioni fantasma, whitelist/blacklist, NBT esatto o
    qualsiasi, per item o per mod, tag scelto tra quelli del primo campione. Il Quarry tiene solo i drop che passano (gli

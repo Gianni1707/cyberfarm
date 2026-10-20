@@ -84,13 +84,8 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
         for (int i = 0; i < 3; i++) {
-            int left = x + buttonX(i);
-            int top = y + BUTTON_Y;
             boolean on = buttonOn(i);
-            graphics.fill(left, top, left + BUTTON_WIDTH, top + BUTTON_HEIGHT, SLOT_BORDER);
-            graphics.fill(left + 1, top + 1, left + BUTTON_WIDTH - 1, top + BUTTON_HEIGHT - 1, on ? ACCENT_DIM : PANEL_DARK);
-            Component label = buttonLabel(i);
-            graphics.text(font, label, left + (BUTTON_WIDTH - font.width(label)) / 2, top + 3, on ? TEXT : TEXT_DIM, false);
+            drawButton(graphics, x + buttonX(i), y + BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT, buttonLabel(i), on ? ACCENT_DIM : PANEL_DARK, on ? TEXT : TEXT_DIM);
         }
         // Tag picker: < #namespace:tag >
         int top = y + TAG_Y;

@@ -17,7 +17,7 @@ item_ids:
 Pipes for **liquids**: water, lava, Coolant, Cryo Coolant and the liquids of other mods. Use them
 to bring water from a [Water Pump](water_pump.md) to a [Coolant Mixer](coolant_mixer.md) or a
 [Fission Reactor](fission_reactor.md). Gases (biogas, methane, Steam) need a
-[Gas Pipe](gas_pipe.md). Liquid pipes have a **blue** stripe.
+[Gas Pipe](gas_pipe.md). Their band is **blue**.
 
 <br clear="all" />
 

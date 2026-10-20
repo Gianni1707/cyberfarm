@@ -400,20 +400,23 @@ def turbine_controller(state):
 
 
 def multiblock_projector():
-    """Handheld projector: a dark body with a cyan lens throwing a beam up-right."""
+    """A blueprint tablet: a grid with the outline of a cooling tower, so it reads as 'shows a structure'."""
     c = Canvas()
-    c.rect(2, 8, 10, 13, "k")
-    c.rect(3, 9, 9, 12, "m")
-    c.rect(3, 9, 9, 9, "l")
-    c.rect(4, 13, 6, 15, "k")
-    c.rect(5, 13, 5, 14, "s")
-    c.disc(10.5, 9.5, 2.2, "k")
-    c.disc(10.5, 9.5, 1.3, "c")
-    c.set(10, 9, "w")
-    for i in range(1, 5):
-        c.set(11 + i, 8 - i, "b")
-        c.set(12 + i, 8 - i, "c") if 12 + i < 16 else None
-        c.set(11 + i, 9 - i, "c")
+    c.rect(1, 1, 14, 14, "k")
+    c.rect(2, 2, 13, 13, (14, 52, 90, 255))
+    for i in range(2, 14, 3):
+        c.rect(i, 2, i, 13, (30, 80, 128, 255))
+        c.rect(2, i, 13, i, (30, 80, 128, 255))
+    for x0, x1, y in ((4, 11, 12), (5, 10, 11), (6, 9, 8), (6, 9, 7), (5, 10, 4), (4, 11, 3)):
+        c.set(x0, y, "C")
+        c.set(x1, y, "C")
+    c.rect(4, 12, 11, 12, "C")
+    c.rect(4, 3, 11, 3, "c")
+    for y in (5, 6, 9, 10):
+        c.set(5 if y in (5, 10) else 6, y, "c")
+        c.set(10 if y in (5, 10) else 9, y, "c")
+    c.rect(1, 14, 14, 14, "m")
+    c.set(12, 14, "c")
     return c
 
 
@@ -824,44 +827,33 @@ def extractor_side(formed):
 
 
 # Pipe tiers are told apart by the rims of the sleeve: plain, gold, violet
-TIER_RIMS = {"": None, "advanced_": ("O", "o"), "elite_": ("V", "v")}
+# Cable sleeves: a light tube with the content as a coloured band down the middle. Arms use rows
+# 6..9 (a straight run joins them into one tube), the coupling box at junctions columns/rows 5..10.
+PIPE_CONTENT = {
+    # main colour, highlight
+    "energy": ((47, 224, 255, 255), (184, 246, 255, 255)),
+    "gas": ((255, 176, 40, 255), (255, 226, 140, 255)),
+    "liquid": ((52, 124, 230, 255), (150, 200, 255, 255)),
+}
+PIPE_RIMS = {"": ((125, 138, 150, 255), (74, 85, 97, 255)), "advanced_": ("O", "o"), "elite_": ("V", "v")}
 
 
-def tier_rims(c, tier):
-    """Colours the sleeve's edge rows and the core frame with the tier's accent."""
-    rims = TIER_RIMS[tier]
-    if rims:
-        c.rect(0, 6, 15, 6, rims[0])
-        c.rect(0, 9, 15, 9, rims[1])
-        c.frame(5, 5, 10, 10, rims[1])
-    return c
-
-
-def gas_pipe():
-    """Like the conduit sleeve, with an amber stripe so gas and power lines are told apart."""
+def clean_pipe(kind, tier):
+    main, light = PIPE_CONTENT[kind]
+    rim, rim_dark = PIPE_RIMS[tier]
     c = Canvas()
-    c.rect(0, 0, 15, 15, "m", noise=3, seed=27)
-    c.rect(0, 7, 15, 8, "y")
-    for x in range(0, 16, 3):
-        c.set(x, 7, "O")
-        c.set(x, 8, "O")
-    c.frame(5, 5, 10, 10, "k")
-    c.rect(0, 6, 15, 6, "l")
-    c.rect(0, 9, 15, 9, "d")
-    return c
-
-
-def liquid_pipe():
-    """Like the gas pipe, with a blue stripe: liquids, not gases."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "l", noise=3, seed=28)
-    c.rect(0, 7, 15, 8, "b")
-    for x in range(1, 16, 3):
-        c.set(x, 7, "c")
-        c.set(x, 8, "c")
-    c.frame(5, 5, 10, 10, "k")
-    c.rect(0, 6, 15, 6, "w")
-    c.rect(0, 9, 15, 9, "m")
+    c.rect(0, 0, 15, 15, (200, 210, 218, 255))
+    c.rect(0, 6, 15, 6, (232, 238, 242, 255))
+    c.rect(0, 7, 15, 8, main)
+    c.rect(0, 7, 15, 7, light)
+    c.rect(0, 9, 15, 9, (150, 162, 172, 255))
+    # A ring in the tier's colour where two pipes meet
+    for x in (0, 15):
+        c.rect(x, 6, x, 9, rim)
+    c.rect(5, 5, 10, 10, rim_dark)
+    c.rect(6, 6, 9, 9, (60, 68, 78, 255))
+    c.rect(7, 7, 8, 8, main)
+    c.set(7, 7, light)
     return c
 
 
@@ -875,16 +867,16 @@ def pipe_extract():
     return c
 
 
-def tank_side(fluid, light, accent):
-    """Tank wall: a steel frame around a tall window showing the fluid, with level marks."""
+def tank_side(accent):
+    """Tank wall: a steel frame around a dark window (columns 4..10, rows 3..12) where the
+    tank's renderer draws the fluid at its level, with gauge marks beside it."""
     c = panel(61 if accent == "y" else 62)
-    c.rect(3, 2, 12, 13, "K")
-    c.rect(4, 3, 11, 12, "s")
-    c.rect(4, 6, 11, 12, fluid, noise=6, seed=63)
-    c.rect(4, 6, 11, 6, light)
-    for y in (4, 7, 10):
-        c.set(12, y, accent)
-    c.rect(3, 14, 12, 14, accent)
+    c.rect(3, 2, 11, 13, "K")
+    c.rect(4, 3, 10, 12, (24, 30, 36, 255))
+    c.set(4, 3, (255, 255, 255, 120))
+    for y in range(3, 13, 3):
+        c.set(12, y, "m")
+    c.rect(3, 14, 11, 14, accent)
     return c
 
 
@@ -903,20 +895,6 @@ def gas_texture(base, light, seed):
     for i in range(16):
         c.set((i * 5 + seed) % 16, (i * 3) % 16, light)
         c.set((i * 7 + seed) % 16, (i * 11 + 4) % 16, light)
-    return c
-
-
-def energy_conduit():
-    """Sleeve texture: the core uses the centre (5..10), the arms the middle rows (6..9)."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "d", noise=3, seed=12)
-    c.rect(0, 7, 15, 8, "b")
-    for x in range(0, 16, 2):
-        c.set(x, 7, "c")
-        c.set(x + 1, 8, "c")
-    c.frame(5, 5, 10, 10, "k")
-    c.rect(0, 6, 15, 6, "m")
-    c.rect(0, 9, 15, 9, "D")
     return c
 
 
@@ -1466,7 +1444,7 @@ def build_all():
         "block/drone_dock_top": dock_top(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
-        **{f"block/{tier}energy_conduit": tier_rims(energy_conduit(), tier) for tier in TIER_RIMS},
+        **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/muffler": muffler(),
@@ -1526,11 +1504,11 @@ def build_all():
         "block/methane_extractor_bottom_formed": extractor_bottom(True),
         "block/methane_extractor_top_formed": extractor_top(True),
         "block/methane_extractor_side_formed": extractor_side(True),
-        **{f"block/{tier}gas_pipe": tier_rims(gas_pipe(), tier) for tier in TIER_RIMS},
-        **{f"block/{tier}liquid_pipe": tier_rims(liquid_pipe(), tier) for tier in TIER_RIMS},
+        **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
+        **{f"block/{tier}liquid_pipe": clean_pipe("liquid", tier) for tier in PIPE_RIMS},
         "block/pipe_extract": pipe_extract(),
-        "block/liquid_tank_side": tank_side("#2a4f9a", "#7fb0ff", "c"),
-        "block/gas_tank_side": tank_side("#c9a54a", "#ffe6a0", "y"),
+        "block/liquid_tank_side": tank_side("c"),
+        "block/gas_tank_side": tank_side("y"),
         "block/tank_top": tank_top(),
         "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),

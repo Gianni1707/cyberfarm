@@ -10,39 +10,23 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jspecify.annotations.Nullable;
 
 /** Fission Reactor controller: FORMED when its tower is complete, LIT while the core is burning fuel. */
-public class ReactorControllerBlock extends MachineBlock {
+public class ReactorControllerBlock extends MultiblockControllerBlock {
     public static final MapCodec<ReactorControllerBlock> CODEC = simpleCodec(ReactorControllerBlock::new);
-    public static final BooleanProperty FORMED = CyberFrameBlock.FORMED;
-    public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    /** Tower size while formed: 0 small, 1 medium, 2 large (see {@link TowerSize}). */
-    public static final IntegerProperty SIZE = IntegerProperty.create("size", 0, 2);
 
     public ReactorControllerBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(LIT, false).setValue(SIZE, 0));
     }
 
     @Override
     protected MapCodec<ReactorControllerBlock> codec() {
         return CODEC;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(FORMED, LIT, SIZE);
     }
 
     @Override

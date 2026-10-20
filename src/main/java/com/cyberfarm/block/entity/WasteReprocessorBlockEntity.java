@@ -13,7 +13,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -43,16 +42,16 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = Radiation.isWaste(getStack(INPUT)) && hasRoom(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
-                && hasRoom(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
+        boolean canRun = Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
+                && hasRoomFor(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             if (++progress >= PROCESS_TIME) {
                 progress = 0;
                 ItemStack input = getStack(INPUT);
                 setStack(INPUT, input.copyWithCount(input.getCount() - 1));
-                grow(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get());
+                addOne(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get());
                 if (level.getRandom().nextInt(URANIUM_CHANCE) == 0) {
-                    grow(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
+                    addOne(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
                 }
                 level.playSound(null, pos, ModSounds.REPROCESSOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
@@ -61,16 +60,6 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
             progress = 0;
             setChanged();
         }
-    }
-
-    private boolean hasRoom(int slot, Item item) {
-        ItemStack stack = getStack(slot);
-        return stack.isEmpty() || (stack.is(item) && stack.getCount() < stack.getMaxStackSize());
-    }
-
-    private void grow(int slot, Item item) {
-        ItemStack stack = getStack(slot);
-        setStack(slot, stack.isEmpty() ? new ItemStack(item) : stack.copyWithCount(stack.getCount() + 1));
     }
 
     /** Only waste goes in; the outputs are taken out by hand or by hoppers. */

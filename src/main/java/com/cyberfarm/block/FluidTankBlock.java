@@ -1,6 +1,7 @@
 package com.cyberfarm.block;
 
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
+import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
@@ -10,9 +11,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Liquid Tank or Gas Tank: stores one fluid, liquids or gases like the matching pipe. Passive: it
@@ -58,5 +62,10 @@ public class FluidTankBlock extends MachineBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new FluidTankBlockEntity(pos, state);
+    }
+
+    @Override
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+        return machineTicker(level, type, ModBlockEntities.FLUID_TANK.get());
     }
 }

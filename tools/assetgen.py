@@ -102,6 +102,14 @@ def pipe_models(name):
     }}
     write(ASSETS / f"models/block/{name}_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
     write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": [arm]})
+    # Middle of a straight run, joining the two arms into one tube (along north-south, rotated for the other axes).
+    # Columns 1..4 are plain tube, stretched over the 6 pixels: 5..10 belong to the coupling box.
+    body, casing = [1, 6, 5, 10], [1, 0, 5, 6]
+    middle = {"from": [6, 6, 5], "to": [10, 10, 11], "faces": {
+        "east": {"texture": "#conduit", "uv": body}, "west": {"texture": "#conduit", "uv": body},
+        "up": {"texture": "#conduit", "uv": casing}, "down": {"texture": "#conduit", "uv": casing},
+    }}
+    write(ASSETS / f"models/block/{name}_middle.json", {"textures": texture, "elements": [middle]})
     # Item: core with arms east and west
     write(ASSETS / f"models/block/{name}_inventory.json", {
         "parent": "minecraft:block/block", "textures": texture,
@@ -110,7 +118,16 @@ def pipe_models(name):
                      {"from": [11, 6, 6], "to": [16, 10, 10], "faces": all_faces()}],
     })
     rotations = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
-    parts = [{"apply": {"model": f"{NS}:block/{name}_core"}}]
+    # The coupling box only where the pipe is not a straight run: at junctions, bends and ends
+    sides = list(rotations)
+    opposite = {"north": "south", "east": "west", "up": "down"}
+    not_straight = [{a: "true", b: "false"} for a, b in opposite.items()] + [{a: "false", b: "true"} for a, b in opposite.items()]
+    not_straight += [{"north": "true", "east": "true"}, {"north": "true", "up": "true"}, {"east": "true", "up": "true"}]
+    not_straight.append({side: "false" for side in sides})
+    parts = [{"when": {"OR": not_straight}, "apply": {"model": f"{NS}:block/{name}_core"}}]
+    for axis, (a, b), rotation in (("z", ("north", "south"), {}), ("x", ("east", "west"), {"y": 90}), ("y", ("up", "down"), {"x": 90})):
+        straight = {side: "true" if side in (a, b) else "false" for side in sides}
+        parts.append({"when": straight, "apply": {"model": f"{NS}:block/{name}_middle", **rotation}})
     for direction, rotation in rotations.items():
         parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
     # Pulling collar on the arms set to extract (shared by every pipe)

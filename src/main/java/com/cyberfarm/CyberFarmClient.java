@@ -2,18 +2,20 @@ package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
+import com.cyberfarm.client.renderer.FluidTankRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
+import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.DroneAssemblerScreen;
 import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.client.screen.GasTurbineScreen;
 import com.cyberfarm.client.screen.ItemFilterScreen;
 import com.cyberfarm.client.screen.MethaneExtractorScreen;
-import com.cyberfarm.client.screen.CoolantMixerScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
 import com.cyberfarm.client.screen.ReactorScreen;
 import com.cyberfarm.client.screen.TurbineScreen;
@@ -68,8 +70,8 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
-        NeoForge.EVENT_BUS.addListener(com.cyberfarm.client.ProjectionRenderer::extract);
-        NeoForge.EVENT_BUS.addListener(com.cyberfarm.client.ProjectionRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
+        NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -130,6 +132,7 @@ public class CyberFarmClient {
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */

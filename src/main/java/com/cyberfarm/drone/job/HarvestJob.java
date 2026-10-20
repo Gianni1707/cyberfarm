@@ -27,13 +27,11 @@ public class HarvestJob extends DroneJob {
     }
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        if (drone.isCargoFull()) {
+        if (drone.cargo().isFull()) {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone,
-                BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()),
-                pos -> isHarvestable(level, pos));
+        BlockPos target = nearest(drone, blocksIn(area), pos -> isHarvestable(level, pos));
         return target == null ? null : new HarvestJob(target);
     }
 
@@ -55,7 +53,7 @@ public class HarvestJob extends DroneJob {
             case FAILED -> Result.DONE;
             case ARRIVED -> {
                 harvest(drone, level);
-                yield drone.isCargoFull() ? Result.RETURN : Result.DONE;
+                yield drone.cargo().isFull() ? Result.RETURN : Result.DONE;
             }
         };
     }
@@ -81,7 +79,7 @@ public class HarvestJob extends DroneJob {
         if (replanted != null) {
             level.setBlock(target, replanted, Block.UPDATE_ALL);
         }
-        drone.collect(level, target, drops);
+        drone.cargo().collect(level, target, drops);
         drone.useJobEnergy(ENERGY_COST);
     }
 }

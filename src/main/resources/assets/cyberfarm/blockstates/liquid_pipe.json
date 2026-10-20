@@ -1,8 +1,97 @@
 {
   "multipart": [
     {
+      "when": {
+        "OR": [
+          {
+            "north": "true",
+            "south": "false"
+          },
+          {
+            "east": "true",
+            "west": "false"
+          },
+          {
+            "up": "true",
+            "down": "false"
+          },
+          {
+            "north": "false",
+            "south": "true"
+          },
+          {
+            "east": "false",
+            "west": "true"
+          },
+          {
+            "up": "false",
+            "down": "true"
+          },
+          {
+            "north": "true",
+            "east": "true"
+          },
+          {
+            "north": "true",
+            "up": "true"
+          },
+          {
+            "east": "true",
+            "up": "true"
+          },
+          {
+            "north": "false",
+            "east": "false",
+            "south": "false",
+            "west": "false",
+            "up": "false",
+            "down": "false"
+          }
+        ]
+      },
       "apply": {
         "model": "cyberfarm:block/liquid_pipe_core"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "east": "false",
+        "south": "true",
+        "west": "false",
+        "up": "false",
+        "down": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_pipe_middle"
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "true",
+        "south": "false",
+        "west": "true",
+        "up": "false",
+        "down": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_pipe_middle",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "north": "false",
+        "east": "false",
+        "south": "false",
+        "west": "false",
+        "up": "true",
+        "down": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_pipe_middle",
+        "x": 90
       }
     },
     {

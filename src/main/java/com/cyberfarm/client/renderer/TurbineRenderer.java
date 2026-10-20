@@ -79,9 +79,9 @@ public class TurbineRenderer implements BlockEntityRenderer<TurbineControllerBlo
         Direction back = state.facing.getOpposite();
         Direction right = state.facing.getClockWise();
         state.ports = state.formed ? entity.portsForRender().stream().map(port -> {
-            BlockPos d = port.subtract(controller);
-            return new Vector3f(d.getX() * right.getStepX() + d.getZ() * right.getStepZ(), d.getY(),
-                    d.getX() * back.getStepX() + d.getZ() * back.getStepZ());
+            BlockPos offset = port.subtract(controller);
+            return new Vector3f(offset.getX() * right.getStepX() + offset.getZ() * right.getStepZ(), offset.getY(),
+                    offset.getX() * back.getStepX() + offset.getZ() * back.getStepZ());
         }).toList() : List.of();
         // The controller is wrapped in shell blocks: take the light in front of it
         if (entity.getLevel() != null) {

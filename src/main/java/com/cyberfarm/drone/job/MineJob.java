@@ -6,7 +6,6 @@ import com.cyberfarm.entity.DroneEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.jspecify.annotations.Nullable;
@@ -74,7 +73,7 @@ public class MineJob extends DroneJob {
     }
 
     private static boolean isLoadFull(DroneEntity drone) {
-        return drone.getCargoCount() >= LOAD_LIMIT || drone.isCargoFull();
+        return drone.cargo().count() >= LOAD_LIMIT || drone.cargo().isFull();
     }
 
     private static boolean canMine(ServerLevel level, DroneDockBlockEntity dock, BlockPos pos) {
@@ -122,12 +121,8 @@ public class MineJob extends DroneJob {
         }
 
         stop(drone, level);
-        // Drops as if mined with a diamond pickaxe (plus Fortune / Silk Touch addons),
-        // so ores and obsidian drop correctly.
-        var drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
-        level.destroyBlock(target, false, drone);
-        // The dock filter decides what the drone keeps; the rest is thrown away
-        drone.collect(level, target, drops.stream().filter(dock.filter()::test).toList());
+        // A diamond pickaxe, so ores and obsidian drop; the dock filter decides what is kept, the rest is thrown away
+        drone.cargo().collect(level, target, breakBlock(drone, level, target, state).stream().filter(dock.filter()::test).toList());
         drone.useJobEnergy(20 + (int) (hardness * 10));
         return isLoadFull(drone) ? Result.RETURN : Result.DONE;
     }

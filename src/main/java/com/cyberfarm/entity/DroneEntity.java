@@ -3,9 +3,9 @@ package com.cyberfarm.entity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Predicate;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.drone.DroneCargo;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.drone.job.DroneJob;
@@ -21,9 +21,9 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.Mth;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -42,15 +42,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -78,7 +72,6 @@ public class DroneEntity extends PathfinderMob {
     public static final double PASSENGER_DROP = 2.5;
     /** Beyond this horizontal distance the drone climbs over the terrain before heading home. */
     private static final double LONG_TRIP = 16.0;
-    public static final int CARGO_SLOTS = 9;
     private static final int SCAN_INTERVAL = 40;
     /** Cruise speed in blocks per tick of a 100% frame (3 blocks/s); the Basic frame flies at 80%. */
     private static final double BASE_SPEED = 0.15;
@@ -104,7 +97,7 @@ public class DroneEntity extends PathfinderMob {
     private double returnAltitude = Double.NaN;
     private int pathfindTicks;
     private final Set<BlockPos> unreachable = new HashSet<>();
-    private final ItemStacksResourceHandler cargo = new ItemStacksResourceHandler(CARGO_SLOTS);
+    private final DroneCargo cargo = new DroneCargo();
 
     public DroneEntity(EntityType<? extends DroneEntity> type, Level level) {
         super(type, level);
@@ -173,9 +166,14 @@ public class DroneEntity extends PathfinderMob {
         return Math.max(1, modules.energyCapacity());
     }
 
+    /** The drone never leaves its dock with less than 30% charge. */
+    private int departureCharge() {
+        return capacity() * 3 / 10;
+    }
+
     // ---------------------------------------------------------------- API for jobs
 
-    public ItemStacksResourceHandler getCargo() {
+    public DroneCargo cargo() {
         return cargo;
     }
 
@@ -196,27 +194,6 @@ public class DroneEntity extends PathfinderMob {
         return unreachable.contains(pos);
     }
 
-    public boolean isCargoFull() {
-        for (int i = 0; i < cargo.size(); i++) {
-            if (cargo.getResource(i).isEmpty()) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public int getCargoCount() {
-        int count = 0;
-        for (int i = 0; i < cargo.size(); i++) {
-            count += cargo.getAmountAsInt(i);
-        }
-        return count;
-    }
-
-    public boolean isCargoEmpty() {
-        return ResourceHandlerUtil.isEmpty(cargo);
-    }
-
     /** True while the drone is parked on (or right above) its dock. */
     public boolean isAtDock() {
         if (dockPos == null) {
@@ -226,24 +203,9 @@ public class DroneEntity extends PathfinderMob {
         return home.subtract(position()).horizontalDistance() < 1.0 && Math.abs(getY() - home.y) < TAXI_WAIT_HEIGHT + 0.5;
     }
 
-    /** Removes and returns one item of the first cargo stack matching {@code filter}, or EMPTY. */
-    public ItemStack takeOneFromCargo(Predicate<ItemStack> filter) {
-        for (int i = 0; i < cargo.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(cargo, i);
-            if (!stack.isEmpty() && filter.test(stack)) {
-                cargo.set(i, ItemResource.of(stack), stack.getCount() - 1);
-                return stack.copyWithCount(1);
-            }
-        }
-        return ItemStack.EMPTY;
-    }
-
     /** Sent only when it changes: ItemStack has no equals, so a plain set would resend it every tick. */
     private void syncCarriedItem() {
-        ItemStack shown = ItemStack.EMPTY;
-        for (int i = 0; i < cargo.size() && shown.isEmpty(); i++) {
-            shown = ItemUtil.getStack(cargo, i).copyWithCount(1);
-        }
+        ItemStack shown = cargo.firstItem();
         if (!ItemStack.matches(shown, entityData.get(DATA_CARRIED))) {
             entityData.set(DATA_CARRIED, shown);
         }
@@ -251,26 +213,6 @@ public class DroneEntity extends PathfinderMob {
 
     public ItemStack getCarriedItem() {
         return entityData.get(DATA_CARRIED);
-    }
-
-    public boolean cargoContains(Predicate<ItemStack> filter) {
-        for (int i = 0; i < cargo.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(cargo, i);
-            if (!stack.isEmpty() && filter.test(stack)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /** Puts drops in the cargo; whatever does not fit falls on the ground at {@code pos}. */
-    public void collect(ServerLevel level, BlockPos pos, List<ItemStack> drops) {
-        for (ItemStack drop : drops) {
-            ItemStack rest = storeInCargo(drop);
-            if (!rest.isEmpty()) {
-                Block.popResource(level, pos, rest);
-            }
-        }
     }
 
     /** Items carried per Transport trip, from the Stack Addons. */
@@ -426,15 +368,14 @@ public class DroneEntity extends PathfinderMob {
         } else {
             flyHome();
         }
-        unloadCargo(dock);
+        cargo.unloadInto(dock);
 
         int charged = dock.charge(capacity() - energy);
         energy += charged;
         setStatus(charged > 0 ? STATUS_CHARGING : STATUS_IDLE);
 
-        // Finish charging while the dock can supply power; never leave below 30%,
-        // and wait while the dock is too full to take the cargo.
-        if ((charged > 0 && energy < capacity()) || energy < capacity() * 3 / 10 || !isCargoEmpty()) {
+        // Finish charging while the dock can supply power, and wait while it is too full to take the cargo
+        if ((charged > 0 && energy < capacity()) || energy < departureCharge() || !cargo.isEmpty()) {
             return;
         }
         if (--scanCooldown > 0) {
@@ -457,7 +398,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private boolean isWaitingForPassenger(DroneDockBlockEntity dock) {
-        return modules.tasks().contains(DroneTask.TAXI) && dock.getTaxiDestination() != null && energy >= capacity() * 3 / 10;
+        return modules.tasks().contains(DroneTask.TAXI) && dock.getTaxiDestination() != null && energy >= departureCharge();
     }
 
     /** A player right-clicked the waiting Taxi drone: check the trip, then let them grab the hook. */
@@ -514,47 +455,18 @@ public class DroneEntity extends PathfinderMob {
         }
     }
 
-    private void startReturn(ServerLevel level) {
+    private void stopJob(ServerLevel level) {
         if (job != null) {
             job.stop(this, level);
         }
+    }
+
+    private void startReturn(ServerLevel level) {
+        stopJob(level);
         job = null;
         jobTask = null;
         navigation.stop();
         setStatus(STATUS_RETURNING);
-    }
-
-    // ---------------------------------------------------------------- cargo
-
-    public ItemStack storeInCargo(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {
-            int inserted = ResourceHandlerUtil.insertStacking(cargo, ItemResource.of(stack), stack.getCount(), transaction);
-            transaction.commit();
-            return stack.copyWithCount(stack.getCount() - inserted);
-        }
-    }
-
-    private void unloadCargo(DroneDockBlockEntity dock) {
-        for (int i = 0; i < cargo.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(cargo, i);
-            if (!stack.isEmpty()) {
-                ItemStack rest = dock.deposit(stack);
-                cargo.set(i, ItemResource.of(rest), rest.getCount());
-            }
-        }
-    }
-
-    private void dropCargo(ServerLevel level) {
-        for (int i = 0; i < cargo.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(cargo, i);
-            if (!stack.isEmpty()) {
-                spawnAtLocation(level, stack);
-                cargo.set(i, ItemResource.EMPTY, 0);
-            }
-        }
     }
 
     // ---------------------------------------------------------------- pickup and lifecycle
@@ -567,11 +479,9 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void dropAsItem(ServerLevel level) {
-        if (job != null) {
-            job.stop(this, level);
-        }
+        stopJob(level);
         spawnAtLocation(level, toItem());
-        dropCargo(level);
+        cargo.dropAll(stack -> spawnAtLocation(level, stack));
         discard();
     }
 
@@ -587,14 +497,12 @@ public class DroneEntity extends PathfinderMob {
             return super.mobInteract(player, hand);
         }
         if (level() instanceof ServerLevel level) {
-            if (job != null) {
-                job.stop(this, level);
-            }
+            stopJob(level);
             if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
-                unloadCargo(dock);
+                cargo.unloadInto(dock);
                 dock.releaseDrone(getUUID());
             }
-            dropCargo(level);
+            cargo.dropAll(stack -> spawnAtLocation(level, stack));
             ItemStack item = toItem();
             if (!player.addItem(item)) {
                 spawnAtLocation(level, item);
@@ -608,7 +516,7 @@ public class DroneEntity extends PathfinderMob {
     protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean killedByPlayer) {
         super.dropCustomDeathLoot(level, source, killedByPlayer);
         spawnAtLocation(level, toItem());
-        dropCargo(level);
+        cargo.dropAll(stack -> spawnAtLocation(level, stack));
     }
 
     @Override
@@ -656,7 +564,7 @@ public class DroneEntity extends PathfinderMob {
         output.store("modules", DroneModules.CODEC, modules);
         output.putInt("energy", energy);
         output.storeNullable("dock", BlockPos.CODEC, dockPos);
-        cargo.serialize(output.child("cargo"));
+        cargo.save(output.child("cargo"));
     }
 
     @Override
@@ -665,7 +573,7 @@ public class DroneEntity extends PathfinderMob {
         modules = input.read("modules", DroneModules.CODEC).orElse(DroneModules.EMPTY);
         energy = input.getIntOr("energy", 0);
         dockPos = input.read("dock", BlockPos.CODEC).orElse(null);
-        cargo.deserialize(input.childOrEmpty("cargo"));
+        cargo.load(input.childOrEmpty("cargo"));
         entityData.set(DATA_TASKS, modules.taskMask());
         // Jobs are not saved: a reloaded drone flies home and starts over.
         setStatus(STATUS_RETURNING);

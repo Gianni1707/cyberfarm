@@ -47,23 +47,17 @@ public class FertilizeJob extends DroneJob {
     }
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        boolean hasFertilizer = drone.cargoContains(FertilizeJob::isFertilizer);
-        // Fertilizer can only be loaded while the drone sits on its dock
-        if (!hasFertilizer && !(drone.isAtDock() && dock.contains(FertilizeJob::isFertilizer))) {
+        boolean hasFertilizer = drone.cargo().contains(FertilizeJob::isFertilizer);
+        if (!hasFertilizer && !canLoadFromDock(drone, dock, FertilizeJob::isFertilizer)) {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone,
-                BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()),
-                pos -> canGrow(level, pos));
+        BlockPos target = nearest(drone, blocksIn(area), pos -> canGrow(level, pos));
         if (target == null) {
             return null;
         }
         if (!hasFertilizer) {
-            ItemStack rest = drone.storeInCargo(dock.withdraw(FertilizeJob::isFertilizer, FERTILIZER_PER_TRIP));
-            if (!rest.isEmpty()) {
-                dock.deposit(rest);
-            }
+            loadFromDock(drone, dock, FertilizeJob::isFertilizer, FERTILIZER_PER_TRIP);
         }
         return new FertilizeJob(target);
     }
@@ -89,7 +83,7 @@ public class FertilizeJob extends DroneJob {
     }
 
     private Result fertilize(DroneEntity drone, ServerLevel level) {
-        ItemStack fertilizer = drone.takeOneFromCargo(FertilizeJob::isFertilizer);
+        ItemStack fertilizer = drone.cargo().takeOne(FertilizeJob::isFertilizer);
         if (fertilizer.isEmpty()) {
             return Result.RETURN;
         }
@@ -101,7 +95,7 @@ public class FertilizeJob extends DroneJob {
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         if (!left.isEmpty()) {
             // Not used up: this fertilizer does not work on this plant, skip it until the drone goes home
-            drone.collect(level, plant, List.of(left));
+            drone.cargo().collect(level, plant, List.of(left));
             drone.markUnreachable(plant);
             return Result.DONE;
         }

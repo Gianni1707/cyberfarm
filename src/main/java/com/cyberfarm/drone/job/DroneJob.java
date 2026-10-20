@@ -1,5 +1,6 @@
 package com.cyberfarm.drone.job;
 
+import java.util.List;
 import java.util.function.Predicate;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -7,6 +8,10 @@ import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -60,6 +65,28 @@ public abstract class DroneJob {
             return Travel.FAILED;
         }
         return Travel.MOVING;
+    }
+
+    /** Every block of the work area. */
+    protected static Iterable<BlockPos> blocksIn(BoundingBox area) {
+        return BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ());
+    }
+
+    /** Whether the drone can load {@code supply} now: only while it sits on its dock, which has some. */
+    protected static boolean canLoadFromDock(DroneEntity drone, DroneDockBlockEntity dock, Predicate<ItemStack> supply) {
+        return drone.isAtDock() && dock.contains(supply);
+    }
+
+    /** Loads up to {@code max} items of {@code supply} from the dock; what does not fit in the cargo goes back. */
+    protected static void loadFromDock(DroneEntity drone, DroneDockBlockEntity dock, Predicate<ItemStack> supply, int max) {
+        dock.deposit(drone.cargo().store(dock.withdraw(supply, max)));
+    }
+
+    /** Breaks the block as if mined with the drone's tool (and its Fortune / Silk Touch addons); returns the drops. */
+    protected static List<ItemStack> breakBlock(DroneEntity drone, ServerLevel level, BlockPos pos, BlockState state) {
+        List<ItemStack> drops = Block.getDrops(state, level, pos, null, drone, drone.miningTool(level));
+        level.destroyBlock(pos, false, drone);
+        return drops;
     }
 
     /** The position closest to the drone that passes the test, skipping blocks it could not reach. */

@@ -50,13 +50,11 @@ public class LogJob extends DroneJob {
     }
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        if (drone.isCargoFull()) {
+        if (drone.cargo().isFull()) {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos base = nearest(drone,
-                BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()),
-                pos -> isTreeBase(level, pos));
+        BlockPos base = nearest(drone, blocksIn(area), pos -> isTreeBase(level, pos));
         return base == null ? null : new LogJob(base);
     }
 
@@ -99,7 +97,7 @@ public class LogJob extends DroneJob {
             }
         }
         replant(drone, level);
-        return drone.isCargoFull() ? Result.RETURN : Result.DONE;
+        return drone.cargo().isFull() ? Result.RETURN : Result.DONE;
     }
 
     /**
@@ -122,8 +120,17 @@ public class LogJob extends DroneJob {
         return best != null ? Vec3.atBottomCenterOf(best).add(0.0, 0.2, 0.0) : Vec3.atCenterOf(base).add(0.0, 1.0, 0.0);
     }
 
-    /** Logs connected to the base (diagonals too, for acacia branches), then their natural leaves; top first. */
+    /** The logs and natural leaves of the tree, top first. */
     private List<BlockPos> findTree(ServerLevel level) {
+        Set<BlockPos> logs = findLogs(level);
+        List<BlockPos> tree = new ArrayList<>(logs);
+        tree.addAll(findLeaves(level, logs));
+        tree.sort(Comparator.comparingInt((BlockPos pos) -> pos.getY()).reversed());
+        return tree;
+    }
+
+    /** Logs connected to the base, diagonals too (acacia branches). */
+    private Set<BlockPos> findLogs(ServerLevel level) {
         Set<BlockPos> logs = new HashSet<>();
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         logs.add(base);
@@ -138,9 +145,13 @@ public class LogJob extends DroneJob {
                 }
             }
         }
+        return logs;
+    }
 
+    /** Natural leaves touching the logs, within the canopy around the trunk. */
+    private Set<BlockPos> findLeaves(ServerLevel level, Set<BlockPos> logs) {
         Set<BlockPos> leaves = new HashSet<>();
-        queue.addAll(logs);
+        ArrayDeque<BlockPos> queue = new ArrayDeque<>(logs);
         while (!queue.isEmpty() && leaves.size() < MAX_LEAVES) {
             BlockPos pos = queue.poll();
             for (Direction direction : Direction.values()) {
@@ -157,17 +168,11 @@ public class LogJob extends DroneJob {
                 }
             }
         }
-
-        List<BlockPos> tree = new ArrayList<>(logs);
-        tree.addAll(leaves);
-        tree.sort(Comparator.comparingInt((BlockPos pos) -> pos.getY()).reversed());
-        return tree;
+        return leaves;
     }
 
     private void cut(DroneEntity drone, ServerLevel level, BlockPos pos, BlockState state) {
-        List<ItemStack> drops = Block.getDrops(state, level, pos, null, drone, drone.miningTool(level));
-        level.destroyBlock(pos, false, drone);
-        drone.collect(level, pos, drops);
+        drone.cargo().collect(level, pos, breakBlock(drone, level, pos, state));
         drone.useJobEnergy(state.is(BlockTags.LOGS) ? LOG_COST : LEAF_COST);
     }
 
@@ -176,7 +181,7 @@ public class LogJob extends DroneJob {
         if (!level.getBlockState(base).isAir()) {
             return;
         }
-        ItemStack sapling = drone.takeOneFromCargo(stack -> stack.is(ItemTags.SAPLINGS)
+        ItemStack sapling = drone.cargo().takeOne(stack -> stack.is(ItemTags.SAPLINGS)
                 && stack.getItem() instanceof BlockItem item
                 && item.getBlock().defaultBlockState().canSurvive(level, base));
         if (!sapling.isEmpty()) {
