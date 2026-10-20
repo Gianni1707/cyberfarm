@@ -32,7 +32,7 @@ public class TransportJob extends DroneJob {
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         BlockPos source = dock.getTransportSource();
         BlockPos destination = dock.getTransportDestination();
-        if (source == null || destination == null || !drone.isCargoEmpty()
+        if (source == null || destination == null || !drone.cargo().isEmpty()
                 || drone.isUnreachable(source) || drone.isUnreachable(destination)) {
             return null;
         }
@@ -56,14 +56,14 @@ public class TransportJob extends DroneJob {
         BlockPos stop = phase == Phase.PICKUP ? source : destination;
         return switch (travelTo(drone, stop)) {
             case MOVING -> Result.CONTINUE;
-            case FAILED -> drone.isCargoEmpty() ? Result.DONE : Result.RETURN;
+            case FAILED -> drone.cargo().isEmpty() ? Result.DONE : Result.RETURN;
             case ARRIVED -> phase == Phase.PICKUP ? pickUp(drone, level, dock) : dropOff(drone, level);
         };
     }
 
     private Result pickUp(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         // 16 items per trip, plus one stack per Stack Addon
-        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.getCargo(), resource -> dock.filter().test(resource.toStack()), drone.transportCapacity(), null);
+        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.cargo().handler(), resource -> dock.filter().test(resource.toStack()), drone.transportCapacity(), null);
         if (moved == 0) {
             return Result.DONE;
         }
@@ -72,8 +72,8 @@ public class TransportJob extends DroneJob {
     }
 
     private Result dropOff(DroneEntity drone, ServerLevel level) {
-        ResourceHandlerUtil.moveStacking(drone.getCargo(), inventory(level, destination), resource -> true, Integer.MAX_VALUE, null);
+        ResourceHandlerUtil.moveStacking(drone.cargo().handler(), inventory(level, destination), resource -> true, Integer.MAX_VALUE, null);
         // Whatever did not fit goes back to the dock.
-        return drone.isCargoEmpty() ? Result.DONE : Result.RETURN;
+        return drone.cargo().isEmpty() ? Result.DONE : Result.RETURN;
     }
 }

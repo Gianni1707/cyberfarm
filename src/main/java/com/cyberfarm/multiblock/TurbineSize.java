@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
  * the inside, where the rotor spins, must be empty. Bigger turbines take more steam and get more FE
  * out of every mB.
  */
-public enum TurbineSize {
+public enum TurbineSize implements Multiblock.Shape {
     SMALL(1, 4, 200, 4, 100),
     MEDIUM(2, 6, 600, 5, 140),
     LARGE(3, 8, 1_600, 6, 200);
@@ -68,6 +68,7 @@ public enum TurbineSize {
         return controller.relative(facing.getOpposite(), along).relative(facing.getClockWise(), right).above(up);
     }
 
+    @Override
     public List<Multiblock.Cell> cells(BlockPos controller, Direction facing) {
         List<Multiblock.Cell> cells = new ArrayList<>((2 * half + 1) * (2 * half + 1) * length);
         for (int along = 0; along < length; along++) {

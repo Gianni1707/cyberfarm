@@ -134,10 +134,10 @@ public final class ProjectionRenderer {
         poseStack.translate(-camera.x, -camera.y, -camera.z);
         byBlock.forEach((block, list) -> event.getSubmitNodeCollector().submitCustomGeometry(poseStack, type(block), (pose, buffer) -> {
             for (Ghost ghost : list) {
-                BlockPos p = ghost.pos();
+                BlockPos pos = ghost.pos();
                 float inset = ghost.wrong() ? -0.01F : 0.15F;
                 int color = ghost.wrong() ? RED : alpha | 0xFFFFFF;
-                cube(pose, buffer, p.getX() + inset, p.getY() + inset, p.getZ() + inset, 1 - 2 * inset, color);
+                cube(pose, buffer, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
             }
         }));
         poseStack.popPose();
@@ -160,10 +160,10 @@ public final class ProjectionRenderer {
         return Identifier.fromNamespaceAndPath("cyberfarm", "textures/block/cyber_frame.png");
     }
 
-    private static void cube(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float s, int color) {
-        float x1 = x + s;
-        float y1 = y + s;
-        float z1 = z + s;
+    private static void cube(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float size, int color) {
+        float x1 = x + size;
+        float y1 = y + size;
+        float z1 = z + size;
         face(pose, buffer, color, 0, -1, 0, x, y, z, x1, y, z, x1, y, z1, x, y, z1);
         face(pose, buffer, color, 0, 1, 0, x, y1, z1, x1, y1, z1, x1, y1, z, x, y1, z);
         face(pose, buffer, color, 0, 0, -1, x1, y1, z, x1, y, z, x, y, z, x, y1, z);

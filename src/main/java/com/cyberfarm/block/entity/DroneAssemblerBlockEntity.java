@@ -96,8 +96,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             if (count > type.getMaxPerDrone()) {
                 return false;
             }
+            if (count == 0) {
+                continue;
+            }
             for (AddonType other : AddonType.values()) {
-                if (count > 0 && type.conflictsWith(other) && countAddons(slots, other) > 0) {
+                if (type.conflictsWith(other) && countAddons(slots, other) > 0) {
                     return false;
                 }
             }
@@ -181,8 +184,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             return;
         }
         if (!canAssemble()) {
-            assembling = false;
-            progress = 0;
+            resetAssembly();
             setChanged();
             return;
         }
@@ -193,6 +195,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             }
             setChanged();
         }
+    }
+
+    private void resetAssembly() {
+        assembling = false;
+        progress = 0;
     }
 
     private void finishAssembly(ServerLevel level, BlockPos pos) {
@@ -210,8 +217,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
         drone.set(ModDataComponents.ENERGY.get(), 0);
         setStack(OUTPUT_SLOT, drone);
 
-        assembling = false;
-        progress = 0;
+        resetAssembly();
         level.playSound(null, pos, ModSounds.ASSEMBLER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.2F);
     }
 

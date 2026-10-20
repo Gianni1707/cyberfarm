@@ -38,24 +38,17 @@ public class PlantJob extends DroneJob {
     }
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        boolean hasSeeds = drone.cargoContains(PlantJob::isPlantable);
-        // Seeds can only be loaded while the drone sits on its dock
-        if (!hasSeeds && !(drone.isAtDock() && dock.contains(PlantJob::isPlantable))) {
+        boolean hasSeeds = drone.cargo().contains(PlantJob::isPlantable);
+        if (!hasSeeds && !canLoadFromDock(drone, dock, PlantJob::isPlantable)) {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone,
-                BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ()),
-                pos -> isEmptyFarmland(level, pos));
+        BlockPos target = nearest(drone, blocksIn(area), pos -> isEmptyFarmland(level, pos));
         if (target == null) {
             return null;
         }
         if (!hasSeeds) {
-            ItemStack seeds = dock.withdraw(PlantJob::isPlantable, SEEDS_PER_TRIP);
-            ItemStack rest = drone.storeInCargo(seeds);
-            if (!rest.isEmpty()) {
-                dock.deposit(rest);
-            }
+            loadFromDock(drone, dock, PlantJob::isPlantable, SEEDS_PER_TRIP);
         }
         return new PlantJob(target);
     }
@@ -79,7 +72,7 @@ public class PlantJob extends DroneJob {
     /** Plants the first seed in the cargo that can grow here. False when the drone is out of seeds. */
     private boolean plant(DroneEntity drone, ServerLevel level) {
         BlockPos cropPos = farmland.above();
-        ItemStack seed = drone.takeOneFromCargo(stack -> isPlantable(stack)
+        ItemStack seed = drone.cargo().takeOne(stack -> isPlantable(stack)
                 && ((BlockItem) stack.getItem()).getBlock().defaultBlockState().canSurvive(level, cropPos));
         if (seed.isEmpty()) {
             return false;

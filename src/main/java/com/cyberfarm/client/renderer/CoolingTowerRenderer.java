@@ -183,11 +183,11 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
     }
 
     private static void plate(PoseStack.Pose pose, VertexConsumer buffer, float angle, float y, TowerSize tower, float u, float v, int light) {
-        float r = tower.radius(y) + INSET_OFFSET;
-        float c = (float) Math.cos(angle);
-        float sn = (float) Math.sin(angle);
-        buffer.addVertex(pose, c * r, y, sn * r).setColor(0xFFFFFFFF).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
-                .setNormal(pose, c, 0.0F, sn);
+        float radius = tower.radius(y) + INSET_OFFSET;
+        float cos = (float) Math.cos(angle);
+        float sin = (float) Math.sin(angle);
+        buffer.addVertex(pose, cos * radius, y, sin * radius).setColor(0xFFFFFFFF).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
+                .setNormal(pose, cos, 0.0F, sin);
     }
 
     private static void quad(PoseStack.Pose pose, VertexConsumer buffer, float a0, float a1, float r0, float r1, float h0, float h1,

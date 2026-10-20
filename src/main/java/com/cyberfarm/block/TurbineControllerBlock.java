@@ -6,38 +6,23 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import org.jspecify.annotations.Nullable;
 
 /** Steam Turbine controller: FORMED when its hall is complete (SIZE says which), LIT while the rotor turns. */
-public class TurbineControllerBlock extends MachineBlock {
+public class TurbineControllerBlock extends MultiblockControllerBlock {
     public static final MapCodec<TurbineControllerBlock> CODEC = simpleCodec(TurbineControllerBlock::new);
-    public static final BooleanProperty FORMED = CyberFrameBlock.FORMED;
-    public static final BooleanProperty LIT = BlockStateProperties.LIT;
-    public static final IntegerProperty SIZE = ReactorControllerBlock.SIZE;
 
     public TurbineControllerBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FORMED, false).setValue(LIT, false).setValue(SIZE, 0));
     }
 
     @Override
     protected MapCodec<TurbineControllerBlock> codec() {
         return CODEC;
-    }
-
-    @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(FORMED, LIT, SIZE);
     }
 
     @Override

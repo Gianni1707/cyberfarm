@@ -118,7 +118,7 @@ public class SurveyToolItem extends Item {
                 Math.min(pos.getX(), corner.getX()), Math.min(pos.getY(), corner.getY()) - 1, Math.min(pos.getZ(), corner.getZ()),
                 Math.max(pos.getX(), corner.getX()), Math.max(pos.getY(), corner.getY()) + 2, Math.max(pos.getZ(), corner.getZ())));
         message(player, Component.translatable("message.cyberfarm.survey.area_set", width, depth));
-        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
+        playSaved(level, pos);
         return InteractionResult.SUCCESS;
     }
 
@@ -138,7 +138,7 @@ public class SurveyToolItem extends Item {
         stack.remove(ModDataComponents.ROUTE_SOURCE.get());
         dock.setTransportRoute(source, pos);
         message(player, Component.translatable("message.cyberfarm.survey.route_set", source.toShortString(), pos.toShortString()));
-        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
+        playSaved(level, pos);
         return InteractionResult.SUCCESS;
     }
 
@@ -153,7 +153,7 @@ public class SurveyToolItem extends Item {
         }
         dock.setTaxiDestination(pos);
         message(player, Component.translatable("message.cyberfarm.survey.taxi_set", pos.toShortString()));
-        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
+        playSaved(level, pos);
         return InteractionResult.SUCCESS;
     }
 
@@ -168,6 +168,11 @@ public class SurveyToolItem extends Item {
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    /** The chime of an area, route or destination saved on the dock. */
+    private static void playSaved(ServerLevel level, BlockPos pos) {
+        level.playSound(null, pos, SoundEvents.PLAYER_LEVELUP, SoundSource.PLAYERS, 0.4F, 1.8F);
     }
 
     private static void clearPending(ItemStack stack) {

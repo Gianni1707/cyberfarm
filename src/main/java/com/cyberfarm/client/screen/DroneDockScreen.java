@@ -43,12 +43,8 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
 
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
-        int left = x + BUTTON_X;
-        int top = y + BUTTON_Y;
-        graphics.fill(left, top, left + BUTTON_WIDTH, top + BUTTON_HEIGHT, SLOT_BORDER);
-        graphics.fill(left + 1, top + 1, left + BUTTON_WIDTH - 1, top + BUTTON_HEIGHT - 1, PANEL_LIGHT);
-        Component filter = Component.translatable("gui.cyberfarm.dock.filter");
-        graphics.text(font, filter, left + (BUTTON_WIDTH - font.width(filter)) / 2, top + 3, TEXT, false);
+        drawButton(graphics, x + BUTTON_X, y + BUTTON_Y, BUTTON_WIDTH, BUTTON_HEIGHT,
+                Component.translatable("gui.cyberfarm.dock.filter"), PANEL_LIGHT, TEXT);
 
         int status = menu.getDroneStatus();
         String key = STATUS_KEYS[Math.max(0, Math.min(status, STATUS_KEYS.length - 1))];

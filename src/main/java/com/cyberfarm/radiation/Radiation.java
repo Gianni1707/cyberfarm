@@ -116,14 +116,18 @@ public final class Radiation {
                 for (int dz = -SCAN_RADIUS; dz <= SCAN_RADIUS; dz++) {
                     long chunkPos = ChunkPos.pack(home.x() + dx, home.z() + dz);
                     LevelChunk chunk = level.getChunkSource().getChunkNow(home.x() + dx, home.z() + dz);
-                    if (chunk == null || !scanned.add(chunkPos)) {
-                        continue;
-                    }
-                    for (BlockEntity entity : chunk.getBlockEntities().values()) {
-                        data.add(chunkPos, PER_ROD * countStoredWaste(level, entity));
+                    if (chunk != null && scanned.add(chunkPos)) {
+                        scanChunk(level, data, chunkPos, chunk);
                     }
                 }
             }
+        }
+    }
+
+    /** Waste stored in the chunk's containers and storage blocks. */
+    private static void scanChunk(ServerLevel level, RadiationData data, long chunkPos, LevelChunk chunk) {
+        for (BlockEntity entity : chunk.getBlockEntities().values()) {
+            data.add(chunkPos, PER_ROD * countStoredWaste(level, entity));
         }
     }
 

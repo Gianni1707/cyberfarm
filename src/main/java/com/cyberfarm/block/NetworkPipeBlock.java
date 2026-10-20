@@ -2,8 +2,6 @@ package com.cyberfarm.block;
 
 import java.util.Map;
 
-import com.google.common.collect.Maps;
-
 import com.cyberfarm.energy.ConduitNetwork;
 
 import net.minecraft.core.BlockPos;
@@ -12,9 +10,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -45,13 +44,8 @@ import org.jspecify.annotations.Nullable;
 public abstract class NetworkPipeBlock extends BaseEntityBlock {
     public static final Map<Direction, BooleanProperty> CONNECTIONS = PipeBlock.PROPERTY_BY_DIRECTION;
     /** Per side: the pipe pulls out of the block there (right-click the arm to switch). */
-    public static final Map<Direction, BooleanProperty> EXTRACT = Maps.newEnumMap(Map.of(
-            Direction.NORTH, BooleanProperty.create("extract_north"),
-            Direction.EAST, BooleanProperty.create("extract_east"),
-            Direction.SOUTH, BooleanProperty.create("extract_south"),
-            Direction.WEST, BooleanProperty.create("extract_west"),
-            Direction.UP, BooleanProperty.create("extract_up"),
-            Direction.DOWN, BooleanProperty.create("extract_down")));
+    public static final Map<Direction, BooleanProperty> EXTRACT = Util.makeEnumMap(Direction.class,
+            side -> BooleanProperty.create("extract_" + side.getSerializedName()));
 
     /** A pipe's block entity, which pulls from the blocks its arms are set to extract from. */
     public interface Puller {
@@ -73,11 +67,8 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
         super(properties);
         this.rate = rate;
         BlockState state = stateDefinition.any();
-        for (BooleanProperty property : CONNECTIONS.values()) {
-            state = state.setValue(property, false);
-        }
-        for (BooleanProperty property : EXTRACT.values()) {
-            state = state.setValue(property, false);
+        for (Direction side : Direction.values()) {
+            state = state.setValue(CONNECTIONS.get(side), false).setValue(EXTRACT.get(side), false);
         }
         registerDefaultState(state);
     }

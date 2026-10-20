@@ -67,6 +67,13 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     /** Machine-specific widgets drawn above the panel. {@code x}/{@code y} are the GUI origin. */
     protected abstract void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y);
 
+    /** A flat button: outlined, filled with {@code fill}, its label centred. */
+    protected void drawButton(GuiGraphicsExtractor graphics, int x, int y, int width, int height, Component label, int fill, int textColor) {
+        graphics.fill(x, y, x + width, y + height, SLOT_BORDER);
+        graphics.fill(x + 1, y + 1, x + width - 1, y + height - 1, fill);
+        graphics.text(font, label, x + (width - font.width(label)) / 2, y + 3, textColor, false);
+    }
+
     protected static void drawSlot(GuiGraphicsExtractor graphics, int x, int y) {
         graphics.fill(x - 1, y - 1, x + 17, y + 17, SLOT_BORDER);
         graphics.fill(x, y, x + 16, y + 16, SLOT_BG);

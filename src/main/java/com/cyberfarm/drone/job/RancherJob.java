@@ -40,12 +40,11 @@ public class RancherJob extends DroneJob {
     }
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        if (drone.isCargoFull()) {
+        if (drone.cargo().isFull()) {
             return null;
         }
-        boolean hasBuckets = drone.cargoContains(RancherJob::isBucket);
-        // Buckets can only be loaded while the drone sits on its dock
-        boolean canMilk = hasBuckets || (drone.isAtDock() && dock.contains(RancherJob::isBucket));
+        boolean hasBuckets = drone.cargo().contains(RancherJob::isBucket);
+        boolean canMilk = hasBuckets || canLoadFromDock(drone, dock, RancherJob::isBucket);
         AABB area = AABB.of(dock.getWorkArea()).inflate(0.0, 2.0, 0.0);
         LivingEntity best = null;
         double bestDistance = Double.MAX_VALUE;
@@ -63,10 +62,7 @@ public class RancherJob extends DroneJob {
             return null;
         }
         if (!hasBuckets && !canShear(level, best)) {
-            ItemStack rest = drone.storeInCargo(dock.withdraw(RancherJob::isBucket, BUCKETS_PER_TRIP));
-            if (!rest.isEmpty()) {
-                dock.deposit(rest);
-            }
+            loadFromDock(drone, dock, RancherJob::isBucket, BUCKETS_PER_TRIP);
         }
         return new RancherJob(best);
     }
@@ -97,7 +93,7 @@ public class RancherJob extends DroneJob {
         drone.flyTowards(hover);
         if (canShear(level, animal)) {
             List<ItemStack> drops = ((IShearable) animal).onSheared(null, new ItemStack(Items.SHEARS), level, animal.blockPosition());
-            drone.collect(level, animal.blockPosition(), drops);
+            drone.cargo().collect(level, animal.blockPosition(), drops);
         } else if (isMilkable(animal)) {
             if (!milk(drone, level)) {
                 return Result.DONE;
@@ -106,12 +102,12 @@ public class RancherJob extends DroneJob {
             return Result.DONE;
         }
         drone.useJobEnergy(ENERGY_COST);
-        return drone.isCargoFull() ? Result.RETURN : Result.DONE;
+        return drone.cargo().isFull() ? Result.RETURN : Result.DONE;
     }
 
     /** Milks with a bucket from the cargo, as a player would, so the animal decides what comes out. */
     private boolean milk(DroneEntity drone, ServerLevel level) {
-        ItemStack bucket = drone.takeOneFromCargo(RancherJob::isBucket);
+        ItemStack bucket = drone.cargo().takeOne(RancherJob::isBucket);
         if (bucket.isEmpty()) {
             return false;
         }
@@ -120,7 +116,7 @@ public class RancherJob extends DroneJob {
         animal.interact(player, InteractionHand.MAIN_HAND, animal.position());
         ItemStack result = player.getItemInHand(InteractionHand.MAIN_HAND);
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
-        drone.collect(level, animal.blockPosition(), List.of(result));
+        drone.cargo().collect(level, animal.blockPosition(), List.of(result));
         if (result.is(Items.BUCKET)) {
             // Still empty: this one gives no milk, leave it alone until the drone goes home
             drone.markUnreachable(animal.blockPosition());

@@ -171,25 +171,29 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     /** Takes up to {@code max} items of the first stack matching {@code filter}, e.g. seeds for a Planter. */
     public ItemStack withdraw(Predicate<ItemStack> filter, int max) {
-        for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = getStack(i);
-            if (!stack.isEmpty() && filter.test(stack)) {
-                int taken = Math.min(max, stack.getCount());
-                setStack(i, taken == stack.getCount() ? ItemStack.EMPTY : stack.copyWithCount(stack.getCount() - taken));
-                return stack.copyWithCount(taken);
-            }
+        int slot = findSlot(filter);
+        if (slot < 0) {
+            return ItemStack.EMPTY;
         }
-        return ItemStack.EMPTY;
+        ItemStack stack = getStack(slot);
+        int taken = Math.min(max, stack.getCount());
+        setStack(slot, taken == stack.getCount() ? ItemStack.EMPTY : stack.copyWithCount(stack.getCount() - taken));
+        return stack.copyWithCount(taken);
     }
 
     public boolean contains(Predicate<ItemStack> filter) {
+        return findSlot(filter) >= 0;
+    }
+
+    /** Index of the first stored stack matching {@code filter}, or -1. */
+    private int findSlot(Predicate<ItemStack> filter) {
         for (int i = 0; i < items.size(); i++) {
             ItemStack stack = getStack(i);
             if (!stack.isEmpty() && filter.test(stack)) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return -1;
     }
 
     @Override

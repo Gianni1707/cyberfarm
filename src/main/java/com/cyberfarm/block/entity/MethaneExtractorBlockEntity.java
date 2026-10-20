@@ -7,12 +7,14 @@ import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.menu.MethaneExtractorMenu;
+import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.EntityTypeTags;
@@ -32,7 +34,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
 
 /**
  * Methane Extractor: the "shower head" on top of a 3x3x4 chamber. It draws Methane from the mob
@@ -67,28 +68,9 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         return tank;
     }
 
-    /** Checks the 3x3x4 chamber below an extractor sitting at {@code top}. */
+    /** Checks the 3x3x4 chamber below an extractor sitting at {@code top}, as laid out by its {@link Blueprint}. */
     public static boolean isStructureValid(Level level, BlockPos top) {
-        for (int dx = -1; dx <= 1; dx++) {
-            for (int dz = -1; dz <= 1; dz++) {
-                boolean centre = dx == 0 && dz == 0;
-                boolean corner = dx != 0 && dz != 0;
-                if (!centre && !isFrame(level, top.offset(dx, 0, dz))) {
-                    return false;
-                }
-                for (int dy = 1; dy <= 2; dy++) {
-                    BlockState wall = level.getBlockState(top.offset(dx, -dy, dz));
-                    boolean ok = centre ? wall.isAir() : corner ? wall.is(ModBlocks.CYBER_FRAME.get()) : wall.is(Tags.Blocks.GLASS_BLOCKS);
-                    if (!ok) {
-                        return false;
-                    }
-                }
-                if (!isFrame(level, top.offset(dx, -3, dz))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return Blueprint.METHANE_CHAMBER.ghosts(top, Direction.NORTH).stream().allMatch(ghost -> ghost.ok().test(level.getBlockState(ghost.pos())));
     }
 
     /** Lights up (or turns off) the Cyber Frames of the chamber under {@code top}. */
@@ -99,10 +81,6 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
                 level.setBlock(pos, frame.setValue(CyberFrameBlock.FORMED, formed), Block.UPDATE_CLIENTS);
             }
         }
-    }
-
-    private static boolean isFrame(Level level, BlockPos pos) {
-        return level.getBlockState(pos).is(ModBlocks.CYBER_FRAME.get());
     }
 
     /** The 1x1x2 space in the middle of the chamber. */

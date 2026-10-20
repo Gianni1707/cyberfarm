@@ -10,11 +10,11 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModCreativeTabs;
 import com.cyberfarm.registry.ModDataComponents;
+import com.cyberfarm.registry.ModEffects;
 import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModMenus;
-import com.cyberfarm.registry.ModEffects;
 import com.cyberfarm.registry.ModSounds;
 import com.mojang.logging.LogUtils;
 

@@ -87,7 +87,7 @@ public enum Blueprint {
         return ghosts;
     }
 
-    /** The 3x3x4 chamber under a Methane Extractor (see MethaneExtractorBlockEntity#isStructureValid). */
+    /** The 3x3x4 chamber under a Methane Extractor; the extractor checks itself against it too. */
     private static List<Ghost> methaneChamber(BlockPos top) {
         Block frame = ModBlocks.CYBER_FRAME.get();
         Block extractor = ModBlocks.METHANE_EXTRACTOR.get();

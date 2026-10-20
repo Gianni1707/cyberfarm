@@ -9,6 +9,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Containers;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -104,6 +105,18 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     public void setStack(int index, ItemStack stack) {
         items.set(index, ItemResource.of(stack), stack.getCount());
+    }
+
+    /** Whether one more {@code item} fits in the slot. */
+    protected boolean hasRoomFor(int slot, Item item) {
+        ItemStack stack = getStack(slot);
+        return stack.isEmpty() || (stack.is(item) && stack.getCount() < stack.getMaxStackSize());
+    }
+
+    /** Adds one {@code item} to the slot; check {@link #hasRoomFor} first. */
+    protected void addOne(int slot, Item item) {
+        ItemStack stack = getStack(slot);
+        setStack(slot, stack.isEmpty() ? new ItemStack(item) : stack.copyWithCount(stack.getCount() + 1));
     }
 
     @Override
