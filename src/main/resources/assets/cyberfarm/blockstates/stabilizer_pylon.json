@@ -1,0 +1,71 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "part": "single"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_single"
+      }
+    },
+    {
+      "when": {
+        "part": "bottom"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_bottom"
+      }
+    },
+    {
+      "when": {
+        "part": "middle"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_middle"
+      }
+    },
+    {
+      "when": {
+        "part": "top"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_top"
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_socket"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_socket",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_socket",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/stabilizer_pylon_socket",
+        "y": 270
+      }
+    }
+  ]
+}

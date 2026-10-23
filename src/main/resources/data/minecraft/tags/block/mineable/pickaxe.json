@@ -28,6 +28,9 @@
     "cyberfarm:vitrified_waste",
     "cyberfarm:liquid_tank",
     "cyberfarm:gas_tank",
+    "cyberfarm:resonance_core",
+    "cyberfarm:resonance_cell",
+    "cyberfarm:stabilizer_pylon",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore"
   ]

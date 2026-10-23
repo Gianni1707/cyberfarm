@@ -26,7 +26,7 @@ reactor and more. The info page (the "i" tab) of any CyberFarm machine gives a q
 New here? Read [Getting Started](getting_started.md): your first drone, step by step.
 Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
 Need water for your machines? A [Water Pump](water_pump.md) gives an endless supply.
-Then the handbook has four sections:
+Then the handbook has five sections:
 
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
@@ -40,6 +40,10 @@ the [Waste Reprocessor](waste_reprocessor.md) and the [Hazmat Suit and Geiger Co
 
 The [Multiblock Projector](multiblock_projector.md) shows any of these structures in the world
 before you build it.
+
+### [Energy Storage](energy_storage.md)
+Keeping power for later: the [Resonance Core](resonance_core.md), a battery you build bigger with a
+shell of Resonance Cells, held steady by columns of Stabilizer Pylons that are also its way in and out.
 
 ### [Cables](cables.md)
 Moving power and fluids: the [Energy Conduit](energy_conduit.md), the [Gas Pipe](gas_pipe.md) and the

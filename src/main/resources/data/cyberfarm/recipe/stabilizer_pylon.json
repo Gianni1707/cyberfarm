@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:amethyst_shard",
+    "I": "minecraft:iron_ingot",
+    "F": "cyberfarm:cyber_frame",
+    "R": "minecraft:redstone"
+  },
+  "pattern": [
+    " A ",
+    "IFI",
+    "IRI"
+  ],
+  "result": {
+    "id": "cyberfarm:stabilizer_pylon",
+    "count": 2
+  }
+}
