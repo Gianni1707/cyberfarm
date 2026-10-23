@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "formed=false,open=false": {
+      "model": "cyberfarm:block/intake_gate"
+    },
+    "formed=false,open=true": {
+      "model": "cyberfarm:block/intake_gate"
+    },
+    "formed=true,open=false": {
+      "model": "cyberfarm:block/intake_gate_hidden"
+    },
+    "formed=true,open=true": {
+      "model": "cyberfarm:block/intake_gate_hidden"
+    }
+  }
+}

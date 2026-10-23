@@ -46,6 +46,11 @@ public class ModFluids {
     public static final DeferredHolder<Fluid, GasFluid> METHANE = FLUIDS.register("methane", () -> new GasFluid(METHANE_TYPE, ModItems.METHANE_BUCKET));
     public static final DeferredHolder<Fluid, GasFluid> STEAM = FLUIDS.register("steam", () -> new GasFluid(STEAM_TYPE, ModItems.STEAM_BUCKET));
 
+    // Acid for the Methane Extractor's chamber: a liquid (it runs in Liquid Pipes) kept in tanks and buckets only
+    public static final DeferredHolder<FluidType, FluidType> ACID_TYPE = FLUID_TYPES.register("acid",
+            () -> new FluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.acid").density(1300).temperature(300).viscosity(1500)));
+    public static final DeferredHolder<Fluid, GasFluid> ACID = FLUIDS.register("acid", () -> new GasFluid(ACID_TYPE, ModItems.ACID_BUCKET));
+
     // They flow like water
     private static BaseFlowingFluid.Properties coolant() {
         return new BaseFlowingFluid.Properties(COOLANT_TYPE, COOLANT, FLOWING_COOLANT)

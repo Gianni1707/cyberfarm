@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
+import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
@@ -50,6 +51,7 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         GAS_TURBINE("gas_turbine", ModItems.GAS_TURBINE),
         WATER_PUMP("water_pump", ModItems.WATER_PUMP),
         COOLANT_MIXER("coolant_mixer", ModItems.COOLANT_MIXER),
+        ACID_SYNTHESIZER("acid_synthesizer", ModItems.ACID_SYNTHESIZER),
         FISSION_REACTOR("fission_reactor", ModItems.REACTOR_CONTROLLER),
         STEAM_TURBINE("steam_turbine", ModItems.TURBINE_CONTROLLER),
         WASTE_REPROCESSOR("waste_reprocessor", ModItems.WASTE_REPROCESSOR);
@@ -100,6 +102,10 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
                 List.of(new FluidAmount(Fluids.WATER, WaterPumpBlockEntity.RATE)),
                 List.of(note("pump"), note("energy", WaterPumpBlockEntity.ENERGY_PER_TICK))));
         coolantMixer(all);
+        all.add(new MachineExample(Machine.ACID_SYNTHESIZER, List.of(List.of(new ItemStack(ModItems.SULFUR.get()))),
+                List.of(new FluidAmount(Fluids.WATER, AcidSynthesizerBlockEntity.BATCH)), List.of(),
+                List.of(new FluidAmount(ModFluids.ACID.get(), AcidSynthesizerBlockEntity.BATCH)),
+                List.of(note("time_energy", AcidSynthesizerBlockEntity.PROCESS_TIME / 20, AcidSynthesizerBlockEntity.ENERGY_PER_TICK))));
         fissionReactor(all);
         steamTurbine(all);
         all.add(new MachineExample(Machine.WASTE_REPROCESSOR, List.of(List.of(new ItemStack(ModItems.DEPLETED_FUEL_ROD.get()))), List.of(),

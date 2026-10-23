@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "F": "cyberfarm:cyber_frame",
+    "P": "minecraft:piston",
+    "D": "minecraft:iron_door"
+  },
+  "pattern": [
+    "IFI",
+    "PDP"
+  ],
+  "result": {
+    "id": "cyberfarm:intake_gate"
+  }
+}

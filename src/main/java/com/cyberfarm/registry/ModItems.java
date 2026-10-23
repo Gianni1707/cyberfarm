@@ -1,5 +1,12 @@
 package com.cyberfarm.registry;
 
+import java.util.List;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.ItemLore;
+
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneTask;
@@ -43,6 +50,11 @@ public class ModItems {
     public static final DeferredItem<BlockItem> GAS_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TURBINE);
     public static final DeferredItem<BlockItem> METHANE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_EXTRACTOR);
     public static final DeferredItem<BlockItem> CYBER_FRAME = ITEMS.registerSimpleBlockItem(ModBlocks.CYBER_FRAME);
+    public static final DeferredItem<BlockItem> ACID_INLET = ITEMS.registerSimpleBlockItem(ModBlocks.ACID_INLET,
+            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.acid_inlet", ChatFormatting.GREEN)));
+    public static final DeferredItem<BlockItem> METHANE_OUTLET = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_OUTLET,
+            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.methane_outlet", ChatFormatting.AQUA)));
+    public static final DeferredItem<BlockItem> INTAKE_GATE = ITEMS.registerSimpleBlockItem(ModBlocks.INTAKE_GATE);
     public static final DeferredItem<BlockItem> MUFFLER = ITEMS.registerSimpleBlockItem(ModBlocks.MUFFLER);
     public static final DeferredItem<MobCapsuleItem> MOB_CAPSULE = ITEMS.registerItem("mob_capsule", MobCapsuleItem::new);
 
@@ -77,6 +89,16 @@ public class ModItems {
     public static final DeferredItem<FluidBucketItem> STEAM_BUCKET = ITEMS.registerItem("steam_bucket", p -> new FluidBucketItem(ModFluids.STEAM.get(), p));
     public static final DeferredItem<FluidBucketItem> COOLANT_BUCKET = ITEMS.registerItem("coolant_bucket", p -> new FluidBucketItem(ModFluids.COOLANT.get(), p));
     public static final DeferredItem<FluidBucketItem> CRYO_COOLANT_BUCKET = ITEMS.registerItem("cryo_coolant_bucket", p -> new FluidBucketItem(ModFluids.CRYO_COOLANT.get(), p));
+    public static final DeferredItem<FluidBucketItem> ACID_BUCKET = ITEMS.registerItem("acid_bucket", p -> new FluidBucketItem(ModFluids.ACID.get(), p));
+
+    // Sulfur from the Nether, for the Acid Synthesizer
+    public static final DeferredItem<BlockItem> NETHER_SULFUR_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.NETHER_SULFUR_ORE);
+    public static final DeferredItem<Item> SULFUR = ITEMS.registerSimpleItem("sulfur");
+    public static final DeferredItem<BlockItem> CONTAINMENT_GLASS = ITEMS.registerSimpleBlockItem(ModBlocks.CONTAINMENT_GLASS);
+    public static final DeferredItem<BlockItem> ACID_SYNTHESIZER = ITEMS.registerSimpleBlockItem(ModBlocks.ACID_SYNTHESIZER);
+    public static final DeferredItem<BlockItem> STEAM_ENGINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE);
+    public static final DeferredItem<BlockItem> STEAM_ENGINE_CYLINDER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE_CYLINDER);
+    public static final DeferredItem<BlockItem> STEAM_ENGINE_DYNAMO = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE_DYNAMO);
 
     // Crafting components
     public static final DeferredItem<Item> DRONE_CORE = ITEMS.registerSimpleItem("drone_core");
@@ -130,4 +152,9 @@ public class ModItems {
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
     public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
+
+    /** One coloured, non-italic line under an item's name. */
+    private static ItemLore lore(String key, ChatFormatting color) {
+        return new ItemLore(List.of(Component.translatable(key).withStyle(style -> style.withColor(color).withItalic(false))));
+    }
 }

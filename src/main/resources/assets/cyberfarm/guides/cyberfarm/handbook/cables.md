@@ -29,7 +29,7 @@ mod. Each kind comes in **three tiers**, told apart by the ring where two cables
 | --- | --- | --- | --- | --- |
 | [Energy Conduit](energy_conduit.md) | FE | 2,000 FE/t | 16,000 FE/t | 128,000 FE/t |
 | [Gas Pipe](gas_pipe.md) | gases: biogas, methane, Steam | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
-| [Liquid Pipe](liquid_pipe.md) | liquids: water, lava, coolants | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
+| [Liquid Pipe](liquid_pipe.md) | liquids: water, lava, coolants, acid | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
 
 The rate is how much can enter the network **from each source**: a generator or tank pushing in. It is set by the pipe the source touches, so
 tiers can be mixed in one network: put a better pipe right where a big producer connects.

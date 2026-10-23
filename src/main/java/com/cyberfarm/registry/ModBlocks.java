@@ -1,11 +1,15 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.block.AcidSynthesizerBlock;
+import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.CoolantBlock;
 import com.cyberfarm.block.CoolantMixerBlock;
+import com.cyberfarm.block.ContainmentGlassBlock;
 import com.cyberfarm.block.CyberFrameBlock;
+import com.cyberfarm.block.IntakeGateBlock;
 import com.cyberfarm.block.DroneAssemblerBlock;
 import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
@@ -26,6 +30,7 @@ import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -82,11 +87,18 @@ public class ModBlocks {
 
     public static final DeferredBlock<MethaneExtractorBlock> METHANE_EXTRACTOR = BLOCKS.registerBlock("methane_extractor",
             MethaneExtractorBlock::new,
-            p -> machine(p).lightLevel(state -> state.getValue(MethaneExtractorBlock.FORMED) ? 9 : 0));
+            p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(MethaneExtractorBlock.FORMED) ? 9 : 0));
 
     /** Structural sci-fi frame, used by multiblocks such as the Methane Extractor chamber. */
+    // The chamber's blocks never hide their neighbours' faces: once formed they are drawn as one smooth tank
     public static final DeferredBlock<CyberFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
-            CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 6 : 0));
+            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<CyberFrameBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
+            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<CyberFrameBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
+            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<IntakeGateBlock> INTAKE_GATE = BLOCKS.registerBlock("intake_gate",
+            IntakeGateBlock::new, ModBlocks::chamberPart);
 
     public static final DeferredBlock<MufflerBlock> MUFFLER = BLOCKS.registerBlock("muffler",
             MufflerBlock::new, p -> p.mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL));
@@ -111,6 +123,26 @@ public class ModBlocks {
             ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
             CoolantMixerBlock::new, ModBlocks::machine);
+
+    // Walls of the Methane Extractor's chamber: see-through, tinted, framed
+    public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
+            ContainmentGlassBlock::new, p -> p.mapColor(MapColor.NONE).strength(1.5F, 6.0F).sound(SoundType.GLASS).noOcclusion()
+                    .isValidSpawn(Blocks::never).isRedstoneConductor((s, l, q) -> false).isSuffocating((s, l, q) -> false)
+                    .isViewBlocking((s, l, q) -> false));
+
+    // Sulfur in the Nether's netherrack, and the machine that turns it into acid
+    public static final DeferredBlock<Block> NETHER_SULFUR_ORE = BLOCKS.registerSimpleBlock("nether_sulfur_ore",
+            p -> p.mapColor(MapColor.NETHER).strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE).requiresCorrectToolForDrops());
+    public static final DeferredBlock<AcidSynthesizerBlock> ACID_SYNTHESIZER = BLOCKS.registerBlock("acid_synthesizer",
+            AcidSynthesizerBlock::new, ModBlocks::machine);
+    // Steam Engine: the boiler controls a row of cylinders closed by a dynamo
+    // A complete engine is drawn whole by the boiler's renderer: its blocks hide and never cull their neighbours
+    public static final DeferredBlock<SteamEngineBlock> STEAM_ENGINE = BLOCKS.registerBlock("steam_engine",
+            SteamEngineBlock::new, p -> machine(p).noOcclusion());
+    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_CYLINDER = BLOCKS.registerBlock("steam_engine_cylinder",
+            CyberFrameBlock::new, p -> machine(p).noOcclusion());
+    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
+            CyberFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::machine);
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
@@ -153,5 +185,9 @@ public class ModBlocks {
                 .strength(3.5F, 6.0F)
                 .sound(SoundType.METAL)
                 .requiresCorrectToolForDrops();
+    }
+
+    private static BlockBehaviour.Properties chamberPart(BlockBehaviour.Properties properties) {
+        return machine(properties).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 6 : 0);
     }
 }

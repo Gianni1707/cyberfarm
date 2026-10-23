@@ -61,10 +61,37 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Tier 2** ✅: Bio-Digester (compostabili e carne marcia → Biogas, senza corrente), Methane Extractor (multiblocco "doccia" 3x3x4:
   pavimento e tetto di Cyber Frame, pareti con angoli in Cyber Frame e vetro al centro, estrattore al centro del tetto;
   a struttura completa suono + estrattore e frame illuminati, GUI apribile da ogni blocco della camera (Shift per piazzare);
-  mob caricato con la Mob Capsule, che cattura qualsiasi mob tranne boss e droni; zombie 10 mB/t, mostri 5, animali 2), Gas Turbine (biogas 3 FE/mB, metano 8 FE/mB,
+  mob caricato con la Mob Capsule, che cattura qualsiasi mob tranne boss e droni; zombie 25 mB/t, mostri 12, animali 4), Gas Turbine (biogas 3 FE/mB, metano 8 FE/mB,
   20 mB/t), Gas Pipe (1.000 / 4.000 / 16.000 mB/t per sorgente secondo il tier). Gas = fluidi NeoForge standard con tag `c:gaseous`/`c:biogas`/`c:methane`.
   I gas servono solo ai generatori: i droni vanno sempre e solo a corrente. Mekanism: compatibile solo a livello di tubi
   (i suoi tubi per fluidi trasportano biogas e metano), i nostri gas non sostituiscono i suoi.
+- **Acido** (da testare in gioco): Nether Sulfur Ore nel netherrack del Nether (2-4 Sulfur, Fortune; tag `c:ores/sulfur`,
+  `c:dusts/sulfur`, `c:ores_in_ground/netherrack`), Acid Synthesizer (1 Sulfur + 500 mB acqua → 500 mB Acid, 2 s, 20 FE/t).
+  Il Methane Extractor ora vuole acido (1 mB/t, serbatoio 8.000 mB visibile come pozza verde in camera): senza acido non
+  produce; ogni 15 s l'acido corrode il mob, che alla fine viene consumato. Pareti della camera in Containment Glass.
+  Camera restyle: a struttura completa i blocchi si nascondono e `MethaneChamberRenderer` disegna una vasca cilindrica
+  (base e cappello bianchi con fasce ciano, vetro, 4 pilastri con strisce arancioni, acido con bolle; niente
+  ologramma, i livelli sono nella GUI). Port: qualsiasi Cyber Frame può essere Acid Inlet (solo acido in)
+  o Methane Outlet (il metano esce solo da lì); l'estrattore non espone più fluidi. Intake Gate al posto di un vetro
+  della parete bassa: a camera vuota risucchia il primo mostro davanti (niente boss), portello che si arrotola.
+  Acid Inlet / Methane Outlet con riga colorata nel tooltip; la GUI dice dove va l'acido quando manca.
+  Acid Synthesizer: due finestre di vetro incorniciate (acqua, acido) riempite al livello reale con bolle mentre lavora
+  (`AcidSynthesizerRenderer`, sync ogni 5 tick).
+  Il livello dell'acido arriva ai client anche ogni 5 s; con il serbatoio del metano pieno l'estrattore si ferma (niente acido sprecato).
+  Decomposizione lenta: il mob resta della sua taglia ma la pelle si buca a chiazze e diventa verde malato
+  (`DissolvingMobRenderer`: render state modifier + layer con `RenderTypes.entityCutoutDissolve` e maschera di rumore,
+  come la morte del drago; il corpo normale è nascosto come per l'invisibilità), in modo continuo tra un punto vita e
+  l'altro. Il server manda fumi verdi, brandelli di carne marcia e gocce di slime; si vede anche nella GUI.
+  GUI nuova: finestra sulla camera col mob renderizzato, acido che sale, bolle e archi, integrità del mob.
+  Riempimento animato: quando entra acido (sincronizzato `filling`) un getto scende dalla testa dell'estrattore, schizzi
+  e onde sulla pozza, livello che sale in modo fluido, Acid Inlet che pulsa; nella GUI stato FILLING e getto nella finestra.
+- **Steam Engine** (tier 2.5, da testare in gioco): multiblocco in fila, Caldaia a induzione → 1-4 Cilindri → Dinamo.
+  15 mB/t di biogas (6 FE/mB) o metano (10 FE/mB) per cilindro, fino a 600 FE/t; ~5 s per andare a regime, buffer
+  200.000 FE, l'energia esce dalla dinamo. Restyle come la camera del metano: a fila completa i blocchi (FORMED) si
+  nascondono e `SteamEngineRenderer` disegna la macchina intera su un basamento con linea ciano: caldaia bianca con
+  bobine arancioni che pulsano con la velocità e sbuffi di vapore, cilindri con pistone luminoso in camicia di vetro,
+  linea del vapore, dinamo con avvolgimenti in rame e volano a raggi con bordo ciano. GUI con vista laterale animata.
+  Tubi e cavi collegati a caldaia e dinamo ricevono un manicotto con anello ciano fino al bordo del blocco.
 - **Tier 3 — Nucleare** (in progettazione, vedi sotto).
 
 ### Nucleare (Tier 3) — progetto
@@ -179,9 +206,9 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 
 ### Libro guida
 **Drone Engineer's Handbook**. Sezioni: Getting Started, Muffler e Water Pump alla radice · **Generators** (Combustion, Gas Power, Bio-Digester,
-Methane Extractor, Gas Turbine) ·
+Methane Extractor, Sulfur and Acid, Gas Turbine, Steam Engine) ·
 **Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
-Reprocessor, Hazmat Suit and Geiger Counter) · **Energy Storage** (Resonance Core) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
+Reprocessor, Hazmat Suit and Geiger Counter) · **Energy Storage** (pagina indice con le tre parti, poi Resonance Core, Resonance Cell, Stabilizer Pylon) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
 Modules, Addons, Dock, Using Drones).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
@@ -198,6 +225,10 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 5. Rifinitura: bilanciamento, config, plugin JEI completo, texture e guida.
    ✅ Bilanciamento energia (confrontato con Mekanism, Immersive Engineering, Oritech): porte del reattore 2.500 mB/t di vapore,
    Gas Turbine 20 mB/t (biogas 60, metano 160 FE/t), Water Pump 500 mB/t a 40 FE/t.
+   ✅ Ribilanciamento generatori a gas (ott. 2026): Combustion 40 FE/t; Bio-Digester ~6 mB/t di biogas (~19 FE/t in turbina);
+   camera del metano zombie 25 mB/t (~200 FE/t in turbina, ~10 Bio-Digester, giustificato da struttura + acido + mob);
+   Steam Engine 15 mB/t per cilindro, biogas 6 / metano 10 FE/mB, max 600 FE/t (= ~15 Combustion, 2,4 camere) sotto il
+   reattore più piccolo al massimo (800 FE/t). Guida: tabelle di confronto in Generators e Gas Power.
    ✅ Cavi in 3 tier (base / Advanced oro / Elite viola), i tier si uniscono nella stessa rete e la portata è quella del cavo
    toccato dalla sorgente: Energy Conduit 2.000 / 16.000 / 128.000 FE/t, Gas Pipe e Liquid Pipe 1.000 / 4.000 / 16.000 mB/t.
    Gas Pipe solo gas (`FluidType.isLighterThanAir`: biogas, metano, vapore), Liquid Pipe solo liquidi (acqua, lava,
@@ -221,6 +252,7 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    raggruppati per mB), Methane Extractor (uova spawn per gruppo: zombie, mostri, animali), Gas Turbine, Water Pump, Coolant
    Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.
 6. Energy Storage: Resonance Core costruibile in 4 tier (guscio di Resonance Cell) con colonne di Stabilizer Pylon da cui entra ed esce l'energia (da testare in gioco).
+7. ✅ Acido per il Methane Extractor (zolfo nel Nether, Acid Synthesizer, Containment Glass) e Steam Engine multiblocco (da testare in gioco).
 
 ## Asset
 

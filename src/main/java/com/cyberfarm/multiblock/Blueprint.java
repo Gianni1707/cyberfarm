@@ -10,9 +10,7 @@ import com.cyberfarm.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -130,23 +128,33 @@ public enum Blueprint {
         return ghosts;
     }
 
-    /** The 3x3x4 chamber under a Methane Extractor; the extractor checks itself against it too. */
+    /**
+     * The 3x3x4 chamber under a Methane Extractor; the extractor checks itself against it too. Any
+     * Cyber Frame may be an Acid Inlet or a Methane Outlet instead, any glass of the lower wall an
+     * Intake Gate: the projector suggests one of each.
+     */
     private static List<Ghost> methaneChamber(BlockPos top) {
         Block frame = ModBlocks.CYBER_FRAME.get();
+        Block glass = ModBlocks.CONTAINMENT_GLASS.get();
         Block extractor = ModBlocks.METHANE_EXTRACTOR.get();
+        Predicate<BlockState> shell = state -> state.is(frame) || state.is(ModBlocks.ACID_INLET.get()) || state.is(ModBlocks.METHANE_OUTLET.get());
+        Predicate<BlockState> lowerWall = state -> state.is(glass) || state.is(ModBlocks.INTAKE_GATE.get());
         List<Ghost> ghosts = new ArrayList<>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 boolean centre = dx == 0 && dz == 0;
                 boolean corner = dx != 0 && dz != 0;
-                ghosts.add(centre ? new Ghost(top, extractor, state -> state.is(extractor)) : frame(top.offset(dx, 0, dz), frame));
+                Block roof = dx == -1 && dz == 0 ? ModBlocks.ACID_INLET.get() : dx == 1 && dz == 0 ? ModBlocks.METHANE_OUTLET.get() : frame;
+                ghosts.add(centre ? new Ghost(top, extractor, state -> state.is(extractor)) : new Ghost(top.offset(dx, 0, dz), roof, shell));
                 for (int dy = 1; dy <= 2; dy++) {
                     BlockPos pos = top.offset(dx, -dy, dz);
+                    Block gate = dy == 2 && dx == 0 && dz == -1 ? ModBlocks.INTAKE_GATE.get() : glass;
                     ghosts.add(centre ? new Ghost(pos, null, BlockState::isAir)
-                            : corner ? frame(pos, frame)
-                            : new Ghost(pos, Blocks.GLASS, state -> state.is(Tags.Blocks.GLASS_BLOCKS)));
+                            : corner ? new Ghost(pos, frame, shell)
+                            : dy == 2 ? new Ghost(pos, gate, lowerWall)
+                            : frame(pos, glass));
                 }
-                ghosts.add(frame(top.offset(dx, -3, dz), frame));
+                ghosts.add(new Ghost(top.offset(dx, -3, dz), frame, shell));
             }
         }
         return ghosts;

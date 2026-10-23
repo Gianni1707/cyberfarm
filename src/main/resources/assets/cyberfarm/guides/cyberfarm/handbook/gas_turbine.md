@@ -2,7 +2,7 @@
 navigation:
   title: Gas Turbine
   parent: generators.md
-  position: 5
+  position: 6
   icon: cyberfarm:gas_turbine
 item_ids:
   - cyberfarm:gas_turbine

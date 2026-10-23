@@ -2,13 +2,19 @@ package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
+import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
+import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.renderer.FluidTankRenderer;
 import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
+import com.cyberfarm.client.renderer.SteamEngineRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
+import com.cyberfarm.client.screen.AcidSynthesizerScreen;
+import com.cyberfarm.client.screen.SteamEngineScreen;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
 import com.cyberfarm.client.screen.CoolantMixerScreen;
@@ -30,6 +36,10 @@ import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModMenus;
 
+import com.google.common.reflect.TypeToken;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
@@ -72,6 +82,7 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerScreens);
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
+        modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
@@ -143,6 +154,8 @@ public class CyberFarmClient {
         event.register(ModMenus.ITEM_FILTER.get(), ItemFilterScreen::new);
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
+        event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
+        event.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
         event.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
     }
@@ -152,11 +165,16 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */
     private static void registerRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
+        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>() {},
+                DissolvingMobRenderer::extract);
         event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
             @Override
             public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
@@ -180,6 +198,7 @@ public class CyberFarmClient {
         event.register(gasModel("steam"), ModFluids.STEAM);
         event.register(liquidModel(0xFF1FB8A8), ModFluids.COOLANT, ModFluids.FLOWING_COOLANT);
         event.register(liquidModel(0xFF9FE4FF), ModFluids.CRYO_COOLANT, ModFluids.FLOWING_CRYO_COOLANT);
+        event.register(liquidModel(0xFF9BE04A), ModFluids.ACID);
     }
 
     private static FluidModel.Unbaked gasModel(String name) {

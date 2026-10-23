@@ -1,0 +1,6 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "#minecraft:is_nether",
+  "features": "cyberfarm:nether_sulfur_ore",
+  "step": "underground_decoration"
+}

@@ -3,7 +3,10 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
-import com.cyberfarm.energy.PylonEnergyHandler;
+import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
+import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
+import com.cyberfarm.block.entity.SteamEngineBlockEntity;
+import com.cyberfarm.energy.ForwardingEnergyHandler;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.SurveyModePayload;
@@ -76,7 +79,15 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.METHANE_EXTRACTOR.get(), (be, side) -> be.getTank());
+        // The extraction chamber takes acid in and gives methane out only through its ports
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);
+            return extractor != null ? extractor.getAcidInlet() : null;
+        }, ModBlocks.ACID_INLET.get());
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);
+            return extractor != null ? extractor.getMethaneOutlet() : null;
+        }, ModBlocks.METHANE_OUTLET.get());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
@@ -87,10 +98,21 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
         // The Resonance Core takes and gives power only through its pylons
-        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new PylonEnergyHandler(level, pos),
-                ModBlocks.STABILIZER_PYLON.get());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
+            ResonanceCoreBlockEntity core = ResonanceCoreBlockEntity.linkedCore(level, pos);
+            return core != null ? core.getEnergy() : null;
+        }), ModBlocks.STABILIZER_PYLON.get());
+        // The Steam Engine gives its power out of the dynamo closing its row
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
+            SteamEngineBlockEntity engine = SteamEngineBlockEntity.ofDynamo(level, pos);
+            return engine != null ? engine.getEnergy() : null;
+        }), ModBlocks.STEAM_ENGINE_DYNAMO.get());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.STEAM_ENGINE.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getFluids());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());

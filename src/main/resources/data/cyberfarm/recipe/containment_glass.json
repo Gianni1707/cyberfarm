@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_nugget",
+    "G": "minecraft:glass",
+    "O": "minecraft:obsidian"
+  },
+  "pattern": [
+    "IGI",
+    "GOG",
+    "IGI"
+  ],
+  "result": {
+    "id": "cyberfarm:containment_glass",
+    "count": 4
+  }
+}

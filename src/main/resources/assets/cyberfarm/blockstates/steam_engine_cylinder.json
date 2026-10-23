@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/steam_engine_cylinder"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/steam_engine_cylinder_hidden"
+    }
+  }
+}

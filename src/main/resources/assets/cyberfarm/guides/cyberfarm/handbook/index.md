@@ -31,7 +31,8 @@ Then the handbook has five sections:
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
 with the [Bio-Digester](bio_digester.md), the [Methane Extractor](methane_extractor.md) and the
-[Gas Turbine](gas_turbine.md).
+[Gas Turbine](gas_turbine.md), [Sulfur and Acid](acid_synthesizer.md) and the
+[Steam Engine](steam_engine.md). The Generators page compares them all.
 
 ### [Nuclear](nuclear.md)
 The endgame power plant: [uranium](uranium.md), the [Fission Reactor](fission_reactor.md), the
@@ -43,7 +44,8 @@ before you build it.
 
 ### [Energy Storage](energy_storage.md)
 Keeping power for later: the [Resonance Core](resonance_core.md), a battery you build bigger with a
-shell of Resonance Cells, held steady by columns of Stabilizer Pylons that are also its way in and out.
+shell of [Resonance Cells](resonance_cell.md), held steady by columns of
+[Stabilizer Pylons](stabilizer_pylon.md) that are also its way in and out.
 
 ### [Cables](cables.md)
 Moving power and fluids: the [Energy Conduit](energy_conduit.md), the [Gas Pipe](gas_pipe.md) and the

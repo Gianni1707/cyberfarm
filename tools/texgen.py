@@ -1583,6 +1583,160 @@ def saw_icon():
     return c
 
 
+# --------------------------------------------------------------------------- acid and steam engine
+
+SULFUR = "#e8d43a"
+SULFUR_DARK = "#9a8a16"
+ACID = "#9be04a"
+
+
+def sulfur_ore_overlay():
+    """Transparent overlay drawn over netherrack: clusters of yellow sulfur crystals."""
+    c = Canvas()
+    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
+        c.rect(cx, cy, cx + 1, cy + 1, SULFUR_DARK)
+        c.set(cx, cy, SULFUR)
+        c.set(cx + 1, cy, "#fff3a0")
+    return c
+
+
+def sulfur_dust():
+    """A small heap of yellow powder."""
+    c = Canvas()
+    for y in range(7, 14):
+        half = (y - 6) + 1
+        c.rect(8 - half, y, 7 + half, y, SULFUR, noise=18, seed=y)
+    c.rect(2, 14, 13, 14, SULFUR_DARK)
+    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
+        c.set(x, y, "#fff3a0")
+    return c
+
+
+def acid_synthesizer_front():
+    """Two framed glass windows, water (columns 3..6) and acid (9..12): the renderer fills them to their tanks' levels."""
+    c = panel(60)
+    for x0 in (2, 8):
+        c.rect(x0, 2, x0 + 5, 12, "K")
+        c.rect(x0 + 1, 3, x0 + 4, 11, "#14222a")
+    c.rect(7, 4, 7, 10, "m")
+    c.set(7, 7, "O")
+    c.rect(3, 13, 12, 13, "c")
+    return c
+
+def containment_glass():
+    """Framed, tinted window: steel frame, cyan corner lights, a see-through pane."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, (40, 70, 80, 70))
+    c.frame(0, 0, 15, 15, "k")
+    c.frame(1, 1, 14, 14, "m")
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        c.set(x, y, "c")
+    for i in range(3, 7):
+        c.set(i, 9 - i, (200, 240, 255, 110))
+    return c
+
+
+def steam_engine_front():
+    """The boiler's face: an induction coil glowing behind a grille, and a pressure gauge."""
+    c = panel(61)
+    c.rect(3, 3, 12, 10, "K")
+    for y in range(4, 10, 2):
+        c.rect(4, y, 11, y, "o")
+        c.rect(5, y, 10, y, "O")
+    c.disc(7.5, 12.5, 1.6, "w")
+    c.set(8, 12, "r")
+    return c
+
+
+def steam_engine_cylinder():
+    """A ribbed steel cylinder with a brass band."""
+    c = panel(62, base="m")
+    for x in range(3, 13, 2):
+        c.rect(x, 2, x, 13, "l")
+    c.rect(2, 7, 13, 8, "O")
+    return c
+
+
+def steam_engine_dynamo():
+    """Copper windings behind a grille, cyan output lights."""
+    c = panel(63)
+    c.rect(3, 3, 12, 12, "K")
+    for y in range(4, 12):
+        c.rect(4, y, 11, y, "#b86b2e" if y % 2 else "#e08a45")
+    c.rect(3, 13, 12, 13, "c")
+    return c
+
+
+# --------------------------------------------------------------------------- methane chamber
+
+def chamber_port(color, light):
+    """A Cyber Frame with a round pipe socket ringed in the fluid's colour."""
+    c = cyber_frame()
+    c.disc(7.5, 7.5, 4.6, "k")
+    c.disc(7.5, 7.5, 3.8, color, r_inner=2.6)
+    c.disc(7.5, 7.5, 2.5, "K")
+    c.set(6, 6, light)
+    return c
+
+
+def intake_gate():
+    """A shutter in a hazard-striped frame: the door monsters are pulled through."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    for y in range(16):
+        for x in range(16):
+            if x in (1, 14) or y in (1, 14):
+                c.set(x, y, "y" if (x + y) // 2 % 2 else "K")
+    c.rect(2, 2, 13, 13, "m", noise=3, seed=30)
+    for y in range(3, 13, 2):
+        c.rect(3, y, 12, y, "l")
+    c.rect(3, 12, 12, 13, "o")
+    return c
+
+
+def chamber_shell():
+    """The formed chamber's metal skin: white panels with faint seams."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "#f0f3f5", noise=3, seed=31)
+    for x in (0, 8):
+        c.rect(x, 0, x, 15, "#c4ccd2")
+    c.rect(0, 15, 15, 15, "#c4ccd2")
+    return c
+
+
+def chamber_glass():
+    """The chamber's glass: almost clear, with soft vertical streaks; the renderer's tint sets how much shows."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, (255, 255, 255, 200))
+    for x in (3, 4, 11):
+        c.rect(x, 0, x, 15, (255, 255, 255, 255))
+    return c
+
+
+def dissolve_mask():
+    """Alpha noise for a mob dissolving in acid, 64x64 like a mob skin: patches of low alpha vanish first."""
+    rng = random.Random(77)
+    cells = 8
+    grid = [[rng.random() for _ in range(cells + 1)] for _ in range(cells + 1)]
+    c = Canvas(64, 64)
+    for y in range(64):
+        for x in range(64):
+            gx, gy = x / 64 * cells, y / 64 * cells
+            x0, y0 = int(gx), int(gy)
+            fx, fy = gx - x0, gy - y0
+            top = grid[y0][x0] * (1 - fx) + grid[y0][x0 + 1] * fx
+            bottom = grid[y0 + 1][x0] * (1 - fx) + grid[y0 + 1][x0 + 1] * fx
+            value = (top * (1 - fy) + bottom * fy) * 0.75 + rng.random() * 0.25
+            c.pixels[y][x] = (255, 255, 255, max(8, min(250, int(value * 255))))
+    return c
+
+
+def plain_white():
+    c = Canvas(4, 4)
+    c.rect(0, 0, 3, 3, (255, 255, 255, 255))
+    return c
+
+
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
@@ -1679,6 +1833,21 @@ def build_all():
         "entity/resonance_crystal": crystal_shell(),
         "entity/resonance_glow": crystal_glow(),
         "entity/stabilizer_beam": stabilizer_beam(),
+        "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
+        "item/sulfur": sulfur_dust(),
+        "item/acid_bucket": bucket(ACID, gas=False),
+        "block/acid_synthesizer_front": acid_synthesizer_front(),
+        "block/containment_glass": containment_glass(),
+        "block/steam_engine_front": steam_engine_front(),
+        "block/steam_engine_cylinder": steam_engine_cylinder(),
+        "block/steam_engine_dynamo": steam_engine_dynamo(),
+        "block/acid_inlet": chamber_port(ACID, "#e4ffb0"),
+        "block/methane_outlet": chamber_port("c", "C"),
+        "block/intake_gate": intake_gate(),
+        "entity/methane_chamber": chamber_shell(),
+        "entity/methane_chamber_glass": chamber_glass(),
+        "entity/methane_chamber_glow": plain_white(),
+        "entity/dissolve_mask": dissolve_mask(),
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)

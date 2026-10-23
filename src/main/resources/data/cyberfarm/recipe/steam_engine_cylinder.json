@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "P": "minecraft:piston",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "IPI",
+    "I I",
+    "ICI"
+  ],
+  "result": {
+    "id": "cyberfarm:steam_engine_cylinder",
+    "count": 2
+  }
+}

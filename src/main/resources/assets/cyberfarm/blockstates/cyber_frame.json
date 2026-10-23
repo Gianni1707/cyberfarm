@@ -4,7 +4,7 @@
       "model": "cyberfarm:block/cyber_frame"
     },
     "formed=true": {
-      "model": "cyberfarm:block/cyber_frame_formed"
+      "model": "cyberfarm:block/cyber_frame_hidden"
     }
   }
 }

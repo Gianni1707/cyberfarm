@@ -31,7 +31,16 @@
     "cyberfarm:resonance_core",
     "cyberfarm:resonance_cell",
     "cyberfarm:stabilizer_pylon",
+    "cyberfarm:acid_synthesizer",
+    "cyberfarm:containment_glass",
+    "cyberfarm:acid_inlet",
+    "cyberfarm:methane_outlet",
+    "cyberfarm:intake_gate",
+    "cyberfarm:steam_engine",
+    "cyberfarm:steam_engine_cylinder",
+    "cyberfarm:steam_engine_dynamo",
     "cyberfarm:uranium_ore",
-    "cyberfarm:deepslate_uranium_ore"
+    "cyberfarm:deepslate_uranium_ore",
+    "cyberfarm:nether_sulfur_ore"
   ]
 }
