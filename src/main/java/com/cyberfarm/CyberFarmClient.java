@@ -21,6 +21,8 @@ import com.cyberfarm.client.screen.ReactorScreen;
 import com.cyberfarm.client.screen.TurbineScreen;
 import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.item.SurveyModePayload;
+import com.cyberfarm.item.SurveyToolItem;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModFluids;
@@ -43,12 +45,14 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.common.NeoForge;
@@ -70,6 +74,7 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
+        NeoForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
     }
@@ -77,6 +82,17 @@ public class CyberFarmClient {
     private static void startDroneSound(EntityJoinLevelEvent event) {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof DroneEntity drone) {
             Minecraft.getInstance().getSoundManager().queueTickingSound(new DroneSoundInstance(drone));
+        }
+    }
+
+    /** Sneak + mouse wheel with the Survey Tool in hand changes its mode instead of the hotbar slot. */
+    private static void scrollSurveyMode(InputEvent.MouseScrollingEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null && minecraft.screen == null && minecraft.player.isShiftKeyDown()
+                && minecraft.player.getMainHandItem().getItem() instanceof SurveyToolItem && event.getScrollDeltaY() != 0) {
+            // Wheel up goes back, like the hotbar
+            ClientPacketDistributor.sendToServer(new SurveyModePayload(event.getScrollDeltaY() > 0 ? -1 : 1));
+            event.setCanceled(true);
         }
     }
 

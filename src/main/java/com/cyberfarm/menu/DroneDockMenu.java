@@ -2,27 +2,32 @@ package com.cyberfarm.menu;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.MachineBlockEntity;
+import com.cyberfarm.drone.DroneTask;
+import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import org.jspecify.annotations.Nullable;
 
 public class DroneDockMenu extends MachineMenu {
     public static final int CARGO_X = 98;
     public static final int CARGO_Y = 17;
     public static final int INVENTORY_Y = 104;
     public static final int BUTTON_FILTER = 0;
+    public static final int BUTTON_PAUSE = 1;
 
     private final ContainerLevelAccess access;
 
     public DroneDockMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(DroneDockBlockEntity.CARGO_SLOTS),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 7), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL);
     }
 
     public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
@@ -36,15 +41,19 @@ public class DroneDockMenu extends MachineMenu {
         addPlayerInventory(inventory, INVENTORY_Y);
     }
 
-    /** The Filter button swaps this menu for the dock's filter. */
+    /** The Filter button swaps this menu for the dock's filter; Return/Resume holds or frees the drone. */
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (id != BUTTON_FILTER) {
+        if (id != BUTTON_FILTER && id != BUTTON_PAUSE) {
             return false;
         }
         access.execute((level, pos) -> {
             if (level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock) {
-                dock.openFilter(player);
+                if (id == BUTTON_FILTER) {
+                    dock.openFilter(player);
+                } else {
+                    dock.togglePaused();
+                }
             }
         });
         return true;
@@ -76,5 +85,40 @@ public class DroneDockMenu extends MachineMenu {
 
     public int getQuarryLayer() {
         return extra(6);
+    }
+
+    /** The job the drone is doing, or null when it has none. */
+    public @Nullable DroneTask getDroneTask() {
+        int task = extra(7);
+        return task > 0 && task <= DroneTask.values().length ? DroneTask.values()[task - 1] : null;
+    }
+
+    public int getDroneModules() {
+        return extra(8);
+    }
+
+    public BlockPos getDronePos() {
+        return new BlockPos(combined(9), combined(11), combined(13));
+    }
+
+    public int getDroneEnergy() {
+        return combined(15);
+    }
+
+    public int getDroneCapacity() {
+        return combined(17);
+    }
+
+    public boolean isPaused() {
+        return extra(19) != 0;
+    }
+
+    public boolean hasTaxiDestination() {
+        return extra(20) != 0;
+    }
+
+    /** An int sent as two 16-bit halves, starting at {@code index}. */
+    private int combined(int index) {
+        return EnergyUtil.combine(extra(index), extra(index + 1));
     }
 }

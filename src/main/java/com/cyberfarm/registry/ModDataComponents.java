@@ -38,6 +38,10 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> SURVEY_CORNER = COMPONENTS.registerComponentType("survey_corner",
             builder -> builder.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
 
+    /** Survey Tool: the mode it works in, by {@code SurveyToolItem.Mode} ordinal. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SURVEY_MODE = COMPONENTS.registerComponentType("survey_mode",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
     /** Multiblock Projector: the chosen structure, and where and which way it is pinned. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> PROJECTOR_BLUEPRINT = COMPONENTS.registerComponentType("projector_blueprint",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));

@@ -71,6 +71,9 @@ to bedrock. The dock GUI shows the layer it is working on.
 - It skips **liquids**, **unbreakable blocks** and anything with an inventory or a machine
   inside (chests, furnaces, CyberFarm machines).
 - The column right under the Drone Dock is never dug, so the dock stays on a pillar.
+- In a deep pit it climbs out over the rim and drops straight down the shaft, so the dock can sit
+  beside the pit. A layer is finished only when every block in it is dug: a block the drone could
+  not reach is tried again on the next trip, never skipped.
 - The [dock filter](drone_dock.md) decides which drops are **kept**; the others are thrown away.
 - Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian.
 
@@ -89,8 +92,9 @@ While loaded, the drone carries the item **in its claw**, so you can see what it
 
 <br clear="all" />
 
-Set the route with the [Survey Tool](drone_dock.md): click the source container, then the
-destination. Any inventory works, including ones from other mods. Items that do not fit in the
+Set the route with the [Survey Tool](drone_dock.md) in **Route** mode: click the source
+container, then the destination. Any inventory works, including ones from other mods and **other drones' docks**: a
+Transport drone can collect what a Harvester or a Quarry brings home. Items that do not fit in the
 destination are brought back to the dock. The [dock filter](drone_dock.md) decides **which items**
 are moved.
 
@@ -140,8 +144,8 @@ it** to grab the hook: you hang below it with one hand while it carries you to t
 
 <br clear="all" />
 
-1. With the [Survey Tool](drone_dock.md) linked to the dock, **sneak + right-click the block**
-   you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
+1. With the [Survey Tool](drone_dock.md) linked to the dock and in **Taxi** mode, **right-click
+   the block** you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
 2. Right-click the waiting drone.
 3. It climbs above the terrain, flies straight to the destination and puts you down gently.
 

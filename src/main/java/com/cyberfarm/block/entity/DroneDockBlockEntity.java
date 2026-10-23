@@ -3,6 +3,7 @@ package com.cyberfarm.block.entity;
 import java.util.UUID;
 import java.util.function.Predicate;
 
+import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.ItemFilterMenu;
@@ -40,6 +41,8 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public static final int DEFAULT_RADIUS = 4;
     /** Ticks without news from the drone before the dock shows it as offline. */
     private static final int STATUS_TIMEOUT = 100;
+    /** Data slots after the energy ones; see {@link #getExtraData}. */
+    public static final int EXTRA_DATA = 21;
 
     private @Nullable BoundingBox workArea;
     /** Next layer the Quarry Module digs; unset means the top of the work area. */
@@ -50,8 +53,16 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private @Nullable UUID droneId;
     /** What the Quarry keeps (the rest is thrown away) and what the Transport carries. */
     private final ItemFilter filter = new ItemFilter(this::setChanged);
+    /** Set by the Return button: the drone comes home and takes no new jobs until resumed. */
+    private boolean paused;
+    // What the drone last reported, shown in the GUI
     private int droneStatus;
-    private int droneEnergyPercent;
+    private int droneEnergy;
+    private int droneCapacity;
+    /** {@code DroneTask} ordinal + 1 of the job in progress, 0 for none. */
+    private int droneTask;
+    private int droneModules;
+    private BlockPos dronePos = BlockPos.ZERO;
     private long lastStatusTick;
 
     public DroneDockBlockEntity(BlockPos pos, BlockState state) {
@@ -146,10 +157,23 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         }
     }
 
-    public void updateDroneStatus(long gameTime, int status, int energyPercent) {
+    public void updateDroneStatus(long gameTime, int status, int energy, int capacity, int task, int modules, BlockPos pos) {
         droneStatus = status;
-        droneEnergyPercent = energyPercent;
+        droneEnergy = energy;
+        droneCapacity = capacity;
+        droneTask = task;
+        droneModules = modules;
+        dronePos = pos;
         lastStatusTick = gameTime;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void togglePaused() {
+        paused = !paused;
+        setChanged();
     }
 
     /** Takes up to {@code max} FE out of the dock to recharge the drone. */
@@ -203,17 +227,31 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             case 0 -> area.getXSpan();
             case 1 -> area.getZSpan();
             case 2 -> droneStatus;
-            case 3 -> droneEnergyPercent;
+            case 3 -> droneCapacity > 0 ? (int) ((long) droneEnergy * 100 / droneCapacity) : 0;
             case 4 -> transportSource != null && transportDestination != null ? 1 : 0;
             case 5 -> quarryLayer != null ? 1 : 0;
             case 6 -> getQuarryLayer();
+            case 7 -> droneTask;
+            case 8 -> droneModules;
+            case 9 -> EnergyUtil.low(dronePos.getX());
+            case 10 -> EnergyUtil.high(dronePos.getX());
+            case 11 -> EnergyUtil.low(dronePos.getY());
+            case 12 -> EnergyUtil.high(dronePos.getY());
+            case 13 -> EnergyUtil.low(dronePos.getZ());
+            case 14 -> EnergyUtil.high(dronePos.getZ());
+            case 15 -> EnergyUtil.low(droneEnergy);
+            case 16 -> EnergyUtil.high(droneEnergy);
+            case 17 -> EnergyUtil.low(droneCapacity);
+            case 18 -> EnergyUtil.high(droneCapacity);
+            case 19 -> paused ? 1 : 0;
+            case 20 -> taxiDestination != null ? 1 : 0;
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 7;
+        return EXTRA_DATA;
     }
 
     @Override
@@ -225,6 +263,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("transport_destination", BlockPos.CODEC, transportDestination);
         output.storeNullable("taxi_destination", BlockPos.CODEC, taxiDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
+        output.putBoolean("paused", paused);
         filter.save(output.child("filter"));
     }
 
@@ -237,6 +276,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         transportDestination = input.read("transport_destination", BlockPos.CODEC).orElse(null);
         taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
+        paused = input.getBooleanOr("paused", false);
         filter.load(input.childOrEmpty("filter"));
     }
 

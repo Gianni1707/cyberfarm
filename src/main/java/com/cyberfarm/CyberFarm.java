@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.item.FluidBucketItem;
+import com.cyberfarm.item.SurveyModePayload;
 import com.cyberfarm.radiation.Radiation;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
@@ -27,6 +28,7 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
@@ -48,6 +50,7 @@ public class CyberFarm {
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
+        modEventBus.addListener(CyberFarm::registerPayloads);
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
@@ -97,5 +100,9 @@ public class CyberFarm {
 
     private static void registerAttributes(EntityAttributeCreationEvent event) {
         event.put(ModEntities.DRONE.get(), DroneEntity.createAttributes().build());
+    }
+
+    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        event.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle);
     }
 }

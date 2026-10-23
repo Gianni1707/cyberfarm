@@ -13,5 +13,5 @@ public class ModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<DroneEntity>> DRONE = ENTITIES.registerEntityType("drone",
             DroneEntity::new, MobCategory.MISC,
-            builder -> builder.sized(0.6F, 0.5F).clientTrackingRange(8).noLootTable());
+            builder -> builder.sized(0.6F, 0.5F).clientTrackingRange(8).noLootTable().fireImmune());
 }

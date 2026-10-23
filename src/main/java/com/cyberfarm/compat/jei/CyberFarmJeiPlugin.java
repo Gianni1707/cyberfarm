@@ -3,6 +3,7 @@ package com.cyberfarm.compat.jei;
 import java.util.List;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
@@ -11,9 +12,12 @@ import com.cyberfarm.registry.ModItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
+import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -25,6 +29,17 @@ public class CyberFarmJeiPlugin implements IModPlugin {
     @Override
     public Identifier getPluginUid() {
         return CyberFarm.id("jei");
+    }
+
+    /** Keeps JEI's bookmarks clear of the Drone Dock's side tabs. */
+    @Override
+    public void registerGuiHandlers(IGuiHandlerRegistration registration) {
+        registration.addGuiContainerHandler(DroneDockScreen.class, new IGuiContainerHandler<DroneDockScreen>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(DroneDockScreen screen) {
+                return screen.sideAreas();
+            }
+        });
     }
 
     @Override

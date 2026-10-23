@@ -2,7 +2,6 @@ package com.cyberfarm.block;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.item.DroneItem;
-import com.cyberfarm.item.SurveyToolItem;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
@@ -51,8 +50,8 @@ public class DroneDockBlock extends MachineBlock {
 
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
-        // Let the drone and the survey tool handle the click themselves instead of opening the GUI.
-        if (stack.getItem() instanceof DroneItem || stack.getItem() instanceof SurveyToolItem) {
+        // Let the drone handle the click itself instead of opening the GUI (the survey tool acts before the block).
+        if (stack.getItem() instanceof DroneItem) {
             return InteractionResult.PASS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hitResult);

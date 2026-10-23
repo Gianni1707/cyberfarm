@@ -26,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -37,13 +38,16 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
@@ -68,8 +72,13 @@ public class DroneEntity extends PathfinderMob {
     private static final double APPROACH_HEIGHT = 0.8;
     /** A Taxi drone waits for passengers this high above its parking spot. */
     private static final double TAXI_WAIT_HEIGHT = 2.7;
-    /** How far below the drone a hanging passenger's feet are. */
-    public static final double PASSENGER_DROP = 2.5;
+    /**
+     * How far below the drone a hanging passenger's feet are: the raised fist of a player (1.88
+     * blocks over the feet, model scaled to 15/16) closes around the hook bar, 0.37-0.44 below the drone.
+     */
+    public static final double PASSENGER_DROP = 2.25;
+    /** How far the raised arm's hand sits to the side of a player's centre. */
+    private static final double HAND_SIDE = 0.34;
     /** Beyond this horizontal distance the drone climbs over the terrain before heading home. */
     private static final double LONG_TRIP = 16.0;
     private static final int SCAN_INTERVAL = 40;
@@ -297,6 +306,11 @@ public class DroneEntity extends PathfinderMob {
         }
 
         int status = getStatus();
+        // Return button: come home, but never drop a taxi passenger mid-air
+        if (status == STATUS_WORKING && dock.isPaused() && !isVehicle()) {
+            startReturn(level);
+            status = STATUS_RETURNING;
+        }
         if (status == STATUS_WORKING || status == STATUS_RETURNING) {
             useEnergy(modules.flightCost());
         }
@@ -305,7 +319,8 @@ public class DroneEntity extends PathfinderMob {
             case STATUS_RETURNING -> tickReturning();
             default -> tickDocked(level, dock);
         }
-        dock.updateDroneStatus(level.getGameTime(), getStatus(), energy * 100 / capacity());
+        dock.updateDroneStatus(level.getGameTime(), getStatus(), energy, capacity(),
+                jobTask != null ? jobTask.ordinal() + 1 : 0, modules.taskMask(), blockPosition());
     }
 
     private Vec3 dockHover() {
@@ -323,8 +338,9 @@ public class DroneEntity extends PathfinderMob {
         double horizontal = home.subtract(position()).horizontalDistance();
         if (horizontal > LANDING_RADIUS) {
             Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
-            if (horizontal > LONG_TRIP && level() instanceof ServerLevel level) {
-                // Long way home (e.g. after a taxi trip): climb over the terrain first, then cruise
+            if ((!Double.isNaN(returnAltitude) || horizontal > LONG_TRIP || isWalledIn(approach)) && level() instanceof ServerLevel level) {
+                // Long way home (e.g. after a taxi trip), or out of a quarry pit whose rim blocks
+                // the straight line: climb over the terrain first, then cruise
                 if (Double.isNaN(returnAltitude)) {
                     returnAltitude = TaxiJob.cruiseAltitude(level, position(), approach) - PASSENGER_DROP;
                 }
@@ -357,6 +373,20 @@ public class DroneEntity extends PathfinderMob {
         return false;
     }
 
+    /** Whether no block stands on the straight line from the drone to {@code target}. */
+    public boolean canFlyStraightTo(Vec3 target) {
+        return level().clip(new ClipContext(position(), target, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
+                .getType() == HitResult.Type.MISS;
+    }
+
+    /**
+     * Down in a pit: the way to {@code target} is blocked but the sky above is open, so climbing
+     * out is safe (under trees or a cave roof the drone keeps steering around instead).
+     */
+    private boolean isWalledIn(Vec3 target) {
+        return !canFlyStraightTo(target) && canFlyStraightTo(new Vec3(getX(), Math.max(getY(), target.y) + 1.0, getZ()));
+    }
+
     /** Stops the vanilla move control from steering, so the velocity set by hand is kept. */
     private void holdMoveControl() {
         moveControl.setWantedPosition(getX(), getY(), getZ(), 0.0);
@@ -375,7 +405,7 @@ public class DroneEntity extends PathfinderMob {
         setStatus(charged > 0 ? STATUS_CHARGING : STATUS_IDLE);
 
         // Finish charging while the dock can supply power, and wait while it is too full to take the cargo
-        if ((charged > 0 && energy < capacity()) || energy < departureCharge() || !cargo.isEmpty()) {
+        if (dock.isPaused() || (charged > 0 && energy < capacity()) || energy < departureCharge() || !cargo.isEmpty()) {
             return;
         }
         if (--scanCooldown > 0) {
@@ -398,12 +428,12 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private boolean isWaitingForPassenger(DroneDockBlockEntity dock) {
-        return modules.tasks().contains(DroneTask.TAXI) && dock.getTaxiDestination() != null && energy >= departureCharge();
+        return modules.tasks().contains(DroneTask.TAXI) && !dock.isPaused() && dock.getTaxiDestination() != null && energy >= departureCharge();
     }
 
     /** A player right-clicked the waiting Taxi drone: check the trip, then let them grab the hook. */
     private void startTaxi(ServerLevel level, Player player) {
-        if (job != null || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
+        if (job != null || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) || dock.isPaused()) {
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.busy"));
             return;
         }
@@ -529,6 +559,21 @@ public class DroneEntity extends PathfinderMob {
         return false;
     }
 
+    /**
+     * Nothing hurts a drone, creative players included (the vanilla invulnerable flag lets them
+     * through). Only /kill and the void do; it then drops as an item, so nothing is lost.
+     */
+    @Override
+    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+        return !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
+    }
+
+    /** A left-click goes through it: no hit, no knockback. Sneak + right-click picks it up. */
+    @Override
+    public boolean skipAttackInteraction(Entity attacker) {
+        return true;
+    }
+
     @Override
     public boolean isPushable() {
         return false;
@@ -539,11 +584,21 @@ public class DroneEntity extends PathfinderMob {
     /**
      * The passenger hangs from the hook below the drone instead of sitting on it. Vanilla lowers
      * every passenger by its own vehicle attachment (0.6 for players, made for sitting), so that
-     * offset is added back to keep the hand right on the hook.
+     * offset is added back to keep the hand right on the hook. The player is also moved sideways,
+     * following where they turn, so the raised hand (not their head) is right under the hook.
      */
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
-        return new Vec3(0.0, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, 0.0);
+        double sideX = 0.0;
+        double sideZ = 0.0;
+        if (passenger instanceof Player player) {
+            // The player's right is (-cos, -sin) of their body yaw; the hand is on their main arm's side
+            float yaw = player.yBodyRot * Mth.DEG_TO_RAD;
+            double side = player.getMainArm() == HumanoidArm.RIGHT ? HAND_SIDE : -HAND_SIDE;
+            sideX = Mth.cos(yaw) * side;
+            sideZ = Mth.sin(yaw) * side;
+        }
+        return new Vec3(sideX, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, sideZ);
     }
 
     @Override

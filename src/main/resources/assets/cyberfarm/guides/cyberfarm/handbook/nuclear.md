@@ -26,7 +26,7 @@ turn the steam into FE, just like a real power plant.
 
 1. Mine [uranium](uranium.md) deep underground and craft **Fuel Rods**.
 2. Build the [Fission Reactor](fission_reactor.md) tower.
-3. Feed it **water** with a [Water Pump](water_pump.md) and [Gas Pipes](gas_pipe.md).
+3. Feed it **water** with a [Water Pump](water_pump.md) and [Liquid Pipes](liquid_pipe.md).
 4. Send the steam to [Steam Turbines](steam_turbine.md) and the FE into [Energy Conduits](energy_conduit.md).
 5. To run the reactor harder, cool it better with a [Coolant Mixer](coolant_mixer.md).
 

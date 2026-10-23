@@ -57,6 +57,9 @@ moves into the assembler (up to its 20,000 FE buffer).
 
 ## Recovering a drone
 
+Drones are **indestructible**: weapons, mobs, explosions, fire and lava cannot hurt them, and a
+left-click goes right through them, so you cannot knock one down by mistake.
+
 **Sneak + right-click** the drone with an empty hand. You get the drone item back with its
 charge, and its cargo drops on the ground. If its dock is broken, the drone turns back
 into an item by itself.
