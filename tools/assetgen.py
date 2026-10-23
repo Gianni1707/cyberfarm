@@ -553,9 +553,10 @@ def sounds():
         return [{"name": f"minecraft:{n}", **attrs} for n in names]
 
     events = {
-        "drone.fly": files("mob/bee/loop1", pitch=1.5, volume=0.5),
+        "drone.fly": [{"name": f"{NS}:drone_fly", "volume": 0.6}],  # synthesized by soundgen.py
         "drone.takeoff": files("block/beacon/power1", pitch=1.8, volume=0.4),
         "drone.land": files("block/iron_trapdoor/close", 4, pitch=1.5, volume=0.5),
+        "drone.unfold": files("tile/piston/out", pitch=1.7, volume=0.4) + files("block/iron_trapdoor/open", 4, pitch=1.8, volume=0.4),
         "methane_extractor.work": files("block/bubble_column/upwards_ambient", 5, pitch=0.7, volume=0.5)
                                   + files("random/fizz", pitch=0.6, volume=0.15),
         "methane_extractor.activate": files("block/beacon/activate", pitch=1.2),

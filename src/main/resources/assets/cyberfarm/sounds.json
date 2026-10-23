@@ -2,9 +2,8 @@
   "drone.fly": {
     "sounds": [
       {
-        "name": "minecraft:mob/bee/loop1",
-        "pitch": 1.5,
-        "volume": 0.5
+        "name": "cyberfarm:drone_fly",
+        "volume": 0.6
       }
     ],
     "subtitle": "subtitles.cyberfarm.drone.fly"
@@ -43,6 +42,36 @@
       }
     ],
     "subtitle": "subtitles.cyberfarm.drone.land"
+  },
+  "drone.unfold": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 1.7,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "pitch": 1.8,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "pitch": 1.8,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open3",
+        "pitch": 1.8,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open4",
+        "pitch": 1.8,
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.drone.unfold"
   },
   "methane_extractor.work": {
     "sounds": [

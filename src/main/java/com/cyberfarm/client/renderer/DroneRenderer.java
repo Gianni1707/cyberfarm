@@ -63,6 +63,8 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
     public void extractRenderState(DroneEntity entity, DroneRenderState state, float partialTicks) {
         super.extractRenderState(entity, state, partialTicks);
         state.taskMask = entity.getTaskMask();
+        state.startup = entity.startupTicks(partialTicks);
+        state.shutdown = entity.shutdownTicks(partialTicks);
         state.carried.clear();
         if (state.has(DroneTask.TRANSPORT)) {
             itemModelResolver.updateForLiving(state.carried, entity.getCarriedItem(), ItemDisplayContext.GROUND, entity);

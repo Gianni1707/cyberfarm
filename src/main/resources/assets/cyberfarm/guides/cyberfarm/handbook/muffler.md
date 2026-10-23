@@ -25,7 +25,7 @@ and the mobs locked inside them. Place a **Muffler** and the sounds you choose g
 | Row | Silences |
 | --- | --- |
 | Machines | CyberFarm machines: generators, the Drone Assembler, the Methane Extractor |
-| Drones | the rotor hum (it fades out as a drone flies into range), takeoff and landing |
+| Drones | the whine of their rotors (it fades out as a drone flies into range), takeoff and landing |
 | Monsters | hostile mobs, like the zombie in your Methane Extractor |
 | Animals | passive and neutral mobs: cows, chickens, villagers... |
 | Other machines | the sounds listed in the client config: by default furnaces, blast furnaces and smokers |

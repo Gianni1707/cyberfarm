@@ -3,6 +3,7 @@ package com.cyberfarm.client.model;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.client.renderer.DroneRenderState;
 import com.cyberfarm.drone.DroneTask;
+import com.cyberfarm.entity.DroneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.model.EntityModel;
@@ -34,7 +35,12 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private final ModelPart hook;
     private final ModelPart shears;
     private final ModelPart sprayer;
+    private final ModelPart[] arms = new ModelPart[ARMS];
     private final ModelPart[] rotors = new ModelPart[ARMS];
+    /** Folded for the deploy, each arm swings in by this much, so the four lie along the hull. */
+    private static final float FOLD = (float) Math.toRadians(40.0);
+    /** Rotor turn per tick at full speed. */
+    private static final float ROTOR_SPEED = 1.6F;
 
     public DroneModel(ModelPart root) {
         super(root, RenderTypes::entityCutout);
@@ -48,7 +54,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         this.shears = body.getChild("shears");
         this.sprayer = body.getChild("sprayer");
         for (int i = 0; i < ARMS; i++) {
-            rotors[i] = body.getChild("arm" + i).getChild("motor").getChild("rotor");
+            arms[i] = body.getChild("arm" + i);
+            rotors[i] = arms[i].getChild("motor").getChild("rotor");
         }
     }
 
@@ -129,6 +136,39 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         return LayerDefinition.create(mesh, 64, 64);
     }
 
+    /** Arms opening during the deploy and closing when picked up, eased in and out. */
+    private static float unfold(DroneRenderState state) {
+        float t;
+        if (state.shutdown >= 0) {
+            t = 1.0F - Mth.clamp((state.shutdown - DroneEntity.FOLD_START) / DroneEntity.FOLD_TICKS, 0.0F, 1.0F);
+        } else if (state.startup >= 0) {
+            t = Mth.clamp(state.startup / DroneEntity.UNFOLD_TICKS, 0.0F, 1.0F);
+        } else {
+            return 1.0F;
+        }
+        return t * t * (3.0F - 2.0F * t);
+    }
+
+    /**
+     * The rotors' angle: still before the deploy spin-up, then turning faster and faster at a steady
+     * acceleration (the angle grows with the square of the time, so it never jumps) up to full speed.
+     */
+    private static float rotorAngle(DroneRenderState state) {
+        if (state.shutdown >= 0) {
+            // The mirror image: from full speed down to a stop at a steady deceleration
+            float stopping = Math.min(state.shutdown, DroneEntity.SPIN_DOWN_TICKS);
+            float touchdown = state.ageInTicks - state.shutdown;
+            return ROTOR_SPEED * (touchdown + stopping - stopping * stopping / (2 * DroneEntity.SPIN_DOWN_TICKS));
+        }
+        if (state.startup < 0) {
+            return state.ageInTicks * ROTOR_SPEED;
+        }
+        float spinning = Math.max(0.0F, state.startup - DroneEntity.SPIN_START);
+        return spinning < DroneEntity.SPIN_TICKS
+                ? ROTOR_SPEED * spinning * spinning / (2 * DroneEntity.SPIN_TICKS)
+                : ROTOR_SPEED * (spinning - DroneEntity.SPIN_TICKS / 2.0F);
+    }
+
     /** Moves the pose to the Transport claw, following the body's hover and sway. */
     public void translateToClaw(PoseStack pose) {
         body.translateAndRotate(pose);
@@ -138,12 +178,17 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     @Override
     public void setupAnim(DroneRenderState state) {
         super.setupAnim(state);
-        float spin = state.ageInTicks * 1.6F;
+        float spin = rotorAngle(state);
+        float folded = 1.0F - unfold(state);
         for (int i = 0; i < ARMS; i++) {
             // Opposite corners spin the same way, like a real quadcopter
             rotors[i].yRot = i % 2 == 0 ? spin : -spin;
+            arms[i].yRot += (i % 2 == 0 ? FOLD : -FOLD) * folded;
         }
-        body.y += Mth.sin(state.ageInTicks * 0.15F) * 0.6F;
+        // Resting on the pad or the ground it does not bob: only once it lifts off, and until it lands
+        float lift = state.shutdown >= 0 ? 0.0F
+                : state.startup < 0 ? 1.0F : Mth.clamp((state.startup - DroneEntity.LIFT_START) / 10.0F, 0.0F, 1.0F);
+        body.y += Mth.sin(state.ageInTicks * 0.15F) * 0.6F * lift;
         body.zRot = Mth.sin(state.ageInTicks * 0.09F) * 0.03F;
         harvester.visible = state.has(DroneTask.HARVEST);
         drill.visible = state.has(DroneTask.QUARRY);

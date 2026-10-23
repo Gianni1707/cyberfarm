@@ -43,6 +43,14 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Smontaggio**: drone nello slot di uscita dell'Assembler (altri slot vuoti) → pulsante Disassemble; i pezzi tornano negli slot, la carica va nel buffer dell'Assembler.
 - **Indistruttibili**: nessun danno da nessuna fonte, giocatori in creativa compresi (il flag vanilla li lascia passare), immuni al fuoco, il clic sinistro li attraversa; solo `/kill` e il vuoto li eliminano e allora cadono come oggetto.
 - **Volo**: rettilineo con accelerazione e frenata, pathfinding solo come riserva quando il drone è bloccato.
+  Fischio da quadricottero vero, sintetizzato da `tools/soundgen.py` (4 eliche a toni vicini che battono tra loro più
+  il soffio dell'aria, loop di 2 s senza giunture); volume e tono seguono velocità e giri delle eliche, addolciti.
+- **Ripresa** (Shift + clic destro a mano vuota): il drone atterra (sulla dock se c'è, se no a terra sotto di sé), le
+  eliche rallentano fino a fermarsi, i bracci si richiudono e finisce nell'inventario di chi l'ha preso (a terra se è
+  andato lontano); il carico va nella dock. Sincronizzato con l'istante dell'atterraggio (`DATA_SHUTDOWN`).
+- **Avvio** quando si posa sulla dock (~4 s): appare chiuso coi bracci ripiegati lungo lo scafo, si apre con uno scatto,
+  le eliche accelerano da ferme (il ronzio sale con loro), poi decolla di 1,5 blocchi, resta un attimo in volo e va al lavoro
+  o riatterra. Sincronizzato solo con l'istante d'inizio (`DATA_STARTUP`), il resto lo calcola il client.
 - **Quarry**: scava a serpentina riga per riga, invertendo il verso a ogni strato; torna a scaricare a 192 oggetti. In una cava profonda la linea retta dalla dock taglia il bordo della buca (e il pathfinding arriva solo a 16 blocchi): se la linea è bloccata ma il cielo sopra è libero, il drone esce dalla buca, passa sopra la colonna del blocco e scende in verticale; al ritorno sale prima di puntare alla dock. Uno strato si chiude solo quando non ha più blocchi scavabili raggiungibili da sopra: quelli che il drone non ha raggiunto in questo giro si riprovano dopo il ritorno alla dock, quelli sotto blocchi mai scavati (casse, bedrock) si lasciano. Se lo strato registrato ha sopra terreno ancora intatto (contatore andato avanti rispetto allo scavo, come succedeva prima) la cava riparte dall'alto dell'area.
 - **Idee future**: Range Booster, Solar Skin.
 
@@ -161,7 +169,7 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
-  ronzio del drone in volo (più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
+  fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
   accensione/spegnimento della camera; scoppiettio del generatore; Assembler.
 - **Muffler**: blocco (lana + ferro + note block) con GUI: ogni Muffler sceglie cosa zittire con 5 interruttori
   (Machines = suoni CyberFarm, Drones = `drone.*`, Monsters = HOSTILE, Animals = NEUTRAL, Other machines = lista in config).
@@ -218,4 +226,5 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
 
 - Texture: `python tools/texgen.py` (disegnate in codice con palette condivisa; `--preview DIR` crea un foglio di anteprima).
 - JSON (blockstate, modelli, item, loot, tag, ricette): `python tools/assetgen.py`. Le traduzioni (`lang/en_us.json`) si scrivono a mano.
+- Suoni sintetizzati (`sounds/*.ogg`, ora il volo del drone): `uv run --with numpy --with soundfile python tools/soundgen.py`.
 - Modello 3D del drone in Java (`DroneModel`), GUI disegnate in codice (`MachineScreen`).
