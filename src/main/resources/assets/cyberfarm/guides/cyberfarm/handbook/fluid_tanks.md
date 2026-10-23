@@ -18,7 +18,7 @@ item_ids:
 
 Tanks store **32,000 mB** (32 buckets) of a single fluid:
 
-- the **Liquid Tank** (cyan trim) takes liquids: water, lava, Coolant, Cryo Coolant, liquids
+- the **Liquid Tank** (cyan trim) takes liquids: water, lava, Coolant, Cryo Coolant, Acid, liquids
   of other mods;
 - the **Gas Tank** (amber trim) takes gases: biogas, methane, Steam, gases of other mods.
 

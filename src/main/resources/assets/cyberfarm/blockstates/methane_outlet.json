@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/methane_outlet"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/methane_outlet_hidden"
+    }
+  }
+}

@@ -1,6 +1,8 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.menu.AcidSynthesizerMenu;
+import com.cyberfarm.menu.SteamEngineMenu;
 import com.cyberfarm.menu.BioDigesterMenu;
 import com.cyberfarm.menu.CombustionGeneratorMenu;
 import com.cyberfarm.menu.CoolantMixerMenu;
@@ -41,6 +43,12 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<TurbineMenu>> TURBINE = MENUS.register("turbine",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new TurbineMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineMenu>> STEAM_ENGINE = MENUS.register("steam_engine",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<AcidSynthesizerMenu>> ACID_SYNTHESIZER = MENUS.register("acid_synthesizer",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new AcidSynthesizerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CoolantMixerMenu>> COOLANT_MIXER = MENUS.register("coolant_mixer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));

@@ -24,6 +24,7 @@ FLAT_ITEMS = [
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
+    "sulfur", "acid_bucket",
 ]
 
 
@@ -246,15 +247,22 @@ def blocks():
                          "down": tex("methane_extractor_bottom" + suffix),
                          "north": side, "east": side, "south": side, "west": side},
         })
+    # A formed chamber is drawn whole by the extractor's renderer: its blocks show no faces
+    write(ASSETS / "models/block/methane_extractor_hidden.json", {"textures": {"particle": tex("methane_extractor_side_formed")}})
     write(ASSETS / "blockstates/methane_extractor.json", {"variants": {
-        f"facing={f},formed={formed}": {"model": f"{NS}:block/methane_extractor{'_formed' if formed == 'true' else ''}"}
+        f"facing={f},formed={formed}": {"model": f"{NS}:block/methane_extractor{'_hidden' if formed == 'true' else ''}"}
         for f in FACING_ROTATION for formed in ("false", "true")}})
 
     for model in ("cyber_frame", "cyber_frame_formed"):
         write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
-    write(ASSETS / "blockstates/cyber_frame.json", {"variants": {
-        "formed=false": {"model": f"{NS}:block/cyber_frame"},
-        "formed=true": {"model": f"{NS}:block/cyber_frame_formed"}}})
+    for part in ("cyber_frame", "acid_inlet", "methane_outlet", "intake_gate", "containment_glass"):
+        if part not in ("cyber_frame", "containment_glass"):
+            write(ASSETS / f"models/block/{part}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(part)}})
+        write(ASSETS / f"models/block/{part}_hidden.json", {"textures": {"particle": tex(part)}})
+        variants = {"formed=false": {"model": f"{NS}:block/{part}"}, "formed=true": {"model": f"{NS}:block/{part}_hidden"}}
+        if part == "intake_gate":
+            variants = {f"{key},open={o}": model for key, model in variants.items() for o in ("false", "true")}
+        write(ASSETS / f"blockstates/{part}.json", {"variants": variants})
 
     # Soft block, not a machine: no pickaxe needed
     write(ASSETS / "models/block/muffler.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("muffler")}})
@@ -269,7 +277,8 @@ def blocks():
     names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
-             "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon"]
+             "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
+             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -279,19 +288,25 @@ def blocks():
     write(RES / "data/c/tags/fluid/biogas.json", {"values": [f"{NS}:biogas"]})
     write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
     ores = ["uranium_ore", "deepslate_uranium_ore"]
-    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores]})
+    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + ["nether_sulfur_ore"]]})
     write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
     write(RES / "data/c/tags/fluid/steam.json", {"values": [f"{NS}:steam"]})
     write(RES / "data/c/tags/fluid/gaseous.json", {"values": [f"{NS}:biogas", f"{NS}:methane", f"{NS}:steam"]})
     # Common material tags, so other mods' machines process our uranium and ours take theirs
     for kind in ("block", "item"):
         write(RES / f"data/c/tags/{kind}/ores/uranium.json", {"values": [f"{NS}:{n}" for n in ores]})
-        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": [f"#c:ores/uranium"]})
+        write(RES / f"data/c/tags/{kind}/ores/sulfur.json", {"values": [f"{NS}:nether_sulfur_ore"]})
+        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": ["#c:ores/uranium", "#c:ores/sulfur"]})
+        write(RES / f"data/c/tags/{kind}/ores_in_ground/netherrack.json", {"replace": False, "values": [f"{NS}:nether_sulfur_ore"]})
+    write(RES / "data/c/tags/item/dusts/sulfur.json", {"values": [f"{NS}:sulfur"]})
+    write(RES / "data/c/tags/item/dusts.json", {"replace": False, "values": ["#c:dusts/sulfur"]})
+    write(RES / "data/c/tags/fluid/acid.json", {"values": [f"{NS}:acid"]})
     write(RES / "data/c/tags/item/raw_materials/uranium.json", {"values": [f"{NS}:raw_uranium"]})
     write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium"]})
     write(RES / "data/c/tags/item/ingots/uranium.json", {"values": [f"{NS}:uranium_ingot"]})
     write(RES / "data/c/tags/item/ingots.json", {"replace": False, "values": ["#c:ingots/uranium"]})
     uranium_worldgen()
+    sulfur_ore()
 
 
 def nuclear_blocks():
@@ -371,6 +386,23 @@ def nuclear_blocks():
     orientable("waste_reprocessor", "waste_reprocessor_front", "machine_top")
     facing_blockstate("waste_reprocessor")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
+    orientable("acid_synthesizer", "acid_synthesizer_front", "machine_top")
+    facing_blockstate("acid_synthesizer")
+    # A complete Steam Engine is drawn whole by the boiler's renderer: its blocks show no faces
+    orientable("steam_engine", "steam_engine_front", "machine_top")
+    write(ASSETS / "models/block/steam_engine_hidden.json", {"textures": {"particle": tex("steam_engine_front")}})
+    write(ASSETS / "blockstates/steam_engine.json", {"variants": {
+        f"facing={f},formed={formed}": {"model": f"{NS}:block/steam_engine" + ("_hidden" if formed == "true" else ""),
+                                        **({"y": rot} if rot and formed == "false" else {})}
+        for f, rot in FACING_ROTATION.items() for formed in ("false", "true")}})
+    for part in ("steam_engine_cylinder", "steam_engine_dynamo"):
+        write(ASSETS / f"models/block/{part}.json", {"parent": "minecraft:block/cube_column",
+            "textures": {"side": tex(part), "end": tex("machine_top")}})
+        write(ASSETS / f"models/block/{part}_hidden.json", {"textures": {"particle": tex(part)}})
+        write(ASSETS / f"blockstates/{part}.json", {"variants": {
+            "formed=false": {"model": f"{NS}:block/{part}"}, "formed=true": {"model": f"{NS}:block/{part}_hidden"}}})
+    write(ASSETS / "models/block/containment_glass.json", {"parent": "minecraft:block/cube_all",
+        "render_type": "minecraft:translucent", "textures": {"all": tex("containment_glass")}})
     write(ASSETS / "blockstates/vitrified_waste.json", {"variants": {"": {"model": f"{NS}:block/vitrified_waste"}}})
 
     radiation_data()
@@ -395,6 +427,47 @@ def radiation_data():
     # The suit keeps the cold of coolant pools out, like leather in powder snow
     write(RES / "data/minecraft/tags/item/freeze_immune_wearables.json", {"replace": False, "values": [
         f"{NS}:hazmat_helmet", f"{NS}:hazmat_suit", f"{NS}:hazmat_pants", f"{NS}:hazmat_boots"]})
+
+
+def sulfur_ore():
+    """Sulfur in the Nether: netherrack with yellow crystals, dropping sulfur dust like redstone ore."""
+    name, base = "nether_sulfur_ore", "minecraft:block/netherrack"
+    faces = {d: {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": d} for d in ("down", "up", "north", "south", "west", "east")}
+    over = {d: {"uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": d} for d in faces}
+    write(ASSETS / f"models/block/{name}.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": base, "base": base, "overlay": tex("nether_sulfur_ore_overlay")},
+        "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces},
+                     {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}],
+    })
+    write(ASSETS / f"blockstates/{name}.json", {"variants": {"": {"model": f"{NS}:block/{name}"}}})
+    write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
+    write(DATA / f"loot_table/blocks/{name}.json", {
+        "type": "minecraft:block",
+        "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "entries": [{"type": "minecraft:alternatives", "children": [
+            {"type": "minecraft:item", "name": f"{NS}:{name}", "conditions": [{"condition": "minecraft:match_tool", "predicate": {
+                "predicates": {"minecraft:enchantments": [{"enchantments": "minecraft:silk_touch", "levels": {"min": 1}}]}}}]},
+            {"type": "minecraft:item", "name": f"{NS}:sulfur", "functions": [
+                {"function": "minecraft:set_count", "count": {"type": "minecraft:uniform", "min": 2.0, "max": 4.0}},
+                {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune", "formula": "minecraft:uniform_bonus_count",
+                 "parameters": {"bonusMultiplier": 1}},
+                {"function": "minecraft:explosion_decay"}]},
+        ]}]}],
+        "random_sequence": f"{NS}:blocks/{name}",
+    })
+    write(DATA / f"worldgen/configured_feature/{name}.json", {"type": "minecraft:ore", "config": {
+        "discard_chance_on_air_exposure": 0.0, "size": 10, "targets": [
+            {"state": {"Name": f"{NS}:{name}"}, "target": {"predicate_type": "minecraft:block_match", "block": "minecraft:netherrack"}}]}})
+    write(DATA / f"worldgen/placed_feature/{name}.json", {"feature": f"{NS}:{name}", "placement": [
+        {"type": "minecraft:count", "count": 12},
+        {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:uniform",
+                                                      "min_inclusive": {"above_bottom": 10}, "max_inclusive": {"below_top": 10}}},
+        {"type": "minecraft:biome"},
+    ]})
+    write(DATA / f"neoforge/biome_modifier/{name}.json", {
+        "type": "neoforge:add_features", "biomes": "#minecraft:is_nether",
+        "features": f"{NS}:{name}", "step": "underground_decoration"})
 
 
 def uranium_worldgen():
@@ -490,6 +563,9 @@ def recipes():
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
     shaped("bio_digester", ["ICI", "GXG", "ICI"], {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
     shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": core})
+    shaped("acid_inlet", ["F", "B"], {"F": f"{NS}:cyber_frame", "B": "minecraft:bucket"})
+    shaped("methane_outlet", ["F", "H"], {"F": f"{NS}:cyber_frame", "H": "minecraft:hopper"})
+    shaped("intake_gate", ["IFI", "PDP"], {"I": iron, "F": f"{NS}:cyber_frame", "P": "minecraft:piston", "D": "minecraft:iron_door"})
     shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core, "G": "minecraft:glass"})
     # Nuclear
     uranium = f"{NS}:uranium_ingot"
@@ -524,6 +600,16 @@ def recipes():
            {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "X": "minecraft:glass", "D": core})
     shaped("coolant_mixer", ["IBI", "GXG", "IDI"],
            {"I": iron, "B": "minecraft:bucket", "G": "minecraft:glass", "X": "minecraft:cauldron", "D": core})
+
+    # Acid: sulfur into water; the chamber walls are framed glass
+    shaped("acid_synthesizer", ["ICI", "GXG", "IDI"],
+           {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:cauldron", "D": core})
+    shaped("containment_glass", ["IGI", "GOG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "O": "minecraft:obsidian"}, count=4)
+    # Steam Engine: boiler, cylinders and the dynamo closing the row
+    shaped("steam_engine", ["ICI", "BFB", "IDI"],
+           {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": core})
+    shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
+    shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
 
     # Energy storage: the shell is many cheap cells, the pylons come in pairs
     shaped("resonance_cell", ["GCG", "CBC", "GCG"], {"G": "minecraft:glass", "C": copper, "B": cell}, count=4)

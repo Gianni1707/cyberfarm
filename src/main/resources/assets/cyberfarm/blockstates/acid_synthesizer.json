@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/acid_synthesizer"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/acid_synthesizer",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/acid_synthesizer",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/acid_synthesizer",
+      "y": 270
+    }
+  }
+}

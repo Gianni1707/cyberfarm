@@ -113,6 +113,9 @@ public class GasTank extends FluidStacksResourceHandler {
         if (fluid == ModFluids.CRYO_COOLANT.get()) {
             return 7;
         }
+        if (fluid == ModFluids.ACID.get()) {
+            return 8;
+        }
         return fluid == Fluids.WATER ? 5 : 3;
     }
 

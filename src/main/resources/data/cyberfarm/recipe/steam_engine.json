@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "C": "minecraft:copper_ingot",
+    "B": "minecraft:blast_furnace",
+    "F": "cyberfarm:cyber_frame",
+    "D": "cyberfarm:drone_core"
+  },
+  "pattern": [
+    "ICI",
+    "BFB",
+    "IDI"
+  ],
+  "result": {
+    "id": "cyberfarm:steam_engine"
+  }
+}
