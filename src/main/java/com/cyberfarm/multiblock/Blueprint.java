@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -25,7 +26,10 @@ public enum Blueprint {
     TURBINE_SMALL("turbine", null, TurbineSize.SMALL),
     TURBINE_MEDIUM("turbine", null, TurbineSize.MEDIUM),
     TURBINE_LARGE("turbine", null, TurbineSize.LARGE),
-    METHANE_CHAMBER("methane_chamber", null, null);
+    METHANE_CHAMBER("methane_chamber", null, null),
+    RESONANCE_CORE_TIER_2("resonance_core", 1),
+    RESONANCE_CORE_TIER_3("resonance_core", 2),
+    RESONANCE_CORE_TIER_4("resonance_core", 3);
 
     /**
      * One block of the layout: {@code show} is what to place there (null: leave it empty) and
@@ -36,11 +40,21 @@ public enum Blueprint {
     private final String name;
     private final @Nullable TowerSize tower;
     private final @Nullable TurbineSize turbine;
+    /** Shell half-size of a Resonance Core tier, 0 for the other structures. */
+    private final int coreRadius;
 
     Blueprint(String name, @Nullable TowerSize tower, @Nullable TurbineSize turbine) {
         this.name = name;
         this.tower = tower;
         this.turbine = turbine;
+        this.coreRadius = 0;
+    }
+
+    Blueprint(String name, int coreRadius) {
+        this.name = name;
+        this.tower = null;
+        this.turbine = null;
+        this.coreRadius = coreRadius;
     }
 
     /** Translation key of the name shown to the player, with the size when there is one. */
@@ -49,6 +63,9 @@ public enum Blueprint {
     }
 
     public @Nullable String sizeKey() {
+        if (coreRadius > 0) {
+            return "projector.cyberfarm.size.tier_" + (coreRadius + 1);
+        }
         String size = tower != null ? tower.name() : turbine != null ? turbine.name() : null;
         return size != null ? "gui.cyberfarm.reactor.size." + size.toLowerCase() : null;
     }
@@ -70,7 +87,33 @@ public enum Blueprint {
             return fromCells(turbine.cells(controller, facing), controller, ModBlocks.TURBINE_CONTROLLER.get(),
                     ModBlocks.TURBINE_CASING.get(), ModBlocks.TURBINE_PORT.get());
         }
-        return methaneChamber(controller);
+        return coreRadius > 0 ? resonanceCore(controller, coreRadius) : methaneChamber(controller);
+    }
+
+    /**
+     * A Resonance Core tier: the shell cube over the pedestal, empty inside, and the pylon columns
+     * it needs at their closest, east and west first. The core checks itself against the same rules.
+     */
+    private static List<Ghost> resonanceCore(BlockPos core, int radius) {
+        Block cell = ModBlocks.RESONANCE_CELL.get();
+        Block pylon = ModBlocks.STABILIZER_PYLON.get();
+        List<Ghost> ghosts = new ArrayList<>();
+        ghosts.add(new Ghost(core, ModBlocks.RESONANCE_CORE.get(), state -> state.is(ModBlocks.RESONANCE_CORE.get())));
+        BlockPos centre = core.above(1 + radius);
+        for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-radius, -radius, -radius), centre.offset(radius, radius, radius))) {
+            boolean surface = Math.max(Math.abs(pos.getX() - centre.getX()), Math.max(Math.abs(pos.getY() - centre.getY()),
+                    Math.abs(pos.getZ() - centre.getZ()))) == radius;
+            ghosts.add(surface ? frame(pos.immutable(), cell) : new Ghost(pos.immutable(), null, BlockState::isAir));
+        }
+        int tier = radius + 1;
+        Direction[] sides = {Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH};
+        for (int i = 0; i < ResonanceCoreBlockEntity.requiredPylons(tier); i++) {
+            BlockPos ground = core.relative(sides[i], ResonanceCoreBlockEntity.minDistance(tier));
+            for (int y = 0; y < ResonanceCoreBlockEntity.requiredHeight(tier); y++) {
+                ghosts.add(frame(ground.above(y), pylon));
+            }
+        }
+        return ghosts;
     }
 
     private static List<Ghost> fromCells(List<Multiblock.Cell> cells, BlockPos controller, Block controllerBlock, Block casing, Block port) {

@@ -3,6 +3,7 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.energy.PylonEnergyHandler;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.SurveyModePayload;
@@ -85,6 +86,9 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
+        // The Resonance Core takes and gives power only through its pylons
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new PylonEnergyHandler(level, pos),
+                ModBlocks.STABILIZER_PYLON.get());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());

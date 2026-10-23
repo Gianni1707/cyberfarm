@@ -17,6 +17,7 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_FLY = register("drone.fly");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_TAKEOFF = register("drone.takeoff");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_LAND = register("drone.land");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_UNFOLD = register("drone.unfold");
     public static final DeferredHolder<SoundEvent, SoundEvent> EXTRACTOR_WORK = register("methane_extractor.work");
     public static final DeferredHolder<SoundEvent, SoundEvent> EXTRACTOR_ACTIVATE = register("methane_extractor.activate");
     public static final DeferredHolder<SoundEvent, SoundEvent> EXTRACTOR_DEACTIVATE = register("methane_extractor.deactivate");

@@ -17,6 +17,7 @@ import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.block.entity.ReactorPortBlockEntity;
 import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
+import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
@@ -71,6 +72,9 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK = BLOCK_ENTITIES.register("fluid_tank",
             () -> new BlockEntityType<>(FluidTankBlockEntity::new, Set.of(ModBlocks.LIQUID_TANK.get(), ModBlocks.GAS_TANK.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonanceCoreBlockEntity>> RESONANCE_CORE = BLOCK_ENTITIES.register("resonance_core",
+            () -> new BlockEntityType<>(ResonanceCoreBlockEntity::new, Set.of(ModBlocks.RESONANCE_CORE.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP = BLOCK_ENTITIES.register("water_pump",
             () -> new BlockEntityType<>(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));

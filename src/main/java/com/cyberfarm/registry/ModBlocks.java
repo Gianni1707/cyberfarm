@@ -18,6 +18,9 @@ import com.cyberfarm.block.MufflerBlock;
 import com.cyberfarm.block.ReactorCasingBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ReactorPortBlock;
+import com.cyberfarm.block.ResonanceCellBlock;
+import com.cyberfarm.block.ResonanceCoreBlock;
+import com.cyberfarm.block.StabilizerPylonBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.WaterPumpBlock;
@@ -126,6 +129,14 @@ public class ModBlocks {
             p -> new CoolantBlock(ModFluids.COOLANT.get(), p, 1), ModBlocks::liquid);
     public static final DeferredBlock<CoolantBlock> CRYO_COOLANT = BLOCKS.registerBlock("cryo_coolant",
             p -> new CoolantBlock(ModFluids.CRYO_COOLANT.get(), p, 4), ModBlocks::liquid);
+
+    // Energy storage: the core's crystal, its shell cells and the pylons' emitters glow
+    public static final DeferredBlock<ResonanceCoreBlock> RESONANCE_CORE = BLOCKS.registerBlock("resonance_core",
+            ResonanceCoreBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 10));
+    public static final DeferredBlock<ResonanceCellBlock> RESONANCE_CELL = BLOCKS.registerBlock("resonance_cell",
+            ResonanceCellBlock::new, p -> machine(p).noOcclusion().sound(SoundType.GLASS).lightLevel(state -> 5));
+    public static final DeferredBlock<StabilizerPylonBlock> STABILIZER_PYLON = BLOCKS.registerBlock("stabilizer_pylon",
+            StabilizerPylonBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
 
     private static BlockBehaviour.Properties liquid(BlockBehaviour.Properties properties) {
         return properties.mapColor(MapColor.ICE).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.DESTROY)

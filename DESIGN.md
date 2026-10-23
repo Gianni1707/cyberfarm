@@ -43,6 +43,14 @@ Un drone = **telaio (base a tier)** + **moduli funzione** (decidono il lavoro ch
 - **Smontaggio**: drone nello slot di uscita dell'Assembler (altri slot vuoti) → pulsante Disassemble; i pezzi tornano negli slot, la carica va nel buffer dell'Assembler.
 - **Indistruttibili**: nessun danno da nessuna fonte, giocatori in creativa compresi (il flag vanilla li lascia passare), immuni al fuoco, il clic sinistro li attraversa; solo `/kill` e il vuoto li eliminano e allora cadono come oggetto.
 - **Volo**: rettilineo con accelerazione e frenata, pathfinding solo come riserva quando il drone è bloccato.
+  Fischio da quadricottero vero, sintetizzato da `tools/soundgen.py` (4 eliche a toni vicini che battono tra loro più
+  il soffio dell'aria, loop di 2 s senza giunture); volume e tono seguono velocità e giri delle eliche, addolciti.
+- **Ripresa** (Shift + clic destro a mano vuota): il drone atterra (sulla dock se c'è, se no a terra sotto di sé), le
+  eliche rallentano fino a fermarsi, i bracci si richiudono e finisce nell'inventario di chi l'ha preso (a terra se è
+  andato lontano); il carico va nella dock. Sincronizzato con l'istante dell'atterraggio (`DATA_SHUTDOWN`).
+- **Avvio** quando si posa sulla dock (~4 s): appare chiuso coi bracci ripiegati lungo lo scafo, si apre con uno scatto,
+  le eliche accelerano da ferme (il ronzio sale con loro), poi decolla di 1,5 blocchi, resta un attimo in volo e va al lavoro
+  o riatterra. Sincronizzato solo con l'istante d'inizio (`DATA_STARTUP`), il resto lo calcola il client.
 - **Quarry**: scava a serpentina riga per riga, invertendo il verso a ogni strato; torna a scaricare a 192 oggetti. In una cava profonda la linea retta dalla dock taglia il bordo della buca (e il pathfinding arriva solo a 16 blocchi): se la linea è bloccata ma il cielo sopra è libero, il drone esce dalla buca, passa sopra la colonna del blocco e scende in verticale; al ritorno sale prima di puntare alla dock. Uno strato si chiude solo quando non ha più blocchi scavabili raggiungibili da sopra: quelli che il drone non ha raggiunto in questo giro si riprovano dopo il ritorno alla dock, quelli sotto blocchi mai scavati (casse, bedrock) si lasciano. Se lo strato registrato ha sopra terreno ancora intatto (contatore andato avanti rispetto allo scavo, come succedeva prima) la cava riparte dall'alto dell'area.
 - **Idee future**: Range Booster, Solar Skin.
 
@@ -140,9 +148,28 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
    raffreddamento (iperboloide liscio, pannelli bianchi futuristici con fasce azzurre luminose). Anche porte e controller
    spariscono: la torre li disegna come portelli luminosi e pannello a filo della superficie, dove entrano tubi e cavi.
 
+### Accumulo di energia (Energy Storage)
+- **Resonance Core**: batteria costruibile a FE. Basamento con un cristallo poliedrico (dodecaedro rombico di vetro con un
+  nucleo luminoso che cresce con la carica) che fluttua sopra, disegnato dal renderer. Da solo è tier 1; un **guscio** di
+  **Resonance Cell** a cubo vuoto subito sopra il basamento (3x3x3, 5x5x5, 7x7x7) lo porta a tier 2-4: a guscio completo le
+  celle diventano invisibili (`formed`) e il cristallo cresce fino a riempirlo. Clic su una cella formata apre il core.
+  Rompendo una cella il tier scende e l'energia che non ci sta più va persa; rompendo il basamento l'energia si perde.
+- **Tier**: capacità 1M / 32M / 256M / 2.000M FE; I/O per pilone 16k / 128k / 512k / 2M FE/t.
+- **Stabilizer Pylon**: si impilano in **colonne** (base con piedistallo, segmenti, in cima anello emettitore e punta che
+  emettono luce). Colonne sullo stesso piano del basamento, allineate sui 4 lati, una per lato: ne servono quante il tier,
+  alte tier+1 blocchi (l'anello in cima sta all'altezza del cristallo, raggio orizzontale), a distanza tier+2 .. 6+2*tier,
+  senza ostacoli all'altezza del cristallo. Con meno colonne il core è **Unstable** (cristallo lento, viola, tremolante) e
+  non entra né esce niente, ma l'energia resta.
+- **I/O dai piloni**: il basamento non ha capability; ogni blocco di una colonna collegata espone l'energia del core
+  (`PylonEnergyHandler`, che cerca il core a ogni chiamata). Passiva: si svuota col braccio "pull" dei cavi.
+- Il Multiblock Projector mostra i tier 2-4 con le colonne di piloni.
+- Grafica dei piloni: dove si collega un Energy Conduit compare una presa (multipart, proprietà north/east/south/west) che
+  va dal fusto al bordo del blocco; il raggio parte da una lente luminosa che pulsa sul lato dell'anello rivolto al core.
+- **GUI**: si apre da qualsiasi parte (basamento, celle anche a guscio incompleto, piloni allineati; il menu resta aperto entro 24 blocchi). Mostra tier, stato, colonne presenti/necessarie e per ogni lato cosa ha trovato (collegato, nessun pilone, troppo vicino, troppo lontano, troppo corto, raggio bloccato) con altezza e distanza al passaggio del mouse.
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
-  ronzio del drone in volo (più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
+  fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
   accensione/spegnimento della camera; scoppiettio del generatore; Assembler.
 - **Muffler**: blocco (lana + ferro + note block) con GUI: ogni Muffler sceglie cosa zittire con 5 interruttori
   (Machines = suoni CyberFarm, Drones = `drone.*`, Monsters = HOSTILE, Animals = NEUTRAL, Other machines = lista in config).
@@ -154,7 +181,7 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 **Drone Engineer's Handbook**. Sezioni: Getting Started, Muffler e Water Pump alla radice · **Generators** (Combustion, Gas Power, Bio-Digester,
 Methane Extractor, Gas Turbine) ·
 **Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
-Reprocessor, Hazmat Suit and Geiger Counter) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
+Reprocessor, Hazmat Suit and Geiger Counter) · **Energy Storage** (Resonance Core) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
 Modules, Addons, Dock, Using Drones).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
@@ -193,9 +220,11 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    ✅ Pagine JEI e REI per le macchine (`compat/MachineExample`, una categoria generica per viewer): Bio-Digester (organici
    raggruppati per mB), Methane Extractor (uova spawn per gruppo: zombie, mostri, animali), Gas Turbine, Water Pump, Coolant
    Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.
+6. Energy Storage: Resonance Core costruibile in 4 tier (guscio di Resonance Cell) con colonne di Stabilizer Pylon da cui entra ed esce l'energia (da testare in gioco).
 
 ## Asset
 
 - Texture: `python tools/texgen.py` (disegnate in codice con palette condivisa; `--preview DIR` crea un foglio di anteprima).
 - JSON (blockstate, modelli, item, loot, tag, ricette): `python tools/assetgen.py`. Le traduzioni (`lang/en_us.json`) si scrivono a mano.
+- Suoni sintetizzati (`sounds/*.ogg`, ora il volo del drone): `uv run --with numpy --with soundfile python tools/soundgen.py`.
 - Modello 3D del drone in Java (`DroneModel`), GUI disegnate in codice (`MachineScreen`).

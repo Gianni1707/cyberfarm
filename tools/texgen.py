@@ -936,6 +936,157 @@ def dock_beacon():
     return c
 
 
+# --------------------------------------------------------------------------- energy storage
+
+def core_side():
+    """Pedestal side (6 px high on the block): dark plate with a cyan status strip."""
+    c = panel(70)
+    c.rect(0, 9, 15, 9, "k")
+    c.rect(0, 10, 15, 14, "D", noise=3, seed=71)
+    c.rect(0, 15, 15, 15, "k")
+    c.rect(2, 12, 13, 12, "b")
+    for x in (4, 8, 12):
+        c.set(x, 12, "c")
+    return c
+
+
+def core_front():
+    """Like the side, with the steel name plate of the R-ZPE cell."""
+    c = core_side()
+    c.rect(4, 10, 11, 14, "w")
+    c.frame(4, 10, 11, 14, "l")
+    c.rect(5, 12, 10, 12, "m")
+    c.set(2, 12, "g")
+    c.set(13, 12, "g")
+    return c
+
+
+def core_top():
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=72)
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        c.set(x, y, "l")
+    return c
+
+
+def core_ring():
+    """The emitter ring the crystal floats over: a glowing circle in a steel collar."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "m", noise=3, seed=73)
+    c.disc(7.5, 7.5, 7.0, "l", r_inner=6.0)
+    c.disc(7.5, 7.5, 5.6, "b")
+    c.disc(7.5, 7.5, 4.2, "c", r_inner=3.2)
+    c.disc(7.5, 7.5, 1.6, "C")
+    c.rect(0, 0, 15, 1, "c")   # side faces of the ring: lit rim
+    return c
+
+
+def pylon_side():
+    """Obelisk body: near-black panels split by a glowing violet strip."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "K")
+    c.rect(1, 0, 14, 15, "D", noise=3, seed=74)
+    c.rect(1, 0, 2, 15, "d")
+    c.rect(7, 0, 8, 15, "v")
+    c.rect(7, 2, 8, 13, "V")
+    c.rect(4, 0, 4, 15, "k")
+    c.rect(11, 0, 11, 15, "k")
+    return c
+
+
+def pylon_top():
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "K")
+    c.rect(1, 1, 14, 14, "d", noise=3, seed=75)
+    c.disc(7.5, 7.5, 3.6, "v")
+    c.disc(7.5, 7.5, 2.0, "V")
+    return c
+
+
+def resonance_cell():
+    """Shell block of the Resonance Core: a steel frame around a dark crystal lattice."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "s", noise=2, seed=76)
+    for i in range(2, 14):
+        c.set(i, i, "b")
+        c.set(15 - i, i, "b")
+    for i in (5, 6, 9, 10):
+        c.set(i, i, "c")
+        c.set(15 - i, i, "c")
+    c.set(7, 7, "C")
+    c.set(8, 8, "C")
+    c.frame(1, 1, 14, 14, "l")
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        c.set(x, y, "w")
+    return c
+
+
+def pylon_emitter():
+    """The emitter ring at the top of a pylon (5 rows high on the model): steel rims around a
+    glowing violet lens band that runs all the way round, so the beam leaves it on any side."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "K")
+    c.rect(0, 0, 15, 0, "l")
+    c.rect(0, 1, 15, 3, "v")
+    c.rect(0, 2, 15, 2, "V")
+    for x in range(1, 16, 4):
+        c.set(x, 2, "w")
+    c.rect(0, 4, 15, 4, "l")
+    return c
+
+
+def pylon_port():
+    """Face of the socket where a cable meets a pylon: a cyan ring like the conduits' energy band."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "K")
+    c.rect(1, 1, 14, 14, "d", noise=3, seed=77)
+    c.disc(7.5, 7.5, 6.0, "b", r_inner=4.5)
+    c.disc(7.5, 7.5, 3.5, "s")
+    c.disc(7.5, 7.5, 1.5, "c")
+    return c
+
+
+def crystal_shell():
+    """Glass panel of the floating crystal. The renderer maps each rhombus face onto the diamond
+    inscribed in the texture: a bright frame along its edges, see-through blue glass inside."""
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = abs(x - 7.5) + abs(y - 7.5)
+            if d > 8.2:
+                continue
+            if d > 6.7:
+                c.set(x, y, "#e6f6ff")
+            elif d > 5.7:
+                c.set(x, y, (120, 200, 235, 230))
+            else:
+                c.set(x, y, (60, 150, 220, 70 + int(d * 6)))
+    return c
+
+
+def crystal_glow():
+    """The crystal's heart: white, brightest in the middle; the renderer tints it."""
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            v = max(0, 255 - int((abs(x - 7.5) + abs(y - 7.5)) * 14))
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
+def stabilizer_beam():
+    """Beam strip: bright along the middle (u = 0.5), fading to nothing at the edges, in colour
+    and in alpha, so it never shows a dark outline however it is blended."""
+    c = Canvas()
+    for x in range(16):
+        v = max(0, 255 - int(abs(x - 7.5) * 34))
+        for y in range(16):
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
 # --------------------------------------------------------------------------- items
 
 ITEM_ASCII = {
@@ -1516,6 +1667,18 @@ def build_all():
         "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas_texture("#6cc4dc", "#d4f4ff", 3),
         "block/methane_flow": gas_texture("#6cc4dc", "#d4f4ff", 4),
+        "block/resonance_core_side": core_side(),
+        "block/resonance_core_front": core_front(),
+        "block/resonance_core_top": core_top(),
+        "block/resonance_core_ring": core_ring(),
+        "block/stabilizer_pylon_side": pylon_side(),
+        "block/stabilizer_pylon_top": pylon_top(),
+        "block/stabilizer_pylon_emitter": pylon_emitter(),
+        "block/stabilizer_pylon_port": pylon_port(),
+        "block/resonance_cell": resonance_cell(),
+        "entity/resonance_crystal": crystal_shell(),
+        "entity/resonance_glow": crystal_glow(),
+        "entity/stabilizer_beam": stabilizer_beam(),
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
+import com.cyberfarm.block.ResonanceCoreBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.registry.ModDataComponents;
@@ -74,7 +75,7 @@ public class ProjectorItem extends Item {
 
     private static boolean isController(BlockState state) {
         return state.getBlock() instanceof ReactorControllerBlock || state.getBlock() instanceof TurbineControllerBlock
-                || state.getBlock() instanceof MethaneExtractorBlock;
+                || state.getBlock() instanceof MethaneExtractorBlock || state.getBlock() instanceof ResonanceCoreBlock;
     }
 
     @Override

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/resonance_cell"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/resonance_cell_hidden"
+    }
+  }
+}

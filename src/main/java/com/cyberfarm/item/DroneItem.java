@@ -65,6 +65,7 @@ public class DroneItem extends Item {
         drone.setup(getModules(stack), getEnergy(stack), pos);
         drone.snapTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5, 0.0F, 0.0F);
         level.addFreshEntity(drone);
+        drone.beginStartup();
         dock.setDrone(drone.getUUID());
         level.playSound(null, pos, SoundEvents.BEACON_ACTIVATE, SoundSource.BLOCKS, 0.6F, 1.8F);
         message(player, Component.translatable("message.cyberfarm.drone.deployed"));

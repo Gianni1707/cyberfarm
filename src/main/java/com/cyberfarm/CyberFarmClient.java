@@ -7,6 +7,7 @@ import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.renderer.FluidTankRenderer;
+import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
@@ -18,6 +19,7 @@ import com.cyberfarm.client.screen.ItemFilterScreen;
 import com.cyberfarm.client.screen.MethaneExtractorScreen;
 import com.cyberfarm.client.screen.MufflerScreen;
 import com.cyberfarm.client.screen.ReactorScreen;
+import com.cyberfarm.client.screen.ResonanceCoreScreen;
 import com.cyberfarm.client.screen.TurbineScreen;
 import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
@@ -142,6 +144,7 @@ public class CyberFarmClient {
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
+        event.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -149,6 +152,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */

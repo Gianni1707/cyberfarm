@@ -91,6 +91,11 @@ public class ModItems {
     public static final DeferredItem<DroneFrameItem> ELITE_FRAME = ITEMS.registerItem("elite_frame",
             p -> new DroneFrameItem(p.rarity(Rarity.RARE), 3, 150_000, 160, 3, 16, 4));
 
+    // Energy storage: the core, the cells of its shell and its pylons
+    public static final DeferredItem<BlockItem> RESONANCE_CORE = ITEMS.registerSimpleBlockItem(ModBlocks.RESONANCE_CORE);
+    public static final DeferredItem<BlockItem> RESONANCE_CELL = ITEMS.registerSimpleBlockItem(ModBlocks.RESONANCE_CELL);
+    public static final DeferredItem<BlockItem> STABILIZER_PYLON = ITEMS.registerSimpleBlockItem(ModBlocks.STABILIZER_PYLON);
+
     // Function modules: job, extra flight cost FE/t
     public static final DeferredItem<DroneModuleItem> HARVESTER_MODULE = ITEMS.registerItem("harvester_module",
             p -> new DroneModuleItem(p, DroneTask.HARVEST, 1));

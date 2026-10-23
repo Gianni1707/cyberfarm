@@ -31,6 +31,20 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
         return energy >= capacity;
     }
 
+    /** Resizes the buffer, e.g. when cells go in or out; energy that no longer fits is lost. */
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+        if (energy > capacity) {
+            set(capacity);
+        }
+    }
+
+    /** Changes how much other mods may put in and take out per call; 0 closes that way. */
+    public void setTransferLimits(int maxInsert, int maxExtract) {
+        this.maxInsert = maxInsert;
+        this.maxExtract = maxExtract;
+    }
+
     /** Adds energy produced by the machine itself. Returns the amount actually stored. */
     public int generate(int amount) {
         int added = Math.min(amount, capacity - energy);

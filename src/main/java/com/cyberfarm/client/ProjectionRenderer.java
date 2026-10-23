@@ -149,8 +149,8 @@ public final class ProjectionRenderer {
 
     /** The block's main texture: CyberFarm blocks by name, a few vanilla ones the structures use. */
     private static Identifier texture(Block block) {
-        if (block == ModBlocks.METHANE_EXTRACTOR.get()) {
-            return Identifier.fromNamespaceAndPath("cyberfarm", "textures/block/methane_extractor_side.png");
+        if (block == ModBlocks.METHANE_EXTRACTOR.get() || block == ModBlocks.RESONANCE_CORE.get() || block == ModBlocks.STABILIZER_PYLON.get()) {
+            return BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "textures/block/" + path + "_side.png");
         }
         Identifier key = BuiltInRegistries.BLOCK.getKey(block);
         if (key.getNamespace().equals("cyberfarm") || key.getNamespace().equals("minecraft") && key.getPath().endsWith("glass")) {

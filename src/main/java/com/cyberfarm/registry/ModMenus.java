@@ -12,6 +12,7 @@ import com.cyberfarm.menu.MethaneExtractorMenu;
 import com.cyberfarm.menu.MufflerMenu;
 import com.cyberfarm.menu.ReactorMenu;
 import com.cyberfarm.menu.TurbineMenu;
+import com.cyberfarm.menu.ResonanceCoreMenu;
 import com.cyberfarm.menu.WasteReprocessorMenu;
 
 import net.minecraft.core.registries.Registries;
@@ -46,6 +47,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<WasteReprocessorMenu>> WASTE_REPROCESSOR = MENUS.register("waste_reprocessor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new WasteReprocessorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ResonanceCoreMenu>> RESONANCE_CORE = MENUS.register("resonance_core",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ResonanceCoreMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR = MENUS.register("reactor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));

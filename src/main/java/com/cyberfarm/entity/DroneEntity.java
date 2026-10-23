@@ -3,6 +3,7 @@ package com.cyberfarm.entity;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneCargo;
@@ -93,6 +94,27 @@ public class DroneEntity extends PathfinderMob {
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     /** One item of the first cargo stack, so clients can draw it hanging from the Transport claw. */
     private static final EntityDataAccessor<ItemStack> DATA_CARRIED = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.ITEM_STACK);
+    /** Game time the deploy sequence started, 0 when there is none: the clients animate from it. */
+    private static final EntityDataAccessor<Long> DATA_STARTUP = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.LONG);
+
+    // Deploy sequence, in ticks from the moment it lands on the dock: the folded arms open, the
+    // rotors spin up from a standstill, then it lifts off, hovers a moment and goes about its work
+    public static final int UNFOLD_TICKS = 20;
+    public static final int SPIN_START = 15;
+    public static final int SPIN_TICKS = 30;
+    public static final int LIFT_START = 45;
+    public static final int STARTUP_TICKS = 85;
+    private static final double LIFT_HEIGHT = 1.5;
+    /** Game time the pickup sequence started (after landing), 0 when there is none. */
+    private static final EntityDataAccessor<Long> DATA_SHUTDOWN = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.LONG);
+    // Pickup sequence, in ticks from touching down: the rotors spin down, the arms fold, and it
+    // goes into the inventory of the player who picked it up
+    public static final int SPIN_DOWN_TICKS = 30;
+    public static final int FOLD_START = 20;
+    public static final int FOLD_TICKS = 20;
+    private static final int SHUTDOWN_TICKS = 50;
+    /** Ticks it may take to land before it gives up and folds where it is. */
+    private static final int LANDING_LIMIT = 100;
 
     private DroneModules modules = DroneModules.EMPTY;
     private int energy;
@@ -107,6 +129,10 @@ public class DroneEntity extends PathfinderMob {
     private int pathfindTicks;
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final DroneCargo cargo = new DroneCargo();
+    /** Where a drone being picked up lands, and who gets it; null when nobody is picking it up. */
+    private @Nullable Vec3 landingSpot;
+    private @Nullable UUID pickupBy;
+    private int landingTicks;
 
     public DroneEntity(EntityType<? extends DroneEntity> type, Level level) {
         super(type, level);
@@ -137,6 +163,8 @@ public class DroneEntity extends PathfinderMob {
         builder.define(DATA_STATUS, STATUS_IDLE);
         builder.define(DATA_TASKS, 0);
         builder.define(DATA_CARRIED, ItemStack.EMPTY);
+        builder.define(DATA_STARTUP, 0L);
+        builder.define(DATA_SHUTDOWN, 0L);
     }
 
     @Override
@@ -159,6 +187,125 @@ public class DroneEntity extends PathfinderMob {
 
     public int getStatus() {
         return entityData.get(DATA_STATUS);
+    }
+
+    /** Starts the deploy sequence; called once the drone is placed on its dock. */
+    public void beginStartup() {
+        entityData.set(DATA_STARTUP, level().getGameTime());
+        playSound(ModSounds.DRONE_UNFOLD.get(), 1.0F, 1.0F);
+    }
+
+    /** Ticks into the deploy sequence, with the partial tick; -1 once it is over (or never ran). */
+    public float startupTicks(float partialTick) {
+        long start = entityData.get(DATA_STARTUP);
+        if (start == 0) {
+            return -1.0F;
+        }
+        float elapsed = level().getGameTime() - start + partialTick;
+        return elapsed >= STARTUP_TICKS ? -1.0F : Math.max(0.0F, elapsed);
+    }
+
+    /** Ticks since a picked-up drone touched down, with the partial tick; -1 when it is not being picked up. */
+    public float shutdownTicks(float partialTick) {
+        long start = entityData.get(DATA_SHUTDOWN);
+        return start == 0 ? -1.0F : Math.max(0.0F, level().getGameTime() - start + partialTick);
+    }
+
+    /** How far the arms are open, from 0 (folded, deploying or picked up) to 1. */
+    public float unfold(float partialTick) {
+        float shutdown = shutdownTicks(partialTick);
+        if (shutdown >= 0) {
+            return 1.0F - Mth.clamp((shutdown - FOLD_START) / FOLD_TICKS, 0.0F, 1.0F);
+        }
+        float ticks = startupTicks(partialTick);
+        return ticks < 0 ? 1.0F : Mth.clamp(ticks / UNFOLD_TICKS, 0.0F, 1.0F);
+    }
+
+    /** How fast the rotors turn, from 0 (still) to 1: spinning up on deploy, down when picked up. */
+    public float rotorPower(float partialTick) {
+        float shutdown = shutdownTicks(partialTick);
+        if (shutdown >= 0) {
+            return 1.0F - Mth.clamp(shutdown / SPIN_DOWN_TICKS, 0.0F, 1.0F);
+        }
+        float ticks = startupTicks(partialTick);
+        return ticks < 0 ? 1.0F : Mth.clamp((ticks - SPIN_START) / SPIN_TICKS, 0.0F, 1.0F);
+    }
+
+    /**
+     * Sneak + right-click: instead of vanishing on the spot the drone lands (on its pad if it is
+     * there, else on the ground below), spins down, folds, and then goes to the player.
+     */
+    private void beginPickup(ServerLevel level, Player player) {
+        if (landingSpot != null || entityData.get(DATA_SHUTDOWN) != 0) {
+            return;
+        }
+        stopJob(level);
+        job = null;
+        jobTask = null;
+        navigation.stop();
+        entityData.set(DATA_STARTUP, 0L);
+        pickupBy = player.getUUID();
+        landingTicks = 0;
+        if (dockPos != null && dockHover().subtract(position()).horizontalDistance() < LANDING_RADIUS) {
+            landingSpot = dockHover();
+        } else {
+            HitResult ground = level.clip(new ClipContext(position(), position().subtract(0.0, 64.0, 0.0),
+                    ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, this));
+            landingSpot = ground.getType() == HitResult.Type.MISS ? position() : ground.getLocation();
+        }
+    }
+
+    /** Lands, then counts down the spin-down and the fold the clients draw, then hands itself over. */
+    private void tickPickup(ServerLevel level) {
+        if (landingSpot != null) {
+            flyTowards(landingSpot);
+            if (position().distanceTo(landingSpot) < 0.08 || ++landingTicks > LANDING_LIMIT) {
+                setPos(landingSpot.x, landingSpot.y, landingSpot.z);
+                landingSpot = null;
+                entityData.set(DATA_SHUTDOWN, level.getGameTime());
+                playSound(ModSounds.DRONE_LAND.get(), 1.0F, 1.0F);
+            }
+            return;
+        }
+        holdMoveControl();
+        setDeltaMovement(Vec3.ZERO);
+        int elapsed = (int) shutdownTicks(0.0F);
+        if (elapsed == FOLD_START) {
+            playSound(ModSounds.DRONE_UNFOLD.get(), 1.0F, 0.8F);
+        }
+        if (elapsed >= SHUTDOWN_TICKS) {
+            finishPickup(level);
+        }
+    }
+
+    private void finishPickup(ServerLevel level) {
+        if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
+            cargo.unloadInto(dock);
+            dock.releaseDrone(getUUID());
+        }
+        cargo.dropAll(stack -> spawnAtLocation(level, stack));
+        ItemStack item = toItem();
+        Player player = pickupBy != null ? level.getPlayerByUUID(pickupBy) : null;
+        // A player who walked far away finds it where it landed
+        if (player == null || player.distanceToSqr(this) > 32 * 32 || !player.addItem(item)) {
+            spawnAtLocation(level, item);
+        } else {
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.3F, 1.4F);
+        }
+        discard();
+    }
+
+    /** Waits on the pad while it unfolds and spins up, then rises above the dock and hovers until the end. */
+    private void tickStartup(int elapsed) {
+        if (elapsed < LIFT_START) {
+            holdMoveControl();
+            setDeltaMovement(Vec3.ZERO);
+            return;
+        }
+        if (elapsed == LIFT_START) {
+            playSound(ModSounds.DRONE_TAKEOFF.get(), 1.0F, 1.0F);
+        }
+        flyTowards(dockHover().add(0.0, LIFT_HEIGHT, 0.0));
     }
 
     private void setStatus(int status) {
@@ -296,6 +443,10 @@ public class DroneEntity extends PathfinderMob {
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         syncCarriedItem();
+        if (landingSpot != null || entityData.get(DATA_SHUTDOWN) != 0) {
+            tickPickup(level);
+            return;
+        }
         if (dockPos == null || !level.isLoaded(dockPos)) {
             return;
         }
@@ -305,6 +456,12 @@ public class DroneEntity extends PathfinderMob {
             return;
         }
 
+        float startup = startupTicks(0.0F);
+        if (startup >= 0) {
+            tickStartup((int) startup);
+            dock.updateDroneStatus(level.getGameTime(), getStatus(), energy, capacity(), 0, modules.taskMask(), blockPosition());
+            return;
+        }
         int status = getStatus();
         // Return button: come home, but never drop a taxi passenger mid-air
         if (status == STATUS_WORKING && dock.isPaused() && !isVehicle()) {
@@ -527,17 +684,7 @@ public class DroneEntity extends PathfinderMob {
             return super.mobInteract(player, hand);
         }
         if (level() instanceof ServerLevel level) {
-            stopJob(level);
-            if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
-                cargo.unloadInto(dock);
-                dock.releaseDrone(getUUID());
-            }
-            cargo.dropAll(stack -> spawnAtLocation(level, stack));
-            ItemStack item = toItem();
-            if (!player.addItem(item)) {
-                spawnAtLocation(level, item);
-            }
-            discard();
+            beginPickup(level, player);
         }
         return InteractionResult.SUCCESS;
     }

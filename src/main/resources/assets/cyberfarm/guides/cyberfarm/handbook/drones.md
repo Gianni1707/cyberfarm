@@ -13,7 +13,8 @@ item_ids:
 <ItemImage id="cyberfarm:drone" scale="2" float="left" />
 
 An assembled drone shows its parts and battery in the tooltip. To put it to work,
-**right-click a [Drone Dock](drone_dock.md)** with it.
+**right-click a [Drone Dock](drone_dock.md)** with it. It lands folded on the pad, opens its arms,
+spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock).
 
 <br clear="all" />
 
@@ -60,6 +61,7 @@ moves into the assembler (up to its 20,000 FE buffer).
 Drones are **indestructible**: weapons, mobs, explosions, fire and lava cannot hurt them, and a
 left-click goes right through them, so you cannot knock one down by mistake.
 
-**Sneak + right-click** the drone with an empty hand. You get the drone item back with its
-charge, and its cargo drops on the ground. If its dock is broken, the drone turns back
+**Sneak + right-click** the drone with an empty hand. It lands (on its dock if it is there,
+otherwise on the ground below), its rotors spin down, it folds its arms and then jumps into your
+inventory with its charge; its cargo goes to the dock, or drops on the ground if the dock is full. If its dock is broken, the drone turns back
 into an item by itself.

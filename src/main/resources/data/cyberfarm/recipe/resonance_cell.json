@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:glass",
+    "C": "minecraft:copper_ingot",
+    "B": "cyberfarm:battery_cell"
+  },
+  "pattern": [
+    "GCG",
+    "CBC",
+    "GCG"
+  ],
+  "result": {
+    "id": "cyberfarm:resonance_cell",
+    "count": 4
+  }
+}
