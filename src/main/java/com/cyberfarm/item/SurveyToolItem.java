@@ -1,5 +1,6 @@
 package com.cyberfarm.item;
 
+import java.util.Locale;
 import java.util.function.Consumer;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -24,14 +25,16 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.neoforged.neoforge.capabilities.Capabilities;
 
 /**
- * Configures a Drone Dock:
+ * Configures a Drone Dock. Sneak + mouse wheel (or right-click in the air) switches between its
+ * modes, so a click only ever does what the current mode says:
  * <ul>
- *   <li>right-click the dock to link the tool; sneak + right-click it to reset its area and route;</li>
- *   <li>right-click two opposite corners to set the work area;</li>
- *   <li>right-click two containers (source, then destination) to set the transport route.</li>
- *   <li>sneak + right-click any block to make it the Taxi destination.</li>
+ *   <li><b>Dock</b>: right-click a dock to link the tool; sneak + right-click it to reset its area and route;</li>
+ *   <li><b>Area</b>: right-click two opposite corners to set the work area;</li>
+ *   <li><b>Route</b>: right-click two containers (source, then destination), other drones' docks too;</li>
+ *   <li><b>Taxi</b>: right-click the block where passengers land.</li>
  * </ul>
- * Sneak + right-click in the air clears a half-set corner or route.
+ * Sneak + right-click in the air clears a half-set corner or route. The tool never opens or uses
+ * the block it clicks.
  */
 public class SurveyToolItem extends Item {
     public static final int MAX_AREA_SIZE = 33;
@@ -41,32 +44,47 @@ public class SurveyToolItem extends Item {
     /** Taxi destinations can be much further away than work areas. */
     public static final int MAX_TAXI_DISTANCE = 256;
 
+    public enum Mode {
+        DOCK, AREA, ROUTE, TAXI;
+
+        public Component displayName() {
+            return Component.translatable("survey_mode.cyberfarm." + name().toLowerCase(Locale.ROOT));
+        }
+
+        private String hintKey() {
+            return "tooltip.cyberfarm.survey.hint_" + name().toLowerCase(Locale.ROOT);
+        }
+    }
+
     public SurveyToolItem(Properties properties) {
         super(properties.stacksTo(1));
     }
 
+    public static Mode mode(ItemStack stack) {
+        Mode[] modes = Mode.values();
+        return modes[Math.floorMod(stack.getOrDefault(ModDataComponents.SURVEY_MODE.get(), 0), modes.length)];
+    }
+
+    /** Moves to the next ({@code step} 1) or previous (-1) mode and drops anything half-set. */
+    public static void cycleMode(Player player, ItemStack stack, int step) {
+        Mode[] modes = Mode.values();
+        Mode next = modes[Math.floorMod(mode(stack).ordinal() + step, modes.length)];
+        stack.set(ModDataComponents.SURVEY_MODE.get(), next.ordinal());
+        clearPending(stack);
+        message(player, Component.translatable("message.cyberfarm.survey.mode", next.displayName()));
+    }
+
+    /** Runs before the clicked block reacts, so chests and machines never open their GUI. */
     @Override
-    public InteractionResult useOn(UseOnContext context) {
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         if (!(context.getLevel() instanceof ServerLevel level)) {
             return InteractionResult.SUCCESS;
         }
         Player player = context.getPlayer();
-        ItemStack stack = context.getItemInHand();
         BlockPos pos = context.getClickedPos();
-
-        if (level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock) {
-            clearPending(stack);
-            stack.set(ModDataComponents.LINKED_DOCK.get(), pos);
-            if (player != null && player.isSecondaryUseActive()) {
-                dock.setWorkArea(null);
-                dock.setTransportRoute(null, null);
-                dock.setTaxiDestination(null);
-                message(player, Component.translatable("message.cyberfarm.survey.reset"));
-            } else {
-                message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
-            }
-            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.6F);
-            return InteractionResult.SUCCESS;
+        Mode mode = mode(stack);
+        if (mode == Mode.DOCK) {
+            return link(level, player, stack, pos);
         }
 
         BlockPos dockPos = stack.get(ModDataComponents.LINKED_DOCK.get());
@@ -80,26 +98,49 @@ public class SurveyToolItem extends Item {
             message(player, Component.translatable("message.cyberfarm.survey.dock_missing"));
             return InteractionResult.FAIL;
         }
-        if (player != null && player.isSecondaryUseActive()) {
+        if (mode == Mode.TAXI) {
             return setTaxiDestination(level, player, dockPos, dock, pos);
         }
         if (!pos.closerThan(dockPos, MAX_DOCK_DISTANCE)) {
             message(player, Component.translatable("message.cyberfarm.survey.too_far", MAX_DOCK_DISTANCE));
             return InteractionResult.FAIL;
         }
+        if (mode == Mode.ROUTE && level.getCapability(Capabilities.Item.BLOCK, pos, null) == null) {
+            message(player, Component.translatable("message.cyberfarm.survey.not_container"));
+            return InteractionResult.FAIL;
+        }
 
-        boolean isContainer = level.getCapability(Capabilities.Item.BLOCK, pos, null) != null;
-        InteractionResult result = isContainer ? setRoute(level, player, stack, dock, pos) : setArea(level, player, stack, dock, pos);
+        InteractionResult result = mode == Mode.ROUTE ? setRoute(level, player, stack, dock, pos) : setArea(level, player, stack, dock, pos);
         if (result == InteractionResult.SUCCESS) {
             level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.2F);
         }
         return result;
     }
 
+    private static InteractionResult link(ServerLevel level, Player player, ItemStack stack, BlockPos pos) {
+        if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock)) {
+            // Already linked: they most likely want another mode, so say how to get there
+            message(player, Component.translatable(stack.has(ModDataComponents.LINKED_DOCK.get())
+                    ? "message.cyberfarm.survey.wrong_mode" : "message.cyberfarm.survey.not_dock"));
+            return InteractionResult.FAIL;
+        }
+        clearPending(stack);
+        stack.set(ModDataComponents.LINKED_DOCK.get(), pos);
+        if (player != null && player.isSecondaryUseActive()) {
+            dock.setWorkArea(null);
+            dock.setTransportRoute(null, null);
+            dock.setTaxiDestination(null);
+            message(player, Component.translatable("message.cyberfarm.survey.reset"));
+        } else {
+            message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
+        }
+        level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.6F);
+        return InteractionResult.SUCCESS;
+    }
+
     private static InteractionResult setArea(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
         BlockPos corner = stack.get(ModDataComponents.SURVEY_CORNER.get());
         if (corner == null) {
-            stack.remove(ModDataComponents.ROUTE_SOURCE.get());
             stack.set(ModDataComponents.SURVEY_CORNER.get(), pos);
             message(player, Component.translatable("message.cyberfarm.survey.corner", pos.toShortString()));
             return InteractionResult.SUCCESS;
@@ -125,7 +166,6 @@ public class SurveyToolItem extends Item {
     private static InteractionResult setRoute(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
         BlockPos source = stack.get(ModDataComponents.ROUTE_SOURCE.get());
         if (source == null) {
-            stack.remove(ModDataComponents.SURVEY_CORNER.get());
             stack.set(ModDataComponents.ROUTE_SOURCE.get(), pos);
             message(player, Component.translatable("message.cyberfarm.survey.source", pos.toShortString()));
             return InteractionResult.SUCCESS;
@@ -157,17 +197,24 @@ public class SurveyToolItem extends Item {
         return InteractionResult.SUCCESS;
     }
 
+    /** In the air: sneak clears a half-set corner or route, a plain click moves to the next mode (no wheel needed). */
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (player.isShiftKeyDown() && (stack.has(ModDataComponents.SURVEY_CORNER.get()) || stack.has(ModDataComponents.ROUTE_SOURCE.get()))) {
+        if (player.isShiftKeyDown()) {
+            if (!stack.has(ModDataComponents.SURVEY_CORNER.get()) && !stack.has(ModDataComponents.ROUTE_SOURCE.get())) {
+                return InteractionResult.PASS;
+            }
             clearPending(stack);
             if (!level.isClientSide()) {
                 message(player, Component.translatable("message.cyberfarm.survey.cleared"));
             }
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        if (!level.isClientSide()) {
+            cycleMode(player, stack, 1);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     /** The chime of an area, route or destination saved on the dock. */
@@ -188,6 +235,8 @@ public class SurveyToolItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+        Mode mode = mode(stack);
+        builder.accept(Component.translatable("tooltip.cyberfarm.survey.mode", mode.displayName()).withStyle(ChatFormatting.YELLOW));
         BlockPos dock = stack.get(ModDataComponents.LINKED_DOCK.get());
         if (dock != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.linked", dock.toShortString()).withStyle(ChatFormatting.AQUA));
@@ -202,8 +251,7 @@ public class SurveyToolItem extends Item {
         if (source != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.source", source.toShortString()).withStyle(ChatFormatting.DARK_AQUA));
         }
-        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint").withStyle(ChatFormatting.DARK_GRAY));
-        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_route").withStyle(ChatFormatting.DARK_GRAY));
-        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_taxi").withStyle(ChatFormatting.DARK_GRAY));
+        builder.accept(Component.translatable(mode.hintKey()).withStyle(ChatFormatting.DARK_GRAY));
+        builder.accept(Component.translatable("tooltip.cyberfarm.survey.hint_mode").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

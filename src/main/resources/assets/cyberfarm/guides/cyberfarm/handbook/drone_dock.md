@@ -29,13 +29,30 @@ The dock GUI shows what the drone is doing, its battery level and the size of th
 
 <RecipeFor id="drone_dock" />
 
+## The Survey Tool
+
+The <ItemLink id="survey_tool" /> sets up a dock. It has **four modes**: hold it and **sneak +
+scroll the mouse wheel** to switch, or **right-click the air** to go to the next one. The current
+mode shows above the hotbar and in the tooltip,
+and a click only does what that mode says. The tool never opens the blocks you click, so chests
+and machines stay closed while you set things up.
+
+| Mode | Right-click |
+| --- | --- |
+| **Dock** | a Drone Dock: the tool now configures that dock. Sneak + right-click resets it. |
+| **Area** | two opposite corners: the dock's work area. |
+| **Route** | two containers, source then destination: the transport route. |
+| **Taxi** | the block where taxi passengers land. |
+
+Start in **Dock** mode on the dock you want to set up, then switch to the mode you need. Dock
+mode only picks the dock: to connect the dock to a chest, use **Route** mode.
+
 ## Choosing the work area
 
-Without any setup the drone works a **9x9** area centred on the dock. To change it, use the
-<ItemLink id="survey_tool" />:
+Without any setup the drone works a **9x9** area centred on the dock. To change it:
 
-1. **Right-click the dock** to link the tool to it.
-2. **Right-click the first corner** of your field.
+1. In **Dock** mode, **right-click the dock**.
+2. Switch to **Area** mode and **right-click the first corner** of your field.
 3. **Right-click the opposite corner**. The dock now uses that area.
 
 The area can be up to **33x33** blocks, the two corners can be at most **8 blocks** apart in
@@ -45,17 +62,19 @@ height, and everything must stay within 48 blocks of the dock.
 
 For drones with a [Transport Module](modules.md):
 
-1. **Right-click the dock** to link the tool.
-2. **Right-click the source container** (chest, barrel, any modded inventory).
+1. In **Dock** mode, **right-click the dock**.
+2. Switch to **Route** mode and **right-click the source container** (chest, barrel, any modded
+   inventory, or **another drone's dock**).
 3. **Right-click the destination container**. The route is saved on the dock.
 
-Clicking a container sets the route instead of an area corner.
+Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a
+Harvester or a Quarry and bring the harvest to your storage.
 
 ## Setting a taxi destination
 
-For drones with a [Taxi Module](modules.md): with the tool linked to the dock, **sneak +
-right-click the block** where passengers should land. It can be up to 256 blocks away and needs
-two blocks of air above it.
+For drones with a [Taxi Module](modules.md): with the tool linked to the dock, switch to **Taxi**
+mode and **right-click the block** where passengers should land. It can be up to 256 blocks away
+and needs two blocks of air above it.
 
 ## Item filter
 
@@ -72,7 +91,9 @@ clear it. The buttons switch between **whitelist** and **blacklist**, match item
 
 ## Fixing mistakes
 
-- **Sneak + right-click in the air** clears a corner or route source you set by mistake.
-- **Sneak + right-click the dock** resets it: default 9x9 area, no transport route, no taxi destination.
+- **Sneak + right-click in the air** clears a corner or route source you set by mistake
+  (switching mode clears it too).
+- In **Dock** mode, **sneak + right-click the dock** resets it: default 9x9 area, no transport
+  route, no taxi destination.
 
 <RecipeFor id="survey_tool" />

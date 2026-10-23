@@ -17,7 +17,8 @@ source blocks** (the same rule as an infinite water source) and give it power.
 
 <br clear="all" />
 
-- Pumps **500 mB/t** with **40 FE/t** and pushes it into adjacent [Gas Pipes](gas_pipe.md) and machines.
+- Pumps **500 mB/t** with **40 FE/t** and pushes it into adjacent [Liquid Pipes](liquid_pipe.md) and machines
+  (water is a liquid: a [Gas Pipe](gas_pipe.md) will not take it).
 - One pump feeds 500 heat per tick: enough for a Small tower and a Medium one up to 250%. A Large tower
   at full power (2,000 heat) needs 4 pumps.
 - It has no GUI: **right-click** it to see what it is doing.

@@ -873,7 +873,9 @@ def tank_side(accent):
     c = panel(61 if accent == "y" else 62)
     c.rect(3, 2, 11, 13, "K")
     c.rect(4, 3, 10, 12, (24, 30, 36, 255))
-    c.set(4, 3, (255, 255, 255, 120))
+    # Opaque glint: one see-through pixel would put the whole block in the translucent layer,
+    # and the gas drawn in the window would then hide its wall and show the world behind it.
+    c.set(4, 3, (133, 136, 139, 255))
     for y in range(3, 13, 3):
         c.set(12, y, "m")
     c.rect(3, 14, 11, 14, accent)

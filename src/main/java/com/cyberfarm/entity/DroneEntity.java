@@ -37,6 +37,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.FlyingMoveControl;
 import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -68,8 +69,13 @@ public class DroneEntity extends PathfinderMob {
     private static final double APPROACH_HEIGHT = 0.8;
     /** A Taxi drone waits for passengers this high above its parking spot. */
     private static final double TAXI_WAIT_HEIGHT = 2.7;
-    /** How far below the drone a hanging passenger's feet are. */
-    public static final double PASSENGER_DROP = 2.5;
+    /**
+     * How far below the drone a hanging passenger's feet are: the raised fist of a player (1.88
+     * blocks over the feet, model scaled to 15/16) closes around the hook bar, 0.37-0.44 below the drone.
+     */
+    public static final double PASSENGER_DROP = 2.25;
+    /** How far the raised arm's hand sits to the side of a player's centre. */
+    private static final double HAND_SIDE = 0.34;
     /** Beyond this horizontal distance the drone climbs over the terrain before heading home. */
     private static final double LONG_TRIP = 16.0;
     private static final int SCAN_INTERVAL = 40;
@@ -539,11 +545,21 @@ public class DroneEntity extends PathfinderMob {
     /**
      * The passenger hangs from the hook below the drone instead of sitting on it. Vanilla lowers
      * every passenger by its own vehicle attachment (0.6 for players, made for sitting), so that
-     * offset is added back to keep the hand right on the hook.
+     * offset is added back to keep the hand right on the hook. The player is also moved sideways,
+     * following where they turn, so the raised hand (not their head) is right under the hook.
      */
     @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
-        return new Vec3(0.0, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, 0.0);
+        double sideX = 0.0;
+        double sideZ = 0.0;
+        if (passenger instanceof Player player) {
+            // The player's right is (-cos, -sin) of their body yaw; the hand is on their main arm's side
+            float yaw = player.yBodyRot * Mth.DEG_TO_RAD;
+            double side = player.getMainArm() == HumanoidArm.RIGHT ? HAND_SIDE : -HAND_SIDE;
+            sideX = Mth.cos(yaw) * side;
+            sideZ = Mth.sin(yaw) * side;
+        }
+        return new Vec3(sideX, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, sideZ);
     }
 
     @Override

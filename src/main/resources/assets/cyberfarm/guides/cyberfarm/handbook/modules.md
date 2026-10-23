@@ -89,8 +89,9 @@ While loaded, the drone carries the item **in its claw**, so you can see what it
 
 <br clear="all" />
 
-Set the route with the [Survey Tool](drone_dock.md): click the source container, then the
-destination. Any inventory works, including ones from other mods. Items that do not fit in the
+Set the route with the [Survey Tool](drone_dock.md) in **Route** mode: click the source
+container, then the destination. Any inventory works, including ones from other mods and **other drones' docks**: a
+Transport drone can collect what a Harvester or a Quarry brings home. Items that do not fit in the
 destination are brought back to the dock. The [dock filter](drone_dock.md) decides **which items**
 are moved.
 
@@ -140,8 +141,8 @@ it** to grab the hook: you hang below it with one hand while it carries you to t
 
 <br clear="all" />
 
-1. With the [Survey Tool](drone_dock.md) linked to the dock, **sneak + right-click the block**
-   you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
+1. With the [Survey Tool](drone_dock.md) linked to the dock and in **Taxi** mode, **right-click
+   the block** you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
 2. Right-click the waiting drone.
 3. It climbs above the terrain, flies straight to the destination and puts you down gently.
 
