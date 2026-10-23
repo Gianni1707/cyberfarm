@@ -1,13 +1,16 @@
 package com.cyberfarm.compat.rei;
 
+import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
 import com.cyberfarm.registry.ModItems;
 
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
+import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
@@ -21,6 +24,14 @@ import net.minecraft.network.chat.Component;
  */
 @REIPluginClient
 public class CyberFarmReiPlugin implements REIClientPlugin {
+    /** Keeps REI's panels clear of the Drone Dock's side tabs. */
+    @Override
+    public void registerExclusionZones(ExclusionZones zones) {
+        zones.register(DroneDockScreen.class, (DroneDockScreen screen) -> screen.sideAreas().stream()
+                .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
+                .toList());
+    }
+
     @Override
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new DroneAssemblyReiCategory());

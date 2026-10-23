@@ -42,8 +42,8 @@ Place a <ItemLink id="drone_dock" /> in the middle of your farm, also next to a 
 (or connect it with cables from another mod). Right-click the dock with the drone to deploy it.
 
 By default the drone works a **9x9** area centred on the dock. Use the <ItemLink id="survey_tool" />
-to choose a different area: click the dock, then **sneak + scroll** (or right-click the air) to its **Area** mode and
-click two opposite corners.
+to choose a different area: **sneak + scroll** (or right-click the air) to its **Area** mode, click
+the dock, then two opposite corners. The tool tells you each step above the hotbar.
 
 ## 5. Collect the harvest
 

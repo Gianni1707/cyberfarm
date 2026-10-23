@@ -71,6 +71,9 @@ to bedrock. The dock GUI shows the layer it is working on.
 - It skips **liquids**, **unbreakable blocks** and anything with an inventory or a machine
   inside (chests, furnaces, CyberFarm machines).
 - The column right under the Drone Dock is never dug, so the dock stays on a pillar.
+- In a deep pit it climbs out over the rim and drops straight down the shaft, so the dock can sit
+  beside the pit. A layer is finished only when every block in it is dug: a block the drone could
+  not reach is tried again on the next trip, never skipped.
 - The [dock filter](drone_dock.md) decides which drops are **kept**; the others are thrown away.
 - Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian.
 

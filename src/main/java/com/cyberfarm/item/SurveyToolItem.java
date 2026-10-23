@@ -71,7 +71,24 @@ public class SurveyToolItem extends Item {
         Mode next = modes[Math.floorMod(mode(stack).ordinal() + step, modes.length)];
         stack.set(ModDataComponents.SURVEY_MODE.get(), next.ordinal());
         clearPending(stack);
-        message(player, Component.translatable("message.cyberfarm.survey.mode", next.displayName()));
+        message(player, Component.translatable("message.cyberfarm.survey.mode", next.displayName(), nextStep(stack)));
+    }
+
+    /** What to click next in the current mode, shown above the hotbar after every step. */
+    private static Component nextStep(ItemStack stack) {
+        if (!stack.has(ModDataComponents.LINKED_DOCK.get())) {
+            return step("dock");
+        }
+        return step(switch (mode(stack)) {
+            case DOCK -> "pick_mode";
+            case AREA -> stack.has(ModDataComponents.SURVEY_CORNER.get()) ? "area_second" : "area_first";
+            case ROUTE -> stack.has(ModDataComponents.ROUTE_SOURCE.get()) ? "route_destination" : "route_source";
+            case TAXI -> "taxi";
+        });
+    }
+
+    private static Component step(String key) {
+        return Component.translatable("message.cyberfarm.survey.step." + key);
     }
 
     /** Runs before the clicked block reacts, so chests and machines never open their GUI. */
@@ -88,15 +105,18 @@ public class SurveyToolItem extends Item {
         }
 
         BlockPos dockPos = stack.get(ModDataComponents.LINKED_DOCK.get());
-        if (dockPos == null) {
-            message(player, Component.translatable("message.cyberfarm.survey.no_dock"));
-            return InteractionResult.FAIL;
-        }
-        if (!(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
+        if (dockPos != null && !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity)) {
             stack.remove(ModDataComponents.LINKED_DOCK.get());
             clearPending(stack);
-            message(player, Component.translatable("message.cyberfarm.survey.dock_missing"));
-            return InteractionResult.FAIL;
+            dockPos = null;
+            if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity)) {
+                message(player, Component.translatable("message.cyberfarm.survey.dock_missing"));
+                return InteractionResult.FAIL;
+            }
+        }
+        // In any mode the first click picks the dock; the message then says what comes next
+        if (dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
+            return link(level, player, stack, pos);
         }
         if (mode == Mode.TAXI) {
             return setTaxiDestination(level, player, dockPos, dock, pos);
@@ -120,8 +140,8 @@ public class SurveyToolItem extends Item {
     private static InteractionResult link(ServerLevel level, Player player, ItemStack stack, BlockPos pos) {
         if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock)) {
             // Already linked: they most likely want another mode, so say how to get there
-            message(player, Component.translatable(stack.has(ModDataComponents.LINKED_DOCK.get())
-                    ? "message.cyberfarm.survey.wrong_mode" : "message.cyberfarm.survey.not_dock"));
+            message(player, stack.has(ModDataComponents.LINKED_DOCK.get())
+                    ? Component.translatable("message.cyberfarm.survey.wrong_mode") : step("dock"));
             return InteractionResult.FAIL;
         }
         clearPending(stack);
@@ -132,7 +152,7 @@ public class SurveyToolItem extends Item {
             dock.setTaxiDestination(null);
             message(player, Component.translatable("message.cyberfarm.survey.reset"));
         } else {
-            message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString()));
+            message(player, Component.translatable("message.cyberfarm.survey.linked", pos.toShortString(), nextStep(stack)));
         }
         level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.PLAYERS, 0.5F, 1.6F);
         return InteractionResult.SUCCESS;
