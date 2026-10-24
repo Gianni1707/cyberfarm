@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "W": "minecraft:white_concrete"
+  },
+  "pattern": [
+    "IWI",
+    "W W",
+    "IWI"
+  ],
+  "result": {
+    "id": "cyberfarm:hangar_frame",
+    "count": 8
+  }
+}

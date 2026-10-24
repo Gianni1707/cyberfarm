@@ -5,6 +5,7 @@ import java.util.Set;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
+import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
 import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
@@ -66,6 +67,8 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorPortBlockEntity>> REACTOR_PORT = BLOCK_ENTITIES.register("reactor_port",
             () -> new BlockEntityType<>(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get(), ModBlocks.TURBINE_PORT.get())));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MechHangarBlockEntity>> MECH_HANGAR = BLOCK_ENTITIES.register("mech_hangar",
+            () -> new BlockEntityType<>(MechHangarBlockEntity::new, Set.of(ModBlocks.MECH_HANGAR.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = BLOCK_ENTITIES.register("steam_engine",
             () -> new BlockEntityType<>(SteamEngineBlockEntity::new, Set.of(ModBlocks.STEAM_ENGINE.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AcidSynthesizerBlockEntity>> ACID_SYNTHESIZER = BLOCK_ENTITIES.register("acid_synthesizer",

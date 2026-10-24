@@ -3,9 +3,13 @@ package com.cyberfarm;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.DissolvingMobRenderer;
+import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.model.MechModel;
+import com.cyberfarm.client.renderer.MechRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
+import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
@@ -15,6 +19,7 @@ import com.cyberfarm.client.renderer.SteamEngineRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
 import com.cyberfarm.client.screen.SteamEngineScreen;
+import com.cyberfarm.client.screen.MechHangarScreen;
 import com.cyberfarm.client.screen.BioDigesterScreen;
 import com.cyberfarm.client.screen.CombustionGeneratorScreen;
 import com.cyberfarm.client.screen.CoolantMixerScreen;
@@ -83,6 +88,12 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
+        modEventBus.addListener(MechClient::registerKeys);
+        modEventBus.addListener(MechClient::registerHud);
+        NeoForge.EVENT_BUS.addListener(MechClient::tick);
+        NeoForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
+        NeoForge.EVENT_BUS.addListener(MechClient::hideHand);
+        NeoForge.EVENT_BUS.addListener(MechClient::easeCamera);
         modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
@@ -156,12 +167,14 @@ public class CyberFarmClient {
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
         event.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
+        event.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
         event.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
+        event.registerEntityRenderer(ModEntities.MECH.get(), MechRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
@@ -169,6 +182,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */
@@ -187,6 +201,7 @@ public class CyberFarmClient {
                     }
                     state.isPassenger = false;
                 }
+                MechClient.hidePilot(avatar, state);
             }
         });
     }
@@ -215,5 +230,6 @@ public class CyberFarmClient {
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {
         event.registerLayerDefinition(DroneModel.LAYER, DroneModel::createBodyLayer);
+        event.registerLayerDefinition(MechModel.LAYER, MechModel::createBodyLayer);
     }
 }

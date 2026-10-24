@@ -14,6 +14,9 @@ import com.cyberfarm.item.DepletedFuelRodItem;
 import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
+import com.cyberfarm.item.MechFrameItem;
+import com.cyberfarm.item.MechModuleItem;
+import com.cyberfarm.entity.MechModule;
 import com.cyberfarm.item.DroneModuleItem;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.FuelRodItem;
@@ -150,6 +153,18 @@ public class ModItems {
 
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
+    public static final DeferredItem<MechFrameItem> MECH_FRAME = ITEMS.registerItem("mech_frame", MechFrameItem::new, p -> p.stacksTo(1));
+    public static final DeferredItem<BlockItem> MECH_HANGAR = ITEMS.registerSimpleBlockItem(ModBlocks.MECH_HANGAR);
+    public static final DeferredItem<BlockItem> HANGAR_FRAME = ITEMS.registerSimpleBlockItem(ModBlocks.HANGAR_FRAME);
+    public static final DeferredItem<BlockItem> HANGAR_PAD = ITEMS.registerSimpleBlockItem(ModBlocks.HANGAR_PAD);
+    public static final DeferredItem<MechModuleItem> MECH_JET_MODULE = ITEMS.registerItem("mech_jet_module",
+            p -> new MechModuleItem(p, MechModule.JET), p -> p.stacksTo(1));
+    public static final DeferredItem<MechModuleItem> MECH_DRILL_MODULE = ITEMS.registerItem("mech_drill_module",
+            p -> new MechModuleItem(p, MechModule.DRILL), p -> p.stacksTo(1));
+    public static final DeferredItem<MechModuleItem> MECH_BLADE_MODULE = ITEMS.registerItem("mech_blade_module",
+            p -> new MechModuleItem(p, MechModule.BLADE), p -> p.stacksTo(1));
+    public static final DeferredItem<MechModuleItem> MECH_ARMOR_MODULE = ITEMS.registerItem("mech_armor_module",
+            p -> new MechModuleItem(p, MechModule.ARMOR), p -> p.stacksTo(1));
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
     public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
 

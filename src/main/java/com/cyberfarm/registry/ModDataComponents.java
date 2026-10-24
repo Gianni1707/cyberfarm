@@ -18,6 +18,9 @@ public class ModDataComponents {
     /** FE stored in an item, e.g. the drone's battery. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> ENERGY = COMPONENTS.registerComponentType("energy",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    /** A folded mech's modules, as a bit mask of MechModule#bit(). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> MECH_MODULES = COMPONENTS.registerComponentType("mech_modules",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DroneModules>> DRONE_MODULES = COMPONENTS.registerComponentType("drone_modules",
             builder -> builder.persistent(DroneModules.CODEC).networkSynchronized(DroneModules.STREAM_CODEC));

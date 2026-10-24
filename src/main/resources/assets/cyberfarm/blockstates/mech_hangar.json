@@ -1,0 +1,34 @@
+{
+  "variants": {
+    "facing=north,formed=false": {
+      "model": "cyberfarm:block/mech_hangar"
+    },
+    "facing=north,formed=true": {
+      "model": "cyberfarm:block/mech_hangar_on"
+    },
+    "facing=east,formed=false": {
+      "model": "cyberfarm:block/mech_hangar",
+      "y": 90
+    },
+    "facing=east,formed=true": {
+      "model": "cyberfarm:block/mech_hangar_on",
+      "y": 90
+    },
+    "facing=south,formed=false": {
+      "model": "cyberfarm:block/mech_hangar",
+      "y": 180
+    },
+    "facing=south,formed=true": {
+      "model": "cyberfarm:block/mech_hangar_on",
+      "y": 180
+    },
+    "facing=west,formed=false": {
+      "model": "cyberfarm:block/mech_hangar",
+      "y": 270
+    },
+    "facing=west,formed=true": {
+      "model": "cyberfarm:block/mech_hangar_on",
+      "y": 270
+    }
+  }
+}

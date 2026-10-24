@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": "minecraft:phantom_membrane",
+    "P": "minecraft:iron_block",
+    "C": "cyberfarm:drone_core",
+    "B": "minecraft:blaze_rod"
+  },
+  "pattern": [
+    "F F",
+    "PCP",
+    "B B"
+  ],
+  "result": {
+    "id": "cyberfarm:mech_jet_module"
+  }
+}

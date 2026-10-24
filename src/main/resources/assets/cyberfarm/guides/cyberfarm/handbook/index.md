@@ -26,7 +26,7 @@ reactor and more. The info page (the "i" tab) of any CyberFarm machine gives a q
 New here? Read [Getting Started](getting_started.md): your first drone, step by step.
 Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
 Need water for your machines? A [Water Pump](water_pump.md) gives an endless supply.
-Then the handbook has five sections:
+Then the handbook has six sections:
 
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
@@ -55,3 +55,8 @@ Moving power and fluids: the [Energy Conduit](energy_conduit.md), the [Gas Pipe]
 Building and running drones: the [Drone Assembler](drone_assembler.md),
 [Drone Frames](drone_frames.md), [Function Modules](modules.md), [Addons](addons.md),
 the [Drone Dock](drone_dock.md) and [Using Drones](drones.md).
+
+### [Mech](mech.md)
+A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump and punch, with
+the cockpit display showing its energy and integrity. The [Mech Hangar](mech_hangar.md) charges and
+repairs it and fits its [modules](mech_modules.md).

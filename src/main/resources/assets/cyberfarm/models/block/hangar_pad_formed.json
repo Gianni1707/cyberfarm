@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "cyberfarm:block/hangar_pad_formed",
+    "side": "cyberfarm:block/hangar_pad_side",
+    "bottom": "cyberfarm:block/machine_bottom"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/hangar_frame"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/hangar_frame_hidden"
+    }
+  }
+}

@@ -194,6 +194,86 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
   va dal fusto al bordo del blocco; il raggio parte da una lente luminosa che pulsa sul lato dell'anello rivolto al core.
 - **GUI**: si apre da qualsiasi parte (basamento, celle anche a guscio incompleto, piloni allineati; il menu resta aperto entro 24 blocchi). Mostra tier, stato, colonne presenti/necessarie e per ogni lato cosa ha trovato (collegato, nessun pilone, troppo vicino, troppo lontano, troppo corto, raggio bloccato) con altezza e distanza al passaggio del mouse.
 
+### Meka (progetto, branch `mech`)
+Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod: bianco con accenti azzurro/blu, ali scure), entità `MechEntity`.
+- **Ottenerlo**: si crafta il **Mech Frame** (item) e lo si dispiega nell'Hangar; il meka vive come entità nel mondo.
+- **Entrare/uscire**: click destro → le piastre del torace si aprono (~1 s), il player viene risucchiato nella cabina,
+  le piastre si richiudono e parte il boot dell'HUD; un tasto dedicato (default **V**) fa l'animazione inversa e lo
+  fa scendere. Dentro il player è nascosto; visuale in prima persona dalla cabina con HUD, F5 per la terza persona
+  (camera più lontana).
+- **Base (senza moduli)**: cammina (WASD), **salto alto** (~4 blocchi), **pugno** che colpisce forte e rompe i blocchi
+  più in fretta. Batteria interna **500.000 FE**; consuma FE muovendosi (~20 FE/t camminando), da fermo quasi niente.
+- **Integrità**: il meka ha la sua vita; a 0 non esplode, si **spegne**, espelle il pilota e va riparato in Hangar.
+- **Moduli** (uno per slot, visibili sul modello e montati con animazioni fluide):
+  - **Jet** (schiena): le ali escono dalla schiena e si compongono pezzo per pezzo; doppio salto = volo, consuma ~80 FE/t.
+  - **Braccio trivella** (braccio destro): l'avambraccio si apre e ne esce la trivella che gira scavando; scava 3x3.
+  - **Lama energetica** (braccio sinistro): la lama scorre fuori dall'avambraccio e si illumina; colpo corpo a corpo forte.
+  - **Corazza** (busto): piastre extra si agganciano a spalle e petto; riduce i danni.
+- **HUD futuristico**: cornici agli angoli, barra energia, integrità, velocità/quota, bussola; boot animato all'ingresso.
+  Ogni modulo montato aggiunge il suo pannello (JET: spinta/quota, DRILL: giri/durezza del blocco, BLADE: carica,
+  ARMOR: piastre).
+- **Mech Hangar** (multiblocco con console, pavimento di ricarica e due bracci a gru): il meka parcheggiato si
+  **ricarica** (~2.000 FE/t) e si **ripara**; dalla GUI della console si montano/smontano i moduli (slot per schiena,
+  braccio destro, braccio sinistro, busto) e i bracci della gru si muovono per agganciarli.
+- **Fase 1 fatta** (da testare in gioco): `MechEntity` (Mob, 1,6x3,6, 200 di integrità, armatura 10, batteria nei dati
+  sincronizzati, movimento simulato sul client del pilota come un cavallo), sequenza OPENING → BOARDING → CLOSING →
+  PILOTED → OPENING_OUT → UNBOARDING → CLOSING_OUT con il pilota che scivola dentro/fuori dal davanti; Shift bloccato
+  (`EntityMountEvent`), uscita col tasto V (`MechExitPayload`); salto 0,95, pugno +10 danni (50 FE), scavo da piccone
+  di ferro con i drop giusti, portata +2,5; danni al pilota girati al meka; 100 FE per blocco percorso + 1 FE/t.
+  Modello `MechModel` 128x128 (bianco/blu, spalline, pinne a V, schiena scura). Il tronco è un **vano** in cui il
+  pilota sta **in piedi** contro un'imbracatura, con gli occhi al visore della testa. Il davanti del tronco sono
+  **quattro petali** (due sopra, due sotto) incernierati sui bordi esterni che si aprono uno dopo l'altro come un
+  fiore, e la piastra del visore si alza. Imbarco: il meka si accovaccia (il vano scende a un gradino da terra), il
+  pilota cammina fin davanti partendo da dove si trovava, si gira e indietreggia nel vano salendo il gradino; i petali
+  si chiudono e il meka si raddrizza. Uscita: si accovaccia, si apre (sbuffo di vapore dalle giunture), il pilota si stacca dall'imbracatura, scende il
+  gradino con un passo e si allontana; è visibile nel vano da quando i petali iniziano ad aprirsi, e in prima persona
+  testa e tronco si nascondono solo finché gli occhi sono dentro. Testa 8x8x8 con visore 8x5. La telecamera in terza persona va dai 4 ai 9 blocchi
+  (e ritorno) in modo graduale invece di scattare; il messaggio vanilla "Shift per scendere" è sostituito; se il
+  client riceve il pilota a bordo un tick prima dello stato, resta dov'era invece di finire per un attimo nel vano.
+  Il cavaliere viene alzato dei 0,6 blocchi che il gioco toglie a chi sta su un veicolo (prima i piedi sprofondavano e
+  la vista finiva nella vita del meka). Posizioni, direzione e camminata del pilota in `MechEntity` (`pilotOffset`,
+  `pilotFacing`, `isPilotWalking`), pose in `MechModel` (`petals`, `crouch`). Nella stazione (fase 2) potrà restare
+  in piedi con una pedana all'altezza del vano. In prima persona non si disegnano tronco, testa e petali: si vede
+  dal visore, con braccia e gambe in vista, e il colpo del pilota diventa un pugno del braccio destro. Mentre è pilotato il meka non
+  è bersagliabile (il mirino non lo colpisce),
+  texture da `texgen.py`, telecamera in terza persona a 9 blocchi (attributo `camera_distance`), in prima persona il
+  meka non si disegna. HUD `MechClient`: boot con scanline, angoli, bussola, reticolo, ENERGY/INTEGRITY, SPD/ALT/
+  MODULES, avviso di batteria scarica; nasconde cuori, fame, armatura, aria ed esperienza. Mech Frame (ricetta
+  provvisoria) che lo dispiega e lo ripiega tenendo la carica (100.000 FE di fabbrica). Pagina "Mech" nella guida.
+- **Fase 2 fatta** (da testare in gioco): **Mech Hangar** a **rastrelliera** (stile stazione per armature, futuristica,
+  bianco/blu), 5x5 alto 6, aperto davanti e ai lati: console (`MechHangarBlock`, controller) in testa al binario
+  sinistro rivolta fuori, due binari a terra di Hangar Frame, due montanti in fondo ai binari, trave in cima e due
+  bracci in avanti sopra le spalle del meka, Hangar Pad 3x3 al centro con lo spazio sopra libero. Formato: i frame si
+  nascondono e `HangarRenderer` disegna il rack (binari con gradini e linea ciano, montanti con fasce blu e controventi,
+  trave, bracci, pistoni idraulici, due morse che scendono sulle spalle del meka parcheggiato, stato sincronizzato).
+  GUI ridisegnata: scheda del meka a sinistra (barre etichettate Batteria/Integrità/Hangar, stato, Fold) e sagoma
+  con gli slot ai punti di montaggio e linee di richiamo a destra (`Blueprint.MECH_HANGAR`, anche nel
+  proiettore). Un meka parcheggiato vuoto sul pad viene caricato (2.000 FE/t dalla
+  batteria della console, 1.000.000 FE da cavi), riparato (1 punto ogni 10 tick per 200 FE) e, se spento, si riaccende
+  a integrità piena. GUI con schema del meka e **4 slot moduli** (schiena/Jet, braccio destro/Trivella, braccio
+  sinistro/Lama, busto/Corazza) che rispecchiano il meka parcheggiato: le modifiche vanno subito al meka (bitmask
+  sincronizzata `DATA_MODULES`), senza meka gli slot sono vuoti e non accettano nulla. Il Mech Frame si dispiega **solo sul pad di un hangar completo** (al centro, rivolto
+  verso l'uscita) con un'animazione di apertura (UNFOLDING); il pulsante **Fold** della console lo fa richiudere
+  (FOLDING: si accovaccia, incrocia le braccia, la testa rientra, le gambe si raccolgono, poi si compatta verso terra)
+  e cade come Mech Frame che conserva carica e moduli (componente `mech_modules`). Shift+click destro non lo ripiega
+  più. La console si chiama "Mech Hangar Console" e la sua GUI si apre anche a mano vuota
+  da qualsiasi frame o dal pad dell'hangar completo. La pagina dell'hangar nella guida ha la scena 3D della struttura col meka sul pad. I 4 moduli esistono come oggetti
+  (ricette provvisorie) e l'HUD li elenca; effetti, parti visibili e animazioni nella fase 3. Guida: Mech diventa una
+  sezione con Mech Hangar e Mech Modules.
+- **Fase 3 fatta** (da testare in gioco): le parti dei moduli sono nel `MechModel` e escono con animazioni quando il
+  pilota è dentro (stato PILOTED; uscita graduale lato client, 16 tick): **Jet** due ali a tre segmenti che si aprono
+  dal modulo dorsale + due ugelli, volo (salto in aria = spinta fino a 0,5, Shift = picchiata, niente = planata a
+  -0,18; velocità in aria 0,035; 60 FE/t in volo); **Trivella** sotto la mano destra, tasto R (`MechTogglePayload`), gira
+  quando accesa, scavo a 12 e 3x3 sul piano dello sguardo (20 FE per blocco extra), drop di qualsiasi tier; **Lama**
+  d'energia dall'avambraccio sinistro, tasto G, +18 danni e fendente a 8 sui vicini entro 2,5 (80 FE); **Corazza**
+  piastre su spalle, petto e cosce che si chiudono sul corpo, -40% danni. Gli strumenti si spengono quando il pilota
+  esce. HUD: una riga per modulo con stato e tasto. Base dell'hangar coerente: pad bianco/blu con anello, binari alti
+  quanto il pad con i gradini sopra. GUI dell'hangar: percentuali accanto alle barre, niente sovrapposizioni.
+  Lasciato sul pad, il meka si raddrizza da solo sullo stand (scivola al centro e ruota verso l'uscita, 15% della
+  distanza e 6° per tick); le morse si chiudono solo quando è in posizione.
+- **Fasi**: 1) entità + modello base + entrata/uscita + comandi + energia + HUD base; 2) Hangar (ricarica, riparazione,
+  slot moduli); 3) i quattro moduli con modelli, animazioni, abilità e pannelli HUD; 4) ricette, guida, bilanciamento.
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
@@ -209,7 +289,7 @@ per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar.
 Methane Extractor, Sulfur and Acid, Gas Turbine, Steam Engine) ·
 **Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
 Reprocessor, Hazmat Suit and Geiger Counter) · **Energy Storage** (pagina indice con le tre parti, poi Resonance Core, Resonance Cell, Stabilizer Pylon) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
-Modules, Addons, Dock, Using Drones).
+Modules, Addons, Dock, Using Drones) · **Mech** (Mech Hangar, Mech Modules).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
 `assets/cyberfarm/guideme_guides/handbook.json` + pagine in `assets/cyberfarm/guides/cyberfarm/handbook/*.md`.
@@ -253,6 +333,7 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.
 6. Energy Storage: Resonance Core costruibile in 4 tier (guscio di Resonance Cell) con colonne di Stabilizer Pylon da cui entra ed esce l'energia (da testare in gioco).
 7. ✅ Acido per il Methane Extractor (zolfo nel Nether, Acid Synthesizer, Containment Glass) e Steam Engine multiblocco (da testare in gioco).
+8. Meka pilotabile con Mech Hangar e moduli (Jet, Braccio trivella, Lama energetica, Corazza): fasi 1 (meka, entrata/uscita, comandi, HUD) e 2 (hangar: ricarica, riparazione, slot moduli) fatte, da testare.
 
 ## Asset
 

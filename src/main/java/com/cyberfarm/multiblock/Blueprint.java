@@ -27,7 +27,8 @@ public enum Blueprint {
     METHANE_CHAMBER("methane_chamber", null, null),
     RESONANCE_CORE_TIER_2("resonance_core", 1),
     RESONANCE_CORE_TIER_3("resonance_core", 2),
-    RESONANCE_CORE_TIER_4("resonance_core", 3);
+    RESONANCE_CORE_TIER_4("resonance_core", 3),
+    MECH_HANGAR("mech_hangar", true);
 
     /**
      * One block of the layout: {@code show} is what to place there (null: leave it empty) and
@@ -40,12 +41,14 @@ public enum Blueprint {
     private final @Nullable TurbineSize turbine;
     /** Shell half-size of a Resonance Core tier, 0 for the other structures. */
     private final int coreRadius;
+    private final boolean hangar;
 
     Blueprint(String name, @Nullable TowerSize tower, @Nullable TurbineSize turbine) {
         this.name = name;
         this.tower = tower;
         this.turbine = turbine;
         this.coreRadius = 0;
+        this.hangar = false;
     }
 
     Blueprint(String name, int coreRadius) {
@@ -53,6 +56,15 @@ public enum Blueprint {
         this.tower = null;
         this.turbine = null;
         this.coreRadius = coreRadius;
+        this.hangar = false;
+    }
+
+    Blueprint(String name, boolean hangar) {
+        this.name = name;
+        this.tower = null;
+        this.turbine = null;
+        this.coreRadius = 0;
+        this.hangar = hangar;
     }
 
     /** Translation key of the name shown to the player, with the size when there is one. */
@@ -85,7 +97,62 @@ public enum Blueprint {
             return fromCells(turbine.cells(controller, facing), controller, ModBlocks.TURBINE_CONTROLLER.get(),
                     ModBlocks.TURBINE_CASING.get(), ModBlocks.TURBINE_PORT.get());
         }
+        if (hangar) {
+            return mechHangar(controller, facing);
+        }
         return coreRadius > 0 ? resonanceCore(controller, coreRadius) : methaneChamber(controller);
+    }
+
+    /** The hangar's size: a 5x5 footprint, pillars up to the frame on top at this height. */
+    public static final int HANGAR_SIZE = 5;
+    public static final int HANGAR_TOP = 5;
+
+    /**
+     * A Mech Hangar, a rack the mech stands in: the console at the front of the left floor rail,
+     * facing out; two floor rails of Hangar Frame along the sides, two posts at their back ends up
+     * to a beam across the top, and two arms reaching forward from the beam over the mech's
+     * shoulders; a 3x3 charging pad in the middle with the space over it left free. Open in front
+     * and on the sides, so the mech walks in and out.
+     */
+    private static List<Ghost> mechHangar(BlockPos console, Direction facing) {
+        Block frame = ModBlocks.HANGAR_FRAME.get();
+        Block pad = ModBlocks.HANGAR_PAD.get();
+        Direction across = facing.getCounterClockWise();
+        Direction in = facing.getOpposite();
+        int last = HANGAR_SIZE - 1;
+        List<Ghost> ghosts = new ArrayList<>();
+        for (int w = 0; w < HANGAR_SIZE; w++) {
+            for (int d = 0; d < HANGAR_SIZE; d++) {
+                BlockPos base = console.relative(across, w).relative(in, d);
+                boolean rail = w == 0 || w == last;
+                if (w == 0 && d == 0) {
+                    ghosts.add(new Ghost(base, ModBlocks.MECH_HANGAR.get(), state -> state.is(ModBlocks.MECH_HANGAR.get())));
+                } else if (rail) {
+                    ghosts.add(frame(base, frame));
+                } else if (d >= 1 && d <= 3) {
+                    ghosts.add(frame(base, pad));
+                    for (int y = 1; y < HANGAR_TOP; y++) {
+                        ghosts.add(new Ghost(base.above(y), null, BlockState::isAir));
+                    }
+                }
+                // Posts at the back of the rails, the beam across their tops, the arms forward over the pad
+                if (rail && d == last) {
+                    for (int y = 1; y <= HANGAR_TOP; y++) {
+                        ghosts.add(frame(base.above(y), frame));
+                    }
+                } else if (!rail && d == last) {
+                    ghosts.add(frame(base.above(HANGAR_TOP), frame));
+                } else if ((w == 1 || w == last - 1) && (d == 2 || d == 3)) {
+                    ghosts.add(frame(base.above(HANGAR_TOP), frame));
+                }
+            }
+        }
+        return ghosts;
+    }
+
+    /** Middle of the hangar's pad, for a console at {@code console} facing {@code facing}. */
+    public static BlockPos hangarCentre(BlockPos console, Direction facing) {
+        return console.relative(facing.getCounterClockWise(), 2).relative(facing.getOpposite(), 2);
     }
 
     /**

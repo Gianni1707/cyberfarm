@@ -24,7 +24,8 @@ FLAT_ITEMS = [
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
-    "sulfur", "acid_bucket",
+    "sulfur", "acid_bucket", "mech_frame",
+    "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
 ]
 
 
@@ -278,7 +279,8 @@ def blocks():
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
-             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo"]
+             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
+             "mech_hangar", "hangar_frame", "hangar_pad"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -403,6 +405,21 @@ def nuclear_blocks():
             "formed=false": {"model": f"{NS}:block/{part}"}, "formed=true": {"model": f"{NS}:block/{part}_hidden"}}})
     write(ASSETS / "models/block/containment_glass.json", {"parent": "minecraft:block/cube_all",
         "render_type": "minecraft:translucent", "textures": {"all": tex("containment_glass")}})
+    # Mech Hangar: console, frame and pad light up once the hangar is complete
+    orientable("mech_hangar", "mech_hangar_front", "machine_top")
+    orientable("mech_hangar_on", "mech_hangar_front_on", "machine_top")
+    facing_blockstate("mech_hangar", {"formed=false": "mech_hangar", "formed=true": "mech_hangar_on"})
+    for model in ("hangar_frame", "hangar_frame_formed"):
+        write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
+    # Formed, the rack's frames hide: the console's renderer draws the whole rack
+    write(ASSETS / "models/block/hangar_frame_hidden.json", {"textures": {"particle": tex("hangar_frame_formed")}})
+    write(ASSETS / "blockstates/hangar_frame.json", {"variants": {
+        "formed=false": {"model": f"{NS}:block/hangar_frame"}, "formed=true": {"model": f"{NS}:block/hangar_frame_hidden"}}})
+    for model, top in (("hangar_pad", "hangar_pad"), ("hangar_pad_formed", "hangar_pad_formed")):
+        write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_bottom_top",
+            "textures": {"top": tex(top), "side": tex("hangar_pad_side"), "bottom": tex("machine_bottom")}})
+    write(ASSETS / "blockstates/hangar_pad.json", {"variants": {
+        "formed=false": {"model": f"{NS}:block/hangar_pad"}, "formed=true": {"model": f"{NS}:block/hangar_pad_formed"}}})
     write(ASSETS / "blockstates/vitrified_waste.json", {"variants": {"": {"model": f"{NS}:block/vitrified_waste"}}})
 
     radiation_data()
@@ -610,6 +627,21 @@ def recipes():
            {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": core})
     shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
     shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
+
+    # Mech: a big build, frames and cores at its heart
+    shaped("mech_frame", ["CEC", "FRF", "IBI"], {"C": f"{NS}:cyber_frame", "E": "minecraft:ender_eye", "F": f"{NS}:advanced_frame",
+                                                 "R": "minecraft:redstone_block", "I": "minecraft:iron_block", "B": cell})
+
+    # Mech Hangar and modules
+    shaped("mech_hangar", ["IGI", "CDC", "IFI"], {"I": "minecraft:iron_block", "G": "minecraft:glass_pane", "C": copper,
+                                                  "D": core, "F": f"{NS}:cyber_frame"})
+    shaped("hangar_frame", ["IWI", "W W", "IWI"], {"I": iron, "W": "minecraft:white_concrete"}, count=8)
+    shaped("hangar_pad", ["CRC", "RBR", "CRC"], {"C": copper, "R": redstone, "B": cell}, count=3)
+    shaped("mech_jet_module", ["F F", "PCP", "B B"], {"F": "minecraft:phantom_membrane", "P": "minecraft:iron_block",
+                                                       "C": core, "B": "minecraft:blaze_rod"})
+    shaped("mech_drill_module", [" D ", "DID", "ICI"], {"D": "minecraft:diamond", "I": "minecraft:iron_block", "C": core})
+    shaped("mech_blade_module", ["  A", " A ", "IC "], {"A": "minecraft:amethyst_shard", "I": "minecraft:iron_block", "C": core})
+    shaped("mech_armor_module", ["IOI", "OCO", "IOI"], {"I": "minecraft:iron_block", "O": "minecraft:obsidian", "C": core})
 
     # Energy storage: the shell is many cheap cells, the pylons come in pairs
     shaped("resonance_cell", ["GCG", "CBC", "GCG"], {"G": "minecraft:glass", "C": copper, "B": cell}, count=4)

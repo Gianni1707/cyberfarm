@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:diamond",
+    "I": "minecraft:iron_block",
+    "C": "cyberfarm:drone_core"
+  },
+  "pattern": [
+    " D ",
+    "DID",
+    "ICI"
+  ],
+  "result": {
+    "id": "cyberfarm:mech_drill_module"
+  }
+}

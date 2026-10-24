@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/hangar_pad"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/hangar_pad_formed"
+    }
+  }
+}
