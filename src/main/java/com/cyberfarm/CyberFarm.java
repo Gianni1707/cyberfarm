@@ -3,6 +3,7 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
@@ -126,6 +127,22 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portItems());
+        // A Crystallizer Port passes everything on to the formed Crystallizer of its chamber
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
+            return crystallizer != null ? crystallizer.portFluids() : null;
+        }, ModBlocks.CRYSTALLIZER_PORT.get());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
+            return crystallizer != null ? crystallizer.getEnergy() : null;
+        }, ModBlocks.CRYSTALLIZER_PORT.get());
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
+            return crystallizer != null ? crystallizer.portItems() : null;
+        }, ModBlocks.CRYSTALLIZER_PORT.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());

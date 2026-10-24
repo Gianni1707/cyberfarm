@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/orientable_with_bottom",
+  "textures": {
+    "front": "cyberfarm:block/crystallizer_front",
+    "top": "cyberfarm:block/crystallizer_top",
+    "side": "cyberfarm:block/machine_side",
+    "bottom": "cyberfarm:block/machine_bottom"
+  }
+}

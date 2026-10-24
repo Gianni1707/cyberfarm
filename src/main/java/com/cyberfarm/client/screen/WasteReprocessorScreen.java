@@ -7,7 +7,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-/** Waste in on the left, Vitrified Waste and recovered uranium out on the right. */
+/** Waste in on the left, Vitrified Waste, recovered uranium and isotope shards out on the right. */
 public class WasteReprocessorScreen extends MachineScreen<WasteReprocessorMenu> {
     public WasteReprocessorScreen(WasteReprocessorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 166);
@@ -25,11 +25,12 @@ public class WasteReprocessorScreen extends MachineScreen<WasteReprocessorMenu> 
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
-        if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index <= WasteReprocessorBlockEntity.URANIUM_OUTPUT) {
+        if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index <= WasteReprocessorBlockEntity.ISOTOPE_OUTPUT) {
             String key = switch (hoveredSlot.index) {
                 case WasteReprocessorBlockEntity.INPUT -> "input";
                 case WasteReprocessorBlockEntity.WASTE_OUTPUT -> "waste";
-                default -> "uranium";
+                case WasteReprocessorBlockEntity.URANIUM_OUTPUT -> "uranium";
+                default -> "isotope";
             };
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reprocessor.slot." + key), mouseX, mouseY);
         }

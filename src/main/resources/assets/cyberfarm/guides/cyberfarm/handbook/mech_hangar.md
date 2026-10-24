@@ -70,8 +70,8 @@ on the sides so the mech walks in and out:
 The [Multiblock Projector](multiblock_projector.md) shows it: sneak + right-click to pick *Mech
 Hangar*, then look where the console goes. When it is complete the frames give way to the rack
 itself: white rails with treads and a cyan light line, posts with blue bands braced to the rails,
-the beam and its arms, hydraulic struts, and two **clamps** that come down onto a parked mech's
-shoulders.
+the beam and its arms, hydraulic struts, two **clamps** that come down onto a parked mech's
+shoulders and a **gantry arm** riding on the arms, which fits the modules.
 
 ## Parking
 
@@ -97,7 +97,10 @@ outline with its four **module slots** at their mounts (see [Modules](mech_modul
 behind the shoulder, the armour on the trunk, the blade and the drill by the arms.
 
 The slots show the modules the parked mech carries. Put a module in its slot to fit it, take it
-out to remove it: the change goes straight to the mech, and the modules always travel with it.
+out to remove it, and the **gantry arm** does the work: the bridge rolls along the rack's arms,
+the gripper drops onto the mount (the back, a forearm or the chest) and the module locks in with a
+flash, or comes away held in the gripper; then the arm goes home. The module is on the mech once
+the gripper reaches it, and the modules always travel with the mech.
 With no mech on the pad, the slots are empty and take nothing.
 
 The **Fold** button packs the parked mech back up: it crouches, crosses its arms, draws its head and

@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "F": "minecraft:phantom_membrane",
-    "P": "minecraft:iron_block",
-    "C": "cyberfarm:drone_core",
+    "M": "minecraft:phantom_membrane",
+    "R": "cyberfarm:rotor",
+    "A": "cyberfarm:advanced_frame",
     "B": "minecraft:blaze_rod"
   },
   "pattern": [
-    "F F",
-    "PCP",
+    "M M",
+    "RAR",
     "B B"
   ],
   "result": {

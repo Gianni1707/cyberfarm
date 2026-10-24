@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
+import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
@@ -54,7 +55,8 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         ACID_SYNTHESIZER("acid_synthesizer", ModItems.ACID_SYNTHESIZER),
         FISSION_REACTOR("fission_reactor", ModItems.REACTOR_CONTROLLER),
         STEAM_TURBINE("steam_turbine", ModItems.TURBINE_CONTROLLER),
-        WASTE_REPROCESSOR("waste_reprocessor", ModItems.WASTE_REPROCESSOR);
+        WASTE_REPROCESSOR("waste_reprocessor", ModItems.WASTE_REPROCESSOR),
+        CRYSTALLIZER("crystallizer", ModItems.CRYSTALLIZER);
 
         private final String id;
         private final Supplier<? extends ItemLike> block;
@@ -109,9 +111,15 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         fissionReactor(all);
         steamTurbine(all);
         all.add(new MachineExample(Machine.WASTE_REPROCESSOR, List.of(List.of(new ItemStack(ModItems.DEPLETED_FUEL_ROD.get()))), List.of(),
-                List.of(new ItemStack(ModItems.VITRIFIED_WASTE.get()), new ItemStack(ModItems.URANIUM_INGOT.get())), List.of(),
+                List.of(new ItemStack(ModItems.VITRIFIED_WASTE.get()), new ItemStack(ModItems.URANIUM_INGOT.get()), new ItemStack(ModItems.ISOTOPE_SHARD.get())), List.of(),
                 List.of(note("time_energy", WasteReprocessorBlockEntity.PROCESS_TIME / 20, WasteReprocessorBlockEntity.ENERGY_PER_TICK),
-                        note("chance", Component.translatable(ModItems.URANIUM_INGOT.get().getDescriptionId()), WasteReprocessorBlockEntity.URANIUM_CHANCE))));
+                        note("chance", Component.translatable(ModItems.URANIUM_INGOT.get().getDescriptionId()), WasteReprocessorBlockEntity.URANIUM_CHANCE),
+                        note("chance", Component.translatable(ModItems.ISOTOPE_SHARD.get().getDescriptionId()), WasteReprocessorBlockEntity.ISOTOPE_CHANCE))));
+        all.add(new MachineExample(Machine.CRYSTALLIZER, List.of(List.of(new ItemStack(ModItems.ISOTOPE_SHARD.get())),
+                List.of(new ItemStack(Items.AMETHYST_SHARD, CrystallizerBlockEntity.AMETHYST_PER_CRYSTAL))),
+                List.of(new FluidAmount(ModFluids.ACID.get(), CrystallizerBlockEntity.ACID_PER_CRYSTAL)),
+                List.of(new ItemStack(ModItems.FUSION_CRYSTAL.get())), List.of(),
+                List.of(note("time_energy", CrystallizerBlockEntity.PROCESS_TIME / 20, CrystallizerBlockEntity.ENERGY_PER_TICK))));
         return all;
     }
 

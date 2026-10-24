@@ -32,6 +32,23 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> GEIGER_CLICK = register("geiger.click");
     public static final DeferredHolder<SoundEvent, SoundEvent> GENERATOR_CRACKLE = register("combustion_generator.crackle");
     public static final DeferredHolder<SoundEvent, SoundEvent> ASSEMBLER_WORK = register("drone_assembler.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CRYSTALLIZER_WORK = register("crystallizer.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CRYSTALLIZER_DONE = register("crystallizer.done");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HANGAR_ARM = register("mech_hangar.arm");
+    public static final DeferredHolder<SoundEvent, SoundEvent> HANGAR_FIT = register("mech_hangar.fit");
+    /** The mech is a vehicle, not a machine: the Muffler leaves its sounds alone (see CyberFarmClient). */
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_SERVO = register("mech.servo");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_HISS = register("mech.hiss");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_CLUNK = register("mech.clunk");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_STEP = register("mech.step");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_JET = register("mech.jet");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_DRILL = register("mech.drill");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_BLADE_ON = register("mech.blade_on");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_BLADE_OFF = register("mech.blade_off");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_PUNCH = register("mech.punch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_SLASH = register("mech.slash");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_BOOT = register("mech.boot");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MECH_SHUTDOWN = register("mech.shutdown");
 
     private static DeferredHolder<SoundEvent, SoundEvent> register(String name) {
         return SOUNDS.register(name, () -> SoundEvent.createVariableRangeEvent(CyberFarm.id(name)));

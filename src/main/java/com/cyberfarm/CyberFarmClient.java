@@ -4,11 +4,13 @@ import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
 import com.cyberfarm.client.renderer.MechRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
+import com.cyberfarm.client.renderer.CrystallizerRenderer;
 import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
@@ -18,6 +20,7 @@ import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.SteamEngineRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
+import com.cyberfarm.client.screen.CrystallizerScreen;
 import com.cyberfarm.client.screen.SteamEngineScreen;
 import com.cyberfarm.client.screen.MechHangarScreen;
 import com.cyberfarm.client.screen.BioDigesterScreen;
@@ -34,6 +37,8 @@ import com.cyberfarm.client.screen.ResonanceCoreScreen;
 import com.cyberfarm.client.screen.TurbineScreen;
 import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.entity.MechEntity;
+import com.cyberfarm.entity.MechModule;
 import com.cyberfarm.item.SurveyModePayload;
 import com.cyberfarm.item.SurveyToolItem;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -107,6 +112,10 @@ public class CyberFarmClient {
         if (event.getLevel().isClientSide() && event.getEntity() instanceof DroneEntity drone) {
             Minecraft.getInstance().getSoundManager().queueTickingSound(new DroneSoundInstance(drone));
         }
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof MechEntity mech) {
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new MechLoopSound(mech, MechModule.JET));
+            Minecraft.getInstance().getSoundManager().queueTickingSound(new MechLoopSound(mech, MechModule.DRILL));
+        }
     }
 
     /** Sneak + mouse wheel with the Survey Tool in hand changes its mode instead of the hotbar slot. */
@@ -137,8 +146,8 @@ public class CyberFarmClient {
     private static MufflerBlockEntity.@Nullable Category categoryOf(SoundInstance sound) {
         Identifier id = sound.getIdentifier();
         if (id.getNamespace().equals(CyberFarm.MODID)) {
-            // The Geiger Counter is a warning, never muffled
-            if (id.getPath().startsWith("geiger.")) {
+            // The Geiger Counter is a warning, and the mech a vehicle: never muffled
+            if (id.getPath().startsWith("geiger.") || id.getPath().startsWith("mech.")) {
                 return null;
             }
             return id.getPath().startsWith("drone.") ? MufflerBlockEntity.Category.DRONES : MufflerBlockEntity.Category.MACHINES;
@@ -166,6 +175,7 @@ public class CyberFarmClient {
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
+        event.register(ModMenus.CRYSTALLIZER.get(), CrystallizerScreen::new);
         event.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
         event.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
@@ -182,6 +192,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.CRYSTALLIZER.get(), context -> new CrystallizerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
     }
 

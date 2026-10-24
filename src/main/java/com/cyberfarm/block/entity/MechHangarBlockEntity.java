@@ -49,8 +49,9 @@ import org.jspecify.annotations.Nullable;
  * have its modules fitted or removed in the console's four slots, one per mount.
  *
  * <p>The slots mirror the docked mech: they fill with its modules when it parks and every change
- * goes straight back to it. With no mech parked they are empty and take nothing; the modules
- * always travel with the mech.
+ * goes back to it, carried there by the rack's gantry arm (the module is fitted halfway through
+ * the arm's run). With no mech parked they are empty and take nothing; the modules always travel
+ * with the mech.
  */
 public class MechHangarBlockEntity extends MachineBlockEntity {
     private static final int CAPACITY = 1_000_000;
@@ -65,6 +66,8 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     /** How fast a parked mech glides to its place on the stand: the share of the way per tick, and degrees per tick. */
     private static final double ALIGN_STEP = 0.15;
     private static final float ALIGN_TURN = 6.0F;
+    /** Ticks of the gantry arm's run to a mount and back; the module goes on (or comes off) halfway. */
+    public static final int FIT_TIME = 60;
 
     private final ItemStacksResourceHandler modules = new ItemStacksResourceHandler(MechModule.values().length) {
         @Override
@@ -79,8 +82,15 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
 
         @Override
         protected void onContentsChanged(int index, ItemStack previousContents) {
-            if (!loading && docked != null) {
-                docked.setModules(maskOf());
+            if (!loading && docked != null && level != null) {
+                // A run still going finishes now: the new one carries every change
+                applyFit();
+                fitModule = index;
+                fitInstall = !getResource(index).isEmpty();
+                fitStart = level.getGameTime();
+                fitPending = true;
+                level.playSound(null, padCentre().above(5), ModSounds.HANGAR_ARM.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
             }
             setChanged();
         }
@@ -97,6 +107,12 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     private boolean clientDocked;
     private float clamp;
     private long clampTime;
+    /** The gantry arm's run: which mount it goes to (-1 none), when it set off, whether it carries a module there or back. */
+    private int fitModule = -1;
+    private long fitStart;
+    private boolean fitInstall;
+    /** The slots changed but the arm has not reached the mech yet. */
+    private boolean fitPending;
 
     public MechHangarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.MECH_HANGAR.get(), pos, state, 0, CAPACITY, MAX_INPUT, 0);
@@ -114,6 +130,27 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             }
         }
         return mask;
+    }
+
+    /** The arm reaches the mount: the docked mech gets the slots' modules. */
+    private void applyFit() {
+        if (fitPending && docked != null) {
+            docked.setModules(maskOf());
+        }
+        fitPending = false;
+    }
+
+    /** Client side: which mount the arm is working on (-1 none), how far through its run (0 to 1), and whether it carries a module in. */
+    public int fitModule() {
+        return fitModule;
+    }
+
+    public float fitProgress(float time) {
+        return Mth.clamp((time - fitStart) / FIT_TIME, 0.0F, 1.0F);
+    }
+
+    public boolean fitInstall() {
+        return fitInstall;
     }
 
     /** Fills the slots with the docked mech's modules, or empties them, without touching the mech. */
@@ -229,8 +266,20 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             parked = mechs.isEmpty() ? null : mechs.getFirst();
         }
         if (parked != docked) {
+            applyFit();
             docked = parked;
             mirror(parked);
+        }
+        if (fitModule >= 0) {
+            long elapsed = level.getGameTime() - fitStart;
+            if (fitPending && elapsed >= FIT_TIME / 2) {
+                applyFit();
+                level.playSound(null, padCentre().above(3), ModSounds.HANGAR_FIT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            } else if (elapsed == FIT_TIME * 7 / 10) {
+                level.playSound(null, padCentre().above(5), ModSounds.HANGAR_ARM.get(), SoundSource.BLOCKS, 1.0F, 0.9F);
+            } else if (elapsed >= FIT_TIME) {
+                fitModule = -1;
+            }
         }
         // A mech left on the pad straightens up on the stand: to the middle, facing out; then the clamps close
         boolean held = docked != null && align(docked);
@@ -290,6 +339,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
         CompoundTag tag = saveCustomOnly(registries);
         tag.putBoolean("docked", docked != null);
+        tag.putInt("fit", fitModule);
+        tag.putLong("fit_start", fitStart);
+        tag.putBoolean("fit_install", fitInstall);
         return tag;
     }
 
@@ -302,6 +354,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         clientDocked = input.getBooleanOr("docked", false);
+        fitModule = input.getIntOr("fit", -1);
+        fitStart = input.getLongOr("fit_start", 0L);
+        fitInstall = input.getBooleanOr("fit_install", false);
     }
 
     @Override
@@ -328,7 +383,8 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         if (level != null) {
             setPartsFormed(level, false);
         }
-        // The slots only mirror the mech: nothing of theirs is dropped
+        // The slots only mirror the mech: nothing of theirs is dropped, and a module on its way is fitted
+        applyFit();
         mirror(null);
     }
 

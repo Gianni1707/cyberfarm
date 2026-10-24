@@ -2,14 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": "minecraft:amethyst_shard",
-    "I": "minecraft:iron_block",
-    "C": "cyberfarm:drone_core"
+    "S": "minecraft:amethyst_shard",
+    "D": "minecraft:diamond",
+    "A": "cyberfarm:advanced_frame"
   },
   "pattern": [
-    "  A",
-    " A ",
-    "IC "
+    "  S",
+    " S ",
+    "DA "
   ],
   "result": {
     "id": "cyberfarm:mech_blade_module"

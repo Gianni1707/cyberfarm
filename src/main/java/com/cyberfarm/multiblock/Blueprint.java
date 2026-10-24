@@ -28,7 +28,8 @@ public enum Blueprint {
     RESONANCE_CORE_TIER_2("resonance_core", 1),
     RESONANCE_CORE_TIER_3("resonance_core", 2),
     RESONANCE_CORE_TIER_4("resonance_core", 3),
-    MECH_HANGAR("mech_hangar", true);
+    MECH_HANGAR("mech_hangar", true),
+    CRYSTALLIZER("crystallizer", false);
 
     /**
      * One block of the layout: {@code show} is what to place there (null: leave it empty) and
@@ -99,6 +100,9 @@ public enum Blueprint {
         }
         if (hangar) {
             return mechHangar(controller, facing);
+        }
+        if (this == CRYSTALLIZER) {
+            return crystallizer(controller, facing);
         }
         return coreRadius > 0 ? resonanceCore(controller, coreRadius) : methaneChamber(controller);
     }
@@ -176,6 +180,43 @@ public enum Blueprint {
             BlockPos ground = core.relative(sides[i], ResonanceCoreBlockEntity.minDistance(tier));
             for (int y = 0; y < ResonanceCoreBlockEntity.requiredHeight(tier); y++) {
                 ghosts.add(frame(ground.above(y), pylon));
+            }
+        }
+        return ghosts;
+    }
+
+    /** Middle of a Crystallizer's chamber, on the ground, for a controller at {@code controller} facing {@code facing}. */
+    public static BlockPos crystallizerCentre(BlockPos controller, Direction facing) {
+        return controller.relative(facing.getOpposite());
+    }
+
+    /**
+     * The 3x3x4 chamber behind a Crystallizer, which sits in the middle of its base's front, facing
+     * out: a floor and a roof of Cyber Frame, frames up the corners, Containment Glass walls and the
+     * two blocks in the middle left empty for the crystal. Any frame may be a Crystallizer Port
+     * instead: the projector suggests one at the back of the floor.
+     */
+    private static List<Ghost> crystallizer(BlockPos controller, Direction facing) {
+        Block frame = ModBlocks.CYBER_FRAME.get();
+        Block glass = ModBlocks.CONTAINMENT_GLASS.get();
+        Block crystallizer = ModBlocks.CRYSTALLIZER.get();
+        Block port = ModBlocks.CRYSTALLIZER_PORT.get();
+        Predicate<BlockState> shell = state -> state.is(frame) || state.is(port);
+        BlockPos centre = crystallizerCentre(controller, facing);
+        BlockPos suggested = centre.relative(facing.getOpposite());
+        List<Ghost> ghosts = new ArrayList<>();
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                boolean middle = dx == 0 && dz == 0;
+                boolean corner = dx != 0 && dz != 0;
+                BlockPos base = centre.offset(dx, 0, dz);
+                ghosts.add(base.equals(controller) ? new Ghost(base, crystallizer, state -> state.is(crystallizer))
+                        : new Ghost(base, base.equals(suggested) ? port : frame, shell));
+                for (int dy = 1; dy <= 2; dy++) {
+                    BlockPos pos = base.above(dy);
+                    ghosts.add(middle ? new Ghost(pos, null, BlockState::isAir) : corner ? new Ghost(pos, frame, shell) : frame(pos, glass));
+                }
+                ghosts.add(new Ghost(base.above(3), frame, shell));
             }
         }
         return ghosts;

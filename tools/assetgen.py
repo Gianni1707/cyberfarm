@@ -24,7 +24,7 @@ FLAT_ITEMS = [
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
-    "sulfur", "acid_bucket", "mech_frame",
+    "sulfur", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
     "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
 ]
 
@@ -280,7 +280,7 @@ def blocks():
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
-             "mech_hangar", "hangar_frame", "hangar_pad"]
+             "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -390,6 +390,15 @@ def nuclear_blocks():
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
     orientable("acid_synthesizer", "acid_synthesizer_front", "machine_top")
     facing_blockstate("acid_synthesizer")
+    orientable("crystallizer", "crystallizer_front", "crystallizer_top")
+    # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
+    write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
+    facing_blockstate("crystallizer", {"formed=false": "crystallizer", "formed=true": "crystallizer_hidden"})
+    # Its ports hide too: the renderer draws a socket on the machine where each one is
+    write(ASSETS / "models/block/crystallizer_port.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("crystallizer_port")}})
+    write(ASSETS / "models/block/crystallizer_port_hidden.json", {"textures": {"particle": tex("crystallizer_port")}})
+    write(ASSETS / "blockstates/crystallizer_port.json", {"variants": {
+        "formed=false": {"model": f"{NS}:block/crystallizer_port"}, "formed=true": {"model": f"{NS}:block/crystallizer_port_hidden"}}})
     # A complete Steam Engine is drawn whole by the boiler's renderer: its blocks show no faces
     orientable("steam_engine", "steam_engine_front", "machine_top")
     write(ASSETS / "models/block/steam_engine_hidden.json", {"textures": {"particle": tex("steam_engine_front")}})
@@ -628,20 +637,25 @@ def recipes():
     shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
     shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
 
-    # Mech: a big build, frames and cores at its heart
-    shaped("mech_frame", ["CEC", "FRF", "IBI"], {"C": f"{NS}:cyber_frame", "E": "minecraft:ender_eye", "F": f"{NS}:advanced_frame",
-                                                 "R": "minecraft:redstone_block", "I": "minecraft:iron_block", "B": cell})
+    # Mech: end game. Its core is a Fusion Crystal (reactor waste -> Isotope Shard -> Crystallizer) in two elite frames
+    advanced, elite = f"{NS}:advanced_frame", f"{NS}:elite_frame"
+    shaped("crystallizer", ["DAD", "GXG", "DCD"], {"D": "minecraft:diamond", "A": "minecraft:amethyst_block",
+                                                   "G": f"{NS}:containment_glass", "X": f"{NS}:acid_synthesizer", "C": core})
+    shaped("crystallizer_port", ["IHI", "EXL", "III"], {"I": iron, "H": "minecraft:hopper", "E": f"{NS}:energy_conduit",
+                                                       "X": f"{NS}:cyber_frame", "L": f"{NS}:liquid_pipe"})
+    shaped("mech_core", ["DBD", "EXE", "DBD"], {"D": "minecraft:diamond", "B": cell, "E": elite, "X": f"{NS}:fusion_crystal"})
+    shaped("mech_frame", ["IEI", "AMA", "IRI"], {"I": "minecraft:iron_block", "E": "minecraft:ender_eye", "A": advanced,
+                                                 "M": f"{NS}:mech_core", "R": "minecraft:redstone_block"})
 
-    # Mech Hangar and modules
+    # Mech Hangar and modules: mid to late game, an advanced frame in each
     shaped("mech_hangar", ["IGI", "CDC", "IFI"], {"I": "minecraft:iron_block", "G": "minecraft:glass_pane", "C": copper,
-                                                  "D": core, "F": f"{NS}:cyber_frame"})
+                                                  "D": core, "F": advanced})
     shaped("hangar_frame", ["IWI", "W W", "IWI"], {"I": iron, "W": "minecraft:white_concrete"}, count=8)
     shaped("hangar_pad", ["CRC", "RBR", "CRC"], {"C": copper, "R": redstone, "B": cell}, count=3)
-    shaped("mech_jet_module", ["F F", "PCP", "B B"], {"F": "minecraft:phantom_membrane", "P": "minecraft:iron_block",
-                                                       "C": core, "B": "minecraft:blaze_rod"})
-    shaped("mech_drill_module", [" D ", "DID", "ICI"], {"D": "minecraft:diamond", "I": "minecraft:iron_block", "C": core})
-    shaped("mech_blade_module", ["  A", " A ", "IC "], {"A": "minecraft:amethyst_shard", "I": "minecraft:iron_block", "C": core})
-    shaped("mech_armor_module", ["IOI", "OCO", "IOI"], {"I": "minecraft:iron_block", "O": "minecraft:obsidian", "C": core})
+    shaped("mech_jet_module", ["M M", "RAR", "B B"], {"M": "minecraft:phantom_membrane", "R": rotor, "A": advanced, "B": "minecraft:blaze_rod"})
+    shaped("mech_drill_module", [" D ", "DAD", "ICI"], {"D": "minecraft:diamond", "A": advanced, "I": "minecraft:iron_block", "C": core})
+    shaped("mech_blade_module", ["  S", " S ", "DA "], {"S": "minecraft:amethyst_shard", "D": "minecraft:diamond", "A": advanced})
+    shaped("mech_armor_module", ["IOI", "OAO", "IOI"], {"I": "minecraft:iron_block", "O": "minecraft:obsidian", "A": advanced})
 
     # Energy storage: the shell is many cheap cells, the pylons come in pairs
     shaped("resonance_cell", ["GCG", "CBC", "GCG"], {"G": "minecraft:glass", "C": copper, "B": cell}, count=4)
@@ -689,6 +703,23 @@ def sounds():
         "waste_reprocessor.work": files("block/beacon/power1", pitch=0.7, volume=0.5),
         "geiger.click": files("random/click", pitch=2.0, volume=0.3),
         "steam_turbine.work": files("random/fizz", pitch=0.5, volume=0.25),
+        "crystallizer.work": files("block/amethyst/resonate", 4, pitch=0.8, volume=0.5) + files("block/amethyst/shimmer", pitch=0.9, volume=0.6),
+        "crystallizer.done": files("block/amethyst_cluster/place", 4, pitch=0.7) + files("block/beacon/power1", pitch=1.6, volume=0.5),
+        # Mech: synthesized servos, jet, drill, blade and boot chime (soundgen.py), vanilla metal for the rest
+        "mech_hangar.arm": [{"name": f"{NS}:mech_servo", "pitch": 1.3, "volume": 0.6}],
+        "mech_hangar.fit": files("block/vault/insert", pitch=0.8) + files("block/iron_door/close", 4, pitch=1.2, volume=0.6),
+        "mech.servo": [{"name": f"{NS}:mech_servo", "volume": 0.8}],
+        "mech.hiss": files("random/fizz", pitch=0.5, volume=0.6),
+        "mech.clunk": files("block/iron_door/close", 4, pitch=0.6),
+        "mech.step": files("mob/irongolem/walk", 4, pitch=0.6, volume=0.9) + files("block/heavy_core/step", 4, pitch=0.5, volume=0.7),
+        "mech.jet": [{"name": f"{NS}:mech_jet", "volume": 0.8}],
+        "mech.drill": [{"name": f"{NS}:mech_drill", "volume": 0.6}],
+        "mech.blade_on": [{"name": f"{NS}:mech_blade_on", "volume": 0.8}],
+        "mech.blade_off": [{"name": f"{NS}:mech_blade_off", "volume": 0.8}],
+        "mech.punch": files("mob/irongolem/hit", 4, pitch=0.7) + files("entity/player/attack/strong", 6, pitch=0.6, volume=0.8),
+        "mech.slash": files("entity/player/attack/sweep", 7, pitch=0.7) + files("item/trident/riptide", 3, pitch=1.6, volume=0.4),
+        "mech.boot": [{"name": f"{NS}:mech_boot", "volume": 0.6}],
+        "mech.shutdown": files("block/beacon/deactivate", pitch=0.5),
     }
     write(ASSETS / "sounds.json", {name: {"sounds": entries, "subtitle": f"subtitles.{NS}.{name}"}
                                    for name, entries in events.items()})

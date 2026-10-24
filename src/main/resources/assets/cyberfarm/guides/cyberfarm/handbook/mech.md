@@ -18,8 +18,9 @@ bay you stand in, back against a harness, looking out through the visor of its h
 
 ## Standing it up
 
-Build a [Mech Hangar](mech_hangar.md) first: a <ItemLink id="mech_frame" /> only unfolds on a
-hangar's pad. Right-click the pad and the mech unfolds in the middle of it, facing out of the
+The <ItemLink id="mech_frame" /> is end-game: it is built around a [Mech Core](mech_core.md),
+whose crystal comes from reactor waste. Build a [Mech Hangar](mech_hangar.md) too: a frame only
+unfolds on a hangar's pad. Right-click the pad and the mech unfolds in the middle of it, facing out of the
 hangar. A new frame comes with **100,000 FE** in its battery.
 
 To pack it up again, park it on the pad and press **Fold** on the hangar's console: it folds itself
@@ -51,6 +52,10 @@ hurt you hurts the mech instead, and neither of you takes fall damage.
 In first person you look out through the visor: the mech's arms are at your sides and throw a
 punch when you hit, and looking down you see its legs. Press **F5** for an outside view from
 further back.
+
+You hear it, too: servos and a hiss of steam as it opens, the armour locking shut, the systems
+booting, heavy footsteps and a thud when it lands, the jet's roar, the drill's spin and the
+blade's hum.
 
 ## Battery and integrity
 

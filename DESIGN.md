@@ -271,6 +271,38 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
   quanto il pad con i gradini sopra. GUI dell'hangar: percentuali accanto alle barre, niente sovrapposizioni.
   Lasciato sul pad, il meka si raddrizza da solo sullo stand (scivola al centro e ruota verso l'uscita, 15% della
   distanza e 6° per tick); le morse si chiudono solo quando è in posizione.
+- **Fase 4 fatta** (da testare in gioco): **Mech Core** da end game. Catena: il Waste Reprocessor recupera un
+  **Isotope Shard** una barra su quattro (quarto slot d'uscita); il **Crystallizer** (`CrystallizerBlockEntity`) fa crescere
+  un **Fusion Crystal** da 1 Isotope Shard + 4 Amethyst Shard + 2.000 mB di Acido, 1.000 FE/t per 30 s (600.000 FE).
+  Il Crystallizer è il controller di una **camera multiblocco 3x3x4** (Blueprint `CRYSTALLIZER`, anche nel proiettore):
+  pavimento e tetto di Cyber Frame, angoli di Cyber Frame, pareti di Containment Glass, i due blocchi centrali vuoti,
+  il controller al centro del bordo frontale del pavimento. Completa, i blocchi si nascondono e `CrystallizerRenderer`
+  la disegna sfaccettata, diversa dalla camera del metano: basamento ottagonale a gradini con la vasca d'acido
+  incassata, quattro piloni bianchi che reggono una corona ottagonale col mozzo-emettitore, un campo d'energia viola
+  pulsante al posto del vetro, console col progresso; il cristallo (poliedro della Resonance Core, allungato, viola)
+  cresce al centro nutrito da due raggi, con archi elettrici dai piloni e scintille che vi spiraleggiano; finito resta
+  sospeso finché non lo si prende. Il controller è `noOcclusion` (nascosto non deve bucare il terreno).
+  **Crystallizer Port**: sostituisce qualsiasi Cyber Frame della camera (pavimento, angoli, tetto; il proiettore ne
+  suggerisce una dietro il pavimento) e, a camera formata, passa acido, energia e oggetti al controller
+  (`CrystallizerBlockEntity.ofChamberBlock`); a camera formata si nasconde come gli altri blocchi e il renderer disegna
+  la porta come un nodo dei tubi: al centro del suo blocco un giunto scuro grande come quello dei tubi, con una finestra
+  viola su ogni lato, appoggiato alla macchina (nel basamento, contro il pilone, sotto la corona; negli angoli del tetto
+  un braccetto lo unisce al pilone); per ogni lato con un tubo collegato un braccio con la texture di quel tubo va dal
+  giunto alla faccia, allineato al braccio del tubo (bianco per tramogge e tubi di altre mod). Le porte del pavimento
+  mostrano anche una presa viola sul basamento. Per l'automazione, sia dal
+  controller che dalle porte, entrano solo Isotope Shard e ametista ed esce solo il Fusion Crystal; l'acido non si estrae. Mech Core =
+  Fusion Crystal + 2 Elite Frame + diamanti + celle; il Mech Frame lo richiede. Ricette finali: hangar e moduli con
+  un Advanced Frame, Crystallizer con Acid Synthesizer e Containment Glass. **Braccio a carroponte** nell'hangar: un ponte
+  che scorre sui bracci, un carrello e una pinza telescopica portano il modulo al suo attacco (schiena, avambracci,
+  petto) in 60 tick; il modulo si monta a metà corsa con un lampo (`fitModule`/`fitStart` sincronizzati nell'update
+  tag). **Suoni** del meka: servo, jet, trivella, lama e boot sintetizzati in `soundgen.py`, il resto da audio vanilla;
+  passi a tempo con l'andatura (lato client, ogni mezzo ciclo del passo) e tonfo all'atterraggio; jet e trivella in
+  loop (`MechLoopSound`); il Muffler non silenzia il meka (è un veicolo).
+  **Bilanciamento** (verificato a fine fase 4): l'Isotope Shard esce una barra esaurita su quattro (prima otto), cioè
+  in media ~40 min per uno con un reattore Medium (4 barre da 40 min), ~80 col Small: traguardo da end game senza
+  attese assurde. Il Crystallizer (1.000 FE/t, 600k FE a cristallo) chiede uno Steam Turbine Medium o più Steam Engine;
+  il meka consuma ~22 FE/t camminando (500k = ~19 min continui, ~7 min di volo col jet a 60 FE/t), l'hangar lo ricarica
+  in ~4 min a 2.000 FE/t e lo ripara del tutto con ~40k FE. Il resto (generatori, macchine, consumi) resta come nella 0.3.0.
 - **Fasi**: 1) entità + modello base + entrata/uscita + comandi + energia + HUD base; 2) Hangar (ricarica, riparazione,
   slot moduli); 3) i quattro moduli con modelli, animazioni, abilità e pannelli HUD; 4) ricette, guida, bilanciamento.
 
@@ -289,7 +321,7 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
 Methane Extractor, Sulfur and Acid, Gas Turbine, Steam Engine) ·
 **Nuclear** (Uranium and Fuel Rods, Fission Reactor, Coolant Mixer, Steam Turbine, Waste and Radiation, Waste
 Reprocessor, Hazmat Suit and Geiger Counter) · **Energy Storage** (pagina indice con le tre parti, poi Resonance Core, Resonance Cell, Stabilizer Pylon) · **Cables** (Energy Conduit, Gas Pipe, Liquid Pipe, Liquid and Gas Tanks) · **Drones** (Assembler, Frames,
-Modules, Addons, Dock, Using Drones) · **Mech** (Mech Hangar, Mech Modules).
+Modules, Addons, Dock, Using Drones) · **Mech** (Mech Core, Mech Hangar, Mech Modules).
 La guida si aggiorna sempre insieme alle novità.
 Libreria: **GuideME** 26.1.15-beta, dipendenza **opzionale** (la mod funziona anche senza). Guida data-driven:
 `assets/cyberfarm/guideme_guides/handbook.json` + pagine in `assets/cyberfarm/guides/cyberfarm/handbook/*.md`.
@@ -330,14 +362,14 @@ Il libro viene regalato al primo accesso ed è craftabile (libro + lingotto di r
    ✅ Il drone col Transport Module mostra l'oggetto che trasporta appeso alla pinza (primo stack del carico, sincronizzato ai client).
    ✅ Pagine JEI e REI per le macchine (`compat/MachineExample`, una categoria generica per viewer): Bio-Digester (organici
    raggruppati per mB), Methane Extractor (uova spawn per gruppo: zombie, mostri, animali), Gas Turbine, Water Pump, Coolant
-   Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor; il blocco è la workstation.
+   Mixer, Fission Reactor (per taglia + refrigeranti), Steam Turbine (per taglia), Waste Reprocessor, Crystallizer; il blocco è la workstation.
 6. Energy Storage: Resonance Core costruibile in 4 tier (guscio di Resonance Cell) con colonne di Stabilizer Pylon da cui entra ed esce l'energia (da testare in gioco).
 7. ✅ Acido per il Methane Extractor (zolfo nel Nether, Acid Synthesizer, Containment Glass) e Steam Engine multiblocco (da testare in gioco).
-8. Meka pilotabile con Mech Hangar e moduli (Jet, Braccio trivella, Lama energetica, Corazza): fasi 1 (meka, entrata/uscita, comandi, HUD) e 2 (hangar: ricarica, riparazione, slot moduli) fatte, da testare.
+8. Meka pilotabile con Mech Hangar e moduli (Jet, Braccio trivella, Lama energetica, Corazza): fasi 1-3 rilasciate in 0.3.0; fase 4 (Mech Core da end game con Crystallizer, ricette finali, braccio a carroponte, suoni) fatta, da testare.
 
 ## Asset
 
 - Texture: `python tools/texgen.py` (disegnate in codice con palette condivisa; `--preview DIR` crea un foglio di anteprima).
 - JSON (blockstate, modelli, item, loot, tag, ricette): `python tools/assetgen.py`. Le traduzioni (`lang/en_us.json`) si scrivono a mano.
-- Suoni sintetizzati (`sounds/*.ogg`, ora il volo del drone): `uv run --with numpy --with soundfile python tools/soundgen.py`.
+- Suoni sintetizzati (`sounds/*.ogg`: volo del drone, servo, jet, trivella, lama e boot del meka): `uv run --with numpy --with soundfile python tools/soundgen.py`.
 - Modello 3D del drone in Java (`DroneModel`), GUI disegnate in codice (`MachineScreen`).

@@ -257,5 +257,338 @@
       }
     ],
     "subtitle": "subtitles.cyberfarm.steam_turbine.work"
+  },
+  "crystallizer.work": {
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst/resonate1",
+        "pitch": 0.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate2",
+        "pitch": 0.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate3",
+        "pitch": 0.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/amethyst/resonate4",
+        "pitch": 0.8,
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/amethyst/shimmer",
+        "pitch": 0.9,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.crystallizer.work"
+  },
+  "crystallizer.done": {
+    "sounds": [
+      {
+        "name": "minecraft:block/amethyst_cluster/place1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst_cluster/place2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst_cluster/place3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/amethyst_cluster/place4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:block/beacon/power1",
+        "pitch": 1.6,
+        "volume": 0.5
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.crystallizer.done"
+  },
+  "mech_hangar.arm": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_servo",
+        "pitch": 1.3,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech_hangar.arm"
+  },
+  "mech_hangar.fit": {
+    "sounds": [
+      {
+        "name": "minecraft:block/vault/insert",
+        "pitch": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_door/close1",
+        "pitch": 1.2,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close2",
+        "pitch": 1.2,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close3",
+        "pitch": 1.2,
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close4",
+        "pitch": 1.2,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech_hangar.fit"
+  },
+  "mech.servo": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_servo",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.servo"
+  },
+  "mech.hiss": {
+    "sounds": [
+      {
+        "name": "minecraft:random/fizz",
+        "pitch": 0.5,
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.hiss"
+  },
+  "mech.clunk": {
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_door/close1",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close2",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close3",
+        "pitch": 0.6
+      },
+      {
+        "name": "minecraft:block/iron_door/close4",
+        "pitch": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.clunk"
+  },
+  "mech.step": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/walk1",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk2",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk3",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:mob/irongolem/walk4",
+        "pitch": 0.6,
+        "volume": 0.9
+      },
+      {
+        "name": "minecraft:block/heavy_core/step1",
+        "pitch": 0.5,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/heavy_core/step2",
+        "pitch": 0.5,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/heavy_core/step3",
+        "pitch": 0.5,
+        "volume": 0.7
+      },
+      {
+        "name": "minecraft:block/heavy_core/step4",
+        "pitch": 0.5,
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.step"
+  },
+  "mech.jet": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_jet",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.jet"
+  },
+  "mech.drill": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_drill",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.drill"
+  },
+  "mech.blade_on": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_blade_on",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.blade_on"
+  },
+  "mech.blade_off": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_blade_off",
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.blade_off"
+  },
+  "mech.punch": {
+    "sounds": [
+      {
+        "name": "minecraft:mob/irongolem/hit1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:mob/irongolem/hit4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong1",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong2",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong3",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong4",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong5",
+        "pitch": 0.6,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:entity/player/attack/strong6",
+        "pitch": 0.6,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.punch"
+  },
+  "mech.slash": {
+    "sounds": [
+      {
+        "name": "minecraft:entity/player/attack/sweep1",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep2",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep3",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep4",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep5",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep6",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:entity/player/attack/sweep7",
+        "pitch": 0.7
+      },
+      {
+        "name": "minecraft:item/trident/riptide1",
+        "pitch": 1.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:item/trident/riptide2",
+        "pitch": 1.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:item/trident/riptide3",
+        "pitch": 1.6,
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.slash"
+  },
+  "mech.boot": {
+    "sounds": [
+      {
+        "name": "cyberfarm:mech_boot",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.boot"
+  },
+  "mech.shutdown": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/deactivate",
+        "pitch": 0.5
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.mech.shutdown"
   }
 }

@@ -1,10 +1,11 @@
 package com.cyberfarm.entity;
 
+import com.cyberfarm.registry.ModSounds;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
@@ -74,11 +75,13 @@ public final class MechEvents {
                     near.hurtServer(level, event.getSource(), SWEEP_DAMAGE);
                 }
                 level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 3, 0.6, 0.2, 0.6, 0.0);
-                level.playSound(null, target.getX(), target.getY(), target.getZ(), SoundEvents.PLAYER_ATTACK_SWEEP, SoundSource.PLAYERS, 1.0F, 0.7F);
+                level.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.MECH_SLASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
                 sweeping = false;
             }
         } else if (mech.consume(MechEntity.FE_PER_PUNCH)) {
             event.setAmount(event.getAmount() + PUNCH_DAMAGE);
+            LivingEntity target = event.getEntity();
+            target.level().playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.MECH_PUNCH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
         }
     }
 

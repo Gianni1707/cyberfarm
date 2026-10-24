@@ -2,17 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": "cyberfarm:cyber_frame",
-    "E": "minecraft:ender_eye",
-    "F": "cyberfarm:advanced_frame",
-    "R": "minecraft:redstone_block",
     "I": "minecraft:iron_block",
-    "B": "cyberfarm:battery_cell"
+    "E": "minecraft:ender_eye",
+    "A": "cyberfarm:advanced_frame",
+    "M": "cyberfarm:mech_core",
+    "R": "minecraft:redstone_block"
   },
   "pattern": [
-    "CEC",
-    "FRF",
-    "IBI"
+    "IEI",
+    "AMA",
+    "IRI"
   ],
   "result": {
     "id": "cyberfarm:mech_frame"

@@ -68,6 +68,7 @@ public class ModItems {
     public static final DeferredItem<Item> URANIUM_INGOT = ITEMS.registerSimpleItem("uranium_ingot");
     public static final DeferredItem<FuelRodItem> FUEL_ROD = ITEMS.registerItem("fuel_rod", FuelRodItem::new);
     public static final DeferredItem<DepletedFuelRodItem> DEPLETED_FUEL_ROD = ITEMS.registerItem("depleted_fuel_rod", DepletedFuelRodItem::new);
+    public static final DeferredItem<Item> ISOTOPE_SHARD = ITEMS.registerSimpleItem("isotope_shard", p -> p.rarity(Rarity.UNCOMMON));
     public static final DeferredItem<BlockItem> REACTOR_CONTROLLER = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CONTROLLER);
     public static final DeferredItem<BlockItem> REACTOR_CASING = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_CASING);
     public static final DeferredItem<BlockItem> REACTOR_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.REACTOR_PORT);
@@ -153,6 +154,11 @@ public class ModItems {
 
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
+    public static final DeferredItem<BlockItem> CRYSTALLIZER = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER);
+    public static final DeferredItem<BlockItem> CRYSTALLIZER_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER_PORT,
+            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.crystallizer_port", ChatFormatting.LIGHT_PURPLE)));
+    public static final DeferredItem<Item> FUSION_CRYSTAL = ITEMS.registerSimpleItem("fusion_crystal", p -> p.rarity(Rarity.RARE));
+    public static final DeferredItem<Item> MECH_CORE = ITEMS.registerSimpleItem("mech_core", p -> p.rarity(Rarity.EPIC));
     public static final DeferredItem<MechFrameItem> MECH_FRAME = ITEMS.registerItem("mech_frame", MechFrameItem::new, p -> p.stacksTo(1));
     public static final DeferredItem<BlockItem> MECH_HANGAR = ITEMS.registerSimpleBlockItem(ModBlocks.MECH_HANGAR);
     public static final DeferredItem<BlockItem> HANGAR_FRAME = ITEMS.registerSimpleBlockItem(ModBlocks.HANGAR_FRAME);

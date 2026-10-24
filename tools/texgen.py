@@ -2005,6 +2005,84 @@ def mech_module_icon(kind):
     return c
 
 
+def gem(c, cx, cy, rx, ry, colors, angle=0.0):
+    """A faceted gem on `c`: a rhombus centred on (cx, cy), half-axes rx and ry, turned by `angle`
+    radians. colors = (outline, dark facet, light facet, glint): lit from the top left."""
+    import math
+    outline, dark, light, glint = colors
+    ca, sa = math.cos(angle), math.sin(angle)
+    for y in range(c.height):
+        for x in range(c.width):
+            dx, dy = x - cx, y - cy
+            u, v = dx * ca + dy * sa, -dx * sa + dy * ca
+            d = abs(u) / rx + abs(v) / ry
+            if d > 1.0:
+                continue
+            if d > 1.0 - 1.4 / min(rx, ry):
+                c.set(x, y, outline)
+            elif u + v < 0:
+                c.set(x, y, light if d > 0.35 else glint)
+            else:
+                c.set(x, y, dark)
+
+
+def isotope_shard():
+    """Slivers of glowing isotope recovered from spent fuel: three thin green shards."""
+    c = Canvas()
+    colors = ("#1d4a14", "#4fb02a", "#a6f05a", "#f4ffb0")
+    gem(c, 4.2, 10.0, 2.7, 5.0, colors, angle=0.45)
+    gem(c, 11.0, 10.5, 2.7, 4.6, colors, angle=-0.45)
+    gem(c, 7.5, 7.5, 3.4, 7.4, colors)
+    return c
+
+
+def fusion_crystal():
+    """The Fusion Crystal: a tall violet gem with a white-hot heart."""
+    c = Canvas()
+    gem(c, 7.5, 7.5, 4.6, 7.4, ("#2a1250", "#6a34c0", "#b88cff", "#ffffff"))
+    gem(c, 7.5, 7.5, 1.6, 2.6, ("#f0e0ff", "#f0e0ff", "#ffffff", "#ffffff"))
+    return c
+
+
+def mech_core():
+    """The heart of a mech: a white ring with a blue band holding a Fusion Crystal."""
+    c = Canvas()
+    c.disc(7.5, 7.5, 7.0, "k")
+    c.disc(7.5, 7.5, 6.2, MECH_WHITE)
+    c.disc(7.5, 7.5, 6.2, MECH_RED, r_inner=5.2)
+    c.disc(7.5, 7.5, 4.4, "k")
+    gem(c, 7.5, 7.5, 3.0, 4.2, ("#2a1250", "#6a34c0", "#b88cff", "#ffffff"))
+    for x, y in ((7, 1), (8, 1), (7, 14), (8, 14), (1, 7), (1, 8), (14, 7), (14, 8)):
+        c.set(x, y, MECH_SEAM)
+    return c
+
+
+def crystallizer_front():
+    """A violet screen with the crystal growing on it, over a progress strip."""
+    c = panel(64)
+    c.rect(3, 2, 12, 11, "K")
+    c.rect(4, 3, 11, 10, "#160c26")
+    gem(c, 7.5, 6.5, 2.4, 3.4, ("#6a34c0", "#6a34c0", "#b88cff", "#ffffff"))
+    c.rect(3, 13, 12, 13, "k")
+    c.rect(4, 13, 9, 13, "v")
+    return c
+
+
+def crystallizer_top():
+    """The emitter the crystal floats over: a violet ring around a lens."""
+    c = panel(65)
+    c.disc(7.5, 7.5, 6.0, "K")
+    c.disc(7.5, 7.5, 5.2, "v", r_inner=3.8)
+    c.disc(7.5, 7.5, 3.8, "s")
+    c.disc(7.5, 7.5, 2.0, "V")
+    c.disc(7.5, 7.5, 0.9, "#ffffff")
+    return c
+
+
+def crystallizer_port():
+    """A Cyber Frame with a pipe socket ringed in violet."""
+    return chamber_port("#8a4fd8", "#d6b8ff")
+
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
@@ -2105,6 +2183,12 @@ def build_all():
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
         "block/acid_synthesizer_front": acid_synthesizer_front(),
+        "block/crystallizer_front": crystallizer_front(),
+        "block/crystallizer_top": crystallizer_top(),
+        "block/crystallizer_port": crystallizer_port(),
+        "item/isotope_shard": isotope_shard(),
+        "item/fusion_crystal": fusion_crystal(),
+        "item/mech_core": mech_core(),
         "block/containment_glass": containment_glass(),
         "block/steam_engine_front": steam_engine_front(),
         "block/steam_engine_cylinder": steam_engine_cylinder(),
