@@ -5,7 +5,9 @@ import java.util.UUID;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModItems;
+import com.cyberfarm.registry.ModSounds;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -13,7 +15,7 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -32,6 +34,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
@@ -158,6 +161,11 @@ public class MechEntity extends Mob {
     /** Set while the mech itself lets its pilot out, so the dismount is not blocked. */
     private boolean releasing;
     private @Nullable Vec3 lastPosition;
+    /** Client side: the stride of the walk animation the last footstep fell on, and whether it stood on the ground. */
+    private int lastStride;
+    private boolean wasOnGround = true;
+    /** Walk animation distance between two footfalls: half a cycle of MechModel's gait. */
+    private static final float STRIDE = Mth.PI / 0.45F;
 
     public MechEntity(EntityType<? extends MechEntity> type, Level level) {
         super(type, level);
@@ -230,11 +238,14 @@ public class MechEntity extends Mob {
     /** The pilot's key for the drill or the blade: out it comes, or back it goes. */
     public void toggleTool(MechModule module) {
         if ((module == MechModule.DRILL || module == MechModule.BLADE) && hasModule(module) && isPiloted()
-                && level() instanceof ServerLevel level) {
+                && !level().isClientSide()) {
             entityData.set(DATA_TOOLS, entityData.get(DATA_TOOLS) ^ module.bit());
             boolean on = isToolOn(module);
-            level.playSound(null, getX(), getY() + 2, getZ(), on ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT,
-                    SoundSource.NEUTRAL, 0.7F, module == MechModule.DRILL ? 0.8F : 1.4F);
+            if (module == MechModule.DRILL) {
+                sound(ModSounds.MECH_SERVO.get(), 0.7F, on ? 1.3F : 1.1F);
+            } else {
+                sound(on ? ModSounds.MECH_BLADE_ON.get() : ModSounds.MECH_BLADE_OFF.get(), 1.0F, 1.0F);
+            }
         }
     }
 
@@ -262,7 +273,7 @@ public class MechEntity extends Mob {
         setHealth(Math.min(getMaxHealth(), getHealth() + amount));
         if (isDisabled() && getHealth() >= getMaxHealth()) {
             entityData.set(DATA_DISABLED, false);
-            level().playSound(null, getX(), getY() + 2, getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 0.8F, 1.2F);
+            sound(ModSounds.MECH_BOOT.get(), 1.0F, 1.0F);
         }
     }
 
@@ -285,7 +296,7 @@ public class MechEntity extends Mob {
         }
         setHealth(1.0F);
         entityData.set(DATA_DISABLED, true);
-        level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.NEUTRAL, 1.0F, 0.6F);
+        sound(ModSounds.MECH_SHUTDOWN.get(), 1.0F, 1.0F);
         if (getFirstPassenger() instanceof Player pilot) {
             release(level, pilot);
         }
@@ -341,17 +352,17 @@ public class MechEntity extends Mob {
 
     /** Starts folding a parked mech back into its frame; it drops as an item when done. */
     public void startFold() {
-        if (isParked() && level() instanceof ServerLevel level) {
+        if (isParked() && !level().isClientSide()) {
             setState(State.FOLDING);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 1.0F, 0.5F);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.BEACON_DEACTIVATE, SoundSource.NEUTRAL, 0.6F, 1.4F);
+            sound(ModSounds.MECH_SERVO.get(), 1.0F, 0.6F);
+            sound(ModSounds.MECH_SHUTDOWN.get(), 0.5F, 1.4F);
         }
     }
 
     /** A mech just deployed from its frame unfolds before it can be used. */
     public void startUnfold() {
         setState(State.UNFOLDING);
-        level().playSound(null, getX(), getY() + 2, getZ(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 1.0F, 0.5F);
+        sound(ModSounds.MECH_SERVO.get(), 1.0F, 0.7F);
     }
 
     /** The frame a folded mech drops as: battery charge and modules kept. */
@@ -474,21 +485,49 @@ public class MechEntity extends Mob {
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.mech.disabled"));
             return InteractionResult.SUCCESS;
         }
-        if (level() instanceof ServerLevel level) {
+        if (!level().isClientSide()) {
             boardingPlayer = player.getUUID();
             setState(State.OPENING);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.IRON_DOOR_OPEN, SoundSource.NEUTRAL, 1.0F, 0.6F);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 0.7F, 0.7F);
+            openSounds();
         }
         return InteractionResult.SUCCESS;
     }
 
+    /** The petals unlocking: servos and a hiss of steam from the seams. */
+    private void openSounds() {
+        sound(ModSounds.MECH_SERVO.get(), 1.0F, 1.0F);
+        sound(ModSounds.MECH_HISS.get(), 1.0F, 1.0F);
+    }
+
+    /** A sound from the mech's trunk, for everyone around. */
+    private void sound(SoundEvent sound, float volume, float pitch) {
+        level().playSound(null, getX(), getY() + 2, getZ(), sound, SoundSource.NEUTRAL, volume, pitch);
+    }
+
+    /** Footsteps come from the walk animation on each client instead (see {@link #footsteps}): the pilot's client moves a piloted mech. */
+    @Override
+    protected void playStepSound(BlockPos pos, BlockState state) {}
+
+    /** Client side: a heavy footfall at each stride of the gait, and a thud when it lands. */
+    private void footsteps() {
+        int stride = (int) (walkAnimation.position() / STRIDE);
+        if (onGround() && stride != lastStride && walkAnimation.speed() > 0.05F) {
+            level().playLocalSound(getX(), getY(), getZ(), ModSounds.MECH_STEP.get(), SoundSource.NEUTRAL,
+                    0.6F + Math.min(0.6F, walkAnimation.speed()), 0.9F + random.nextFloat() * 0.2F, false);
+        }
+        lastStride = stride;
+        if (onGround() && !wasOnGround) {
+            level().playLocalSound(getX(), getY(), getZ(), ModSounds.MECH_STEP.get(), SoundSource.NEUTRAL, 1.5F, 0.6F, false);
+            level().playLocalSound(getX(), getY(), getZ(), ModSounds.MECH_CLUNK.get(), SoundSource.NEUTRAL, 0.6F, 0.5F, false);
+        }
+        wasOnGround = onGround();
+    }
+
     /** The pilot asked to get out (the exit key). */
     public void requestExit(Player player) {
-        if (getFirstPassenger() == player && getState() == State.PILOTED && level() instanceof ServerLevel level) {
+        if (getFirstPassenger() == player && getState() == State.PILOTED && !level().isClientSide()) {
             setState(State.OPENING_OUT);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.IRON_DOOR_OPEN, SoundSource.NEUTRAL, 1.0F, 0.6F);
-            level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.PISTON_EXTEND, SoundSource.NEUTRAL, 0.7F, 0.7F);
+            openSounds();
         }
     }
 
@@ -524,6 +563,7 @@ public class MechEntity extends Mob {
                 deployO[i] = deploy[i];
                 deploy[i] = Mth.clamp(deploy[i] + (shouldDeploy(module) ? DEPLOY_SPEED : -DEPLOY_SPEED), 0.0F, 1.0F);
             }
+            footsteps();
         }
         if (level() instanceof ServerLevel level) {
             serverTick(level);
@@ -568,15 +608,15 @@ public class MechEntity extends Mob {
             case BOARDING -> {
                 if (done) {
                     setState(State.CLOSING);
-                    level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.IRON_DOOR_CLOSE, SoundSource.NEUTRAL, 1.0F, 0.6F);
-                    level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.PISTON_CONTRACT, SoundSource.NEUTRAL, 0.7F, 0.7F);
+                    sound(ModSounds.MECH_SERVO.get(), 0.9F, 0.9F);
                 }
             }
             case CLOSING -> {
                 if (done) {
                     setState(pilot != null ? State.PILOTED : State.IDLE);
+                    sound(ModSounds.MECH_CLUNK.get(), 1.0F, 1.0F);
                     if (pilot != null) {
-                        level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.BEACON_ACTIVATE, SoundSource.NEUTRAL, 0.8F, 1.4F);
+                        sound(ModSounds.MECH_BOOT.get(), 1.0F, 1.0F);
                     }
                 }
             }
@@ -591,19 +631,20 @@ public class MechEntity extends Mob {
                         release(level, pilot);
                     }
                     setState(State.CLOSING_OUT);
-                    level.playSound(null, getX(), getY() + 2, getZ(), SoundEvents.IRON_DOOR_CLOSE, SoundSource.NEUTRAL, 1.0F, 0.6F);
+                    sound(ModSounds.MECH_SERVO.get(), 0.9F, 0.9F);
                 }
             }
             case CLOSING_OUT, UNFOLDING -> {
                 if (done) {
                     setState(State.IDLE);
+                    sound(ModSounds.MECH_CLUNK.get(), 1.0F, 1.0F);
                 }
             }
             case FOLDING -> {
                 if (done) {
                     // Packed: it drops as its frame, with a puff where it stood
                     level.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, getX(), getY() + 0.6, getZ(), 16, 0.5, 0.3, 0.5, 0.02);
-                    level.playSound(null, getX(), getY() + 0.5, getZ(), SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.NEUTRAL, 1.0F, 0.6F);
+                    level.playSound(null, getX(), getY() + 0.5, getZ(), ModSounds.MECH_CLUNK.get(), SoundSource.NEUTRAL, 1.0F, 0.8F);
                     spawnAtLocation(level, asFrame(), 0.5F);
                     discard();
                     return;

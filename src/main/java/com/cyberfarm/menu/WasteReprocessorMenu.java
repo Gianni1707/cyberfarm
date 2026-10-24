@@ -15,7 +15,7 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 public class WasteReprocessorMenu extends MachineMenu {
     public WasteReprocessorMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new ItemStacksResourceHandler(3) {
+        this(containerId, inventory, new ItemStacksResourceHandler(4) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
                 return index == WasteReprocessorBlockEntity.INPUT && resource.is(ModItems.DEPLETED_FUEL_ROD.get());
@@ -28,6 +28,7 @@ public class WasteReprocessorMenu extends MachineMenu {
         addMachineSlot(items, WasteReprocessorBlockEntity.INPUT, 44, 35);
         addMachineSlot(items, WasteReprocessorBlockEntity.WASTE_OUTPUT, 104, 26);
         addMachineSlot(items, WasteReprocessorBlockEntity.URANIUM_OUTPUT, 104, 44);
+        addMachineSlot(items, WasteReprocessorBlockEntity.ISOTOPE_OUTPUT, 122, 44);
         addPlayerInventory(inventory, 84);
     }
 

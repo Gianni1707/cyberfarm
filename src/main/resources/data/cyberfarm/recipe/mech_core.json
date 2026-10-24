@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:diamond",
+    "B": "cyberfarm:battery_cell",
+    "E": "cyberfarm:elite_frame",
+    "X": "cyberfarm:fusion_crystal"
+  },
+  "pattern": [
+    "DBD",
+    "EXE",
+    "DBD"
+  ],
+  "result": {
+    "id": "cyberfarm:mech_core"
+  }
+}

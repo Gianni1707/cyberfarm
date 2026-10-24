@@ -4,11 +4,11 @@
   "key": {
     "I": "minecraft:iron_block",
     "O": "minecraft:obsidian",
-    "C": "cyberfarm:drone_core"
+    "A": "cyberfarm:advanced_frame"
   },
   "pattern": [
     "IOI",
-    "OCO",
+    "OAO",
     "IOI"
   ],
   "result": {

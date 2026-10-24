@@ -14,7 +14,8 @@ item_ids:
 # Mech Modules
 
 A mech has four mounts, one module each. Modules are fitted in a [Mech Hangar](mech_hangar.md)'s
-console while the mech is parked on the pad.
+console while the mech is parked on the pad: the hangar's gantry arm carries each one to its mount.
+Every module is built around an Advanced Frame.
 
 Their parts stay stowed while the mech stands empty. **When you climb in**, the jet's wings and
 the armour come out; the drill and the blade come out when you switch them on, and go back when

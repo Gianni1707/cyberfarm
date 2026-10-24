@@ -42,6 +42,8 @@
     "cyberfarm:mech_hangar",
     "cyberfarm:hangar_frame",
     "cyberfarm:hangar_pad",
+    "cyberfarm:crystallizer",
+    "cyberfarm:crystallizer_port",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore",
     "cyberfarm:nether_sulfur_ore"

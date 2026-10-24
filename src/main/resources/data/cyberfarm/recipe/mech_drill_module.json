@@ -3,12 +3,13 @@
   "category": "misc",
   "key": {
     "D": "minecraft:diamond",
+    "A": "cyberfarm:advanced_frame",
     "I": "minecraft:iron_block",
     "C": "cyberfarm:drone_core"
   },
   "pattern": [
     " D ",
-    "DID",
+    "DAD",
     "ICI"
   ],
   "result": {

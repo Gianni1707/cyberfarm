@@ -329,7 +329,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
     }
 
     /** The side of a cylinder around the axis, the texture going once around it. */
-    private static void side(PoseStack.Pose pose, VertexConsumer buffer, float r, float y0, float y1, int color, int light) {
+    static void side(PoseStack.Pose pose, VertexConsumer buffer, float r, float y0, float y1, int color, int light) {
         for (int i = 0; i < SEGMENTS; i++) {
             float a0 = angle(i);
             float a1 = angle(i + 1);
@@ -344,7 +344,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
     }
 
     /** A flat ring (a disc when {@code inner} is 0) at height {@code y}, facing up (1) or down (-1). */
-    private static void ring(PoseStack.Pose pose, VertexConsumer buffer, float inner, float outer, float y, int up, int color, int light) {
+    static void ring(PoseStack.Pose pose, VertexConsumer buffer, float inner, float outer, float y, int up, int color, int light) {
         for (int i = 0; i < SEGMENTS; i++) {
             float a0 = angle(i);
             float a1 = angle(i + 1);
@@ -356,7 +356,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
         }
     }
 
-    private static void box(PoseStack.Pose pose, VertexConsumer buffer, float x0, float y0, float z0, float x1, float y1, float z1, int color, int light) {
+    static void box(PoseStack.Pose pose, VertexConsumer buffer, float x0, float y0, float z0, float x1, float y1, float z1, int color, int light) {
         float[][] faces = {
                 {x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0, 0, 1, 0},
                 {x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1, 0, -1, 0},
@@ -373,7 +373,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
         }
     }
 
-    private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float u, float v, int color, int light,
+    static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float u, float v, int color, int light,
             float nx, float ny, float nz) {
         buffer.addVertex(pose, x, y, z).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
                 .setNormal(pose, nx, ny, nz);

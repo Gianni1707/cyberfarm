@@ -127,7 +127,7 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
         }
     }
 
-    private static void polyhedron(PoseStack.Pose pose, VertexConsumer buffer, float size, int color) {
+    static void polyhedron(PoseStack.Pose pose, VertexConsumer buffer, float size, int color) {
         float[][] uv = {{0.0F, 0.5F}, {0.5F, 0.0F}, {1.0F, 0.5F}, {0.5F, 1.0F}};
         for (float[][] face : FACES) {
             float[] normal = face[4];
@@ -140,13 +140,17 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
         }
     }
 
+    static void beam(PoseStack.Pose pose, VertexConsumer buffer, Vec3 from, Vec3 to, int color) {
+        beam(pose, buffer, from, to, color, BEAM_WIDTH);
+    }
+
     /** Two crossed strips from {@code from} to {@code to}, each drawn both ways so it shows from any side. */
-    private static void beam(PoseStack.Pose pose, VertexConsumer buffer, Vec3 from, Vec3 to, int color) {
+    static void beam(PoseStack.Pose pose, VertexConsumer buffer, Vec3 from, Vec3 to, int color, float width) {
         Vec3 along = to.subtract(from).normalize();
         Vec3 across = along.cross(new Vec3(0.0, 1.0, 0.0));
         across = across.lengthSqr() < 1.0E-4 ? new Vec3(1.0, 0.0, 0.0) : across.normalize();
         Vec3 up = along.cross(across).normalize();
-        for (Vec3 side : new Vec3[] {across.scale(BEAM_WIDTH), up.scale(BEAM_WIDTH)}) {
+        for (Vec3 side : new Vec3[] {across.scale(width), up.scale(width)}) {
             Vec3[] corners = {from.subtract(side), from.add(side), to.add(side), to.subtract(side)};
             float[][] uv = {{0.0F, 1.0F}, {1.0F, 1.0F}, {1.0F, 0.0F}, {0.0F, 0.0F}};
             for (int pass = 0; pass < 2; pass++) {

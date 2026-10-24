@@ -20,7 +20,8 @@ single block.
 - **Sneak + right-click** to pick the structure: the [Fission Reactor](fission_reactor.md) and the
   [Steam Turbine](steam_turbine.md) in all three sizes, the
   [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
-  [Resonance Core](resonance_core.md) and the [Mech Hangar](mech_hangar.md).
+  [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
+  [Crystallizer](mech_core.md) chamber.
 - While you hold it, the projection **follows the block you look at**: the structure **stands on**
   the face you aim at, the controller on the side towards you, facing you, and the rest stretches
   away from you.

@@ -2,6 +2,7 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.AcidSynthesizerMenu;
+import com.cyberfarm.menu.CrystallizerMenu;
 import com.cyberfarm.menu.SteamEngineMenu;
 import com.cyberfarm.menu.MechHangarMenu;
 import com.cyberfarm.menu.BioDigesterMenu;
@@ -59,6 +60,9 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<WasteReprocessorMenu>> WASTE_REPROCESSOR = MENUS.register("waste_reprocessor",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new WasteReprocessorMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<CrystallizerMenu>> CRYSTALLIZER = MENUS.register("crystallizer",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new CrystallizerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ResonanceCoreMenu>> RESONANCE_CORE = MENUS.register("resonance_core",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ResonanceCoreMenu(id, inventory)));

@@ -2,6 +2,7 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.AcidSynthesizerBlock;
+import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
@@ -144,6 +145,12 @@ public class ModBlocks {
             CyberFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
             CyberFrameBlock::new, p -> machine(p).noOcclusion());
+    // Crystallizer: grows the Fusion Crystal at the heart of a mech's core
+    public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = BLOCKS.registerBlock("crystallizer",
+            CrystallizerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
+    /** Takes the place of any Cyber Frame of the chamber: acid, power and items in, the crystal out. Stays visible when formed. */
+    public static final DeferredBlock<CyberFrameBlock> CRYSTALLIZER_PORT = BLOCKS.registerBlock("crystallizer_port",
+            CyberFrameBlock::new, ModBlocks::chamberPart);
     // Mech Hangar: the console at a corner, frame pillars and beams, the charging pad
     public static final DeferredBlock<MechHangarBlock> MECH_HANGAR = BLOCKS.registerBlock("mech_hangar",
             MechHangarBlock::new, ModBlocks::machine);

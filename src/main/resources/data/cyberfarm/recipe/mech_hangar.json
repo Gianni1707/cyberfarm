@@ -6,7 +6,7 @@
     "G": "minecraft:glass_pane",
     "C": "minecraft:copper_ingot",
     "D": "cyberfarm:drone_core",
-    "F": "cyberfarm:cyber_frame"
+    "F": "cyberfarm:advanced_frame"
   },
   "pattern": [
     "IGI",

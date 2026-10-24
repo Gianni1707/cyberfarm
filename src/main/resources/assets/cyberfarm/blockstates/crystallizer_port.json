@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "formed=false": {
+      "model": "cyberfarm:block/crystallizer_port"
+    },
+    "formed=true": {
+      "model": "cyberfarm:block/crystallizer_port_hidden"
+    }
+  }
+}

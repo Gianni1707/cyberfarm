@@ -152,7 +152,7 @@ public final class ProjectionRenderer {
         if (block == ModBlocks.METHANE_EXTRACTOR.get() || block == ModBlocks.RESONANCE_CORE.get() || block == ModBlocks.STABILIZER_PYLON.get()) {
             return BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "textures/block/" + path + "_side.png");
         }
-        if (block == ModBlocks.MECH_HANGAR.get()) {
+        if (block == ModBlocks.MECH_HANGAR.get() || block == ModBlocks.CRYSTALLIZER.get()) {
             return BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "textures/block/" + path + "_front.png");
         }
         Identifier key = BuiltInRegistries.BLOCK.getKey(block);

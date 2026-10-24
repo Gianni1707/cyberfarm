@@ -58,5 +58,6 @@ the [Drone Dock](drone_dock.md) and [Using Drones](drones.md).
 
 ### [Mech](mech.md)
 A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump and punch, with
-the cockpit display showing its energy and integrity. The [Mech Hangar](mech_hangar.md) charges and
+the cockpit display showing its energy and integrity. End game: it is built around a
+[Mech Core](mech_core.md) grown from reactor waste. The [Mech Hangar](mech_hangar.md) charges and
 repairs it and fits its [modules](mech_modules.md).

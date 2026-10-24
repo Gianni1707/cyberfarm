@@ -7,6 +7,7 @@ navigation:
 item_ids:
   - cyberfarm:waste_reprocessor
   - cyberfarm:vitrified_waste
+  - cyberfarm:isotope_shard
 ---
 
 # Waste Reprocessor
@@ -14,7 +15,8 @@ item_ids:
 <BlockImage id="cyberfarm:waste_reprocessor" scale="4" float="left" />
 
 Makes nuclear waste safe. Each **Depleted Fuel Rod** takes 10 seconds and **40 FE/t** and becomes
-a block of **Vitrified Waste**; one time in three it also recovers an **Uranium Ingot**.
+a block of **Vitrified Waste**; one time in three it also recovers an **Uranium Ingot**, and one
+time in four an **Isotope Shard**, the seed of the [Mech Core](mech_core.md)'s crystal.
 
 <br clear="all" />
 
@@ -22,6 +24,7 @@ a block of **Vitrified Waste**; one time in three it also recovers an **Uranium 
   <ItemIcon id="depleted_fuel_rod" />
   <ItemIcon id="vitrified_waste" />
   <ItemIcon id="uranium_ingot" />
+  <ItemIcon id="isotope_shard" />
 </ItemGrid>
 
 - Waste waiting inside the Reprocessor is **shielded**: it does not contaminate.
