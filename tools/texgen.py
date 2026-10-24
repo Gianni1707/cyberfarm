@@ -1737,6 +1737,274 @@ def plain_white():
     return c
 
 
+# --------------------------------------------------------------------------- mech
+
+MECH_WHITE = "#e9edf0"
+MECH_SEAM = "#c3cad1"
+MECH_RED = "#1f8fd0"  # accent: the mod's blue
+MECH_RED_DARK = "#0e5f99"
+MECH_DARK = "#2b3036"
+MECH_BLACK = "#16191d"
+
+
+def _mech_box(c, u, v, w, h, d, color=MECH_WHITE, seam=MECH_SEAM, seed=0):
+    """A box of the mech: one colour with a seam around every face big enough to show one."""
+    faces = paint_box(c, u, v, w, h, d, color, seed=seed)
+    for x0, y0, x1, y1 in faces.values():
+        if x1 - x0 >= 3 and y1 - y0 >= 3:
+            c.frame(x0, y0, x1, y1, seam)
+    return faces
+
+
+def mech_frame_icon():
+    """The folded mech as an item: a small white and blue figure with a cyan visor."""
+    rows = [
+        "................",
+        ".......RR.......",
+        "......wCCw......",
+        "......wwww......",
+        "...RRwwccwwRR...",
+        "..RwwwwccwwwwR..",
+        "..ww.wwwwww.ww..",
+        "..ww.wRRRRw.ww..",
+        "..dd..wddw..dd..",
+        "......wwww......",
+        ".....ww..ww.....",
+        ".....ww..ww.....",
+        ".....ww..ww.....",
+        ".....RR..RR.....",
+        "....RRR..RRR....",
+        "................",
+    ]
+    mapping = {"w": MECH_WHITE, "R": MECH_RED, "d": MECH_DARK, "c": "c", "C": "C"}
+    c = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch in mapping:
+                c.set(x, y, mapping[ch])
+    # A dark outline so it reads on any background
+    outline = []
+    for y in range(16):
+        for x in range(16):
+            if c.pixels[y][x] is None and any(0 <= x + dx < 16 and 0 <= y + dy < 16 and c.pixels[y + dy][x + dx] is not None
+                                              for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
+                outline.append((x, y))
+    for x, y in outline:
+        c.set(x, y, "K")
+    return c
+
+
+def mech_texture():
+    """The mech's skin, 128x128 in the box layout of MechModel: white armour, blue trim, dark joints and bay, cyan lights."""
+    c = Canvas(128, 128)
+    # The pilot's bay: white outside, dark inside with a few lights
+    back_wall = _mech_box(c, 0, 92, 16, 22, 3, seed=1)
+    x0, y0, x1, y1 = back_wall["front"]
+    c.rect(x0, y0, x1, y1, MECH_BLACK)
+    for y in range(y0 + 3, y1 - 2, 4):
+        c.set(x0 + 2, y, "c")
+        c.set(x1 - 2, y, "c")
+    tx0, ty0, tx1, ty1 = back_wall["top"]
+    c.rect(tx0, ty0, tx1, ty1, MECH_RED)
+    c.rect(*back_wall["back"], MECH_DARK)
+    side_wall = _mech_box(c, 38, 92, 2, 22, 7, seed=2)
+    c.rect(*side_wall["left"], MECH_BLACK)
+    x0, y0, x1, y1 = side_wall["right"]
+    c.rect(x0, y0 + 9, x1, y0 + 10, MECH_RED)
+    floor = _mech_box(c, 56, 92, 12, 2, 7, seed=3)
+    c.rect(*floor["top"], MECH_DARK)
+    x0, y0, x1, y1 = floor["front"]
+    c.rect(x0 + 3, y0, x1 - 3, y1, MECH_RED)
+    roof = _mech_box(c, 18, 74, 12, 1, 7, seed=4)
+    c.rect(*roof["bottom"], MECH_BLACK)
+    # Harness: a dark spine with lights, a shoulder bar
+    spine = paint_box(c, 92, 102, 2, 14, 1, MECH_DARK, seed=5)
+    x0, y0, x1, y1 = spine["front"]
+    for y in range(y0 + 1, y1, 3):
+        c.set(x0, y, "c")
+    paint_box(c, 98, 102, 8, 1, 1, MECH_DARK, seed=6)
+    # Petals: white outside with a blue edge and a light slit, dark inside
+    upper = _mech_box(c, 56, 102, 8, 11, 1, seed=7)
+    x0, y0, x1, y1 = upper["front"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, MECH_RED)
+    for i in range(5):
+        c.set(x0 + 1 + i, y0 + 4 + i, MECH_RED)
+    c.rect(x1 - 2, y0 + 3, x1 - 2, y1 - 3, "c")
+    c.rect(*upper["back"], MECH_DARK)
+    lower = _mech_box(c, 74, 102, 8, 9, 1, seed=8)
+    x0, y0, x1, y1 = lower["front"]
+    for i in range(4):
+        c.rect(x1 - 1 - i, y1 - 1 - 2 * i, x1 - 1, y1 - 2 * i, MECH_RED)
+    c.rect(*lower["back"], MECH_DARK)
+    # Head 8x8x8: dark face behind the visor plate with two lit eyes, a blue crest and chin, ear vents;
+    # the plate itself carries the visor slit
+    head = _mech_box(c, 92, 0, 8, 8, 8, seed=9)
+    x0, y0, x1, y1 = head["front"]
+    c.rect(x0, y0, x1, y1 - 2, MECH_BLACK)
+    c.rect(x0 + 1, y0 + 3, x0 + 2, y0 + 3, "c")
+    c.rect(x1 - 2, y0 + 3, x1 - 1, y0 + 3, "c")
+    c.rect(x0 + 2, y1 - 1, x1 - 2, y1, MECH_RED)
+    tx0, ty0, tx1, ty1 = head["top"]
+    c.rect(tx0 + 3, ty0, tx1 - 3, ty1, MECH_RED)
+    for side in ("right", "left"):
+        x0, y0, x1, y1 = head[side]
+        c.rect(x0 + 2, y0 + 3, x1 - 2, y0 + 5, MECH_DARK)
+        c.rect(x0 + 3, y0 + 4, x1 - 3, y0 + 4, "b")
+    visor = paint_box(c, 98, 106, 8, 5, 1, MECH_WHITE, seed=10)
+    x0, y0, x1, y1 = visor["front"]
+    c.rect(x0, y0 + 2, x1, y0 + 2, "C")
+    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 3, "c")
+    c.rect(x0 + 3, y0, x1 - 3, y0, MECH_RED)
+    c.rect(*visor["back"], MECH_DARK)
+    paint_box(c, 124, 0, 1, 5, 1, MECH_RED, seed=11)                      # V fins
+    # Back unit 12x10x4: dark, two glowing thruster slots
+    back = _mech_box(c, 34, 22, 12, 10, 4, MECH_DARK, MECH_BLACK, seed=12)
+    x0, y0, x1, y1 = back["back"]
+    c.rect(x0 + 2, y0 + 2, x0 + 3, y1 - 2, "c")
+    c.rect(x1 - 3, y0 + 2, x1 - 2, y1 - 2, "c")
+    # Shoulder pads 7x7x9: white with a blue lower edge
+    pad = _mech_box(c, 66, 22, 7, 7, 9, seed=13)
+    side_rows(c, pad, [MECH_WHITE] * 5 + [MECH_RED, MECH_RED_DARK])
+    # Arms: dark upper arm, white forearm with a blue cuff, dark hand
+    _mech_box(c, 84, 40, 4, 10, 4, MECH_DARK, MECH_BLACK, seed=14)
+    forearm = _mech_box(c, 98, 22, 5, 10, 5, seed=15)
+    side_rows(c, forearm, [MECH_WHITE] * 8 + [MECH_RED, MECH_RED])
+    paint_box(c, 100, 40, 4, 4, 4, MECH_DARK, seed=16)
+    # Legs: white thigh, white shin with a blue band and a light, blue knee pad, blue-capped foot
+    _mech_box(c, 60, 40, 6, 11, 6, seed=17)
+    shin = _mech_box(c, 0, 40, 7, 13, 7, seed=18)
+    side_rows(c, shin, [MECH_WHITE] * 10 + [MECH_RED, MECH_RED, MECH_RED_DARK])
+    x0, y0, x1, y1 = shin["front"]
+    c.rect(x0 + 3, y0 + 3, x0 + 3, y0 + 5, "c")
+    paint_box(c, 100, 48, 5, 4, 2, MECH_RED, seed=19)
+    foot = _mech_box(c, 28, 40, 6, 4, 10, seed=20)
+    tx0, ty0, tx1, ty1 = foot["top"]
+    c.rect(tx0, ty0, tx1, ty0 + 4, MECH_RED)
+    c.rect(*foot["front"], MECH_RED)
+    # Module parts. Jet: dark wing segments with a blue leading edge and cyan lines, glowing nozzles
+    for u, v, w, d in ((18, 82, 8, 4), (18, 87, 8, 3), (42, 82, 6, 2)):
+        wing = paint_box(c, u, v, w, 1, d, MECH_DARK, top=MECH_DARK, bottom=MECH_DARK, seed=40 + u)
+        x0, y0, x1, y1 = wing["top"]
+        c.rect(x0, y0, x1, y0, MECH_RED)
+        c.rect(x0 + 1, y0 + 1, x1, y0 + 1, "c")
+        x0, y0, x1, y1 = wing["bottom"]
+        c.rect(x0, y0, x1, y0, MECH_RED)
+    nozzle = paint_box(c, 0, 74, 3, 3, 3, MECH_DARK, top=MECH_DARK, bottom="c", seed=44)
+    side_rows(c, nozzle, [MECH_SEAM, MECH_DARK, "b"])
+    # Drill: a dark collar, steel bit with spiral grooves, a lit tip
+    collar = _mech_box(c, 0, 62, 6, 3, 6, MECH_DARK, MECH_BLACK, seed=45)
+    side_rows(c, collar, [MECH_RED, MECH_DARK, MECH_DARK])
+    for u, v, w, h in ((24, 62, 4, 4), (40, 62, 3, 3)):
+        bit = paint_box(c, u, v, w, h, w, "l", seed=46 + u)
+        for name in ("right", "front", "left", "back"):
+            x0, y0, x1, y1 = bit[name]
+            for i in range(y1 - y0 + 1):
+                c.set(x0 + (i % (x1 - x0 + 1)), y0 + i, "m")
+    paint_box(c, 40, 68, 2, 3, 2, "c", seed=48)
+    # Blade: a dark hilt, the blade itself all light
+    paint_box(c, 0, 80, 3, 2, 3, MECH_DARK, top=MECH_RED, seed=49)
+    blade = paint_box(c, 112, 67, 1, 14, 3, "c", seed=50)
+    for name in ("right", "left"):
+        x0, y0, x1, y1 = blade[name]
+        c.rect(x0 + 1, y0, x0 + 1, y1, "C")
+    # Armour: white plates with blue trim
+    shoulder = _mech_box(c, 56, 57, 9, 3, 11, seed=51)
+    side_rows(c, shoulder, [MECH_WHITE, MECH_RED, MECH_RED_DARK])
+    tx0, ty0, tx1, ty1 = shoulder["top"]
+    c.rect(tx0 + 3, ty0 + 1, tx1 - 3, ty1 - 1, MECH_RED)
+    chest = _mech_box(c, 96, 57, 14, 9, 1, seed=52)
+    x0, y0, x1, y1 = chest["front"]
+    for i in range(5):
+        c.set(x0 + 2 + i, y0 + 2 + i, MECH_RED)
+        c.set(x1 - 2 - i, y0 + 2 + i, MECH_RED)
+    c.rect(x0 + 6, y0 + 1, x1 - 6, y0 + 2, "c")
+    thigh = _mech_box(c, 96, 67, 7, 6, 1, seed=53)
+    x0, y0, x1, y1 = thigh["front"]
+    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 4, MECH_RED)
+    return c
+
+# --------------------------------------------------------------------------- mech hangar
+
+def hangar_frame(formed):
+    """A hangar pillar: white plating, blue and white hazard stripes; formed, cyan lines light up."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, MECH_WHITE, noise=3, seed=70)
+    c.frame(1, 1, 14, 14, MECH_SEAM)
+    for y in range(2, 14):
+        for x in range(2, 14):
+            if y in (2, 3, 12, 13):
+                c.set(x, y, MECH_RED if (x + y) // 2 % 2 else MECH_WHITE)
+    c.rect(6, 5, 9, 10, MECH_DARK)
+    if formed:
+        c.rect(7, 5, 8, 10, "c")
+        for x, y in ((2, 7), (13, 7), (2, 8), (13, 8)):
+            c.set(x, y, "c")
+    else:
+        c.rect(7, 6, 8, 9, "b")
+    return c
+
+
+def hangar_pad(formed):
+    """The charging pad's top, like the rack: a white plate with a blue rim and ring; formed, the ring glows."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=71)
+    c.frame(0, 0, 15, 15, MECH_RED)
+    c.frame(1, 1, 14, 14, MECH_SEAM)
+    c.disc(7.5, 7.5, 5.8, "c" if formed else MECH_RED, r_inner=4.6)
+    c.disc(7.5, 7.5, 2.2, "C" if formed else MECH_SEAM)
+    for x, y in ((7, 2), (8, 2), (7, 13), (8, 13), (2, 7), (2, 8), (13, 7), (13, 8)):
+        c.set(x, y, "c" if formed else MECH_DARK)
+    return c
+
+
+def hangar_pad_side():
+    """The pad's sides, like the rails: white with a blue band and a light line."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=74)
+    c.frame(0, 0, 15, 15, MECH_SEAM)
+    c.rect(0, 9, 15, 11, MECH_RED)
+    c.rect(2, 10, 13, 10, "c")
+    c.rect(0, 15, 15, 15, MECH_DARK)
+    return c
+
+def mech_hangar_front(lit):
+    """The console: a screen showing the mech's outline and two status lights."""
+    c = panel(72)
+    c.rect(2, 2, 13, 10, "K")
+    c.rect(3, 3, 12, 9, "s")
+    outline = "c" if lit else "b"
+    c.rect(7, 3, 8, 4, outline)
+    c.frame(6, 5, 9, 7, outline)
+    c.rect(5, 5, 5, 7, outline)
+    c.rect(10, 5, 10, 7, outline)
+    c.rect(6, 8, 6, 9, outline)
+    c.rect(9, 8, 9, 9, outline)
+    c.rect(3, 12, 5, 13, "g" if lit else "D")
+    c.rect(10, 12, 12, 13, "c" if lit else "D")
+    return c
+
+
+def mech_module_icon(kind):
+    """A module: a white casing with a blue edge and the module's sign."""
+    c = Canvas()
+    c.rect(2, 3, 13, 13, "k")
+    c.rect(3, 4, 12, 12, MECH_WHITE, noise=4, seed=73)
+    c.rect(3, 12, 12, 12, MECH_RED)
+    c.rect(3, 4, 12, 4, MECH_SEAM)
+    sign = {
+        "jet": [(5, 9), (6, 8), (7, 7), (8, 7), (9, 8), (10, 9), (7, 9), (8, 9), (7, 10), (8, 10)],
+        "drill": [(7, 5), (8, 5), (6, 6), (9, 6), (7, 7), (8, 7), (6, 8), (9, 8), (7, 9), (8, 9), (7, 10), (8, 10)],
+        "blade": [(10, 5), (9, 6), (8, 7), (7, 8), (6, 9), (5, 10), (9, 5), (8, 6), (7, 7), (6, 8)],
+        "armor": [(5, 6), (6, 6), (9, 6), (10, 6), (5, 7), (10, 7), (5, 8), (10, 8), (6, 9), (9, 9), (7, 10), (8, 10), (7, 6), (8, 6)],
+    }[kind]
+    for x, y in sign:
+        c.set(x, y, "c")
+    c.set(2, 3, None)
+    c.set(13, 3, None)
+    return c
+
+
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
@@ -1857,6 +2125,19 @@ def build_all():
     # Higher frame tiers reuse the basic frame with their own accent colors
     for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"})):
         textures[name] = from_ascii(recolor(ITEM_ASCII["item/basic_frame"], mapping))
+    mech = mech_texture()
+    textures["entity/mech"] = mech
+    textures["entity/mech_glow"] = mech.glow_mask()
+    textures["item/mech_frame"] = mech_frame_icon()
+    textures["block/hangar_frame"] = hangar_frame(False)
+    textures["block/hangar_frame_formed"] = hangar_frame(True)
+    textures["block/hangar_pad"] = hangar_pad(False)
+    textures["block/hangar_pad_formed"] = hangar_pad(True)
+    textures["block/hangar_pad_side"] = hangar_pad_side()
+    textures["block/mech_hangar_front"] = mech_hangar_front(False)
+    textures["block/mech_hangar_front_on"] = mech_hangar_front(True)
+    for kind in ("jet", "drill", "blade", "armor"):
+        textures[f"item/mech_{kind}_module"] = mech_module_icon(kind)
     drone = drone_texture()
     textures["entity/drone"] = drone
     textures["entity/drone_glow"] = drone.glow_mask()

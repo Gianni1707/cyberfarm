@@ -39,6 +39,9 @@
     "cyberfarm:steam_engine",
     "cyberfarm:steam_engine_cylinder",
     "cyberfarm:steam_engine_dynamo",
+    "cyberfarm:mech_hangar",
+    "cyberfarm:hangar_frame",
+    "cyberfarm:hangar_pad",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore",
     "cyberfarm:nether_sulfur_ore"

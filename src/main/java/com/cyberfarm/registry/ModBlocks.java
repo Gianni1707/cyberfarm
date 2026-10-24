@@ -10,6 +10,7 @@ import com.cyberfarm.block.CoolantMixerBlock;
 import com.cyberfarm.block.ContainmentGlassBlock;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.IntakeGateBlock;
+import com.cyberfarm.block.MechHangarBlock;
 import com.cyberfarm.block.DroneAssemblerBlock;
 import com.cyberfarm.block.DroneDockBlock;
 import com.cyberfarm.block.EnergyConduitBlock;
@@ -143,6 +144,13 @@ public class ModBlocks {
             CyberFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
             CyberFrameBlock::new, p -> machine(p).noOcclusion());
+    // Mech Hangar: the console at a corner, frame pillars and beams, the charging pad
+    public static final DeferredBlock<MechHangarBlock> MECH_HANGAR = BLOCKS.registerBlock("mech_hangar",
+            MechHangarBlock::new, ModBlocks::machine);
+    public static final DeferredBlock<CyberFrameBlock> HANGAR_FRAME = BLOCKS.registerBlock("hangar_frame",
+            CyberFrameBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 5 : 0));
+    public static final DeferredBlock<CyberFrameBlock> HANGAR_PAD = BLOCKS.registerBlock("hangar_pad",
+            CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::machine);
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",

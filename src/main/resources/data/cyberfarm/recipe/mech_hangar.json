@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_block",
+    "G": "minecraft:glass_pane",
+    "C": "minecraft:copper_ingot",
+    "D": "cyberfarm:drone_core",
+    "F": "cyberfarm:cyber_frame"
+  },
+  "pattern": [
+    "IGI",
+    "CDC",
+    "IFI"
+  ],
+  "result": {
+    "id": "cyberfarm:mech_hangar"
+  }
+}

@@ -2,6 +2,7 @@ package com.cyberfarm.item;
 
 import java.util.function.Consumer;
 
+import com.cyberfarm.block.MechHangarBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ResonanceCoreBlock;
@@ -75,7 +76,8 @@ public class ProjectorItem extends Item {
 
     private static boolean isController(BlockState state) {
         return state.getBlock() instanceof ReactorControllerBlock || state.getBlock() instanceof TurbineControllerBlock
-                || state.getBlock() instanceof MethaneExtractorBlock || state.getBlock() instanceof ResonanceCoreBlock;
+                || state.getBlock() instanceof MethaneExtractorBlock || state.getBlock() instanceof ResonanceCoreBlock
+                || state.getBlock() instanceof MechHangarBlock;
     }
 
     @Override

@@ -152,6 +152,9 @@ public final class ProjectionRenderer {
         if (block == ModBlocks.METHANE_EXTRACTOR.get() || block == ModBlocks.RESONANCE_CORE.get() || block == ModBlocks.STABILIZER_PYLON.get()) {
             return BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "textures/block/" + path + "_side.png");
         }
+        if (block == ModBlocks.MECH_HANGAR.get()) {
+            return BuiltInRegistries.BLOCK.getKey(block).withPath(path -> "textures/block/" + path + "_front.png");
+        }
         Identifier key = BuiltInRegistries.BLOCK.getKey(block);
         if (key.getNamespace().equals("cyberfarm") || key.getNamespace().equals("minecraft") && key.getPath().endsWith("glass")) {
             return key.withPath(path -> "textures/block/" + path + ".png");

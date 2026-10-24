@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_block",
+    "O": "minecraft:obsidian",
+    "C": "cyberfarm:drone_core"
+  },
+  "pattern": [
+    "IOI",
+    "OCO",
+    "IOI"
+  ],
+  "result": {
+    "id": "cyberfarm:mech_armor_module"
+  }
+}
