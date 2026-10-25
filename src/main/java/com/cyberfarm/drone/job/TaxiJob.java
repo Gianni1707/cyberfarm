@@ -3,17 +3,19 @@ package com.cyberfarm.drone.job;
 import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.drone.DroneFlight;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Taxi Module: carries the player hanging from the drone's hook to the dock's taxi destination.
@@ -21,8 +23,6 @@ import net.minecraft.world.phys.Vec3;
  */
 public class TaxiJob extends DroneJob {
     public static final int TRIP_COST = 50;
-    /** Blocks of air kept between the terrain and the passenger's feet while cruising. */
-    private static final int CLEARANCE = 4;
     private static final int SLOW_FALL_TICKS = 200;
 
     private enum Phase { CLIMB, CRUISE, DESCEND }
@@ -44,19 +44,25 @@ public class TaxiJob extends DroneJob {
     }
 
     /**
-     * Flight altitude between two points: above the highest terrain sampled along the straight
-     * line, plus room for a hanging passenger, and never below either end.
+     * A player clicked the waiting drone: checks there is a destination and enough energy for the
+     * trip there and back. Returns the job, or null after telling the player why not.
      */
-    public static double cruiseAltitude(ServerLevel level, Vec3 from, Vec3 to) {
-        double highest = Math.max(from.y, to.y);
-        double length = from.subtract(to).horizontalDistance();
-        int samples = Math.max(1, (int) (length / 4));
-        for (int i = 0; i <= samples; i++) {
-            Vec3 point = from.lerp(to, (double) i / samples);
-            int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(point.x), (int) Math.floor(point.z));
-            highest = Math.max(highest, ground + CLEARANCE + DroneEntity.PASSENGER_DROP);
+    public static @Nullable TaxiJob plan(DroneEntity drone, ServerLevel level, Player player, @Nullable BlockPos destination,
+            int energy, int flightCost) {
+        if (destination == null) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.no_destination"));
+            return null;
         }
-        return Math.min(highest, level.getMaxY() - 2);
+        Vec3 dropOff = dropOffPoint(destination);
+        double cruiseY = DroneFlight.cruiseAltitude(level, drone.position(), dropOff);
+        // Up, across and down, there and back again
+        double route = (cruiseY - drone.getY()) + dropOff.subtract(drone.position()).horizontalDistance() + (cruiseY - dropOff.y);
+        int needed = (int) Math.ceil(2 * route / (drone.cruiseSpeed() * 0.9) * flightCost) + TRIP_COST;
+        if (energy < needed) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)));
+            return null;
+        }
+        return new TaxiJob(destination, player.getUUID(), cruiseY);
     }
 
     @Override

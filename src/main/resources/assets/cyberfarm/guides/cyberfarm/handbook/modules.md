@@ -13,6 +13,9 @@ item_ids:
   - cyberfarm:taxi_module
   - cyberfarm:rancher_module
   - cyberfarm:fertilizer_module
+  - cyberfarm:builder_module
+  - cyberfarm:fisher_module
+  - cyberfarm:breeder_module
 ---
 
 # Function Modules
@@ -38,6 +41,9 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Taxi Module | +2 FE/t | 50 FE per trip |
 | Rancher Module | +1 FE/t | 15 FE per shearing or milking |
 | Fertilizer Module | +1 FE/t | 10 FE per use |
+| Builder Module | +2 FE/t | 20 FE per block |
+| Fisher Module | +1 FE/t | 10 FE per catch |
+| Breeder Module | +1 FE/t | 15 FE per animal fed |
 
 ## Harvester Module
 
@@ -189,3 +195,66 @@ other mods (everything in the `c:fertilizers` tag).
 - Pairs well with a Harvester and a Planter on the same field.
 
 <RecipeFor id="fertilizer_module" />
+
+## Builder Module
+
+<ItemImage id="cyberfarm:builder_module" scale="2" float="left" />
+
+The drone **builds a multiblock or a schematic** for you: the one you lock with the
+[Multiblock Projector](multiblock_projector.md) and link to its dock. It fits **only a
+[Mini Drone Frame](drone_frames.md)**: building is work for a swarm of Mini Drones on a
+[Builder Swarm Dock](drone_dock.md).
+
+<br clear="all" />
+
+- Pick the structure in the projector's list, **sneak + right-click** a block to lock it there,
+  then **right-click the dock** with the projector to link it. Right-click the dock with an
+  unlocked projector to unlink it.
+- Put the blocks in the dock: the drone takes one kind per trip, carrying them in its claw.
+- It builds **one layer at a time**, from the bottom: a layer is finished before the next one
+  starts. If the dock runs out of a block the current layer needs, the drone **waits** for it.
+  The dock's **Build** tab shows the layer and the blocks it still needs; the ones the dock has
+  none of are marked in red.
+- It flies above the layer it is building, straight from block to block, and goes over the
+  whole structure when something is in the way, so it never gets walled in.
+- The dock **takes in only the blocks the build still needs**. Point a Transport drone's route
+  from your storage to the dock and it brings exactly what is missing, and nothing else.
+- It **never breaks blocks**: the dock screen counts the blocks in the way, and you clear them.
+- Doors and beds go in whole. Blocks it cannot place (water, a lantern hanging under a ceiling)
+  are listed in the Build tab at the end, for you to place by hand. Chests go in empty.
+- Several Builder drones on different docks can share one build: link the same projection to
+  each dock and they split the blocks between them.
+
+<RecipeFor id="builder_module" />
+
+## Fisher Module
+
+<ItemImage id="cyberfarm:fisher_module" scale="2" float="left" />
+
+The drone **fishes** in the water of its work area and brings the catch to the dock.
+
+<br clear="all" />
+
+- It needs **open water**: a water source block with air above it, inside the work area.
+- It hovers over the water, waits for a bite like a fishing rod and pulls out what a rod would,
+  with the same odds: mostly fish, some junk and now and then **treasure** (enchanted books, saddles,
+  name tags...).
+- It flies home when its cargo is full.
+
+<RecipeFor id="fisher_module" />
+
+## Breeder Module
+
+<ItemImage id="cyberfarm:breeder_module" scale="2" float="left" />
+
+The drone **feeds the animals** of its work area so they breed, with their food from the dock.
+
+<br clear="all" />
+
+- Put the food in the dock: wheat for cows and sheep, seeds for chickens, carrots for pigs, or
+  whatever a modded animal eats. The drone takes the right food for each animal.
+- It feeds an animal only when **two of a kind** are ready, so none of the food is wasted.
+- It stops once there are **16 of a kind** in the work area, babies included, so the farm does not
+  grow without end. Pairs well with a Rancher, or a Harvester for the crops they eat.
+
+<RecipeFor id="breeder_module" />

@@ -2,6 +2,8 @@ package com.cyberfarm.item;
 
 import java.util.function.Consumer;
 
+import com.cyberfarm.registry.ModItems;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -62,6 +64,9 @@ public class DroneFrameItem extends Item {
         builder.accept(Component.translatable("tooltip.cyberfarm.capacity", String.format("%,d", energyCapacity)).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.speed", speedPercent).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.frame.slots", moduleSlots).withStyle(ChatFormatting.GRAY));
+        if (this == ModItems.MINI_FRAME.get()) {
+            builder.accept(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.DARK_AQUA));
+        }
         builder.accept(Component.translatable("tooltip.cyberfarm.frame.addons", addonLimit).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.cost.flight_base", flightCost).withStyle(ChatFormatting.GOLD));
     }

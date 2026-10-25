@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "X": "minecraft:fishing_rod",
+    "C": "minecraft:copper_ingot",
+    "D": "cyberfarm:drone_core"
+  },
+  "pattern": [
+    "IXI",
+    "CDC"
+  ],
+  "result": {
+    "id": "cyberfarm:fisher_module"
+  }
+}

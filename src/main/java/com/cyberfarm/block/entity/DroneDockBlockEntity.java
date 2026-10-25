@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 
@@ -7,26 +9,36 @@ import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.ItemFilterMenu;
+import com.cyberfarm.multiblock.BuildPlan;
+import com.cyberfarm.multiblock.Structure;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -41,8 +53,13 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public static final int DEFAULT_RADIUS = 4;
     /** Ticks without news from the drone before the dock shows it as offline. */
     private static final int STATUS_TIMEOUT = 100;
+    /** How many kinds of block the current layer misses the dock screen lists; slot 26 counts the others. */
+    public static final int BUILD_LIST = 10;
+    private static final int BUILD_LIST_DATA = 27;
+    /** Then how many drones are on the dock and how many fit. */
+    private static final int DRONES_DATA = BUILD_LIST_DATA + 3 * BUILD_LIST;
     /** Data slots after the energy ones; see {@link #getExtraData}. */
-    public static final int EXTRA_DATA = 21;
+    public static final int EXTRA_DATA = DRONES_DATA + 2;
 
     private @Nullable BoundingBox workArea;
     /** Next layer the Quarry Module digs; unset means the top of the work area. */
@@ -64,9 +81,40 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private int droneModules;
     private BlockPos dronePos = BlockPos.ZERO;
     private long lastStatusTick;
+    /** The structure its Builder drones build, linked with the Multiblock Projector. */
+    private @Nullable BuildPlan buildPlan;
+    /** The blocks the current layer misses, for the dock screen; worked out once per tick for all the data slots that show them. */
+    private List<Map.Entry<Item, Integer>> shownMissing = List.of();
+    private long shownMissingTick = -1;
+    /**
+     * What pipes, hoppers and Transport drones see: with a build linked only the blocks it still
+     * needs go in, so a Transport route from any storage brings exactly the missing materials.
+     */
+    private final ResourceHandler<ItemResource> externalItems = new DelegatingResourceHandler<>(() -> items) {
+        @Override
+        public boolean isValid(int index, ItemResource resource) {
+            return super.isValid(index, resource) && (resource.isEmpty() || wanted(resource.getItem()) > 0);
+        }
+
+        @Override
+        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            int wanted = Math.min(amount, wanted(resource.getItem()));
+            return wanted > 0 ? super.insert(index, resource, wanted, transaction) : 0;
+        }
+
+        @Override
+        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+            int wanted = Math.min(amount, wanted(resource.getItem()));
+            return wanted > 0 ? super.insert(resource, wanted, transaction) : 0;
+        }
+    };
 
     public DroneDockBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.DRONE_DOCK.get(), pos, state, CARGO_SLOTS, CAPACITY, MAX_INPUT, 0);
+        this(ModBlockEntities.DRONE_DOCK.get(), pos, state);
+    }
+
+    protected DroneDockBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state, CARGO_SLOTS, CAPACITY, MAX_INPUT, 0);
     }
 
     @Override
@@ -141,6 +189,49 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
                 Component.translatable("gui.cyberfarm.dock.filter_title")));
     }
 
+    public @Nullable BuildPlan getBuildPlan() {
+        return buildPlan;
+    }
+
+    /** Links the structure the Builder drones build; null unlinks it. */
+    public void setBuildPlan(@Nullable BuildPlan plan) {
+        buildPlan = plan;
+        setChanged();
+    }
+
+    public ResourceHandler<ItemResource> getExternalItems() {
+        return externalItems;
+    }
+
+    /** How many more of {@code item} the dock takes in from outside: what the build still misses, minus what is stored. */
+    private int wanted(Item item) {
+        if (buildPlan == null || level == null) {
+            return Integer.MAX_VALUE;
+        }
+        return Math.max(0, buildPlan.missing(level).getOrDefault(item, 0) - stored(item));
+    }
+
+    private int stored(Item item) {
+        int stored = 0;
+        for (int i = 0; i < items.size(); i++) {
+            if (items.getResource(i).is(item)) {
+                stored += items.getAmountAsInt(i);
+            }
+        }
+        return stored;
+    }
+
+    private List<Map.Entry<Item, Integer>> shownMissing() {
+        if (buildPlan == null || level == null) {
+            return List.of();
+        }
+        if (level.getGameTime() != shownMissingTick) {
+            shownMissingTick = level.getGameTime();
+            shownMissing = List.copyOf(buildPlan.missingInLayer(level).entrySet());
+        }
+        return shownMissing;
+    }
+
     public boolean hasLiveDrone(ServerLevel level) {
         return droneId != null && level.getEntity(droneId) instanceof DroneEntity drone && drone.isAlive();
     }
@@ -157,7 +248,17 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         }
     }
 
-    public void updateDroneStatus(long gameTime, int status, int energy, int capacity, int task, int modules, BlockPos pos) {
+    /** How many drones live on this dock, and how many fit. */
+    protected int droneCount() {
+        return droneId != null ? 1 : 0;
+    }
+
+    protected int maxDrones() {
+        return 1;
+    }
+
+    /** What {@code drone} reports every tick, for the screen. */
+    public void updateDroneStatus(UUID drone, long gameTime, int status, int energy, int capacity, int task, int modules, BlockPos pos) {
         droneStatus = status;
         droneEnergy = energy;
         droneCapacity = capacity;
@@ -222,6 +323,25 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     @Override
     protected int getExtraData(int id) {
+        if (id >= DRONES_DATA) {
+            return id == DRONES_DATA ? droneCount() : maxDrones();
+        }
+        if (id >= BUILD_LIST_DATA) {
+            // Three slots per listed block: its item id + 1 in two halves (0: none), then how many are missing,
+            // negative when the dock has none of it (shortcut: blocks a drone is carrying count as none)
+            int index = (id - BUILD_LIST_DATA) / 3;
+            List<Map.Entry<Item, Integer>> missing = shownMissing();
+            if (index >= Math.min(missing.size(), BUILD_LIST)) {
+                return 0;
+            }
+            Map.Entry<Item, Integer> entry = missing.get(index);
+            int item = BuiltInRegistries.ITEM.getId(entry.getKey()) + 1;
+            return switch ((id - BUILD_LIST_DATA) % 3) {
+                case 0 -> EnergyUtil.low(item);
+                case 1 -> EnergyUtil.high(item);
+                default -> Math.min(Short.MAX_VALUE, entry.getValue()) * (stored(entry.getKey()) > 0 ? 1 : -1);
+            };
+        }
         BoundingBox area = getWorkArea();
         return switch (id) {
             case 0 -> area.getXSpan();
@@ -245,6 +365,12 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             case 18 -> EnergyUtil.high(droneCapacity);
             case 19 -> paused ? 1 : 0;
             case 20 -> taxiDestination != null ? 1 : 0;
+            case 21 -> buildPlan != null ? 1 : 0;
+            case 22 -> buildPlan != null && level != null ? Math.min(Short.MAX_VALUE, buildPlan.remaining(level)) : 0;
+            case 23 -> buildPlan != null && level != null ? Math.min(Short.MAX_VALUE, buildPlan.obstacles(level)) : 0;
+            case 24 -> buildPlan != null && level != null ? buildPlan.layerNumber(level) : 0;
+            case 25 -> buildPlan != null ? buildPlan.layerCount() : 0;
+            case 26 -> Math.max(0, shownMissing().size() - BUILD_LIST);
             default -> 0;
         };
     }
@@ -264,6 +390,11 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("taxi_destination", BlockPos.CODEC, taxiDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
         output.putBoolean("paused", paused);
+        if (buildPlan != null) {
+            output.store("build", Identifier.CODEC, buildPlan.structure().id());
+            output.store("build_origin", BlockPos.CODEC, buildPlan.origin());
+            output.store("build_facing", Direction.CODEC, buildPlan.facing());
+        }
         filter.save(output.child("filter"));
     }
 
@@ -277,11 +408,15 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
         paused = input.getBooleanOr("paused", false);
+        Structure build = input.read("build", Identifier.CODEC).flatMap(Structure::byId).orElse(null);
+        BlockPos buildOrigin = input.read("build_origin", BlockPos.CODEC).orElse(null);
+        buildPlan = build != null && buildOrigin != null
+                ? new BuildPlan(build, buildOrigin, input.read("build_facing", Direction.CODEC).orElse(Direction.NORTH)) : null;
         filter.load(input.childOrEmpty("filter"));
     }
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new DroneDockMenu(containerId, inventory, items, data, ContainerLevelAccess.create(level, worldPosition));
+        return new DroneDockMenu(containerId, inventory, items, data, ContainerLevelAccess.create(level, worldPosition), getBlockState().getBlock());
     }
 }

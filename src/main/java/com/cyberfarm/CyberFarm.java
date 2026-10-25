@@ -15,7 +15,10 @@ import com.cyberfarm.entity.MechEvents;
 import com.cyberfarm.entity.MechExitPayload;
 import com.cyberfarm.entity.MechTogglePayload;
 import com.cyberfarm.item.FluidBucketItem;
+import com.cyberfarm.item.ProjectorSelectPayload;
 import com.cyberfarm.item.SurveyModePayload;
+import com.cyberfarm.multiblock.Schematics;
+import com.cyberfarm.multiblock.SchematicsPayload;
 import com.cyberfarm.radiation.Radiation;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
@@ -71,6 +74,8 @@ public class CyberFarm {
         NeoForge.EVENT_BUS.addListener(MechEvents::onHarvestCheck);
         NeoForge.EVENT_BUS.addListener(MechEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(Radiation::onLevelTick);
+        NeoForge.EVENT_BUS.addListener(Schematics::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -86,7 +91,9 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getExternalItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
@@ -160,7 +167,9 @@ public class CyberFarm {
 
     private static void registerPayloads(RegisterPayloadHandlersEvent event) {
         event.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
+                .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
-                .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle);
+                .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
+                .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle);
     }
 }

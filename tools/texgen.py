@@ -915,6 +915,20 @@ def dock_top():
     return c
 
 
+def swarm_dock_top():
+    """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=12)
+    c.rect(7, 2, 8, 13, "b")
+    c.rect(2, 7, 13, 8, "b")
+    for cx, cy in ((3.5, 3.5), (11.5, 3.5), (3.5, 11.5), (11.5, 11.5)):
+        c.disc(cx, cy, 2.7, "c", r_inner=1.7)
+        c.set(int(cx), int(cy), "C")
+    c.rect(7, 7, 8, 8, "c")
+    return c
+
+
 def dock_side():
     c = panel(10)
     c.rect(0, 10, 15, 10, "k")
@@ -1306,6 +1320,25 @@ ITEM_ASCII = {
         ".kkk........kkk.",
         "................",
     ],
+    # Mini Drone: the drone drawn smaller, with the Mini Frame's white arms
+    "item/mini_drone": [
+        "................",
+        "................",
+        "................",
+        "...kkk....kkk...",
+        "...kwk....kwk...",
+        "...kkkk..kkkk...",
+        ".....kwkkwk.....",
+        "......kCck......",
+        "......kcCk......",
+        ".....kwkkwk.....",
+        "...kkkk..kkkk...",
+        "...kwk....kwk...",
+        "...kkk....kkk...",
+        "................",
+        "................",
+        "................",
+    ],
     "item/survey_tool": [
         "................",
         ".....k..........",
@@ -1563,8 +1596,65 @@ ITEM_ASCII.update({
         ".......GG.......",
         "........G.......",
     ],
+    # Fisher Module: the drone's cap with a line down to a hook and a fish on it
+    "item/fisher_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        ".......kk.......",
+        ".......kw.......",
+        ".......kw.......",
+        ".......kw.......",
+        "....kk.kw.......",
+        "...kbck.kw......",
+        "..kbcCCk.kw.....",
+        "...kbck..kwk....",
+        "....kk...kk.....",
+        "................",
+    ],
+    # Breeder Module: a feed canister with a heart on it
+    "item/breeder_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        ".....kkkkkk.....",
+        "....kwwwwwlk....",
+        "....kwrwwrlk....",
+        "....krrrrrrk....",
+        "....krrrrrrk....",
+        "....kwrrrrlk....",
+        "....kwwrrwlk....",
+        "....kwwwwwlk....",
+        "....kkkkkkkk....",
+        "......kyyk......",
+        ".......kk.......",
+        ".......yy.......",
+        "........y.......",
+    ],
+    # Builder Module: the claw holds a block over the cyan ghost of where it goes
+    "item/builder_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        "...km.kkkk.mk...",
+        "...kmkkwwkkmk...",
+        "...kl.kwlk.lk...",
+        "...kl.kkkk.lk...",
+        "...kk......kk...",
+        "................",
+        "......cbcb......",
+        "......b..c......",
+        "......c..b......",
+        "......bcbc......",
+    ],
 })
-for _name, _rows in list(ITEM_ASCII.items())[-2:]:
+for _name, _rows in list(ITEM_ASCII.items())[-5:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 
@@ -2095,6 +2185,7 @@ def build_all():
         "block/drone_assembler_top": assembler_top(),
         "block/drone_assembler_side": assembler_side(),
         "block/drone_dock_top": dock_top(),
+        "block/swarm_dock_top": swarm_dock_top(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
         **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},
@@ -2207,7 +2298,9 @@ def build_all():
     for name, icon in ADDON_ICONS.items():
         textures[name] = addon_chip(icon)
     # Higher frame tiers reuse the basic frame with their own accent colors
-    for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"})):
+    # The Mini Frame is drawn white, like the mod's clean panels
+    for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"}),
+                          ("item/mini_frame", {"l": "w", "m": "l", "c": "C"})):
         textures[name] = from_ascii(recolor(ITEM_ASCII["item/basic_frame"], mapping))
     mech = mech_texture()
     textures["entity/mech"] = mech

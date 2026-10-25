@@ -7,6 +7,7 @@ navigation:
 item_ids:
   - cyberfarm:drone_dock
   - cyberfarm:survey_tool
+  - cyberfarm:swarm_dock
 ---
 
 # Drone Dock
@@ -118,3 +119,21 @@ clear it. The buttons switch between **whitelist** and **blacklist**, match item
   route, no taxi destination.
 
 <RecipeFor id="survey_tool" />
+
+## Builder Swarm Dock
+
+<BlockImage id="cyberfarm:swarm_dock" scale="3" float="left" />
+
+A dock for up to **four Mini Drones** (drones built on a [Mini Drone Frame](drone_frames.md)). They
+share its work area, transport route, build and stock, and each parks on its own corner of the pad.
+Four [Builder](modules.md) Mini Drones raise a structure together: link it to the swarm dock with
+the Multiblock Projector, and they split its blocks between them.
+
+<br clear="all" />
+
+- Right-click the swarm dock with a Mini Drone to deploy it; it takes up to four. Bigger drones
+  do not fit, and Mini Drones do not fit an ordinary Drone Dock.
+- The screen shows the swarm as one: the busiest drone's job, their batteries added up, and how
+  many drones are on the dock.
+
+<RecipeFor id="swarm_dock" />

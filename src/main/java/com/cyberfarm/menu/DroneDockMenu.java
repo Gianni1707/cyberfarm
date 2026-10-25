@@ -1,5 +1,8 @@
 package com.cyberfarm.menu;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.drone.DroneTask;
@@ -8,11 +11,14 @@ import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jspecify.annotations.Nullable;
 
@@ -27,11 +33,13 @@ public class DroneDockMenu extends MachineMenu {
 
     public DroneDockMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(DroneDockBlockEntity.CARGO_SLOTS),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL,
+                ModBlocks.DRONE_DOCK.get());
     }
 
-    public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
-        super(ModMenus.DRONE_DOCK.get(), containerId, data, access, ModBlocks.DRONE_DOCK.get());
+    /** {@code block} is the dock's own block, a Drone Dock or a Builder Swarm Dock, so the menu stays open on either. */
+    public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access, Block block) {
+        super(ModMenus.DRONE_DOCK.get(), containerId, data, access, block);
         this.access = access;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -115,6 +123,59 @@ public class DroneDockMenu extends MachineMenu {
 
     public boolean hasTaxiDestination() {
         return extra(20) != 0;
+    }
+
+    public boolean hasBuild() {
+        return extra(21) != 0;
+    }
+
+    public int getBuildRemaining() {
+        return extra(22);
+    }
+
+    public int getBuildObstacles() {
+        return extra(23);
+    }
+
+    /** The layer being built, counting from 1 at the bottom; 0 when nothing is left to place. */
+    public int getBuildLayer() {
+        return extra(24);
+    }
+
+    public int getBuildLayers() {
+        return extra(25);
+    }
+
+    /** {@code inDock}: whether the dock has any of it to give the drones. */
+    public record MissingBlock(Item item, int count, boolean inDock) {}
+
+    /**
+     * The blocks the current layer still needs (up to {@link DroneDockBlockEntity#BUILD_LIST} kinds);
+     * with no layer left for the drones, the blocks left for the player.
+     */
+    public List<MissingBlock> getBuildMissing() {
+        List<MissingBlock> missing = new ArrayList<>();
+        for (int i = 0; i < DroneDockBlockEntity.BUILD_LIST; i++) {
+            int item = combined(27 + 3 * i) - 1;
+            if (item >= 0) {
+                int count = extra(29 + 3 * i);
+                missing.add(new MissingBlock(BuiltInRegistries.ITEM.byId(item), Math.abs(count), count > 0));
+            }
+        }
+        return missing;
+    }
+
+    public int getDroneCount() {
+        return extra(57);
+    }
+
+    public int getMaxDrones() {
+        return extra(58);
+    }
+
+    /** Kinds of block the list leaves out. */
+    public int getBuildMissingMore() {
+        return extra(26);
     }
 
     /** An int sent as two 16-bit halves, starting at {@code index}. */

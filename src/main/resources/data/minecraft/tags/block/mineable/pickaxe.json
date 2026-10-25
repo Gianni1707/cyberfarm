@@ -12,6 +12,7 @@
     "cyberfarm:combustion_generator",
     "cyberfarm:drone_assembler",
     "cyberfarm:drone_dock",
+    "cyberfarm:swarm_dock",
     "cyberfarm:bio_digester",
     "cyberfarm:gas_turbine",
     "cyberfarm:methane_extractor",

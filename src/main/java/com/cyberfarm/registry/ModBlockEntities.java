@@ -12,6 +12,7 @@ import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
@@ -95,4 +96,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
             () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SwarmDockBlockEntity>> SWARM_DOCK = BLOCK_ENTITIES.register("swarm_dock",
+            () -> new BlockEntityType<>(SwarmDockBlockEntity::new, Set.of(ModBlocks.SWARM_DOCK.get())));
 }

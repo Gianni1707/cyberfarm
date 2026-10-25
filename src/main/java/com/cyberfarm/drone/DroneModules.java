@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneModuleItem;
+import com.cyberfarm.registry.ModItems;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,6 +49,11 @@ public record DroneModules(List<Item> parts) {
                 .filter(DroneModuleItem.class::isInstance)
                 .map(item -> ((DroneModuleItem) item).getTask())
                 .toList();
+    }
+
+    /** Built on a Mini Frame: half size, and welcome on a Builder Swarm Dock. */
+    public boolean isMini() {
+        return frame().filter(frame -> frame == ModItems.MINI_FRAME.get()).isPresent();
     }
 
     public int taskMask() {

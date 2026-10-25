@@ -17,19 +17,25 @@ single block.
 
 <br clear="all" />
 
-- **Sneak + right-click** to pick the structure: the [Fission Reactor](fission_reactor.md) and the
+- **Right-click** to open the list of structures and see the blocks each one takes: the [Fission Reactor](fission_reactor.md) and the
   [Steam Turbine](steam_turbine.md) in all three sizes, the
   [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
   [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
   [Crystallizer](mech_core.md) chamber.
+- Below the multiblocks the list has **schematics**, marked in cyan: ready-made buildings such as
+  a Watch Tower, a Storage Shed (a small depot) and a Drone Pad. Any data pack can add more: save a building with a
+  **Structure Block** and put the file in `data/<namespace>/structure/schematic/`. Its north side is
+  its front, which turns towards you. Schematics up to 32 blocks a side are shown.
 - While you hold it, the projection **follows the block you look at**: the structure **stands on**
   the face you aim at, the controller on the side towards you, facing you, and the rest stretches
   away from you.
-- **Right-click a block** to pin it there. Right-click a controller you already placed and the
-  projection lines up with it.
-- **Right-click the air** to unpin it.
+- **Sneak + right-click a block** to lock it there. Lock it on a controller you already placed and
+  the projection lines up with it.
+- **Sneak + right-click the air** to unlock it.
+- **Right-click a [Drone Dock](drone_dock.md)** with a locked projection and a drone with a
+  [Builder Module](modules.md) builds it for you.
 - In **creative** mode, right-clicking a block **builds** the structure right away (where it is
-  pinned, or where it is projected), with plain casings; swap in the ports you need.
+  locked, or where it is projected), with plain casings; swap in the ports you need.
 
 Blocks still to place glow softly; **red** blocks are wrong, or in the way of a space that must
 stay empty. Correct blocks are not drawn. Above the hotbar the projector counts what is left, and

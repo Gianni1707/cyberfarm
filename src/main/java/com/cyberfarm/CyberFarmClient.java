@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
 import com.cyberfarm.client.MechLoopSound;
@@ -77,6 +78,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
+import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import org.jspecify.annotations.Nullable;
@@ -90,6 +92,7 @@ public class CyberFarmClient {
         container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
 
         modEventBus.addListener(CyberFarmClient::registerScreens);
+        modEventBus.addListener((RegisterConditionalItemModelPropertyEvent event) -> event.register(CyberFarm.id("mini_drone"), MiniDroneProperty.MAP_CODEC));
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
