@@ -139,6 +139,8 @@ public class ModItems {
             p -> new DroneModuleItem(p, DroneTask.RANCH, 1));
     public static final DeferredItem<DroneModuleItem> FERTILIZER_MODULE = ITEMS.registerItem("fertilizer_module",
             p -> new DroneModuleItem(p, DroneTask.FERTILIZE, 1));
+    public static final DeferredItem<DroneModuleItem> BUILDER_MODULE = ITEMS.registerItem("builder_module",
+            p -> new DroneModuleItem(p, DroneTask.BUILD, 2));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",

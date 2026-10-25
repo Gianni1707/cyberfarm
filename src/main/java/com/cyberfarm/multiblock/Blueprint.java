@@ -1,16 +1,19 @@
 package com.cyberfarm.multiblock;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -36,6 +39,10 @@ public enum Blueprint {
      * {@code ok} whether what is there now is right.
      */
     public record Ghost(BlockPos pos, @Nullable Block show, Predicate<BlockState> ok) {}
+
+    /** Saved by name, so adding structures never shifts the saved ones. */
+    public static final Codec<Blueprint> CODEC = Codec.stringResolver(Blueprint::name,
+            name -> Arrays.stream(values()).filter(blueprint -> blueprint.name().equals(name)).findFirst().orElse(null));
 
     private final String name;
     private final @Nullable TowerSize tower;
@@ -79,10 +86,6 @@ public enum Blueprint {
         }
         String size = tower != null ? tower.name() : turbine != null ? turbine.name() : null;
         return size != null ? "gui.cyberfarm.reactor.size." + size.toLowerCase() : null;
-    }
-
-    public Blueprint next() {
-        return values()[(ordinal() + 1) % values().length];
     }
 
     public static Blueprint byOrdinal(int ordinal) {
@@ -266,6 +269,12 @@ public enum Blueprint {
             }
         }
         return ghosts;
+    }
+
+    /** The state a ghost's block is placed with: controllers and consoles face {@code facing}, like the structure. */
+    public static BlockState placedState(Block show, Direction facing) {
+        BlockState state = show.defaultBlockState();
+        return state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing) : state;
     }
 
     private static Ghost frame(BlockPos pos, Block frame) {

@@ -20,7 +20,8 @@ A drone is built in the **Drone Assembler** from three kinds of parts:
 - one to three **function modules**, which decide its job:
   **Harvester** (crops), **Quarry** (digs a whole area down to bedrock), **Transport** (chest to chest),
   **Planter**, **Logger** (fells whole trees and replants), **Rancher** (shears and milks animals),
-  **Fertilizer** (any fertilizer, modded ones too) and **Taxi** (carries you, hanging from its hook);
+  **Fertilizer** (any fertilizer, modded ones too), **Taxi** (carries you, hanging from its hook) and
+  **Builder** (builds the multiblock you lock with the Multiblock Projector);
 - **addons**: Speed, Stack, Battery, Fortune and Silk Touch.
 
 Every drone lives on a **Drone Dock**, which charges it and stores what it brings back. The

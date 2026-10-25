@@ -8,13 +8,17 @@ import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ResonanceCoreBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
+import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.client.screen.ProjectorScreen;
 import com.cyberfarm.multiblock.Blueprint;
+import com.cyberfarm.multiblock.BuildPlan;
 import com.cyberfarm.registry.ModDataComponents;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -33,9 +37,11 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Multiblock Projector, after Immersive Engineering's: shows the chosen structure as ghost blocks.
- * While held it follows the block you look at; right-click a block to pin it there (on a controller,
- * it lines up with it), right-click the air to unpin, sneak + right-click to pick the next structure.
- * The structure stands on the block you aim at. In creative, right-clicking builds it instantly.
+ * While held it follows the block you look at. Right-click opens the list of structures; sneak +
+ * right-click a block locks the projection there (on a controller it lines up with it), sneak +
+ * right-click the air unlocks it. Right-click a Drone Dock with a locked projection: its Builder
+ * drones build it. The structure stands on the block you aim at. In creative, right-clicking a block
+ * builds it instantly.
  */
 public class ProjectorItem extends Item {
     public ProjectorItem(Properties properties) {
@@ -81,33 +87,67 @@ public class ProjectorItem extends Item {
                 || state.getBlock() instanceof MechHangarBlock || state.getBlock() instanceof CrystallizerBlock;
     }
 
+    /** Right-click a Drone Dock (without sneaking): link the locked projection to it, or unlink with none locked. */
+    @Override
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        Player player = context.getPlayer();
+        if (player == null || player.isSecondaryUseActive()
+                || !(context.getLevel().getBlockEntity(context.getClickedPos()) instanceof DroneDockBlockEntity dock)) {
+            return InteractionResult.PASS;
+        }
+        if (!(context.getLevel() instanceof ServerLevel level)) {
+            return InteractionResult.SUCCESS;
+        }
+        Placement pinned = pinned(stack);
+        if (pinned == null) {
+            boolean linked = dock.getBuildPlan() != null;
+            dock.setBuildPlan(null);
+            player.sendOverlayMessage(Component.translatable(linked ? "message.cyberfarm.projector.unlinked" : "message.cyberfarm.projector.lock_first"));
+            return InteractionResult.SUCCESS;
+        }
+        if (!pinned.controller().closerThan(dock.getBlockPos(), SurveyToolItem.MAX_DOCK_DISTANCE)) {
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.survey.too_far", SurveyToolItem.MAX_DOCK_DISTANCE));
+            return InteractionResult.FAIL;
+        }
+        BuildPlan plan = new BuildPlan(blueprint(stack), pinned.controller(), pinned.facing());
+        dock.setBuildPlan(plan);
+        player.playSound(SoundEvents.BEACON_ACTIVATE, 0.4F, 1.6F);
+        player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.linked", name(plan.blueprint()),
+                plan.remaining(level), plan.obstacles(level)));
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player == null || player.isSecondaryUseActive()) {
+        if (player == null) {
             return InteractionResult.PASS;
         }
         Level level = context.getLevel();
         ItemStack stack = context.getItemInHand();
         Blueprint blueprint = blueprint(stack);
-        Placement pinned = pinned(stack);
-        Placement placement = pinned != null && player.isCreative() ? pinned
-                : placement(level, context.getClickedPos(), context.getClickedFace(), player, blueprint);
-        if (player.isCreative()) {
+        if (player.isSecondaryUseActive()) {
+            Placement placement = placement(level, context.getClickedPos(), context.getClickedFace(), player, blueprint);
+            stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), placement.controller());
+            stack.set(ModDataComponents.PROJECTOR_FACING.get(), placement.facing().get2DDataValue());
+            player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.6F);
             if (!level.isClientSide()) {
-                build(level, blueprint, placement);
-                player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.built", name(blueprint)));
+                player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.pinned"));
             }
-            stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
-            player.playSound(SoundEvents.ANVIL_USE, 0.4F, 1.4F);
             return InteractionResult.SUCCESS;
         }
-        stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), placement.controller());
-        stack.set(ModDataComponents.PROJECTOR_FACING.get(), placement.facing().get2DDataValue());
-        player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.6F);
-        if (!level.isClientSide()) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.pinned"));
+        if (!player.isCreative()) {
+            // Goes on to use(): the list of structures
+            return InteractionResult.PASS;
         }
+        Placement pinned = pinned(stack);
+        Placement placement = pinned != null ? pinned : placement(level, context.getClickedPos(), context.getClickedFace(), player, blueprint);
+        if (!level.isClientSide()) {
+            build(level, blueprint, placement);
+            player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.built", name(blueprint)));
+        }
+        stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
+        player.playSound(SoundEvents.ANVIL_USE, 0.4F, 1.4F);
         return InteractionResult.SUCCESS;
     }
 
@@ -115,21 +155,23 @@ public class ProjectorItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isSecondaryUseActive()) {
-            Blueprint next = blueprint(stack).next();
-            stack.set(ModDataComponents.PROJECTOR_BLUEPRINT.get(), next.ordinal());
-            stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
-            player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 0.4F, 1.4F);
-            if (!level.isClientSide()) {
-                player.sendOverlayMessage(name(next));
+            if (!stack.has(ModDataComponents.PROJECTOR_ANCHOR.get())) {
+                return InteractionResult.PASS;
             }
-            return InteractionResult.SUCCESS;
-        }
-        if (stack.has(ModDataComponents.PROJECTOR_ANCHOR.get())) {
             stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
             player.playSound(SoundEvents.BEACON_DEACTIVATE, 0.4F, 1.6F);
             return InteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        if (level.isClientSide()) {
+            ProjectorScreen.open(hand, blueprint(stack));
+        }
+        return InteractionResult.SUCCESS;
+    }
+
+    /** The structure picked in the list: the projection follows the player's aim again. */
+    public static void select(ItemStack stack, Blueprint blueprint) {
+        stack.set(ModDataComponents.PROJECTOR_BLUEPRINT.get(), blueprint.ordinal());
+        stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
     }
 
     /** Creative only: places every block of the structure and clears the spaces that must be empty. */
@@ -138,10 +180,7 @@ public class ProjectorItem extends Item {
             if (ghost.ok().test(level.getBlockState(ghost.pos()))) {
                 continue;
             }
-            BlockState state = ghost.show() != null ? ghost.show().defaultBlockState() : Blocks.AIR.defaultBlockState();
-            if (state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
-                state = state.setValue(BlockStateProperties.HORIZONTAL_FACING, placement.facing());
-            }
+            BlockState state = ghost.show() != null ? Blueprint.placedState(ghost.show(), placement.facing()) : Blocks.AIR.defaultBlockState();
             level.setBlock(ghost.pos(), state, Block.UPDATE_ALL);
         }
     }

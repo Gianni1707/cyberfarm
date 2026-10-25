@@ -1563,8 +1563,27 @@ ITEM_ASCII.update({
         ".......GG.......",
         "........G.......",
     ],
+    # Builder Module: the claw holds a block over the cyan ghost of where it goes
+    "item/builder_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        "...km.kkkk.mk...",
+        "...kmkkwwkkmk...",
+        "...kl.kwlk.lk...",
+        "...kl.kkkk.lk...",
+        "...kk......kk...",
+        "................",
+        "......cbcb......",
+        "......b..c......",
+        "......c..b......",
+        "......bcbc......",
+    ],
 })
-for _name, _rows in list(ITEM_ASCII.items())[-2:]:
+for _name, _rows in list(ITEM_ASCII.items())[-3:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 

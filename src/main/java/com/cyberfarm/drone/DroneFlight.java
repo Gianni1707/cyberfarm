@@ -115,8 +115,9 @@ public final class DroneFlight {
      */
     public boolean flyHome(Vec3 home) {
         double horizontal = home.subtract(drone.position()).horizontalDistance();
-        if (horizontal > LANDING_RADIUS) {
-            Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
+        Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
+        // Close to the dock but walled in (inside a structure a Builder is raising): climb out first
+        if (horizontal > LANDING_RADIUS || isWalledIn(approach)) {
             if ((!Double.isNaN(returnAltitude) || horizontal > LONG_TRIP || isWalledIn(approach)) && drone.level() instanceof ServerLevel level) {
                 // Long way home (e.g. after a taxi trip), or out of a quarry pit whose rim blocks
                 // the straight line: climb over the terrain first, then cruise

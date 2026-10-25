@@ -1,6 +1,7 @@
 package com.cyberfarm.drone;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.drone.job.BuildJob;
 import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.FertilizeJob;
 import com.cyberfarm.drone.job.HarvestJob;
@@ -24,7 +25,8 @@ public enum DroneTask {
     /** Taxi trips start when a player right-clicks the waiting drone, never on their own. */
     TAXI((drone, level, dock) -> null),
     RANCH(RancherJob::find),
-    FERTILIZE(FertilizeJob::find);
+    FERTILIZE(FertilizeJob::find),
+    BUILD(BuildJob::find);
 
     @FunctionalInterface
     public interface JobFinder {

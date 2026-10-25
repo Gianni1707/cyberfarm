@@ -193,7 +193,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         harvester.visible = state.has(DroneTask.HARVEST);
         drill.visible = state.has(DroneTask.QUARRY);
         drill.yRot = state.ageInTicks * 0.8F;
-        claw.visible = state.has(DroneTask.TRANSPORT);
+        // The Builder carries its blocks in the same claw
+        claw.visible = state.has(DroneTask.TRANSPORT) || state.has(DroneTask.BUILD);
         seedTank.visible = state.has(DroneTask.PLANT);
         saw.visible = state.has(DroneTask.LOG);
         saw.xRot = state.ageInTicks * 1.2F;

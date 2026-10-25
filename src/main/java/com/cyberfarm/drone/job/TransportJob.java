@@ -1,5 +1,8 @@
 package com.cyberfarm.drone.job;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.entity.DroneEntity;
 
@@ -62,13 +65,39 @@ public class TransportJob extends DroneJob {
     }
 
     private Result pickUp(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
+        ResourceHandler<ItemResource> from = inventory(level, source);
+        Set<ItemResource> wanted = accepted(from, inventory(level, destination), dock);
         // 16 items per trip, plus one stack per Stack Addon
-        int moved = ResourceHandlerUtil.moveStacking(inventory(level, source), drone.cargo().handler(), resource -> dock.filter().test(resource.toStack()), drone.transportCapacity(), null);
+        int moved = wanted.isEmpty() ? 0 : ResourceHandlerUtil.moveStacking(from, drone.cargo().handler(), wanted::contains, drone.transportCapacity(), null);
         if (moved == 0) {
             return Result.DONE;
         }
         phase = Phase.DROPOFF;
         return Result.CONTINUE;
+    }
+
+    /**
+     * The items in the source that the filter lets through and the destination takes in now, so the
+     * drone never loads what it would have to bring back (a Builder's dock wants only the missing blocks).
+     */
+    private static Set<ItemResource> accepted(@Nullable ResourceHandler<ItemResource> from, @Nullable ResourceHandler<ItemResource> to,
+            DroneDockBlockEntity dock) {
+        Set<ItemResource> accepted = new HashSet<>();
+        if (from == null || to == null) {
+            return accepted;
+        }
+        for (int i = 0; i < from.size(); i++) {
+            ItemResource resource = from.getResource(i);
+            if (resource.isEmpty() || accepted.contains(resource) || !dock.filter().test(resource.toStack())) {
+                continue;
+            }
+            try (Transaction simulation = Transaction.openRoot()) {
+                if (to.insert(resource, 1, simulation) > 0) {
+                    accepted.add(resource);
+                }
+            }
+        }
+        return accepted;
     }
 
     private Result dropOff(DroneEntity drone, ServerLevel level) {

@@ -13,6 +13,7 @@ item_ids:
   - cyberfarm:taxi_module
   - cyberfarm:rancher_module
   - cyberfarm:fertilizer_module
+  - cyberfarm:builder_module
 ---
 
 # Function Modules
@@ -38,6 +39,7 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Taxi Module | +2 FE/t | 50 FE per trip |
 | Rancher Module | +1 FE/t | 15 FE per shearing or milking |
 | Fertilizer Module | +1 FE/t | 10 FE per use |
+| Builder Module | +2 FE/t | 20 FE per block |
 
 ## Harvester Module
 
@@ -189,3 +191,29 @@ other mods (everything in the `c:fertilizers` tag).
 - Pairs well with a Harvester and a Planter on the same field.
 
 <RecipeFor id="fertilizer_module" />
+
+## Builder Module
+
+<ItemImage id="cyberfarm:builder_module" scale="2" float="left" />
+
+The drone **builds a multiblock** for you: the one you lock with the
+[Multiblock Projector](multiblock_projector.md) and link to its dock.
+
+<br clear="all" />
+
+- Pick the structure in the projector's list, **sneak + right-click** a block to lock it there,
+  then **right-click the dock** with the projector to link it. Right-click the dock with an
+  unlocked projector to unlink it.
+- Put the blocks in the dock: the drone takes one kind per trip, carrying them in its claw.
+- It builds **one layer at a time**, from the bottom: a layer is finished before the next one
+  starts. If the dock runs out of a block the current layer needs, the drone **waits** for it.
+  The dock's **Build** tab shows the layer and the blocks it still needs.
+- It flies above the layer it is building, straight from block to block, and goes over the
+  whole structure when something is in the way, so it never gets walled in.
+- The dock **takes in only the blocks the build still needs**. Point a Transport drone's route
+  from your storage to the dock and it brings exactly what is missing, and nothing else.
+- It **never breaks blocks**: the dock screen counts the blocks in the way, and you clear them.
+- Several Builder drones on different docks can share one build: link the same projection to
+  each dock and they split the blocks between them.
+
+<RecipeFor id="builder_module" />
