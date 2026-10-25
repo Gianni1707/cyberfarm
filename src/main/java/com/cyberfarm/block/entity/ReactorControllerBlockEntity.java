@@ -108,6 +108,11 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     // ---------------------------------------------------------------- tick
 
     @Override
+    protected boolean isWorking() {
+        return getBlockState().getValue(ReactorControllerBlock.LIT);
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         state = checkStructure(level, pos, state);
         if (state == null) {

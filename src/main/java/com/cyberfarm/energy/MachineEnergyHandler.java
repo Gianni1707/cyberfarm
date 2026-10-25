@@ -8,6 +8,9 @@ import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
  */
 public class MachineEnergyHandler extends SimpleEnergyHandler {
     private final Runnable onChanged;
+    /** What the machine itself made and used since {@link #takeGenerated}/{@link #takeUsed} last read it. */
+    private int generated;
+    private int used;
 
     public MachineEnergyHandler(int capacity, int maxInsert, int maxExtract, Runnable onChanged) {
         super(capacity, maxInsert, maxExtract);
@@ -50,6 +53,7 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
         int added = Math.min(amount, capacity - energy);
         if (added > 0) {
             set(energy + added);
+            generated += added;
         }
         return added;
     }
@@ -60,6 +64,7 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
             return false;
         }
         set(energy - amount);
+        used += amount;
         return true;
     }
 
@@ -68,7 +73,20 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
         int drained = Math.min(max, energy);
         if (drained > 0) {
             set(energy - drained);
+            used += drained;
         }
         return drained;
+    }
+
+    public int takeGenerated() {
+        int value = generated;
+        generated = 0;
+        return value;
+    }
+
+    public int takeUsed() {
+        int value = used;
+        used = 0;
+        return value;
     }
 }

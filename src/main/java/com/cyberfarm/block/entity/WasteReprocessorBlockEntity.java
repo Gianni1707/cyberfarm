@@ -45,6 +45,11 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean canRun = Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
                 && hasRoomFor(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get()) && hasRoomFor(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());

@@ -180,6 +180,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) ASSEMBLY_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (!assembling) {
             return;

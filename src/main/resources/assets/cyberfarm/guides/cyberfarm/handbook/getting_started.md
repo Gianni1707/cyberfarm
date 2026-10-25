@@ -34,6 +34,10 @@ Place a <ItemLink id="combustion_generator" /> and feed it coal or any other fur
 It pushes FE into every machine touching it, or into <ItemLink id="energy_conduit" />s that carry
 it further.
 
+**Look at any CyberFarm machine** to see a small panel beside the crosshair: whether it is
+working, the FE it makes or uses each tick, how full its energy buffer is and how far its batch
+has got. Working machines also show it: sparks, smoke, frost or bubbles depending on the machine.
+
 ## 3. Build the drone
 
 Place a <ItemLink id="drone_assembler" /> next to the generator. Put a

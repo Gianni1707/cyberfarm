@@ -53,6 +53,16 @@ public class BioDigesterBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
+    protected boolean isWorking() {
+        return progress > 0;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         ItemStack input = getStack(0);
         int yield = biogasFor(input);

@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.MachineOverlay;
 import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
@@ -99,6 +100,7 @@ public class CyberFarmClient {
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(MechClient::registerKeys);
         modEventBus.addListener(MechClient::registerHud);
+        modEventBus.addListener(MachineOverlay::register);
         NeoForge.EVENT_BUS.addListener(MechClient::tick);
         NeoForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
         NeoForge.EVENT_BUS.addListener(MechClient::hideHand);

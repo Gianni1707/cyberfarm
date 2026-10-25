@@ -140,6 +140,11 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (--checkCooldown <= 0) {
             checkCooldown = CHECK_INTERVAL;

@@ -324,6 +324,18 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
 - **Fasi**: 1) entità + modello base + entrata/uscita + comandi + energia + HUD base; 2) Hangar (ricarica, riparazione,
   slot moduli); 3) i quattro moduli con modelli, animazioni, abilità e pannelli HUD; 4) ricette, guida, bilanciamento.
 
+### Stato delle macchine
+- Ogni macchina (`MachineBlockEntity`) misura ogni secondo gli FE prodotti e usati: `MachineEnergyHandler` conta `generate`, `consume` e
+  `drain`. Ne ricava un `MachineStatus` (lavora sì/no, FE/t prodotti e usati, buffer, avanzamento del lotto o -1) e lo manda
+  (`MachineStatusPayload`) ai giocatori che hanno il chunk caricato, solo se è cambiato e comunque ogni 5 s. Chi lavora senza FE
+  (Bio-Digester, Methane Extractor, reattore) lo dice con `isWorking()`; le macchine a lotti danno `progress()`.
+- **Particelle ambientali**: ticker client in `MachineBlock.machineTicker` che chiama `ambient()` mentre la macchina lavora; di base
+  qualche scintilla elettrica sui lati, a tema dove serve (bolle sul Bio-Digester, brina e gocce sul Coolant Mixer, fumi verdi
+  sull'Acid Synthesizer, bagliore radioattivo e fumo sul Waste Reprocessor, scarico sulla Gas Turbine, schizzi sulla Water Pump).
+  Steam Engine, turbina, reattore, Methane Extractor e Combustion Generator tengono gli effetti che avevano già.
+- **Overlay**: guardando una macchina, pannello accanto al mirino (`MachineOverlay`, layer sopra il mirino) con nome, stato,
+  +FE/t prodotti, -FE/t usati, barra del buffer e avanzamento; nascosto in Meka e con l'interfaccia nascosta (F1).
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,

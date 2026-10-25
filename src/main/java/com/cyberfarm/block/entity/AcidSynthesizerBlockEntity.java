@@ -68,6 +68,11 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean canRun = getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
