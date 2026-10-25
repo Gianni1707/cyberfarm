@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.drone.DroneCargo;
 import com.cyberfarm.drone.DroneFlight;
 import com.cyberfarm.drone.DroneModules;
@@ -68,6 +69,10 @@ public class DroneEntity extends PathfinderMob {
 
     /** Height above the dock block where the drone parks: just over the 6px pad. */
     public static final double DOCK_HEIGHT = 0.4;
+    /** A Mini Drone is half the size of the others; four of them park on the corners of one pad. */
+    private static final double MINI_SCALE = 0.5;
+    /** Close enough to the middle that a Mini Drone (0.3 wide) clears the pad's corner beacons (3/16 in from each edge). */
+    private static final double CORNER_OFFSET = 0.15;
     /** A Taxi drone waits for passengers this high above its parking spot. */
     private static final double TAXI_WAIT_HEIGHT = 2.7;
     /**
@@ -142,6 +147,7 @@ public class DroneEntity extends PathfinderMob {
         this.energy = Math.min(energy, modules.energyCapacity());
         this.dockPos = dockPos.immutable();
         this.entityData.set(DATA_TASKS, modules.taskMask());
+        getAttribute(Attributes.SCALE).setBaseValue(modules.isMini() ? MINI_SCALE : 1.0);
     }
 
     @Override
@@ -414,7 +420,7 @@ public class DroneEntity extends PathfinderMob {
         float startup = startupTicks(0.0F);
         if (startup >= 0) {
             tickStartup((int) startup);
-            dock.updateDroneStatus(level.getGameTime(), getStatus(), energy, capacity(), 0, modules.taskMask(), blockPosition());
+            dock.updateDroneStatus(getUUID(), level.getGameTime(), getStatus(), energy, capacity(), 0, modules.taskMask(), blockPosition());
             return;
         }
         int status = getStatus();
@@ -431,12 +437,15 @@ public class DroneEntity extends PathfinderMob {
             case STATUS_RETURNING -> tickReturning();
             default -> tickDocked(level, dock);
         }
-        dock.updateDroneStatus(level.getGameTime(), getStatus(), energy, capacity(),
+        dock.updateDroneStatus(getUUID(), level.getGameTime(), getStatus(), energy, capacity(),
                 jobTask != null ? jobTask.ordinal() + 1 : 0, modules.taskMask(), blockPosition());
     }
 
+    /** Where it parks: the middle of the pad, or on a swarm dock the corner of the pad it was given. */
     private Vec3 dockHover() {
-        return new Vec3(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5);
+        Vec3 pad = new Vec3(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5);
+        int corner = level().getBlockEntity(dockPos) instanceof SwarmDockBlockEntity swarm ? swarm.parkingSpot(getUUID()) : -1;
+        return corner < 0 ? pad : pad.add((corner & 1) == 0 ? -CORNER_OFFSET : CORNER_OFFSET, 0.0, (corner & 2) == 0 ? -CORNER_OFFSET : CORNER_OFFSET);
     }
 
     private void tickDocked(ServerLevel level, DroneDockBlockEntity dock) {

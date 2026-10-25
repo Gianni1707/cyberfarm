@@ -17,10 +17,10 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 # Items drawn as flat sprites (textures/item/<name>.png)
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
-    "basic_frame", "advanced_frame", "elite_frame",
+    "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
-    "drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
+    "drone", "mini_drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
@@ -86,6 +86,8 @@ def dock_model():
         },
         "elements": elements,
     })
+    # The Builder Swarm Dock: the same pad with four landing rings on top
+    write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
 
 
 def energy_storage_models():
@@ -228,6 +230,7 @@ def blocks():
 
     dock_model()
     facing_blockstate("drone_dock")
+    facing_blockstate("swarm_dock")
 
     for pipe in PIPES:
         pipe_models(pipe)
@@ -275,7 +278,7 @@ def blocks():
     coolant_blocks()
     energy_storage_models()
 
-    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock",
+    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
@@ -521,6 +524,12 @@ def items():
     for name in FLAT_ITEMS:
         write(ASSETS / f"models/item/{name}.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/{name}"}})
         write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:item/{name}"}})
+    # One drone item: built on a Mini Drone Frame it shows the mini sprite
+    write(ASSETS / "items/drone.json", {"model": {
+        "type": "minecraft:condition", "property": f"{NS}:mini_drone",
+        "on_true": {"type": "minecraft:model", "model": f"{NS}:item/mini_drone"},
+        "on_false": {"type": "minecraft:model", "model": f"{NS}:item/drone"},
+    }})
     write(ASSETS / "models/item/mob_capsule.json", {"parent": "minecraft:item/generated", "textures": {"layer0": f"{NS}:item/mob_capsule"}})
     write(ASSETS / "items/mob_capsule.json", {"model": {
         "type": "minecraft:condition", "property": "minecraft:has_component", "component": f"{NS}:captured_mob",
@@ -554,6 +563,7 @@ def recipes():
     shaped("battery_cell", [" N ", "CRC", "CRC"], {"N": "minecraft:iron_nugget", "C": copper, "R": redstone})
 
     shaped("basic_frame", ["R R", " D ", "RBR"], {"R": rotor, "D": core, "B": cell})
+    shaped("mini_frame", ["R R", " D "], {"R": rotor, "D": core})
     shaped("advanced_frame", ["GBG", "DFD", "GBG"], {"G": gold, "B": cell, "D": core, "F": f"{NS}:basic_frame"})
     shaped("elite_frame", ["XBX", "EFE", "XBX"], {"X": "minecraft:diamond", "B": cell, "E": "minecraft:ender_eye", "F": f"{NS}:advanced_frame"})
 
@@ -580,6 +590,7 @@ def recipes():
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
+    shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
     shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)

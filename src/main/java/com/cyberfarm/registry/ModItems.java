@@ -40,6 +40,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> COMBUSTION_GENERATOR = ITEMS.registerSimpleBlockItem(ModBlocks.COMBUSTION_GENERATOR);
     public static final DeferredItem<BlockItem> DRONE_ASSEMBLER = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_ASSEMBLER);
     public static final DeferredItem<BlockItem> DRONE_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_DOCK);
+    public static final DeferredItem<BlockItem> SWARM_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.SWARM_DOCK);
     public static final DeferredItem<BlockItem> ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ADVANCED_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ELITE_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ENERGY_CONDUIT);
@@ -116,6 +117,9 @@ public class ModItems {
             p -> new DroneFrameItem(p, 2, 60_000, 130, 2, 8, 3));
     public static final DeferredItem<DroneFrameItem> ELITE_FRAME = ITEMS.registerItem("elite_frame",
             p -> new DroneFrameItem(p.rarity(Rarity.RARE), 3, 150_000, 160, 3, 16, 4));
+    /** Builds a Mini Drone: half size, small battery, one module; up to four share a Builder Swarm Dock. */
+    public static final DeferredItem<DroneFrameItem> MINI_FRAME = ITEMS.registerItem("mini_frame",
+            p -> new DroneFrameItem(p, 1, 10_000, 100, 1, 2, 1));
 
     // Energy storage: the core, the cells of its shell and its pylons
     public static final DeferredItem<BlockItem> RESONANCE_CORE = ITEMS.registerSimpleBlockItem(ModBlocks.RESONANCE_CORE);

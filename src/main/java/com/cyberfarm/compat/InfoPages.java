@@ -18,6 +18,8 @@ public final class InfoPages {
                 page(ModItems.COMBUSTION_GENERATOR.get()),
                 page(ModItems.DRONE_ASSEMBLER.get()),
                 page(ModItems.DRONE_DOCK.get()),
+                page(ModItems.SWARM_DOCK.get()),
+                page(ModItems.MINI_FRAME.get()),
                 page(ModItems.ENERGY_CONDUIT.get()),
                 page(ModItems.ADVANCED_ENERGY_CONDUIT.get()),
                 page(ModItems.ELITE_ENERGY_CONDUIT.get()),

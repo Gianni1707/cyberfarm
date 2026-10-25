@@ -282,6 +282,10 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
                 ItemStack stack = new ItemStack(missing.item());
                 graphics.item(stack, cellX, cellY);
                 graphics.itemDecorations(font, stack, cellX, cellY, missing.count() >= 1000 ? missing.count() / 1000 + "k" : String.valueOf(missing.count()));
+                if (!missing.inDock()) {
+                    // Not in the dock: the drones wait for it
+                    graphics.fill(cellX, cellY, cellX + 16, cellY + 16, 0x70FF3030);
+                }
             }
             if (menu.getBuildMissingMore() > 0 && !blocks.isEmpty()) {
                 graphics.text(font, Component.translatable("gui.cyberfarm.dock.build_more", menu.getBuildMissingMore()),
@@ -302,6 +306,9 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         lines.add(new Line(workText(status, docked), workColor(status, docked)));
         if (status == DroneEntity.STATUS_NONE) {
             return lines;
+        }
+        if (menu.getMaxDrones() > 1) {
+            lines.add(new Line(Component.translatable("gui.cyberfarm.dock.drones", menu.getDroneCount(), menu.getMaxDrones()), TEXT));
         }
         lines.add(new Line(Component.translatable("gui.cyberfarm.dock.modules"), TEXT_DIM));
         int modules = menu.getDroneModules();
@@ -356,8 +363,10 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         }
         if (!buildBlocks().isEmpty()) {
             // With no layer left the drones can build, what is left is for the player to place
-            lines.add(new Line(Component.translatable(menu.getBuildLayer() > 0 ? "gui.cyberfarm.dock.build_needs" : "gui.cyberfarm.dock.build_by_hand"),
-                    menu.getBuildLayer() > 0 ? ACCENT : WARM));
+            boolean waiting = buildBlocks().stream().anyMatch(missing -> !missing.inDock());
+            String key = menu.getBuildLayer() == 0 ? "gui.cyberfarm.dock.build_by_hand"
+                    : waiting ? "gui.cyberfarm.dock.build_bring" : "gui.cyberfarm.dock.build_needs";
+            lines.add(new Line(Component.translatable(key), menu.getBuildLayer() > 0 && !waiting ? ACCENT : WARM));
         }
         return lines;
     }

@@ -1,0 +1,6 @@
+{
+  "parent": "cyberfarm:block/drone_dock",
+  "textures": {
+    "top": "cyberfarm:block/swarm_dock_top"
+  }
+}

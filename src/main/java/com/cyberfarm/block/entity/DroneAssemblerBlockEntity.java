@@ -10,6 +10,7 @@ import java.util.function.IntFunction;
 
 import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneModules;
+import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
@@ -84,7 +85,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             if (stack.isEmpty()) {
                 continue;
             }
-            if (i >= frame.getModuleSlots() || !modules.add(stack.getItem())) {
+            if (i >= frame.getModuleSlots() || !fits(frame, stack.getItem()) || !modules.add(stack.getItem())) {
                 return false;
             }
         }
@@ -226,6 +227,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
      * the current frame has unlocked, and only if no other slot holds the same module; an addon
      * needs a frame and must not conflict with the addons already installed.
      */
+    /** The Builder Module goes only on a Mini Frame: building is work for a swarm of small drones. */
+    public static boolean fits(DroneFrameItem frame, Item module) {
+        return !(module instanceof DroneModuleItem builder && builder.getTask() == DroneTask.BUILD) || frame == ModItems.MINI_FRAME.get();
+    }
+
     public static boolean canPlace(IntFunction<ItemStack> slots, int index, ItemResource resource) {
         if (index == FRAME_SLOT) {
             return resource.getItem() instanceof DroneFrameItem;
@@ -238,7 +244,8 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             return false;
         }
         if (isModuleSlot(index)) {
-            if (!(resource.getItem() instanceof DroneModuleItem) || index - FIRST_MODULE_SLOT >= frame.getModuleSlots()) {
+            if (!(resource.getItem() instanceof DroneModuleItem) || index - FIRST_MODULE_SLOT >= frame.getModuleSlots()
+                    || !fits(frame, resource.getItem())) {
                 return false;
             }
             for (int i = FIRST_MODULE_SLOT; i < FIRST_ADDON_SLOT; i++) {

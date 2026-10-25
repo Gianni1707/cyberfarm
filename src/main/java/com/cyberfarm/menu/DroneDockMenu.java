@@ -18,6 +18,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jspecify.annotations.Nullable;
 
@@ -32,11 +33,13 @@ public class DroneDockMenu extends MachineMenu {
 
     public DroneDockMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(DroneDockBlockEntity.CARGO_SLOTS),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL,
+                ModBlocks.DRONE_DOCK.get());
     }
 
-    public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
-        super(ModMenus.DRONE_DOCK.get(), containerId, data, access, ModBlocks.DRONE_DOCK.get());
+    /** {@code block} is the dock's own block, a Drone Dock or a Builder Swarm Dock, so the menu stays open on either. */
+    public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access, Block block) {
+        super(ModMenus.DRONE_DOCK.get(), containerId, data, access, block);
         this.access = access;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
@@ -143,7 +146,8 @@ public class DroneDockMenu extends MachineMenu {
         return extra(25);
     }
 
-    public record MissingBlock(Item item, int count) {}
+    /** {@code inDock}: whether the dock has any of it to give the drones. */
+    public record MissingBlock(Item item, int count, boolean inDock) {}
 
     /**
      * The blocks the current layer still needs (up to {@link DroneDockBlockEntity#BUILD_LIST} kinds);
@@ -154,10 +158,19 @@ public class DroneDockMenu extends MachineMenu {
         for (int i = 0; i < DroneDockBlockEntity.BUILD_LIST; i++) {
             int item = combined(27 + 3 * i) - 1;
             if (item >= 0) {
-                missing.add(new MissingBlock(BuiltInRegistries.ITEM.byId(item), extra(29 + 3 * i)));
+                int count = extra(29 + 3 * i);
+                missing.add(new MissingBlock(BuiltInRegistries.ITEM.byId(item), Math.abs(count), count > 0));
             }
         }
         return missing;
+    }
+
+    public int getDroneCount() {
+        return extra(57);
+    }
+
+    public int getMaxDrones() {
+        return extra(58);
     }
 
     /** Kinds of block the list leaves out. */

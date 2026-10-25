@@ -29,11 +29,12 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
                 ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get());
 
         List<AssemblyExample> examples = new ArrayList<>();
-        for (DroneFrameItem frame : List.of(ModItems.BASIC_FRAME.get(), ModItems.ADVANCED_FRAME.get(), ModItems.ELITE_FRAME.get())) {
+        for (DroneFrameItem frame : List.of(ModItems.MINI_FRAME.get(), ModItems.BASIC_FRAME.get(), ModItems.ADVANCED_FRAME.get(), ModItems.ELITE_FRAME.get())) {
+            List<ItemStack> fitting = modules.stream().filter(module -> DroneAssemblerBlockEntity.fits(frame, module.getItem())).toList();
             List<List<ItemStack>> moduleSlots = new ArrayList<>();
             for (int i = 0; i < DroneAssemblerBlockEntity.MODULE_SLOTS; i++) {
                 // Locked slots stay empty; unlocked ones start on a different module each
-                moduleSlots.add(i < frame.getModuleSlots() ? rotated(modules, i) : List.of());
+                moduleSlots.add(i < frame.getModuleSlots() ? rotated(fitting, i) : List.of());
             }
             List<List<ItemStack>> addonSlots = new ArrayList<>();
             for (int i = 0; i < DroneAssemblerBlockEntity.ADDON_SLOTS; i++) {

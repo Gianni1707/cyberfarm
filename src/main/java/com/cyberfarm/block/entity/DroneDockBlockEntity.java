@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.ValueInput;
@@ -55,8 +56,10 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** How many kinds of block the current layer misses the dock screen lists; slot 26 counts the others. */
     public static final int BUILD_LIST = 10;
     private static final int BUILD_LIST_DATA = 27;
+    /** Then how many drones are on the dock and how many fit. */
+    private static final int DRONES_DATA = BUILD_LIST_DATA + 3 * BUILD_LIST;
     /** Data slots after the energy ones; see {@link #getExtraData}. */
-    public static final int EXTRA_DATA = BUILD_LIST_DATA + 3 * BUILD_LIST;
+    public static final int EXTRA_DATA = DRONES_DATA + 2;
 
     private @Nullable BoundingBox workArea;
     /** Next layer the Quarry Module digs; unset means the top of the work area. */
@@ -107,7 +110,11 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     };
 
     public DroneDockBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.DRONE_DOCK.get(), pos, state, CARGO_SLOTS, CAPACITY, MAX_INPUT, 0);
+        this(ModBlockEntities.DRONE_DOCK.get(), pos, state);
+    }
+
+    protected DroneDockBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state, CARGO_SLOTS, CAPACITY, MAX_INPUT, 0);
     }
 
     @Override
@@ -201,13 +208,17 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         if (buildPlan == null || level == null) {
             return Integer.MAX_VALUE;
         }
+        return Math.max(0, buildPlan.missing(level).getOrDefault(item, 0) - stored(item));
+    }
+
+    private int stored(Item item) {
         int stored = 0;
         for (int i = 0; i < items.size(); i++) {
             if (items.getResource(i).is(item)) {
                 stored += items.getAmountAsInt(i);
             }
         }
-        return Math.max(0, buildPlan.missing(level).getOrDefault(item, 0) - stored);
+        return stored;
     }
 
     private List<Map.Entry<Item, Integer>> shownMissing() {
@@ -237,7 +248,17 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         }
     }
 
-    public void updateDroneStatus(long gameTime, int status, int energy, int capacity, int task, int modules, BlockPos pos) {
+    /** How many drones live on this dock, and how many fit. */
+    protected int droneCount() {
+        return droneId != null ? 1 : 0;
+    }
+
+    protected int maxDrones() {
+        return 1;
+    }
+
+    /** What {@code drone} reports every tick, for the screen. */
+    public void updateDroneStatus(UUID drone, long gameTime, int status, int energy, int capacity, int task, int modules, BlockPos pos) {
         droneStatus = status;
         droneEnergy = energy;
         droneCapacity = capacity;
@@ -302,8 +323,12 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     @Override
     protected int getExtraData(int id) {
+        if (id >= DRONES_DATA) {
+            return id == DRONES_DATA ? droneCount() : maxDrones();
+        }
         if (id >= BUILD_LIST_DATA) {
-            // Three slots per listed block: its item id + 1 in two halves (0: none), then how many are missing
+            // Three slots per listed block: its item id + 1 in two halves (0: none), then how many are missing,
+            // negative when the dock has none of it (shortcut: blocks a drone is carrying count as none)
             int index = (id - BUILD_LIST_DATA) / 3;
             List<Map.Entry<Item, Integer>> missing = shownMissing();
             if (index >= Math.min(missing.size(), BUILD_LIST)) {
@@ -314,7 +339,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             return switch ((id - BUILD_LIST_DATA) % 3) {
                 case 0 -> EnergyUtil.low(item);
                 case 1 -> EnergyUtil.high(item);
-                default -> Math.min(Short.MAX_VALUE, entry.getValue());
+                default -> Math.min(Short.MAX_VALUE, entry.getValue()) * (stored(entry.getKey()) > 0 ? 1 : -1);
             };
         }
         BoundingBox area = getWorkArea();
@@ -392,6 +417,6 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory inventory, Player player) {
-        return new DroneDockMenu(containerId, inventory, items, data, ContainerLevelAccess.create(level, worldPosition));
+        return new DroneDockMenu(containerId, inventory, items, data, ContainerLevelAccess.create(level, worldPosition), getBlockState().getBlock());
     }
 }

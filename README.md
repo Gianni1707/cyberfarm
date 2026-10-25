@@ -17,6 +17,7 @@ first login.
 A drone is built in the **Drone Assembler** from three kinds of parts:
 
 - a **frame** in three tiers (Basic, Advanced, Elite): battery, speed, how many modules and addons it takes;
+  or the half-size **Mini Frame**, four of which share a **Builder Swarm Dock**;
 - one to three **function modules**, which decide its job:
   **Harvester** (crops), **Quarry** (digs a whole area down to bedrock), **Transport** (chest to chest),
   **Planter**, **Logger** (fells whole trees and replants), **Rancher** (shears and milks animals),

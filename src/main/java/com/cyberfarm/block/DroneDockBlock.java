@@ -39,7 +39,7 @@ public class DroneDockBlock extends MachineBlock {
     }
 
     @Override
-    protected MapCodec<DroneDockBlock> codec() {
+    protected MapCodec<? extends DroneDockBlock> codec() {
         return CODEC;
     }
 

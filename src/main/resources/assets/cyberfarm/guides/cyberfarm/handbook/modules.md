@@ -197,7 +197,9 @@ other mods (everything in the `c:fertilizers` tag).
 <ItemImage id="cyberfarm:builder_module" scale="2" float="left" />
 
 The drone **builds a multiblock or a schematic** for you: the one you lock with the
-[Multiblock Projector](multiblock_projector.md) and link to its dock.
+[Multiblock Projector](multiblock_projector.md) and link to its dock. It fits **only a
+[Mini Drone Frame](drone_frames.md)**: building is work for a swarm of Mini Drones on a
+[Builder Swarm Dock](drone_dock.md).
 
 <br clear="all" />
 
@@ -207,7 +209,8 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
 - Put the blocks in the dock: the drone takes one kind per trip, carrying them in its claw.
 - It builds **one layer at a time**, from the bottom: a layer is finished before the next one
   starts. If the dock runs out of a block the current layer needs, the drone **waits** for it.
-  The dock's **Build** tab shows the layer and the blocks it still needs.
+  The dock's **Build** tab shows the layer and the blocks it still needs; the ones the dock has
+  none of are marked in red.
 - It flies above the layer it is building, straight from block to block, and goes over the
   whole structure when something is in the way, so it never gets walled in.
 - The dock **takes in only the blocks the build still needs**. Point a Transport drone's route

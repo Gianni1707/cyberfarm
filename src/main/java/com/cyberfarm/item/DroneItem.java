@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModDataComponents;
@@ -41,6 +42,12 @@ public class DroneItem extends Item {
         return stack.getOrDefault(ModDataComponents.ENERGY.get(), 0);
     }
 
+    /** "Mini Drone" for one built on a Mini Drone Frame. */
+    @Override
+    public Component getName(ItemStack stack) {
+        return getModules(stack).isMini() ? Component.translatable("item.cyberfarm.mini_drone") : super.getName(stack);
+    }
+
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
@@ -50,6 +57,12 @@ public class DroneItem extends Item {
         }
         if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock)) {
             message(player, Component.translatable("message.cyberfarm.drone.needs_dock"));
+            return InteractionResult.FAIL;
+        }
+        // Mini Drones live only on a swarm dock, and a swarm dock takes only Mini Drones
+        boolean mini = getModules(context.getItemInHand()).isMini();
+        if (mini != dock instanceof SwarmDockBlockEntity) {
+            message(player, Component.translatable(mini ? "message.cyberfarm.drone.mini_needs_swarm" : "message.cyberfarm.drone.swarm_only_mini"));
             return InteractionResult.FAIL;
         }
         if (dock.hasLiveDrone(level)) {
