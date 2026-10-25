@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 /** Has no GUI: right-click tells what the pump is doing. */
-public class WaterPumpBlock extends MachineBlock {
+public class WaterPumpBlock extends LitMachineBlock {
     public static final MapCodec<WaterPumpBlock> CODEC = simpleCodec(WaterPumpBlock::new);
 
     public WaterPumpBlock(Properties properties) {

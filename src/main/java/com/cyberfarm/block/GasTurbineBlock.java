@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class GasTurbineBlock extends MachineBlock {
+public class GasTurbineBlock extends LitMachineBlock {
     public static final MapCodec<GasTurbineBlock> CODEC = simpleCodec(GasTurbineBlock::new);
 
     public GasTurbineBlock(Properties properties) {

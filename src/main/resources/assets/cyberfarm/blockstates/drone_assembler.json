@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "cyberfarm:block/drone_assembler"
     },
-    "facing=east": {
+    "facing=north,lit=true": {
+      "model": "cyberfarm:block/drone_assembler_on"
+    },
+    "facing=east,lit=false": {
       "model": "cyberfarm:block/drone_assembler",
       "y": 90
     },
-    "facing=south": {
+    "facing=east,lit=true": {
+      "model": "cyberfarm:block/drone_assembler_on",
+      "y": 90
+    },
+    "facing=south,lit=false": {
       "model": "cyberfarm:block/drone_assembler",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,lit=true": {
+      "model": "cyberfarm:block/drone_assembler_on",
+      "y": 180
+    },
+    "facing=west,lit=false": {
       "model": "cyberfarm:block/drone_assembler",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "cyberfarm:block/drone_assembler_on",
       "y": 270
     }
   }

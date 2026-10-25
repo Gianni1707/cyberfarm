@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class CoolantMixerBlock extends MachineBlock {
+public class CoolantMixerBlock extends LitMachineBlock {
     public static final MapCodec<CoolantMixerBlock> CODEC = simpleCodec(CoolantMixerBlock::new);
 
     public CoolantMixerBlock(Properties properties) {

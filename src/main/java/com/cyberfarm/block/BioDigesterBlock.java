@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class BioDigesterBlock extends MachineBlock {
+public class BioDigesterBlock extends LitMachineBlock {
     public static final MapCodec<BioDigesterBlock> CODEC = simpleCodec(BioDigesterBlock::new);
 
     public BioDigesterBlock(Properties properties) {

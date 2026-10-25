@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jspecify.annotations.Nullable;
 
-public class DroneAssemblerBlock extends MachineBlock {
+public class DroneAssemblerBlock extends LitMachineBlock {
     public static final MapCodec<DroneAssemblerBlock> CODEC = simpleCodec(DroneAssemblerBlock::new);
 
     public DroneAssemblerBlock(Properties properties) {

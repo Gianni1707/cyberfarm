@@ -47,6 +47,30 @@ def orientable(name, front, top, side="machine_side", bottom="machine_bottom"):
     })
 
 
+def lit_machine(name, top, side="machine_side", bottom="machine_bottom"):
+    """A machine that lights up while it works: its model off, and on with the animated front and,
+    over it and its sides, a skin of the same lights that glows in the dark."""
+    orientable(name, f"{name}_front", top, side, bottom)
+    # Explicit UVs: worked out from the overlay's coordinates they would run off the texture
+    glow = {d: {"uv": [0, 0, 16, 16], "texture": "#side_glow", "cullface": d} for d in ("east", "south", "west")}
+    write(ASSETS / f"models/block/{name}_on.json", {
+        "parent": "minecraft:block/orientable_with_bottom",
+        "render_type": "minecraft:cutout",
+        "textures": {"front": tex(f"{name}_front_on"), "top": tex(top), "side": tex(side), "bottom": tex(bottom),
+                     "front_glow": tex(f"{name}_front_glow"), "side_glow": tex(f"{side}_glow")},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 16, 16], "faces": {
+                "down": {"texture": "#bottom", "cullface": "down"}, "up": {"texture": "#top", "cullface": "up"},
+                "north": {"texture": "#front", "cullface": "north"}, "south": {"texture": "#side", "cullface": "south"},
+                "west": {"texture": "#side", "cullface": "west"}, "east": {"texture": "#side", "cullface": "east"}}},
+            # A hair outside the cube so it never fights with the faces under it
+            {"from": [-0.01, -0.01, -0.01], "to": [16.01, 16.01, 16.01], "shade": False, "light_emission": 15,
+             "faces": {"north": {"uv": [0, 0, 16, 16], "texture": "#front_glow", "cullface": "north"}, **glow}},
+        ],
+    })
+    facing_blockstate(name, {"lit=false": name, "lit=true": f"{name}_on"})
+
+
 def facing_blockstate(name, extra=None):
     """Variants for every horizontal facing; `extra` maps a property value suffix to a model."""
     variants = {}
@@ -241,12 +265,9 @@ def block_loot(name):
 
 
 def blocks():
-    orientable("combustion_generator", "combustion_generator_front", "combustion_generator_top")
-    orientable("combustion_generator_on", "combustion_generator_front_on", "combustion_generator_top")
-    facing_blockstate("combustion_generator", {"lit=false": "combustion_generator", "lit=true": "combustion_generator_on"})
+    lit_machine("combustion_generator", "combustion_generator_top")
 
-    orientable("drone_assembler", "drone_assembler_front", "drone_assembler_top", side="drone_assembler_side")
-    facing_blockstate("drone_assembler")
+    lit_machine("drone_assembler", "drone_assembler_top", side="drone_assembler_side")
 
     dock_model()
     facing_blockstate("drone_dock")
@@ -257,10 +278,8 @@ def blocks():
     write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
         "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
 
-    orientable("bio_digester", "bio_digester_front", "bio_digester_top")
-    facing_blockstate("bio_digester")
-    orientable("gas_turbine", "gas_turbine_front", "gas_turbine_top")
-    facing_blockstate("gas_turbine")
+    lit_machine("bio_digester", "bio_digester_top")
+    lit_machine("gas_turbine", "gas_turbine_top")
 
     # The extractor is the chamber's "shower head": its bottom face looks into the chamber
     for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):
@@ -400,19 +419,15 @@ def nuclear_blocks():
                     model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
                     variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
-    orientable("water_pump", "water_pump_front", "water_pump_top")
-    facing_blockstate("water_pump")
+    lit_machine("water_pump", "water_pump_top")
     for tank in ("liquid_tank", "gas_tank"):
         write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
             "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
         facing_blockstate(tank)
-    orientable("coolant_mixer", "coolant_mixer_front", "machine_top")
-    facing_blockstate("coolant_mixer")
-    orientable("waste_reprocessor", "waste_reprocessor_front", "machine_top")
-    facing_blockstate("waste_reprocessor")
+    lit_machine("coolant_mixer", "machine_top")
+    lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
-    orientable("acid_synthesizer", "acid_synthesizer_front", "machine_top")
-    facing_blockstate("acid_synthesizer")
+    lit_machine("acid_synthesizer", "machine_top")
     orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
     write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})

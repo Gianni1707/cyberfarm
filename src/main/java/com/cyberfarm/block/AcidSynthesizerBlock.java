@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class AcidSynthesizerBlock extends MachineBlock {
+public class AcidSynthesizerBlock extends LitMachineBlock {
     public static final MapCodec<AcidSynthesizerBlock> CODEC = simpleCodec(AcidSynthesizerBlock::new);
     private static final DustParticleOptions FUMES = new DustParticleOptions(0x9BE04A, 0.8F);
 

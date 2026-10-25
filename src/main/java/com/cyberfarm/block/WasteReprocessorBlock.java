@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class WasteReprocessorBlock extends MachineBlock {
+public class WasteReprocessorBlock extends LitMachineBlock {
     public static final MapCodec<WasteReprocessorBlock> CODEC = simpleCodec(WasteReprocessorBlock::new);
     private static final DustParticleOptions GLOW = new DustParticleOptions(0x6CFF6C, 1.0F);
 

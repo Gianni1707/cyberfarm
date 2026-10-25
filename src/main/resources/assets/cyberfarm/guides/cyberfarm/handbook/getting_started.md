@@ -36,7 +36,8 @@ it further.
 
 **Look at any CyberFarm machine** to see a small panel beside the crosshair: whether it is
 working, the FE it makes or uses each tick, how full its energy buffer is and how far its batch
-has got. Working machines also show it: sparks, smoke, frost or bubbles depending on the machine.
+has got. Working machines also show it: their front lights up and moves, their lights glow in the
+dark, and they give off sparks, smoke, frost or bubbles depending on the machine.
 
 ## 3. Build the drone
 

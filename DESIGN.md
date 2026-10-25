@@ -336,6 +336,16 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
 - **Overlay**: guardando una macchina, pannello accanto al mirino (`MachineOverlay`, layer sopra il mirino) con nome, stato,
   +FE/t prodotti, -FE/t usati, barra del buffer e avanzamento; nascosto in Meka e con l'interfaccia nascosta (F1).
 
+### Texture animate e luci
+- `texgen.py` genera strisce animate (`strip()`, con `.mcmeta`): i gas (biogas, metano, vapore) vorticano e hanno puntini che salgono;
+  coolant, cryo e acido nel mondo usano già l'acqua vanilla colorata.
+- **Macchine con stato acceso** (`LitMachineBlock`: Combustion Generator, Drone Assembler, Bio-Digester, Gas Turbine, Water Pump,
+  Coolant Mixer, Waste Reprocessor, Acid Synthesizer): `LIT` segue `MachineStatus.working` (il generatore tiene il suo). Spenta:
+  luci del frontale un passo più scure e fuoco spento (`powered_off`). Accesa: frontale animato (`working`: banda di luce che scende
+  sulle luci, fuoco che tremola, finestre che ondeggiano, bolle che salgono in Bio-Digester e Water Pump), luce di blocco 6.
+- **Accenti luminosi**: il modello acceso (`lit_machine` in `assetgen.py`) ha una seconda pelle appena fuori dal cubo con
+  `light_emission: 15` e le sole luci del frontale e dei lati (maschere `_glow`), così di notte e con gli shader brillano.
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,

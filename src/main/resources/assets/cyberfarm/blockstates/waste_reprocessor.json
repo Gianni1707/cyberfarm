@@ -1,18 +1,33 @@
 {
   "variants": {
-    "facing=north": {
+    "facing=north,lit=false": {
       "model": "cyberfarm:block/waste_reprocessor"
     },
-    "facing=east": {
+    "facing=north,lit=true": {
+      "model": "cyberfarm:block/waste_reprocessor_on"
+    },
+    "facing=east,lit=false": {
       "model": "cyberfarm:block/waste_reprocessor",
       "y": 90
     },
-    "facing=south": {
+    "facing=east,lit=true": {
+      "model": "cyberfarm:block/waste_reprocessor_on",
+      "y": 90
+    },
+    "facing=south,lit=false": {
       "model": "cyberfarm:block/waste_reprocessor",
       "y": 180
     },
-    "facing=west": {
+    "facing=south,lit=true": {
+      "model": "cyberfarm:block/waste_reprocessor_on",
+      "y": 180
+    },
+    "facing=west,lit=false": {
       "model": "cyberfarm:block/waste_reprocessor",
+      "y": 270
+    },
+    "facing=west,lit=true": {
+      "model": "cyberfarm:block/waste_reprocessor_on",
       "y": 270
     }
   }

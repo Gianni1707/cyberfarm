@@ -7,6 +7,8 @@ Run from the project root:
     python tools/texgen.py                 writes all textures
     python tools/texgen.py --preview DIR   also writes an enlarged preview sheet to DIR
 """
+import inspect
+import json
 import math
 import random
 import struct
@@ -55,6 +57,7 @@ class Canvas:
         self.width, self.height = width, height
         self.pixels = [[None] * width for _ in range(height)]
         self.keys = [[None] * width for _ in range(height)]  # palette key per pixel, for the glow mask
+        self.animation = None  # set by strip(): written next to the PNG as its .mcmeta
 
     def set(self, x, y, color, shade=0):
         if not (0 <= x < self.width and 0 <= y < self.height):
@@ -91,13 +94,20 @@ class Canvas:
                 if ch not in ". ":
                     self.set(x0 + dx, y0 + dy, ch)
 
-    def glow_mask(self):
+    def glow_mask(self, keys=GLOW_KEYS):
         glow = Canvas(self.width, self.height)
+        glow.animation = self.animation
         for y in range(self.height):
             for x in range(self.width):
-                if self.keys[y][x] in GLOW_KEYS:
+                if self.keys[y][x] in keys:
                     glow.pixels[y][x] = self.pixels[y][x]
         return glow
+
+    def copy(self):
+        out = Canvas(self.width, self.height)
+        out.pixels = [list(row) for row in self.pixels]
+        out.keys = [list(row) for row in self.keys]
+        return out
 
     def save(self, path):
         raw = bytearray()
@@ -420,11 +430,11 @@ def multiblock_projector():
     return c
 
 
-def water_pump_front():
+def water_pump_front(frame=None):
     c = panel(52)
     c.rect(3, 3, 12, 12, "K")
     c.rect(4, 4, 11, 11, "#2a4f9a", noise=8, seed=52)
-    for x, y in ((5, 9), (8, 6), (10, 10), (6, 5)):
+    for x, y in rising(((5, 9), (8, 6), (10, 10), (6, 5)), frame, 4, 8):
         c.set(x, y, "#7fb0ff")
     c.rect(3, 13, 12, 13, "b")
     return c
@@ -764,12 +774,14 @@ def fuel_rod(depleted):
     return c
 
 
-def digester_front():
+def digester_front(frame=None):
     c = panel(22)
     c.rect(3, 2, 12, 12, "K")
     c.rect(4, 3, 11, 6, "s")
     c.rect(4, 7, 11, 11, "#4f9a2f", noise=8, seed=22)
-    for x, y in ((5, 9), (8, 8), (10, 10), (6, 6), (9, 5)):
+    for x, y in ((6, 6), (9, 5)):
+        c.set(x, y, "G")
+    for x, y in rising(((5, 9), (8, 8), (10, 10)), frame, 7, 5):
         c.set(x, y, "G")
     c.rect(3, 13, 12, 13, "g")
     return c
@@ -888,6 +900,110 @@ def tank_top():
     c.disc(7.5, 7.5, 3.5, "m")
     c.rect(6, 6, 9, 9, "l")
     return c
+
+
+# --------------------------------------------------------------------------- animation
+
+def strip(frames, frametime=2, interpolate=False):
+    """Stacks equal frames into one tall texture, marked animated so it is saved with a .mcmeta."""
+    height = frames[0].height
+    out = Canvas(frames[0].width, height * len(frames))
+    for i, frame in enumerate(frames):
+        for y in range(height):
+            out.pixels[i * height + y] = list(frame.pixels[y])
+            out.keys[i * height + y] = list(frame.keys[y])
+    out.animation = {"frametime": frametime, **({"interpolate": True} if interpolate else {})}
+    return out
+
+
+def mix(a, b, t):
+    a, b = rgba(a), rgba(b)
+    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (255,)
+
+
+# A machine's front with the power off: its lights (cyan, green, the uranium readout) one step
+# dimmer and its fire out
+POWERED_OFF = {"C": "c", "c": "b", "b": "#0a4a5c", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
+               "O": "l", "o": "m", "r": "d"}
+# ...and while it works: a band of light sweeping down its lights, one step brighter
+SWEEP = {"b": "c", "c": "C", "C": "#ecfeff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
+FLAMES = ("r", "o", "O")
+# What glows in the dark on a working machine's front: its lights and any fire
+FRONT_GLOW = GLOW_KEYS | {"#ecfeff", "g", "G", "#e6ffe9", "4", "5", "#e8ffd0"} | set(FLAMES)
+
+
+def powered_off(front):
+    out = front.copy()
+    for y in range(front.height):
+        for x in range(front.width):
+            if front.keys[y][x] in POWERED_OFF:
+                out.set(x, y, POWERED_OFF[front.keys[y][x]])
+    return out
+
+
+def working(fronts):
+    """A working machine's front, looping: a band of light sweeps down its lights, fire flickers,
+    and the colour of any window (a fluid, a screen) ripples gently."""
+    count = len(fronts)
+    frames = []
+    for f, front in enumerate(fronts):
+        out = front.copy()
+        rng = random.Random(f * 977 + 13)
+        for y in range(front.height):
+            for x in range(front.width):
+                key, px = front.keys[y][x], front.pixels[y][x]
+                if px is None:
+                    continue
+                if key in SWEEP:
+                    behind = (f * front.height // count - y) % front.height
+                    if behind == 0 or (behind == 1 and key == "b"):
+                        out.set(x, y, SWEEP[key])
+                elif key in FLAMES:
+                    out.set(x, y, FLAMES[max(0, min(2, FLAMES.index(key) + rng.randint(-1, 1)))])
+                elif key is None or key.startswith("#"):
+                    shade = round(16 * math.sin(2 * math.pi * (y / 8 - f / count) + x * 0.7))
+                    out.pixels[y][x] = tuple(max(0, min(255, ch + shade)) for ch in px[:3]) + (px[3],)
+        frames.append(out)
+    return strip(frames)
+
+
+def lit_front(name, draw, off=None):
+    """The three textures of a machine that lights up while it works: its front off (dimmed unless
+    given), working (animated), and what of that glows in the dark. `draw` draws the front; if it
+    takes a frame number (0-15) it draws that frame of a motion of its own, such as bubbles."""
+    moving = bool(inspect.signature(draw).parameters)
+    on = working([draw(f) if moving else draw() for f in range(16)])
+    return {f"block/{name}_front": off or powered_off(draw()), f"block/{name}_front_on": on,
+            f"block/{name}_front_glow": on.glow_mask(FRONT_GLOW)}
+
+
+def rising(points, frame, top, height):
+    """Bubble positions for a frame: each rises through a window `height` rows tall from row
+    `top`, once round per 16 frames; the still picture (frame None) keeps them where they are."""
+    if frame is None:
+        return points
+    return [(x, top + (y - top - frame * height // 16) % height) for x, y in points]
+
+
+def gas(base, light, seed, count=32):
+    """Swirling gas, looping in place and in time: three waves that tile across the texture and
+    a few motes of light drifting up."""
+    rng = random.Random(seed)
+    motes = [(rng.randrange(16), rng.randrange(16)) for _ in range(8)]
+    frames = []
+    for f in range(count):
+        t = f / count
+        c = Canvas()
+        for y in range(16):
+            for x in range(16):
+                v = (math.sin(2 * math.pi * (x / 16 + t)) + math.sin(2 * math.pi * (y / 16 + 2 * t + seed / 7))
+                     + 0.7 * math.sin(2 * math.pi * ((x + y) / 16 - t)))
+                level = max(0, min(3, int((v + 2.7) / 5.4 * 4)))
+                c.set(x, y, mix(base, light, level * 0.2))
+        for mx, my in motes:
+            c.set(mx, (my - f // 2) % 16, light)
+        frames.append(c)
+    return strip(frames, interpolate=True)
 
 
 def gas_texture(base, light, seed):
@@ -2198,14 +2314,15 @@ def crystallizer_port():
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
+        "block/machine_side_glow": machine_side().glow_mask(),
         "block/machine_bottom": machine_bottom(),
         "block/machine_top": machine_top(),
-        "block/combustion_generator_front": generator_front(False),
-        "block/combustion_generator_front_on": generator_front(True),
+        **lit_front("combustion_generator", lambda: generator_front(True), off=generator_front(False)),
         "block/combustion_generator_top": generator_top(),
-        "block/drone_assembler_front": assembler_front(),
+        **lit_front("drone_assembler", assembler_front),
         "block/drone_assembler_top": assembler_top(),
         "block/drone_assembler_side": assembler_side(),
+        "block/drone_assembler_side_glow": assembler_side().glow_mask(),
         "block/drone_dock_top": dock_top(),
         "block/swarm_dock_top": swarm_dock_top(),
         "block/hologram_table_top": hologram_table_top(),
@@ -2233,15 +2350,15 @@ def build_all():
         "block/reactor_controller": reactor_controller("off"),
         "block/reactor_controller_formed": reactor_controller("formed"),
         "block/reactor_controller_on": reactor_controller("on"),
-        "block/water_pump_front": water_pump_front(),
+        **lit_front("water_pump", water_pump_front),
         "block/water_pump_top": water_pump_top(),
-        "block/coolant_mixer_front": coolant_mixer_front(),
+        **lit_front("coolant_mixer", coolant_mixer_front),
         "block/coolant_still": gas_texture("#178f84", "#4fe0d0", 7),
         "block/coolant_flow": gas_texture("#178f84", "#4fe0d0", 8),
         "block/cryo_coolant_still": gas_texture("#8fd8f5", "#ffffff", 9),
         "block/cryo_coolant_flow": gas_texture("#8fd8f5", "#ffffff", 10),
-        "block/steam_still": gas_texture("#d8dee3", "#ffffff", 5),
-        "block/steam_flow": gas_texture("#d8dee3", "#ffffff", 6),
+        "block/steam_still": gas("#d8dee3", "#ffffff", 5),
+        "block/steam_flow": gas("#d8dee3", "#ffffff", 6),
         "item/biogas_bucket": bucket("#5fa83a", gas=True),
         "item/methane_bucket": bucket("#6cc4dc", gas=True),
         "item/steam_bucket": bucket("#aebfcb", gas=True),
@@ -2249,7 +2366,7 @@ def build_all():
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
         "entity/cooling_tower": cooling_tower(False),
         "block/vitrified_waste": vitrified_waste(),
-        "block/waste_reprocessor_front": waste_reprocessor_front(),
+        **lit_front("waste_reprocessor", waste_reprocessor_front),
         "item/hazmat_helmet": hazmat_item("helmet"),
         "item/hazmat_suit": hazmat_item("suit"),
         "item/hazmat_pants": hazmat_item("pants"),
@@ -2263,9 +2380,9 @@ def build_all():
         "item/uranium_ingot": uranium_ingot(),
         "item/fuel_rod": fuel_rod(False),
         "item/depleted_fuel_rod": fuel_rod(True),
-        "block/bio_digester_front": digester_front(),
+        **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
-        "block/gas_turbine_front": turbine_front(),
+        **lit_front("gas_turbine", turbine_front),
         "block/gas_turbine_top": generator_top(),
         "block/methane_extractor_bottom": extractor_bottom(False),
         "block/methane_extractor_top": extractor_top(False),
@@ -2279,10 +2396,10 @@ def build_all():
         "block/liquid_tank_side": tank_side("c"),
         "block/gas_tank_side": tank_side("y"),
         "block/tank_top": tank_top(),
-        "block/biogas_still": gas_texture("#5fa83a", "#a6e07a", 1),
-        "block/biogas_flow": gas_texture("#5fa83a", "#a6e07a", 2),
-        "block/methane_still": gas_texture("#6cc4dc", "#d4f4ff", 3),
-        "block/methane_flow": gas_texture("#6cc4dc", "#d4f4ff", 4),
+        "block/biogas_still": gas("#5fa83a", "#a6e07a", 1),
+        "block/biogas_flow": gas("#5fa83a", "#a6e07a", 2),
+        "block/methane_still": gas("#6cc4dc", "#d4f4ff", 3),
+        "block/methane_flow": gas("#6cc4dc", "#d4f4ff", 4),
         "block/resonance_core_side": core_side(),
         "block/resonance_core_front": core_front(),
         "block/resonance_core_top": core_top(),
@@ -2298,7 +2415,7 @@ def build_all():
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
-        "block/acid_synthesizer_front": acid_synthesizer_front(),
+        **lit_front("acid_synthesizer", acid_synthesizer_front),
         "block/crystallizer_front": crystallizer_front(),
         "block/crystallizer_top": crystallizer_top(),
         "block/crystallizer_port": crystallizer_port(),
@@ -2362,7 +2479,7 @@ def write_preview(textures, out_dir, scale=8):
         s = cell // tex.width
         ox = (i % cols) * (cell + 8) + 4
         oy = (i // cols) * (cell + 8) + 4
-        for y in range(tex.height):
+        for y in range(min(tex.height, tex.width)):
             for x in range(tex.width):
                 px = tex.pixels[y][x]
                 if px is None:
@@ -2378,6 +2495,11 @@ if __name__ == "__main__":
     all_textures = build_all()
     for texture_name, canvas in all_textures.items():
         canvas.save(TEXTURES / f"{texture_name}.png")
+        meta = TEXTURES / f"{texture_name}.png.mcmeta"
+        if canvas.animation:
+            meta.write_text(json.dumps({"animation": canvas.animation}, indent=2) + "\n")
+        elif meta.exists():
+            meta.unlink()
     print(f"wrote {len(all_textures)} textures to {TEXTURES.relative_to(ROOT)}")
     if "--preview" in sys.argv:
         write_preview(all_textures, sys.argv[sys.argv.index("--preview") + 1])

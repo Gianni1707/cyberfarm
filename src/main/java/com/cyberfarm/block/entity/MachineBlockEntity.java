@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.energy.MachineEnergyHandler;
 
@@ -12,6 +13,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -106,6 +108,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         if (!now.equals(sentStatus) || time % STATUS_RESEND == 0) {
             sentStatus = now;
             PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new MachineStatusPayload(pos, now));
+        }
+        BlockState state = getBlockState();
+        if (state.getBlock() instanceof LitMachineBlock && state.getValue(LitMachineBlock.LIT) != now.working()) {
+            level.setBlock(pos, state.setValue(LitMachineBlock.LIT, now.working()), Block.UPDATE_CLIENTS);
         }
     }
 
