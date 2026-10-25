@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.EffectRenderer;
 import com.cyberfarm.client.MachineOverlay;
 import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.DissolvingMobRenderer;
@@ -12,6 +13,7 @@ import com.cyberfarm.client.renderer.MechRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
+import com.cyberfarm.client.renderer.AssemblerRenderer;
 import com.cyberfarm.client.renderer.CrystallizerRenderer;
 import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
@@ -112,6 +114,8 @@ public class CyberFarmClient {
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(EffectRenderer::extract);
+        NeoForge.EVENT_BUS.addListener(EffectRenderer::submit);
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -195,6 +199,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.font()));
+        event.registerBlockEntityRenderer(ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());

@@ -213,6 +213,8 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
 - Put the blocks in the dock: the drone takes one kind per trip, carrying them in its claw.
 - It builds **one layer at a time**, from the bottom: a layer is finished before the next one
   starts. If the dock runs out of a block the current layer needs, the drone **waits** for it.
+- Each block is **printed** into place: a shell of light closes in on it and a scan line runs
+  down it.
   The dock's **Build** tab shows the layer and the blocks it still needs; the ones the dock has
   none of are marked in red.
 - It flies above the layer it is building, straight from block to block, and goes over the

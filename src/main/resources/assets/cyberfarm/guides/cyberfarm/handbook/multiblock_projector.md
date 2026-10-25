@@ -39,6 +39,7 @@ single block.
 
 Blocks still to place glow softly; **red** blocks are wrong, or in the way of a space that must
 stay empty. Correct blocks are not drawn. Above the hotbar the projector counts what is left, and
-says when the structure is complete.
+says when the structure is complete. When any CyberFarm multiblock forms, a ring of light rises
+through it from the bottom to the top.
 
 <RecipeFor id="multiblock_projector" />

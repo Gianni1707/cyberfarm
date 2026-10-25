@@ -25,7 +25,9 @@ and takes 5 seconds.
    module slots are unlocked.
 3. Optionally put [addons](addons.md) in the **2x2 addon grid**. Each slot holds a stack of the
    same addon; the counter above the grid shows how many you used out of the frame's limit.
-4. Press **Assemble**. When the bar is full, take the finished <ItemLink id="drone" /> from the output slot.
+4. Press **Assemble**. The drone takes shape as a **hologram** on the pad inside the assembler's
+   open chamber, unfolding as it is made. When the bar is full it flashes into the output slot: take the finished
+   <ItemLink id="drone" /> from there.
 
 A drone needs **at least one module**, and the same module cannot be installed twice.
 

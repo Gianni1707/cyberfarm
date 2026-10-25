@@ -52,7 +52,7 @@ public class ModBlocks {
             p -> machine(p).lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<DroneAssemblerBlock> DRONE_ASSEMBLER = BLOCKS.registerBlock("drone_assembler",
-            DroneAssemblerBlock::new, ModBlocks::litMachine);
+            DroneAssemblerBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<DroneDockBlock> DRONE_DOCK = BLOCKS.registerBlock("drone_dock",
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));

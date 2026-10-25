@@ -209,44 +209,76 @@ def generator_top():
     return c
 
 
-def assembler_front():
-    c = panel(6)
-    c.rect(2, 2, 13, 10, "K")
-    c.rect(3, 3, 12, 9, "s")
-    c.ascii(4, 4, [
-        "cc....cc",
-        "..cbbc..",
-        "..bccb..",
-        "..cbbc..",
-        "cc....cc",
-    ])
-    c.set(3, 12, "c")
-    c.set(5, 12, "g")
-    c.set(7, 12, "O")
-    c.rect(9, 12, 12, 12, "K")
-    return c
-
-
-def assembler_top():
-    c = panel(7)
-    c.rect(2, 2, 13, 13, "K")
-    c.rect(3, 3, 12, 12, "s", noise=2, seed=7)
-    c.rect(7, 5, 8, 10, "b")
-    c.rect(5, 7, 10, 8, "b")
-    c.rect(7, 7, 8, 8, "c")
-    for (x, y, dx, dy) in ((3, 3, 1, 1), (12, 3, -1, 1), (3, 12, 1, -1), (12, 12, -1, -1)):
-        c.set(x, y, "c")
-        c.set(x + dx, y, "c")
-        c.set(x, y + dy, "c")
-    return c
-
-
-def assembler_side():
+def assembler_base_side():
+    """Drone Assembler base, a slab four pixels tall: only the bottom four rows show."""
     c = panel(8)
-    c.rect(3, 3, 3, 12, "b")
-    c.rect(3, 5, 3, 10, "c")
-    for y in (4, 6, 8, 10):
-        c.rect(6, y, 12, y, "K")
+    c.rect(1, 12, 14, 12, "m")
+    c.rect(1, 13, 14, 14, "d", noise=3, seed=8)
+    light_strip(c, 13, 2, 13)
+    c.rect(0, 15, 15, 15, "k")
+    return c
+
+
+def assembler_base_front():
+    """The base's front: the control panel, with its status lights and a readout strip."""
+    c = assembler_base_side()
+    c.rect(1, 13, 14, 14, "s")
+    c.set(2, 13, "c")
+    c.set(4, 13, "g")
+    c.set(6, 13, "O")
+    c.rect(8, 13, 13, 13, "b")
+    c.rect(9, 13, 11, 13, "c")
+    return c
+
+
+def assembler_pad():
+    """The top of the base, where the drone takes shape: a landing ring with hazard corners."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=6)
+    c.disc(7.5, 7.5, 5.8, "b", r_inner=4.9)
+    c.disc(7.5, 7.5, 4.0, "s")
+    c.rect(7, 4, 8, 11, "K")
+    c.rect(4, 7, 11, 8, "K")
+    c.rect(7, 7, 8, 8, "c")
+    for x, y, dx, dy in ((1, 1, 1, 1), (14, 1, -1, 1), (1, 14, 1, -1), (14, 14, -1, -1)):
+        c.set(x, y, "y")
+        c.set(x + dx, y, "y")
+        c.set(x, y + dy, "y")
+    return c
+
+
+def assembler_pillar(frame=None):
+    """A corner pillar (faces show columns 7-8, rows 2-11): steel with a light line; while working
+    a bright spark runs up it, once round per 16 frames."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "l", noise=3, seed=9)
+    c.rect(7, 2, 7, 11, "w")
+    c.rect(8, 2, 8, 11, "c")
+    if frame is not None:
+        head = 11 - frame * 10 // 16
+        for y in (head, head + 1):
+            c.set(8, 2 + (y - 2) % 10, "C")
+    return c
+
+
+def assembler_cap_side():
+    """The cap's edge, two pixels tall: only the top two rows show."""
+    c = panel(10)
+    c.rect(0, 0, 15, 0, "l")
+    c.rect(0, 1, 15, 1, "k")
+    return c
+
+
+def assembler_emitter():
+    """The cap's underside, looking down into the chamber: the assembly emitter."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=12)
+    c.disc(7.5, 7.5, 5.0, "K")
+    c.disc(7.5, 7.5, 4.2, "b", r_inner=3.2)
+    c.disc(7.5, 7.5, 2.4, "c")
+    c.disc(7.5, 7.5, 1.0, "C")
     return c
 
 
@@ -967,14 +999,17 @@ def working(fronts):
     return strip(frames)
 
 
-def lit_front(name, draw, off=None):
-    """The three textures of a machine that lights up while it works: its front off (dimmed unless
-    given), working (animated), and what of that glows in the dark. `draw` draws the front; if it
-    takes a frame number (0-15) it draws that frame of a motion of its own, such as bubbles."""
+def lit_textures(name, draw, off=None):
+    """The three textures of a machine part that lights up while the machine works: off (dimmed
+    unless given), working (animated), and what of that glows in the dark. `draw` draws the part;
+    if it takes a frame number (0-15) it draws that frame of a motion of its own, such as bubbles."""
     moving = bool(inspect.signature(draw).parameters)
     on = working([draw(f) if moving else draw() for f in range(16)])
-    return {f"block/{name}_front": off or powered_off(draw()), f"block/{name}_front_on": on,
-            f"block/{name}_front_glow": on.glow_mask(FRONT_GLOW)}
+    return {f"block/{name}": off or powered_off(draw()), f"block/{name}_on": on, f"block/{name}_glow": on.glow_mask(FRONT_GLOW)}
+
+
+def lit_front(name, draw, off=None):
+    return lit_textures(f"{name}_front", draw, off)
 
 
 def rising(points, frame, top, height):
@@ -2319,10 +2354,13 @@ def build_all():
         "block/machine_top": machine_top(),
         **lit_front("combustion_generator", lambda: generator_front(True), off=generator_front(False)),
         "block/combustion_generator_top": generator_top(),
-        **lit_front("drone_assembler", assembler_front),
-        "block/drone_assembler_top": assembler_top(),
-        "block/drone_assembler_side": assembler_side(),
-        "block/drone_assembler_side_glow": assembler_side().glow_mask(),
+        **lit_front("drone_assembler", assembler_base_front),
+        "block/drone_assembler_top": assembler_pad(),
+        "block/drone_assembler_side": assembler_base_side(),
+        "block/drone_assembler_side_glow": assembler_base_side().glow_mask(),
+        **lit_textures("drone_assembler_pillar", assembler_pillar),
+        **lit_textures("drone_assembler_emitter", assembler_emitter),
+        "block/drone_assembler_cap": assembler_cap_side(),
         "block/drone_dock_top": dock_top(),
         "block/swarm_dock_top": swarm_dock_top(),
         "block/hologram_table_top": hologram_table_top(),

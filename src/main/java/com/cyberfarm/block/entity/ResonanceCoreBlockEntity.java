@@ -1,6 +1,9 @@
 package com.cyberfarm.block.entity;
 
+import java.util.List;
+
 import com.cyberfarm.block.ResonanceCellBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.menu.ResonanceCoreMenu;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
@@ -104,6 +107,11 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
             if (found != radius) {
                 setShellFormed(level, pos, radius, false);
                 setShellFormed(level, pos, found, true);
+                if (found > 0) {
+                    // The core and the shell of cells over it
+                    BlockPos centre = pos.above(1 + found);
+                    Effects.reveal(level, List.of(pos, centre.offset(-found, -found, -found), centre.offset(found, found, found)));
+                }
                 radius = found;
                 setChanged();
             }

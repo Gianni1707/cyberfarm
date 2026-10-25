@@ -1,8 +1,11 @@
 package com.cyberfarm.block.entity;
 
+import java.util.List;
+
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.SteamEngineBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.menu.SteamEngineMenu;
@@ -129,6 +132,10 @@ public class SteamEngineBlockEntity extends MachineBlockEntity {
                 cylinders = found;
                 state = state.setValue(SteamEngineBlock.FORMED, cylinders > 0);
                 level.setBlock(pos, state, Block.UPDATE_ALL);
+                if (cylinders > 0) {
+                    // The boiler, its cylinders and the dynamo closing the row
+                    Effects.reveal(level, List.of(pos, pos.relative(back(), cylinders + 1)));
+                }
             }
             setPartsFormed(level, cylinders, true);
         }

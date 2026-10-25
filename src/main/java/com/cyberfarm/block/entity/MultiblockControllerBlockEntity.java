@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.MultiblockControllerBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.multiblock.Multiblock;
 import com.cyberfarm.multiblock.PortOwner;
 import com.cyberfarm.registry.ModSounds;
@@ -102,6 +103,9 @@ public abstract class MultiblockControllerBlockEntity<S extends Enum<S> & Multib
             level.setBlock(pos, state, Block.UPDATE_ALL);
             level.playSound(null, pos, (size != null ? ModSounds.REACTOR_ACTIVATE : ModSounds.REACTOR_DEACTIVATE).get(),
                     SoundSource.BLOCKS, 1.0F, formSoundPitch());
+            if (size != null) {
+                Effects.reveal(level, size.cells(pos, facing).stream().map(Multiblock.Cell::pos).toList());
+            }
         }
         if (size != null) {
             // Re-applied while formed, for shell blocks placed back or shared with a broken neighbour

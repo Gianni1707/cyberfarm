@@ -1,6 +1,7 @@
 package com.cyberfarm.drone.job;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.multiblock.BuildPlan;
 import com.cyberfarm.multiblock.Structure;
@@ -132,6 +133,7 @@ public class BuildJob extends DroneJob {
         level.setBlock(pos, state, Block.UPDATE_ALL);
         state.getBlock().setPlacedBy(level, pos, state, null, item);
         level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        Effects.print(level, pos);
         drone.useJobEnergy(ENERGY_COST);
         return Result.DONE;
     }

@@ -39,6 +39,8 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
 
     /** Client side: what the server last said this machine is doing. */
     public MachineStatus status = MachineStatus.IDLE;
+    /** Client side: the game time the status arrived, to carry progress on smoothly until the next one. */
+    public long statusTime;
     private MachineStatus sentStatus = MachineStatus.IDLE;
 
     protected final ContainerData data = new ContainerData() {

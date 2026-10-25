@@ -5,6 +5,7 @@ import java.util.List;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.MechHangarBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.entity.MechEntity;
 import com.cyberfarm.entity.MechModule;
@@ -254,6 +255,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             if (state.getValue(MechHangarBlock.FORMED) != formed) {
                 level.setBlock(pos, state.setValue(MechHangarBlock.FORMED, formed), Block.UPDATE_ALL);
                 level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 0.8F);
+                if (formed) {
+                    Effects.reveal(level, Blueprint.MECH_HANGAR.ghosts(worldPosition, facing()).stream().map(Blueprint.Ghost::pos).toList());
+                }
                 setPartsFormed(level, formed);
             } else if (formed) {
                 setPartsFormed(level, true);

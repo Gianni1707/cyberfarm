@@ -6,6 +6,7 @@ import java.util.List;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.IntakeGateBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.item.MobCapsuleItem;
@@ -259,6 +260,9 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
             if (changed) {
                 level.setBlock(pos, state.setValue(MethaneExtractorBlock.FORMED, formed), Block.UPDATE_ALL);
                 level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (formed) {
+                    Effects.reveal(level, chamberBlocks(pos));
+                }
             }
             // Re-applied while formed, so a frame shared with a broken neighbour chamber lights up again
             if (formed || changed) {

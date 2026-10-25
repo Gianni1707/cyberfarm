@@ -24,6 +24,7 @@ public record MachineStatusPayload(BlockPos pos, MachineStatus status) implement
     public static void handle(MachineStatusPayload payload, IPayloadContext context) {
         if (context.player().level().getBlockEntity(payload.pos()) instanceof MachineBlockEntity machine) {
             machine.status = payload.status();
+            machine.statusTime = context.player().level().getGameTime();
         }
     }
 }

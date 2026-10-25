@@ -71,6 +71,51 @@ def lit_machine(name, top, side="machine_side", bottom="machine_bottom"):
     facing_blockstate(name, {"lit=false": name, "lit=true": f"{name}_on"})
 
 
+def assembler_models():
+    """The Drone Assembler as an open chamber, so the drone it makes shows inside: a low base with
+    the control panel and the assembly pad, a steel pillar on each corner and a cap with the emitter
+    looking down. Working, the pillars' light lines, the emitter and the panel glow in the dark."""
+    sides = ("north", "east", "south", "west")
+    pillars = [(x, z) for x in (0, 14) for z in (0, 14)]
+
+    def elements(on):
+        base = {"from": [0, 0, 0], "to": [16, 4, 16], "faces": {
+            "north": {"uv": [0, 12, 16, 16], "texture": "#front", "cullface": "north"},
+            **{d: {"uv": [0, 12, 16, 16], "texture": "#side", "cullface": d} for d in sides[1:]},
+            "up": {"texture": "#pad"}, "down": {"texture": "#bottom", "cullface": "down"}}}
+        posts = [{"from": [x, 4, z], "to": [x + 2, 14, z + 2],
+                  "faces": {d: {"uv": [7, 2, 9, 12], "texture": "#pillar"} for d in sides}} for x, z in pillars]
+        cap = {"from": [0, 14, 0], "to": [16, 16, 16], "faces": {
+            **{d: {"uv": [0, 0, 16, 2], "texture": "#cap", "cullface": d} for d in sides},
+            "up": {"texture": "#cap_top", "cullface": "up"}, "down": {"texture": "#emitter"}}}
+        parts = [base, *posts, cap]
+        if on:
+            glow = {"shade": False, "light_emission": 15}
+            # Each a hair outside the part it lights, so it never fights with the faces under it
+            parts.append({"from": [-0.01, -0.01, -0.01], "to": [16.01, 4, 16.01], **glow, "faces": {
+                "north": {"uv": [0, 12, 16, 16], "texture": "#front_glow", "cullface": "north"},
+                **{d: {"uv": [0, 12, 16, 16], "texture": "#side_glow", "cullface": d} for d in sides[1:]}}})
+            parts += [{"from": [x - 0.01, 4, z - 0.01], "to": [x + 2.01, 14, z + 2.01], **glow,
+                       "faces": {d: {"uv": [7, 2, 9, 12], "texture": "#pillar_glow"} for d in sides}} for x, z in pillars]
+            parts.append({"from": [0, 13.99, 0], "to": [16, 13.99, 16], **glow,
+                          "faces": {"down": {"uv": [0, 0, 16, 16], "texture": "#emitter_glow"}}})
+        return parts
+
+    for on in (False, True):
+        lit = "_on" if on else ""
+        textures = {"particle": tex("drone_assembler_side"), "front": tex(f"drone_assembler_front{lit}"),
+                    "side": tex("drone_assembler_side"), "pad": tex("drone_assembler_top"), "bottom": tex("machine_bottom"),
+                    "pillar": tex(f"drone_assembler_pillar{lit}"), "cap": tex("drone_assembler_cap"), "cap_top": tex("machine_top"),
+                    "emitter": tex(f"drone_assembler_emitter{lit}")}
+        if on:
+            textures.update({"front_glow": tex("drone_assembler_front_glow"), "side_glow": tex("drone_assembler_side_glow"),
+                             "pillar_glow": tex("drone_assembler_pillar_glow"), "emitter_glow": tex("drone_assembler_emitter_glow")})
+        write(ASSETS / f"models/block/drone_assembler{lit}.json", {
+            "parent": "minecraft:block/block", **({"render_type": "minecraft:cutout"} if on else {}),
+            "textures": textures, "elements": elements(on)})
+    facing_blockstate("drone_assembler", {"lit=false": "drone_assembler", "lit=true": "drone_assembler_on"})
+
+
 def facing_blockstate(name, extra=None):
     """Variants for every horizontal facing; `extra` maps a property value suffix to a model."""
     variants = {}
@@ -267,7 +312,7 @@ def block_loot(name):
 def blocks():
     lit_machine("combustion_generator", "combustion_generator_top")
 
-    lit_machine("drone_assembler", "drone_assembler_top", side="drone_assembler_side")
+    assembler_models()
 
     dock_model()
     facing_blockstate("drone_dock")

@@ -346,6 +346,20 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
 - **Accenti luminosi**: il modello acceso (`lit_machine` in `assetgen.py`) ha una seconda pelle appena fuori dal cubo con
   `light_emission: 15` e le sole luci del frontale e dei lati (maschere `_glow`), così di notte e con gli shader brillano.
 
+### Momenti da clip
+- `Effects` (server) manda `EffectPayload` ai giocatori che hanno il chunk caricato; `EffectRenderer` (client) li disegna per un
+  numero fisso di tick, con lo stesso schema di `ProjectionRenderer` (extract + submit della geometria).
+- **Stampa** (12 tick): ogni blocco piazzato da un Builder ha un guscio di luce che si stringe e una linea di scansione che scende,
+  più scintille. Usato anche dall'Assembler a fine assemblaggio, sopra di sé.
+- **Svelamento** (32 tick): quando un multiblocco si forma (reattore, turbina, Crystallizer, Hangar, Methane Extractor,
+  Steam Engine, Resonance Core) un anello di luce sale dal basso all'alto del suo ingombro, con alone e spigoli che si accendono,
+  e puntini di luce dalla base.
+- **Assembler**: il blocco è una camera aperta (base bassa col pannello e il pad, quattro pilastri d'acciaio con linea di luce,
+  cappello con l'emettitore rivolto in basso; acceso, scintilla che sale sui pilastri ed emettitore e pannello che brillano).
+  `AssemblerRenderer` mostra il drone in costruzione come ologramma sul pad, dentro la camera: da tenue e chiuso a pieno
+  e aperto, rotori che partono nell'ultimo quarto, anello di scansione. L'avanzamento viene da `MachineStatus` e prosegue fluido
+  tra un pacchetto e l'altro (`statusTime`).
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,
