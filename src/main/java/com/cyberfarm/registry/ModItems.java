@@ -41,6 +41,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> DRONE_ASSEMBLER = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_ASSEMBLER);
     public static final DeferredItem<BlockItem> DRONE_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_DOCK);
     public static final DeferredItem<BlockItem> SWARM_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.SWARM_DOCK);
+    public static final DeferredItem<BlockItem> HOLOGRAM_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.HOLOGRAM_TABLE);
     public static final DeferredItem<BlockItem> ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ADVANCED_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ELITE_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ENERGY_CONDUIT);

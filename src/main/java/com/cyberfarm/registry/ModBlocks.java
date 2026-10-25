@@ -5,6 +5,7 @@ import com.cyberfarm.block.AcidSynthesizerBlock;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.SwarmDockBlock;
+import com.cyberfarm.block.HologramTableBlock;
 import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.CoolantBlock;
@@ -56,6 +57,8 @@ public class ModBlocks {
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
     public static final DeferredBlock<SwarmDockBlock> SWARM_DOCK = BLOCKS.registerBlock("swarm_dock",
             SwarmDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
+    public static final DeferredBlock<HologramTableBlock> HOLOGRAM_TABLE = BLOCKS.registerBlock("hologram_table",
+            HologramTableBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 9));
 
     // Cables and pipes in three tiers, rates comparable to Immersive Engineering and Mekanism
     public static final DeferredBlock<EnergyConduitBlock> ENERGY_CONDUIT = BLOCKS.registerBlock("energy_conduit",

@@ -915,6 +915,28 @@ def dock_top():
     return c
 
 
+def hologram_table_top():
+    """Hologram Table plate: a dark top with a ring of cyan lenses round the emitter."""
+    c = panel(14)
+    c.disc(7.5, 7.5, 5.2, "k")
+    c.disc(7.5, 7.5, 4.4, "b", r_inner=3.4)
+    c.disc(7.5, 7.5, 2.2, "c")
+    c.disc(7.5, 7.5, 1.0, "C")
+    for x, y in ((7, 3), (8, 3), (7, 12), (8, 12), (3, 7), (3, 8), (12, 7), (12, 8)):
+        c.set(x, y, "C")
+    return c
+
+
+def hologram_table_side():
+    """Hologram Table side: only the bottom five rows show, the plate's rim with a lit strip."""
+    c = panel(15)
+    c.rect(0, 11, 15, 11, "k")
+    c.rect(1, 12, 14, 14, "m")
+    c.rect(2, 13, 13, 13, "c")
+    c.rect(0, 15, 15, 15, "k")
+    return c
+
+
 def swarm_dock_top():
     """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross."""
     c = Canvas()
@@ -2186,6 +2208,9 @@ def build_all():
         "block/drone_assembler_side": assembler_side(),
         "block/drone_dock_top": dock_top(),
         "block/swarm_dock_top": swarm_dock_top(),
+        "block/hologram_table_top": hologram_table_top(),
+        "block/hologram_table_side": hologram_table_side(),
+        "entity/hologram": plain_white(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
         **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},

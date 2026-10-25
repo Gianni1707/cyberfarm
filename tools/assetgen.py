@@ -86,6 +86,26 @@ def dock_model():
         },
         "elements": elements,
     })
+    # Hologram Table: a low projector plate with an emitter post on each corner, like the dock's
+    # beacons; the projection is drawn by its renderer
+    rim = {d: {"texture": "#side", "uv": [0, 11, 16, 16], "cullface": d} for d in ("north", "east", "south", "west")}
+    post_side = {"uv": [0, 0, 2, 3], "texture": "#beacon"}
+    posts = [{
+        "from": [x, 5, z], "to": [x + 2, 8, z + 2],
+        "faces": {"up": {"uv": [4, 0, 6, 2], "texture": "#beacon"},
+                  "north": post_side, "east": post_side, "south": post_side, "west": post_side},
+    } for x in (0, 14) for z in (0, 14)]
+    write(ASSETS / "models/block/hologram_table.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": tex("hologram_table_side"), "side": tex("hologram_table_side"),
+                     "top": tex("hologram_table_top"), "bottom": tex("machine_bottom"), "beacon": tex("drone_dock_beacon")},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 5, 16],
+             "faces": {**rim, "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
+            *posts,
+        ],
+    })
+    write(ASSETS / "blockstates/hologram_table.json", {"variants": {"": {"model": f"{NS}:block/hologram_table"}}})
     # The Builder Swarm Dock: the same pad with four landing rings on top
     write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
 
@@ -278,7 +298,7 @@ def blocks():
     coolant_blocks()
     energy_storage_models()
 
-    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock",
+    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
@@ -593,6 +613,7 @@ def recipes():
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
     shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
+    shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": core})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
     shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)

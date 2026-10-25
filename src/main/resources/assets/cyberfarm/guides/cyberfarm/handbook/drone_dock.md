@@ -137,3 +137,5 @@ the Multiblock Projector, and they split its blocks between them.
   many drones are on the dock.
 
 <RecipeFor id="swarm_dock" />
+
+The [Hologram Table](hologram_table.md) shows all your docks and drones on a 3D map.
