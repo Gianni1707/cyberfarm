@@ -1,0 +1,40 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:taxi_module"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.taxi.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.taxi.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "ride": {
+      "trigger": "minecraft:started_riding",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "vehicle": {
+                "type": "cyberfarm:drone"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ride"
+    ]
+  ],
+  "parent": "cyberfarm:deploy_drone"
+}

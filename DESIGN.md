@@ -134,6 +134,8 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
   del fronte, interno vuoto per il rotore. Small 3×3×4 (200 mB/t, 4 FE/mB), Medium 5×5×6 (600, 5), Large 7×7×8 (1600, 6).
   Il rotore accelera e rallenta gradualmente; formata diventa un cilindro bianco/azzurro con rotore animato. Accetta `c:steam`.
 
+**Advancement** — scheda CyberFarm (sfondo `machine_side`), generata da `assetgen.advancements()` con trigger vanilla: tre rami dal Drone Core: droni (assembla, schiera, Survey Tool, Taxi, telaio Elite, sciame, collega una costruzione), energia (combustione, turbina a gas, Steam Engine, Resonance Core), nucleare fino al mech (uranio, reattore, barra esausta, tuta hazmat, Fusion Crystal, Mech Core, pilota il mech: sfida). Il collegamento col proiettore avviene in `onItemUseFirst`, che salta il trigger vanilla: lo fa scattare `ProjectorItem` a mano.
+
 **Multiblock Projector** — ispirato al Projector di Immersive Engineering: click destro apre la lista delle strutture
 (`ProjectorScreen`, con i blocchi che servono; pacchetto `ProjectorSelectPayload`), la proiezione segue lo sguardo e si
 blocca con Shift + click destro su un blocco (su un controller si allinea), Shift + click destro in aria la sblocca;

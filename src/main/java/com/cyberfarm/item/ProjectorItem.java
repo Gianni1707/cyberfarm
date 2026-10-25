@@ -20,7 +20,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -115,6 +117,10 @@ public class ProjectorItem extends Item {
         }
         BuildPlan plan = new BuildPlan(structure(stack), pinned.controller(), pinned.facing());
         dock.setBuildPlan(plan);
+        // Vanilla only counts item uses that reach the block, and this one acts before: count it here
+        if (player instanceof ServerPlayer serverPlayer) {
+            CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, context.getClickedPos(), stack);
+        }
         player.playSound(SoundEvents.BEACON_ACTIVATE, 0.4F, 1.6F);
         player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.linked", plan.structure().displayName(),
                 plan.remaining(level), plan.obstacles(level)));

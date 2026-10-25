@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:depleted_fuel_rod"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.spent_fuel.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.spent_fuel.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:depleted_fuel_rod"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ],
+  "parent": "cyberfarm:reactor"
+}

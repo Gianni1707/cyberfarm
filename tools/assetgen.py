@@ -739,9 +739,77 @@ def sounds():
                                    for name, entries in events.items()})
 
 
+# --------------------------------------------------------------------------- advancements
+
+def _advancement(name, parent, icon, criteria, frame="task"):
+    display = {
+        "icon": {"id": f"{NS}:{icon}"},
+        "title": {"translate": f"advancements.{NS}.{name}.title"},
+        "description": {"translate": f"advancements.{NS}.{name}.description"},
+        "frame": frame,
+        "show_toast": parent is not None,
+        "announce_to_chat": parent is not None,
+    }
+    data = {"display": display, "criteria": criteria, "requirements": [[key] for key in criteria]}
+    if parent:
+        data["parent"] = f"{NS}:{parent}"
+    else:
+        # The tab's background: the mod's machine plating, tiled
+        display["background"] = f"{NS}:block/machine_side"
+    write(DATA / f"advancement/{name}.json", data)
+
+
+def _has(*items):
+    """All these items in the inventory at once."""
+    return {"get": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": f"{NS}:{i}"} for i in items]}}}
+
+
+def _placed(block):
+    return {"place": {"trigger": "minecraft:placed_block", "conditions": {"location": [
+        {"condition": "minecraft:location_check", "predicate": {"block": {"blocks": f"{NS}:{block}"}}}]}}}
+
+
+def _used_on(item, block):
+    return {"use": {"trigger": "minecraft:item_used_on_block", "conditions": {"location": [
+        {"condition": "minecraft:location_check", "predicate": {"block": {"blocks": f"{NS}:{block}"}}},
+        {"condition": "minecraft:match_tool", "predicate": {"items": f"{NS}:{item}"}}]}}}
+
+
+def _rides(entity):
+    return {"ride": {"trigger": "minecraft:started_riding", "conditions": {"player": [
+        {"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"vehicle": {"type": f"{NS}:{entity}"}}}]}}}
+
+
+def advancements():
+    """The CyberFarm tab: three branches from the Drone Core, drones, power, and nuclear up to the mech."""
+    _advancement("root", None, "drone_core", _has("drone_core"))
+    # Drones
+    _advancement("assemble_drone", "root", "drone", _has("drone"))
+    _advancement("deploy_drone", "assemble_drone", "drone_dock", _used_on("drone", "drone_dock"))
+    _advancement("survey_tool", "deploy_drone", "survey_tool", _has("survey_tool"))
+    _advancement("taxi", "deploy_drone", "taxi_module", _rides("drone"))
+    _advancement("elite_frame", "assemble_drone", "elite_frame", _has("elite_frame"), "goal")
+    _advancement("swarm", "deploy_drone", "swarm_dock", _used_on("drone", "swarm_dock"))
+    _advancement("construction", "swarm", "multiblock_projector", _used_on("multiblock_projector", "swarm_dock"), "goal")
+    # Power
+    _advancement("power_on", "root", "combustion_generator", _placed("combustion_generator"))
+    _advancement("gas_power", "power_on", "gas_turbine", _placed("gas_turbine"))
+    _advancement("steam_engine", "gas_power", "steam_engine", _placed("steam_engine"))
+    _advancement("energy_storage", "power_on", "resonance_core", _placed("resonance_core"), "goal")
+    # Nuclear, then the mech
+    _advancement("uranium", "power_on", "raw_uranium", _has("raw_uranium"))
+    _advancement("reactor", "uranium", "reactor_controller", _placed("reactor_controller"))
+    _advancement("spent_fuel", "reactor", "depleted_fuel_rod", _has("depleted_fuel_rod"), "goal")
+    _advancement("hazmat", "reactor", "hazmat_suit", _has("hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots"))
+    _advancement("fusion_crystal", "spent_fuel", "fusion_crystal", _has("fusion_crystal"))
+    _advancement("mech_core", "fusion_crystal", "mech_core", _has("mech_core"))
+    _advancement("pilot_mech", "mech_core", "mech_frame", _rides("mech"), "challenge")
+
+
 if __name__ == "__main__":
     blocks()
     items()
     recipes()
     sounds()
+    advancements()
     print("assets and data written")

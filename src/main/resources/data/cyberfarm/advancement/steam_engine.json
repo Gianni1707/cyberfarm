@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:steam_engine"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.steam_engine.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.steam_engine.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "place": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:steam_engine"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place"
+    ]
+  ],
+  "parent": "cyberfarm:gas_power"
+}

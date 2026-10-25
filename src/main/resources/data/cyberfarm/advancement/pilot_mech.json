@@ -1,0 +1,40 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:mech_frame"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.pilot_mech.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.pilot_mech.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "ride": {
+      "trigger": "minecraft:started_riding",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "vehicle": {
+                "type": "cyberfarm:mech"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "ride"
+    ]
+  ],
+  "parent": "cyberfarm:mech_core"
+}

@@ -14,6 +14,9 @@ item_ids:
 
 Your first farming drone needs iron, copper, redstone and a little gold. Here is the whole path.
 
+The **CyberFarm** tab of the advancements screen (press L) shows where to go next: drones,
+power, and nuclear power up to the mech.
+
 ## 1. Craft the components
 
 Every CyberFarm machine and drone is built around the <ItemLink id="drone_core" />.

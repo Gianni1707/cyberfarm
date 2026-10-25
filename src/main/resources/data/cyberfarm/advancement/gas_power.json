@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:gas_turbine"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.gas_power.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.gas_power.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "place": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:gas_turbine"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place"
+    ]
+  ],
+  "parent": "cyberfarm:power_on"
+}

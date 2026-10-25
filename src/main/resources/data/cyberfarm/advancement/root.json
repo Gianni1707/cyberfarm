@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:drone_core"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.root.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.root.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": false,
+    "background": "cyberfarm:block/machine_side"
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:drone_core"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ]
+}
