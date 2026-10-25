@@ -1,6 +1,7 @@
 package com.cyberfarm.drone.job;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.drone.DroneFlight;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -158,7 +159,7 @@ public class MineJob extends DroneJob {
         if (!routeChecked) {
             routeChecked = true;
             if (!drone.canFlyStraightTo(hover)) {
-                double altitude = Math.max(drone.getY(), TaxiJob.cruiseAltitude(level, drone.position(), hover) - DroneEntity.PASSENGER_DROP);
+                double altitude = Math.max(drone.getY(), DroneFlight.cruiseAltitude(level, drone.position(), hover) - DroneEntity.PASSENGER_DROP);
                 // Only through open sky: both columns must be clear up to the crossing altitude
                 if (drone.canFlyStraightTo(new Vec3(drone.getX(), altitude, drone.getZ()))
                         && level.clip(new ClipContext(hover, new Vec3(hover.x, altitude, hover.z), ClipContext.Block.COLLIDER,

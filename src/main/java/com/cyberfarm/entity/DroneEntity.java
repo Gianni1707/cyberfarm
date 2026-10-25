@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneCargo;
+import com.cyberfarm.drone.DroneFlight;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.drone.job.DroneJob;
@@ -67,10 +68,6 @@ public class DroneEntity extends PathfinderMob {
 
     /** Height above the dock block where the drone parks: just over the 6px pad. */
     public static final double DOCK_HEIGHT = 0.4;
-    /** Within this horizontal distance of the dock the drone stops pathfinding and lands by hand. */
-    private static final double LANDING_RADIUS = 2.5;
-    /** The drone lines up this high above the pad before descending. */
-    private static final double APPROACH_HEIGHT = 0.8;
     /** A Taxi drone waits for passengers this high above its parking spot. */
     private static final double TAXI_WAIT_HEIGHT = 2.7;
     /**
@@ -80,15 +77,7 @@ public class DroneEntity extends PathfinderMob {
     public static final double PASSENGER_DROP = 2.25;
     /** How far the raised arm's hand sits to the side of a player's centre. */
     private static final double HAND_SIDE = 0.34;
-    /** Beyond this horizontal distance the drone climbs over the terrain before heading home. */
-    private static final double LONG_TRIP = 16.0;
     private static final int SCAN_INTERVAL = 40;
-    /** Cruise speed in blocks per tick of a 100% frame (3 blocks/s); the Basic frame flies at 80%. */
-    private static final double BASE_SPEED = 0.15;
-    /** Ticks pushing against a block before falling back to pathfinding... */
-    private static final int STUCK_LIMIT = 20;
-    /** ...and how long to pathfind before trying a straight line again. */
-    private static final int PATHFIND_TICKS = 60;
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
@@ -124,9 +113,7 @@ public class DroneEntity extends PathfinderMob {
     /** Round robin over the modules, so one busy module does not starve the others. */
     private int nextTask;
     private int scanCooldown;
-    private int stuckTicks;
-    private double returnAltitude = Double.NaN;
-    private int pathfindTicks;
+    private final DroneFlight flight = new DroneFlight(this, () -> modules.speed());
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final DroneCargo cargo = new DroneCargo();
     /** Where a drone being picked up lands, and who gets it; null when nobody is picking it up. */
@@ -246,7 +233,7 @@ public class DroneEntity extends PathfinderMob {
         entityData.set(DATA_STARTUP, 0L);
         pickupBy = player.getUUID();
         landingTicks = 0;
-        if (dockPos != null && dockHover().subtract(position()).horizontalDistance() < LANDING_RADIUS) {
+        if (dockPos != null && dockHover().subtract(position()).horizontalDistance() < DroneFlight.LANDING_RADIUS) {
             landingSpot = dockHover();
         } else {
             HitResult ground = level.clip(new ClipContext(position(), position().subtract(0.0, 64.0, 0.0),
@@ -267,7 +254,7 @@ public class DroneEntity extends PathfinderMob {
             }
             return;
         }
-        holdMoveControl();
+        flight.holdMoveControl();
         setDeltaMovement(Vec3.ZERO);
         int elapsed = (int) shutdownTicks(0.0F);
         if (elapsed == FOLD_START) {
@@ -298,7 +285,7 @@ public class DroneEntity extends PathfinderMob {
     /** Waits on the pad while it unfolds and spins up, then rises above the dock and hovers until the end. */
     private void tickStartup(int elapsed) {
         if (elapsed < LIFT_START) {
-            holdMoveControl();
+            flight.holdMoveControl();
             setDeltaMovement(Vec3.ZERO);
             return;
         }
@@ -392,49 +379,17 @@ public class DroneEntity extends PathfinderMob {
     }
 
     public double cruiseSpeed() {
-        return BASE_SPEED * modules.speed();
+        return flight.cruiseSpeed();
     }
 
-    /**
-     * Flies in a straight line toward {@code target}, accelerating smoothly, easing off near it and
-     * turning gradually. Call it every tick. Vanilla pathfinding re-plans between grid nodes and
-     * zig-zags, so it is only used for a few seconds after the drone gets stuck against a block.
-     */
+    /** Flies straight toward {@code target}; see {@link DroneFlight#flyTowards}. Call it every tick. */
     public void flyTowards(Vec3 target) {
-        if (pathfindTicks > 0) {
-            pathfindTicks--;
-            if (tickCount % 10 == 0 || navigation.isDone()) {
-                navigation.moveTo(target.x, target.y, target.z, modules.speed());
-            }
-            return;
-        }
-        navigation.stop();
-        holdMoveControl();
+        flight.flyTowards(target);
+    }
 
-        Vec3 delta = target.subtract(position());
-        double distance = delta.length();
-        if (distance < 0.02) {
-            setDeltaMovement(Vec3.ZERO);
-            return;
-        }
-        double speed = Math.min(cruiseSpeed(), distance * 0.3);
-        Vec3 desired = delta.scale(speed / distance);
-        setDeltaMovement(getDeltaMovement().lerp(desired, 0.5));
-        if (desired.horizontalDistanceSqr() > 1.0E-4) {
-            float yaw = (float) (Mth.atan2(desired.z, desired.x) * Mth.RAD_TO_DEG) - 90.0F;
-            setYRot(Mth.approachDegrees(getYRot(), yaw, 8.0F));
-            yBodyRot = getYRot();
-            yHeadRot = getYRot();
-        }
-
-        if (horizontalCollision || (verticalCollision && Math.abs(delta.y) > 0.5)) {
-            if (++stuckTicks > STUCK_LIMIT) {
-                stuckTicks = 0;
-                pathfindTicks = PATHFIND_TICKS;
-            }
-        } else if (stuckTicks > 0) {
-            stuckTicks--;
-        }
+    /** Whether no block stands on the straight line from the drone to {@code target}. */
+    public boolean canFlyStraightTo(Vec3 target) {
+        return flight.canFlyStraightTo(target);
     }
 
     // ---------------------------------------------------------------- AI
@@ -484,76 +439,11 @@ public class DroneEntity extends PathfinderMob {
         return new Vec3(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5);
     }
 
-    /**
-     * Brings the drone onto the pad: pathfinding up to a point above the dock, then a slow
-     * vertical descent with speed easing off near the pad. Returns true once it is parked.
-     * The vanilla flying move control always pushes at full speed, so it overshoots small
-     * targets; the last metres are steered by hand instead.
-     */
-    private boolean flyHome() {
-        Vec3 home = dockHover();
-        double horizontal = home.subtract(position()).horizontalDistance();
-        if (horizontal > LANDING_RADIUS) {
-            Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
-            if ((!Double.isNaN(returnAltitude) || horizontal > LONG_TRIP || isWalledIn(approach)) && level() instanceof ServerLevel level) {
-                // Long way home (e.g. after a taxi trip), or out of a quarry pit whose rim blocks
-                // the straight line: climb over the terrain first, then cruise
-                if (Double.isNaN(returnAltitude)) {
-                    returnAltitude = TaxiJob.cruiseAltitude(level, position(), approach) - PASSENGER_DROP;
-                }
-                flyTowards(getY() < returnAltitude - 0.5
-                        ? new Vec3(getX(), returnAltitude, getZ())
-                        : new Vec3(home.x, returnAltitude, home.z));
-            } else {
-                flyTowards(approach);
-            }
-            return false;
-        }
-
-        returnAltitude = Double.NaN;
-        pathfindTicks = 0;
-        navigation.stop();
-        holdMoveControl();
-        // Line up above the pad first, then descend straight down
-        Vec3 target = horizontal > 0.2 ? new Vec3(home.x, Math.max(getY(), home.y + APPROACH_HEIGHT), home.z) : home;
-        Vec3 delta = target.subtract(position());
-        if (horizontal <= 0.2 && Math.abs(delta.y) < 0.03) {
-            setDeltaMovement(Vec3.ZERO);
-            if (position().distanceToSqr(home) > 1.0E-6) {
-                setPos(home.x, home.y, home.z);
-            }
-            return true;
-        }
-        double length = delta.length();
-        double speed = Math.min(0.2, length * 0.35);
-        setDeltaMovement(delta.scale(speed / length));
-        return false;
-    }
-
-    /** Whether no block stands on the straight line from the drone to {@code target}. */
-    public boolean canFlyStraightTo(Vec3 target) {
-        return level().clip(new ClipContext(position(), target, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, this))
-                .getType() == HitResult.Type.MISS;
-    }
-
-    /**
-     * Down in a pit: the way to {@code target} is blocked but the sky above is open, so climbing
-     * out is safe (under trees or a cave roof the drone keeps steering around instead).
-     */
-    private boolean isWalledIn(Vec3 target) {
-        return !canFlyStraightTo(target) && canFlyStraightTo(new Vec3(getX(), Math.max(getY(), target.y) + 1.0, getZ()));
-    }
-
-    /** Stops the vanilla move control from steering, so the velocity set by hand is kept. */
-    private void holdMoveControl() {
-        moveControl.setWantedPosition(getX(), getY(), getZ(), 0.0);
-    }
-
     private void tickDocked(ServerLevel level, DroneDockBlockEntity dock) {
         if (isWaitingForPassenger(dock)) {
             flyTowards(dockHover().add(0.0, TAXI_WAIT_HEIGHT, 0.0));
         } else {
-            flyHome();
+            flight.flyHome(dockHover());
         }
         cargo.unloadInto(dock);
 
@@ -594,22 +484,9 @@ public class DroneEntity extends PathfinderMob {
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.busy"));
             return;
         }
-        BlockPos destination = dock.getTaxiDestination();
-        if (destination == null) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.no_destination"));
-            return;
-        }
-        Vec3 dropOff = TaxiJob.dropOffPoint(destination);
-        double cruiseY = TaxiJob.cruiseAltitude(level, position(), dropOff);
-        // Up, across and down, there and back again
-        double route = (cruiseY - getY()) + dropOff.subtract(position()).horizontalDistance() + (cruiseY - dropOff.y);
-        int needed = (int) Math.ceil(2 * route / (cruiseSpeed() * 0.9) * modules.flightCost()) + TaxiJob.TRIP_COST;
-        if (energy < needed) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)));
-            return;
-        }
-        if (player.startRiding(this)) {
-            job = new TaxiJob(destination, player.getUUID(), cruiseY);
+        TaxiJob taxi = TaxiJob.plan(this, level, player, dock.getTaxiDestination(), energy, modules.flightCost());
+        if (taxi != null && player.startRiding(this)) {
+            job = taxi;
             jobTask = DroneTask.TAXI;
             setStatus(STATUS_WORKING);
             level.playSound(null, blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 1.0F, 1.2F);
@@ -635,7 +512,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void tickReturning() {
-        if (flyHome()) {
+        if (flight.flyHome(dockHover())) {
             unreachable.clear();
             scanCooldown = SCAN_INTERVAL;
             setStatus(STATUS_IDLE);
