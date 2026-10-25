@@ -8,6 +8,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -45,7 +46,10 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SURVEY_MODE = COMPONENTS.registerComponentType("survey_mode",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
-    /** Multiblock Projector: the chosen structure, and where and which way it is pinned. */
+    /** Multiblock Projector: the chosen structure (a multiblock or a schematic), and where and which way it is pinned. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>> PROJECTOR_STRUCTURE = COMPONENTS.registerComponentType("projector_structure",
+            builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
+    /** The multiblock's number, as projectors saved it before the schematics; still read so they keep their choice. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> PROJECTOR_BLUEPRINT = COMPONENTS.registerComponentType("projector_blueprint",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<BlockPos>> PROJECTOR_ANCHOR = COMPONENTS.registerComponentType("projector_anchor",

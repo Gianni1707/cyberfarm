@@ -17,6 +17,8 @@ import com.cyberfarm.entity.MechTogglePayload;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.ProjectorSelectPayload;
 import com.cyberfarm.item.SurveyModePayload;
+import com.cyberfarm.multiblock.Schematics;
+import com.cyberfarm.multiblock.SchematicsPayload;
 import com.cyberfarm.radiation.Radiation;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModBlocks;
@@ -72,6 +74,8 @@ public class CyberFarm {
         NeoForge.EVENT_BUS.addListener(MechEvents::onHarvestCheck);
         NeoForge.EVENT_BUS.addListener(MechEvents::onBlockBreak);
         NeoForge.EVENT_BUS.addListener(Radiation::onLevelTick);
+        NeoForge.EVENT_BUS.addListener(Schematics::onServerAboutToStart);
+        NeoForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -163,6 +167,7 @@ public class CyberFarm {
         event.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
                 .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
-                .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle);
+                .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
+                .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle);
     }
 }

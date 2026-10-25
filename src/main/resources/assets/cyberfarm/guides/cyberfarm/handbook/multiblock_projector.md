@@ -22,6 +22,10 @@ single block.
   [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
   [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
   [Crystallizer](mech_core.md) chamber.
+- Below the multiblocks the list has **schematics**, marked in cyan: ready-made buildings such as
+  a Watch Tower, a Storage Shed (a small depot) and a Drone Pad. Any data pack can add more: save a building with a
+  **Structure Block** and put the file in `data/<namespace>/structure/schematic/`. Its north side is
+  its front, which turns towards you. Schematics up to 32 blocks a side are shown.
 - While you hold it, the projection **follows the block you look at**: the structure **stands on**
   the face you aim at, the controller on the side towards you, facing you, and the rest stretches
   away from you.

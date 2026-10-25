@@ -2,8 +2,8 @@ package com.cyberfarm.drone.job;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.entity.DroneEntity;
-import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.multiblock.BuildPlan;
+import com.cyberfarm.multiblock.Structure;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -36,13 +36,13 @@ public class BuildJob extends DroneJob {
     private enum Phase { RISE, CLIMB, CROSS, APPROACH }
 
     private final BuildPlan plan;
-    private final Blueprint.Ghost ghost;
+    private final Structure.Ghost ghost;
     private final Vec3 hover;
     private final double crossY;
     private Phase phase = Phase.RISE;
     private int legTicks;
 
-    private BuildJob(BuildPlan plan, Blueprint.Ghost ghost) {
+    private BuildJob(BuildPlan plan, Structure.Ghost ghost) {
         this.plan = plan;
         this.ghost = ghost;
         this.hover = Vec3.atCenterOf(ghost.pos()).add(0.0, 1.0, 0.0);
@@ -55,12 +55,12 @@ public class BuildJob extends DroneJob {
             return null;
         }
         // Away from the dock only blocks whose item is in the cargo; on the dock also what it stocks
-        Blueprint.Ghost ghost = plan.claim(level, drone.getUUID(), drone.position(), pos -> !drone.isUnreachable(pos),
+        Structure.Ghost ghost = plan.claim(level, drone.getUUID(), drone.position(), pos -> !drone.isUnreachable(pos),
                 item -> drone.cargo().contains(stack -> stack.is(item)) || canLoadFromDock(drone, dock, stack -> stack.is(item)));
         if (ghost == null) {
             return null;
         }
-        Item item = ghost.show().asItem();
+        Item item = BuildPlan.cost(ghost.show());
         if (!drone.cargo().contains(stack -> stack.is(item))) {
             loadFromDock(drone, dock, stack -> stack.is(item), drone.transportCapacity());
         }
@@ -124,11 +124,11 @@ public class BuildJob extends DroneJob {
         if (!level.getBlockState(pos).canBeReplaced() || !plan.canPlace(level, ghost)) {
             return Result.DONE;
         }
-        ItemStack item = drone.cargo().takeOne(stack -> stack.is(ghost.show().asItem()));
+        ItemStack item = drone.cargo().takeOne(stack -> stack.is(BuildPlan.cost(ghost.show())));
         if (item.isEmpty()) {
             return Result.RETURN;
         }
-        BlockState state = plan.stateOf(ghost);
+        BlockState state = ghost.show();
         level.setBlock(pos, state, Block.UPDATE_ALL);
         state.getBlock().setPlacedBy(level, pos, state, null, item);
         level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);

@@ -137,8 +137,18 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
 (`ProjectorScreen`, con i blocchi che servono; pacchetto `ProjectorSelectPayload`), la proiezione segue lo sguardo e si
 blocca con Shift + click destro su un blocco (su un controller si allinea), Shift + click destro in aria la sblocca;
 blocchi fantasma per ciò che manca, rossi per ciò che è sbagliato, contatore sopra la hotbar. Click destro su una
-Drone Dock con la proiezione bloccata la collega alla dock (`BuildPlan`, salvato per nome del Blueprint); con una
+Drone Dock con la proiezione bloccata la collega alla dock (`BuildPlan`, salvato con l'id della struttura); con una
 proiezione sbloccata la scollega. In creativa il click destro su un blocco costruisce subito.
+**Schematiche**: interfaccia comune `Structure` per i multiblocchi (`Blueprint`) e le schematiche (`Schematic`). Le
+schematiche sono file `.nbt` della Structure Block vanilla sotto `structure/schematic/` di qualsiasi datapack (max 32
+blocchi per lato): il server le legge all'avvio e a ogni /reload (`Schematics`, dal formato salvato del template, senza
+access transformer) e le manda ai giocatori (`SchematicsPayload`). Il lato nord è il fronte, centrato sul blocco mirato
+e ruotato verso il giocatore. Aria, structure void e jigsaw esclusi; i dati dei block entity (contenuto delle casse)
+non vengono mai copiati. Nel proiettore stanno sotto i multiblocchi con un segno ciano; lista scorrevole, blocchi
+richiesti in griglia. Tre pronte, generate da `tools/schemgen.py`: Watch Tower, Storage Shed, Drone Pad. La proiezione
+usa la texture particellare di ogni blocco dall'atlas. Il Builder salta le metà superiori di porte e letti (le mette
+`setPlacedBy`) e i blocchi senza oggetto; un blocco che non può ancora stare in piedi o senza spazio sopra per il drone
+non ferma lo strato e alla fine resta da piazzare a mano (scheda Build: "Left for you to place").
 
 **Scorie e Waste Reprocessor**
 - Le Depleted Fuel Rod sono radioattive: in inventario, in una cassa o a terra contaminano la zona attorno.

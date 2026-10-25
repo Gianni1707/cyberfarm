@@ -40,7 +40,9 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
     private static final int TAB_BUILD = 2;
     private static final int PANEL_WIDTH = 116;
     private static final int LINE = 10;
-    private static final int BLOCK_ROW = 18;
+    /** The Build tab's blocks: icons with their counts, this many to a row. */
+    private static final int BLOCK_CELL = 18;
+    private static final int BLOCKS_PER_ROW = 5;
 
     private static final String[] STATUS_KEYS = {"none", "idle", "charging", "working", "returning"};
     /** Transport and Taxi drones follow a route or a destination, never the work area. */
@@ -115,7 +117,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             default -> 4;
         };
         int height = 12 + LINE + lines * LINE + (openTab == TAB_BATTERY ? 14 : 0)
-                + (openTab == TAB_BUILD ? buildRows().size() * BLOCK_ROW : 0);
+                + (openTab == TAB_BUILD ? blockGridRows() * BLOCK_CELL + (menu.getBuildMissingMore() > 0 && !buildBlocks().isEmpty() ? LINE : 0) : 0);
         return new Rect2i(tabX() - PANEL_WIDTH + 1, topPos + 2, PANEL_WIDTH, height);
     }
 
@@ -271,12 +273,19 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             }
         }
         if (openTab == TAB_BUILD) {
-            for (DroneDockMenu.MissingBlock missing : buildRows()) {
+            List<DroneDockMenu.MissingBlock> blocks = buildBlocks();
+            for (int i = 0; i < blocks.size(); i++) {
+                DroneDockMenu.MissingBlock missing = blocks.get(i);
+                int cellX = textX + (i % BLOCKS_PER_ROW) * BLOCK_CELL + 1;
+                int cellY = textY + (i / BLOCKS_PER_ROW) * BLOCK_CELL + 1;
+                drawSlot(graphics, cellX, cellY);
                 ItemStack stack = new ItemStack(missing.item());
-                graphics.item(stack, textX, textY);
-                String text = missing.count() + "x " + stack.getHoverName().getString();
-                graphics.text(font, font.plainSubstrByWidth(text, PANEL_WIDTH - 32), textX + 18, textY + 4, TEXT, false);
-                textY += BLOCK_ROW;
+                graphics.item(stack, cellX, cellY);
+                graphics.itemDecorations(font, stack, cellX, cellY, missing.count() >= 1000 ? missing.count() / 1000 + "k" : String.valueOf(missing.count()));
+            }
+            if (menu.getBuildMissingMore() > 0 && !blocks.isEmpty()) {
+                graphics.text(font, Component.translatable("gui.cyberfarm.dock.build_more", menu.getBuildMissingMore()),
+                        textX, textY + blockGridRows() * BLOCK_CELL + 1, TEXT_DIM, false);
             }
         } else if (openTab == TAB_BATTERY) {
             drawBattery(graphics, textX, textY, rect.getWidth() - 14);
@@ -327,7 +336,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         return lines;
     }
 
-    /** The Build tab's text: the layer being built, what is left and what is in the way; the blocks follow as rows. */
+    /** The Build tab's text: the layer being built, what is left and what is in the way; the blocks follow as a grid. */
     private List<Line> buildLines() {
         List<Line> lines = new ArrayList<>();
         if (!menu.hasBuild()) {
@@ -345,14 +354,20 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         if (menu.getBuildObstacles() > 0) {
             lines.add(new Line(Component.translatable("gui.cyberfarm.dock.build_obstacles", menu.getBuildObstacles()), WARM));
         }
-        if (!buildRows().isEmpty()) {
-            lines.add(new Line(Component.translatable("gui.cyberfarm.dock.build_needs"), ACCENT));
+        if (!buildBlocks().isEmpty()) {
+            // With no layer left the drones can build, what is left is for the player to place
+            lines.add(new Line(Component.translatable(menu.getBuildLayer() > 0 ? "gui.cyberfarm.dock.build_needs" : "gui.cyberfarm.dock.build_by_hand"),
+                    menu.getBuildLayer() > 0 ? ACCENT : WARM));
         }
         return lines;
     }
 
-    private List<DroneDockMenu.MissingBlock> buildRows() {
+    private List<DroneDockMenu.MissingBlock> buildBlocks() {
         return menu.hasBuild() && menu.getBuildRemaining() > 0 ? menu.getBuildMissing() : List.of();
+    }
+
+    private int blockGridRows() {
+        return (buildBlocks().size() + BLOCKS_PER_ROW - 1) / BLOCKS_PER_ROW;
     }
 
     private void drawBattery(GuiGraphicsExtractor graphics, int x, int y, int width) {
@@ -398,13 +413,15 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         } else if (tabCount() > TAB_BUILD && inTab(TAB_BUILD, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dock.tab.build"), mouseX, mouseY);
         } else if (openTab == TAB_BUILD) {
-            // Block rows: the full name, which may be cut short in the panel
+            // A block of the grid: its name
             Rect2i rect = panelRect();
-            int rowsTop = rect.getY() + 6 + LINE + 3 + buildLines().size() * LINE;
-            List<DroneDockMenu.MissingBlock> rows = buildRows();
-            int row = mouseY >= rowsTop ? (mouseY - rowsTop) / BLOCK_ROW : -1;
-            if (mouseX >= rect.getX() && mouseX < rect.getX() + rect.getWidth() && row >= 0 && row < rows.size()) {
-                graphics.setTooltipForNextFrame(font, new ItemStack(rows.get(row).item()).getHoverName(), mouseX, mouseY);
+            int gridX = rect.getX() + 7;
+            int gridY = rect.getY() + 6 + LINE + 3 + buildLines().size() * LINE;
+            List<DroneDockMenu.MissingBlock> blocks = buildBlocks();
+            int column = mouseX >= gridX ? (mouseX - gridX) / BLOCK_CELL : -1;
+            int index = mouseY >= gridY && column >= 0 && column < BLOCKS_PER_ROW ? (mouseY - gridY) / BLOCK_CELL * BLOCKS_PER_ROW + column : -1;
+            if (index >= 0 && index < blocks.size()) {
+                graphics.setTooltipForNextFrame(font, new ItemStack(blocks.get(index).item()).getHoverName(), mouseX, mouseY);
             }
         }
     }

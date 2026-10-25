@@ -196,7 +196,7 @@ other mods (everything in the `c:fertilizers` tag).
 
 <ItemImage id="cyberfarm:builder_module" scale="2" float="left" />
 
-The drone **builds a multiblock** for you: the one you lock with the
+The drone **builds a multiblock or a schematic** for you: the one you lock with the
 [Multiblock Projector](multiblock_projector.md) and link to its dock.
 
 <br clear="all" />
@@ -213,6 +213,8 @@ The drone **builds a multiblock** for you: the one you lock with the
 - The dock **takes in only the blocks the build still needs**. Point a Transport drone's route
   from your storage to the dock and it brings exactly what is missing, and nothing else.
 - It **never breaks blocks**: the dock screen counts the blocks in the way, and you clear them.
+- Doors and beds go in whole. Blocks it cannot place (water, a lantern hanging under a ceiling)
+  are listed in the Build tab at the end, for you to place by hand. Chests go in empty.
 - Several Builder drones on different docks can share one build: link the same projection to
   each dock and they split the blocks between them.
 

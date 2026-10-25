@@ -1,16 +1,18 @@
 package com.cyberfarm.multiblock;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 
+import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
-import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -20,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * The multiblocks the Multiblock Projector can show, each laid out from its controller's position
  * and facing, with the same rules the controllers check.
  */
-public enum Blueprint {
+public enum Blueprint implements Structure {
     REACTOR_SMALL("reactor", TowerSize.SMALL, null),
     REACTOR_MEDIUM("reactor", TowerSize.MEDIUM, null),
     REACTOR_LARGE("reactor", TowerSize.LARGE, null),
@@ -34,15 +36,8 @@ public enum Blueprint {
     MECH_HANGAR("mech_hangar", true),
     CRYSTALLIZER("crystallizer", false);
 
-    /**
-     * One block of the layout: {@code show} is what to place there (null: leave it empty) and
-     * {@code ok} whether what is there now is right.
-     */
-    public record Ghost(BlockPos pos, @Nullable Block show, Predicate<BlockState> ok) {}
-
-    /** Saved by name, so adding structures never shifts the saved ones. */
-    public static final Codec<Blueprint> CODEC = Codec.stringResolver(Blueprint::name,
-            name -> Arrays.stream(values()).filter(blueprint -> blueprint.name().equals(name)).findFirst().orElse(null));
+    /** One block of the layout as the helpers below draw it up; {@link #ghosts} turns it into placed states. */
+    private record Part(BlockPos pos, @Nullable Block show, Predicate<BlockState> ok) {}
 
     private final String name;
     private final @Nullable TowerSize tower;
@@ -80,6 +75,23 @@ public enum Blueprint {
         return "projector.cyberfarm." + name;
     }
 
+    @Override
+    public Identifier id() {
+        return CyberFarm.id(name().toLowerCase(Locale.ROOT));
+    }
+
+    @Override
+    public Component displayName() {
+        Component name = Component.translatable(key());
+        return sizeKey() == null ? name
+                : Component.translatable("message.cyberfarm.projector.sized", name, Component.translatable(sizeKey()));
+    }
+
+    @Override
+    public Component description() {
+        return Component.translatable(key() + ".desc");
+    }
+
     public @Nullable String sizeKey() {
         if (coreRadius > 0) {
             return "projector.cyberfarm.size.tier_" + (coreRadius + 1);
@@ -92,7 +104,14 @@ public enum Blueprint {
         return values()[Math.floorMod(ordinal, values().length)];
     }
 
+    @Override
     public List<Ghost> ghosts(BlockPos controller, Direction facing) {
+        return parts(controller, facing).stream()
+                .map(part -> new Ghost(part.pos(), part.show() != null ? placedState(part.show(), facing) : null, part.ok()))
+                .toList();
+    }
+
+    private List<Part> parts(BlockPos controller, Direction facing) {
         if (tower != null) {
             return fromCells(tower.cells(controller, facing), controller, ModBlocks.REACTOR_CONTROLLER.get(),
                     ModBlocks.REACTOR_CASING.get(), ModBlocks.REACTOR_PORT.get());
@@ -121,25 +140,25 @@ public enum Blueprint {
      * shoulders; a 3x3 charging pad in the middle with the space over it left free. Open in front
      * and on the sides, so the mech walks in and out.
      */
-    private static List<Ghost> mechHangar(BlockPos console, Direction facing) {
+    private static List<Part> mechHangar(BlockPos console, Direction facing) {
         Block frame = ModBlocks.HANGAR_FRAME.get();
         Block pad = ModBlocks.HANGAR_PAD.get();
         Direction across = facing.getCounterClockWise();
         Direction in = facing.getOpposite();
         int last = HANGAR_SIZE - 1;
-        List<Ghost> ghosts = new ArrayList<>();
+        List<Part> ghosts = new ArrayList<>();
         for (int w = 0; w < HANGAR_SIZE; w++) {
             for (int d = 0; d < HANGAR_SIZE; d++) {
                 BlockPos base = console.relative(across, w).relative(in, d);
                 boolean rail = w == 0 || w == last;
                 if (w == 0 && d == 0) {
-                    ghosts.add(new Ghost(base, ModBlocks.MECH_HANGAR.get(), state -> state.is(ModBlocks.MECH_HANGAR.get())));
+                    ghosts.add(new Part(base, ModBlocks.MECH_HANGAR.get(), state -> state.is(ModBlocks.MECH_HANGAR.get())));
                 } else if (rail) {
                     ghosts.add(frame(base, frame));
                 } else if (d >= 1 && d <= 3) {
                     ghosts.add(frame(base, pad));
                     for (int y = 1; y < HANGAR_TOP; y++) {
-                        ghosts.add(new Ghost(base.above(y), null, BlockState::isAir));
+                        ghosts.add(new Part(base.above(y), null, BlockState::isAir));
                     }
                 }
                 // Posts at the back of the rails, the beam across their tops, the arms forward over the pad
@@ -166,16 +185,16 @@ public enum Blueprint {
      * A Resonance Core tier: the shell cube over the pedestal, empty inside, and the pylon columns
      * it needs at their closest, east and west first. The core checks itself against the same rules.
      */
-    private static List<Ghost> resonanceCore(BlockPos core, int radius) {
+    private static List<Part> resonanceCore(BlockPos core, int radius) {
         Block cell = ModBlocks.RESONANCE_CELL.get();
         Block pylon = ModBlocks.STABILIZER_PYLON.get();
-        List<Ghost> ghosts = new ArrayList<>();
-        ghosts.add(new Ghost(core, ModBlocks.RESONANCE_CORE.get(), state -> state.is(ModBlocks.RESONANCE_CORE.get())));
+        List<Part> ghosts = new ArrayList<>();
+        ghosts.add(new Part(core, ModBlocks.RESONANCE_CORE.get(), state -> state.is(ModBlocks.RESONANCE_CORE.get())));
         BlockPos centre = core.above(1 + radius);
         for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-radius, -radius, -radius), centre.offset(radius, radius, radius))) {
             boolean surface = Math.max(Math.abs(pos.getX() - centre.getX()), Math.max(Math.abs(pos.getY() - centre.getY()),
                     Math.abs(pos.getZ() - centre.getZ()))) == radius;
-            ghosts.add(surface ? frame(pos.immutable(), cell) : new Ghost(pos.immutable(), null, BlockState::isAir));
+            ghosts.add(surface ? frame(pos.immutable(), cell) : new Part(pos.immutable(), null, BlockState::isAir));
         }
         int tier = radius + 1;
         Direction[] sides = {Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH};
@@ -199,7 +218,7 @@ public enum Blueprint {
      * two blocks in the middle left empty for the crystal. Any frame may be a Crystallizer Port
      * instead: the projector suggests one at the back of the floor.
      */
-    private static List<Ghost> crystallizer(BlockPos controller, Direction facing) {
+    private static List<Part> crystallizer(BlockPos controller, Direction facing) {
         Block frame = ModBlocks.CYBER_FRAME.get();
         Block glass = ModBlocks.CONTAINMENT_GLASS.get();
         Block crystallizer = ModBlocks.CRYSTALLIZER.get();
@@ -207,33 +226,33 @@ public enum Blueprint {
         Predicate<BlockState> shell = state -> state.is(frame) || state.is(port);
         BlockPos centre = crystallizerCentre(controller, facing);
         BlockPos suggested = centre.relative(facing.getOpposite());
-        List<Ghost> ghosts = new ArrayList<>();
+        List<Part> ghosts = new ArrayList<>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 boolean middle = dx == 0 && dz == 0;
                 boolean corner = dx != 0 && dz != 0;
                 BlockPos base = centre.offset(dx, 0, dz);
-                ghosts.add(base.equals(controller) ? new Ghost(base, crystallizer, state -> state.is(crystallizer))
-                        : new Ghost(base, base.equals(suggested) ? port : frame, shell));
+                ghosts.add(base.equals(controller) ? new Part(base, crystallizer, state -> state.is(crystallizer))
+                        : new Part(base, base.equals(suggested) ? port : frame, shell));
                 for (int dy = 1; dy <= 2; dy++) {
                     BlockPos pos = base.above(dy);
-                    ghosts.add(middle ? new Ghost(pos, null, BlockState::isAir) : corner ? new Ghost(pos, frame, shell) : frame(pos, glass));
+                    ghosts.add(middle ? new Part(pos, null, BlockState::isAir) : corner ? new Part(pos, frame, shell) : frame(pos, glass));
                 }
-                ghosts.add(new Ghost(base.above(3), frame, shell));
+                ghosts.add(new Part(base.above(3), frame, shell));
             }
         }
         return ghosts;
     }
 
-    private static List<Ghost> fromCells(List<Multiblock.Cell> cells, BlockPos controller, Block controllerBlock, Block casing, Block port) {
-        List<Ghost> ghosts = new ArrayList<>(cells.size());
+    private static List<Part> fromCells(List<Multiblock.Cell> cells, BlockPos controller, Block controllerBlock, Block casing, Block port) {
+        List<Part> ghosts = new ArrayList<>(cells.size());
         for (Multiblock.Cell cell : cells) {
             if (cell.pos().equals(controller)) {
-                ghosts.add(new Ghost(cell.pos(), controllerBlock, state -> state.is(controllerBlock)));
+                ghosts.add(new Part(cell.pos(), controllerBlock, state -> state.is(controllerBlock)));
             } else if (cell.part() == Multiblock.Part.SHELL) {
-                ghosts.add(new Ghost(cell.pos(), casing, state -> state.is(casing) || state.is(port)));
+                ghosts.add(new Part(cell.pos(), casing, state -> state.is(casing) || state.is(port)));
             } else if (cell.part() == Multiblock.Part.EMPTY) {
-                ghosts.add(new Ghost(cell.pos(), null, BlockState::isAir));
+                ghosts.add(new Part(cell.pos(), null, BlockState::isAir));
             }
         }
         return ghosts;
@@ -244,28 +263,28 @@ public enum Blueprint {
      * Cyber Frame may be an Acid Inlet or a Methane Outlet instead, any glass of the lower wall an
      * Intake Gate: the projector suggests one of each.
      */
-    private static List<Ghost> methaneChamber(BlockPos top) {
+    private static List<Part> methaneChamber(BlockPos top) {
         Block frame = ModBlocks.CYBER_FRAME.get();
         Block glass = ModBlocks.CONTAINMENT_GLASS.get();
         Block extractor = ModBlocks.METHANE_EXTRACTOR.get();
         Predicate<BlockState> shell = state -> state.is(frame) || state.is(ModBlocks.ACID_INLET.get()) || state.is(ModBlocks.METHANE_OUTLET.get());
         Predicate<BlockState> lowerWall = state -> state.is(glass) || state.is(ModBlocks.INTAKE_GATE.get());
-        List<Ghost> ghosts = new ArrayList<>();
+        List<Part> ghosts = new ArrayList<>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 boolean centre = dx == 0 && dz == 0;
                 boolean corner = dx != 0 && dz != 0;
                 Block roof = dx == -1 && dz == 0 ? ModBlocks.ACID_INLET.get() : dx == 1 && dz == 0 ? ModBlocks.METHANE_OUTLET.get() : frame;
-                ghosts.add(centre ? new Ghost(top, extractor, state -> state.is(extractor)) : new Ghost(top.offset(dx, 0, dz), roof, shell));
+                ghosts.add(centre ? new Part(top, extractor, state -> state.is(extractor)) : new Part(top.offset(dx, 0, dz), roof, shell));
                 for (int dy = 1; dy <= 2; dy++) {
                     BlockPos pos = top.offset(dx, -dy, dz);
                     Block gate = dy == 2 && dx == 0 && dz == -1 ? ModBlocks.INTAKE_GATE.get() : glass;
-                    ghosts.add(centre ? new Ghost(pos, null, BlockState::isAir)
-                            : corner ? new Ghost(pos, frame, shell)
-                            : dy == 2 ? new Ghost(pos, gate, lowerWall)
+                    ghosts.add(centre ? new Part(pos, null, BlockState::isAir)
+                            : corner ? new Part(pos, frame, shell)
+                            : dy == 2 ? new Part(pos, gate, lowerWall)
                             : frame(pos, glass));
                 }
-                ghosts.add(new Ghost(top.offset(dx, -3, dz), frame, shell));
+                ghosts.add(new Part(top.offset(dx, -3, dz), frame, shell));
             }
         }
         return ghosts;
@@ -277,7 +296,7 @@ public enum Blueprint {
         return state.hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? state.setValue(BlockStateProperties.HORIZONTAL_FACING, facing) : state;
     }
 
-    private static Ghost frame(BlockPos pos, Block frame) {
-        return new Ghost(pos, frame, state -> state.is(frame));
+    private static Part frame(BlockPos pos, Block frame) {
+        return new Part(pos, frame, state -> state.is(frame));
     }
 }

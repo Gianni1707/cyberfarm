@@ -9,8 +9,8 @@ import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
 import com.cyberfarm.menu.ItemFilterMenu;
-import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.multiblock.BuildPlan;
+import com.cyberfarm.multiblock.Structure;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.Codec;
 
@@ -19,6 +19,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,9 +52,9 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public static final int DEFAULT_RADIUS = 4;
     /** Ticks without news from the drone before the dock shows it as offline. */
     private static final int STATUS_TIMEOUT = 100;
-    /** How many of the blocks the current layer misses the dock screen lists. */
-    public static final int BUILD_LIST = 6;
-    private static final int BUILD_LIST_DATA = 26;
+    /** How many kinds of block the current layer misses the dock screen lists; slot 26 counts the others. */
+    public static final int BUILD_LIST = 10;
+    private static final int BUILD_LIST_DATA = 27;
     /** Data slots after the energy ones; see {@link #getExtraData}. */
     public static final int EXTRA_DATA = BUILD_LIST_DATA + 3 * BUILD_LIST;
 
@@ -215,7 +216,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         }
         if (level.getGameTime() != shownMissingTick) {
             shownMissingTick = level.getGameTime();
-            shownMissing = buildPlan.missingInLayer(level).entrySet().stream().limit(BUILD_LIST).toList();
+            shownMissing = List.copyOf(buildPlan.missingInLayer(level).entrySet());
         }
         return shownMissing;
     }
@@ -305,7 +306,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             // Three slots per listed block: its item id + 1 in two halves (0: none), then how many are missing
             int index = (id - BUILD_LIST_DATA) / 3;
             List<Map.Entry<Item, Integer>> missing = shownMissing();
-            if (index >= missing.size()) {
+            if (index >= Math.min(missing.size(), BUILD_LIST)) {
                 return 0;
             }
             Map.Entry<Item, Integer> entry = missing.get(index);
@@ -344,6 +345,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             case 23 -> buildPlan != null && level != null ? Math.min(Short.MAX_VALUE, buildPlan.obstacles(level)) : 0;
             case 24 -> buildPlan != null && level != null ? buildPlan.layerNumber(level) : 0;
             case 25 -> buildPlan != null ? buildPlan.layerCount() : 0;
+            case 26 -> Math.max(0, shownMissing().size() - BUILD_LIST);
             default -> 0;
         };
     }
@@ -364,7 +366,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
         output.putBoolean("paused", paused);
         if (buildPlan != null) {
-            output.store("build", Blueprint.CODEC, buildPlan.blueprint());
+            output.store("build", Identifier.CODEC, buildPlan.structure().id());
             output.store("build_origin", BlockPos.CODEC, buildPlan.origin());
             output.store("build_facing", Direction.CODEC, buildPlan.facing());
         }
@@ -381,7 +383,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
         paused = input.getBooleanOr("paused", false);
-        Blueprint build = input.read("build", Blueprint.CODEC).orElse(null);
+        Structure build = input.read("build", Identifier.CODEC).flatMap(Structure::byId).orElse(null);
         BlockPos buildOrigin = input.read("build_origin", BlockPos.CODEC).orElse(null);
         buildPlan = build != null && buildOrigin != null
                 ? new BuildPlan(build, buildOrigin, input.read("build_facing", Direction.CODEC).orElse(Direction.NORTH)) : null;

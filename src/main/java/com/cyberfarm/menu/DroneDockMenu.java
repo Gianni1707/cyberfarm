@@ -145,16 +145,24 @@ public class DroneDockMenu extends MachineMenu {
 
     public record MissingBlock(Item item, int count) {}
 
-    /** The blocks the current layer still needs (up to {@link DroneDockBlockEntity#BUILD_LIST} kinds). */
+    /**
+     * The blocks the current layer still needs (up to {@link DroneDockBlockEntity#BUILD_LIST} kinds);
+     * with no layer left for the drones, the blocks left for the player.
+     */
     public List<MissingBlock> getBuildMissing() {
         List<MissingBlock> missing = new ArrayList<>();
         for (int i = 0; i < DroneDockBlockEntity.BUILD_LIST; i++) {
-            int item = combined(26 + 3 * i) - 1;
+            int item = combined(27 + 3 * i) - 1;
             if (item >= 0) {
-                missing.add(new MissingBlock(BuiltInRegistries.ITEM.byId(item), extra(28 + 3 * i)));
+                missing.add(new MissingBlock(BuiltInRegistries.ITEM.byId(item), extra(29 + 3 * i)));
             }
         }
         return missing;
+    }
+
+    /** Kinds of block the list leaves out. */
+    public int getBuildMissingMore() {
+        return extra(26);
     }
 
     /** An int sent as two 16-bit halves, starting at {@code index}. */
