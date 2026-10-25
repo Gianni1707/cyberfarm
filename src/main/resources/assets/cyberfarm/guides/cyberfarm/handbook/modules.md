@@ -14,6 +14,8 @@ item_ids:
   - cyberfarm:rancher_module
   - cyberfarm:fertilizer_module
   - cyberfarm:builder_module
+  - cyberfarm:fisher_module
+  - cyberfarm:breeder_module
 ---
 
 # Function Modules
@@ -40,6 +42,8 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Rancher Module | +1 FE/t | 15 FE per shearing or milking |
 | Fertilizer Module | +1 FE/t | 10 FE per use |
 | Builder Module | +2 FE/t | 20 FE per block |
+| Fisher Module | +1 FE/t | 10 FE per catch |
+| Breeder Module | +1 FE/t | 15 FE per animal fed |
 
 ## Harvester Module
 
@@ -222,3 +226,35 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
   each dock and they split the blocks between them.
 
 <RecipeFor id="builder_module" />
+
+## Fisher Module
+
+<ItemImage id="cyberfarm:fisher_module" scale="2" float="left" />
+
+The drone **fishes** in the water of its work area and brings the catch to the dock.
+
+<br clear="all" />
+
+- It needs **open water**: a water source block with air above it, inside the work area.
+- It hovers over the water, waits for a bite like a fishing rod and pulls out what a rod would,
+  with the same odds: mostly fish, some junk and now and then **treasure** (enchanted books, saddles,
+  name tags...).
+- It flies home when its cargo is full.
+
+<RecipeFor id="fisher_module" />
+
+## Breeder Module
+
+<ItemImage id="cyberfarm:breeder_module" scale="2" float="left" />
+
+The drone **feeds the animals** of its work area so they breed, with their food from the dock.
+
+<br clear="all" />
+
+- Put the food in the dock: wheat for cows and sheep, seeds for chickens, carrots for pigs, or
+  whatever a modded animal eats. The drone takes the right food for each animal.
+- It feeds an animal only when **two of a kind** are ready, so none of the food is wasted.
+- It stops once there are **16 of a kind** in the work area, babies included, so the farm does not
+  grow without end. Pairs well with a Rancher, or a Harvester for the crops they eat.
+
+<RecipeFor id="breeder_module" />

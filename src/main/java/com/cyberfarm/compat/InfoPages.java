@@ -94,7 +94,9 @@ public final class InfoPages {
                 page(ModItems.TAXI_MODULE.get()),
                 page(ModItems.RANCHER_MODULE.get()),
                 page(ModItems.FERTILIZER_MODULE.get()),
-                page(ModItems.BUILDER_MODULE.get()));
+                page(ModItems.BUILDER_MODULE.get()),
+                page(ModItems.FISHER_MODULE.get()),
+                page(ModItems.BREEDER_MODULE.get()));
     }
 
     private static Page page(Item item) {

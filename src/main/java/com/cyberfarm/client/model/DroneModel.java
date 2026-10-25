@@ -195,10 +195,11 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         drill.yRot = state.ageInTicks * 0.8F;
         // The Builder carries its blocks in the same claw
         claw.visible = state.has(DroneTask.TRANSPORT) || state.has(DroneTask.BUILD);
-        seedTank.visible = state.has(DroneTask.PLANT);
+        // The Breeder keeps its food in the Planter's tank, the Fisher casts with the Taxi's hook
+        seedTank.visible = state.has(DroneTask.PLANT) || state.has(DroneTask.BREED);
         saw.visible = state.has(DroneTask.LOG);
         saw.xRot = state.ageInTicks * 1.2F;
-        hook.visible = state.has(DroneTask.TAXI);
+        hook.visible = state.has(DroneTask.TAXI) || state.has(DroneTask.FISH);
         shears.visible = state.has(DroneTask.RANCH);
         // The blades snip open and shut
         shears.yRot = Mth.sin(state.ageInTicks * 0.5F) * 0.15F;

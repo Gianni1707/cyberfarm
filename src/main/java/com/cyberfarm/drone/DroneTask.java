@@ -1,9 +1,11 @@
 package com.cyberfarm.drone;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.drone.job.BreedJob;
 import com.cyberfarm.drone.job.BuildJob;
 import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.FertilizeJob;
+import com.cyberfarm.drone.job.FishJob;
 import com.cyberfarm.drone.job.HarvestJob;
 import com.cyberfarm.drone.job.LogJob;
 import com.cyberfarm.drone.job.MineJob;
@@ -26,7 +28,9 @@ public enum DroneTask {
     TAXI((drone, level, dock) -> null),
     RANCH(RancherJob::find),
     FERTILIZE(FertilizeJob::find),
-    BUILD(BuildJob::find);
+    BUILD(BuildJob::find),
+    FISH(FishJob::find),
+    BREED(BreedJob::find);
 
     @FunctionalInterface
     public interface JobFinder {

@@ -227,9 +227,10 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
      * the current frame has unlocked, and only if no other slot holds the same module; an addon
      * needs a frame and must not conflict with the addons already installed.
      */
-    /** The Builder Module goes only on a Mini Frame: building is work for a swarm of small drones. */
+    /** The Builder Module and the Mini Frame go only together: building is work for a swarm of small drones. */
     public static boolean fits(DroneFrameItem frame, Item module) {
-        return !(module instanceof DroneModuleItem builder && builder.getTask() == DroneTask.BUILD) || frame == ModItems.MINI_FRAME.get();
+        boolean builder = module instanceof DroneModuleItem moduleItem && moduleItem.getTask() == DroneTask.BUILD;
+        return builder == (frame == ModItems.MINI_FRAME.get());
     }
 
     public static boolean canPlace(IntFunction<ItemStack> slots, int index, ItemResource resource) {

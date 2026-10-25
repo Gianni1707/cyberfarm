@@ -1596,6 +1596,44 @@ ITEM_ASCII.update({
         ".......GG.......",
         "........G.......",
     ],
+    # Fisher Module: the drone's cap with a line down to a hook and a fish on it
+    "item/fisher_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        ".......kk.......",
+        ".......kw.......",
+        ".......kw.......",
+        ".......kw.......",
+        "....kk.kw.......",
+        "...kbck.kw......",
+        "..kbcCCk.kw.....",
+        "...kbck..kwk....",
+        "....kk...kk.....",
+        "................",
+    ],
+    # Breeder Module: a feed canister with a heart on it
+    "item/breeder_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        ".....kkkkkk.....",
+        "....kwwwwwlk....",
+        "....kwrwwrlk....",
+        "....krrrrrrk....",
+        "....krrrrrrk....",
+        "....kwrrrrlk....",
+        "....kwwrrwlk....",
+        "....kwwwwwlk....",
+        "....kkkkkkkk....",
+        "......kyyk......",
+        ".......kk.......",
+        ".......yy.......",
+        "........y.......",
+    ],
     # Builder Module: the claw holds a block over the cyan ghost of where it goes
     "item/builder_module": [
         "................",
@@ -1616,7 +1654,7 @@ ITEM_ASCII.update({
         "......bcbc......",
     ],
 })
-for _name, _rows in list(ITEM_ASCII.items())[-3:]:
+for _name, _rows in list(ITEM_ASCII.items())[-5:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 

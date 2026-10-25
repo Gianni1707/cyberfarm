@@ -18,7 +18,7 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
-    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module",
+    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
@@ -576,6 +576,8 @@ def recipes():
     shaped("rancher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:shears", "C": copper, "D": core})
     shaped("fertilizer_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bone_block", "C": copper, "D": core})
     shaped("builder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:piston", "C": copper, "D": core})
+    shaped("fisher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:fishing_rod", "C": copper, "D": core})
+    shaped("breeder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:hay_block", "C": copper, "D": core})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
