@@ -116,12 +116,13 @@ public class TurbineRenderer implements BlockEntityRenderer<TurbineControllerBlo
             rotor(pose, buffer, radius * 0.8F, end - 0.2F, state.rotation, light);
         });
         collector.submitCustomGeometry(poseStack, GLOW,
-                (pose, buffer) -> housing(pose, buffer, radius, front, end, size.length(), LightCoordsUtil.FULL_BRIGHT));
+                // A hair outside the shell: drawn on the same surface, shader packs flicker between the two
+                (pose, buffer) -> housing(pose, buffer, radius + 0.006F, front, end, size.length(), LightCoordsUtil.FULL_BRIGHT));
         collector.submitCustomGeometry(poseStack, state.lit ? PANEL_ON : PANEL,
                 (pose, buffer) -> plate(pose, buffer, 0.0F, 0.0F, front - OFFSET, Direction.NORTH, 1.0F, light));
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (Vector3f port : state.ports) {
-                hatch(pose, buffer, port, size, radius);
+                hatch(pose, buffer, port, size, radius, light);
             }
         });
         poseStack.popPose();
@@ -191,11 +192,10 @@ public class TurbineRenderer implements BlockEntityRenderer<TurbineControllerBlo
      * A port's hatch where a pipe plugged into it meets the turbine: on the cap for ports inside the
      * cap's disc, otherwise on the cylinder, on the side the port sticks out to.
      */
-    private static void hatch(PoseStack.Pose pose, VertexConsumer buffer, Vector3f port, TurbineSize size, float radius) {
+    private static void hatch(PoseStack.Pose pose, VertexConsumer buffer, Vector3f port, TurbineSize size, float radius, int light) {
         float x = port.x();
         float y = port.y();
         float z = port.z();
-        int light = LightCoordsUtil.FULL_BRIGHT;
         boolean cap = z == 0 || z == size.length() - 1;
         if (cap && Math.sqrt(x * x + y * y) <= radius - 0.5F) {
             boolean atFront = z == 0;
