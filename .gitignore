@@ -39,3 +39,9 @@ run-server/
 **/src/generated/**/.cache/
 repo/
 !**/src/**/repo/
+
+### dev / local-only, not committed ###
+graphify-out/
+/CLAUDE.md
+/.claude/
+/DESIGN.md
