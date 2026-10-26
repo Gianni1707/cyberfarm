@@ -9,6 +9,9 @@ import java.util.function.Supplier;
 
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
+import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
+import com.cyberfarm.block.entity.FabricatorBlockEntity;
+import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
@@ -56,7 +59,10 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         FISSION_REACTOR("fission_reactor", ModItems.REACTOR_CONTROLLER),
         STEAM_TURBINE("steam_turbine", ModItems.TURBINE_CONTROLLER),
         WASTE_REPROCESSOR("waste_reprocessor", ModItems.WASTE_REPROCESSOR),
-        CRYSTALLIZER("crystallizer", ModItems.CRYSTALLIZER);
+        CRYSTALLIZER("crystallizer", ModItems.CRYSTALLIZER),
+        ELECTROLYZER("electrolyzer", ModItems.ELECTROLYZER),
+        PYROLYSIS_OVEN("pyrolysis_oven", ModItems.PYROLYSIS_OVEN),
+        FABRICATOR("fabricator", ModItems.FABRICATOR);
 
         private final String id;
         private final Supplier<? extends ItemLike> block;
@@ -108,6 +114,20 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
                 List.of(new FluidAmount(Fluids.WATER, AcidSynthesizerBlockEntity.BATCH)), List.of(),
                 List.of(new FluidAmount(ModFluids.ACID.get(), AcidSynthesizerBlockEntity.BATCH)),
                 List.of(note("time_energy", AcidSynthesizerBlockEntity.PROCESS_TIME / 20, AcidSynthesizerBlockEntity.ENERGY_PER_TICK))));
+        all.add(new MachineExample(Machine.ELECTROLYZER, List.of(List.of(new ItemStack(ModItems.ALUMINA.get()))), List.of(),
+                List.of(new ItemStack(ModItems.ALUMINUM_INGOT.get())), List.of(),
+                List.of(note("time_energy", ElectrolyzerBlockEntity.PROCESS_TIME / 20, ElectrolyzerBlockEntity.ENERGY_PER_TICK))));
+        all.add(new MachineExample(Machine.PYROLYSIS_OVEN, List.of(List.of(new ItemStack(Items.STRING))),
+                List.of(new FluidAmount(ModFluids.METHANE.get(), PyrolysisOvenBlockEntity.METHANE_PER_FIBER)),
+                List.of(new ItemStack(ModItems.CARBON_FIBER.get())), List.of(),
+                List.of(note("time_energy", PyrolysisOvenBlockEntity.PROCESS_TIME / 20, PyrolysisOvenBlockEntity.ENERGY_PER_TICK))));
+        for (FabricatorBlockEntity.Recipe recipe : FabricatorBlockEntity.RECIPES) {
+            all.add(new MachineExample(Machine.FABRICATOR,
+                    recipe.inputs().stream().map(input -> List.of(input.shown().get())).toList(),
+                    recipe.acid() > 0 ? List.of(new FluidAmount(ModFluids.ACID.get(), recipe.acid())) : List.of(),
+                    List.of(recipe.output()), List.of(),
+                    List.of(note("time_energy", recipe.time() / 20, FabricatorBlockEntity.ENERGY_PER_TICK))));
+        }
         fissionReactor(all);
         steamTurbine(all);
         all.add(new MachineExample(Machine.WASTE_REPROCESSOR, List.of(List.of(new ItemStack(ModItems.DEPLETED_FUEL_ROD.get()))), List.of(),

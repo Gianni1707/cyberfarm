@@ -5,7 +5,7 @@
     "D": "minecraft:diamond",
     "A": "cyberfarm:advanced_frame",
     "I": "minecraft:iron_block",
-    "C": "cyberfarm:drone_core"
+    "C": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     " D ",

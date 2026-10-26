@@ -5,7 +5,7 @@
     "I": "minecraft:iron_block",
     "G": "minecraft:glass_pane",
     "C": "minecraft:copper_ingot",
-    "D": "cyberfarm:drone_core",
+    "D": "cyberfarm:advanced_circuit",
     "F": "cyberfarm:advanced_frame"
   },
   "pattern": [

@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#c:dusts/sulfur"
+    "#c:dusts/sulfur",
+    "#c:dusts/alumina"
   ]
 }

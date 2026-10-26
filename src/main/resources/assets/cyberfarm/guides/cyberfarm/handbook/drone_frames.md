@@ -36,6 +36,9 @@ only on a [Builder Swarm Dock](drone_dock.md), which takes up to four, each on i
 
 <RecipeFor id="mini_frame" />
 
+The Basic and Mini frames are made of [aluminum](aluminum.md); the Advanced and Elite frames of
+[carbon fiber](carbon_fiber.md), with [Advanced and Elite Circuits](circuits.md).
+
 Speed Addons add 10% each on top of the frame speed. The flight cost is the frame's share of
 the drone's [power use](drones.md). Higher tiers are crafted from the tier
 below, so you never lose your progress.

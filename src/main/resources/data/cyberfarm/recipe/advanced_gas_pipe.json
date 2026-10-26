@@ -4,7 +4,7 @@
   "key": {
     "P": "cyberfarm:gas_pipe",
     "G": "minecraft:gold_ingot",
-    "R": "minecraft:redstone"
+    "R": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     "PPP",

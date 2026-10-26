@@ -5,7 +5,7 @@
     "I": "minecraft:iron_ingot",
     "X": "minecraft:hay_block",
     "C": "minecraft:copper_ingot",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:basic_circuit"
   },
   "pattern": [
     "IXI",

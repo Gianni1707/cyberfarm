@@ -5,7 +5,7 @@
     "G": "minecraft:glass",
     "A": "minecraft:amethyst_block",
     "I": "minecraft:iron_ingot",
-    "R": "minecraft:redstone_block",
+    "R": "cyberfarm:advanced_circuit",
     "F": "cyberfarm:cyber_frame"
   },
   "pattern": [

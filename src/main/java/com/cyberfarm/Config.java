@@ -25,5 +25,25 @@ public class Config {
         BUILDER.pop();
     }
 
+    static {
+        BUILDER.push("drones");
+    }
+
+    public static final ModConfigSpec.BooleanValue ANCHOR_ENABLED = BUILDER
+            .comment("Whether a dock with an Anchor Addon drone keeps the chunks its drone works in loaded.")
+            .define("anchorEnabled", true);
+
+    public static final ModConfigSpec.IntValue ANCHOR_ENERGY_PER_CHUNK = BUILDER
+            .comment("FE per tick a dock pays for each chunk it keeps loaded.")
+            .defineInRange("anchorEnergyPerChunk", 4, 0, 1000);
+
+    public static final ModConfigSpec.IntValue ANCHOR_MAX_CHUNKS = BUILDER
+            .comment("Most chunks one dock keeps loaded: its own, around its drones, the route's ends, then the work area.")
+            .defineInRange("anchorMaxChunks", 25, 1, 256);
+
+    static {
+        BUILDER.pop();
+    }
+
     static final ModConfigSpec SPEC = BUILDER.build();
 }

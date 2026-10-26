@@ -5,7 +5,7 @@
     "I": "minecraft:iron_ingot",
     "P": "minecraft:diamond_pickaxe",
     "C": "minecraft:copper_ingot",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:basic_circuit"
   },
   "pattern": [
     "IPI",

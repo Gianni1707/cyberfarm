@@ -26,7 +26,11 @@ reactor and more. The info page (the "i" tab) of any CyberFarm machine gives a q
 New here? Read [Getting Started](getting_started.md): your first drone, step by step.
 Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
 Need water for your machines? A [Water Pump](water_pump.md) gives an endless supply.
-Then the handbook has six sections:
+Then the handbook has seven sections:
+
+### [Materials and Progression](materials.md)
+The three tiers and their materials: [aluminum](aluminum.md) from bauxite,
+[circuits and the Fabricator](circuits.md), and [carbon fiber](carbon_fiber.md) from methane.
 
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)

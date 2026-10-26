@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -19,11 +20,17 @@ import org.jspecify.annotations.Nullable;
  * Item filter of the Drone Dock, with the usual options of other mods: up to 9 sample items, as a
  * whitelist or a blacklist, matched by item (optionally with components), by mod, or by a tag picked
  * from the sample's tags. The default is an empty blacklist: everything passes.
+ *
+ * <p>It also holds the Transport Module's limit: how many of each item the route's destination
+ * should hold, 0 for no limit.
  */
 public class ItemFilter {
     public static final int SLOTS = 9;
-    /** GUI data: the 4 energy slots every machine menu starts with, then the 4 filter settings. */
-    public static final int DATA_SLOTS = MachineBlockEntity.ENERGY_DATA_SLOTS + 4;
+    /** GUI data: the 4 energy slots every machine menu starts with, then the 4 filter settings and the limit. */
+    public static final int DATA_SLOTS = MachineBlockEntity.ENERGY_DATA_SLOTS + 5;
+    /** The limits the arrows step through; 0 is no limit. */
+    private static final int[] LIMITS = {0, 1, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
+    public static final int MAX_LIMIT = LIMITS[LIMITS.length - 1];
 
     private final SimpleContainer items;
     private final Runnable onChanged;
@@ -35,6 +42,7 @@ public class ItemFilter {
                 case 1 -> matchComponents ? 1 : 0;
                 case 2 -> matchMod ? 1 : 0;
                 case 3 -> tagIndex();
+                case 4 -> limit;
                 default -> 0;
             };
         }
@@ -51,6 +59,7 @@ public class ItemFilter {
     private boolean matchComponents;
     private boolean matchMod;
     private @Nullable TagKey<Item> tag;
+    private int limit;
 
     public ItemFilter(Runnable onChanged) {
         this.onChanged = onChanged;
@@ -116,6 +125,29 @@ public class ItemFilter {
         onChanged.run();
     }
 
+    /** How many of each item the Transport Module's destination should hold; 0 for no limit. */
+    public int limit() {
+        return limit;
+    }
+
+    /** Steps the limit up or down: through the round values, or by one when {@code fine}. */
+    public void stepLimit(int step, boolean fine) {
+        if (fine) {
+            limit = Math.clamp(limit + step, 0, MAX_LIMIT);
+        } else if (step > 0) {
+            limit = Arrays.stream(LIMITS).filter(value -> value > limit).findFirst().orElse(MAX_LIMIT);
+        } else {
+            int below = 0;
+            for (int value : LIMITS) {
+                if (value < limit) {
+                    below = value;
+                }
+            }
+            limit = below;
+        }
+        onChanged.run();
+    }
+
     /** Tags of the first sample item, sorted so client and server agree on the order. */
     public static List<TagKey<Item>> tagsOf(ItemStack sample) {
         return sample.typeHolder().tags().sorted(Comparator.comparing((TagKey<Item> key) -> key.location().toString())).toList();
@@ -151,6 +183,7 @@ public class ItemFilter {
         output.putBoolean("match_components", matchComponents);
         output.putBoolean("match_mod", matchMod);
         output.storeNullable("tag", Identifier.CODEC, tag == null ? null : tag.location());
+        output.putInt("limit", limit);
     }
 
     public void load(ValueInput input) {
@@ -161,5 +194,6 @@ public class ItemFilter {
         matchComponents = input.getBooleanOr("match_components", false);
         matchMod = input.getBooleanOr("match_mod", false);
         tag = input.read("tag", Identifier.CODEC).map(id -> TagKey.create(Registries.ITEM, id)).orElse(null);
+        limit = input.getIntOr("limit", 0);
     }
 }

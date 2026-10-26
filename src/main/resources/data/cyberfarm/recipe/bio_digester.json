@@ -3,12 +3,13 @@
   "category": "misc",
   "key": {
     "I": "minecraft:iron_ingot",
+    "U": "cyberfarm:basic_circuit",
     "C": "minecraft:copper_ingot",
     "G": "minecraft:glass",
     "X": "minecraft:composter"
   },
   "pattern": [
-    "ICI",
+    "IUI",
     "GXG",
     "ICI"
   ],

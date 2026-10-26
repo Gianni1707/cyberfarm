@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": "minecraft:iron_ingot",
-    "D": "cyberfarm:drone_core",
+    "D": "cyberfarm:basic_circuit",
     "C": "minecraft:copper_ingot",
     "T": "minecraft:crafting_table"
   },

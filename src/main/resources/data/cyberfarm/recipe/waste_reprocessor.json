@@ -6,7 +6,7 @@
     "C": "minecraft:copper_ingot",
     "B": "minecraft:blast_furnace",
     "X": "minecraft:glass",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     "ICI",

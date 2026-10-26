@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": "minecraft:redstone",
+    "C": "minecraft:copper_ingot",
+    "N": "minecraft:gold_nugget"
+  },
+  "pattern": [
+    " R ",
+    "CNC",
+    " R "
+  ],
+  "result": {
+    "id": "cyberfarm:basic_circuit"
+  }
+}

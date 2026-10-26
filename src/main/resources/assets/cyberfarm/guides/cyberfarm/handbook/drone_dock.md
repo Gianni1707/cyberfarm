@@ -115,6 +115,12 @@ clear it. The buttons switch between **whitelist** and **blacklist**, match item
 (enchantments, damage, names) or not, match **by mod**, and pick a **tag** of the first sample
 (e.g. `#c:ores`). An empty blacklist, the default, lets everything through.
 
+The bottom row sets a **limit** for the Transport Module: **Keep at destination: N**. The drone
+then stops bringing an item once the destination holds N of it, and carries only what is missing,
+so a chest stays stocked with 64 bread instead of filling up with 2,000. The arrows step through
+round numbers (8, 16, 32 and on up to 4,096); hold **Shift** to step by one. It counts each item
+separately.
+
 ## Fixing mistakes
 
 - **Sneak + right-click in the air** clears a corner or route source you set by mistake

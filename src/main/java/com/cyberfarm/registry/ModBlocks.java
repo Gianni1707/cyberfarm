@@ -2,6 +2,9 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.AcidSynthesizerBlock;
+import com.cyberfarm.block.ElectrolyzerBlock;
+import com.cyberfarm.block.FabricatorBlock;
+import com.cyberfarm.block.PyrolysisOvenBlock;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.SwarmDockBlock;
@@ -117,6 +120,18 @@ public class ModBlocks {
             p -> p.mapColor(MapColor.STONE).strength(3.0F, 3.0F).sound(SoundType.STONE).requiresCorrectToolForDrops().lightLevel(state -> 3));
     public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = BLOCKS.registerSimpleBlock("deepslate_uranium_ore",
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops().lightLevel(state -> 3));
+
+    // Materials: bauxite for aluminum, and the machines that make the drones' materials and circuits
+    public static final DeferredBlock<Block> BAUXITE_ORE = BLOCKS.registerSimpleBlock("bauxite_ore",
+            p -> p.mapColor(MapColor.STONE).strength(3.0F, 3.0F).sound(SoundType.STONE).requiresCorrectToolForDrops());
+    public static final DeferredBlock<Block> DEEPSLATE_BAUXITE_ORE = BLOCKS.registerSimpleBlock("deepslate_bauxite_ore",
+            p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
+    public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = BLOCKS.registerBlock("electrolyzer",
+            ElectrolyzerBlock::new, ModBlocks::litMachine);
+    public static final DeferredBlock<PyrolysisOvenBlock> PYROLYSIS_OVEN = BLOCKS.registerBlock("pyrolysis_oven",
+            PyrolysisOvenBlock::new, ModBlocks::litMachine);
+    public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",
+            FabricatorBlock::new, ModBlocks::litMachine);
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
             ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));

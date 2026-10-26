@@ -6,7 +6,7 @@
     "A": "minecraft:amethyst_block",
     "G": "cyberfarm:containment_glass",
     "X": "cyberfarm:acid_synthesizer",
-    "C": "cyberfarm:drone_core"
+    "C": "cyberfarm:elite_circuit"
   },
   "pattern": [
     "DAD",

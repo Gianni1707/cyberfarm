@@ -2,15 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "X": "minecraft:diamond",
-    "B": "cyberfarm:battery_cell",
-    "E": "minecraft:ender_eye",
-    "F": "cyberfarm:advanced_frame"
+    "K": "cyberfarm:carbon_fiber",
+    "D": "minecraft:diamond",
+    "C": "cyberfarm:elite_circuit",
+    "F": "cyberfarm:advanced_frame",
+    "E": "minecraft:ender_eye"
   },
   "pattern": [
-    "XBX",
-    "EFE",
-    "XBX"
+    "KDK",
+    "CFC",
+    "KEK"
   ],
   "result": {
     "id": "cyberfarm:elite_frame"

@@ -46,8 +46,13 @@
     "cyberfarm:hangar_pad",
     "cyberfarm:crystallizer",
     "cyberfarm:crystallizer_port",
+    "cyberfarm:electrolyzer",
+    "cyberfarm:pyrolysis_oven",
+    "cyberfarm:fabricator",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore",
+    "cyberfarm:bauxite_ore",
+    "cyberfarm:deepslate_bauxite_ore",
     "cyberfarm:nether_sulfur_ore"
   ]
 }

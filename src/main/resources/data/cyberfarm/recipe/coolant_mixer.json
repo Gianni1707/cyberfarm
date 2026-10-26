@@ -6,7 +6,7 @@
     "B": "minecraft:bucket",
     "G": "minecraft:glass",
     "X": "minecraft:cauldron",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     "IBI",
