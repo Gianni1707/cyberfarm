@@ -47,6 +47,75 @@ def orientable(name, front, top, side="machine_side", bottom="machine_bottom"):
     })
 
 
+def lit_machine(name, top, side="machine_side", bottom="machine_bottom"):
+    """A machine that lights up while it works: its model off, and on with the animated front and,
+    over it and its sides, a skin of the same lights that glows in the dark."""
+    orientable(name, f"{name}_front", top, side, bottom)
+    # Explicit UVs: worked out from the overlay's coordinates they would run off the texture
+    glow = {d: {"uv": [0, 0, 16, 16], "texture": "#side_glow", "cullface": d} for d in ("east", "south", "west")}
+    write(ASSETS / f"models/block/{name}_on.json", {
+        "parent": "minecraft:block/orientable_with_bottom",
+        "render_type": "minecraft:cutout",
+        "textures": {"front": tex(f"{name}_front_on"), "top": tex(top), "side": tex(side), "bottom": tex(bottom),
+                     "front_glow": tex(f"{name}_front_glow"), "side_glow": tex(f"{side}_glow")},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 16, 16], "faces": {
+                "down": {"texture": "#bottom", "cullface": "down"}, "up": {"texture": "#top", "cullface": "up"},
+                "north": {"texture": "#front", "cullface": "north"}, "south": {"texture": "#side", "cullface": "south"},
+                "west": {"texture": "#side", "cullface": "west"}, "east": {"texture": "#side", "cullface": "east"}}},
+            # A hair outside the cube so it never fights with the faces under it
+            {"from": [-0.01, -0.01, -0.01], "to": [16.01, 16.01, 16.01], "shade": False, "light_emission": 15,
+             "faces": {"north": {"uv": [0, 0, 16, 16], "texture": "#front_glow", "cullface": "north"}, **glow}},
+        ],
+    })
+    facing_blockstate(name, {"lit=false": name, "lit=true": f"{name}_on"})
+
+
+def assembler_models():
+    """The Drone Assembler as an open chamber, so the drone it makes shows inside: a low base with
+    the control panel and the assembly pad, a steel pillar on each corner and a cap with the emitter
+    looking down. Working, the pillars' light lines, the emitter and the panel glow in the dark."""
+    sides = ("north", "east", "south", "west")
+    pillars = [(x, z) for x in (0, 14) for z in (0, 14)]
+
+    def elements(on):
+        base = {"from": [0, 0, 0], "to": [16, 4, 16], "faces": {
+            "north": {"uv": [0, 12, 16, 16], "texture": "#front", "cullface": "north"},
+            **{d: {"uv": [0, 12, 16, 16], "texture": "#side", "cullface": d} for d in sides[1:]},
+            "up": {"texture": "#pad"}, "down": {"texture": "#bottom", "cullface": "down"}}}
+        posts = [{"from": [x, 4, z], "to": [x + 2, 14, z + 2],
+                  "faces": {d: {"uv": [7, 2, 9, 12], "texture": "#pillar"} for d in sides}} for x, z in pillars]
+        cap = {"from": [0, 14, 0], "to": [16, 16, 16], "faces": {
+            **{d: {"uv": [0, 0, 16, 2], "texture": "#cap", "cullface": d} for d in sides},
+            "up": {"texture": "#cap_top", "cullface": "up"}, "down": {"texture": "#emitter"}}}
+        parts = [base, *posts, cap]
+        if on:
+            glow = {"shade": False, "light_emission": 15}
+            # Each a hair outside the part it lights, so it never fights with the faces under it
+            parts.append({"from": [-0.01, -0.01, -0.01], "to": [16.01, 4, 16.01], **glow, "faces": {
+                "north": {"uv": [0, 12, 16, 16], "texture": "#front_glow", "cullface": "north"},
+                **{d: {"uv": [0, 12, 16, 16], "texture": "#side_glow", "cullface": d} for d in sides[1:]}}})
+            parts += [{"from": [x - 0.01, 4, z - 0.01], "to": [x + 2.01, 14, z + 2.01], **glow,
+                       "faces": {d: {"uv": [7, 2, 9, 12], "texture": "#pillar_glow"} for d in sides}} for x, z in pillars]
+            parts.append({"from": [0, 13.99, 0], "to": [16, 13.99, 16], **glow,
+                          "faces": {"down": {"uv": [0, 0, 16, 16], "texture": "#emitter_glow"}}})
+        return parts
+
+    for on in (False, True):
+        lit = "_on" if on else ""
+        textures = {"particle": tex("drone_assembler_side"), "front": tex(f"drone_assembler_front{lit}"),
+                    "side": tex("drone_assembler_side"), "pad": tex("drone_assembler_top"), "bottom": tex("machine_bottom"),
+                    "pillar": tex(f"drone_assembler_pillar{lit}"), "cap": tex("drone_assembler_cap"), "cap_top": tex("machine_top"),
+                    "emitter": tex(f"drone_assembler_emitter{lit}")}
+        if on:
+            textures.update({"front_glow": tex("drone_assembler_front_glow"), "side_glow": tex("drone_assembler_side_glow"),
+                             "pillar_glow": tex("drone_assembler_pillar_glow"), "emitter_glow": tex("drone_assembler_emitter_glow")})
+        write(ASSETS / f"models/block/drone_assembler{lit}.json", {
+            "parent": "minecraft:block/block", **({"render_type": "minecraft:cutout"} if on else {}),
+            "textures": textures, "elements": elements(on)})
+    facing_blockstate("drone_assembler", {"lit=false": "drone_assembler", "lit=true": "drone_assembler_on"})
+
+
 def facing_blockstate(name, extra=None):
     """Variants for every horizontal facing; `extra` maps a property value suffix to a model."""
     variants = {}
@@ -86,6 +155,26 @@ def dock_model():
         },
         "elements": elements,
     })
+    # Hologram Table: a low projector plate with an emitter post on each corner, like the dock's
+    # beacons; the projection is drawn by its renderer
+    rim = {d: {"texture": "#side", "uv": [0, 11, 16, 16], "cullface": d} for d in ("north", "east", "south", "west")}
+    post_side = {"uv": [0, 0, 2, 3], "texture": "#beacon"}
+    posts = [{
+        "from": [x, 5, z], "to": [x + 2, 8, z + 2],
+        "faces": {"up": {"uv": [4, 0, 6, 2], "texture": "#beacon"},
+                  "north": post_side, "east": post_side, "south": post_side, "west": post_side},
+    } for x in (0, 14) for z in (0, 14)]
+    write(ASSETS / "models/block/hologram_table.json", {
+        "parent": "minecraft:block/block",
+        "textures": {"particle": tex("hologram_table_side"), "side": tex("hologram_table_side"),
+                     "top": tex("hologram_table_top"), "bottom": tex("machine_bottom"), "beacon": tex("drone_dock_beacon")},
+        "elements": [
+            {"from": [0, 0, 0], "to": [16, 5, 16],
+             "faces": {**rim, "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
+            *posts,
+        ],
+    })
+    write(ASSETS / "blockstates/hologram_table.json", {"variants": {"": {"model": f"{NS}:block/hologram_table"}}})
     # The Builder Swarm Dock: the same pad with four landing rings on top
     write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
 
@@ -221,12 +310,9 @@ def block_loot(name):
 
 
 def blocks():
-    orientable("combustion_generator", "combustion_generator_front", "combustion_generator_top")
-    orientable("combustion_generator_on", "combustion_generator_front_on", "combustion_generator_top")
-    facing_blockstate("combustion_generator", {"lit=false": "combustion_generator", "lit=true": "combustion_generator_on"})
+    lit_machine("combustion_generator", "combustion_generator_top")
 
-    orientable("drone_assembler", "drone_assembler_front", "drone_assembler_top", side="drone_assembler_side")
-    facing_blockstate("drone_assembler")
+    assembler_models()
 
     dock_model()
     facing_blockstate("drone_dock")
@@ -237,10 +323,8 @@ def blocks():
     write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
         "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
 
-    orientable("bio_digester", "bio_digester_front", "bio_digester_top")
-    facing_blockstate("bio_digester")
-    orientable("gas_turbine", "gas_turbine_front", "gas_turbine_top")
-    facing_blockstate("gas_turbine")
+    lit_machine("bio_digester", "bio_digester_top")
+    lit_machine("gas_turbine", "gas_turbine_top")
 
     # The extractor is the chamber's "shower head": its bottom face looks into the chamber
     for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):
@@ -278,7 +362,7 @@ def blocks():
     coolant_blocks()
     energy_storage_models()
 
-    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock",
+    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
@@ -380,19 +464,15 @@ def nuclear_blocks():
                     model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
                     variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
-    orientable("water_pump", "water_pump_front", "water_pump_top")
-    facing_blockstate("water_pump")
+    lit_machine("water_pump", "water_pump_top")
     for tank in ("liquid_tank", "gas_tank"):
         write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
             "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
         facing_blockstate(tank)
-    orientable("coolant_mixer", "coolant_mixer_front", "machine_top")
-    facing_blockstate("coolant_mixer")
-    orientable("waste_reprocessor", "waste_reprocessor_front", "machine_top")
-    facing_blockstate("waste_reprocessor")
+    lit_machine("coolant_mixer", "machine_top")
+    lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
-    orientable("acid_synthesizer", "acid_synthesizer_front", "machine_top")
-    facing_blockstate("acid_synthesizer")
+    lit_machine("acid_synthesizer", "machine_top")
     orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
     write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
@@ -593,6 +673,7 @@ def recipes():
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
     shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
+    shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": core})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
     shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)
@@ -739,9 +820,77 @@ def sounds():
                                    for name, entries in events.items()})
 
 
+# --------------------------------------------------------------------------- advancements
+
+def _advancement(name, parent, icon, criteria, frame="task"):
+    display = {
+        "icon": {"id": f"{NS}:{icon}"},
+        "title": {"translate": f"advancements.{NS}.{name}.title"},
+        "description": {"translate": f"advancements.{NS}.{name}.description"},
+        "frame": frame,
+        "show_toast": parent is not None,
+        "announce_to_chat": parent is not None,
+    }
+    data = {"display": display, "criteria": criteria, "requirements": [[key] for key in criteria]}
+    if parent:
+        data["parent"] = f"{NS}:{parent}"
+    else:
+        # The tab's background: the mod's machine plating, tiled
+        display["background"] = f"{NS}:block/machine_side"
+    write(DATA / f"advancement/{name}.json", data)
+
+
+def _has(*items):
+    """All these items in the inventory at once."""
+    return {"get": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": f"{NS}:{i}"} for i in items]}}}
+
+
+def _placed(block):
+    return {"place": {"trigger": "minecraft:placed_block", "conditions": {"location": [
+        {"condition": "minecraft:location_check", "predicate": {"block": {"blocks": f"{NS}:{block}"}}}]}}}
+
+
+def _used_on(item, block):
+    return {"use": {"trigger": "minecraft:item_used_on_block", "conditions": {"location": [
+        {"condition": "minecraft:location_check", "predicate": {"block": {"blocks": f"{NS}:{block}"}}},
+        {"condition": "minecraft:match_tool", "predicate": {"items": f"{NS}:{item}"}}]}}}
+
+
+def _rides(entity):
+    return {"ride": {"trigger": "minecraft:started_riding", "conditions": {"player": [
+        {"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"vehicle": {"type": f"{NS}:{entity}"}}}]}}}
+
+
+def advancements():
+    """The CyberFarm tab: three branches from the Drone Core, drones, power, and nuclear up to the mech."""
+    _advancement("root", None, "drone_core", _has("drone_core"))
+    # Drones
+    _advancement("assemble_drone", "root", "drone", _has("drone"))
+    _advancement("deploy_drone", "assemble_drone", "drone_dock", _used_on("drone", "drone_dock"))
+    _advancement("survey_tool", "deploy_drone", "survey_tool", _has("survey_tool"))
+    _advancement("taxi", "deploy_drone", "taxi_module", _rides("drone"))
+    _advancement("elite_frame", "assemble_drone", "elite_frame", _has("elite_frame"), "goal")
+    _advancement("swarm", "deploy_drone", "swarm_dock", _used_on("drone", "swarm_dock"))
+    _advancement("construction", "swarm", "multiblock_projector", _used_on("multiblock_projector", "swarm_dock"), "goal")
+    # Power
+    _advancement("power_on", "root", "combustion_generator", _placed("combustion_generator"))
+    _advancement("gas_power", "power_on", "gas_turbine", _placed("gas_turbine"))
+    _advancement("steam_engine", "gas_power", "steam_engine", _placed("steam_engine"))
+    _advancement("energy_storage", "power_on", "resonance_core", _placed("resonance_core"), "goal")
+    # Nuclear, then the mech
+    _advancement("uranium", "power_on", "raw_uranium", _has("raw_uranium"))
+    _advancement("reactor", "uranium", "reactor_controller", _placed("reactor_controller"))
+    _advancement("spent_fuel", "reactor", "depleted_fuel_rod", _has("depleted_fuel_rod"), "goal")
+    _advancement("hazmat", "reactor", "hazmat_suit", _has("hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots"))
+    _advancement("fusion_crystal", "spent_fuel", "fusion_crystal", _has("fusion_crystal"))
+    _advancement("mech_core", "fusion_crystal", "mech_core", _has("mech_core"))
+    _advancement("pilot_mech", "mech_core", "mech_frame", _rides("mech"), "challenge")
+
+
 if __name__ == "__main__":
     blocks()
     items()
     recipes()
     sounds()
+    advancements()
     print("assets and data written")

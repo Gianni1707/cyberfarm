@@ -134,6 +134,10 @@ y0   ■ ■ ■ ■ ■     pavimento 5x5
   del fronte, interno vuoto per il rotore. Small 3×3×4 (200 mB/t, 4 FE/mB), Medium 5×5×6 (600, 5), Large 7×7×8 (1600, 6).
   Il rotore accelera e rallenta gradualmente; formata diventa un cilindro bianco/azzurro con rotore animato. Accetta `c:steam`.
 
+**Hologram Table** — proietta sopra di sé una mappa 3D della zona (raggio 16/24/32, tasto destro per cambiarlo; la proiezione è larga almeno 1,6 blocchi e si allarga col raggio, così un blocco del mondo non diventa mai più piccolo che a 24; altezza del rilievo mai sotto quella a 24, così da lontano le colline si leggono): rilievo coi colori da mappa ombreggiati come una mappa vanilla e appena tinti di ciano, Dock come colonne di luce, droni come punti in tempo reale colorati per stato (lavoro ciano, ritorno ambra, riposo tenue) con una scia che sfuma; giocatori come frecce bianche orientate, mostri ostili come punti rossi, N/E/S/W sui bordi, cornice di luce, linea di scansione che sale nel rilievo schiarendo le colonne che attraversa (niente velo traslucido: nasconderebbe ciò che viene disegnato dopo) e una riga sospesa che conta dock, droni, droni al lavoro, ostili e raggio. Si accende quando un giocatore è entro 6 blocchi (fascio che sale e terreno che sorge dal centro a onda in 1,5 s) e si richiude quando se ne va; acceso, un impulso radar ogni 4 s schiarisce terreno e droni al suo passaggio. Tutto lato client (`HologramRenderer`: chunk caricati, heightmap `WORLD_SURFACE`, block entity dei chunk, droni tracciati), in rete passa solo lo zoom (salvato nel block entity); rilievo in cache nel block entity e riletto ogni 2 s. Non usa energia. Il blocco è una piastra bassa con quattro emettitori agli angoli, come i beacon del Dock.
+
+**Advancement** — scheda CyberFarm (sfondo `machine_side`), generata da `assetgen.advancements()` con trigger vanilla: tre rami dal Drone Core: droni (assembla, schiera, Survey Tool, Taxi, telaio Elite, sciame, collega una costruzione), energia (combustione, turbina a gas, Steam Engine, Resonance Core), nucleare fino al mech (uranio, reattore, barra esausta, tuta hazmat, Fusion Crystal, Mech Core, pilota il mech: sfida). Il collegamento col proiettore avviene in `onItemUseFirst`, che salta il trigger vanilla: lo fa scattare `ProjectorItem` a mano.
+
 **Multiblock Projector** — ispirato al Projector di Immersive Engineering: click destro apre la lista delle strutture
 (`ProjectorScreen`, con i blocchi che servono; pacchetto `ProjectorSelectPayload`), la proiezione segue lo sguardo e si
 blocca con Shift + click destro su un blocco (su un controller si allinea), Shift + click destro in aria la sblocca;
@@ -319,6 +323,59 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
   in ~4 min a 2.000 FE/t e lo ripara del tutto con ~40k FE. Il resto (generatori, macchine, consumi) resta come nella 0.3.0.
 - **Fasi**: 1) entità + modello base + entrata/uscita + comandi + energia + HUD base; 2) Hangar (ricarica, riparazione,
   slot moduli); 3) i quattro moduli con modelli, animazioni, abilità e pannelli HUD; 4) ricette, guida, bilanciamento.
+
+### Stato delle macchine
+- Ogni macchina (`MachineBlockEntity`) misura ogni secondo gli FE prodotti e usati: `MachineEnergyHandler` conta `generate`, `consume` e
+  `drain`. Ne ricava un `MachineStatus` (lavora sì/no, FE/t prodotti e usati, buffer, avanzamento del lotto o -1) e lo manda
+  (`MachineStatusPayload`) ai giocatori che hanno il chunk caricato, solo se è cambiato e comunque ogni 5 s. Chi lavora senza FE
+  (Bio-Digester, Methane Extractor, reattore) lo dice con `isWorking()`; le macchine a lotti danno `progress()`.
+- **Particelle ambientali**: ticker client in `MachineBlock.machineTicker` che chiama `ambient()` mentre la macchina lavora; di base
+  qualche scintilla elettrica sui lati, a tema dove serve (bolle sul Bio-Digester, brina e gocce sul Coolant Mixer, fumi verdi
+  sull'Acid Synthesizer, bagliore radioattivo e fumo sul Waste Reprocessor, scarico sulla Gas Turbine, schizzi sulla Water Pump).
+  Steam Engine, turbina, reattore, Methane Extractor e Combustion Generator tengono gli effetti che avevano già.
+- **Overlay**: guardando una macchina, pannello accanto al mirino (`MachineOverlay`, layer sopra il mirino) con nome, stato,
+  +FE/t prodotti, -FE/t usati, barra del buffer e avanzamento; nascosto in Meka e con l'interfaccia nascosta (F1).
+
+### Texture animate e luci
+- `texgen.py` genera strisce animate (`strip()`, con `.mcmeta`): i gas (biogas, metano, vapore) vorticano e hanno puntini che salgono;
+  coolant, cryo e acido nel mondo usano già l'acqua vanilla colorata.
+- **Macchine con stato acceso** (`LitMachineBlock`: Combustion Generator, Drone Assembler, Bio-Digester, Gas Turbine, Water Pump,
+  Coolant Mixer, Waste Reprocessor, Acid Synthesizer): `LIT` segue `MachineStatus.working` (il generatore tiene il suo). Spenta:
+  luci del frontale un passo più scure e fuoco spento (`powered_off`). Accesa: frontale animato (`working`: banda di luce che scende
+  sulle luci, fuoco che tremola, finestre che ondeggiano, bolle che salgono in Bio-Digester e Water Pump), luce di blocco 6.
+- **Accenti luminosi**: il modello acceso (`lit_machine` in `assetgen.py`) ha una seconda pelle appena fuori dal cubo con
+  `light_emission: 15` e le sole luci del frontale e dei lati (maschere `_glow`), così di notte e con gli shader brillano.
+
+### Momenti da clip
+- `Effects` (server) manda `EffectPayload` ai giocatori che hanno il chunk caricato; `EffectRenderer` (client) li disegna per un
+  numero fisso di tick, con lo stesso schema di `ProjectionRenderer` (extract + submit della geometria).
+- **Stampa** (12 tick): ogni blocco piazzato da un Builder ha un guscio di luce che si stringe e una linea di scansione che scende,
+  più scintille. Usato anche dall'Assembler a fine assemblaggio, sopra di sé.
+- **Svelamento** (32 tick): quando un multiblocco si forma (reattore, turbina, Crystallizer, Hangar, Methane Extractor,
+  Steam Engine, Resonance Core) un anello di luce sale dal basso all'alto del suo ingombro, con alone e spigoli che si accendono,
+  e puntini di luce dalla base.
+- **Assembler**: il blocco è una camera aperta (base bassa col pannello e il pad, quattro pilastri d'acciaio con linea di luce,
+  cappello con l'emettitore rivolto in basso; acceso, scintilla che sale sui pilastri ed emettitore e pannello che brillano).
+  `AssemblerRenderer` mostra il drone in costruzione come ologramma sul pad, dentro la camera: da tenue e chiuso a pieno
+  e aperto, rotori che partono nell'ultimo quarto, anello di scansione. L'avanzamento viene da `MachineStatus` e prosegue fluido
+  tra un pacchetto e l'altro (`statusTime`).
+
+### Macchine piccole vive
+- **Dock** (`DockRenderer`, anche per lo Swarm Dock): tutto dai droni che il client vede già, senza rete. Tre luci girano
+  sull'anello del pad finché un drone entro 12 blocchi torna a casa; archi di energia (spezzati, ridisegnati ogni 2 tick) dai beacon
+  agli angoli verso un drone in ricarica sul pad; sullo Swarm Dock gli anelli (ora tenui nella texture) si accendono sotto ogni Mini Drone.
+- **Droni**: `Effects.beam` (payload con l'id del drone) per un raggio di luce dal drone al blocco su cui lavora (raccolta, semina,
+  taglio, costruzione; ogni 6 tick mentre scava, così il raggio è continuo). `DroneDownwash`: in volo basso (entro 3 blocchi) il
+  drone solleva polvere (`DUST_PLUME`) o spruzzi sull'acqua, più fitti più è basso.
+- **Parti in movimento** (`MovingPartsRenderer`): ventola a quattro pale nella Gas Turbine (le razze dipinte tolte dalla texture),
+  pistone che sale e scende sopra la Water Pump, pala che gira dietro l'oblò del Bio-Digester. Accelerano e rallentano in 1,5 s
+  seguendo `MachineStatus.working`.
+
+### GUI animate
+- Tutto in `MachineScreen`, quindi in ogni schermata delle macchine: all'apertura una linea di luce scende sul pannello in 0,8 s, rallentando in fondo
+  (sotto è ancora buio); un riflesso corre sulla linea dell'intestazione ogni 4,5 s; lo slot sotto il mouse si accende di ciano;
+  la barra dell'energia è ciano, ambra sotto il 50%, rossa sotto il 20%, con un luccichio che sale; le barre di avanzamento hanno
+  un impulso che le percorre e il bordo di testa acceso. Il proiettore ha la sua schermata e resta com'era.
 
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:

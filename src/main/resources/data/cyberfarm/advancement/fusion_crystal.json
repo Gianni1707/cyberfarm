@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:fusion_crystal"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.fusion_crystal.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.fusion_crystal.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:fusion_crystal"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ],
+  "parent": "cyberfarm:spent_fuel"
+}

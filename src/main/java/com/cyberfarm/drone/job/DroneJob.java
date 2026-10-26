@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -85,6 +86,7 @@ public abstract class DroneJob {
     /** Breaks the block as if mined with the drone's tool (and its Fortune / Silk Touch addons); returns the drops. */
     protected static List<ItemStack> breakBlock(DroneEntity drone, ServerLevel level, BlockPos pos, BlockState state) {
         List<ItemStack> drops = Block.getDrops(state, level, pos, null, drone, drone.miningTool(level));
+        Effects.beam(level, drone, pos);
         level.destroyBlock(pos, false, drone);
         return drops;
     }

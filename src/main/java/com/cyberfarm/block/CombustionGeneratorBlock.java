@@ -70,4 +70,8 @@ public class CombustionGeneratorBlock extends MachineBlock {
         double fz = pos.getZ() + 0.5 + facing.getStepZ() * 0.52 + (facing.getAxis() == Direction.Axis.X ? offset : 0);
         level.addParticle(ParticleTypes.FLAME, fx, pos.getY() + 0.3, fz, 0.0, 0.0, 0.0);
     }
+
+    /** Nothing extra: it already smokes and flames from {@link #animateTick} while lit. */
+    @Override
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 }

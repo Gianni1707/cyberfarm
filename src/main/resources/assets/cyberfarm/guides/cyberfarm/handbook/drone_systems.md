@@ -17,6 +17,7 @@ carry items and even give you a ride, then fly home to unload and recharge.
   <ItemIcon id="speed_addon" />
   <ItemIcon id="drone_dock" />
   <ItemIcon id="drone" />
+  <ItemIcon id="hologram_table" />
 </ItemGrid>
 
 ## From parts to a working drone
@@ -28,6 +29,7 @@ carry items and even give you a ride, then fly home to unload and recharge.
 4. Put it all together in the [Drone Assembler](drone_assembler.md).
 5. Give it a home: a powered [Drone Dock](drone_dock.md), with a work area marked by the Survey Tool.
 6. Deploy it, change it and recover it as shown in [Using Drones](drones.md).
+7. Watch the whole fleet at work on a [Hologram Table](hologram_table.md).
 
 ## Pages
 

@@ -65,6 +65,11 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         Recipe recipe = recipeFor(input.fluid(), getStack(0));
         boolean canRun = recipe != null && input.amount() >= BATCH

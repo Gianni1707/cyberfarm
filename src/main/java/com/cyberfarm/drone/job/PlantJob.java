@@ -1,6 +1,7 @@
 package com.cyberfarm.drone.job;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -79,6 +80,7 @@ public class PlantJob extends DroneJob {
         }
         Block crop = ((BlockItem) seed.getItem()).getBlock();
         level.setBlock(cropPos, crop.defaultBlockState(), Block.UPDATE_ALL);
+        Effects.beam(level, drone, cropPos);
         level.playSound(null, cropPos, SoundEvents.CROP_PLANTED, SoundSource.BLOCKS, 1.0F, 1.0F);
         drone.useJobEnergy(ENERGY_COST);
         return true;

@@ -1,22 +1,29 @@
 package com.cyberfarm;
 
 import com.cyberfarm.block.entity.MufflerBlockEntity;
+import com.cyberfarm.client.DroneDownwash;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.EffectRenderer;
+import com.cyberfarm.client.MachineOverlay;
 import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
 import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
 import com.cyberfarm.client.renderer.MechRenderer;
+import com.cyberfarm.client.renderer.MovingPartsRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
+import com.cyberfarm.client.renderer.AssemblerRenderer;
 import com.cyberfarm.client.renderer.CrystallizerRenderer;
+import com.cyberfarm.client.renderer.DockRenderer;
 import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.renderer.FluidTankRenderer;
+import com.cyberfarm.client.renderer.HologramRenderer;
 import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.SteamEngineRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
@@ -98,6 +105,7 @@ public class CyberFarmClient {
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(MechClient::registerKeys);
         modEventBus.addListener(MechClient::registerHud);
+        modEventBus.addListener(MachineOverlay::register);
         NeoForge.EVENT_BUS.addListener(MechClient::tick);
         NeoForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
         NeoForge.EVENT_BUS.addListener(MechClient::hideHand);
@@ -109,6 +117,9 @@ public class CyberFarmClient {
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(EffectRenderer::extract);
+        NeoForge.EVENT_BUS.addListener(EffectRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(DroneDownwash::tick);
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -191,6 +202,13 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.font()));
+        event.registerBlockEntityRenderer(ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
+        event.registerBlockEntityRenderer(ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
+        event.registerBlockEntityRenderer(ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
+        event.registerBlockEntityRenderer(ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
+        event.registerBlockEntityRenderer(ModBlockEntities.WATER_PUMP.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PISTON));
+        event.registerBlockEntityRenderer(ModBlockEntities.BIO_DIGESTER.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PADDLE));
         event.registerBlockEntityRenderer(ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());

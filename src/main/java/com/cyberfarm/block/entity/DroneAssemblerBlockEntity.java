@@ -11,6 +11,7 @@ import java.util.function.IntFunction;
 import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.item.DroneAddonItem;
 import com.cyberfarm.item.DroneFrameItem;
 import com.cyberfarm.item.DroneItem;
@@ -180,6 +181,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) ASSEMBLY_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (!assembling) {
             return;
@@ -204,6 +210,8 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     }
 
     private void finishAssembly(ServerLevel level, BlockPos pos) {
+        // The hologram in the chamber becomes real: a flash round it
+        Effects.print(level, pos);
         // Addons are stored once per item, so three Speed Addons appear three times.
         List<Item> parts = new ArrayList<>();
         for (int i = FRAME_SLOT; i < OUTPUT_SLOT; i++) {

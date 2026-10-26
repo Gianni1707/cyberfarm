@@ -1,0 +1,45 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:swarm_dock"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.swarm.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.swarm.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "use": {
+      "trigger": "minecraft:item_used_on_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:swarm_dock"
+              }
+            }
+          },
+          {
+            "condition": "minecraft:match_tool",
+            "predicate": {
+              "items": "cyberfarm:drone"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "use"
+    ]
+  ],
+  "parent": "cyberfarm:deploy_drone"
+}

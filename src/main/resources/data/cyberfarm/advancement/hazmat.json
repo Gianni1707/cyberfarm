@@ -1,0 +1,43 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:hazmat_suit"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.hazmat.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.hazmat.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:hazmat_helmet"
+          },
+          {
+            "items": "cyberfarm:hazmat_suit"
+          },
+          {
+            "items": "cyberfarm:hazmat_pants"
+          },
+          {
+            "items": "cyberfarm:hazmat_boots"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ],
+  "parent": "cyberfarm:reactor"
+}

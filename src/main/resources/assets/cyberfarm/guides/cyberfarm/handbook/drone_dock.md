@@ -26,6 +26,10 @@ The home base of a drone. Each dock hosts **one drone** and:
 Power the dock with a <ItemLink id="combustion_generator" /> placed next to it, or with
 cables from any mod. The harvest can be pulled out with hoppers or item pipes from any side.
 
+You can read a dock at a glance: lights **chase round its landing ring** while a drone flies
+home, and **arcs of energy** jump from its corner beacons to a drone charging on it. On a Builder
+Swarm Dock each of the four landing rings **lights up** while a Mini Drone stands on it.
+
 <RecipeFor id="drone_dock" />
 
 ## The dock screen
@@ -137,3 +141,5 @@ the Multiblock Projector, and they split its blocks between them.
   many drones are on the dock.
 
 <RecipeFor id="swarm_dock" />
+
+The [Hologram Table](hologram_table.md) shows all your docks and drones on a 3D map.

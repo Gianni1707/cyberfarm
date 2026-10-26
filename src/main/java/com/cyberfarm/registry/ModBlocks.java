@@ -5,6 +5,7 @@ import com.cyberfarm.block.AcidSynthesizerBlock;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.SwarmDockBlock;
+import com.cyberfarm.block.HologramTableBlock;
 import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.CoolantBlock;
@@ -20,6 +21,7 @@ import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
 import com.cyberfarm.block.LiquidPipeBlock;
+import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MufflerBlock;
 import com.cyberfarm.block.ReactorCasingBlock;
@@ -50,12 +52,14 @@ public class ModBlocks {
             p -> machine(p).lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<DroneAssemblerBlock> DRONE_ASSEMBLER = BLOCKS.registerBlock("drone_assembler",
-            DroneAssemblerBlock::new, ModBlocks::machine);
+            DroneAssemblerBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<DroneDockBlock> DRONE_DOCK = BLOCKS.registerBlock("drone_dock",
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
     public static final DeferredBlock<SwarmDockBlock> SWARM_DOCK = BLOCKS.registerBlock("swarm_dock",
             SwarmDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
+    public static final DeferredBlock<HologramTableBlock> HOLOGRAM_TABLE = BLOCKS.registerBlock("hologram_table",
+            HologramTableBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 9));
 
     // Cables and pipes in three tiers, rates comparable to Immersive Engineering and Mekanism
     public static final DeferredBlock<EnergyConduitBlock> ENERGY_CONDUIT = BLOCKS.registerBlock("energy_conduit",
@@ -85,10 +89,10 @@ public class ModBlocks {
 
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
-            BioDigesterBlock::new, ModBlocks::machine);
+            BioDigesterBlock::new, ModBlocks::litMachine);
 
     public static final DeferredBlock<GasTurbineBlock> GAS_TURBINE = BLOCKS.registerBlock("gas_turbine",
-            GasTurbineBlock::new, ModBlocks::machine);
+            GasTurbineBlock::new, ModBlocks::litMachine);
 
     public static final DeferredBlock<MethaneExtractorBlock> METHANE_EXTRACTOR = BLOCKS.registerBlock("methane_extractor",
             MethaneExtractorBlock::new,
@@ -127,7 +131,7 @@ public class ModBlocks {
     public static final DeferredBlock<ReactorPortBlock> TURBINE_PORT = BLOCKS.registerBlock("turbine_port",
             ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
-            CoolantMixerBlock::new, ModBlocks::machine);
+            CoolantMixerBlock::new, ModBlocks::litMachine);
 
     // Walls of the Methane Extractor's chamber: see-through, tinted, framed
     public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
@@ -139,7 +143,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> NETHER_SULFUR_ORE = BLOCKS.registerSimpleBlock("nether_sulfur_ore",
             p -> p.mapColor(MapColor.NETHER).strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE).requiresCorrectToolForDrops());
     public static final DeferredBlock<AcidSynthesizerBlock> ACID_SYNTHESIZER = BLOCKS.registerBlock("acid_synthesizer",
-            AcidSynthesizerBlock::new, ModBlocks::machine);
+            AcidSynthesizerBlock::new, ModBlocks::litMachine);
     // Steam Engine: the boiler controls a row of cylinders closed by a dynamo
     // A complete engine is drawn whole by the boiler's renderer: its blocks hide and never cull their neighbours
     public static final DeferredBlock<SteamEngineBlock> STEAM_ENGINE = BLOCKS.registerBlock("steam_engine",
@@ -162,14 +166,14 @@ public class ModBlocks {
     public static final DeferredBlock<CyberFrameBlock> HANGAR_PAD = BLOCKS.registerBlock("hangar_pad",
             CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
-            WaterPumpBlock::new, ModBlocks::machine);
+            WaterPumpBlock::new, ModBlocks::litMachine);
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
             p -> new FluidTankBlock(p, false), ModBlocks::machine);
     public static final DeferredBlock<FluidTankBlock> GAS_TANK = BLOCKS.registerBlock("gas_tank",
             p -> new FluidTankBlock(p, true), ModBlocks::machine);
 
     public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
-            WasteReprocessorBlock::new, ModBlocks::machine);
+            WasteReprocessorBlock::new, ModBlocks::litMachine);
     /** Treated nuclear waste: inert glass, safe to store or build with. */
     public static final DeferredBlock<Block> VITRIFIED_WASTE = BLOCKS.registerSimpleBlock("vitrified_waste",
             p -> p.mapColor(MapColor.COLOR_GREEN).strength(3.0F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().lightLevel(state -> 2));
@@ -195,6 +199,10 @@ public class ModBlocks {
 
     private static BlockBehaviour.Properties pipe(BlockBehaviour.Properties properties) {
         return properties.mapColor(MapColor.METAL).strength(1.0F, 3.0F).sound(SoundType.COPPER).noOcclusion();
+    }
+
+    private static BlockBehaviour.Properties litMachine(BlockBehaviour.Properties properties) {
+        return machine(properties).lightLevel(LitMachineBlock::lightLevel);
     }
 
     private static BlockBehaviour.Properties machine(BlockBehaviour.Properties properties) {

@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.energy.MachineEnergyHandler;
 
@@ -11,6 +12,8 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,6 +22,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
  * Shared base for CyberFarm machines: an FE buffer, an item inventory and synced GUI data.
@@ -26,9 +30,22 @@ import net.neoforged.neoforge.transfer.item.ItemUtil;
  */
 public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
     public static final int ENERGY_DATA_SLOTS = 4;
+    /** The status is measured over this many ticks, and sent again at least this often regardless. */
+    private static final int STATUS_INTERVAL = 20;
+    private static final int STATUS_RESEND = 100;
 
     protected final MachineEnergyHandler energy;
     protected final ItemStacksResourceHandler items;
+
+    /** Client side: what the server last said this machine is doing. */
+    public MachineStatus status = MachineStatus.IDLE;
+    /** Client side: the game time the status arrived, to carry progress on smoothly until the next one. */
+    public long statusTime;
+    /** Client side, for its moving parts: how fast they go (0 still, 1 full speed, eased), how far they have turned, and when. */
+    public float motionSpeed;
+    public float motionPhase;
+    public float motionTime;
+    private MachineStatus sentStatus = MachineStatus.IDLE;
 
     protected final ContainerData data = new ContainerData() {
         @Override
@@ -73,6 +90,36 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     public abstract void serverTick(ServerLevel level, BlockPos pos, BlockState state);
+
+    /** For machines that work without making or using FE, such as a digester or a reactor. */
+    protected boolean isWorking() {
+        return false;
+    }
+
+    /** How far the current batch is, 0 to 1, or -1 for a machine without batches. */
+    protected float progress() {
+        return -1.0F;
+    }
+
+    /** Measures what the machine did over the last second and tells the players near it, if it changed. */
+    public final void tickStatus(ServerLevel level, BlockPos pos) {
+        long time = level.getGameTime();
+        if (time % STATUS_INTERVAL != 0) {
+            return;
+        }
+        float made = energy.takeGenerated() / (float) STATUS_INTERVAL;
+        float used = energy.takeUsed() / (float) STATUS_INTERVAL;
+        MachineStatus now = new MachineStatus(made > 0 || used > 0 || isWorking(), made, used, energy.getEnergy(), energy.getCapacity(), progress());
+        // Sent again now and then too, for players who loaded the chunk since
+        if (!now.equals(sentStatus) || time % STATUS_RESEND == 0) {
+            sentStatus = now;
+            PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new MachineStatusPayload(pos, now));
+        }
+        BlockState state = getBlockState();
+        if (state.getBlock() instanceof LitMachineBlock && state.getValue(LitMachineBlock.LIT) != now.working()) {
+            level.setBlock(pos, state.setValue(LitMachineBlock.LIT, now.working()), Block.UPDATE_CLIENTS);
+        }
+    }
 
     /** Whether automation and players may put this item into the slot. */
     protected boolean isItemValid(int index, ItemResource resource) {

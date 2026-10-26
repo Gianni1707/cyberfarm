@@ -3,6 +3,7 @@ package com.cyberfarm.block.entity;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.menu.CrystallizerMenu;
@@ -140,6 +141,11 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected float progress() {
+        return progress / (float) PROCESS_TIME;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (--checkCooldown <= 0) {
             checkCooldown = CHECK_INTERVAL;
@@ -148,6 +154,9 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
                 state = state.setValue(CrystallizerBlock.FORMED, formed);
                 level.setBlock(pos, state, Block.UPDATE_ALL);
                 level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.2F);
+                if (formed) {
+                    Effects.reveal(level, Blueprint.CRYSTALLIZER.ghosts(worldPosition, facing()).stream().map(Blueprint.Ghost::pos).toList());
+                }
             }
             setPartsFormed(level, formed);
         }

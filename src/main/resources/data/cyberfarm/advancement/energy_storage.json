@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:resonance_core"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.energy_storage.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.energy_storage.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "place": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:resonance_core"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place"
+    ]
+  ],
+  "parent": "cyberfarm:power_on"
+}

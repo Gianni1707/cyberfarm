@@ -8,6 +8,7 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -97,4 +98,8 @@ public class MethaneExtractorBlock extends MachineBlock {
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.METHANE_EXTRACTOR.get());
     }
+
+    /** Nothing extra: the chamber already fumes and smokes round the mob being dissolved. */
+    @Override
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 }

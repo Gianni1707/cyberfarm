@@ -72,7 +72,7 @@ public class DroneEntity extends PathfinderMob {
     /** A Mini Drone is half the size of the others; four of them park on the corners of one pad. */
     private static final double MINI_SCALE = 0.5;
     /** Close enough to the middle that a Mini Drone (0.3 wide) clears the pad's corner beacons (3/16 in from each edge). */
-    private static final double CORNER_OFFSET = 0.15;
+    public static final double CORNER_OFFSET = 0.15;
     /** A Taxi drone waits for passengers this high above its parking spot. */
     private static final double TAXI_WAIT_HEIGHT = 2.7;
     /**

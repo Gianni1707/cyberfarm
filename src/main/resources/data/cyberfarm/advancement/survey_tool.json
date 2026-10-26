@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:survey_tool"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.survey_tool.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.survey_tool.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:survey_tool"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ],
+  "parent": "cyberfarm:deploy_drone"
+}

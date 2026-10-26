@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:reactor_controller"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.reactor.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.reactor.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "place": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:reactor_controller"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place"
+    ]
+  ],
+  "parent": "cyberfarm:uranium"
+}

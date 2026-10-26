@@ -6,6 +6,7 @@ import java.util.List;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.IntakeGateBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.item.MobCapsuleItem;
@@ -106,6 +107,8 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     private int sampledAcid;
     /** Shown on clients as acid pouring from the extractor into the pool. */
     private boolean filling;
+    /** Whether a mob is being dissolved into methane right now. */
+    private boolean extracting;
     // Client side: the pool level drawn, easing towards the real one
     private float shownAcid = -1;
     private long shownTime;
@@ -239,6 +242,11 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    protected boolean isWorking() {
+        return extracting;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean wasFilling = filling;
         if (level.getGameTime() % SYNC_INTERVAL == 0) {
@@ -252,6 +260,9 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
             if (changed) {
                 level.setBlock(pos, state.setValue(MethaneExtractorBlock.FORMED, formed), Block.UPDATE_ALL);
                 level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (formed) {
+                    Effects.reveal(level, chamberBlocks(pos));
+                }
             }
             // Re-applied while formed, so a frame shared with a broken neighbour chamber lights up again
             if (formed || changed) {
@@ -274,7 +285,8 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
             rate = mobs.stream().mapToInt(MethaneExtractorBlockEntity::rateOf).sum();
         }
         // The acid eats the mob away while its gas is drawn; a full methane tank stops it all
-        if (rate > 0 && acid.amount() >= ACID_PER_TICK && tank.amount() + rate <= tank.capacity()) {
+        extracting = rate > 0 && acid.amount() >= ACID_PER_TICK && tank.amount() + rate <= tank.capacity();
+        if (extracting) {
             acid.drain(ACID_PER_TICK);
             if (tank.fill(ModFluids.METHANE.get(), rate) > 0 && level.getGameTime() % WORK_SOUND_INTERVAL == 0) {
                 level.playSound(null, pos.below(2), ModSounds.EXTRACTOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);

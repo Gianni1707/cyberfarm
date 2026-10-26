@@ -3,6 +3,7 @@ package com.cyberfarm.drone.job;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -75,6 +76,7 @@ public class HarvestJob extends DroneJob {
             }
         }
 
+        Effects.beam(level, drone, target);
         level.destroyBlock(target, false, drone);
         if (replanted != null) {
             level.setBlock(target, replanted, Block.UPDATE_ALL);
