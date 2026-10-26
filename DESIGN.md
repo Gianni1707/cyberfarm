@@ -371,6 +371,12 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
   pistone che sale e scende sopra la Water Pump, pala che gira dietro l'oblò del Bio-Digester. Accelerano e rallentano in 1,5 s
   seguendo `MachineStatus.working`.
 
+### GUI animate
+- Tutto in `MachineScreen`, quindi in ogni schermata delle macchine: all'apertura una linea di luce scende sul pannello in 0,8 s, rallentando in fondo
+  (sotto è ancora buio); un riflesso corre sulla linea dell'intestazione ogni 4,5 s; lo slot sotto il mouse si accende di ciano;
+  la barra dell'energia è ciano, ambra sotto il 50%, rossa sotto il 20%, con un luccichio che sale; le barre di avanzamento hanno
+  un impulso che le percorre e il bordo di testa acceso. Il proiettore ha la sua schermata e resta com'era.
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,

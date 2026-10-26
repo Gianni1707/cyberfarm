@@ -2,6 +2,7 @@ package com.cyberfarm.client.screen;
 
 import com.cyberfarm.menu.MachineMenu;
 
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -10,7 +11,10 @@ import net.minecraft.world.inventory.Slot;
 
 /**
  * Base screen for CyberFarm machines. The whole GUI is drawn with flat fills in the mod's
- * clean sci-fi palette, so no GUI textures are needed.
+ * clean sci-fi palette, so no GUI textures are needed. It moves a little, like the mech's HUD: the
+ * panel powers on with a sweep of light when it opens, a glint runs along the header line, the slot
+ * under the mouse lights up, the energy bar shimmers and turns amber then red as it empties, and
+ * progress bars pulse with a bright leading edge.
  */
 public abstract class MachineScreen<T extends MachineMenu> extends AbstractContainerScreen<T> {
     public static final int OUTLINE = 0xFF0B0E11;
@@ -24,6 +28,10 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     public static final int WARM = 0xFFFFB347;
     public static final int TEXT = 0xFFC9D3DC;
     public static final int TEXT_DIM = 0xFF7D8A96;
+    public static final int DANGER = 0xFFFF5040;
+    /** How long the power-on sweep takes when the screen opens, and how often the header glint runs, in ms. */
+    private static final long POWER_ON_MS = 800;
+    private static final long GLINT_MS = 4500;
 
     protected static final int ENERGY_BAR_WIDTH = 10;
 
@@ -32,6 +40,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     protected int energyBarHeight = 52;
     /** False for settings-only GUIs that have no player inventory. */
     protected boolean showInventory = true;
+    private final long openedAt = Util.getMillis();
 
     protected MachineScreen(T menu, Inventory inventory, Component title, int width, int height) {
         super(menu, inventory, title, width, height);
@@ -48,20 +57,53 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + imageHeight - 1, PANEL);
         graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + 2, PANEL_LIGHT);
         graphics.fill(x + 1, y + imageHeight - 2, x + imageWidth - 1, y + imageHeight - 1, PANEL_DARK);
-        // Cyan header line under the title, and a divider above the player inventory
+        // Cyan header line under the title, with a glint running along it, and a divider above the player inventory
         graphics.fill(x + 6, y + 15, x + imageWidth - 6, y + 16, ACCENT_DIM);
+        glint(graphics, x + 6, y + 15, imageWidth - 12, (Util.getMillis() - openedAt) % GLINT_MS / (float) GLINT_MS);
         if (showInventory) {
             graphics.fill(x + 6, y + inventoryLabelY - 3, x + imageWidth - 6, y + inventoryLabelY - 2, PANEL_LIGHT);
         }
 
         for (Slot slot : menu.slots) {
             drawSlot(graphics, x + slot.x, y + slot.y);
+            if (isHovering(slot.x, slot.y, 16, 16, mouseX, mouseY)) {
+                // The slot under the mouse lights up
+                graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, ACCENT);
+                graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, SLOT_BG);
+                graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, 0x302FE0FF);
+            }
         }
         // Machines that use no power (Bio-Digester, Methane Extractor) have no energy bar
         if (menu.getEnergyCapacity() > 0) {
             drawEnergyBar(graphics, x + energyBarX, y + energyBarY, energyBarHeight);
         }
         extractMachineBackground(graphics, x, y);
+        powerOn(graphics, x, y);
+    }
+
+    /** A short bright dash with fading tails, {@code t} (0 to 1) of the way along a one-pixel line. */
+    private static void glint(GuiGraphicsExtractor graphics, int x, int y, int width, float t) {
+        int middle = x + Math.round(width * t);
+        for (int i = -8; i <= 8; i++) {
+            int px = middle + i;
+            if (px >= x && px < x + width) {
+                int alpha = 0xFF * (9 - Math.abs(i)) / 9;
+                graphics.fill(px, y, px + 1, y + 1, alpha << 24 | (ACCENT & 0xFFFFFF));
+            }
+        }
+    }
+
+    /** As the screen opens, a line of light sweeps down the panel, everything below it still dark. */
+    private void powerOn(GuiGraphicsExtractor graphics, int x, int y) {
+        long elapsed = Util.getMillis() - openedAt;
+        if (elapsed >= POWER_ON_MS) {
+            return;
+        }
+        // Eased, so it slows as it reaches the bottom
+        float t = (float) elapsed / POWER_ON_MS;
+        int line = y + Math.round(imageHeight * (1.0F - (1.0F - t) * (1.0F - t)));
+        graphics.fill(x + 1, line, x + imageWidth - 1, y + imageHeight - 1, 0xE0101418);
+        graphics.fill(x + 1, Math.max(y + 1, line - 2), x + imageWidth - 1, line, ACCENT);
     }
 
     /** Machine-specific widgets drawn above the panel. {@code x}/{@code y} are the GUI origin. */
@@ -87,8 +129,15 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         int capacity = menu.getEnergyCapacity();
         int filled = capacity <= 0 ? 0 : (int) ((long) height * Math.min(menu.getEnergy(), capacity) / capacity);
         if (filled > 0) {
-            graphics.fill(x, y + height - filled, x + ENERGY_BAR_WIDTH, y + height, ACCENT_DIM);
-            graphics.fill(x + 2, y + height - filled, x + ENERGY_BAR_WIDTH - 2, y + height, ACCENT);
+            // Cyan while there is plenty, amber when it runs low, red when nearly empty
+            float charge = (float) filled / height;
+            int core = charge > 0.5F ? ACCENT : charge > 0.2F ? WARM : DANGER;
+            int edge = charge > 0.5F ? ACCENT_DIM : (core & 0x00FFFFFF) | 0x80000000;
+            graphics.fill(x, y + height - filled, x + ENERGY_BAR_WIDTH, y + height, edge);
+            graphics.fill(x + 2, y + height - filled, x + ENERGY_BAR_WIDTH - 2, y + height, core);
+            // A shimmer rising through the charge
+            int band = y + height - Math.round(filled * (Util.getMillis() % 2500 / 2500.0F));
+            graphics.fill(x + 2, Math.max(y + height - filled, band - 3), x + ENERGY_BAR_WIDTH - 2, band, 0x60FFFFFF);
         }
         // Scale ticks
         for (int i = 1; i < 4; i++) {
@@ -126,13 +175,21 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         }
     }
 
-    /** Draws a horizontal progress bar ({@code progress} from 0 to 1). */
+    /**
+     * Draws a horizontal progress bar ({@code progress} from 0 to 1), with a light pulse running along
+     * the filled part and its leading edge lit.
+     */
     protected static void drawProgressBar(GuiGraphicsExtractor graphics, int x, int y, int width, int height, float progress, int color) {
         graphics.fill(x - 1, y - 1, x + width + 1, y + height + 1, SLOT_BORDER);
         graphics.fill(x, y, x + width, y + height, SLOT_BG);
         int filled = Math.round(width * Math.max(0.0F, Math.min(1.0F, progress)));
         if (filled > 0) {
             graphics.fill(x, y, x + filled, y + height, color);
+            int pulse = x + Math.round(filled * (Util.getMillis() % 2000 / 2000.0F));
+            graphics.fill(Math.max(x, pulse - 4), y, pulse, y + height, 0x50FFFFFF);
+            if (filled < width) {
+                graphics.fill(x + filled - 1, y, x + filled, y + height, 0xC0FFFFFF);
+            }
         }
     }
 
