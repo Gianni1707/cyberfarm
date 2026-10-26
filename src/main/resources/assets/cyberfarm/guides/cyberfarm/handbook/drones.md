@@ -28,6 +28,9 @@ spins its rotors up and lifts off for a moment, then gets to work (or settles ba
    or there is nothing left to do. With several modules, the next trip starts from the next module.
 4. It unloads into the dock, charges and starts again.
 
+While they work, drones hit their target with a short **beam of light** (a steady one while they
+dig), and flying low their rotors kick up **dust**, or spray over water.
+
 Drones fly in a **straight line** to their target, slowing down as they arrive. If something
 blocks the way they find a path around it. Flight speed comes from the [frame](drone_frames.md)
 and the [Speed Addons](addons.md).

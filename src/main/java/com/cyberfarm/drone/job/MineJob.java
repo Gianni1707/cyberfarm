@@ -2,6 +2,7 @@ package com.cyberfarm.drone.job;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneFlight;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -186,6 +187,10 @@ public class MineJob extends DroneJob {
         float hardness = state.getDestroySpeed(level, target);
         int needed = miningTicks(hardness);
         progress++;
+        // A steady cutting beam while it digs: each lasts a little longer than the gap to the next
+        if (progress % 6 == 1) {
+            Effects.beam(level, drone, target);
+        }
 
         int stage = Math.min(9, progress * 10 / needed);
         if (stage != shownStage) {

@@ -41,6 +41,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     public MachineStatus status = MachineStatus.IDLE;
     /** Client side: the game time the status arrived, to carry progress on smoothly until the next one. */
     public long statusTime;
+    /** Client side, for its moving parts: how fast they go (0 still, 1 full speed, eased), how far they have turned, and when. */
+    public float motionSpeed;
+    public float motionPhase;
+    public float motionTime;
     private MachineStatus sentStatus = MachineStatus.IDLE;
 
     protected final ContainerData data = new ContainerData() {

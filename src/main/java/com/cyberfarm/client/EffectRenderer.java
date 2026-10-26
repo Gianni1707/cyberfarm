@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.client.renderer.DockRenderer;
 import com.cyberfarm.effect.Effects;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -18,13 +19,15 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 /**
  * Draws the short moments of {@link Effects}: a block printed into place by a Builder drone, a
- * structure revealed as it forms. Each lives for a fixed number of ticks from when it arrived.
+ * structure revealed as it forms, a drone's beam on the block it works. Each lives for a fixed
+ * number of ticks from when it arrived.
  */
 public final class EffectRenderer {
     private static final RenderType LIGHT = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
@@ -32,10 +35,12 @@ public final class EffectRenderer {
     private static final int PALE = 0xB8F6FF;
     private static final float PRINT_TICKS = 12.0F;
     private static final float REVEAL_TICKS = 32.0F;
+    private static final float BEAM_TICKS = 8.0F;
 
-    private record Effect(int kind, BlockPos from, BlockPos to, long start) {}
+    private record Effect(int kind, BlockPos from, BlockPos to, int source, long start) {}
 
-    private record Frame(Effect effect, float t) {}
+    /** An effect at {@code t} (0 to 1) through its life; {@code origin} is where its source entity is now, or null. */
+    private record Frame(Effect effect, float t, Vec3 origin) {}
 
     // shortcut: effects kept in statics between payload, extract and submit; fine for the one local player
     private static final List<Effect> effects = new ArrayList<>();
@@ -43,14 +48,16 @@ public final class EffectRenderer {
 
     private EffectRenderer() {}
 
-    public static void add(int kind, BlockPos from, BlockPos to) {
+    public static void add(int kind, BlockPos from, BlockPos to, int source) {
         ClientLevel level = Minecraft.getInstance().level;
         if (level == null) {
             return;
         }
-        effects.add(new Effect(kind, from, to, level.getGameTime()));
+        effects.add(new Effect(kind, from, to, source, level.getGameTime()));
         RandomSource random = level.getRandom();
-        if (kind == Effects.PRINT) {
+        if (kind == Effects.BEAM) {
+            level.addParticle(ParticleTypes.ELECTRIC_SPARK, from.getX() + 0.5, from.getY() + 0.6, from.getZ() + 0.5, 0.0, 0.0, 0.0);
+        } else if (kind == Effects.PRINT) {
             for (int i = 0; i < 6; i++) {
                 level.addParticle(ParticleTypes.ELECTRIC_SPARK, from.getX() + random.nextDouble(), from.getY() + random.nextDouble(),
                         from.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
@@ -73,12 +80,21 @@ public final class EffectRenderer {
         float time = event.getLevel().getGameTime() + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         List<Frame> now = new ArrayList<>();
         // A level change or a long pause can leave effects from another time: those go too
+        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
         effects.removeIf(effect -> {
-            float t = (time - effect.start()) / (effect.kind() == Effects.PRINT ? PRINT_TICKS : REVEAL_TICKS);
+            float t = (time - effect.start()) / switch (effect.kind()) {
+                case Effects.PRINT -> PRINT_TICKS;
+                case Effects.BEAM -> BEAM_TICKS;
+                default -> REVEAL_TICKS;
+            };
             if (t < 0.0F || t >= 1.0F) {
                 return true;
             }
-            now.add(new Frame(effect, t));
+            Entity source = effect.source() >= 0 ? event.getLevel().getEntity(effect.source()) : null;
+            if (effect.kind() == Effects.BEAM && source == null) {
+                return true;
+            }
+            now.add(new Frame(effect, t, source == null ? null : source.getPosition(partialTick)));
             return false;
         });
         frames = now;
@@ -95,14 +111,23 @@ public final class EffectRenderer {
         poseStack.translate(-camera.x, -camera.y, -camera.z);
         event.getSubmitNodeCollector().submitCustomGeometry(poseStack, LIGHT, (pose, buffer) -> {
             for (Frame frame : toDraw) {
-                if (frame.effect().kind() == Effects.PRINT) {
-                    print(pose, buffer, frame.effect().from(), frame.t());
-                } else {
-                    reveal(pose, buffer, frame.effect().from(), frame.effect().to(), frame.t());
+                switch (frame.effect().kind()) {
+                    case Effects.PRINT -> print(pose, buffer, frame.effect().from(), frame.t());
+                    case Effects.BEAM -> beam(pose, buffer, frame.origin(), frame.effect().from(), frame.t());
+                    default -> reveal(pose, buffer, frame.effect().from(), frame.effect().to(), frame.t());
                 }
             }
         });
         poseStack.popPose();
+    }
+
+    /** A beam from under the drone to the middle of the block, with a soft halo, fading out. */
+    private static void beam(PoseStack.Pose pose, VertexConsumer buffer, Vec3 drone, BlockPos target, float t) {
+        Vec3 from = drone.add(0.0, 0.1, 0.0);
+        Vec3 to = Vec3.atCenterOf(target);
+        float fade = 1.0F - t * t;
+        DockRenderer.segment(pose, buffer, from, to, 0.012F, (int) (0xF0 * fade) << 24 | PALE);
+        DockRenderer.segment(pose, buffer, from, to, 0.035F, (int) (0x50 * fade) << 24 | CYAN);
     }
 
     /** A shell of light closing in on the block and fading, and a scan line running down it. */

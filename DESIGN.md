@@ -360,6 +360,17 @@ Un mecha pilotabile di **~3,5 blocchi** (stile Knightmare, nei colori della mod:
   e aperto, rotori che partono nell'ultimo quarto, anello di scansione. L'avanzamento viene da `MachineStatus` e prosegue fluido
   tra un pacchetto e l'altro (`statusTime`).
 
+### Macchine piccole vive
+- **Dock** (`DockRenderer`, anche per lo Swarm Dock): tutto dai droni che il client vede già, senza rete. Tre luci girano
+  sull'anello del pad finché un drone entro 12 blocchi torna a casa; archi di energia (spezzati, ridisegnati ogni 2 tick) dai beacon
+  agli angoli verso un drone in ricarica sul pad; sullo Swarm Dock gli anelli (ora tenui nella texture) si accendono sotto ogni Mini Drone.
+- **Droni**: `Effects.beam` (payload con l'id del drone) per un raggio di luce dal drone al blocco su cui lavora (raccolta, semina,
+  taglio, costruzione; ogni 6 tick mentre scava, così il raggio è continuo). `DroneDownwash`: in volo basso (entro 3 blocchi) il
+  drone solleva polvere (`DUST_PLUME`) o spruzzi sull'acqua, più fitti più è basso.
+- **Parti in movimento** (`MovingPartsRenderer`): ventola a quattro pale nella Gas Turbine (le razze dipinte tolte dalla texture),
+  pistone che sale e scende sopra la Water Pump, pala che gira dietro l'oblò del Bio-Digester. Accelerano e rallentano in 1,5 s
+  seguendo `MachineStatus.working`.
+
 ### Suoni
 - Eventi propri (`ModSounds`, `sounds.json` generato da `assetgen.py`) che riusano audio vanilla con pitch/volume propri:
   fischio delle eliche del drone in volo (sintetizzato; più forte e acuto con la velocità), decollo, atterraggio; bolle dell'Extractor mentre produce,

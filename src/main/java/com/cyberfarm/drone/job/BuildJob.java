@@ -134,6 +134,7 @@ public class BuildJob extends DroneJob {
         state.getBlock().setPlacedBy(level, pos, state, null, item);
         level.playSound(null, pos, state.getSoundType().getPlaceSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
         Effects.print(level, pos);
+        Effects.beam(level, drone, pos);
         drone.useJobEnergy(ENERGY_COST);
         return Result.DONE;
     }

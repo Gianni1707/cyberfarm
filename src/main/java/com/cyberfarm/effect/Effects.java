@@ -2,6 +2,7 @@ package com.cyberfarm.effect;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -12,11 +13,17 @@ public final class Effects {
     public static final int PRINT = 0;
     /** A structure coming together: a ring of light rising through it, its edges lighting up behind it. */
     public static final int REVEAL = 1;
+    /** A drone at work on a block: a short beam of light from it to the block. */
+    public static final int BEAM = 2;
 
     private Effects() {}
 
     public static void print(ServerLevel level, BlockPos pos) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new EffectPayload(PRINT, pos, pos));
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new EffectPayload(PRINT, pos, pos, -1));
+    }
+
+    public static void beam(ServerLevel level, Entity drone, BlockPos target) {
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(BEAM, target, target, drone.getId()));
     }
 
     /** Plays the reveal over the box holding all {@code blocks}; called once, as the structure forms. */
@@ -38,6 +45,6 @@ public final class Effects {
             return;
         }
         BlockPos from = new BlockPos(minX, minY, minZ);
-        PacketDistributor.sendToPlayersTrackingChunk(server, ChunkPos.containing(from), new EffectPayload(REVEAL, from, new BlockPos(maxX, maxY, maxZ)));
+        PacketDistributor.sendToPlayersTrackingChunk(server, ChunkPos.containing(from), new EffectPayload(REVEAL, from, new BlockPos(maxX, maxY, maxZ), -1));
     }
 }

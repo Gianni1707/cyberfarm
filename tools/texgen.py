@@ -829,12 +829,11 @@ def digester_top():
 
 
 def turbine_front():
+    """Gas Turbine front: a dark duct round the burner; the fan in it is drawn by MovingPartsRenderer."""
     c = panel(24)
     c.disc(7.5, 7.5, 6.2, "K")
     c.disc(7.5, 7.5, 5.2, "s")
-    for i in range(-4, 5):
-        c.set(round(7.5 + i), round(7.5 + i), "l")
-        c.set(round(7.5 + i), round(7.5 - i), "l")
+    c.disc(7.5, 7.5, 5.2, "D", r_inner=4.6)
     c.disc(7.5, 7.5, 1.6, "O")
     return c
 
@@ -1089,16 +1088,20 @@ def hologram_table_side():
 
 
 def swarm_dock_top():
-    """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross."""
+    """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross. The
+    rings are dim: each lights up while a drone stands on it (see DockRenderer)."""
     c = Canvas()
     c.rect(0, 0, 15, 15, "k")
     c.rect(1, 1, 14, 14, "D", noise=3, seed=12)
-    c.rect(7, 2, 8, 13, "b")
-    c.rect(2, 7, 13, 8, "b")
-    for cx, cy in ((3.5, 3.5), (11.5, 3.5), (3.5, 11.5), (11.5, 11.5)):
-        c.disc(cx, cy, 2.7, "c", r_inner=1.7)
-        c.set(int(cx), int(cy), "C")
-    c.rect(7, 7, 8, 8, "c")
+    # Lead-in marks from the middle of each edge
+    c.rect(7, 1, 8, 2, "b")
+    c.rect(7, 13, 8, 14, "b")
+    c.rect(1, 7, 2, 8, "b")
+    c.rect(13, 7, 14, 8, "b")
+    # One ring under each parking spot (0.15 from the middle, as DroneEntity.CORNER_OFFSET)
+    for cx, cy in ((5.1, 5.1), (9.9, 5.1), (5.1, 9.9), (9.9, 9.9)):
+        c.disc(cx, cy, 2.3, "b", r_inner=1.4)
+        c.set(round(cx), round(cy), "c")
     return c
 
 
