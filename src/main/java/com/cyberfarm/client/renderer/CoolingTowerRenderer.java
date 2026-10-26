@@ -93,7 +93,11 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         poseStack.translate(back.getStepX() * size.base() + 0.5F, -1.0F, back.getStepZ() * size.base() + 0.5F);
         int light = state.towerLight;
         collector.submitCustomGeometry(poseStack, SHELL, (pose, buffer) -> drawTower(pose, buffer, size, light, false));
+        // The glowing bands a hair outside the shell: drawn on the same surface, shader packs flicker between the two
+        poseStack.pushPose();
+        poseStack.scale(1.004F, 1.0F, 1.004F);
         collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> drawTower(pose, buffer, size, LightCoordsUtil.FULL_BRIGHT, true));
+        poseStack.popPose();
         // The controller sits in the middle of its side, on the second layer
         BlockPos controller = BlockPos.ZERO.relative(state.facing, size.base()).above();
         collector.submitCustomGeometry(poseStack, state.lit ? PANEL_ON : PANEL,
@@ -101,7 +105,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (BlockPos port : state.ports) {
                 if (outward(port) != null) {
-                    inset(pose, buffer, size, port, 0.8F, LightCoordsUtil.FULL_BRIGHT);
+                    inset(pose, buffer, size, port, 0.8F, light);
                 }
             }
         });
