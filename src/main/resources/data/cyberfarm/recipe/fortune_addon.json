@@ -5,7 +5,7 @@
     "N": "minecraft:gold_nugget",
     "X": "minecraft:emerald",
     "R": "minecraft:redstone",
-    "C": "minecraft:copper_ingot"
+    "C": "cyberfarm:basic_circuit"
   },
   "pattern": [
     "NXN",

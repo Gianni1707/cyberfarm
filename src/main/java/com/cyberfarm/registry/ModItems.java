@@ -107,6 +107,19 @@ public class ModItems {
     public static final DeferredItem<BlockItem> STEAM_ENGINE_DYNAMO = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE_DYNAMO);
 
     // Crafting components
+    // Materials and circuits: aluminum for the first frames, carbon fiber for the advanced ones
+    public static final DeferredItem<BlockItem> BAUXITE_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.BAUXITE_ORE);
+    public static final DeferredItem<BlockItem> DEEPSLATE_BAUXITE_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.DEEPSLATE_BAUXITE_ORE);
+    public static final DeferredItem<Item> RAW_BAUXITE = ITEMS.registerSimpleItem("raw_bauxite");
+    public static final DeferredItem<Item> ALUMINA = ITEMS.registerSimpleItem("alumina");
+    public static final DeferredItem<Item> ALUMINUM_INGOT = ITEMS.registerSimpleItem("aluminum_ingot");
+    public static final DeferredItem<Item> CARBON_FIBER = ITEMS.registerSimpleItem("carbon_fiber");
+    public static final DeferredItem<Item> BASIC_CIRCUIT = ITEMS.registerSimpleItem("basic_circuit");
+    public static final DeferredItem<Item> ADVANCED_CIRCUIT = ITEMS.registerSimpleItem("advanced_circuit", p -> p.rarity(Rarity.UNCOMMON));
+    public static final DeferredItem<Item> ELITE_CIRCUIT = ITEMS.registerSimpleItem("elite_circuit", p -> p.rarity(Rarity.RARE));
+    public static final DeferredItem<BlockItem> ELECTROLYZER = ITEMS.registerSimpleBlockItem(ModBlocks.ELECTROLYZER);
+    public static final DeferredItem<BlockItem> PYROLYSIS_OVEN = ITEMS.registerSimpleBlockItem(ModBlocks.PYROLYSIS_OVEN);
+    public static final DeferredItem<BlockItem> FABRICATOR = ITEMS.registerSimpleBlockItem(ModBlocks.FABRICATOR);
     public static final DeferredItem<Item> DRONE_CORE = ITEMS.registerSimpleItem("drone_core");
     public static final DeferredItem<Item> ROTOR = ITEMS.registerSimpleItem("rotor");
     public static final DeferredItem<Item> BATTERY_CELL = ITEMS.registerSimpleItem("battery_cell");
@@ -162,6 +175,8 @@ public class ModItems {
             p -> new DroneAddonItem(p, AddonType.FORTUNE));
     public static final DeferredItem<DroneAddonItem> SILK_TOUCH_ADDON = ITEMS.registerItem("silk_touch_addon",
             p -> new DroneAddonItem(p, AddonType.SILK_TOUCH));
+    public static final DeferredItem<DroneAddonItem> ANCHOR_ADDON = ITEMS.registerItem("anchor_addon",
+            p -> new DroneAddonItem(p, AddonType.ANCHOR));
 
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);

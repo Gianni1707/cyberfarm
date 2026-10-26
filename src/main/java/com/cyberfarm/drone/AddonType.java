@@ -15,7 +15,9 @@ public enum AddonType {
     /** Fortune level for Quarry and Harvester drops. */
     FORTUNE(3, 0, 25),
     /** Silk Touch for Quarry and Harvester drops; cannot be combined with Fortune. */
-    SILK_TOUCH(1, 0, 50);
+    SILK_TOUCH(1, 0, 50),
+    /** Its dock keeps the chunks the drone works in loaded, paying FE per chunk (see the config). */
+    ANCHOR(1, 0, 0);
 
     private final int maxPerDrone;
     private final int flightCostPercent;

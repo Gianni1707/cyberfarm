@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
+import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.drone.DroneCargo;
 import com.cyberfarm.drone.DroneFlight;
 import com.cyberfarm.drone.DroneModules;
@@ -362,6 +363,11 @@ public class DroneEntity extends PathfinderMob {
 
     public ItemStack getCarriedItem() {
         return entityData.get(DATA_CARRIED);
+    }
+
+    /** Whether an Anchor Addon is fitted: its dock keeps the chunks it works in loaded. */
+    public boolean isAnchored() {
+        return modules.addonCount(AddonType.ANCHOR) > 0;
     }
 
     /** Items carried per Transport trip, from the Stack Addons. */

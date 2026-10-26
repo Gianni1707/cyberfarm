@@ -27,6 +27,11 @@ public class ItemFilterMenu extends MachineMenu {
     public static final int BUTTON_MOD = 2;
     public static final int BUTTON_TAG_PREVIOUS = 3;
     public static final int BUTTON_TAG_NEXT = 4;
+    public static final int BUTTON_LIMIT_DOWN = 5;
+    public static final int BUTTON_LIMIT_UP = 6;
+    public static final int BUTTON_LIMIT_DOWN_ONE = 7;
+    public static final int BUTTON_LIMIT_UP_ONE = 8;
+    public static final int INVENTORY_Y = 102;
 
     private final ItemFilter filter;
     private final Container samples;
@@ -59,7 +64,7 @@ public class ItemFilterMenu extends MachineMenu {
                 }
             });
         }
-        addPlayerInventory(inventory, 84);
+        addPlayerInventory(inventory, INVENTORY_Y);
     }
 
     @Override
@@ -102,6 +107,10 @@ public class ItemFilterMenu extends MachineMenu {
             case BUTTON_MOD -> filter.toggleMod();
             case BUTTON_TAG_PREVIOUS -> filter.cycleTag(-1);
             case BUTTON_TAG_NEXT -> filter.cycleTag(1);
+            case BUTTON_LIMIT_DOWN -> filter.stepLimit(-1, false);
+            case BUTTON_LIMIT_UP -> filter.stepLimit(1, false);
+            case BUTTON_LIMIT_DOWN_ONE -> filter.stepLimit(-1, true);
+            case BUTTON_LIMIT_UP_ONE -> filter.stepLimit(1, true);
             default -> {
                 return false;
             }
@@ -123,6 +132,10 @@ public class ItemFilterMenu extends MachineMenu {
 
     public int getTagIndex() {
         return extra(3);
+    }
+
+    public int getLimit() {
+        return extra(4);
     }
 
     /** The sample whose tags the tag button steps through. */

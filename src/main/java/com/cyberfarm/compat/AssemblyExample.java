@@ -27,7 +27,7 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
                 ModItems.RANCHER_MODULE.get(), ModItems.FERTILIZER_MODULE.get(), ModItems.BUILDER_MODULE.get(),
                 ModItems.FISHER_MODULE.get(), ModItems.BREEDER_MODULE.get());
         List<ItemStack> addons = stacks(ModItems.SPEED_ADDON.get(), ModItems.STACK_ADDON.get(), ModItems.BATTERY_ADDON.get(),
-                ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get());
+                ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get(), ModItems.ANCHOR_ADDON.get());
 
         List<AssemblyExample> examples = new ArrayList<>();
         for (DroneFrameItem frame : List.of(ModItems.MINI_FRAME.get(), ModItems.BASIC_FRAME.get(), ModItems.ADVANCED_FRAME.get(), ModItems.ELITE_FRAME.get())) {

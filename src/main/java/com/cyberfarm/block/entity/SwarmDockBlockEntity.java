@@ -66,6 +66,11 @@ public class SwarmDockBlockEntity extends DroneDockBlockEntity {
     }
 
     @Override
+    protected List<UUID> droneIds() {
+        return drones;
+    }
+
+    @Override
     protected int droneCount() {
         return drones.size();
     }

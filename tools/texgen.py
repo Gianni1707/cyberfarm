@@ -1615,6 +1615,14 @@ ADDON_ICONS = {
         ".Vv...",
         "v.....",
     ],
+    "item/anchor_addon": [
+        "..cc..",
+        ".cCCc.",
+        "..cc..",
+        "..cc..",
+        "c.cc.c",
+        ".cccc.",
+    ],
 }
 
 
@@ -2349,6 +2357,130 @@ def crystallizer_port():
     """A Cyber Frame with a pipe socket ringed in violet."""
     return chamber_port("#8a4fd8", "#d6b8ff")
 
+# --------------------------------------------------------------------------- materials and circuits
+
+def tinted(canvas, mapping):
+    """`canvas` with its palette keys swapped for other colours, e.g. an ore sprite in a new metal."""
+    out = canvas.copy()
+    for y in range(canvas.height):
+        for x in range(canvas.width):
+            if canvas.keys[y][x] in mapping:
+                out.set(x, y, mapping[canvas.keys[y][x]])
+    return out
+
+
+BAUXITE = {"1": "#2a140c", "2": "#6a2e18", "3": "#a24a24", "4": "#cf6f3a", "5": "#f0a070",
+           "6": "#3a2a20", "7": "#5a4234", "8": "#7a5c48", "9": "#9a7a62"}
+ALUMINUM = {"1": "#2c3238", "2": "#5e6872", "3": "#8e98a2", "4": "#c2cad2", "5": "#f2f6fa"}
+
+
+def bauxite_ore_overlay():
+    """Transparent overlay over stone or deepslate: rusty clumps of bauxite."""
+    c = Canvas()
+    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
+        c.rect(cx, cy, cx + 2, cy + 1, "#7a3418")
+        c.set(cx, cy, "#cf6f3a")
+        c.set(cx + 1, cy, "#a24a24")
+        c.set(cx + 2, cy + 1, "#4a1e0e")
+    return c
+
+
+def raw_bauxite():
+    return tinted(raw_uranium(), BAUXITE)
+
+
+def aluminum_ingot():
+    return tinted(uranium_ingot(), ALUMINUM)
+
+
+def alumina():
+    """A small heap of white alumina powder."""
+    c = Canvas()
+    for y in range(7, 14):
+        half = (y - 6) + 1
+        c.rect(8 - half, y, 7 + half, y, "#e8ecf0", noise=10, seed=y + 40)
+    c.rect(2, 14, 13, 14, "#a8b0b8")
+    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
+        c.set(x, y, "#ffffff")
+    return c
+
+
+def carbon_fiber():
+    """A swatch of woven carbon fiber: a diagonal twill in black and graphite, with a sheen."""
+    c = Canvas()
+    for y in range(2, 14):
+        for x in range(2, 14):
+            weave = ((x + y) // 2 + (x // 2)) % 2
+            c.set(x, y, "#3a3f46" if weave else "#16191d")
+    c.frame(2, 2, 13, 13, "#0b0d10")
+    for i in range(3, 9):
+        c.set(i + 2, i - 1, "#6a7480")
+    return c
+
+
+def circuit(board, trace, chip_light):
+    """A circuit board: a coloured board with copper traces, gold pins and a chip whose light shows the tier."""
+    c = Canvas()
+    c.rect(1, 3, 14, 12, "k")
+    c.rect(2, 4, 13, 11, board, noise=6, seed=91)
+    for y in (5, 10):
+        c.rect(3, y, 12, y, trace)
+    for x in (3, 12):
+        c.rect(x, 5, x, 10, trace)
+    c.rect(5, 6, 10, 9, "K")
+    c.rect(6, 7, 9, 8, "#22262c")
+    c.set(7, 7, chip_light)
+    for x in (5, 7, 9, 10):
+        c.set(x, 5, "O")
+        c.set(x, 10, "O")
+    return c
+
+
+def electrolyzer_front(frame=None):
+    """An electrolysis cell: two electrodes in a bath, bubbles rising off them while it works."""
+    c = panel(66)
+    c.rect(3, 2, 12, 12, "K")
+    c.rect(4, 3, 11, 11, "#1a2c3a")
+    c.rect(4, 7, 11, 11, "#2a5a7a")
+    c.rect(5, 3, 5, 10, "l")
+    c.rect(10, 3, 10, 10, "#b07040")
+    for x, y in rising([(6, 10), (9, 9), (6, 7), (9, 11)], frame, 7, 5):
+        c.set(x, y, "#a8e0ff")
+    c.rect(3, 13, 12, 13, "c")
+    return c
+
+
+def pyrolysis_oven_front():
+    """A kiln door with a grate of glowing coals, a gauge and a methane feed pipe."""
+    c = panel(67)
+    c.rect(3, 3, 12, 11, "K")
+    c.rect(4, 4, 11, 10, "#1c1410")
+    for x in range(4, 12):
+        c.set(x, 9, "o" if x % 2 else "r")
+        c.set(x, 8, "O" if x % 3 == 0 else "o")
+    for x in range(4, 12, 2):
+        c.set(x, 6, "r")
+    c.rect(3, 12, 12, 12, "m")
+    c.set(13, 4, "c")
+    return c
+
+
+def fabricator_front():
+    """A clean-room window over a circuit board with a printing head and status lights."""
+    c = panel(68)
+    c.rect(3, 2, 12, 11, "K")
+    c.rect(4, 3, 11, 10, "#123a24")
+    for y in (5, 8):
+        c.rect(4, y, 11, y, "#c87a3a")
+    c.rect(6, 6, 9, 7, "K")
+    c.rect(4, 3, 11, 3, "m")
+    c.rect(7, 4, 8, 4, "C")
+    c.rect(3, 13, 12, 13, "c")
+    c.set(4, 12, "g")
+    c.set(6, 12, "G")
+    return c
+
+
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
@@ -2457,6 +2589,17 @@ def build_all():
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
         **lit_front("acid_synthesizer", acid_synthesizer_front),
+        **lit_front("electrolyzer", electrolyzer_front),
+        **lit_front("pyrolysis_oven", pyrolysis_oven_front),
+        **lit_front("fabricator", fabricator_front),
+        "block/bauxite_ore_overlay": bauxite_ore_overlay(),
+        "item/raw_bauxite": raw_bauxite(),
+        "item/alumina": alumina(),
+        "item/aluminum_ingot": aluminum_ingot(),
+        "item/carbon_fiber": carbon_fiber(),
+        "item/basic_circuit": circuit("#2f8a4a", "#c87a3a", "g"),
+        "item/advanced_circuit": circuit("#1f4f9a", "#d8a040", "c"),
+        "item/elite_circuit": circuit("#5a2f9a", "#e8c050", "V"),
         "block/crystallizer_front": crystallizer_front(),
         "block/crystallizer_top": crystallizer_top(),
         "block/crystallizer_port": crystallizer_port(),

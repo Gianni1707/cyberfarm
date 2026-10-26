@@ -17,8 +17,9 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Transport Module: carries items from the source container to the destination container of the
- * dock's route (set with the Survey Tool), only the items the dock filter lets through. Works with
- * any inventory from any mod.
+ * dock's route (set with the Survey Tool), only the items the dock filter lets through and, with a
+ * limit set in the filter, only until the destination holds that many of each. Works with any
+ * inventory from any mod.
  */
 public class TransportJob extends DroneJob {
     private enum Phase { PICKUP, DROPOFF }
@@ -43,7 +44,7 @@ public class TransportJob extends DroneJob {
         ResourceHandler<ItemResource> to = inventory(level, destination);
         // Only fly if at least one item could actually go from the source to the destination.
         try (Transaction simulation = Transaction.openRoot()) {
-            if (ResourceHandlerUtil.move(from, to, resource -> dock.filter().test(resource.toStack()), 1, simulation) == 0) {
+            if (ResourceHandlerUtil.move(from, to, resource -> dock.filter().test(resource.toStack()) && room(to, resource, dock) > 0, 1, simulation) == 0) {
                 return null;
             }
         }
@@ -66,9 +67,16 @@ public class TransportJob extends DroneJob {
 
     private Result pickUp(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         ResourceHandler<ItemResource> from = inventory(level, source);
-        Set<ItemResource> wanted = accepted(from, inventory(level, destination), dock);
-        // 16 items per trip, plus one stack per Stack Addon
-        int moved = wanted.isEmpty() ? 0 : ResourceHandlerUtil.moveStacking(from, drone.cargo().handler(), wanted::contains, drone.transportCapacity(), null);
+        ResourceHandler<ItemResource> to = inventory(level, destination);
+        // 16 items per trip, plus one stack per Stack Addon; with a limit, no more of each than the destination is short of
+        int capacity = drone.transportCapacity();
+        int moved = 0;
+        for (ItemResource resource : accepted(from, to, dock)) {
+            int amount = Math.min(capacity - moved, room(to, resource, dock));
+            if (amount > 0) {
+                moved += ResourceHandlerUtil.moveStacking(from, drone.cargo().handler(), resource::equals, amount, null);
+            }
+        }
         if (moved == 0) {
             return Result.DONE;
         }
@@ -88,7 +96,7 @@ public class TransportJob extends DroneJob {
         }
         for (int i = 0; i < from.size(); i++) {
             ItemResource resource = from.getResource(i);
-            if (resource.isEmpty() || accepted.contains(resource) || !dock.filter().test(resource.toStack())) {
+            if (resource.isEmpty() || accepted.contains(resource) || !dock.filter().test(resource.toStack()) || room(to, resource, dock) <= 0) {
                 continue;
             }
             try (Transaction simulation = Transaction.openRoot()) {
@@ -98,6 +106,21 @@ public class TransportJob extends DroneJob {
             }
         }
         return accepted;
+    }
+
+    /** How many more of {@code resource} the destination should get: no end without a limit in the filter. */
+    private static int room(@Nullable ResourceHandler<ItemResource> to, ItemResource resource, DroneDockBlockEntity dock) {
+        int limit = dock.filter().limit();
+        if (limit <= 0 || to == null) {
+            return Integer.MAX_VALUE;
+        }
+        long held = 0;
+        for (int i = 0; i < to.size(); i++) {
+            if (to.getResource(i).equals(resource)) {
+                held += to.getAmountAsLong(i);
+            }
+        }
+        return (int) Math.max(0, limit - held);
     }
 
     private Result dropOff(DroneEntity drone, ServerLevel level) {

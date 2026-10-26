@@ -1,0 +1,39 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:basic_circuit"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.circuits.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.circuits.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "place": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "location": [
+          {
+            "condition": "minecraft:location_check",
+            "predicate": {
+              "block": {
+                "blocks": "cyberfarm:fabricator"
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "place"
+    ]
+  ],
+  "parent": "cyberfarm:aluminum"
+}

@@ -14,16 +14,17 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.Item;
 
-/** Filter GUI: 9 ghost slots, three mode switches and a tag picker. */
+/** Filter GUI: 9 ghost slots, three mode switches, a tag picker and the Transport limit. */
 public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
     private static final int BUTTON_Y = 42;
     private static final int BUTTON_WIDTH = 52;
     private static final int BUTTON_HEIGHT = 14;
     private static final int TAG_Y = 62;
+    private static final int LIMIT_Y = 80;
     private static final int ARROW = 12;
 
     public ItemFilterScreen(ItemFilterMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 166);
+        super(menu, inventory, title, 176, ItemFilterMenu.INVENTORY_Y + 82);
     }
 
     private static int buttonX(int index) {
@@ -41,6 +42,14 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
         }
         if (isHovering(imageWidth - 8 - ARROW, TAG_Y, ARROW, ARROW, mouseX, mouseY)) {
             return ItemFilterMenu.BUTTON_TAG_NEXT;
+        }
+        // Shift steps the limit by one instead of to the next round value
+        boolean fine = minecraft.hasShiftDown();
+        if (isHovering(8, LIMIT_Y, ARROW, ARROW, mouseX, mouseY)) {
+            return fine ? ItemFilterMenu.BUTTON_LIMIT_DOWN_ONE : ItemFilterMenu.BUTTON_LIMIT_DOWN;
+        }
+        if (isHovering(imageWidth - 8 - ARROW, LIMIT_Y, ARROW, ARROW, mouseX, mouseY)) {
+            return fine ? ItemFilterMenu.BUTTON_LIMIT_UP_ONE : ItemFilterMenu.BUTTON_LIMIT_UP;
         }
         return -1;
     }
@@ -98,6 +107,15 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
         String text = font.plainSubstrByWidth(tag.getString(), width - 4);
         boolean set = menu.getTagIndex() >= 0;
         graphics.text(font, text, x + (imageWidth - font.width(text)) / 2, top + 2, set ? ACCENT : TEXT_DIM, false);
+        // Limit: < Keep at destination: N >
+        int row = y + LIMIT_Y;
+        arrow(graphics, x + 8, row, "-");
+        arrow(graphics, x + imageWidth - 8 - ARROW, row, "+");
+        graphics.fill(x + 8 + ARROW + 2, row, x + imageWidth - 10 - ARROW, row + ARROW, SLOT_BORDER);
+        graphics.fill(x + 9 + ARROW + 2, row + 1, x + imageWidth - 11 - ARROW, row + ARROW - 1, SLOT_BG);
+        int limit = menu.getLimit();
+        Component label = limit > 0 ? Component.translatable("gui.cyberfarm.filter.limit", limit) : Component.translatable("gui.cyberfarm.filter.limit_none");
+        graphics.text(font, label, x + (imageWidth - font.width(label)) / 2, row + 2, limit > 0 ? ACCENT : TEXT_DIM, false);
     }
 
     private void arrow(GuiGraphicsExtractor graphics, int x, int y, String symbol) {
@@ -115,6 +133,8 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
             graphics.setTooltipForNextFrame(font, Component.translatable(hints[button]), mouseX, mouseY);
         } else if (isHovering(8, TAG_Y, imageWidth - 16, ARROW, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.filter.tag.hint"), mouseX, mouseY);
+        } else if (isHovering(8, LIMIT_Y, imageWidth - 16, ARROW, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.filter.limit.hint"), mouseX, mouseY);
         } else if (isHovering(ItemFilterMenu.FILTER_X - 1, ItemFilterMenu.FILTER_Y - 1, ItemFilter.SLOTS * 18, 18, mouseX, mouseY)
                 && (hoveredSlot == null || !hoveredSlot.hasItem())) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.filter.slots.hint"), mouseX, mouseY);

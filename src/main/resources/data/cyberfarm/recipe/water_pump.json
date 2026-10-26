@@ -6,7 +6,7 @@
     "B": "minecraft:bucket",
     "C": "minecraft:copper_ingot",
     "P": "minecraft:piston",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     "IBI",

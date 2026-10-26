@@ -19,7 +19,8 @@ FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module",
-    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon",
+    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
+    "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
@@ -367,7 +368,7 @@ def blocks():
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
-             "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port"]
+             "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -377,25 +378,32 @@ def blocks():
     write(RES / "data/c/tags/fluid/biogas.json", {"values": [f"{NS}:biogas"]})
     write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
     ores = ["uranium_ore", "deepslate_uranium_ore"]
-    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + ["nether_sulfur_ore"]]})
+    bauxite = ["bauxite_ore", "deepslate_bauxite_ore"]
+    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + bauxite + ["nether_sulfur_ore"]]})
     write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
+    write(RES / "data/minecraft/tags/block/needs_stone_tool.json", {"values": [f"{NS}:{n}" for n in bauxite]})
     write(RES / "data/c/tags/fluid/steam.json", {"values": [f"{NS}:steam"]})
     write(RES / "data/c/tags/fluid/gaseous.json", {"values": [f"{NS}:biogas", f"{NS}:methane", f"{NS}:steam"]})
     # Common material tags, so other mods' machines process our uranium and ours take theirs
     for kind in ("block", "item"):
         write(RES / f"data/c/tags/{kind}/ores/uranium.json", {"values": [f"{NS}:{n}" for n in ores]})
         write(RES / f"data/c/tags/{kind}/ores/sulfur.json", {"values": [f"{NS}:nether_sulfur_ore"]})
-        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": ["#c:ores/uranium", "#c:ores/sulfur"]})
+        write(RES / f"data/c/tags/{kind}/ores/bauxite.json", {"values": [f"{NS}:{n}" for n in bauxite]})
+        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": ["#c:ores/uranium", "#c:ores/sulfur", "#c:ores/bauxite"]})
         write(RES / f"data/c/tags/{kind}/ores_in_ground/netherrack.json", {"replace": False, "values": [f"{NS}:nether_sulfur_ore"]})
     write(RES / "data/c/tags/item/dusts/sulfur.json", {"values": [f"{NS}:sulfur"]})
-    write(RES / "data/c/tags/item/dusts.json", {"replace": False, "values": ["#c:dusts/sulfur"]})
+    write(RES / "data/c/tags/item/dusts/alumina.json", {"values": [f"{NS}:alumina"]})
+    write(RES / "data/c/tags/item/dusts.json", {"replace": False, "values": ["#c:dusts/sulfur", "#c:dusts/alumina"]})
     write(RES / "data/c/tags/fluid/acid.json", {"values": [f"{NS}:acid"]})
     write(RES / "data/c/tags/item/raw_materials/uranium.json", {"values": [f"{NS}:raw_uranium"]})
-    write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium"]})
+    write(RES / "data/c/tags/item/raw_materials/bauxite.json", {"values": [f"{NS}:raw_bauxite"]})
+    write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium", "#c:raw_materials/bauxite"]})
     write(RES / "data/c/tags/item/ingots/uranium.json", {"values": [f"{NS}:uranium_ingot"]})
-    write(RES / "data/c/tags/item/ingots.json", {"replace": False, "values": ["#c:ingots/uranium"]})
+    write(RES / "data/c/tags/item/ingots/aluminum.json", {"values": [f"{NS}:aluminum_ingot"]})
+    write(RES / "data/c/tags/item/ingots.json", {"replace": False, "values": ["#c:ingots/uranium", "#c:ingots/aluminum"]})
     uranium_worldgen()
     sulfur_ore()
+    bauxite_ores()
 
 
 def nuclear_blocks():
@@ -473,6 +481,9 @@ def nuclear_blocks():
     lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
     lit_machine("acid_synthesizer", "machine_top")
+    lit_machine("electrolyzer", "machine_top")
+    lit_machine("pyrolysis_oven", "machine_top")
+    lit_machine("fabricator", "machine_top")
     orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
     write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
@@ -536,6 +547,48 @@ def radiation_data():
     # The suit keeps the cold of coolant pools out, like leather in powder snow
     write(RES / "data/minecraft/tags/item/freeze_immune_wearables.json", {"replace": False, "values": [
         f"{NS}:hazmat_helmet", f"{NS}:hazmat_suit", f"{NS}:hazmat_pants", f"{NS}:hazmat_boots"]})
+
+
+def bauxite_ores():
+    """Bauxite, the ore of aluminum: rusty clumps in stone and deepslate, dropping Raw Bauxite, in
+    veins about as common as iron, mostly near the surface where it weathers out."""
+    for name, base in (("bauxite_ore", "minecraft:block/stone"), ("deepslate_bauxite_ore", "minecraft:block/deepslate")):
+        faces = {d: {"uv": [0, 0, 16, 16], "texture": "#base", "cullface": d} for d in ("down", "up", "north", "south", "west", "east")}
+        over = {d: {"uv": [0, 0, 16, 16], "texture": "#overlay", "cullface": d} for d in faces}
+        write(ASSETS / f"models/block/{name}.json", {
+            "parent": "minecraft:block/block",
+            "textures": {"particle": base, "base": base, "overlay": tex("bauxite_ore_overlay")},
+            "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": faces},
+                         {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}],
+        })
+        write(ASSETS / f"blockstates/{name}.json", {"variants": {"": {"model": f"{NS}:block/{name}"}}})
+        write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
+        write(DATA / f"loot_table/blocks/{name}.json", {
+            "type": "minecraft:block",
+            "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "entries": [{"type": "minecraft:alternatives", "children": [
+                {"type": "minecraft:item", "name": f"{NS}:{name}", "conditions": [{"condition": "minecraft:match_tool", "predicate": {
+                    "predicates": {"minecraft:enchantments": [{"enchantments": "minecraft:silk_touch", "levels": {"min": 1}}]}}}]},
+                {"type": "minecraft:item", "name": f"{NS}:raw_bauxite", "functions": [
+                    {"function": "minecraft:apply_bonus", "enchantment": "minecraft:fortune", "formula": "minecraft:ore_drops"},
+                    {"function": "minecraft:explosion_decay"}]},
+            ]}]}],
+            "random_sequence": f"{NS}:blocks/{name}",
+        })
+    write(DATA / "worldgen/configured_feature/bauxite_ore.json", {"type": "minecraft:ore", "config": {
+        "discard_chance_on_air_exposure": 0.0, "size": 9, "targets": [
+            {"state": {"Name": f"{NS}:bauxite_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:stone_ore_replaceables"}},
+            {"state": {"Name": f"{NS}:deepslate_bauxite_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:deepslate_ore_replaceables"}},
+        ]}})
+    write(DATA / "worldgen/placed_feature/bauxite_ore.json", {"feature": f"{NS}:bauxite_ore", "placement": [
+        {"type": "minecraft:count", "count": 10},
+        {"type": "minecraft:in_square"},
+        {"type": "minecraft:height_range", "height": {"type": "minecraft:trapezoid",
+                                                      "min_inclusive": {"absolute": -16}, "max_inclusive": {"absolute": 112}}},
+        {"type": "minecraft:biome"},
+    ]})
+    write(DATA / "neoforge/biome_modifier/bauxite_ore.json", {
+        "type": "neoforge:add_features", "biomes": "#minecraft:is_overworld",
+        "features": f"{NS}:bauxite_ore", "step": "underground_ores"})
 
 
 def sulfur_ore():
@@ -637,57 +690,73 @@ def shaped(name, pattern, key, count=1, category="misc"):
 def recipes():
     iron, copper, gold, redstone = "minecraft:iron_ingot", "minecraft:copper_ingot", "minecraft:gold_ingot", "minecraft:redstone"
     core, rotor, cell = f"{NS}:drone_core", f"{NS}:rotor", f"{NS}:battery_cell"
+    # Progression: aluminum and Basic Circuits, then carbon fiber and Advanced Circuits (acid), then Elite Circuits (uranium)
+    aluminum, fiber = "#c:ingots/aluminum", f"{NS}:carbon_fiber"
+    circuit, advanced_circuit, elite_circuit = f"{NS}:basic_circuit", f"{NS}:advanced_circuit", f"{NS}:elite_circuit"
+    for source, suffix in ((f"{NS}:raw_bauxite", ""), (f"{NS}:bauxite_ore", "_from_ore"), (f"{NS}:deepslate_bauxite_ore", "_from_deepslate_ore")):
+        for kind, time in (("smelting", 200), ("blasting", 100)):
+            write(DATA / f"recipe/alumina{suffix}_{kind}.json", {
+                "type": f"minecraft:{kind}", "category": "misc", "cookingtime": time, "experience": 0.5,
+                "group": "alumina", "ingredient": source, "result": {"id": f"{NS}:alumina"}})
+    # By hand a circuit is slow and dear; the Fabricator makes two from the same
+    shaped("basic_circuit", [" R ", "CNC", " R "], {"R": redstone, "C": copper, "N": "minecraft:gold_nugget"})
+    shaped("electrolyzer", ["ICI", "GXG", "IBI"], {"I": iron, "C": circuit, "G": "minecraft:glass", "X": "minecraft:cauldron", "B": cell})
+    shaped("fabricator", ["IPI", "CTC", "IBI"], {"I": iron, "P": "minecraft:piston", "C": circuit, "T": "minecraft:crafting_table", "B": cell})
+    shaped("pyrolysis_oven", ["ICI", "PFP", "III"], {"I": iron, "C": circuit, "P": f"{NS}:gas_pipe", "F": "minecraft:blast_furnace"})
 
     shaped("drone_core", ["IRI", "RGR", "IRI"], {"I": iron, "R": redstone, "G": gold}, count=2)
     shaped("rotor", ["N N", " I ", "N N"], {"N": "minecraft:iron_nugget", "I": iron}, count=2)
     shaped("battery_cell", [" N ", "CRC", "CRC"], {"N": "minecraft:iron_nugget", "C": copper, "R": redstone})
 
-    shaped("basic_frame", ["R R", " D ", "RBR"], {"R": rotor, "D": core, "B": cell})
-    shaped("mini_frame", ["R R", " D "], {"R": rotor, "D": core})
-    shaped("advanced_frame", ["GBG", "DFD", "GBG"], {"G": gold, "B": cell, "D": core, "F": f"{NS}:basic_frame"})
-    shaped("elite_frame", ["XBX", "EFE", "XBX"], {"X": "minecraft:diamond", "B": cell, "E": "minecraft:ender_eye", "F": f"{NS}:advanced_frame"})
+    # Frames like real drones': aluminum first, carbon fiber for the advanced and elite ones
+    shaped("basic_frame", ["RAR", "CDB", "RAR"], {"R": rotor, "A": aluminum, "C": circuit, "D": core, "B": cell})
+    shaped("mini_frame", ["RAR", " D "], {"R": rotor, "A": aluminum, "D": core})
+    shaped("advanced_frame", ["KCK", "BFB", "KCK"], {"K": fiber, "C": advanced_circuit, "B": cell, "F": f"{NS}:basic_frame"})
+    shaped("elite_frame", ["KDK", "CFC", "KEK"], {"K": fiber, "D": "minecraft:diamond", "C": elite_circuit,
+                                                 "F": f"{NS}:advanced_frame", "E": "minecraft:ender_eye"})
 
-    shaped("harvester_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:iron_hoe", "C": copper, "D": core})
-    shaped("quarry_module", ["IPI", "CDC"], {"I": iron, "P": "minecraft:diamond_pickaxe", "C": copper, "D": core})
-    shaped("transport_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core})
-    shaped("planter_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:dispenser", "C": copper, "D": core})
-    shaped("logger_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:iron_axe", "C": copper, "D": core})
-    shaped("taxi_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:lead", "C": copper, "D": core})
-    shaped("rancher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:shears", "C": copper, "D": core})
-    shaped("fertilizer_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bone_block", "C": copper, "D": core})
-    shaped("builder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:piston", "C": copper, "D": core})
-    shaped("fisher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:fishing_rod", "C": copper, "D": core})
-    shaped("breeder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:hay_block", "C": copper, "D": core})
+    shaped("harvester_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:iron_hoe", "C": copper, "D": circuit})
+    shaped("quarry_module", ["IPI", "CDC"], {"I": iron, "P": "minecraft:diamond_pickaxe", "C": copper, "D": circuit})
+    shaped("transport_module", ["IHI", "CDC"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": circuit})
+    shaped("planter_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:dispenser", "C": copper, "D": circuit})
+    shaped("logger_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:iron_axe", "C": copper, "D": circuit})
+    shaped("taxi_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:lead", "C": copper, "D": circuit})
+    shaped("rancher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:shears", "C": copper, "D": circuit})
+    shaped("fertilizer_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bone_block", "C": copper, "D": circuit})
+    shaped("builder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:piston", "C": copper, "D": circuit})
+    shaped("fisher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:fishing_rod", "C": copper, "D": circuit})
+    shaped("breeder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:hay_block", "C": copper, "D": circuit})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
-        shaped(name, ["NXN", "RCR"], {"N": "minecraft:gold_nugget", "X": special, "R": redstone, "C": copper})
+        shaped(name, ["NXN", "RCR"], {"N": "minecraft:gold_nugget", "X": special, "R": redstone, "C": circuit})
 
     addon("speed_addon", "minecraft:sugar")
     addon("stack_addon", "minecraft:chest")
     addon("battery_addon", cell)
     addon("fortune_addon", "minecraft:emerald")
     addon("silk_touch_addon", "minecraft:diamond")
+    addon("anchor_addon", "minecraft:ender_eye")
 
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
-    shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": core, "C": copper, "T": "minecraft:crafting_table"})
-    shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": core, "I": iron})
+    shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": circuit, "C": copper, "T": "minecraft:crafting_table"})
+    shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": circuit, "I": iron})
     shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
-    shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": core})
+    shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": circuit})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
     shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)
     # Higher tiers: 8 pipes around an upgrade core
     for kind in ("energy_conduit", "gas_pipe", "liquid_pipe"):
-        shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": redstone}, count=8)
-        shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": f"{NS}:uranium_ingot"}, count=8)
+        shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": advanced_circuit}, count=8)
+        shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": elite_circuit}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
-    shaped("bio_digester", ["ICI", "GXG", "ICI"], {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
-    shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": core})
+    shaped("bio_digester", ["IUI", "GXG", "ICI"], {"I": iron, "U": circuit, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
+    shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": circuit})
     shaped("acid_inlet", ["F", "B"], {"F": f"{NS}:cyber_frame", "B": "minecraft:bucket"})
     shaped("methane_outlet", ["F", "H"], {"F": f"{NS}:cyber_frame", "H": "minecraft:hopper"})
     shaped("intake_gate", ["IFI", "PDP"], {"I": iron, "F": f"{NS}:cyber_frame", "P": "minecraft:piston", "D": "minecraft:iron_door"})
-    shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": core, "G": "minecraft:glass"})
+    shaped("methane_extractor", ["IHI", "CDC", "IGI"], {"I": iron, "H": "minecraft:hopper", "C": copper, "D": circuit, "G": "minecraft:glass"})
     # Nuclear
     uranium = f"{NS}:uranium_ingot"
     casing = f"{NS}:reactor_casing"
@@ -700,17 +769,17 @@ def recipes():
     shaped("reactor_casing", ["CIC", "I I", "CIC"], {"C": "minecraft:light_gray_concrete", "I": iron}, count=8)
     shaped("reactor_port", ["H", "X", "B"], {"H": "minecraft:hopper", "X": casing, "B": "minecraft:bucket"})
     shaped("reactor_controller", ["IUI", "DXD", "IRI"],
-           {"I": iron, "U": uranium, "D": "minecraft:diamond", "X": casing, "R": "minecraft:redstone_block"})
+           {"I": iron, "U": uranium, "D": "minecraft:diamond", "X": casing, "R": elite_circuit})
     turbine_casing = f"{NS}:turbine_casing"
     shaped("turbine_casing", ["CIC", "I I", "CIC"], {"C": copper, "I": iron}, count=8)
     shaped("turbine_port", ["E", "X", "B"], {"E": f"{NS}:energy_conduit", "X": turbine_casing, "B": "minecraft:bucket"})
-    shaped("turbine_controller", ["IDI", "RTR", "IXI"],
-           {"I": iron, "D": "minecraft:diamond", "R": redstone, "T": f"{NS}:gas_turbine", "X": turbine_casing})
+    shaped("turbine_controller", ["ICI", "RTR", "IXI"],
+           {"I": iron, "C": elite_circuit, "R": redstone, "T": f"{NS}:gas_turbine", "X": turbine_casing})
     shaped("multiblock_projector", ["GLG", "IRI", " I "],
            {"G": "minecraft:glass_pane", "L": "minecraft:glowstone_dust", "I": iron, "R": redstone}, category="equipment")
     shaped("liquid_tank", ["IGI", "GBG", "IGI"], {"I": iron, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("gas_tank", ["CGC", "GBG", "CGC"], {"C": copper, "G": "minecraft:glass", "B": "minecraft:bucket"})
-    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": core})
+    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": advanced_circuit})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")
     shaped("hazmat_suit", ["W W", "WIW", "WWW"], {"W": wool, "I": lead_lining}, category="equipment")
@@ -718,24 +787,24 @@ def recipes():
     shaped("hazmat_boots", ["W W", "L L"], {"W": wool, "L": "minecraft:leather"}, category="equipment")
     shaped("geiger_counter", [" C ", "IGI", "IRI"], {"C": copper, "I": iron, "G": "minecraft:glass_pane", "R": redstone}, category="equipment")
     shaped("waste_reprocessor", ["ICI", "BXB", "IDI"],
-           {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "X": "minecraft:glass", "D": core})
+           {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "X": "minecraft:glass", "D": advanced_circuit})
     shaped("coolant_mixer", ["IBI", "GXG", "IDI"],
-           {"I": iron, "B": "minecraft:bucket", "G": "minecraft:glass", "X": "minecraft:cauldron", "D": core})
+           {"I": iron, "B": "minecraft:bucket", "G": "minecraft:glass", "X": "minecraft:cauldron", "D": advanced_circuit})
 
     # Acid: sulfur into water; the chamber walls are framed glass
     shaped("acid_synthesizer", ["ICI", "GXG", "IDI"],
-           {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:cauldron", "D": core})
+           {"I": iron, "C": copper, "G": "minecraft:glass", "X": "minecraft:cauldron", "D": circuit})
     shaped("containment_glass", ["IGI", "GOG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "O": "minecraft:obsidian"}, count=4)
     # Steam Engine: boiler, cylinders and the dynamo closing the row
     shaped("steam_engine", ["ICI", "BFB", "IDI"],
-           {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": core})
+           {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": advanced_circuit})
     shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
     shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
 
     # Mech: end game. Its core is a Fusion Crystal (reactor waste -> Isotope Shard -> Crystallizer) in two elite frames
     advanced, elite = f"{NS}:advanced_frame", f"{NS}:elite_frame"
     shaped("crystallizer", ["DAD", "GXG", "DCD"], {"D": "minecraft:diamond", "A": "minecraft:amethyst_block",
-                                                   "G": f"{NS}:containment_glass", "X": f"{NS}:acid_synthesizer", "C": core})
+                                                   "G": f"{NS}:containment_glass", "X": f"{NS}:acid_synthesizer", "C": elite_circuit})
     shaped("crystallizer_port", ["IHI", "EXL", "III"], {"I": iron, "H": "minecraft:hopper", "E": f"{NS}:energy_conduit",
                                                        "X": f"{NS}:cyber_frame", "L": f"{NS}:liquid_pipe"})
     shaped("mech_core", ["DBD", "EXE", "DBD"], {"D": "minecraft:diamond", "B": cell, "E": elite, "X": f"{NS}:fusion_crystal"})
@@ -744,18 +813,18 @@ def recipes():
 
     # Mech Hangar and modules: mid to late game, an advanced frame in each
     shaped("mech_hangar", ["IGI", "CDC", "IFI"], {"I": "minecraft:iron_block", "G": "minecraft:glass_pane", "C": copper,
-                                                  "D": core, "F": advanced})
+                                                  "D": advanced_circuit, "F": advanced})
     shaped("hangar_frame", ["IWI", "W W", "IWI"], {"I": iron, "W": "minecraft:white_concrete"}, count=8)
     shaped("hangar_pad", ["CRC", "RBR", "CRC"], {"C": copper, "R": redstone, "B": cell}, count=3)
     shaped("mech_jet_module", ["M M", "RAR", "B B"], {"M": "minecraft:phantom_membrane", "R": rotor, "A": advanced, "B": "minecraft:blaze_rod"})
-    shaped("mech_drill_module", [" D ", "DAD", "ICI"], {"D": "minecraft:diamond", "A": advanced, "I": "minecraft:iron_block", "C": core})
+    shaped("mech_drill_module", [" D ", "DAD", "ICI"], {"D": "minecraft:diamond", "A": advanced, "I": "minecraft:iron_block", "C": advanced_circuit})
     shaped("mech_blade_module", ["  S", " S ", "DA "], {"S": "minecraft:amethyst_shard", "D": "minecraft:diamond", "A": advanced})
     shaped("mech_armor_module", ["IOI", "OAO", "IOI"], {"I": "minecraft:iron_block", "O": "minecraft:obsidian", "A": advanced})
 
     # Energy storage: the shell is many cheap cells, the pylons come in pairs
     shaped("resonance_cell", ["GCG", "CBC", "GCG"], {"G": "minecraft:glass", "C": copper, "B": cell}, count=4)
     shaped("resonance_core", ["GAG", "IRI", "IFI"], {"G": "minecraft:glass", "A": "minecraft:amethyst_block", "I": iron,
-                                                     "R": "minecraft:redstone_block", "F": f"{NS}:cyber_frame"})
+                                                     "R": advanced_circuit, "F": f"{NS}:cyber_frame"})
     shaped("stabilizer_pylon", [" A ", "IFI", "IRI"], {"A": "minecraft:amethyst_shard", "I": iron, "F": f"{NS}:cyber_frame", "R": redstone}, count=2)
 
     shaped("muffler", ["WIW", "INI", "WIW"], {"W": "#minecraft:wool", "I": iron, "N": "minecraft:note_block"})
@@ -864,6 +933,12 @@ def _rides(entity):
 def advancements():
     """The CyberFarm tab: three branches from the Drone Core, drones, power, and nuclear up to the mech."""
     _advancement("root", None, "drone_core", _has("drone_core"))
+    # Materials: aluminum and circuits, carbon fiber, then the elite circuits
+    _advancement("aluminum", "root", "aluminum_ingot", _has("aluminum_ingot"))
+    _advancement("circuits", "aluminum", "basic_circuit", _placed("fabricator"))
+    _advancement("advanced_circuit", "circuits", "advanced_circuit", _has("advanced_circuit"))
+    _advancement("carbon_fiber", "advanced_circuit", "carbon_fiber", _has("carbon_fiber"))
+    _advancement("elite_circuit", "carbon_fiber", "elite_circuit", _has("elite_circuit"), "goal")
     # Drones
     _advancement("assemble_drone", "root", "drone", _has("drone"))
     _advancement("deploy_drone", "assemble_drone", "drone_dock", _used_on("drone", "drone_dock"))

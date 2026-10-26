@@ -6,7 +6,7 @@
     "U": "cyberfarm:uranium_ingot",
     "D": "minecraft:diamond",
     "X": "cyberfarm:reactor_casing",
-    "R": "minecraft:redstone_block"
+    "R": "cyberfarm:elite_circuit"
   },
   "pattern": [
     "IUI",

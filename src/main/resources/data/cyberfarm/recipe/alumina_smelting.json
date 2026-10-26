@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:smelting",
+  "category": "misc",
+  "cookingtime": 200,
+  "experience": 0.5,
+  "group": "alumina",
+  "ingredient": "cyberfarm:raw_bauxite",
+  "result": {
+    "id": "cyberfarm:alumina"
+  }
+}

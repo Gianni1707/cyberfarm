@@ -4,7 +4,7 @@
   "key": {
     "G": "minecraft:light_blue_stained_glass_pane",
     "I": "minecraft:iron_ingot",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:basic_circuit"
   },
   "pattern": [
     "GGG",

@@ -4,7 +4,7 @@
   "key": {
     "P": "cyberfarm:advanced_liquid_pipe",
     "D": "minecraft:diamond",
-    "U": "cyberfarm:uranium_ingot"
+    "U": "cyberfarm:elite_circuit"
   },
   "pattern": [
     "PPP",

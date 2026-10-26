@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "#c:raw_materials/uranium"
+    "#c:raw_materials/uranium",
+    "#c:raw_materials/bauxite"
   ]
 }

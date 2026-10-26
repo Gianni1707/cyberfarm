@@ -4,6 +4,9 @@ import java.util.Set;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
+import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
+import com.cyberfarm.block.entity.FabricatorBlockEntity;
+import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
@@ -76,6 +79,15 @@ public class ModBlockEntities {
             () -> new BlockEntityType<>(SteamEngineBlockEntity::new, Set.of(ModBlocks.STEAM_ENGINE.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AcidSynthesizerBlockEntity>> ACID_SYNTHESIZER = BLOCK_ENTITIES.register("acid_synthesizer",
             () -> new BlockEntityType<>(AcidSynthesizerBlockEntity::new, Set.of(ModBlocks.ACID_SYNTHESIZER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = BLOCK_ENTITIES.register("electrolyzer",
+            () -> new BlockEntityType<>(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PyrolysisOvenBlockEntity>> PYROLYSIS_OVEN = BLOCK_ENTITIES.register("pyrolysis_oven",
+            () -> new BlockEntityType<>(PyrolysisOvenBlockEntity::new, Set.of(ModBlocks.PYROLYSIS_OVEN.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FabricatorBlockEntity>> FABRICATOR = BLOCK_ENTITIES.register("fabricator",
+            () -> new BlockEntityType<>(FabricatorBlockEntity::new, Set.of(ModBlocks.FABRICATOR.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolantMixerBlockEntity>> COOLANT_MIXER = BLOCK_ENTITIES.register("coolant_mixer",
             () -> new BlockEntityType<>(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));

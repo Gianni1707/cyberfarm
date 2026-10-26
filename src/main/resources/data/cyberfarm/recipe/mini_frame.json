@@ -3,10 +3,11 @@
   "category": "misc",
   "key": {
     "R": "cyberfarm:rotor",
+    "A": "#c:ingots/aluminum",
     "D": "cyberfarm:drone_core"
   },
   "pattern": [
-    "R R",
+    "RAR",
     " D "
   ],
   "result": {

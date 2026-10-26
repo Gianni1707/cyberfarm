@@ -6,7 +6,7 @@
     "C": "minecraft:copper_ingot",
     "R": "minecraft:redstone",
     "F": "minecraft:furnace",
-    "D": "cyberfarm:drone_core"
+    "D": "cyberfarm:basic_circuit"
   },
   "pattern": [
     "ICI",

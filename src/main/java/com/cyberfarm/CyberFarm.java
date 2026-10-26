@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
+import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.MachineStatusPayload;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
@@ -42,6 +43,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
@@ -66,6 +68,7 @@ public class CyberFarm {
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
         modEventBus.addListener(CyberFarm::registerPayloads);
+        modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
@@ -135,6 +138,14 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());

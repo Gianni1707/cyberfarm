@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": "minecraft:gold_ingot",
+    "K": "cyberfarm:carbon_fiber",
+    "C": "cyberfarm:advanced_circuit",
     "B": "cyberfarm:battery_cell",
-    "D": "cyberfarm:drone_core",
     "F": "cyberfarm:basic_frame"
   },
   "pattern": [
-    "GBG",
-    "DFD",
-    "GBG"
+    "KCK",
+    "BFB",
+    "KCK"
   ],
   "result": {
     "id": "cyberfarm:advanced_frame"

@@ -2,6 +2,9 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.AcidSynthesizerMenu;
+import com.cyberfarm.menu.ElectrolyzerMenu;
+import com.cyberfarm.menu.FabricatorMenu;
+import com.cyberfarm.menu.PyrolysisOvenMenu;
 import com.cyberfarm.menu.CrystallizerMenu;
 import com.cyberfarm.menu.SteamEngineMenu;
 import com.cyberfarm.menu.MechHangarMenu;
@@ -51,6 +54,15 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineMenu>> STEAM_ENGINE = MENUS.register("steam_engine",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerMenu>> ELECTROLYZER = MENUS.register("electrolyzer",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<PyrolysisOvenMenu>> PYROLYSIS_OVEN = MENUS.register("pyrolysis_oven",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new PyrolysisOvenMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<FabricatorMenu>> FABRICATOR = MENUS.register("fabricator",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new FabricatorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<AcidSynthesizerMenu>> ACID_SYNTHESIZER = MENUS.register("acid_synthesizer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new AcidSynthesizerMenu(id, inventory)));

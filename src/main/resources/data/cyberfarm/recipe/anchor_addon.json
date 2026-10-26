@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": "minecraft:gold_nugget",
+    "X": "minecraft:ender_eye",
+    "R": "minecraft:redstone",
+    "C": "cyberfarm:basic_circuit"
+  },
+  "pattern": [
+    "NXN",
+    "RCR"
+  ],
+  "result": {
+    "id": "cyberfarm:anchor_addon"
+  }
+}
