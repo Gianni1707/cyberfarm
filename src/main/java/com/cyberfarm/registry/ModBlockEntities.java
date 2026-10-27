@@ -7,6 +7,7 @@ import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
 import com.cyberfarm.block.entity.FabricatorBlockEntity;
 import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
+import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
@@ -88,6 +89,9 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FabricatorBlockEntity>> FABRICATOR = BLOCK_ENTITIES.register("fabricator",
             () -> new BlockEntityType<>(FabricatorBlockEntity::new, Set.of(ModBlocks.FABRICATOR.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SupplyTerminalBlockEntity>> SUPPLY_TERMINAL = BLOCK_ENTITIES.register("supply_terminal",
+            () -> new BlockEntityType<>(SupplyTerminalBlockEntity::new, Set.of(ModBlocks.SUPPLY_TERMINAL.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolantMixerBlockEntity>> COOLANT_MIXER = BLOCK_ENTITIES.register("coolant_mixer",
             () -> new BlockEntityType<>(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));

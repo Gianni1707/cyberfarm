@@ -5,6 +5,7 @@ import com.cyberfarm.block.AcidSynthesizerBlock;
 import com.cyberfarm.block.ElectrolyzerBlock;
 import com.cyberfarm.block.FabricatorBlock;
 import com.cyberfarm.block.PyrolysisOvenBlock;
+import com.cyberfarm.block.SupplyTerminalBlock;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.SwarmDockBlock;
@@ -132,6 +133,9 @@ public class ModBlocks {
             PyrolysisOvenBlock::new, ModBlocks::litMachine);
     public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",
             FabricatorBlock::new, ModBlocks::litMachine);
+    // Supply contracts: the Drone Mechanist's job site in a village
+    public static final DeferredBlock<SupplyTerminalBlock> SUPPLY_TERMINAL = BLOCKS.registerBlock("supply_terminal",
+            SupplyTerminalBlock::new, p -> machine(p).lightLevel(state -> 4));
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
             ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));

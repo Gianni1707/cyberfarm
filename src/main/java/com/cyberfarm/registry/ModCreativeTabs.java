@@ -2,6 +2,8 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.HandbookGifting;
+import com.cyberfarm.item.BlueprintDiscItem;
+import com.cyberfarm.village.VillagePlan;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -22,7 +24,9 @@ public class ModCreativeTabs {
                 if (!handbook.isEmpty()) {
                     output.accept(handbook);
                 }
-                ModItems.ITEMS.getEntries().forEach(item -> output.accept(item.get()));
+                ModItems.ITEMS.getEntries().stream().filter(item -> item != ModItems.BLUEPRINT_DISC).forEach(item -> output.accept(item.get()));
+                // A blank disc teaches nothing: one disc for each building at each tier instead
+                VillagePlan.LEVELS.forEach(level -> level.forEach(unlock -> output.accept(BlueprintDiscItem.of(unlock))));
             })
             .build());
 }

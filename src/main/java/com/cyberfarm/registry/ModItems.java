@@ -23,6 +23,7 @@ import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.item.GeigerCounterItem;
 import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.item.MobCapsuleItem;
+import com.cyberfarm.item.BlueprintDiscItem;
 import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.item.SurveyToolItem;
 
@@ -120,6 +121,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> ELECTROLYZER = ITEMS.registerSimpleBlockItem(ModBlocks.ELECTROLYZER);
     public static final DeferredItem<BlockItem> PYROLYSIS_OVEN = ITEMS.registerSimpleBlockItem(ModBlocks.PYROLYSIS_OVEN);
     public static final DeferredItem<BlockItem> FABRICATOR = ITEMS.registerSimpleBlockItem(ModBlocks.FABRICATOR);
+    public static final DeferredItem<BlockItem> SUPPLY_TERMINAL = ITEMS.registerSimpleBlockItem(ModBlocks.SUPPLY_TERMINAL);
     public static final DeferredItem<Item> DRONE_CORE = ITEMS.registerSimpleItem("drone_core");
     public static final DeferredItem<Item> ROTOR = ITEMS.registerSimpleItem("rotor");
     public static final DeferredItem<Item> BATTERY_CELL = ITEMS.registerSimpleItem("battery_cell");
@@ -199,6 +201,7 @@ public class ModItems {
             p -> new MechModuleItem(p, MechModule.ARMOR), p -> p.stacksTo(1));
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
     public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
+    public static final DeferredItem<BlueprintDiscItem> BLUEPRINT_DISC = ITEMS.registerItem("blueprint_disc", BlueprintDiscItem::new);
 
     /** One coloured, non-italic line under an item's name. */
     private static ItemLore lore(String key, ChatFormatting color) {

@@ -20,6 +20,7 @@ import com.cyberfarm.item.ProjectorSelectPayload;
 import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.multiblock.BuildPlan;
 import com.cyberfarm.multiblock.Structure;
+import com.cyberfarm.village.Blueprints;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -68,7 +69,9 @@ public class ProjectorScreen extends Screen {
 
     private final InteractionHand hand;
     private final long openedAt = Util.getMillis();
-    private final List<Structure> structures = Structure.all();
+    /** Everything it can show; village buildings only once their blueprint disc is learned. */
+    private final List<Structure> structures = Structure.all().stream()
+            .filter(structure -> Blueprints.canProject(Minecraft.getInstance().player, structure.id())).toList();
     private Structure selected;
     private List<Map.Entry<Item, Integer>> materials = List.of();
     private int scroll;

@@ -18,8 +18,9 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Builder Module: places the missing blocks of the structure linked to the dock (with the
- * Multiblock Projector), lowest layer first. The blocks come from the dock, one kind per trip;
- * the drone never breaks anything in the way. The plan goes up one layer at a time, so everything
+ * Multiblock Projector), lowest layer first, once the site is clear: until then it breaks what is in
+ * the way ({@link ClearJob}), top down. The blocks come from the dock, one kind per trip. The plan
+ * goes up one layer at a time, so everything
  * above the layer being built is empty: the drone rises out of the layer, then flies straight to
  * the block. Only when something stands in that straight line does it go like a crane, up over the
  * whole structure and across. Each leg starts a little before the last one ends, so it turns in a
@@ -53,6 +54,14 @@ public class BuildJob extends DroneJob {
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         BuildPlan plan = dock.getBuildPlan();
         if (plan == null) {
+            return null;
+        }
+        // The site is cleared first; building waits while there is anything left the drone could clear
+        BlockPos clear = plan.claimClearing(level, drone.getUUID(), drone.position(), pos -> !drone.isUnreachable(pos));
+        if (clear != null) {
+            return new ClearJob(plan, clear);
+        }
+        if (plan.toClear(level).stream().anyMatch(pos -> !drone.isUnreachable(pos))) {
             return null;
         }
         // Away from the dock only blocks whose item is in the cargo; on the dock also what it stocks

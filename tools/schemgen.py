@@ -19,10 +19,18 @@ DATA_VERSION = 4790  # SharedConstants.WORLD_VERSION of Minecraft 26.1.2
 
 # ---------------------------------------------------------------------------- NBT writer
 
-END, INT, STRING, LIST, COMPOUND = 0, 3, 8, 9, 10
+END, BYTE, INT, DOUBLE, STRING, LIST, COMPOUND = 0, 1, 3, 6, 8, 9, 10
 
 
 class Int(int):
+    pass
+
+
+class Byte(int):
+    pass
+
+
+class Double(float):
     pass
 
 
@@ -34,6 +42,10 @@ def _name(out, name):
 def _payload(out, value):
     if isinstance(value, Int):
         out += struct.pack(">i", value)
+    elif isinstance(value, Byte):
+        out += struct.pack(">b", value)
+    elif isinstance(value, Double):
+        out += struct.pack(">d", value)
     elif isinstance(value, str):
         _name(out, value)
     elif isinstance(value, list):
@@ -52,7 +64,8 @@ def _payload(out, value):
 
 
 def _kind(value):
-    return INT if isinstance(value, Int) else STRING if isinstance(value, str) else LIST if isinstance(value, list) else COMPOUND
+    kinds = ((Int, INT), (Byte, BYTE), (Double, DOUBLE), (str, STRING), (list, LIST))
+    return next((kind for cls, kind in kinds if isinstance(value, cls)), COMPOUND)
 
 
 def write_nbt(path, root):
@@ -129,7 +142,8 @@ class Schematic:
         props.setdefault("waterlogged", "false")
         return block[0], tuple(sorted(props.items()))
 
-    def save(self, name):
+    def save(self, name, out=OUT, entities=()):
+        """Writes the schematic as out/name.nbt; entities are (x, y, z, nbt) placed with it."""
         resolved = {pos: self._connected(pos, block) if connector(block[0]) else block for pos, block in self.blocks.items()}
         palette = []
         index = {}
@@ -142,12 +156,13 @@ class Schematic:
                     entry["Properties"] = dict(block[1])
                 palette.append(entry)
             blocks.append({"pos": [Int(x), Int(y), Int(z)], "state": Int(index[block])})
-        write_nbt(OUT / f"{name}.nbt", {
+        write_nbt(out / f"{name}.nbt", {
             "DataVersion": Int(DATA_VERSION),
             "size": [Int(v) for v in self.size],
             "palette": palette,
             "blocks": blocks,
-            "entities": [],
+            "entities": [{"pos": [Double(x), Double(y), Double(z)], "blockPos": [Int(int(x)), Int(int(y)), Int(int(z))], "nbt": nbt}
+                         for x, y, z, nbt in entities],
         })
         print(f"{name}: {len(blocks)} blocks, {len(palette)} block states")
         self.resolved = resolved
