@@ -462,6 +462,21 @@ def multiblock_projector():
     return c
 
 
+def blueprint_disc():
+    """A data disc in blueprint blue: a cyan rim, a lighter track, a silver hub, a glint."""
+    c = Canvas()
+    c.disc(7.5, 7.5, 7.0, "k")
+    c.disc(7.5, 7.5, 6.2, "C")
+    c.disc(7.5, 7.5, 5.4, (14, 52, 90, 255))
+    c.disc(7.5, 7.5, 4.4, (30, 80, 128, 255))
+    c.disc(7.5, 7.5, 3.4, (14, 52, 90, 255))
+    c.disc(7.5, 7.5, 2.0, "m")
+    c.disc(7.5, 7.5, 0.9, "k")
+    for x, y in ((3, 6), (4, 4), (6, 3), (11, 10), (10, 11)):
+        c.set(x, y, "c")
+    return c
+
+
 def water_pump_front(frame=None):
     c = panel(52)
     c.rect(3, 3, 12, 12, "K")
@@ -2481,6 +2496,51 @@ def fabricator_front():
     return c
 
 
+def supply_terminal_front():
+    """A notice screen: three contract lines with their progress, an emerald for the pay."""
+    c = panel(69)
+    c.rect(2, 2, 13, 12, "K")
+    c.rect(3, 3, 12, 11, "#10222a")
+    for y, filled in ((4, 7), (7, 4), (10, 9)):
+        c.rect(4, y, 4 + filled, y, "c")
+        c.rect(5 + filled, y, 9, y, "b")
+        c.set(11, y, "#3fdc6f")
+    c.rect(3, 13, 12, 13, "y")
+    return c
+
+
+def villager_drone_mechanist():
+    """The Drone Mechanist's outfit over the villager model (64x64, the model's own UV layout):
+    goggles pushed up on his forehead with their strap round his head, and a white lab coat with
+    a blue collar and hem, a pocket with a cyan stylus, and white sleeves meeting over his arms."""
+    c = Canvas(64, 64)
+    coat, shade, blue = "#e9edf0", "#c9d0d6", "#1f8fd0"
+    # Head (0,0): the strap round all four sides on the row above the brow, the goggles on the forehead
+    for x in range(0, 32):
+        c.set(x, 11, "#262b31")
+    c.rect(8, 10, 15, 12, "#3a4048")
+    for x in (9, 10, 13, 14):
+        c.set(x, 11, "c")
+    c.set(9, 11, "C")
+    c.set(13, 11, "C")
+    # Coat over the jacket (0,38): top, right side, front, left side and back
+    c.rect(6, 38, 13, 43, coat)
+    for x0, x1 in ((0, 5), (6, 13), (14, 19), (20, 27)):
+        c.rect(x0, 44, x1, 63, coat, noise=3, seed=x0 + 7)
+        c.rect(x0, 62, x1, 63, blue)
+        c.set(x0, 61, shade)
+        c.set(x1, 61, shade)
+    c.rect(6, 44, 13, 45, blue)
+    c.rect(10, 46, 10, 61, shade)
+    c.frame(11, 53, 13, 56, shade)
+    c.rect(12, 51, 12, 53, "c")
+    # Sleeves: the two upper arms (44,22) and the middle of the folded forearms (40,38), hands left bare
+    c.rect(44, 22, 59, 31, coat)
+    c.rect(44, 32, 59, 33, blue)
+    c.rect(46, 38, 49, 45, coat)
+    c.rect(58, 42, 61, 45, coat)
+    return c
+
 def build_all():
     textures = {
         "block/machine_side": machine_side(),
@@ -2516,6 +2576,7 @@ def build_all():
         "block/turbine_controller_formed": turbine_controller("formed"),
         "block/turbine_controller_on": turbine_controller("on"),
         "item/multiblock_projector": multiblock_projector(),
+        "item/blueprint_disc": blueprint_disc(),
         "block/reactor_casing": reactor_casing(False),
         "block/reactor_casing_formed": reactor_casing(True),
         "block/reactor_port": reactor_port(False),
@@ -2592,6 +2653,9 @@ def build_all():
         **lit_front("electrolyzer", electrolyzer_front),
         **lit_front("pyrolysis_oven", pyrolysis_oven_front),
         **lit_front("fabricator", fabricator_front),
+        "block/supply_terminal_front": supply_terminal_front(),
+        "entity/villager/profession/drone_mechanist": villager_drone_mechanist(),
+        "entity/zombie_villager/profession/drone_mechanist": villager_drone_mechanist(),
         "block/bauxite_ore_overlay": bauxite_ore_overlay(),
         "item/raw_bauxite": raw_bauxite(),
         "item/alumina": alumina(),

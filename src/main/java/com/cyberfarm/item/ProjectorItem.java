@@ -9,11 +9,13 @@ import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.ResonanceCoreBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
 import com.cyberfarm.client.screen.ProjectorScreen;
 import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.multiblock.BuildPlan;
 import com.cyberfarm.multiblock.Structure;
 import com.cyberfarm.registry.ModDataComponents;
+import com.cyberfarm.village.VillagePlan;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -33,6 +35,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jspecify.annotations.Nullable;
@@ -42,8 +46,8 @@ import org.jspecify.annotations.Nullable;
  * While held it follows the block you look at. Right-click opens the list of structures; sneak +
  * right-click a block locks the projection there (on a controller it lines up with it), sneak +
  * right-click the air unlocks it. Right-click a Drone Dock with a locked projection: its Builder
- * drones build it. The structure stands on the block you aim at. In creative, right-clicking a block
- * builds it instantly.
+ * drones clear the site and build it. The structure stands on the block you aim at. In creative,
+ * right-clicking a block clears the site and builds it instantly.
  */
 public class ProjectorItem extends Item {
     public ProjectorItem(Properties properties) {
@@ -141,8 +145,9 @@ public class ProjectorItem extends Item {
             stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), placement.controller());
             stack.set(ModDataComponents.PROJECTOR_FACING.get(), placement.facing().get2DDataValue());
             player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.6F);
-            if (!level.isClientSide()) {
+            if (level instanceof ServerLevel serverLevel) {
                 player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.pinned"));
+                addSite(serverLevel, structure, placement);
             }
             return InteractionResult.SUCCESS;
         }
@@ -153,6 +158,11 @@ public class ProjectorItem extends Item {
         Placement pinned = pinned(stack);
         Placement placement = pinned != null ? pinned : placement(level, context.getClickedPos(), context.getClickedFace(), player, structure);
         if (level instanceof ServerLevel serverLevel) {
+            addSite(serverLevel, structure, placement);
+            // The site is cleared first, as the Builder drones would
+            for (BlockPos pos : new BuildPlan(structure, placement.controller(), placement.facing()).toClear(serverLevel)) {
+                serverLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
+            }
             structure.buildInstantly(serverLevel, placement.controller(), placement.facing());
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.built", structure.displayName()));
         }
@@ -183,6 +193,26 @@ public class ProjectorItem extends Item {
         stack.set(ModDataComponents.PROJECTOR_STRUCTURE.get(), structure.id());
         stack.remove(ModDataComponents.PROJECTOR_BLUEPRINT.get());
         stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
+    }
+
+    /**
+     * A village upgrade picked near its village: the projection pins itself over the tier below, as
+     * built, so it asks only for what the upgrade adds.
+     */
+    public static void alignUpgrade(ServerPlayer player, ItemStack stack, Structure structure) {
+        VillagePlan.unlock(structure.id()).ifPresent(unlock -> SupplyTerminalBlockEntity.villageAt(player.level(), player.blockPosition())
+                .ifPresent(terminal -> terminal.upgradeSite(unlock).ifPresent(at -> {
+                    stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), at.origin());
+                    stack.set(ModDataComponents.PROJECTOR_FACING.get(), at.facing().get2DDataValue());
+                    terminal.addSite(unlock, at);
+                    player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.aligned", unlock.displayName()));
+                })));
+    }
+
+    /** A village blueprint pinned inside its village: the village watches the spot until the building is complete. */
+    private static void addSite(ServerLevel level, Structure structure, Placement placement) {
+        VillagePlan.unlock(structure.id()).ifPresent(unlock -> SupplyTerminalBlockEntity.villageAt(level, placement.controller())
+                .ifPresent(terminal -> terminal.addSite(unlock, new SupplyTerminalBlockEntity.Placed(placement.controller(), placement.facing()))));
     }
 
     @Override

@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "cyberfarm:mechanist_outpost",
+      "weight": 1
+    }
+  ],
+  "placement": {
+    "type": "minecraft:random_spread",
+    "spacing": 80,
+    "separation": 32,
+    "salt": 17170414
+  }
+}

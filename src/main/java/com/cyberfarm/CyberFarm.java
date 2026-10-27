@@ -33,6 +33,10 @@ import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModMenus;
 import com.cyberfarm.registry.ModSounds;
+import com.cyberfarm.registry.ModVillagers;
+import com.cyberfarm.village.MechanistChoicePayload;
+import com.cyberfarm.village.MechanistDialogue;
+import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
 
 import net.minecraft.resources.Identifier;
@@ -64,6 +68,9 @@ public class CyberFarm {
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         ModSounds.SOUNDS.register(modEventBus);
         ModEffects.EFFECTS.register(modEventBus);
+        ModVillagers.POI_TYPES.register(modEventBus);
+        ModVillagers.PROFESSIONS.register(modEventBus);
+        ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
@@ -81,6 +88,7 @@ public class CyberFarm {
         NeoForge.EVENT_BUS.addListener(Radiation::onLevelTick);
         NeoForge.EVENT_BUS.addListener(Schematics::onServerAboutToStart);
         NeoForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
+        NeoForge.EVENT_BUS.addListener(MechanistDialogue::onInteract);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -146,6 +154,7 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());
@@ -183,6 +192,8 @@ public class CyberFarm {
                 .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
+                .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
+                .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)
                 .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle);

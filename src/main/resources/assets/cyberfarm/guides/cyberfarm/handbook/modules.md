@@ -211,7 +211,12 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
   then **right-click the dock** with the projector to link it. Right-click the dock with an
   unlocked projector to unlink it.
 - Put the blocks in the dock: the drone takes one kind per trip, carrying them in its claw.
-- It builds **one layer at a time**, from the bottom: a layer is finished before the next one
+- First it **clears the site**, from the top down: it cuts away wrong blocks where the structure
+  goes and anything in a space that must stay empty, and in a schematic's box (above its bottom
+  layer) the ground, rocks, trees and plants. What it cuts drops where the block was. It leaves
+  chests, machines and anything else holding things, fluids and unbreakable blocks: the dock
+  screen counts them, and you move them.
+- Then it builds **one layer at a time**, from the bottom: a layer is finished before the next one
   starts. If the dock runs out of a block the current layer needs, the drone **waits** for it.
 - Each block is **printed** into place: a shell of light closes in on it and a scan line runs
   down it.
@@ -221,7 +226,6 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
   whole structure when something is in the way, so it never gets walled in.
 - The dock **takes in only the blocks the build still needs**. Point a Transport drone's route
   from your storage to the dock and it brings exactly what is missing, and nothing else.
-- It **never breaks blocks**: the dock screen counts the blocks in the way, and you clear them.
 - Doors and beds go in whole. Blocks it cannot place (water, a lantern hanging under a ceiling)
   are listed in the Build tab at the end, for you to place by hand. Chests go in empty.
 - Several Builder drones on different docks can share one build: link the same projection to

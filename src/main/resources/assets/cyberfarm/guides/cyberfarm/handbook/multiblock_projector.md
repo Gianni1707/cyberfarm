@@ -25,7 +25,10 @@ single block.
 - Below the multiblocks the list has **schematics**, marked in cyan: ready-made buildings such as
   a Watch Tower, a Storage Shed (a small depot) and a Drone Pad. Any data pack can add more: save a building with a
   **Structure Block** and put the file in `data/<namespace>/structure/schematic/`. Its north side is
-  its front, which turns towards you. Schematics up to 32 blocks a side are shown.
+  its front, which turns towards you. Schematics up to 40 blocks a side are shown.
+- The [tech village](tech_village.md)'s buildings join the list once you **learn** their
+  **Blueprint Disc**. Pick an upgrade near its village and the projection locks itself over the
+  building it upgrades, so it shows only what the upgrade adds.
 - While you hold it, the projection **follows the block you look at**: the structure **stands on**
   the face you aim at, the controller on the side towards you, facing you, and the rest stretches
   away from you.
@@ -34,8 +37,9 @@ single block.
 - **Sneak + right-click the air** to unlock it.
 - **Right-click a [Drone Dock](drone_dock.md)** with a locked projection and a drone with a
   [Builder Module](modules.md) builds it for you.
-- In **creative** mode, right-clicking a block **builds** the structure right away (where it is
-  locked, or where it is projected), with plain casings; swap in the ports you need.
+- In **creative** mode, right-clicking a block **clears the site and builds** the structure right
+  away (where it is locked, or where it is projected), with plain casings; swap in the ports you
+  need.
 
 Blocks still to place glow softly; **red** blocks are wrong, or in the way of a space that must
 stay empty. Correct blocks are not drawn. Above the hotbar the projector counts what is left, and

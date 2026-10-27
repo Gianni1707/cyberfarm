@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 12
+  },
+  "gives": {
+    "id": "cyberfarm:stack_addon"
+  },
+  "max_uses": 4.0,
+  "reputation_discount": 0.05,
+  "xp": 25.0
+}

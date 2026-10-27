@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  */
 public record Schematic(Identifier id, Vec3i size, List<Entry> blocks) implements Structure {
     /** Bigger schematics are skipped: the projection and the network message stay small. */
-    public static final int MAX_SIZE = 32;
+    public static final int MAX_SIZE = 40;
     private static final String FOLDER = "schematic/";
 
     /** One block, relative to the structure's lowest corner; sorted bottom layer first. */
@@ -120,6 +120,11 @@ public record Schematic(Identifier id, Vec3i size, List<Entry> blocks) implement
             case WEST -> Rotation.COUNTERCLOCKWISE_90;
             default -> Rotation.NONE;
         };
+    }
+
+    /** Where to put the schematic so its block at {@code local} lands on {@code at}, its front towards {@code facing}. */
+    public BlockPos originFor(BlockPos local, BlockPos at, Direction facing) {
+        return at.subtract(local.subtract(new BlockPos(size.getX() / 2, 0, 0)).rotate(rotation(facing)));
     }
 
     @Override

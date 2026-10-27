@@ -1,5 +1,6 @@
 package com.cyberfarm.multiblock;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
@@ -23,11 +25,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
- * A structure linked to a Drone Dock for its Builder drones: which blocks are still missing and
- * which drone is placing what. It goes up one layer at a time: a layer is finished before any block
- * of the next one goes in, so the drones wait for its blocks rather than skip ahead. Within a layer
- * the block nearest the drone goes first; a block is claimed by one drone at a time, so several
- * drones can share the work.
+ * A structure linked to a Drone Dock for its Builder drones: what is in the way, which blocks are
+ * still missing and which drone is working on what. First the site is cleared, from the top down:
+ * wrong blocks where the structure goes, anything in the spaces that must stay empty and, inside a
+ * schematic's box above its bottom layer, the land and what grows on it. Blocks holding things (a
+ * chest, a machine), fluids and unbreakable blocks are left for the player. Then it goes up one
+ * layer at a time: a layer is finished before any block of the next one goes in, so the drones wait
+ * for its blocks rather than skip ahead. Within a layer the block nearest the drone goes first; a
+ * block is claimed by one drone at a time, so several drones can share the work.
  */
 public final class BuildPlan {
     /** A claim lapses if its drone has not placed the block by then (out of power, picked up...). */
@@ -46,13 +51,92 @@ public final class BuildPlan {
     /** The heights of the layers that have blocks to place, bottom first. */
     private final List<Integer> layers;
     private final Map<BlockPos, Claim> claims = new HashMap<>();
+    /** Every place of the layout, the spaces that must stay empty too. */
+    private final Map<BlockPos, Structure.Ghost> layout = new HashMap<>();
+    /** A schematic's box above its bottom layer, where it has no block: the land there is cleared. */
+    private final List<BlockPos> land = new ArrayList<>();
 
     public BuildPlan(Structure structure, BlockPos origin, Direction facing) {
         this.structure = structure;
         this.origin = origin.immutable();
         this.facing = facing;
-        this.ghosts = structure.ghosts(origin, facing).stream().filter(ghost -> ghost.show() != null && cost(ghost.show()) != Items.AIR).toList();
+        List<Structure.Ghost> all = structure.ghosts(origin, facing);
+        this.ghosts = all.stream().filter(ghost -> ghost.show() != null && cost(ghost.show()) != Items.AIR).toList();
         this.layers = ghosts.stream().map(ghost -> ghost.pos().getY()).distinct().sorted().toList();
+        all.forEach(ghost -> layout.put(ghost.pos(), ghost));
+        if (structure instanceof Schematic && !all.isEmpty()) {
+            int minX = all.stream().mapToInt(ghost -> ghost.pos().getX()).min().orElseThrow();
+            int maxX = all.stream().mapToInt(ghost -> ghost.pos().getX()).max().orElseThrow();
+            int minZ = all.stream().mapToInt(ghost -> ghost.pos().getZ()).min().orElseThrow();
+            int maxZ = all.stream().mapToInt(ghost -> ghost.pos().getZ()).max().orElseThrow();
+            int maxY = all.stream().mapToInt(ghost -> ghost.pos().getY()).max().orElseThrow();
+            for (BlockPos pos : BlockPos.betweenClosed(minX, origin.getY() + 1, minZ, maxX, maxY, maxZ)) {
+                if (!layout.containsKey(pos)) {
+                    land.add(pos.immutable());
+                }
+            }
+        }
+    }
+
+    /** The land and what grows on it: what may be cleared from a schematic's box. */
+    private static boolean natural(BlockState state) {
+        return state.is(BlockTags.OVERWORLD_CARVER_REPLACEABLES) || state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)
+                || state.is(BlockTags.FLOWERS) || state.is(BlockTags.SAPLINGS) || state.is(BlockTags.REPLACEABLE_BY_TREES);
+    }
+
+    /** What may be broken: no fluid, nothing holding things (a chest keeps its contents), nothing unbreakable. */
+    private static boolean breakable(Level level, BlockPos pos, BlockState state) {
+        return !state.isAir() && state.getFluidState().isEmpty() && !state.hasBlockEntity() && state.getDestroySpeed(level, pos) >= 0;
+    }
+
+    /** Whether the block at {@code pos} must go before the structure is built. */
+    public boolean inTheWay(Level level, BlockPos pos) {
+        BlockState here = level.getBlockState(pos);
+        if (!breakable(level, pos, here)) {
+            return false;
+        }
+        Structure.Ghost ghost = layout.get(pos);
+        return ghost != null ? !ghost.ok().test(here) && !here.canBeReplaced() : natural(here);
+    }
+
+    /** Everything still in the way, the highest first. */
+    public List<BlockPos> toClear(Level level) {
+        List<BlockPos> clear = new ArrayList<>();
+        for (BlockPos pos : layout.keySet()) {
+            if (inTheWay(level, pos)) {
+                clear.add(pos);
+            }
+        }
+        for (BlockPos pos : land) {
+            if (inTheWay(level, pos)) {
+                clear.add(pos);
+            }
+        }
+        clear.sort((a, b) -> Integer.compare(b.getY(), a.getY()));
+        return clear;
+    }
+
+    /**
+     * The next block for {@code claimant} to clear: among those in the way that nobody else is
+     * breaking and it can reach, in the highest layer, the nearest to {@code from}. Null when there
+     * is none.
+     */
+    public @Nullable BlockPos claimClearing(ServerLevel level, UUID claimant, Vec3 from, Predicate<BlockPos> canReach) {
+        long now = level.getGameTime();
+        claims.values().removeIf(claim -> claim.until() < now || claim.drone().equals(claimant));
+        BlockPos best = null;
+        for (BlockPos pos : toClear(level)) {
+            if (best != null && pos.getY() < best.getY()) {
+                break;
+            }
+            if (!claims.containsKey(pos) && canReach.test(pos) && (best == null || pos.distToCenterSqr(from) < best.distToCenterSqr(from))) {
+                best = pos;
+            }
+        }
+        if (best != null) {
+            claims.put(best, new Claim(claimant, now + CLAIM_TICKS));
+        }
+        return best;
     }
 
     /** The item a block uses up: air for the half a door or bed places by itself, and for blocks with no item. */
@@ -138,11 +222,11 @@ public final class BuildPlan {
         return (int) ghosts.stream().filter(ghost -> !ghost.ok().test(level.getBlockState(ghost.pos()))).count();
     }
 
-    /** Wrong blocks the Builder cannot place over, and blocks in spaces that must stay empty: the Builder never breaks blocks. */
+    /** Wrong blocks the Builder cannot clear: they hold things, or are fluids or unbreakable. The player moves them. */
     public int obstacles(Level level) {
-        return (int) structure.ghosts(origin, facing).stream().filter(ghost -> {
+        return (int) layout.values().stream().filter(ghost -> {
             BlockState here = level.getBlockState(ghost.pos());
-            return !ghost.ok().test(here) && !here.canBeReplaced();
+            return !ghost.ok().test(here) && !here.canBeReplaced() && !inTheWay(level, ghost.pos());
         }).count();
     }
 

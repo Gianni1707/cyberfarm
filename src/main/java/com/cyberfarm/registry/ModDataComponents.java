@@ -46,6 +46,9 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SURVEY_MODE = COMPONENTS.registerComponentType("survey_mode",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    /** Blueprint Disc: the village building (a schematic) it teaches. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>> BLUEPRINT = COMPONENTS.registerComponentType("blueprint",
+            builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
     /** Multiblock Projector: the chosen structure (a multiblock or a schematic), and where and which way it is pinned. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>> PROJECTOR_STRUCTURE = COMPONENTS.registerComponentType("projector_structure",
             builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));

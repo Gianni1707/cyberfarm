@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 10
+  },
+  "gives": {
+    "id": "cyberfarm:speed_addon"
+  },
+  "max_uses": 4.0,
+  "reputation_discount": 0.05,
+  "xp": 25.0
+}

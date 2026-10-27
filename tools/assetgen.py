@@ -21,7 +21,7 @@ FLAT_ITEMS = [
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
-    "drone", "mini_drone", "survey_tool", "multiblock_projector", "mob_capsule_filled",
+    "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
@@ -368,7 +368,8 @@ def blocks():
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
-             "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator"]
+             "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
+             "supply_terminal"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
@@ -484,6 +485,11 @@ def nuclear_blocks():
     lit_machine("electrolyzer", "machine_top")
     lit_machine("pyrolysis_oven", "machine_top")
     lit_machine("fabricator", "machine_top")
+    orientable("supply_terminal", "supply_terminal_front", "machine_top")
+    facing_blockstate("supply_terminal")
+    # A villager job site, for mods that look for them
+    write(RES / "data/c/tags/block/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
+    write(RES / "data/c/tags/item/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
     orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
     write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
@@ -702,6 +708,8 @@ def recipes():
     shaped("basic_circuit", [" R ", "CNC", " R "], {"R": redstone, "C": copper, "N": "minecraft:gold_nugget"})
     shaped("electrolyzer", ["ICI", "GXG", "IBI"], {"I": iron, "C": circuit, "G": "minecraft:glass", "X": "minecraft:cauldron", "B": cell})
     shaped("fabricator", ["IPI", "CTC", "IBI"], {"I": iron, "P": "minecraft:piston", "C": circuit, "T": "minecraft:crafting_table", "B": cell})
+    shaped("supply_terminal", ["GGG", "CXC", "IBI"], {"G": "minecraft:glass_pane", "C": circuit, "X": "minecraft:emerald",
+                                                      "I": iron, "B": "minecraft:barrel"})
     shaped("pyrolysis_oven", ["ICI", "PFP", "III"], {"I": iron, "C": circuit, "P": f"{NS}:gas_pipe", "F": "minecraft:blast_furnace"})
 
     shaped("drone_core", ["IRI", "RGR", "IRI"], {"I": iron, "R": redstone, "G": gold}, count=2)
@@ -939,6 +947,7 @@ def advancements():
     _advancement("advanced_circuit", "circuits", "advanced_circuit", _has("advanced_circuit"))
     _advancement("carbon_fiber", "advanced_circuit", "carbon_fiber", _has("carbon_fiber"))
     _advancement("elite_circuit", "carbon_fiber", "elite_circuit", _has("elite_circuit"), "goal")
+    _advancement("supply_contracts", "circuits", "supply_terminal", _placed("supply_terminal"))
     # Drones
     _advancement("assemble_drone", "root", "drone", _has("drone"))
     _advancement("deploy_drone", "assemble_drone", "drone_dock", _used_on("drone", "drone_dock"))
@@ -962,7 +971,64 @@ def advancements():
     _advancement("pilot_mech", "mech_core", "mech_frame", _rides("mech"), "challenge")
 
 
+# --------------------------------------------------------------------------- villagers
+
+# The Drone Mechanist's trades by level: (name, wants, wanted count, gives, given count, max uses, xp)
+MECHANIST_TRADES = {
+    1: [("basic_circuit", "minecraft:emerald", 1, f"{NS}:basic_circuit", 2, 12, 2),
+        ("redstone_emerald", "minecraft:redstone", 20, "minecraft:emerald", 1, 16, 2)],
+    2: [("battery_cell", "minecraft:emerald", 3, f"{NS}:battery_cell", 2, 12, 10),
+        ("copper_emerald", "minecraft:copper_ingot", 10, "minecraft:emerald", 1, 16, 10)],
+    3: [("advanced_circuit", "minecraft:emerald", 6, f"{NS}:advanced_circuit", 1, 8, 20),
+        ("aluminum_ingot", "minecraft:emerald", 4, f"{NS}:aluminum_ingot", 4, 12, 15)],
+    4: [("speed_addon", "minecraft:emerald", 10, f"{NS}:speed_addon", 1, 4, 25),
+        ("stack_addon", "minecraft:emerald", 12, f"{NS}:stack_addon", 1, 4, 25),
+        ("carbon_fiber", "minecraft:emerald", 8, f"{NS}:carbon_fiber", 4, 8, 20)],
+    5: [("elite_circuit", "minecraft:emerald", 24, f"{NS}:elite_circuit", 1, 4, 30),
+        ("anchor_addon", "minecraft:emerald", 16, f"{NS}:anchor_addon", 1, 4, 30)],
+}
+
+
+def villagers():
+    """The Drone Mechanist's trades: one file a trade, a tag a level, and the trade set that picks two of them."""
+    # Unemployed villagers only look for job sites in this tag
+    write(RES / "data/minecraft/tags/point_of_interest_type/acquirable_job_site.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
+    for level, trades in MECHANIST_TRADES.items():
+        ids = []
+        for name, wants, wants_count, gives, gives_count, max_uses, xp in trades:
+            trade = {"wants": {"id": wants, **({"count": wants_count} if wants_count > 1 else {})},
+                     "gives": {"id": gives, **({"count": gives_count} if gives_count > 1 else {})},
+                     "max_uses": float(max_uses), "reputation_discount": 0.05, "xp": float(xp)}
+            write(DATA / f"villager_trade/drone_mechanist/{level}/{name}.json", trade)
+            ids.append(f"{NS}:drone_mechanist/{level}/{name}")
+        write(DATA / f"tags/villager_trade/drone_mechanist/level_{level}.json", {"values": ids})
+        write(DATA / f"trade_set/drone_mechanist/level_{level}.json", {
+            "amount": 2.0, "random_sequence": f"{NS}:trade_set/drone_mechanist/level_{level}",
+            "trades": f"#{NS}:drone_mechanist/level_{level}"})
+
+
+def outpost_worldgen():
+    """The Drone Mechanist's Outpost: his cabin (tools/villagegen.py), alone in the grasslands and
+    woods of the Overworld. Rare, a thousand blocks and more apart: a whole village grows from one."""
+    write(DATA / "worldgen/template_pool/village/outpost.json", {"fallback": "minecraft:empty", "elements": [{"weight": 1, "element": {
+        "element_type": "minecraft:single_pool_element", "location": f"{NS}:village/outpost",
+        "processors": {"processors": []}, "projection": "rigid"}}]})
+    write(DATA / "worldgen/structure/mechanist_outpost.json", {
+        "type": "minecraft:jigsaw", "biomes": f"#{NS}:has_structure/mechanist_outpost", "step": "surface_structures",
+        "start_pool": f"{NS}:village/outpost", "size": 1, "start_height": {"absolute": -1},
+        "project_start_to_heightmap": "WORLD_SURFACE_WG", "max_distance_from_center": 80, "use_expansion_hack": False,
+        "terrain_adaptation": "beard_thin", "spawn_overrides": {}})
+    write(DATA / "worldgen/structure_set/mechanist_outposts.json", {
+        "structures": [{"structure": f"{NS}:mechanist_outpost", "weight": 1}],
+        "placement": {"type": "minecraft:random_spread", "spacing": 80, "separation": 32, "salt": 1717_0414}})
+    write(DATA / "tags/worldgen/biome/has_structure/mechanist_outpost.json", {"values": [
+        "minecraft:plains", "minecraft:sunflower_plains", "minecraft:meadow", "minecraft:savanna", "minecraft:forest",
+        "minecraft:birch_forest", "minecraft:flower_forest", "minecraft:taiga", "minecraft:snowy_plains"]})
+
+
 if __name__ == "__main__":
+    villagers()
+    outpost_worldgen()
     blocks()
     items()
     recipes()

@@ -54,6 +54,7 @@ public final class InfoPages {
                 page(ModItems.PYROLYSIS_OVEN.get()),
                 page(ModItems.CARBON_FIBER.get()),
                 page(ModItems.FABRICATOR.get()),
+                page(ModItems.SUPPLY_TERMINAL.get()),
                 page(ModItems.BASIC_CIRCUIT.get()),
                 page(ModItems.ADVANCED_CIRCUIT.get()),
                 page(ModItems.ELITE_CIRCUIT.get()),

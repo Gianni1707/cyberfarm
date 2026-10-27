@@ -1,0 +1,12 @@
+{
+  "wants": {
+    "id": "minecraft:emerald",
+    "count": 24
+  },
+  "gives": {
+    "id": "cyberfarm:elite_circuit"
+  },
+  "max_uses": 4.0,
+  "reputation_discount": 0.05,
+  "xp": 30.0
+}
