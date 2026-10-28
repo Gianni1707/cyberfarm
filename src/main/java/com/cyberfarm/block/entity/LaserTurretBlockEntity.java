@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 public class LaserTurretBlockEntity extends MachineBlockEntity {
     public static final int RANGE = 16;
     public static final float DAMAGE = 8.0F;
-    public static final int ENERGY_PER_SHOT = 200;
+    public static final int ENERGY_PER_SHOT = (int) DAMAGE * Laser.ENERGY_PER_DAMAGE;
     public static final int SHOT_INTERVAL = 20;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;

@@ -20,11 +20,13 @@ import org.jspecify.annotations.Nullable;
  * and blows itself up on it, a small TNT blast. The drone is gone: it is a one-way trip.
  */
 public class BombJob extends DroneJob {
-    /** A third of TNT's: kills a zombie, digs a small crater. */
-    public static final float POWER = 1.5F;
+    /** Half of TNT's, going off at the mob's feet: about 24 damage to it (a zombie has 20), a small crater. */
+    public static final float POWER = 2.0F;
     private static final double VERTICAL_REACH = 8.0;
     /** Close enough to the mob's middle to go off. */
-    private static final double FUSE_DISTANCE = 1.2;
+    private static final double FUSE_DISTANCE = 1.5;
+    /** The blast is set this high over the mob's feet: vanilla measures from the feet, so it hits the mob full on. */
+    private static final double BLAST_HEIGHT = 0.5;
     /** A claim on a mob lasts this long after its drone last flew at it (a drone that was unloaded lets go). */
     private static final int CLAIM_TICKS = 20;
 
@@ -83,7 +85,7 @@ public class BombJob extends DroneJob {
         Vec3 aim = target.getBoundingBox().getCenter();
         if (drone.position().distanceTo(aim) <= FUSE_DISTANCE) {
             CLAIMS.remove(target, this);
-            drone.detonate(level, POWER);
+            drone.detonate(level, target.position().add(0.0, BLAST_HEIGHT, 0.0), POWER);
             return Result.CONTINUE;
         }
         if (travelTo(drone, target.blockPosition(), aim) == Travel.FAILED) {

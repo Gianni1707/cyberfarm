@@ -46,7 +46,7 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Builder Module | +2 FE/t | 20 FE per block |
 | Fisher Module | +1 FE/t | 10 FE per catch |
 | Breeder Module | +1 FE/t | 15 FE per animal fed |
-| Guard Module | +2 FE/t | 50 FE per shot |
+| Guard Module | +2 FE/t | 150 FE per shot |
 | Bomb Module | +1 FE/t | the Mini Drone itself |
 
 ## Harvester Module
@@ -279,9 +279,10 @@ on its shoulder, then goes after the next one.
 <br clear="all" />
 
 - It looks over the work area and **8 blocks above and below** it, so it also catches flying mobs
-  and what comes out of a cave.
+  and what comes out of a cave. Without a surveyed area that is the default 9x9 square round the
+  dock; mark a bigger one (up to 33x33) with the [Survey Tool](drone_dock.md).
 - It hovers **3 blocks over the mob's head**, out of reach of swords and claws, and fires once a
-  second: **6 damage a shot**. Nothing can hurt the drone, creepers included.
+  second: **6 damage a shot**, 150 FE (every CyberFarm laser costs 25 FE per point of damage). Nothing can hurt the drone, creepers included.
 - It shoots **hostile mobs only**, just like the [Laser Turret](laser_turret.md): never players,
   animals, villagers, golems, named mobs, mobs riding something or neutral mobs that are not angry.
 - With nothing left to shoot it flies home to charge, and checks again every two seconds.
@@ -302,7 +303,8 @@ at it and explodes**.
 - It looks over the work area and **8 blocks above and below** it, and goes for the same mobs as the
   Guard Module above: never animals, villagers, golems, named mobs or calm neutral mobs.
 - With the fuse lit (you hear it hiss) it flies straight at the mob and goes off once it is close.
-- The blast is **a small TNT**, about a third as strong: it kills a zombie, **breaks a few blocks**
+- The blast is **a small TNT**, half as strong, going off at the mob's feet: about **24 damage**,
+  enough for a zombie, a skeleton or a creeper. It **breaks a few blocks**
   and hurts anything near it, **players included**. Keep the work area away from what you built.
 - **The drone is used up**: assemble a new Mini Drone and put it back on the dock. Its place on the
   pad is free as soon as it goes off.

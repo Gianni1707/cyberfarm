@@ -21,6 +21,8 @@ import org.jspecify.annotations.Nullable;
 /** The red laser of the Guard Module and the Laser Turret: what it may shoot, and the shot itself. */
 public final class Laser {
     public static final ResourceKey<DamageType> DAMAGE = ResourceKey.create(Registries.DAMAGE_TYPE, CyberFarm.id("laser"));
+    /** Every laser costs the same per point of damage: the Guard drone and the Laser Turret only differ in reach and rate. */
+    public static final int ENERGY_PER_DAMAGE = 25;
 
     private Laser() {}
 
