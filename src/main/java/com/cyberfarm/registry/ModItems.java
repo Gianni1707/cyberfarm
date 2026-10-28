@@ -87,6 +87,7 @@ public class ModItems {
     public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
+    public static final DeferredItem<BlockItem> LASER_TURRET = ITEMS.registerSimpleBlockItem(ModBlocks.LASER_TURRET);
     public static final DeferredItem<BlockItem> LIQUID_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.LIQUID_TANK);
     public static final DeferredItem<BlockItem> GAS_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TANK);
 
@@ -165,6 +166,10 @@ public class ModItems {
             p -> new DroneModuleItem(p, DroneTask.FISH, 1));
     public static final DeferredItem<DroneModuleItem> BREEDER_MODULE = ITEMS.registerItem("breeder_module",
             p -> new DroneModuleItem(p, DroneTask.BREED, 1));
+    public static final DeferredItem<DroneModuleItem> GUARD_MODULE = ITEMS.registerItem("guard_module",
+            p -> new DroneModuleItem(p, DroneTask.GUARD, 2));
+    public static final DeferredItem<DroneModuleItem> BOMB_MODULE = ITEMS.registerItem("bomb_module",
+            p -> new DroneModuleItem(p, DroneTask.BOMB, 1));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",

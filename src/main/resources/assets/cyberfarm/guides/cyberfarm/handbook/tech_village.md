@@ -48,6 +48,10 @@ twenty minutes. At level **10** the village is complete, and every contract pays
 | 9 | 680 | Power Station III, Market Hall III |
 | 10 | 850 | Drone Workshop III, Watch Tower III |
 
+The Watch Tower is the village's defence. Its third tier has two Drone Docks on the gate deck:
+put a drone with a [Guard Module](modules.md) on each, and add a few [Laser Turrets](laser_turret.md)
+along the palisade to keep raiders and monsters out.
+
 ## Blueprint discs
 
 <ItemImage id="cyberfarm:blueprint_disc" scale="2" float="left" />

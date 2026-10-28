@@ -26,6 +26,7 @@ reactor and more. The info page (the "i" tab) of any CyberFarm machine gives a q
 New here? Read [Getting Started](getting_started.md): your first drone, step by step.
 Base too loud? A [Muffler](muffler.md) silences machines, drones and mobs around it.
 Need water for your machines? A [Water Pump](water_pump.md) gives an endless supply.
+Monsters at night? A [Laser Turret](laser_turret.md) or a drone with a [Guard Module](modules.md) keeps them away.
 Then the handbook has seven sections:
 
 ### [Materials and Progression](materials.md)

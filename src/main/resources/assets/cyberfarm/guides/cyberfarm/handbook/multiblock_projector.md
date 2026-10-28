@@ -22,9 +22,8 @@ single block.
   [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
   [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
   [Crystallizer](mech_core.md) chamber.
-- Below the multiblocks the list has **schematics**, marked in cyan: ready-made buildings such as
-  a Watch Tower, a Storage Shed (a small depot) and a Drone Pad. Any data pack can add more: save a building with a
-  **Structure Block** and put the file in `data/<namespace>/structure/schematic/`. Its north side is
+- Below the multiblocks the list has **schematics**, marked in cyan: buildings saved with a
+  **Structure Block**. Any data pack can add them: put the file in `data/<namespace>/structure/schematic/`. Its north side is
   its front, which turns towards you. Schematics up to 40 blocks a side are shown.
 - The [tech village](tech_village.md)'s buildings join the list once you **learn** their
   **Blueprint Disc**. Pick an upgrade near its village and the projection locks itself over the

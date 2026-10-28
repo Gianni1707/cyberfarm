@@ -24,6 +24,7 @@ import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
 import com.cyberfarm.client.renderer.FluidTankRenderer;
+import com.cyberfarm.client.renderer.LaserTurretRenderer;
 import com.cyberfarm.client.renderer.HologramRenderer;
 import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.SteamEngineRenderer;
@@ -212,6 +213,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.LASER_TURRET.get(), context -> new LaserTurretRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.font()));
         event.registerBlockEntityRenderer(ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
         event.registerBlockEntityRenderer(ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());

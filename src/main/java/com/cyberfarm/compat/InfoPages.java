@@ -43,6 +43,7 @@ public final class InfoPages {
                 page(ModItems.TURBINE_CASING.get()),
                 page(ModItems.TURBINE_PORT.get()),
                 page(ModItems.WATER_PUMP.get()),
+                page(ModItems.LASER_TURRET.get()),
                 page(ModItems.LIQUID_TANK.get()),
                 page(ModItems.GAS_TANK.get()),
                 page(ModItems.COOLANT_MIXER.get()),
@@ -108,7 +109,9 @@ public final class InfoPages {
                 page(ModItems.FERTILIZER_MODULE.get()),
                 page(ModItems.BUILDER_MODULE.get()),
                 page(ModItems.FISHER_MODULE.get()),
-                page(ModItems.BREEDER_MODULE.get()));
+                page(ModItems.BREEDER_MODULE.get()),
+                page(ModItems.GUARD_MODULE.get()),
+                page(ModItems.BOMB_MODULE.get()));
     }
 
     private static Page page(Item item) {

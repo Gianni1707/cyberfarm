@@ -1,12 +1,12 @@
-"""Writes CyberFarm's ready-made schematics: structure files in the vanilla Structure Block format
+"""Shared tools for CyberFarm's schematics: structure files in the vanilla Structure Block format
 (gzipped NBT) under data/cyberfarm/structure/schematic/, shown in the Multiblock Projector's list.
+The tech village's buildings are drawn with it (tools/village_buildings.py, tools/villagegen.py).
 
 Each schematic is drawn layer by layer: x runs west to east, z north to south, and the north side
 (z = 0) is the front, which the projector turns towards the player. The style follows the mod:
 clean white and grey panels, dark Cyber Frame trim with cyan accents, light blue glass.
 
-Run from the project root:  python tools/schemgen.py
-With --preview <dir> it also draws each schematic seen from the front-right, as <name>.png.
+preview() draws a schematic seen from the front-right, as a PNG.
 """
 import gzip
 import struct
@@ -183,152 +183,6 @@ PANE = state("light_blue_stained_glass_pane")
 BARS = state("iron_bars")
 
 
-def watch_tower():
-    """A white tower on a dark plinth: frame corners, tall slit windows, a cantilevered deck with a
-    railing, a canopy on frame posts and a lamp on top."""
-    s = Schematic(7, 14, 7)
-    # Plinth: dark rim, grey floor, a lamp in each corner
-    s.fill(0, 0, 0, 6, 0, 6, LIGHT)
-    s.ring(0, 0, 6, 6, 0, DARK)
-    for x, z in ((0, 0), (6, 0), (0, 6), (6, 6)):
-        s.set(x, 0, z, LAMP)
-    # Shaft: 5x5 of white panels between frame corners, a grey band every few layers
-    for y in range(1, 8):
-        s.ring(1, 1, 5, 5, y, GREY if y == 4 else WHITE)
-        for x, z in ((1, 1), (5, 1), (1, 5), (5, 5)):
-            s.set(x, y, z, FRAME)
-    # Tall slit windows in the middle of the sides, either side of the ladder at the back, over the door
-    for y in range(2, 7):
-        if y != 4:
-            s.set(1, y, 3, PANE)
-            s.set(5, y, 3, PANE)
-            s.set(2, y, 5, PANE)
-            s.set(4, y, 5, PANE)
-    for y in (5, 6):
-        s.set(3, y, 1, PANE)
-    # Entrance: an iron door with a button beside it, under a small quartz canopy
-    s.door(3, 1, 1, "iron_door", "north")
-    s.set(4, 2, 0, state("polished_blackstone_button", face="wall", facing="north", powered="false"))
-    for x in (2, 3, 4):
-        s.set(x, 3, 0, slab("smooth_quartz_slab", "top"))
-    # Ladder up the inside of the back wall, through the deck
-    for y in range(1, 9):
-        s.set(3, y, 4, state("ladder", facing="north", waterlogged="false"))
-    # Deck: overhanging 7x7, quartz with a light rim, held by stairs under the edge
-    s.fill(0, 8, 0, 6, 8, 6, QUARTZ)
-    s.ring(0, 0, 6, 6, 8, LIGHT)
-    s.remove(3, 8, 4)
-    s.set(3, 8, 4, state("ladder", facing="north", waterlogged="false"))
-    for x in range(1, 6):
-        s.set(x, 7, 0, stairs("smooth_quartz_stairs", "south", "top"))
-        s.set(x, 7, 6, stairs("smooth_quartz_stairs", "north", "top"))
-    for z in range(1, 6):
-        s.set(0, 7, z, stairs("smooth_quartz_stairs", "east", "top"))
-        s.set(6, 7, z, stairs("smooth_quartz_stairs", "west", "top"))
-    # Railing round the deck, frame posts holding a canopy
-    s.ring(0, 0, 6, 6, 9, BARS)
-    for x, z in ((1, 1), (5, 1), (1, 5), (5, 5)):
-        s.set(x, 9, z, FRAME)
-        s.set(x, 10, z, FRAME)
-    s.fill(1, 11, 1, 5, 11, 5, QUARTZ)
-    s.ring(1, 1, 5, 5, 11, LIGHT)
-    for x in range(1, 6):
-        s.set(x, 11, 0, slab("smooth_quartz_slab"))
-        s.set(x, 11, 6, slab("smooth_quartz_slab"))
-    for z in range(1, 6):
-        s.set(0, 11, z, slab("smooth_quartz_slab"))
-        s.set(6, 11, z, slab("smooth_quartz_slab"))
-    # Beacon: a frame block with a lamp and a rod on top
-    s.set(3, 12, 3, LAMP)
-    s.set(3, 13, 3, state("lightning_rod", facing="up", powered="false", waterlogged="false"))
-    s.save("watch_tower")
-    return s
-
-
-def storage_shed():
-    """A prefab depot: white panels between grey columns on a dark footing, a band of light blue
-    windows under a cyan stripe, an iron door in a frame portal off a covered porch, a parapet roof
-    with lamps set in; barrels and a crafting table inside."""
-    s = Schematic(9, 7, 8)
-    s.fill(0, 0, 0, 8, 0, 7, DARK)
-    s.fill(1, 0, 2, 7, 0, 6, LIGHT)
-    # Walls on z 1-7; the front row (z 0) is the porch
-    for y in range(1, 5):
-        s.ring(0, 1, 8, 7, y, WHITE)
-    for x, z in ((0, 1), (8, 1), (0, 7), (8, 7), (4, 7), (0, 4), (8, 4)):
-        s.fill(x, 1, z, x, 4, z, GREY)
-    # Windows between the columns, a cyan stripe over them
-    for x in (1, 2, 6, 7):
-        s.set(x, 2, 1, PANE)
-    for x in (1, 2, 3, 5, 6, 7):
-        s.set(x, 2, 7, PANE)
-    for z in (2, 3, 5, 6):
-        s.set(0, 2, z, PANE)
-        s.set(8, 2, z, PANE)
-    for x in range(1, 8):
-        s.set(x, 4, 1, CYAN)
-        s.set(x, 4, 7, CYAN)
-    for z in range(2, 7):
-        s.set(0, 4, z, CYAN)
-        s.set(8, 4, z, CYAN)
-    # Entrance: frame portal, iron door, a button on the wall beside it
-    s.fill(3, 1, 1, 3, 3, 1, FRAME)
-    s.fill(5, 1, 1, 5, 3, 1, FRAME)
-    s.set(4, 3, 1, FRAME)
-    s.door(4, 1, 1, "iron_door", "north")
-    s.set(6, 2, 0, state("polished_blackstone_button", face="wall", facing="north", powered="false"))
-    s.set(6, 2, 1, WHITE)
-    # Porch canopy: quartz slabs out over the front, on two frame posts
-    for x in range(2, 7):
-        s.set(x, 4, 0, slab("smooth_quartz_slab", "top"))
-    for x in (2, 6):
-        s.fill(x, 1, 0, x, 3, 0, BARS)
-    # Roof: a light parapet round grey slabs with lamps set in, a vent and a rod
-    s.fill(0, 5, 1, 8, 5, 7, LIGHT)
-    s.fill(1, 5, 2, 7, 5, 6, GREY)
-    for x, z in ((2, 3), (6, 3), (2, 5), (6, 5)):
-        s.set(x, 5, z, LAMP)
-    s.ring(0, 1, 8, 7, 6, slab("smooth_quartz_slab"))
-    s.set(4, 6, 4, state("iron_trapdoor", facing="north", half="bottom", open="false", powered="false", waterlogged="false"))
-    s.set(7, 6, 6, state("lightning_rod", facing="up", powered="false", waterlogged="false"))
-    # Inside: barrels stacked along the back, a crafting table in the middle
-    for x in (1, 2, 6, 7):
-        s.set(x, 1, 6, state("barrel", facing="up", open="false"))
-    for x in (1, 7):
-        s.set(x, 2, 6, state("barrel", facing="up", open="false"))
-    s.set(4, 1, 6, state("crafting_table"))
-    s.save("storage_shed")
-    return s
-
-
-def drone_pad():
-    """A raised 9x9 landing pad with beveled quartz edges, cyan markings round the middle (where the
-    Drone Dock goes), lamps set in the deck and four frame light posts."""
-    s = Schematic(9, 4, 9)
-    # Raised deck with stair bevels all round and slabs at the corners
-    s.fill(1, 0, 1, 7, 0, 7, LIGHT)
-    for i in range(1, 8):
-        s.set(i, 0, 0, stairs("smooth_quartz_stairs", "south"))
-        s.set(i, 0, 8, stairs("smooth_quartz_stairs", "north"))
-        s.set(0, 0, i, stairs("smooth_quartz_stairs", "east"))
-        s.set(8, 0, i, stairs("smooth_quartz_stairs", "west"))
-    for x, z in ((0, 0), (8, 0), (0, 8), (8, 8)):
-        s.set(x, 0, z, slab("smooth_quartz_slab"))
-    # Markings: a cyan ring round the white middle, lamps at the ends of the cross
-    s.ring(2, 2, 6, 6, 0, CYAN)
-    s.fill(3, 0, 3, 5, 0, 5, WHITE)
-    for x, z in ((4, 1), (4, 7), (1, 4), (7, 4)):
-        s.set(x, 0, z, LAMP)
-    # Light posts on the corners of the deck
-    for x, z in ((1, 1), (7, 1), (1, 7), (7, 7)):
-        s.set(x, 1, z, FRAME)
-        s.set(x, 2, z, state("polished_deepslate_wall", up="true", north="none", south="none", east="none", west="none",
-                             waterlogged="false"))
-        s.set(x, 3, z, state("end_rod", facing="up"))
-    s.save("drone_pad")
-    return s
-
-
 # ---------------------------------------------------------------------------- preview
 
 COLOURS = {
@@ -409,12 +263,3 @@ def preview(s, path):
         polygon(front, shade(colour, 0.82))
         polygon(top, shade(colour, 1.0))
     canvas.save(Path(path))
-
-
-if __name__ == "__main__":
-    built = [watch_tower(), storage_shed(), drone_pad()]
-    if "--preview" in sys.argv:
-        out = Path(sys.argv[sys.argv.index("--preview") + 1])
-        out.mkdir(parents=True, exist_ok=True)
-        for schematic, name in zip(built, ("watch_tower", "storage_shed", "drone_pad")):
-            preview(schematic, out / f"{name}.png")

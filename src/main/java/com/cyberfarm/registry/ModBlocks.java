@@ -36,6 +36,7 @@ import com.cyberfarm.block.ResonanceCoreBlock;
 import com.cyberfarm.block.StabilizerPylonBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.WasteReprocessorBlock;
+import com.cyberfarm.block.LaserTurretBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -186,6 +187,8 @@ public class ModBlocks {
             CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, ModBlocks::litMachine);
+    public static final DeferredBlock<LaserTurretBlock> LASER_TURRET = BLOCKS.registerBlock("laser_turret",
+            LaserTurretBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
             p -> new FluidTankBlock(p, false), ModBlocks::machine);
     public static final DeferredBlock<FluidTankBlock> GAS_TANK = BLOCKS.registerBlock("gas_tank",

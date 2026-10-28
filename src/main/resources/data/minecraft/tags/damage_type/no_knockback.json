@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "cyberfarm:radiation"
+    "cyberfarm:radiation",
+    "cyberfarm:laser"
   ]
 }

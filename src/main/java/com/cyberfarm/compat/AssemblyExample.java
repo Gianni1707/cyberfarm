@@ -25,7 +25,7 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
         List<ItemStack> modules = stacks(ModItems.HARVESTER_MODULE.get(), ModItems.QUARRY_MODULE.get(), ModItems.TRANSPORT_MODULE.get(),
                 ModItems.PLANTER_MODULE.get(), ModItems.LOGGER_MODULE.get(), ModItems.TAXI_MODULE.get(),
                 ModItems.RANCHER_MODULE.get(), ModItems.FERTILIZER_MODULE.get(), ModItems.BUILDER_MODULE.get(),
-                ModItems.FISHER_MODULE.get(), ModItems.BREEDER_MODULE.get());
+                ModItems.FISHER_MODULE.get(), ModItems.BREEDER_MODULE.get(), ModItems.GUARD_MODULE.get(), ModItems.BOMB_MODULE.get());
         List<ItemStack> addons = stacks(ModItems.SPEED_ADDON.get(), ModItems.STACK_ADDON.get(), ModItems.BATTERY_ADDON.get(),
                 ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get(), ModItems.ANCHOR_ADDON.get());
 

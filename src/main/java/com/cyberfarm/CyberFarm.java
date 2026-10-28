@@ -38,6 +38,7 @@ import com.cyberfarm.village.MechanistChoicePayload;
 import com.cyberfarm.village.MechanistDialogue;
 import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.MapCodec;
 
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
@@ -47,14 +48,24 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
     public static final String MODID = "cyberfarm";
     public static final Logger LOGGER = LogUtils.getLogger();
+
+    private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS =
+            DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, MODID);
+
+    static {
+        CONDITIONS.register("bauxite_generation", () -> Config.BauxiteGenerationCondition.CODEC);
+    }
 
     public CyberFarm(IEventBus modEventBus, ModContainer modContainer) {
         ModBlocks.BLOCKS.register(modEventBus);
@@ -71,6 +82,7 @@ public class CyberFarm {
         ModVillagers.POI_TYPES.register(modEventBus);
         ModVillagers.PROFESSIONS.register(modEventBus);
         ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
+        CONDITIONS.register(modEventBus);
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
@@ -156,6 +168,7 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portItems());

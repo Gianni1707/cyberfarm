@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jspecify.annotations.Nullable;
 
 /** Short visual moments, played on the clients of the players near them. */
 public final class Effects {
@@ -15,6 +16,8 @@ public final class Effects {
     public static final int REVEAL = 1;
     /** A drone at work on a block: a short beam of light from it to the block. */
     public static final int BEAM = 2;
+    /** A laser shot: a red beam from a Guard drone (the source) or a Laser Turret (at {@code to}) to the mob at {@code from}. */
+    public static final int LASER = 3;
 
     private Effects() {}
 
@@ -24,6 +27,10 @@ public final class Effects {
 
     public static void beam(ServerLevel level, Entity drone, BlockPos target) {
         PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(BEAM, target, target, drone.getId()));
+    }
+
+    public static void laser(ServerLevel level, BlockPos target, BlockPos turret, @Nullable Entity drone) {
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(LASER, target, turret, drone != null ? drone.getId() : -1));
     }
 
     /** Plays the reveal over the box holding all {@code blocks}; called once, as the structure forms. */

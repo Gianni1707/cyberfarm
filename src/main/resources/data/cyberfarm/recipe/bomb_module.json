@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "X": "minecraft:tnt",
+    "C": "minecraft:copper_ingot",
+    "D": "cyberfarm:basic_circuit"
+  },
+  "pattern": [
+    "IXI",
+    "CDC"
+  ],
+  "result": {
+    "id": "cyberfarm:bomb_module"
+  }
+}

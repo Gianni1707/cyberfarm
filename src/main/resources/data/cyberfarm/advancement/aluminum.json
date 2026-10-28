@@ -19,7 +19,7 @@
       "conditions": {
         "items": [
           {
-            "items": "cyberfarm:aluminum_ingot"
+            "items": "#c:ingots/aluminum"
           }
         ]
       }
