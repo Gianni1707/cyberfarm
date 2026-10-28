@@ -18,7 +18,7 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
-    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module",
+    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
@@ -178,6 +178,31 @@ def dock_model():
     write(ASSETS / "blockstates/hologram_table.json", {"variants": {"": {"model": f"{NS}:block/hologram_table"}}})
     # The Builder Swarm Dock: the same pad with four landing rings on top
     write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
+
+
+def laser_turret_models():
+    """Laser Turret pedestal with the bearing neck; the head is drawn by its renderer. The item shows
+    the head too, barrel to the north."""
+    sides = ("north", "east", "south", "west")
+    base = [
+        {"from": [1, 0, 1], "to": [15, 6, 15], "faces": {
+            **{d: {"uv": [1, 10, 15, 16], "texture": "#side"} for d in sides},
+            "up": {"uv": [1, 1, 15, 15], "texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
+        {"from": [5, 6, 5], "to": [11, 8, 11], "faces": {d: {"uv": [5, 0, 11, 2], "texture": "#ring"} for d in sides}},
+    ]
+    head = [
+        {"from": [4.5, 8, 4.5], "to": [11.5, 13, 11.5], "faces": {
+            **{d: {"uv": [4, 4, 11, 9], "texture": "#ring"} for d in sides},
+            "up": {"uv": [4, 4, 11, 11], "texture": "#ring"}, "down": {"uv": [4, 4, 11, 11], "texture": "#ring"}}},
+        {"from": [7, 9.5, 0], "to": [9, 11.5, 4.5], "faces": {
+            "north": {"uv": [7, 11, 9, 12], "texture": "#side"},
+            **{d: {"uv": [0, 6, 4.5, 8], "texture": "#ring"} for d in ("east", "west", "up", "down")}}},
+    ]
+    textures = {"particle": tex("laser_turret_side"), "side": tex("laser_turret_side"), "top": tex("laser_turret_top"),
+                "ring": tex("laser_turret_ring"), "bottom": tex("machine_bottom")}
+    write(ASSETS / "models/block/laser_turret.json", {"parent": "minecraft:block/block", "textures": textures, "elements": base})
+    write(ASSETS / "models/block/laser_turret_inventory.json", {"parent": "minecraft:block/block", "textures": textures, "elements": base + head})
+    facing_blockstate("laser_turret")
 
 
 def energy_storage_models():
@@ -362,6 +387,7 @@ def blocks():
     nuclear_blocks()
     coolant_blocks()
     energy_storage_models()
+    laser_turret_models()
 
     names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
@@ -369,10 +395,11 @@ def blocks():
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
              "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
-             "supply_terminal"]
+             "supply_terminal", "laser_turret"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
-            write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}"}})
+            model = f"{name}_inventory" if name == "laser_turret" else name
+            write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{model}"}})
         block_loot(name)
 
     # Common fluid tags, so other mods recognise our gases
@@ -390,7 +417,9 @@ def blocks():
         write(RES / f"data/c/tags/{kind}/ores/uranium.json", {"values": [f"{NS}:{n}" for n in ores]})
         write(RES / f"data/c/tags/{kind}/ores/sulfur.json", {"values": [f"{NS}:nether_sulfur_ore"]})
         write(RES / f"data/c/tags/{kind}/ores/bauxite.json", {"values": [f"{NS}:{n}" for n in bauxite]})
-        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": ["#c:ores/uranium", "#c:ores/sulfur", "#c:ores/bauxite"]})
+        # Bauxite is aluminum ore to other mods' crushers; our furnace recipes stay on our own ore (no smelting conflict)
+        write(RES / f"data/c/tags/{kind}/ores/aluminum.json", {"replace": False, "values": [f"{NS}:{n}" for n in bauxite]})
+        write(RES / f"data/c/tags/{kind}/ores.json", {"replace": False, "values": ["#c:ores/uranium", "#c:ores/sulfur", "#c:ores/bauxite", "#c:ores/aluminum"]})
         write(RES / f"data/c/tags/{kind}/ores_in_ground/netherrack.json", {"replace": False, "values": [f"{NS}:nether_sulfur_ore"]})
     write(RES / "data/c/tags/item/dusts/sulfur.json", {"values": [f"{NS}:sulfur"]})
     write(RES / "data/c/tags/item/dusts/alumina.json", {"values": [f"{NS}:alumina"]})
@@ -398,7 +427,8 @@ def blocks():
     write(RES / "data/c/tags/fluid/acid.json", {"values": [f"{NS}:acid"]})
     write(RES / "data/c/tags/item/raw_materials/uranium.json", {"values": [f"{NS}:raw_uranium"]})
     write(RES / "data/c/tags/item/raw_materials/bauxite.json", {"values": [f"{NS}:raw_bauxite"]})
-    write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium", "#c:raw_materials/bauxite"]})
+    write(RES / "data/c/tags/item/raw_materials/aluminum.json", {"replace": False, "values": [f"{NS}:raw_bauxite"]})
+    write(RES / "data/c/tags/item/raw_materials.json", {"replace": False, "values": ["#c:raw_materials/uranium", "#c:raw_materials/bauxite", "#c:raw_materials/aluminum"]})
     write(RES / "data/c/tags/item/ingots/uranium.json", {"values": [f"{NS}:uranium_ingot"]})
     write(RES / "data/c/tags/item/ingots/aluminum.json", {"values": [f"{NS}:aluminum_ingot"]})
     write(RES / "data/c/tags/item/ingots.json", {"replace": False, "values": ["#c:ingots/uranium", "#c:ingots/aluminum"]})
@@ -545,7 +575,9 @@ def radiation_data():
     """Radiation damage type, Hazmat Suit equipment model and the tags they need."""
     write(DATA / "damage_type/radiation.json", {"message_id": f"{NS}.radiation", "exhaustion": 0.0, "scaling": "never"})
     write(RES / "data/minecraft/tags/damage_type/bypasses_armor.json", {"replace": False, "values": [f"{NS}:radiation"]})
-    write(RES / "data/minecraft/tags/damage_type/no_knockback.json", {"replace": False, "values": [f"{NS}:radiation"]})
+    # The laser keeps a mob where the gun aims instead of pushing it out of range
+    write(DATA / "damage_type/laser.json", {"message_id": f"{NS}.laser", "exhaustion": 0.1, "scaling": "never"})
+    write(RES / "data/minecraft/tags/damage_type/no_knockback.json", {"replace": False, "values": [f"{NS}:radiation", f"{NS}:laser"]})
     write(ASSETS / "equipment/hazmat.json", {"layers": {
         "humanoid": [{"texture": f"{NS}:hazmat"}],
         "humanoid_leggings": [{"texture": f"{NS}:hazmat"}],
@@ -593,6 +625,7 @@ def bauxite_ores():
         {"type": "minecraft:biome"},
     ]})
     write(DATA / "neoforge/biome_modifier/bauxite_ore.json", {
+        "neoforge:conditions": [{"type": f"{NS}:bauxite_generation"}],  # config: world.bauxiteGeneration
         "type": "neoforge:add_features", "biomes": "#minecraft:is_overworld",
         "features": f"{NS}:bauxite_ore", "step": "underground_ores"})
 
@@ -734,6 +767,9 @@ def recipes():
     shaped("builder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:piston", "C": copper, "D": circuit})
     shaped("fisher_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:fishing_rod", "C": copper, "D": circuit})
     shaped("breeder_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:hay_block", "C": copper, "D": circuit})
+    # Defence: an amethyst lens focuses the laser
+    shaped("guard_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:amethyst_shard", "C": copper, "D": circuit})
+    shaped("bomb_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:tnt", "C": copper, "D": circuit})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
@@ -787,6 +823,7 @@ def recipes():
            {"G": "minecraft:glass_pane", "L": "minecraft:glowstone_dust", "I": iron, "R": redstone}, category="equipment")
     shaped("liquid_tank", ["IGI", "GBG", "IGI"], {"I": iron, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("gas_tank", ["CGC", "GBG", "CGC"], {"C": copper, "G": "minecraft:glass", "B": "minecraft:bucket"})
+    shaped("laser_turret", ["IAI", "RDR", "IBI"], {"I": iron, "A": "minecraft:amethyst_shard", "R": redstone, "D": advanced_circuit, "B": cell})
     shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": advanced_circuit})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")
@@ -919,7 +956,7 @@ def _advancement(name, parent, icon, criteria, frame="task"):
 
 def _has(*items):
     """All these items in the inventory at once."""
-    return {"get": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": f"{NS}:{i}"} for i in items]}}}
+    return {"get": {"trigger": "minecraft:inventory_changed", "conditions": {"items": [{"items": i if i.startswith("#") else f"{NS}:{i}"} for i in items]}}}
 
 
 def _placed(block):
@@ -942,7 +979,7 @@ def advancements():
     """The CyberFarm tab: three branches from the Drone Core, drones, power, and nuclear up to the mech."""
     _advancement("root", None, "drone_core", _has("drone_core"))
     # Materials: aluminum and circuits, carbon fiber, then the elite circuits
-    _advancement("aluminum", "root", "aluminum_ingot", _has("aluminum_ingot"))
+    _advancement("aluminum", "root", "aluminum_ingot", _has("#c:ingots/aluminum"))
     _advancement("circuits", "aluminum", "basic_circuit", _placed("fabricator"))
     _advancement("advanced_circuit", "circuits", "advanced_circuit", _has("advanced_circuit"))
     _advancement("carbon_fiber", "advanced_circuit", "carbon_fiber", _has("carbon_fiber"))
@@ -954,6 +991,9 @@ def advancements():
     _advancement("survey_tool", "deploy_drone", "survey_tool", _has("survey_tool"))
     _advancement("taxi", "deploy_drone", "taxi_module", _rides("drone"))
     _advancement("elite_frame", "assemble_drone", "elite_frame", _has("elite_frame"), "goal")
+    _advancement("guard", "deploy_drone", "guard_module", _has("guard_module"))
+    _advancement("laser_turret", "guard", "laser_turret", _placed("laser_turret"))
+    _advancement("bomb", "guard", "bomb_module", _has("bomb_module"))
     _advancement("swarm", "deploy_drone", "swarm_dock", _used_on("drone", "swarm_dock"))
     _advancement("construction", "swarm", "multiblock_projector", _used_on("multiblock_projector", "swarm_dock"), "goal")
     # Power

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "cyberfarm:block/laser_turret"
+    },
+    "facing=east": {
+      "model": "cyberfarm:block/laser_turret",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "cyberfarm:block/laser_turret",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "cyberfarm:block/laser_turret",
+      "y": 270
+    }
+  }
+}

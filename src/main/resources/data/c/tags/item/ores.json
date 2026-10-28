@@ -3,6 +3,7 @@
   "values": [
     "#c:ores/uranium",
     "#c:ores/sulfur",
-    "#c:ores/bauxite"
+    "#c:ores/bauxite",
+    "#c:ores/aluminum"
   ]
 }

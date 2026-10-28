@@ -237,8 +237,9 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
      */
     /** The Builder Module and the Mini Frame go only together: building is work for a swarm of small drones. */
     public static boolean fits(DroneFrameItem frame, Item module) {
-        boolean builder = module instanceof DroneModuleItem moduleItem && moduleItem.getTask() == DroneTask.BUILD;
-        return builder == (frame == ModItems.MINI_FRAME.get());
+        // Building and bombing are work for Mini Drones, and the Mini Frame takes nothing else
+        boolean miniOnly = module instanceof DroneModuleItem moduleItem && (moduleItem.getTask() == DroneTask.BUILD || moduleItem.getTask() == DroneTask.BOMB);
+        return miniOnly == (frame == ModItems.MINI_FRAME.get());
     }
 
     public static boolean canPlace(IntFunction<ItemStack> slots, int index, ItemResource resource) {

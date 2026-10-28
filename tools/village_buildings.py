@@ -1067,7 +1067,7 @@ def palisade(s):
 
 def gatehouse(s):
     """Tier III: a guard deck over the gate and lookouts on the corner turrets. Two Drone Docks on
-    the gate deck for Guard drones (the Guard Module comes with the defence update)."""
+    the gate deck for Guard drones: give each one a Guard Module and the gate as its work area."""
     # The deck round the gate lanterns, a hole for the ladder up the west post
     for x in range(6, 13):
         for z in (1, 2, 3):

@@ -50,6 +50,7 @@
     "cyberfarm:pyrolysis_oven",
     "cyberfarm:fabricator",
     "cyberfarm:supply_terminal",
+    "cyberfarm:laser_turret",
     "cyberfarm:uranium_ore",
     "cyberfarm:deepslate_uranium_ore",
     "cyberfarm:bauxite_ore",

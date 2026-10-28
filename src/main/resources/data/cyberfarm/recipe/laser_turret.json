@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "minecraft:iron_ingot",
+    "A": "minecraft:amethyst_shard",
+    "R": "minecraft:redstone",
+    "D": "cyberfarm:advanced_circuit",
+    "B": "cyberfarm:battery_cell"
+  },
+  "pattern": [
+    "IAI",
+    "RDR",
+    "IBI"
+  ],
+  "result": {
+    "id": "cyberfarm:laser_turret"
+  }
+}

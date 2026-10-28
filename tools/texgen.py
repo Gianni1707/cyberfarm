@@ -501,6 +501,39 @@ URANIUM_SHADES = {"1": "#14200d", "2": "#26501a", "3": "#3c8a24", "4": "#62d13a"
 PALETTE.update(URANIUM_SHADES)
 
 
+def turret_side():
+    """Laser Turret pedestal side (6 px high on the block): dark plate, hazard band, red lamp."""
+    c = panel(80)
+    c.rect(0, 9, 15, 9, "k")
+    c.rect(0, 10, 15, 14, "D", noise=3, seed=81)
+    c.rect(0, 15, 15, 15, "k")
+    for x in range(1, 15):
+        c.set(x, 13, "y" if x % 4 < 2 else "k")
+    c.rect(7, 11, 8, 11, "#ff2a1f")
+    return c
+
+
+def turret_top():
+    """The pedestal's top with the bearing ring the head turns on."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=82)
+    c.disc(7.5, 7.5, 5.0, "m", 3.6)
+    c.disc(7.5, 7.5, 3.6, "k")
+    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+        c.set(x, y, "l")
+    return c
+
+
+def turret_ring():
+    """Steel of the bearing neck and, in the item, of the head."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "l", noise=3, seed=83)
+    c.rect(0, 0, 15, 0, "w")
+    c.rect(0, 15, 15, 15, "m")
+    return c
+
+
 def coolant_mixer_front():
     c = panel(54)
     c.rect(3, 3, 12, 12, "K")
@@ -1752,6 +1785,17 @@ def drone_texture():
         c.rect(x0, y0, x1, y1, "w")
         c.frame(x0, y0, x1, y1, "k")
         c.set((x0 + x1) // 2, (y0 + y1) // 2, "m")
+    # Guard laser: steel mount 2x2x2, barrel 1x1x4 with a dark band, red lens 1x1x1
+    paint_box(c, 0, 52, 2, 2, 2, "l", top="w", bottom="d", seed=19)
+    barrel = paint_box(c, 8, 52, 1, 1, 4, "m", top="l", bottom="d", seed=20)
+    for name in ("right", "left"):
+        x0, y0, x1, y1 = barrel[name]
+        c.set(x0 + 1, y0, "k")
+    paint_box(c, 20, 52, 1, 1, 1, "#ff2a1f", seed=21)
+    # Bomb charge 3x3x3: dark casing with a hazard band, red detonator 1x1x1
+    charge = paint_box(c, 28, 52, 3, 3, 3, "d", top="m", bottom="k", seed=22)
+    side_rows(c, charge, ["d", "y", "d"])
+    paint_box(c, 40, 52, 1, 1, 1, "#ff2a1f", seed=23)
     return c
 
 
@@ -1853,7 +1897,47 @@ ITEM_ASCII.update({
         "......bcbc......",
     ],
 })
-for _name, _rows in list(ITEM_ASCII.items())[-5:]:
+ITEM_ASCII.update({
+    # Guard Module: the drone's cap with a laser gun under it and a red shot leaving the lens
+    "item/guard_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        "......kkkk......",
+        "....kkkwwlkkkk..",
+        "....kllwwllllkr.",
+        "....kmmmmmmmmkro",
+        "....kkkkkkkkkk..",
+        "......kmmk......",
+        "......kddk......",
+        ".......kk.......",
+        "................",
+        "................",
+    ],
+    # Bomb Module: the drone's cap with a striped charge under it and a lit fuse
+    "item/bomb_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        ".......kk.......",
+        ".....kkkkkk.....",
+        "....kddddddk....",
+        "....kyykyykk....",
+        "....kddddddk....",
+        "....kddddddk....",
+        ".....kkkkkk.....",
+        ".......rk.......",
+        "......Oo........",
+        ".......O........",
+    ],
+})
+for _name, _rows in list(ITEM_ASCII.items())[-7:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 
@@ -2586,6 +2670,9 @@ def build_all():
         "block/reactor_controller_on": reactor_controller("on"),
         **lit_front("water_pump", water_pump_front),
         "block/water_pump_top": water_pump_top(),
+        "block/laser_turret_side": turret_side(),
+        "block/laser_turret_top": turret_top(),
+        "block/laser_turret_ring": turret_ring(),
         **lit_front("coolant_mixer", coolant_mixer_front),
         "block/coolant_still": gas_texture("#178f84", "#4fe0d0", 7),
         "block/coolant_flow": gas_texture("#178f84", "#4fe0d0", 8),

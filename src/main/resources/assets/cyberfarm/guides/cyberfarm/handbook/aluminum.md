@@ -31,9 +31,12 @@ ore: just as in real life, it takes electrolysis and a steady flow of power.
 3. Put the Alumina in an **Electrolyzer**: **1 Aluminum Ingot every 5 seconds at 40 FE/t**. One
    [Combustion Generator](combustion_generator.md) keeps it running.
 
-Aluminum Ingots are tagged `c:ingots/aluminum`, Alumina `c:dusts/alumina` and the ore
-`c:ores/bauxite`: aluminum from other mods works in every recipe, and their machines can process
-ours.
+Aluminum Ingots are tagged `c:ingots/aluminum`, Alumina `c:dusts/alumina`, the ore
+`c:ores/bauxite` and `c:ores/aluminum`, Raw Bauxite `c:raw_materials/aluminum`: aluminum from other
+mods works in every recipe, and their crushers and furnaces can process our ore.
+
+Already have an aluminum ore from another mod? Set `bauxiteGeneration = false` under `[world]` in
+`cyberfarm-common.toml` and only theirs generates (new chunks only).
 
 <Row>
   <RecipeFor id="electrolyzer" />

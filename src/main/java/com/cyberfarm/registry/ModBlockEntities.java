@@ -29,6 +29,7 @@ import com.cyberfarm.block.entity.ReactorPortBlockEntity;
 import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
+import com.cyberfarm.block.entity.LaserTurretBlockEntity;
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -110,6 +111,8 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP = BLOCK_ENTITIES.register("water_pump",
             () -> new BlockEntityType<>(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaserTurretBlockEntity>> LASER_TURRET = BLOCK_ENTITIES.register("laser_turret",
+            () -> new BlockEntityType<>(LaserTurretBlockEntity::new, Set.of(ModBlocks.LASER_TURRET.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
             () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));

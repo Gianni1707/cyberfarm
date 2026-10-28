@@ -16,6 +16,8 @@ item_ids:
   - cyberfarm:builder_module
   - cyberfarm:fisher_module
   - cyberfarm:breeder_module
+  - cyberfarm:guard_module
+  - cyberfarm:bomb_module
 ---
 
 # Function Modules
@@ -44,6 +46,8 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Builder Module | +2 FE/t | 20 FE per block |
 | Fisher Module | +1 FE/t | 10 FE per catch |
 | Breeder Module | +1 FE/t | 15 FE per animal fed |
+| Guard Module | +2 FE/t | 50 FE per shot |
+| Bomb Module | +1 FE/t | the Mini Drone itself |
 
 ## Harvester Module
 
@@ -264,3 +268,46 @@ The drone **feeds the animals** of its work area so they breed, with their food 
   grow without end. Pairs well with a Rancher, or a Harvester for the crops they eat.
 
 <RecipeFor id="breeder_module" />
+
+## Guard Module
+
+<ItemImage id="cyberfarm:guard_module" scale="2" float="left" />
+
+The drone **defends its work area**: it hunts every hostile mob there and shoots it with the laser
+on its shoulder, then goes after the next one.
+
+<br clear="all" />
+
+- It looks over the work area and **8 blocks above and below** it, so it also catches flying mobs
+  and what comes out of a cave.
+- It hovers **3 blocks over the mob's head**, out of reach of swords and claws, and fires once a
+  second: **6 damage a shot**. Nothing can hurt the drone, creepers included.
+- It shoots **hostile mobs only**, just like the [Laser Turret](laser_turret.md): never players,
+  animals, villagers, golems, named mobs, mobs riding something or neutral mobs that are not angry.
+- With nothing left to shoot it flies home to charge, and checks again every two seconds.
+- Pairs well with any farm module on the same drone, or on its own on a dock by the village gate.
+
+<RecipeFor id="guard_module" />
+
+## Bomb Module
+
+<ItemImage id="cyberfarm:bomb_module" scale="2" float="left" />
+
+A kamikaze drone. It fits **only a [Mini Drone Frame](drone_frames.md)**: the Mini Drone waits on
+its [Builder Swarm Dock](drone_dock.md) until a hostile mob comes into the work area, then **dives
+at it and explodes**.
+
+<br clear="all" />
+
+- It looks over the work area and **8 blocks above and below** it, and goes for the same mobs as the
+  Guard Module above: never animals, villagers, golems, named mobs or calm neutral mobs.
+- With the fuse lit (you hear it hiss) it flies straight at the mob and goes off once it is close.
+- The blast is **a small TNT**, about a third as strong: it kills a zombie, **breaks a few blocks**
+  and hurts anything near it, **players included**. Keep the work area away from what you built.
+- **The drone is used up**: assemble a new Mini Drone and put it back on the dock. Its place on the
+  pad is free as soon as it goes off.
+- Up to four Mini Drones share a Builder Swarm Dock, and **each goes for a different mob**, so a
+  swarm takes out a whole group.
+
+<RecipeFor id="bomb_module" />
+

@@ -1,0 +1,34 @@
+{
+  "display": {
+    "icon": {
+      "id": "cyberfarm:guard_module"
+    },
+    "title": {
+      "translate": "advancements.cyberfarm.guard.title"
+    },
+    "description": {
+      "translate": "advancements.cyberfarm.guard.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true
+  },
+  "criteria": {
+    "get": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": "cyberfarm:guard_module"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "get"
+    ]
+  ],
+  "parent": "cyberfarm:deploy_drone"
+}

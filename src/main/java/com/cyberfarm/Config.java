@@ -1,6 +1,9 @@
 package com.cyberfarm;
 
+import com.mojang.serialization.MapCodec;
+
 import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class Config {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -45,5 +48,34 @@ public class Config {
         BUILDER.pop();
     }
 
+    static {
+        BUILDER.push("world");
+    }
+
+    public static final ModConfigSpec.BooleanValue BAUXITE_GENERATION = BUILDER
+            .comment("Whether bauxite ore generates. Turn it off when another mod already adds an aluminum ore: our recipes take any c:ingots/aluminum, so their aluminum works.",
+                    "Takes effect when a world is loaded.")
+            .define("bauxiteGeneration", true);
+
+    static {
+        BUILDER.pop();
+    }
+
     static final ModConfigSpec SPEC = BUILDER.build();
+
+    /** Datapack condition {@code cyberfarm:bauxite_generation}: keeps the bauxite biome modifier out when the option is off. */
+    public record BauxiteGenerationCondition() implements ICondition {
+        public static final BauxiteGenerationCondition INSTANCE = new BauxiteGenerationCondition();
+        public static final MapCodec<BauxiteGenerationCondition> CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        public boolean test(IContext context) {
+            return BAUXITE_GENERATION.getAsBoolean();
+        }
+
+        @Override
+        public MapCodec<? extends ICondition> codec() {
+            return CODEC;
+        }
+    }
 }

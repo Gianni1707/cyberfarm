@@ -26,16 +26,19 @@ import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 /**
  * Draws the short moments of {@link Effects}: a block printed into place by a Builder drone, a
- * structure revealed as it forms, a drone's beam on the block it works. Each lives for a fixed
+ * structure revealed as it forms, a drone's beam on the block it works, a laser shot. Each lives for a fixed
  * number of ticks from when it arrived.
  */
 public final class EffectRenderer {
     private static final RenderType LIGHT = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
     private static final int CYAN = 0x2FE0FF;
     private static final int PALE = 0xB8F6FF;
+    private static final int LASER_RED = 0xFF2A1F;
+    private static final int LASER_CORE = 0xFFD8D0;
     private static final float PRINT_TICKS = 12.0F;
     private static final float REVEAL_TICKS = 32.0F;
     private static final float BEAM_TICKS = 8.0F;
+    private static final float LASER_TICKS = 6.0F;
 
     private record Effect(int kind, BlockPos from, BlockPos to, int source, long start) {}
 
@@ -55,7 +58,13 @@ public final class EffectRenderer {
         }
         effects.add(new Effect(kind, from, to, source, level.getGameTime()));
         RandomSource random = level.getRandom();
-        if (kind == Effects.BEAM) {
+        if (kind == Effects.LASER) {
+            for (int i = 0; i < 3; i++) {
+                level.addParticle(ParticleTypes.ELECTRIC_SPARK, from.getX() + 0.2 + random.nextDouble() * 0.6, from.getY() + 0.2 + random.nextDouble() * 0.6,
+                        from.getZ() + 0.2 + random.nextDouble() * 0.6, 0.0, 0.0, 0.0);
+            }
+            level.addParticle(ParticleTypes.SMOKE, from.getX() + 0.5, from.getY() + 0.6, from.getZ() + 0.5, 0.0, 0.02, 0.0);
+        } else if (kind == Effects.BEAM) {
             level.addParticle(ParticleTypes.ELECTRIC_SPARK, from.getX() + 0.5, from.getY() + 0.6, from.getZ() + 0.5, 0.0, 0.0, 0.0);
         } else if (kind == Effects.PRINT) {
             for (int i = 0; i < 6; i++) {
@@ -85,13 +94,15 @@ public final class EffectRenderer {
             float t = (time - effect.start()) / switch (effect.kind()) {
                 case Effects.PRINT -> PRINT_TICKS;
                 case Effects.BEAM -> BEAM_TICKS;
+                case Effects.LASER -> LASER_TICKS;
                 default -> REVEAL_TICKS;
             };
             if (t < 0.0F || t >= 1.0F) {
                 return true;
             }
             Entity source = effect.source() >= 0 ? event.getLevel().getEntity(effect.source()) : null;
-            if (effect.kind() == Effects.BEAM && source == null) {
+            // A drone's beam goes with its drone; a turret's laser has none
+            if ((effect.kind() == Effects.BEAM || effect.source() >= 0) && source == null) {
                 return true;
             }
             now.add(new Frame(effect, t, source == null ? null : source.getPosition(partialTick)));
@@ -114,6 +125,8 @@ public final class EffectRenderer {
                 switch (frame.effect().kind()) {
                     case Effects.PRINT -> print(pose, buffer, frame.effect().from(), frame.t());
                     case Effects.BEAM -> beam(pose, buffer, frame.origin(), frame.effect().from(), frame.t());
+                    case Effects.LASER -> laser(pose, buffer, frame.origin() != null ? frame.origin().add(0.0, 0.1, 0.0) : turretMuzzle(frame.effect().to()),
+                            frame.effect().from(), frame.t());
                     default -> reveal(pose, buffer, frame.effect().from(), frame.effect().to(), frame.t());
                 }
             }
@@ -128,6 +141,19 @@ public final class EffectRenderer {
         float fade = 1.0F - t * t;
         DockRenderer.segment(pose, buffer, from, to, 0.012F, (int) (0xF0 * fade) << 24 | PALE);
         DockRenderer.segment(pose, buffer, from, to, 0.035F, (int) (0x50 * fade) << 24 | CYAN);
+    }
+
+    /** A Laser Turret's beam leaves from the middle of its head. */
+    private static Vec3 turretMuzzle(BlockPos turret) {
+        return Vec3.atBottomCenterOf(turret).add(0.0, 0.66, 0.0);
+    }
+
+    /** A hot white core in a red glow, fading fast. */
+    private static void laser(PoseStack.Pose pose, VertexConsumer buffer, Vec3 from, BlockPos target, float t) {
+        Vec3 to = Vec3.atCenterOf(target);
+        float fade = 1.0F - t;
+        DockRenderer.segment(pose, buffer, from, to, 0.02F, (int) (0xF8 * fade) << 24 | LASER_CORE);
+        DockRenderer.segment(pose, buffer, from, to, 0.06F, (int) (0x70 * fade) << 24 | LASER_RED);
     }
 
     /** A shell of light closing in on the block and fading, and a scan line running down it. */

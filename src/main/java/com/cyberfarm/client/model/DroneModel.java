@@ -20,7 +20,8 @@ import net.minecraft.util.Mth;
 /**
  * Quadcopter drone: flat hull with a glowing core, four diagonal arms with spinning rotors and
  * landing skids. One tool per installed module: harvester head (centre, below), drill (front),
- * cargo claw (back), seed tank (top), saw (right side) and taxi hook (hanging). Texture layout: 64x64.
+ * cargo claw (back), seed tank (top), saw (right side), taxi hook (hanging), laser gun (right
+ * shoulder) and bomb (centre, below). Texture layout: 64x64.
  */
 public class DroneModel extends EntityModel<DroneRenderState> {
     public static final ModelLayerLocation LAYER = new ModelLayerLocation(CyberFarm.id("drone"), "main");
@@ -35,6 +36,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private final ModelPart hook;
     private final ModelPart shears;
     private final ModelPart sprayer;
+    private final ModelPart laser;
+    private final ModelPart bomb;
     private final ModelPart[] arms = new ModelPart[ARMS];
     private final ModelPart[] rotors = new ModelPart[ARMS];
     /** Folded for the deploy, each arm swings in by this much, so the four lie along the hull. */
@@ -53,6 +56,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         this.hook = body.getChild("hook");
         this.shears = body.getChild("shears");
         this.sprayer = body.getChild("sprayer");
+        this.laser = body.getChild("laser");
+        this.bomb = body.getChild("bomb");
         for (int i = 0; i < ARMS; i++) {
             arms[i] = body.getChild("arm" + i);
             rotors[i] = arms[i].getChild("motor").getChild("rotor");
@@ -133,6 +138,19 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(44, 40).addBox(-4.5F, -5.0F, 0.0F, 2.0F, 3.0F, 2.0F),
                 PartPose.ZERO);
 
+        // Guard: a laser gun on the right shoulder, its barrel pointing ahead, a red lens at the tip
+        body.addOrReplaceChild("laser", CubeListBuilder.create()
+                        .texOffs(0, 52).addBox(2.5F, -4.0F, -1.5F, 2.0F, 2.0F, 2.0F)
+                        .texOffs(8, 52).addBox(3.0F, -3.5F, -5.5F, 1.0F, 1.0F, 4.0F)
+                        .texOffs(20, 52).addBox(3.0F, -3.5F, -6.5F, 1.0F, 1.0F, 1.0F),
+                PartPose.ZERO);
+
+        // Bomb: a striped charge slung under the hull, with a red detonator at the bottom
+        body.addOrReplaceChild("bomb", CubeListBuilder.create()
+                        .texOffs(28, 52).addBox(-1.5F, 1.0F, -1.5F, 3.0F, 3.0F, 3.0F)
+                        .texOffs(40, 52).addBox(-0.5F, 4.0F, -0.5F, 1.0F, 1.0F, 1.0F),
+                PartPose.ZERO);
+
         return LayerDefinition.create(mesh, 64, 64);
     }
 
@@ -204,5 +222,7 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         // The blades snip open and shut
         shears.yRot = Mth.sin(state.ageInTicks * 0.5F) * 0.15F;
         sprayer.visible = state.has(DroneTask.FERTILIZE);
+        laser.visible = state.has(DroneTask.GUARD);
+        bomb.visible = state.has(DroneTask.BOMB);
     }
 }

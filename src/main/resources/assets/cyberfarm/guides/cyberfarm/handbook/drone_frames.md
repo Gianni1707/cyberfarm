@@ -30,8 +30,9 @@ how fast the drone flies, how many function modules it can carry and how many
 | Elite Drone Frame | 3 | 150,000 FE | 160% (4.8 blocks/s) | 3 | 16 | 4 FE/t |
 | Mini Drone Frame | 1 | 10,000 FE | 100% (3 blocks/s) | 1 | 2 | 1 FE/t |
 
-A drone built on the **Mini Drone Frame** is a **Mini Drone**: half the size of the others, and a
-builder only: the frame takes the [Builder Module](modules.md) and nothing else. It lives
+A drone built on the **Mini Drone Frame** is a **Mini Drone**: half the size of the others, made
+for two jobs only: the frame takes the [Builder Module](modules.md) or the
+[Bomb Module](modules.md) and nothing else. It lives
 only on a [Builder Swarm Dock](drone_dock.md), which takes up to four, each on its own corner of the pad.
 
 <RecipeFor id="mini_frame" />
