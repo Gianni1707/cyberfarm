@@ -38,19 +38,21 @@
           "texture": "#conduit",
           "uv": [
             1,
-            0,
+            6,
             5,
-            6
-          ]
+            10
+          ],
+          "rotation": 90
         },
         "down": {
           "texture": "#conduit",
           "uv": [
             1,
-            0,
+            6,
             5,
-            6
-          ]
+            10
+          ],
+          "rotation": 270
         }
       }
     }

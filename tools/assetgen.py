@@ -279,20 +279,23 @@ def pipe_models(name):
     texture = {"particle": tex(name), "conduit": tex(name)}
     all_faces = lambda: {d: {"texture": "#conduit"} for d in ("north", "east", "south", "west", "up", "down")}
     core = {"from": [5, 5, 5], "to": [11, 11, 11], "faces": all_faces()}
-    # Arm pointing north; the blockstate rotates it to every other side
+    # Arm pointing north; the blockstate rotates it to every other side. The coloured band (rows 6..9,
+    # ring at column 0) goes round all four sides along the tube, so a pipe looks the same whichever
+    # way it runs: up and down get it turned a quarter, the ring at the block's edge.
     arm = {"from": [6, 6, 0], "to": [10, 10, 5], "faces": {
         "north": {"texture": "#conduit", "cullface": "north"},
         "east": {"texture": "#conduit"}, "west": {"texture": "#conduit"},
-        "up": {"texture": "#conduit"}, "down": {"texture": "#conduit"},
+        "up": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 90},
+        "down": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 270},
     }}
     write(ASSETS / f"models/block/{name}_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
     write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": [arm]})
     # Middle of a straight run, joining the two arms into one tube (along north-south, rotated for the other axes).
     # Columns 1..4 are plain tube, stretched over the 6 pixels: 5..10 belong to the coupling box.
-    body, casing = [1, 6, 5, 10], [1, 0, 5, 6]
+    body = [1, 6, 5, 10]
     middle = {"from": [6, 6, 5], "to": [10, 10, 11], "faces": {
         "east": {"texture": "#conduit", "uv": body}, "west": {"texture": "#conduit", "uv": body},
-        "up": {"texture": "#conduit", "uv": casing}, "down": {"texture": "#conduit", "uv": casing},
+        "up": {"texture": "#conduit", "uv": body, "rotation": 90}, "down": {"texture": "#conduit", "uv": body, "rotation": 270},
     }}
     write(ASSETS / f"models/block/{name}_middle.json", {"textures": texture, "elements": [middle]})
     # Item: core with arms east and west

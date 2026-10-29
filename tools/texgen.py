@@ -934,10 +934,9 @@ def clean_pipe(kind, tier):
     rim, rim_dark = PIPE_RIMS[tier]
     c = Canvas()
     c.rect(0, 0, 15, 15, (200, 210, 218, 255))
-    c.rect(0, 6, 15, 6, (232, 238, 242, 255))
+    # The band wraps all four sides of a tube: the same edge top and bottom, so it meets itself at every corner
+    c.rect(0, 6, 15, 9, (150, 162, 172, 255))
     c.rect(0, 7, 15, 8, main)
-    c.rect(0, 7, 15, 7, light)
-    c.rect(0, 9, 15, 9, (150, 162, 172, 255))
     # A ring in the tier's colour where two pipes meet
     for x in (0, 15):
         c.rect(x, 6, x, 9, rim)

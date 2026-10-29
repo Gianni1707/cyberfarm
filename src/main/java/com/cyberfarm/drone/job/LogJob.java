@@ -54,7 +54,7 @@ public class LogJob extends DroneJob {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos base = nearest(drone, blocksIn(area), pos -> isTreeBase(level, pos));
+        BlockPos base = first(drone, area, pos -> isTreeBase(level, pos));
         return base == null ? null : new LogJob(base);
     }
 

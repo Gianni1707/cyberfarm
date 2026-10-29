@@ -84,6 +84,9 @@ Without any setup the drone works a **9x9** area centred on the dock. To change 
 The area can be up to **33x33** blocks, the two corners can be at most **8 blocks** apart in
 height, and everything must stay within 48 blocks of the dock.
 
+The drone works its area **block by block from one corner to the other**, row after row like a
+Quarry, so a field is harvested and replanted in order instead of here and there.
+
 ## Setting a transport route
 
 For drones with a [Transport Module](modules.md):

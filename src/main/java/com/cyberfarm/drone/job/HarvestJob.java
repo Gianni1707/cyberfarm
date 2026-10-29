@@ -32,7 +32,7 @@ public class HarvestJob extends DroneJob {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone, blocksIn(area), pos -> isHarvestable(level, pos));
+        BlockPos target = first(drone, area, pos -> isHarvestable(level, pos));
         return target == null ? null : new HarvestJob(target);
     }
 

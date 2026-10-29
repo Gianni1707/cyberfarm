@@ -27,10 +27,24 @@
           "texture": "#conduit"
         },
         "up": {
-          "texture": "#conduit"
+          "texture": "#conduit",
+          "uv": [
+            0,
+            6,
+            5,
+            10
+          ],
+          "rotation": 90
         },
         "down": {
-          "texture": "#conduit"
+          "texture": "#conduit",
+          "uv": [
+            0,
+            6,
+            5,
+            10
+          ],
+          "rotation": 270
         }
       }
     }

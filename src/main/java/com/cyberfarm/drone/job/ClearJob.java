@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 /**
  * Builder Module, before building: breaks one block in the way of the structure (see
@@ -33,7 +34,7 @@ public class ClearJob extends DroneJob {
             stop(drone, level);
             return Result.DONE;
         }
-        return switch (travelTo(drone, target)) {
+        return switch (travelTo(drone, target, Vec3.atCenterOf(target).add(0.0, 1.0, 0.0), BuildJob.REACH)) {
             case MOVING -> Result.CONTINUE;
             case FAILED -> {
                 stop(drone, level);
