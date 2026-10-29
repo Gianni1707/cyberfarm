@@ -13,6 +13,27 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 
 ## What's new
 
+**0.9.2: polish**
+- Builder docks **take each layer's blocks from the chests next to them** and put back what that
+  layer does not use.
+- Area drones work their area **block by block from one corner to the other**, and Builder drones
+  fly from block to block without stopping.
+- Gas and Liquid Pipes no longer join each other, and pipes look the same whichever way they run.
+
+**0.9.0 and 0.9.1: a farm that defends itself**
+- **Guard** drones hunt hostile mobs over their work area with a laser.
+- The **Laser Turret**: on FE, it watches 16 blocks all round and burns down the mobs it sees.
+- **Bomb** drones: Mini Drones that dive at a mob and explode, up to four per Swarm Dock.
+- Lasers cost 25 FE per point of damage; named, riding and neutral mobs are left alone.
+- Aluminum works with other mods' ores and machines (`c:ores/aluminum`).
+
+**0.8.0: the tech village**
+- **Supply contracts** at the **Supply Terminal**, the job site of a new villager, the **Drone
+  Mechanist**, found in a rare outpost in the Overworld.
+- A **tech village** to raise with him: ten levels and seven buildings in three tiers each, learned
+  from **Blueprint Discs** and built with the Multiblock Projector. Every building does real work.
+- Builder drones **clear the site** before they build.
+
 **0.7.0: logistics and materials**
 - A three-tier **material progression** with the materials of real drones: **bauxite** and
   **aluminum**, **carbon fiber**, and **Basic, Advanced and Elite Circuits**, made in three new
@@ -47,7 +68,8 @@ A drone is put together in the **Drone Assembler** from three kinds of parts:
   **Harvester** (crops), **Quarry** (digs a whole area down to bedrock), **Transport** (from one
   storage to another, of any mod), **Planter**, **Logger** (fells whole trees and replants),
   **Rancher** (shears and milks), **Fertilizer**, **Fisher** (vanilla fishing loot, treasure
-  included), **Breeder**, **Taxi** (carries you, hanging from its hook) and **Builder**;
+  included), **Breeder**, **Taxi** (carries you, hanging from its hook), **Builder**, **Guard**
+  (hunts hostile mobs with a laser) and **Bomb** (Mini Drones only);
 - **addons**: Speed, Stack, Battery, Fortune, Silk Touch and Anchor.
 
 ![Frames, modules and addons](docs/images/drones.png)
@@ -60,8 +82,14 @@ item filter decides what it keeps. There is no programming: an area and a dock a
 
 **Building with drones.** The **Multiblock Projector** shows any CyberFarm multiblock, or a
 schematic, as ghost blocks. Lock it in place, link it to a dock, and its Builder drones raise it
-layer by layer with the blocks you put in the dock. Three ready-made buildings come with the mod,
-and any data pack can add more.
+layer by layer with the blocks you put in the dock or in chests beside it, clearing the site
+first. The tech village's buildings come with the mod, and any data pack can add more schematics.
+
+**The tech village.** A rare outpost in the Overworld hides the **Drone Mechanist**, a villager
+who takes **supply contracts** at his **Supply Terminal** and offers to build a town with you. Fill
+his contracts to raise the village through ten levels; each one hands you **Blueprint Discs** for
+its seven buildings (Drone Workshop, Residence, Power Station, Hydroponic Farm, Market Hall, Outpost
+and Watch Tower), in three tiers each, and every building does real work.
 
 ![Four Mini Drones build a drone workshop, sped up](docs/images/builder.gif)
 
