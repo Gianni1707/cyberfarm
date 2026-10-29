@@ -102,13 +102,13 @@ public final class MechClient {
         }
         if (mech != null && !wasPiloting) {
             bootTicks = 0;
-            minecraft.gui.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.exit_hint", EXIT.getTranslatedKeyMessage()), false);
+            minecraft.gui.hud.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.exit_hint", EXIT.getTranslatedKeyMessage()), false);
         }
         wasPiloting = mech != null;
         // The game says to sneak to get off; in a mech that does nothing, so the line is replaced
         boolean aboard = minecraft.player != null && minecraft.player.getVehicle() instanceof MechEntity;
         if (aboard && !wasAboard && mech == null) {
-            minecraft.gui.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.boarding"), false);
+            minecraft.gui.hud.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.boarding"), false);
         }
         wasAboard = aboard;
         if (mech != null) {
@@ -175,7 +175,7 @@ public final class MechClient {
     private static void renderHud(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         MechEntity mech = piloted();
-        if (mech == null || minecraft.options.hideGui) {
+        if (mech == null || minecraft.gui.hud.isHidden()) {
             return;
         }
         Font font = minecraft.font;

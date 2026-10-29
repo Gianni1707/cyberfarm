@@ -14,7 +14,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -98,7 +98,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
         }
         BlockPos top = entity.getBlockPos();
         state.time = level.getGameTime() + partialTick;
-        state.light = LevelRenderer.getLightCoords(level, top.above());
+        state.light = LightCoordsUtil.getLightCoords(level, top.above());
         state.acid = entity.shownAcid(state.time);
         state.filling = entity.isFilling();
         state.depth = MAX_DEPTH * state.acid;

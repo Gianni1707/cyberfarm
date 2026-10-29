@@ -230,7 +230,7 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     /** The space over the pad, where a mech parks. */
     private AABB bay() {
         BlockPos centre = Blueprint.hangarCentre(worldPosition, facing());
-        return new AABB(centre.offset(-1, 1, -1).getCenter(), centre.offset(1, Blueprint.HANGAR_TOP - 1, 1).getCenter()).inflate(0.5);
+        return new AABB(Vec3.atCenterOf(centre.offset(-1, 1, -1)), Vec3.atCenterOf(centre.offset(1, Blueprint.HANGAR_TOP - 1, 1))).inflate(0.5);
     }
 
     private boolean isComplete(Level level) {

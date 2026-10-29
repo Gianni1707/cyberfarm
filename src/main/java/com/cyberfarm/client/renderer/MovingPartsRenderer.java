@@ -7,7 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -65,7 +65,7 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
             return;
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
-        state.light = LevelRenderer.getLightCoords(level, part == Part.PISTON ? entity.getBlockPos().above() : entity.getBlockPos().relative(state.facing));
+        state.light = LightCoordsUtil.getLightCoords(level, part == Part.PISTON ? entity.getBlockPos().above() : entity.getBlockPos().relative(state.facing));
         float time = level.getGameTime() + partialTick;
         float elapsed = entity.motionTime == 0.0F ? 0.0F : Mth.clamp(time - entity.motionTime, 0.0F, 5.0F);
         entity.motionTime = time;

@@ -87,7 +87,7 @@ public class ProjectorScreen extends Screen {
     public static void open(InteractionHand hand, Structure selected) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BEACON_POWER_SELECT, 1.8F, 0.4F));
-        minecraft.setScreen(new ProjectorScreen(hand, selected));
+        minecraft.gui.setScreen(new ProjectorScreen(hand, selected));
     }
 
     @Override

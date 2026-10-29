@@ -142,7 +142,7 @@ public class CyberFarmClient {
     /** Sneak + mouse wheel with the Survey Tool in hand changes its mode instead of the hotbar slot. */
     private static void scrollSurveyMode(InputEvent.MouseScrollingEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player != null && minecraft.screen == null && minecraft.player.isShiftKeyDown()
+        if (minecraft.player != null && minecraft.gui.screen() == null && minecraft.player.isShiftKeyDown()
                 && minecraft.player.getMainHandItem().getItem() instanceof SurveyToolItem && event.getScrollDeltaY() != 0) {
             // Wheel up goes back, like the hotbar
             ClientPacketDistributor.sendToServer(new SurveyModePayload(event.getScrollDeltaY() > 0 ? -1 : 1));

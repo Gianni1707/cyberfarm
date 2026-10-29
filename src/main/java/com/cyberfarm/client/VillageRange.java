@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import org.jspecify.annotations.Nullable;
 
@@ -40,7 +41,7 @@ public final class VillageRange {
         if (shown == null || level == null || player == null || minecraft.isPaused() || level.getGameTime() % EVERY != 0) {
             return;
         }
-        if (player.distanceToSqr(shown.getCenter()) > FORGOTTEN * FORGOTTEN) {
+        if (player.distanceToSqr(Vec3.atCenterOf(shown)) > FORGOTTEN * FORGOTTEN) {
             shown = null;
             return;
         }

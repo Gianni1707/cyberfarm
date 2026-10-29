@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -85,7 +85,7 @@ public class TurbineRenderer implements BlockEntityRenderer<TurbineControllerBlo
         }).toList() : List.of();
         // The controller is wrapped in shell blocks: take the light in front of it
         if (entity.getLevel() != null) {
-            state.light = LevelRenderer.getLightCoords(entity.getLevel(), controller.relative(state.facing));
+            state.light = LightCoordsUtil.getLightCoords(entity.getLevel(), controller.relative(state.facing));
         }
     }
 

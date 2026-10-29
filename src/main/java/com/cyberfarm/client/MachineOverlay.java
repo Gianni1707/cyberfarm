@@ -44,7 +44,7 @@ public final class MachineOverlay {
 
     private static void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.options.hideGui || minecraft.level == null || minecraft.player == null
+        if (minecraft.gui.hud.isHidden() || minecraft.level == null || minecraft.player == null
                 || minecraft.player.getVehicle() instanceof MechEntity
                 || !(minecraft.hitResult instanceof BlockHitResult hit) || hit.getType() != HitResult.Type.BLOCK
                 || !(minecraft.level.getBlockEntity(hit.getBlockPos()) instanceof MachineBlockEntity machine)) {

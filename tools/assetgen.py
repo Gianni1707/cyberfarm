@@ -975,7 +975,7 @@ def _used_on(item, block):
 
 def _rides(entity):
     return {"ride": {"trigger": "minecraft:started_riding", "conditions": {"player": [
-        {"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"vehicle": {"type": f"{NS}:{entity}"}}}]}}}
+        {"condition": "minecraft:entity_properties", "entity": "this", "predicate": {"vehicle": {"entity_type": f"{NS}:{entity}"}}}]}}}
 
 
 def advancements():

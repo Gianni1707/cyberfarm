@@ -23,7 +23,7 @@
             "entity": "this",
             "predicate": {
               "vehicle": {
-                "type": "cyberfarm:drone"
+                "entity_type": "cyberfarm:drone"
               }
             }
           }

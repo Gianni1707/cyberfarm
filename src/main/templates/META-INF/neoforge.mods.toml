@@ -85,7 +85,7 @@ Build modular drones in the Drone Assembler and let them run your farms, powered
     modId="guideme"
     type="optional"
     reason="Shows the Drone Engineer's Handbook"
-    versionRange="[26.1.15-beta,)"
+    versionRange="[26.2.2-alpha,)"
     ordering="NONE"
     side="BOTH"
 

@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -72,7 +72,7 @@ public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEnti
         state.fill = (float) tank.amount() / tank.capacity();
         for (Direction side : Direction.Plane.HORIZONTAL) {
             state.light[side.get2DDataValue()] = entity.getLevel() != null
-                    ? LevelRenderer.getLightCoords(entity.getLevel(), entity.getBlockPos().relative(side)) : state.lightCoords;
+                    ? LightCoordsUtil.getLightCoords(entity.getLevel(), entity.getBlockPos().relative(side)) : state.lightCoords;
         }
     }
 

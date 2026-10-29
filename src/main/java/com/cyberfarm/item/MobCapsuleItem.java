@@ -6,7 +6,9 @@ import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.registry.ModDataComponents;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -16,6 +18,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -85,7 +88,7 @@ public class MobCapsuleItem extends Item {
         CompoundTag data = tag.copy();
         // A copied capsule must not bring back two mobs with the same id
         data.remove("UUID");
-        Entity entity = EntityType.loadEntityRecursive(data, level, EntitySpawnReason.BUCKET, loaded -> {
+        Entity entity = EntityType.loadEntityRecursive(data, level, new EntitySpawnRequest(EntitySpawnReason.BUCKET, false), loaded -> {
             loaded.snapTo(pos.x, pos.y, pos.z, loaded.getYRot(), loaded.getXRot());
             return loaded;
         });
@@ -113,7 +116,7 @@ public class MobCapsuleItem extends Item {
             builder.accept(Component.translatable("tooltip.cyberfarm.capsule.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
-        Component name = EntityType.byString(tag.getStringOr("id", ""))
+        Component name = BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(tag.getStringOr("id", "")))
                 .map(EntityType::getDescription)
                 .orElse(Component.literal("?"));
         builder.accept(Component.translatable("tooltip.cyberfarm.capsule.contains", name).withStyle(ChatFormatting.AQUA));
