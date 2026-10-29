@@ -12,6 +12,7 @@ import java.util.function.Predicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -81,7 +82,7 @@ public final class BuildPlan {
     /** The land and what grows on it: what may be cleared from a schematic's box. */
     private static boolean natural(BlockState state) {
         return state.is(BlockTags.OVERWORLD_CARVER_REPLACEABLES) || state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)
-                || state.is(BlockTags.FLOWERS) || state.is(BlockTags.SAPLINGS) || state.is(BlockTags.REPLACEABLE_BY_TREES);
+                || state.is(BlockTags.FLOWERS) || state.is(BlockItemTags.SAPLINGS.block()) || state.is(BlockTags.REPLACEABLE_BY_TREES);
     }
 
     /** What may be broken: no fluid, nothing holding things (a chest keeps its contents), nothing unbreakable. */

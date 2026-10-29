@@ -6,7 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -58,7 +58,7 @@ public class LaserTurretRenderer implements BlockEntityRenderer<LaserTurretBlock
         if (level == null) {
             return;
         }
-        state.light = LevelRenderer.getLightCoords(level, turret.getBlockPos().above());
+        state.light = LightCoordsUtil.getLightCoords(level, turret.getBlockPos().above());
         float time = level.getGameTime() + partialTick;
         float elapsed = turret.headTime == 0.0F ? 0.0F : Mth.clamp(time - turret.headTime, 0.0F, 5.0F);
         turret.headTime = time;

@@ -2,7 +2,7 @@
 
 ![A CyberFarm base at sunset: drones over the wheat, the cooling tower behind](docs/images/hero.png)
 
-**CyberFarm** is a tech mod for **Minecraft 26.1.2 (NeoForge)** about modular drones that run your
+**CyberFarm** is a tech mod for **Minecraft 26.2 (NeoForge)** about modular drones that run your
 farms, the power plants that keep them flying and, at the end of it all, a mech you pilot yourself.
 It starts with a combustion generator and a first drone, and grows through biogas, methane and
 steam up to a nuclear reactor with its own cooling tower. Clean white-and-cyan sci-fi style, FE
@@ -167,8 +167,8 @@ Tanks** and **Gas Tanks** store 32 buckets and show the fluid inside through the
 
 | | Version |
 | --- | --- |
-| Minecraft | 26.1.2 |
-| NeoForge | 26.1.2.122 or newer |
+| Minecraft | 26.2 |
+| NeoForge | 26.2.0.93 or newer |
 | Java | 25 |
 | [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | optional, for the in-game handbook |
 | JEI or REI | optional, for recipe pages |
@@ -176,7 +176,7 @@ Tanks** and **Gas Tanks** store 32 buckets and show the fluid inside through the
 ## Installation
 
 Download `cyberfarm-<version>.jar` from the [releases](https://github.com/Gianni1707/cyberfarm/releases)
-and put it in the `mods` folder of a NeoForge 26.1.2 instance, plus GuideME for the handbook. It is
+and put it in the `mods` folder of a NeoForge 26.2 instance, plus GuideME for the handbook. It is
 needed on both the server and the client.
 
 ## Building from source

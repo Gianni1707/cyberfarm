@@ -8,6 +8,7 @@ import com.cyberfarm.entity.DroneEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.BlockItemTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.BoneMealItem;
@@ -66,7 +67,7 @@ public class FertilizeJob extends DroneJob {
     private static boolean canGrow(ServerLevel level, BlockPos pos) {
         BlockState state = level.getBlockState(pos);
         boolean plant = state.getBlock() instanceof CropBlock || state.getBlock() instanceof StemBlock || state.getBlock() instanceof SaplingBlock
-                || state.is(BlockTags.CROPS) || state.is(BlockTags.SAPLINGS);
+                || state.is(BlockTags.CROPS) || state.is(BlockItemTags.SAPLINGS.block());
         return plant && state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(level, pos, state);
     }
 

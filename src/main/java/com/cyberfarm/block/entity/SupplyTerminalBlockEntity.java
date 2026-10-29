@@ -40,6 +40,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -56,6 +57,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jspecify.annotations.Nullable;
@@ -116,7 +118,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             new Template(() -> Items.WHEAT, 64, 2, 1),
             new Template(() -> Items.BEETROOT, 48, 2, 1),
             new Template(() -> Items.APPLE, 24, 2, 1),
-            new Template(() -> Items.WHITE_WOOL, 32, 3, 1),
+            new Template(() -> Items.WOOL.white(), 32, 3, 1),
             new Template(() -> Items.COOKED_BEEF, 32, 4, 2),
             new Template(() -> Items.LEATHER, 24, 4, 2),
             new Template(() -> Items.OAK_LOG, 64, 3, 2),
@@ -432,7 +434,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             if (mechanist != null) {
                 events(level);
                 // He keeps close to his terminal: wandered off, he walks back
-                if (!mechanist.isSleeping() && mechanist.distanceToSqr(pos.getCenter()) > LEASH * LEASH) {
+                if (!mechanist.isSleeping() && mechanist.distanceToSqr(Vec3.atCenterOf(pos)) > LEASH * LEASH) {
                     mechanist.getBrain().setMemory(MemoryModuleType.WALK_TARGET, new WalkTarget(pos, 0.6F, 3));
                 }
             }
@@ -563,8 +565,8 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         }
         if (contract.kind == Kind.DEFENSE) {
             // The village arms itself: two iron golems join the fight
-            spawnNear(level, EntityType.IRON_GOLEM);
-            spawnNear(level, EntityType.IRON_GOLEM);
+            spawnNear(level, EntityTypes.IRON_GOLEM);
+            spawnNear(level, EntityTypes.IRON_GOLEM);
         }
         level.playSound(null, worldPosition, SoundEvents.VILLAGER_YES, SoundSource.NEUTRAL, 1.0F, 1.0F);
         level.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.6F, 1.2F);
@@ -577,19 +579,19 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
      */
     private void milestone(ServerLevel level, int reached) {
         if (reached % 2 == 1) {
-            Villager villager = spawnNear(level, EntityType.VILLAGER);
+            Villager villager = spawnNear(level, EntityTypes.VILLAGER);
             if (villager != null) {
                 villager.setAge(-24_000);
             }
         }
         if (reached % 2 == 0) {
-            spawnNear(level, EntityType.IRON_GOLEM);
+            spawnNear(level, EntityTypes.IRON_GOLEM);
         }
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, worldPosition.getX() + 0.5, worldPosition.getY() + 1.5, worldPosition.getZ() + 0.5,
                 40, 0.6, 0.6, 0.6, 0.3);
         level.playSound(null, worldPosition, SoundEvents.BELL_BLOCK, SoundSource.BLOCKS, 1.5F, 1.0F);
         level.playSound(null, worldPosition, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1.0F, 1.0F);
-        if (owner != null && level.getPlayerByUUID(owner) instanceof ServerPlayer player && player.distanceToSqr(worldPosition.getCenter()) < RANGE * RANGE * 4) {
+        if (owner != null && level.getPlayerByUUID(owner) instanceof ServerPlayer player && player.distanceToSqr(Vec3.atCenterOf(worldPosition)) < RANGE * RANGE * 4) {
             player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 20 * 60 * 20, Math.min(reached - 1, 4)));
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.terminal.prosperity", reached));
         }

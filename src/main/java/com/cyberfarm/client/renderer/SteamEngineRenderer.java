@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -82,7 +82,7 @@ public class SteamEngineRenderer implements BlockEntityRenderer<SteamEngineBlock
         Level level = entity.getLevel();
         if (level != null) {
             state.time = level.getGameTime() + partialTick;
-            state.light = LevelRenderer.getLightCoords(level, entity.getBlockPos().above());
+            state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().above());
             BlockPos dynamo = entity.dynamoPos();
             state.boilerSockets = sockets(level, entity.getBlockPos());
             state.dynamoSockets = dynamo != null ? sockets(level, dynamo) : List.of();

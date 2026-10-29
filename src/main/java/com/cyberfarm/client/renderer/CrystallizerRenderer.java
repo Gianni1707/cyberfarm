@@ -15,7 +15,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -152,7 +152,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
         state.done = entity.hasCrystal();
         state.acid = entity.acidFill();
         BlockPos centre = entity.centre();
-        state.light = LevelRenderer.getLightCoords(level, centre.above(2));
+        state.light = LightCoordsUtil.getLightCoords(level, centre.above(2));
         List<Port> ports = new ArrayList<>();
         for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-1, 0, -1), centre.offset(1, 3, 1))) {
             if (level.getBlockState(pos).is(ModBlocks.CRYSTALLIZER_PORT.get())) {

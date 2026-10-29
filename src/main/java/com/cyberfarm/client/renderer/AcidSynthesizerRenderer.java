@@ -8,7 +8,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -72,7 +72,7 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
         state.acid = models.get(ModFluids.ACID.get().defaultFluidState()).stillMaterial().sprite();
         if (entity.getLevel() != null) {
             state.time = entity.getLevel().getGameTime() + partialTick;
-            state.light = LevelRenderer.getLightCoords(entity.getLevel(), entity.getBlockPos().relative(state.facing));
+            state.light = LightCoordsUtil.getLightCoords(entity.getLevel(), entity.getBlockPos().relative(state.facing));
         }
     }
 

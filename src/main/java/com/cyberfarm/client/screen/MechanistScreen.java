@@ -56,7 +56,7 @@ public class MechanistScreen extends Screen {
 
     public static void open(MechanistDialoguePayload talk) {
         if (!talk.lines().isEmpty()) {
-            Minecraft.getInstance().setScreen(new MechanistScreen(talk));
+            Minecraft.getInstance().gui.setScreen(new MechanistScreen(talk));
         }
     }
 

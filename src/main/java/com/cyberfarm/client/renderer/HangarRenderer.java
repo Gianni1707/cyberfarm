@@ -7,7 +7,7 @@ import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -91,7 +91,7 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
         state.fitModule = entity.fitModule();
         state.fit = entity.fitProgress(time);
         state.fitInstall = entity.fitInstall();
-        state.light = LevelRenderer.getLightCoords(entity.getLevel(), entity.getBlockPos().above());
+        state.light = LightCoordsUtil.getLightCoords(entity.getLevel(), entity.getBlockPos().above());
     }
 
     @Override

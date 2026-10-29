@@ -10,7 +10,7 @@ import com.cyberfarm.multiblock.TowerSize;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
@@ -77,7 +77,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         state.ports = state.formed ? entity.portsForRender().stream().map(port -> port.subtract(floor)).toList() : List.of();
         // The controller sits inside solid shell blocks: take the light above the rim instead
         if (entity.getLevel() != null) {
-            state.towerLight = LevelRenderer.getLightCoords(entity.getLevel(), floor.above(state.size.height() + 1));
+            state.towerLight = LightCoordsUtil.getLightCoords(entity.getLevel(), floor.above(state.size.height() + 1));
         }
     }
 
