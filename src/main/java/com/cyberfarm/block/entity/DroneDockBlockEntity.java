@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -108,6 +110,8 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** The chunks this dock keeps loaded now, as ChunkPos longs (saved, so it can let go of them after a restart). */
     private final Set<Long> anchored = new HashSet<>();
     private int anchorCooldown;
+    private static final int PULL_INTERVAL = 20;
+    private int pullCooldown;
     /** The blocks the current layer misses, for the dock screen; worked out once per tick for all the data slots that show them. */
     private List<Map.Entry<Item, Integer>> shownMissing = List.of();
     private long shownMissingTick = -1;
@@ -150,6 +154,46 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         if (--anchorCooldown <= 0) {
             anchorCooldown = ANCHOR_INTERVAL;
             anchor(level);
+        }
+        if (buildPlan != null && --pullCooldown <= 0) {
+            pullCooldown = PULL_INTERVAL;
+            pullForLayer(level, pos);
+        }
+    }
+
+    /**
+     * With a build linked, takes what the layer being built still misses out of the chests (or any
+     * storage) next to the dock, and puts back there what that layer does not use (blocks the drones
+     * skipped, or left from a layer below). Only that layer: the nine slots never fill up with
+     * blocks it cannot use, which would leave the drones waiting for its own.
+     */
+    private void pullForLayer(ServerLevel level, BlockPos pos) {
+        Map<Item, Integer> layer = buildPlan.missingInLayer(level);
+        Map<Item, Integer> missing = new HashMap<>(layer);
+        missing.replaceAll((item, count) -> count - stored(item));
+        missing.values().removeIf(count -> count <= 0);
+        for (Direction side : Direction.values()) {
+            if (missing.isEmpty()) {
+                return;
+            }
+            BlockPos at = pos.relative(side);
+            // Not another dock: it would hand over its own build's blocks
+            if (level.getBlockEntity(at) instanceof DroneDockBlockEntity) {
+                continue;
+            }
+            ResourceHandler<ItemResource> source = level.getCapability(Capabilities.Item.BLOCK, at, side.getOpposite());
+            if (source == null) {
+                continue;
+            }
+            ResourceHandlerUtil.moveStacking(items, source, resource -> !layer.containsKey(resource.getItem()), Integer.MAX_VALUE, null);
+            for (Map.Entry<Item, Integer> entry : List.copyOf(missing.entrySet())) {
+                int moved = ResourceHandlerUtil.moveStacking(source, items, resource -> resource.is(entry.getKey()), entry.getValue(), null);
+                if (moved >= entry.getValue()) {
+                    missing.remove(entry.getKey());
+                } else if (moved > 0) {
+                    missing.put(entry.getKey(), entry.getValue() - moved);
+                }
+            }
         }
     }
 

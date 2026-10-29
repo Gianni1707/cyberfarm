@@ -230,6 +230,9 @@ The drone **builds a multiblock or a schematic** for you: the one you lock with 
   whole structure when something is in the way, so it never gets walled in.
 - The dock **takes in only the blocks the build still needs**. Point a Transport drone's route
   from your storage to the dock and it brings exactly what is missing, and nothing else.
+- Or put **chests next to the dock**: every second it takes from them what the layer being built
+  still needs, and puts back there what that layer does not use, so its nine slots never fill up
+  with blocks for later layers.
 - Doors and beds go in whole. Blocks it cannot place (water, a lantern hanging under a ceiling)
   are listed in the Build tab at the end, for you to place by hand. Chests go in empty.
 - Several Builder drones on different docks can share one build: link the same projection to
