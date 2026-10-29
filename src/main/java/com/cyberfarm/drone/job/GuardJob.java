@@ -15,8 +15,8 @@ import org.jspecify.annotations.Nullable;
  * them with its laser from above, out of reach of their swords, then goes after the next one.
  */
 public class GuardJob extends DroneJob {
-    public static final int ENERGY_COST = 50;
     public static final float DAMAGE = 6.0F;
+    public static final int ENERGY_COST = (int) DAMAGE * Laser.ENERGY_PER_DAMAGE;
     public static final int SHOT_INTERVAL = 20;
     /** How far above the work area (and below) it looks for mobs, so flyers and cave openings count too. */
     private static final double VERTICAL_REACH = 8.0;

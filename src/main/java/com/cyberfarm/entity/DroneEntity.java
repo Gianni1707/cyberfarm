@@ -391,16 +391,16 @@ public class DroneEntity extends PathfinderMob {
     }
 
     /**
-     * Bomb Module: blows the drone up where it is, a small TNT blast that breaks blocks. The drone is
+     * Bomb Module: blows the drone up at {@code at}, a small TNT blast that breaks blocks. The drone is
      * used up (its cargo drops); its place on the dock is free again.
      */
-    public void detonate(ServerLevel level, float power) {
+    public void detonate(ServerLevel level, Vec3 at, float power) {
         if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
             dock.releaseDrone(getUUID());
         }
         cargo.dropAll(stack -> spawnAtLocation(level, stack));
         discard();
-        level.explode(this, getX(), getY(), getZ(), power, Level.ExplosionInteraction.TNT);
+        level.explode(this, at.x, at.y, at.z, power, Level.ExplosionInteraction.TNT);
     }
 
     public double cruiseSpeed() {

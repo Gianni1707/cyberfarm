@@ -13,13 +13,15 @@ item_ids:
 <BlockImage id="cyberfarm:laser_turret" scale="4" float="left" />
 
 Monsters at the door? A **Laser Turret** keeps them out. Give it power and it watches **16 blocks**
-all round, turns its head toward the nearest hostile mob it can see and burns it down.
+all round (a sphere 33 blocks across, as wide as the largest drone work area), turns its head toward the nearest hostile mob it can see and burns it down.
 
 <br clear="all" />
 
 - **8 damage a shot, one shot a second**: a zombie lasts three shots.
-- A shot costs **200 FE** from its 20,000 FE buffer. It uses no power while nothing is in sight, so
-  a [Combustion Generator](combustion_generator.md) keeps a few turrets going.
+- A shot costs **200 FE** from its 20,000 FE buffer: **10 FE/t** while it fights, none while nothing
+  is in sight, so one [Combustion Generator](combustion_generator.md) keeps four turrets firing.
+- Every CyberFarm laser costs **25 FE per point of damage**, the turret and the
+  [Guard Module](modules.md) alike.
 - It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.
 - It shoots **hostile mobs only**. Players, animals, villagers and golems are safe, and so are
   **named mobs**, mobs **riding** something (a minecart, a boat) and **neutral mobs** (endermen,
