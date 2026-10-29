@@ -161,7 +161,12 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
 
     private boolean connectsTo(Level level, BlockPos pos, Direction direction) {
         BlockPos neighbor = pos.relative(direction);
-        return sameKind(level.getBlockState(neighbor)) || canConnectToMachine(level, neighbor, direction.getOpposite());
+        BlockState state = level.getBlockState(neighbor);
+        // Another kind of pipe exposes the same capability, but a gas line never joins a liquid one
+        if (state.getBlock() instanceof NetworkPipeBlock) {
+            return sameKind(state);
+        }
+        return canConnectToMachine(level, neighbor, direction.getOpposite());
     }
 
     @Override
