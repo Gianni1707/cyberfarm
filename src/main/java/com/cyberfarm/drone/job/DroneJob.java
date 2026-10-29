@@ -52,9 +52,14 @@ public abstract class DroneJob {
 
     /** Like {@link #travelTo(DroneEntity, BlockPos)}, hovering at {@code hover} instead of above the block. */
     protected Travel travelTo(DroneEntity drone, BlockPos pos, Vec3 hover) {
+        return travelTo(drone, pos, hover, ARRIVAL_DISTANCE);
+    }
+
+    /** Like {@link #travelTo(DroneEntity, BlockPos, Vec3)}, arrived as soon as it is within {@code reach} of {@code hover}. */
+    protected Travel travelTo(DroneEntity drone, BlockPos pos, Vec3 hover, double reach) {
         drone.flyTowards(hover);
         double distance = drone.position().distanceTo(hover);
-        if (distance <= ARRIVAL_DISTANCE) {
+        if (distance <= reach) {
             noProgressTicks = 0;
             return Travel.ARRIVED;
         }
@@ -66,11 +71,6 @@ public abstract class DroneJob {
             return Travel.FAILED;
         }
         return Travel.MOVING;
-    }
-
-    /** Every block of the work area. */
-    protected static Iterable<BlockPos> blocksIn(BoundingBox area) {
-        return BlockPos.betweenClosed(area.minX(), area.minY(), area.minZ(), area.maxX(), area.maxY(), area.maxZ());
     }
 
     /** Whether the drone can load {@code supply} now: only while it sits on its dock, which has some. */
@@ -91,19 +91,25 @@ public abstract class DroneJob {
         return drops;
     }
 
-    /** The position closest to the drone that passes the test, skipping blocks it could not reach. */
-    protected static @Nullable BlockPos nearest(DroneEntity drone, Iterable<BlockPos> positions, Predicate<BlockPos> test) {
-        BlockPos best = null;
-        double bestDistance = Double.MAX_VALUE;
-        for (BlockPos pos : positions) {
-            if (!drone.isUnreachable(pos) && test.test(pos)) {
-                double distance = pos.distToCenterSqr(drone.position());
-                if (distance < bestDistance) {
-                    bestDistance = distance;
-                    best = pos.immutable();
+    /**
+     * The first block of the work area that passes the test, walking it block by block from one
+     * corner to the other like the Quarry: rows along X, alternating direction, each column top
+     * down. Blocks the drone could not reach are skipped.
+     */
+    protected static @Nullable BlockPos first(DroneEntity drone, BoundingBox area, Predicate<BlockPos> test) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
+        int width = area.getXSpan();
+        for (int row = 0; row < area.getZSpan(); row++) {
+            for (int column = 0; column < width; column++) {
+                int x = row % 2 == 0 ? area.minX() + column : area.maxX() - column;
+                for (int y = area.maxY(); y >= area.minY(); y--) {
+                    pos.set(x, y, area.minZ() + row);
+                    if (!drone.isUnreachable(pos) && test.test(pos)) {
+                        return pos.immutable();
+                    }
                 }
             }
         }
-        return best;
+        return null;
     }
 }

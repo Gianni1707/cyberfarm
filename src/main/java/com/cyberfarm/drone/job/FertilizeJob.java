@@ -52,7 +52,7 @@ public class FertilizeJob extends DroneJob {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone, blocksIn(area), pos -> canGrow(level, pos));
+        BlockPos target = first(drone, area, pos -> canGrow(level, pos));
         if (target == null) {
             return null;
         }

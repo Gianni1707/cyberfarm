@@ -34,6 +34,11 @@ public class BuildJob extends DroneJob {
     private static final int LEG_LIMIT = 200;
     /** How far ahead of a corner the next leg starts; each leg also aims this far past its end, so the drone keeps its speed. */
     private static final double CORNER = 0.5;
+    /**
+     * How close to the spot over the block the drone places it (and the Clearing breaks it): its beam
+     * reaches, so it never brakes to a stop at every block and sweeps on to the next one.
+     */
+    static final double REACH = 1.0;
 
     private enum Phase { RISE, CLIMB, CROSS, APPROACH }
 
@@ -105,7 +110,7 @@ public class BuildJob extends DroneJob {
                 }
             }
             case APPROACH -> {
-                return switch (travelTo(drone, ghost.pos(), hover)) {
+                return switch (travelTo(drone, ghost.pos(), hover, REACH)) {
                     case MOVING -> Result.CONTINUE;
                     case FAILED -> giveUp(drone);
                     case ARRIVED -> place(drone, level);

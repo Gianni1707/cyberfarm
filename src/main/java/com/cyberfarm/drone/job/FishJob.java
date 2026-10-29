@@ -51,7 +51,7 @@ public class FishJob extends DroneJob {
         if (drone.cargo().isFull()) {
             return null;
         }
-        BlockPos water = nearest(drone, blocksIn(dock.getWorkArea()), pos -> isOpenWater(level, pos));
+        BlockPos water = first(drone, dock.getWorkArea(), pos -> isOpenWater(level, pos));
         return water != null ? new FishJob(water) : null;
     }
 

@@ -44,7 +44,7 @@ public class PlantJob extends DroneJob {
             return null;
         }
         BoundingBox area = dock.getWorkArea();
-        BlockPos target = nearest(drone, blocksIn(area), pos -> isEmptyFarmland(level, pos));
+        BlockPos target = first(drone, area, pos -> isEmptyFarmland(level, pos));
         if (target == null) {
             return null;
         }
