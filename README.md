@@ -163,6 +163,21 @@ Tanks** and **Gas Tanks** store 32 buckets and show the fluid inside through the
   other way round.
 - A **Muffler** silences machines, drones and mobs around it.
 
+## Performance
+
+Drones look for work every 2 seconds, not every tick. Profiled with [spark](https://spark.lucko.me)
+on NeoForge 26.2, singleplayer, 20 Harvester + Planter drones working nonstop on 20 wheat fields:
+
+| | Server, median | Server, worst tick | TPS |
+| --- | --- | --- | --- |
+| [No drones](https://spark.lucko.me/eRz5ZY97jN) | 4.8 ms/tick | 6.9 ms | 20 |
+| [20 drones](https://spark.lucko.me/7DZMDMHpXD) | 5.2 ms/tick | 7.6 ms | 20 |
+
+That is about 0.02 ms per drone. The [client](https://spark.lucko.me/QHCAbxG5Ik) stayed under
+1 ms per tick with the 20 drones in view. Other modules and servers are not profiled yet: if you
+see lag, a spark report in a [GitHub issue](https://github.com/Gianni1707/cyberfarm/issues) helps
+a lot.
+
 ## Requirements
 
 | | Version |
