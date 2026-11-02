@@ -327,7 +327,7 @@
   "mech_hangar.fit": {
     "sounds": [
       {
-        "name": "minecraft:block/vault/insert",
+        "name": "minecraft:block/smithing_table/smithing_table1",
         "pitch": 0.8
       },
       {
@@ -416,22 +416,22 @@
         "volume": 0.9
       },
       {
-        "name": "minecraft:block/heavy_core/step1",
+        "name": "minecraft:block/netherite/step1",
         "pitch": 0.5,
         "volume": 0.7
       },
       {
-        "name": "minecraft:block/heavy_core/step2",
+        "name": "minecraft:block/netherite/step2",
         "pitch": 0.5,
         "volume": 0.7
       },
       {
-        "name": "minecraft:block/heavy_core/step3",
+        "name": "minecraft:block/netherite/step3",
         "pitch": 0.5,
         "volume": 0.7
       },
       {
-        "name": "minecraft:block/heavy_core/step4",
+        "name": "minecraft:block/netherite/step4",
         "pitch": 0.5,
         "volume": 0.7
       }
