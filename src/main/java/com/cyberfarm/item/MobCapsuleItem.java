@@ -43,7 +43,7 @@ public class MobCapsuleItem extends Item {
     }
 
     public static boolean hasMob(ItemStack stack) {
-        return stack.has(ModDataComponents.CAPTURED_MOB.get());
+        return ModDataComponents.CAPTURED_MOB.has(stack);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MobCapsuleItem extends Item {
         if (player.level() instanceof ServerLevel level) {
             TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
             mob.save(output);
-            capsule.set(ModDataComponents.CAPTURED_MOB.get(), output.buildResult());
+            ModDataComponents.CAPTURED_MOB.set(capsule, output.buildResult());
             level.playSound(null, mob.blockPosition(), SoundEvents.BUNDLE_INSERT, SoundSource.PLAYERS, 1.0F, 0.8F);
             mob.discard();
         }
@@ -81,7 +81,7 @@ public class MobCapsuleItem extends Item {
 
     /** Lets the stored mob out at {@code pos} and empties the capsule. Released mobs never despawn. */
     public static @Nullable Entity release(ServerLevel level, ItemStack capsule, Vec3 pos) {
-        CompoundTag tag = capsule.get(ModDataComponents.CAPTURED_MOB.get());
+        CompoundTag tag = ModDataComponents.CAPTURED_MOB.get(capsule);
         if (tag == null) {
             return null;
         }
@@ -99,7 +99,7 @@ public class MobCapsuleItem extends Item {
             mob.setPersistenceRequired();
         }
         level.addFreshEntity(entity);
-        capsule.remove(ModDataComponents.CAPTURED_MOB.get());
+        ModDataComponents.CAPTURED_MOB.remove(capsule);
         level.playSound(null, entity.blockPosition(), SoundEvents.BUNDLE_DROP_CONTENTS, SoundSource.PLAYERS, 1.0F, 1.0F);
         return entity;
     }
@@ -111,7 +111,7 @@ public class MobCapsuleItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
-        CompoundTag tag = stack.get(ModDataComponents.CAPTURED_MOB.get());
+        CompoundTag tag = ModDataComponents.CAPTURED_MOB.get(stack);
         if (tag == null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.capsule.empty").withStyle(ChatFormatting.GRAY));
             return;

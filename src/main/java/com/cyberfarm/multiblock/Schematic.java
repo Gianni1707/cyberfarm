@@ -1,5 +1,7 @@
 package com.cyberfarm.multiblock;
 
+import com.cyberfarm.port.net.PortCodecs;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -14,8 +16,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
@@ -39,14 +41,14 @@ public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) imp
     /** One block, relative to the structure's lowest corner; sorted bottom layer first. */
     public record Entry(BlockPos pos, BlockState state) {
         static final StreamCodec<ByteBuf, Entry> STREAM_CODEC = StreamCodec.composite(
-                BlockPos.STREAM_CODEC, Entry::pos,
+                PortCodecs.BLOCK_POS, Entry::pos,
                 ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY), Entry::state,
                 Entry::new);
     }
 
     public static final StreamCodec<ByteBuf, Schematic> STREAM_CODEC = StreamCodec.composite(
-            ResourceLocation.STREAM_CODEC, Schematic::id,
-            BlockPos.STREAM_CODEC.map(pos -> (Vec3i) pos, BlockPos::new), Schematic::size,
+            PortCodecs.RESOURCE_LOCATION, Schematic::id,
+            PortCodecs.BLOCK_POS.map(pos -> (Vec3i) pos, BlockPos::new), Schematic::size,
             Entry.STREAM_CODEC.apply(ByteBufCodecs.list()), Schematic::blocks,
             Schematic::new);
 

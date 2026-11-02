@@ -34,12 +34,12 @@ public class BlueprintDiscItem extends Item {
 
     public static ItemStack of(VillagePlan.Unlock unlock) {
         ItemStack stack = new ItemStack(ModItems.BLUEPRINT_DISC.get());
-        stack.set(ModDataComponents.BLUEPRINT.get(), unlock.schematic());
+        ModDataComponents.BLUEPRINT.set(stack, unlock.schematic());
         return stack;
     }
 
     public static @Nullable ResourceLocation blueprint(ItemStack stack) {
-        return stack.get(ModDataComponents.BLUEPRINT.get());
+        return ModDataComponents.BLUEPRINT.get(stack);
     }
 
     /** True for a disc whose building {@code player} has not learned yet. */

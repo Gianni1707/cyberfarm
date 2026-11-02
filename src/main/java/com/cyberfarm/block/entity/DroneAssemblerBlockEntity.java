@@ -222,8 +222,8 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             setStack(i, ItemStack.EMPTY);
         }
         ItemStack drone = new ItemStack(ModItems.DRONE.get());
-        drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
-        drone.set(ModDataComponents.ENERGY.get(), 0);
+        ModDataComponents.DRONE_MODULES.set(drone, new DroneModules(parts));
+        ModDataComponents.ENERGY.set(drone, 0);
         setStack(OUTPUT_SLOT, drone);
 
         resetAssembly();

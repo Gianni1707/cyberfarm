@@ -24,7 +24,7 @@ import com.cyberfarm.port.ValueOutput;
 import com.cyberfarm.port.ItemResource;
 import com.cyberfarm.port.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
-import net.neoforged.neoforge.network.PacketDistributor;
+import com.cyberfarm.port.net.PacketDistributor;
 
 /**
  * Shared base for CyberFarm machines: an FE buffer, an item inventory and synced GUI data.

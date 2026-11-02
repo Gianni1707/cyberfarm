@@ -56,17 +56,17 @@ public class ProjectorItem extends Item {
 
     /** The chosen structure; a projector from before the schematics saved a multiblock's number instead. */
     public static Structure structure(ItemStack stack) {
-        ResourceLocation id = stack.get(ModDataComponents.PROJECTOR_STRUCTURE.get());
+        ResourceLocation id = ModDataComponents.PROJECTOR_STRUCTURE.get(stack);
         return id != null ? Structure.byId(id).orElse(Blueprint.byOrdinal(0))
-                : Blueprint.byOrdinal(stack.getOrDefault(ModDataComponents.PROJECTOR_BLUEPRINT.get(), 0));
+                : Blueprint.byOrdinal(ModDataComponents.PROJECTOR_BLUEPRINT.getOrDefault(stack, 0));
     }
 
     public static @Nullable BlockPos anchor(ItemStack stack) {
-        return stack.get(ModDataComponents.PROJECTOR_ANCHOR.get());
+        return ModDataComponents.PROJECTOR_ANCHOR.get(stack);
     }
 
     public static Direction anchorFacing(ItemStack stack) {
-        return Direction.from2DDataValue(stack.getOrDefault(ModDataComponents.PROJECTOR_FACING.get(), 0));
+        return Direction.from2DDataValue(ModDataComponents.PROJECTOR_FACING.getOrDefault(stack, 0));
     }
 
     public record Placement(BlockPos controller, Direction facing) {}
@@ -87,7 +87,7 @@ public class ProjectorItem extends Item {
     }
 
     public static @Nullable Placement pinned(ItemStack stack) {
-        BlockPos anchor = stack.get(ModDataComponents.PROJECTOR_ANCHOR.get());
+        BlockPos anchor = ModDataComponents.PROJECTOR_ANCHOR.get(stack);
         return anchor != null ? new Placement(anchor, anchorFacing(stack)) : null;
     }
 
@@ -142,8 +142,8 @@ public class ProjectorItem extends Item {
         Structure structure = structure(stack);
         if (player.isSecondaryUseActive()) {
             Placement placement = placement(level, context.getClickedPos(), context.getClickedFace(), player, structure);
-            stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), placement.controller());
-            stack.set(ModDataComponents.PROJECTOR_FACING.get(), placement.facing().get2DDataValue());
+            ModDataComponents.PROJECTOR_ANCHOR.set(stack, placement.controller());
+            ModDataComponents.PROJECTOR_FACING.set(stack, placement.facing().get2DDataValue());
             player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.6F);
             if (level instanceof ServerLevel serverLevel) {
                 player.displayClientMessage(Component.translatable("message.cyberfarm.projector.pinned"), true);
@@ -166,7 +166,7 @@ public class ProjectorItem extends Item {
             structure.buildInstantly(serverLevel, placement.controller(), placement.facing());
             player.displayClientMessage(Component.translatable("message.cyberfarm.projector.built", structure.displayName()), true);
         }
-        stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
+        ModDataComponents.PROJECTOR_ANCHOR.remove(stack);
         player.playSound(SoundEvents.ANVIL_USE, 0.4F, 1.4F);
         return InteractionResult.SUCCESS;
     }
@@ -175,10 +175,10 @@ public class ProjectorItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isSecondaryUseActive()) {
-            if (!stack.has(ModDataComponents.PROJECTOR_ANCHOR.get())) {
+            if (!ModDataComponents.PROJECTOR_ANCHOR.has(stack)) {
                 return InteractionResult.PASS;
             }
-            stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
+            ModDataComponents.PROJECTOR_ANCHOR.remove(stack);
             player.playSound(SoundEvents.BEACON_DEACTIVATE, 0.4F, 1.6F);
             return InteractionResult.SUCCESS;
         }
@@ -190,9 +190,9 @@ public class ProjectorItem extends Item {
 
     /** The structure picked in the list: the projection follows the player's aim again. */
     public static void select(ItemStack stack, Structure structure) {
-        stack.set(ModDataComponents.PROJECTOR_STRUCTURE.get(), structure.id());
-        stack.remove(ModDataComponents.PROJECTOR_BLUEPRINT.get());
-        stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
+        ModDataComponents.PROJECTOR_STRUCTURE.set(stack, structure.id());
+        ModDataComponents.PROJECTOR_BLUEPRINT.remove(stack);
+        ModDataComponents.PROJECTOR_ANCHOR.remove(stack);
     }
 
     /**
@@ -202,8 +202,8 @@ public class ProjectorItem extends Item {
     public static void alignUpgrade(ServerPlayer player, ItemStack stack, Structure structure) {
         VillagePlan.unlock(structure.id()).ifPresent(unlock -> SupplyTerminalBlockEntity.villageAt(player.level(), player.blockPosition())
                 .ifPresent(terminal -> terminal.upgradeSite(unlock).ifPresent(at -> {
-                    stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), at.origin());
-                    stack.set(ModDataComponents.PROJECTOR_FACING.get(), at.facing().get2DDataValue());
+                    ModDataComponents.PROJECTOR_ANCHOR.set(stack, at.origin());
+                    ModDataComponents.PROJECTOR_FACING.set(stack, at.facing().get2DDataValue());
                     terminal.addSite(unlock, at);
                     player.displayClientMessage(Component.translatable("message.cyberfarm.projector.aligned", unlock.displayName()), true);
                 })));

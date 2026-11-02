@@ -51,7 +51,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import com.cyberfarm.port.net.PortNetwork;
 import com.cyberfarm.port.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
@@ -73,7 +73,6 @@ public class CyberFarm {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
-        ModDataComponents.COMPONENTS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
@@ -84,10 +83,10 @@ public class CyberFarm {
         ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
         CONDITIONS.register(modEventBus);
 
+        registerPayloads();
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
-        modEventBus.addListener(CyberFarm::registerPayloads);
-        modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
+                modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
         MinecraftForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
@@ -200,8 +199,8 @@ public class CyberFarm {
         event.put(ModEntities.MECH.get(), MechEntity.createAttributes().build());
     }
 
-    private static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
+    private static void registerPayloads() {
+        PortNetwork.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
                 .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
@@ -210,5 +209,6 @@ public class CyberFarm {
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)
                 .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle);
+        PortNetwork.register();
     }
 }

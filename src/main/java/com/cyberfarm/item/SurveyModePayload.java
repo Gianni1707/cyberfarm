@@ -3,11 +3,11 @@ package com.cyberfarm.item;
 import com.cyberfarm.CyberFarm;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
+import com.cyberfarm.port.net.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.cyberfarm.port.net.IPayloadContext;
 
 /** Sneak + mouse wheel with the Survey Tool in hand: the client asks for the next (1) or previous (-1) mode. */
 public record SurveyModePayload(int step) implements CustomPacketPayload {

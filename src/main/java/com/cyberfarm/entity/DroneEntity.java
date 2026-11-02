@@ -569,8 +569,8 @@ public class DroneEntity extends PathfinderMob {
 
     public ItemStack toItem() {
         ItemStack stack = new ItemStack(ModItems.DRONE.get());
-        stack.set(ModDataComponents.DRONE_MODULES.get(), modules);
-        stack.set(ModDataComponents.ENERGY.get(), energy);
+        ModDataComponents.DRONE_MODULES.set(stack, modules);
+        ModDataComponents.ENERGY.set(stack, energy);
         return stack;
     }
 

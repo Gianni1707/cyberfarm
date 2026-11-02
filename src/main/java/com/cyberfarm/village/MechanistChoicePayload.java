@@ -4,11 +4,11 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.village.MechanistDialogue.Choice;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
+import com.cyberfarm.port.net.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.cyberfarm.port.net.IPayloadContext;
 
 /** The player pressed one of the buttons at the end of a talk with the Mechanist. */
 public record MechanistChoicePayload(int entity, int choice) implements CustomPacketPayload {

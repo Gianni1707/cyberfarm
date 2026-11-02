@@ -1,18 +1,20 @@
 package com.cyberfarm.item;
 
+import com.cyberfarm.port.net.PortCodecs;
+
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.multiblock.Structure;
 import com.cyberfarm.village.Blueprints;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
+import com.cyberfarm.port.net.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.handling.IPayloadContext;
+import com.cyberfarm.port.net.IPayloadContext;
 
 /** A structure picked in the Multiblock Projector's list, for the projector held in {@code hand}. */
 public record ProjectorSelectPayload(InteractionHand hand, ResourceLocation structure) implements CustomPacketPayload {
@@ -20,7 +22,7 @@ public record ProjectorSelectPayload(InteractionHand hand, ResourceLocation stru
     public static final StreamCodec<ByteBuf, ProjectorSelectPayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL.map(main -> main ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND, hand -> hand == InteractionHand.MAIN_HAND),
             ProjectorSelectPayload::hand,
-            ResourceLocation.STREAM_CODEC, ProjectorSelectPayload::structure,
+            PortCodecs.RESOURCE_LOCATION, ProjectorSelectPayload::structure,
             ProjectorSelectPayload::new);
 
     @Override

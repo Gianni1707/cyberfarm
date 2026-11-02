@@ -11,9 +11,9 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.FriendlyByteBuf;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
 import net.minecraft.world.item.Item;
 
 /** What a drone was built from: one frame, its function modules and its addons (one entry per addon). */
@@ -28,7 +28,7 @@ public record DroneModules(List<Item> parts) {
     public static final Codec<DroneModules> CODEC = BuiltInRegistries.ITEM.byNameCodec().listOf()
             .xmap(DroneModules::new, DroneModules::parts);
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, DroneModules> STREAM_CODEC = ByteBufCodecs.registry(Registries.ITEM)
+    public static final StreamCodec<FriendlyByteBuf, DroneModules> STREAM_CODEC = ByteBufCodecs.registry(Registries.ITEM)
             .apply(ByteBufCodecs.list())
             .map(DroneModules::new, DroneModules::parts);
 

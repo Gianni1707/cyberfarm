@@ -35,11 +35,11 @@ public class DroneItem extends Item {
     }
 
     public static DroneModules getModules(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.DRONE_MODULES.get(), DroneModules.EMPTY);
+        return ModDataComponents.DRONE_MODULES.getOrDefault(stack, DroneModules.EMPTY);
     }
 
     public static int getEnergy(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.ENERGY.get(), 0);
+        return ModDataComponents.ENERGY.getOrDefault(stack, 0);
     }
 
     /** "Mini Drone" for one built on a Mini Drone Frame. */

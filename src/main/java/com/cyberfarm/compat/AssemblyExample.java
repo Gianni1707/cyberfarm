@@ -46,8 +46,8 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
             parts.add(frame);
             parts.add(ModItems.HARVESTER_MODULE.get());
             ItemStack drone = new ItemStack(ModItems.DRONE.get());
-            drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
-            drone.set(ModDataComponents.ENERGY.get(), 0);
+            ModDataComponents.DRONE_MODULES.set(drone, new DroneModules(parts));
+            ModDataComponents.ENERGY.set(drone, 0);
 
             examples.add(new AssemblyExample(frame, moduleSlots, addonSlots, drone));
         }

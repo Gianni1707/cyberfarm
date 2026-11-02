@@ -62,27 +62,27 @@ public class SurveyToolItem extends Item {
 
     public static Mode mode(ItemStack stack) {
         Mode[] modes = Mode.values();
-        return modes[Math.floorMod(stack.getOrDefault(ModDataComponents.SURVEY_MODE.get(), 0), modes.length)];
+        return modes[Math.floorMod(ModDataComponents.SURVEY_MODE.getOrDefault(stack, 0), modes.length)];
     }
 
     /** Moves to the next ({@code step} 1) or previous (-1) mode and drops anything half-set. */
     public static void cycleMode(Player player, ItemStack stack, int step) {
         Mode[] modes = Mode.values();
         Mode next = modes[Math.floorMod(mode(stack).ordinal() + step, modes.length)];
-        stack.set(ModDataComponents.SURVEY_MODE.get(), next.ordinal());
+        ModDataComponents.SURVEY_MODE.set(stack, next.ordinal());
         clearPending(stack);
         message(player, Component.translatable("message.cyberfarm.survey.mode", next.displayName(), nextStep(stack)));
     }
 
     /** What to click next in the current mode, shown above the hotbar after every step. */
     private static Component nextStep(ItemStack stack) {
-        if (!stack.has(ModDataComponents.LINKED_DOCK.get())) {
+        if (!ModDataComponents.LINKED_DOCK.has(stack)) {
             return step("dock");
         }
         return step(switch (mode(stack)) {
             case DOCK -> "pick_mode";
-            case AREA -> stack.has(ModDataComponents.SURVEY_CORNER.get()) ? "area_second" : "area_first";
-            case ROUTE -> stack.has(ModDataComponents.ROUTE_SOURCE.get()) ? "route_destination" : "route_source";
+            case AREA -> ModDataComponents.SURVEY_CORNER.has(stack) ? "area_second" : "area_first";
+            case ROUTE -> ModDataComponents.ROUTE_SOURCE.has(stack) ? "route_destination" : "route_source";
             case TAXI -> "taxi";
         });
     }
@@ -104,9 +104,9 @@ public class SurveyToolItem extends Item {
             return link(level, player, stack, pos);
         }
 
-        BlockPos dockPos = stack.get(ModDataComponents.LINKED_DOCK.get());
+        BlockPos dockPos = ModDataComponents.LINKED_DOCK.get(stack);
         if (dockPos != null && !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity)) {
-            stack.remove(ModDataComponents.LINKED_DOCK.get());
+            ModDataComponents.LINKED_DOCK.remove(stack);
             clearPending(stack);
             dockPos = null;
             if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity)) {
@@ -140,12 +140,12 @@ public class SurveyToolItem extends Item {
     private static InteractionResult link(ServerLevel level, Player player, ItemStack stack, BlockPos pos) {
         if (!(level.getBlockEntity(pos) instanceof DroneDockBlockEntity dock)) {
             // Already linked: they most likely want another mode, so say how to get there
-            message(player, stack.has(ModDataComponents.LINKED_DOCK.get())
+            message(player, ModDataComponents.LINKED_DOCK.has(stack)
                     ? Component.translatable("message.cyberfarm.survey.wrong_mode") : step("dock"));
             return InteractionResult.FAIL;
         }
         clearPending(stack);
-        stack.set(ModDataComponents.LINKED_DOCK.get(), pos);
+        ModDataComponents.LINKED_DOCK.set(stack, pos);
         if (player != null && player.isSecondaryUseActive()) {
             dock.setWorkArea(null);
             dock.setTransportRoute(null, null);
@@ -159,14 +159,14 @@ public class SurveyToolItem extends Item {
     }
 
     private static InteractionResult setArea(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
-        BlockPos corner = stack.get(ModDataComponents.SURVEY_CORNER.get());
+        BlockPos corner = ModDataComponents.SURVEY_CORNER.get(stack);
         if (corner == null) {
-            stack.set(ModDataComponents.SURVEY_CORNER.get(), pos);
+            ModDataComponents.SURVEY_CORNER.set(stack, pos);
             message(player, Component.translatable("message.cyberfarm.survey.corner", pos.toShortString()));
             return InteractionResult.SUCCESS;
         }
 
-        stack.remove(ModDataComponents.SURVEY_CORNER.get());
+        ModDataComponents.SURVEY_CORNER.remove(stack);
         int width = Math.abs(pos.getX() - corner.getX()) + 1;
         int depth = Math.abs(pos.getZ() - corner.getZ()) + 1;
         if (width > MAX_AREA_SIZE || depth > MAX_AREA_SIZE || Math.abs(pos.getY() - corner.getY()) > MAX_AREA_HEIGHT) {
@@ -184,9 +184,9 @@ public class SurveyToolItem extends Item {
     }
 
     private static InteractionResult setRoute(ServerLevel level, Player player, ItemStack stack, DroneDockBlockEntity dock, BlockPos pos) {
-        BlockPos source = stack.get(ModDataComponents.ROUTE_SOURCE.get());
+        BlockPos source = ModDataComponents.ROUTE_SOURCE.get(stack);
         if (source == null) {
-            stack.set(ModDataComponents.ROUTE_SOURCE.get(), pos);
+            ModDataComponents.ROUTE_SOURCE.set(stack, pos);
             message(player, Component.translatable("message.cyberfarm.survey.source", pos.toShortString()));
             return InteractionResult.SUCCESS;
         }
@@ -195,7 +195,7 @@ public class SurveyToolItem extends Item {
             return InteractionResult.FAIL;
         }
 
-        stack.remove(ModDataComponents.ROUTE_SOURCE.get());
+        ModDataComponents.ROUTE_SOURCE.remove(stack);
         dock.setTransportRoute(source, pos);
         message(player, Component.translatable("message.cyberfarm.survey.route_set", source.toShortString(), pos.toShortString()));
         playSaved(level, pos);
@@ -222,7 +222,7 @@ public class SurveyToolItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            if (!stack.has(ModDataComponents.SURVEY_CORNER.get()) && !stack.has(ModDataComponents.ROUTE_SOURCE.get())) {
+            if (!ModDataComponents.SURVEY_CORNER.has(stack) && !ModDataComponents.ROUTE_SOURCE.has(stack)) {
                 return InteractionResult.PASS;
             }
             clearPending(stack);
@@ -243,8 +243,8 @@ public class SurveyToolItem extends Item {
     }
 
     private static void clearPending(ItemStack stack) {
-        stack.remove(ModDataComponents.SURVEY_CORNER.get());
-        stack.remove(ModDataComponents.ROUTE_SOURCE.get());
+        ModDataComponents.SURVEY_CORNER.remove(stack);
+        ModDataComponents.ROUTE_SOURCE.remove(stack);
     }
 
     private static void message(Player player, Component text) {
@@ -257,17 +257,17 @@ public class SurveyToolItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         Mode mode = mode(stack);
         builder.accept(Component.translatable("tooltip.cyberfarm.survey.mode", mode.displayName()).withStyle(ChatFormatting.YELLOW));
-        BlockPos dock = stack.get(ModDataComponents.LINKED_DOCK.get());
+        BlockPos dock = ModDataComponents.LINKED_DOCK.get(stack);
         if (dock != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.linked", dock.toShortString()).withStyle(ChatFormatting.AQUA));
         } else {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.unlinked").withStyle(ChatFormatting.GRAY));
         }
-        BlockPos corner = stack.get(ModDataComponents.SURVEY_CORNER.get());
+        BlockPos corner = ModDataComponents.SURVEY_CORNER.get(stack);
         if (corner != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.corner", corner.toShortString()).withStyle(ChatFormatting.DARK_AQUA));
         }
-        BlockPos source = stack.get(ModDataComponents.ROUTE_SOURCE.get());
+        BlockPos source = ModDataComponents.ROUTE_SOURCE.get(stack);
         if (source != null) {
             builder.accept(Component.translatable("tooltip.cyberfarm.survey.source", source.toShortString()).withStyle(ChatFormatting.DARK_AQUA));
         }

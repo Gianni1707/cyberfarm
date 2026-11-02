@@ -368,8 +368,8 @@ public class MechEntity extends Mob {
     /** The frame a folded mech drops as: battery charge and modules kept. */
     public ItemStack asFrame() {
         ItemStack frame = new ItemStack(ModItems.MECH_FRAME.get());
-        frame.set(ModDataComponents.ENERGY.get(), getEnergy());
-        frame.set(ModDataComponents.MECH_MODULES.get(), getModules());
+        ModDataComponents.ENERGY.set(frame, getEnergy());
+        ModDataComponents.MECH_MODULES.set(frame, getModules());
         return frame;
     }
 

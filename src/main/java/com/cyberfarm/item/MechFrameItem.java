@@ -30,7 +30,7 @@ public class MechFrameItem extends Item {
     }
 
     public static int energyOf(ItemStack stack) {
-        return stack.getOrDefault(ModDataComponents.ENERGY.get(), MechEntity.FACTORY_CHARGE);
+        return ModDataComponents.ENERGY.getOrDefault(stack, MechEntity.FACTORY_CHARGE);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class MechFrameItem extends Item {
             return InteractionResult.FAIL;
         }
         mech.setEnergy(energyOf(context.getItemInHand()));
-        mech.setModules(context.getItemInHand().getOrDefault(ModDataComponents.MECH_MODULES.get(), 0));
+        mech.setModules(ModDataComponents.MECH_MODULES.getOrDefault(context.getItemInHand(), 0));
         level.addFreshEntity(mech);
         mech.startUnfold();
         context.getItemInHand().shrink(1);

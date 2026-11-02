@@ -1,8 +1,8 @@
 package com.cyberfarm.block.entity;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
 
 /**
  * What a machine is doing, as its clients see it: whether it works, the FE it made and used per

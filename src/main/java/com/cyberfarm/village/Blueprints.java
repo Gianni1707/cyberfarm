@@ -1,5 +1,7 @@
 package com.cyberfarm.village;
 
+import com.cyberfarm.port.net.PortCodecs;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,8 +9,8 @@ import com.cyberfarm.registry.ModVillagers;
 import com.mojang.serialization.MapCodec;
 
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import com.cyberfarm.port.net.ByteBufCodecs;
+import com.cyberfarm.port.net.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -16,7 +18,7 @@ import net.minecraft.world.entity.player.Player;
 public record Blueprints(List<ResourceLocation> learned) {
     public static final Blueprints NONE = new Blueprints(List.of());
     public static final MapCodec<Blueprints> CODEC = ResourceLocation.CODEC.listOf().fieldOf("learned").xmap(Blueprints::new, Blueprints::learned);
-    public static final StreamCodec<ByteBuf, Blueprints> STREAM_CODEC = ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())
+    public static final StreamCodec<ByteBuf, Blueprints> STREAM_CODEC = PortCodecs.RESOURCE_LOCATION.apply(ByteBufCodecs.list())
             .map(Blueprints::new, Blueprints::learned);
 
     public static Blueprints of(Player player) {
