@@ -5,6 +5,7 @@ import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -13,14 +14,12 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -73,8 +72,8 @@ public final class DissolvingMobRenderer {
     /** Adds the dissolving layer to every living renderer. */
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
-        for (EntityType<?> type : ForgeRegistries.ENTITY_TYPES.getValues()) {
-            EntityRenderer<?> renderer = event.getEntityRenderer((EntityType) type);
+        // The dispatcher holds the new renderers when the event fires; Forge 47.1 has no getter for non-living ones
+        for (EntityRenderer<?> renderer : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values()) {
             if (renderer instanceof LivingEntityRenderer living) {
                 living.addLayer(new Layer(living));
             }
