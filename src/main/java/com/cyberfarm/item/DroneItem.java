@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -23,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 
 /** An assembled drone. Right-click a Drone Dock to deploy it. */
@@ -93,7 +98,8 @@ public class DroneItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         DroneModules modules = getModules(stack);
         if (modules.parts().isEmpty()) {
             builder.accept(Component.translatable("tooltip.cyberfarm.drone.empty").withStyle(ChatFormatting.GRAY));

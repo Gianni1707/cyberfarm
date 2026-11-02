@@ -1,5 +1,7 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlock;
+
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 
 import net.minecraft.core.BlockPos;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
  * A piece of a Resonance Core's shell. A complete cube of them around the crystal grows the core
  * by a tier; once formed they vanish inside the bigger crystal. Right-clicking any of them opens the core.
  */
-public class ResonanceCellBlock extends Block {
+public class ResonanceCellBlock extends PortBlock {
     public static final BooleanProperty FORMED = CyberFrameBlock.FORMED;
 
     public ResonanceCellBlock(Properties properties) {

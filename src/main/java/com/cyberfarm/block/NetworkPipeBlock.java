@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import net.minecraft.world.level.LevelAccessor;
+
 import com.cyberfarm.port.PortEntityBlock;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import java.util.Map;
 
@@ -106,8 +107,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
-            Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
         // Any change next to a pipe may change which blocks the network reaches.
         ConduitNetwork.invalidate();
         if (!(level instanceof Level realLevel)) {
@@ -148,7 +148,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
 
     /** Only pipes with an arm set to extract tick. */
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide() || !isPulling(state)) {
             return null;
         }
@@ -180,8 +180,8 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     }
 
     @Override
-    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
-        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        super.onRemove(state, level, pos, newState, movedByPiston);
         ConduitNetwork.invalidate();
     }
 

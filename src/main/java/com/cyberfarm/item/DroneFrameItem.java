@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.registry.ModItems;
@@ -9,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 /**
  * The base of a drone. Its tier sets the battery size, the flight speed, how many function
@@ -59,7 +64,8 @@ public class DroneFrameItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         builder.accept(Component.translatable("tooltip.cyberfarm.frame.tier", tier).withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable("tooltip.cyberfarm.capacity", String.format("%,d", energyCapacity)).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.speed", speedPercent).withStyle(ChatFormatting.GRAY));

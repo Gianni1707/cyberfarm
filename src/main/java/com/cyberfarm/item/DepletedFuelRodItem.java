@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.radiation.Radiation;
@@ -11,7 +17,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 /**
  * Nuclear waste. Carried, stored in a container or left on the ground it contaminates the area
@@ -32,7 +37,8 @@ public class DepletedFuelRodItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         builder.accept(Component.translatable("tooltip.cyberfarm.depleted_fuel_rod").withStyle(ChatFormatting.RED));
         builder.accept(Component.translatable("tooltip.cyberfarm.depleted_fuel_rod.hint").withStyle(ChatFormatting.DARK_GRAY));
     }

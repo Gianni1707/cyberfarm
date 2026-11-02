@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -31,7 +30,7 @@ public class WasteReprocessorBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.WASTE_REPROCESSOR.get());
     }
 

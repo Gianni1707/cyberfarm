@@ -1,5 +1,9 @@
 package com.cyberfarm.block;
 
+import net.minecraft.world.level.LevelAccessor;
+
+import com.cyberfarm.port.PortBlock;
+
 import java.util.Locale;
 
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
@@ -35,7 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * A Resonance Core finds the columns lined up on its sides, fires their beams, and takes and gives
  * its power through every block of them.
  */
-public class StabilizerPylonBlock extends Block implements EntityBlock {
+public class StabilizerPylonBlock extends PortBlock implements EntityBlock {
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
     // A socket on each side where an Energy Conduit plugs in, bridging the gap to the narrow shaft
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
@@ -83,8 +87,7 @@ public class StabilizerPylonBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction,
-            BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbourState, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
         return direction.getAxis() == Direction.Axis.Y ? withPart(state, level, pos) : state.setValue(socket(direction), isConduit(neighbourState));
     }
 

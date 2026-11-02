@@ -1,5 +1,7 @@
 package com.cyberfarm.item;
 
+import net.minecraft.world.InteractionResultHolder;
+
 import net.minecraftforge.fluids.FluidStack;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -64,8 +66,8 @@ public class FluidBucketItem extends BucketItem {
 
     /** Gases have nothing to place in the world; coolants pour like water. */
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-        return isGas() ? InteractionResult.PASS : super.use(level, player, hand);
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        return isGas() ? InteractionResultHolder.pass(player.getItemInHand(hand)) : super.use(level, player, hand);
     }
 
     /** An empty bucket right-clicked on a machine or tank takes out 1000 mB of a CyberFarm fluid. */

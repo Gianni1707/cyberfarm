@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -41,7 +40,7 @@ public class SteamEngineBlock extends MachineBlock {
 
     /** Ticks on the client too, to animate the pistons and the flywheel. */
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide()
                 ? createTickerHelper(type, ModBlockEntities.STEAM_ENGINE.get(), (lvl, pos, st, engine) -> engine.clientTick())
                 : machineTicker(level, type, ModBlockEntities.STEAM_ENGINE.get());

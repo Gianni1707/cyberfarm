@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.drone.DroneTask;
@@ -9,7 +15,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 /** A function module: it decides what job the drone does (harvest, quarry, transport...). */
 public class DroneModuleItem extends Item {
@@ -32,7 +37,8 @@ public class DroneModuleItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         builder.accept(Component.translatable("tooltip.cyberfarm.module").withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.cost.flight_add", flightCost).withStyle(ChatFormatting.GOLD));

@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.radiation.Radiation;
@@ -15,7 +21,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 
 /** Held in either hand it clicks faster where radiation is higher and shows the level above the hotbar. */
 public class GeigerCounterItem extends Item {
@@ -45,7 +50,8 @@ public class GeigerCounterItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         builder.accept(Component.translatable("tooltip.cyberfarm.geiger").withStyle(ChatFormatting.GRAY));
     }
 }

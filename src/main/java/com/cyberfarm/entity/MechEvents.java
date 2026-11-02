@@ -55,7 +55,7 @@ public final class MechEvents {
     public static void onDamage(LivingIncomingDamageEvent event) {
         MechEntity shell = pilotedMech(event.getEntity());
         if (shell != null && event.getEntity().level() instanceof ServerLevel level && !event.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
-            shell.hurtServer(level, event.getSource(), event.getAmount());
+            shell.hurt(event.getSource(), event.getAmount());
             event.setCanceled(true);
             return;
         }
@@ -72,7 +72,7 @@ public final class MechEvents {
                 LivingEntity target = event.getEntity();
                 for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(SWEEP_RANGE),
                         e -> e != target && e != mech && e != attacker && e.isAlive())) {
-                    near.hurtServer(level, event.getSource(), SWEEP_DAMAGE);
+                    near.hurt(event.getSource(), SWEEP_DAMAGE);
                 }
                 level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 3, 0.6, 0.2, 0.6, 0.0);
                 level.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.MECH_SLASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);

@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import net.minecraft.world.InteractionResultHolder;
+
+import org.jspecify.annotations.Nullable;
+
+import java.util.List;
+
 import java.util.Locale;
 import java.util.function.Consumer;
 
@@ -18,7 +24,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -219,7 +224,12 @@ public class SurveyToolItem extends Item {
 
     /** In the air: sneak clears a half-set corner or route, a plain click moves to the next mode (no wheel needed). */
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        InteractionResult result = useItem(level, player, hand);
+        return new InteractionResultHolder<>(result, player.getItemInHand(hand));
+    }
+
+    private InteractionResult useItem(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!ModDataComponents.SURVEY_CORNER.has(stack) && !ModDataComponents.ROUTE_SOURCE.has(stack)) {
@@ -254,7 +264,8 @@ public class SurveyToolItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         Mode mode = mode(stack);
         builder.accept(Component.translatable("tooltip.cyberfarm.survey.mode", mode.displayName()).withStyle(ChatFormatting.YELLOW));
         BlockPos dock = ModDataComponents.LINKED_DOCK.get(stack);

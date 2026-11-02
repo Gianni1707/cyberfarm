@@ -2,13 +2,13 @@ package com.cyberfarm.block;
 
 
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.TransparentBlock;
+import net.minecraft.world.level.block.AbstractGlassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 /** Wall of the Methane Extractor's chamber: see-through glass, hidden while the chamber is drawn whole. */
-public class ContainmentGlassBlock extends TransparentBlock {
+public class ContainmentGlassBlock extends AbstractGlassBlock {
     public static final BooleanProperty FORMED = MethaneExtractorBlock.FORMED;
 
     public ContainmentGlassBlock(Properties properties) {

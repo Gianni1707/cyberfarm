@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -27,7 +26,7 @@ public class SwarmDockBlock extends DroneDockBlock {
     }
 
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.SWARM_DOCK.get());
     }
 }

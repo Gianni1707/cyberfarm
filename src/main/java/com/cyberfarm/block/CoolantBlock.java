@@ -26,8 +26,8 @@ public class CoolantBlock extends LiquidBlock {
     }
 
     @Override
-    protected void entityInside(BlockState state, Level level, BlockPos pos, Entity entity, InsideBlockEffectApplier effects, boolean intersects) {
-        super.entityInside(state, level, pos, entity, effects, intersects);
+    public void entityInside(BlockState state, Level level, BlockPos pos, Entity entity) {
+        super.entityInside(state, level, pos, entity);
         // Called for every coolant block the entity touches: act once per tick, from the block at its feet
         if (!pos.equals(entity.blockPosition())) {
             return;

@@ -1,5 +1,7 @@
 package com.cyberfarm.entity;
 
+import net.minecraft.nbt.CompoundTag;
+
 import java.util.UUID;
 
 import com.cyberfarm.CyberFarm;
@@ -184,15 +186,15 @@ public class MechEntity extends Mob {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(DATA_ENERGY, 0);
-        builder.define(DATA_STATE, State.IDLE.ordinal());
-        builder.define(DATA_STATE_TIME, 0L);
-        builder.define(DATA_DISABLED, false);
-        builder.define(DATA_MODULES, 0);
-        builder.define(DATA_TOOLS, 0);
-        builder.define(DATA_BOARD_FROM, new Vector3f(0.0F, 0.0F, 1.5F));
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(DATA_ENERGY, 0);
+        entityData.define(DATA_STATE, State.IDLE.ordinal());
+        entityData.define(DATA_STATE_TIME, 0L);
+        entityData.define(DATA_DISABLED, false);
+        entityData.define(DATA_MODULES, 0);
+        entityData.define(DATA_TOOLS, 0);
+        entityData.define(DATA_BOARD_FROM, new Vector3f(0.0F, 0.0F, 1.5F));
     }
 
     // ------------------------------------------------------------------ battery and integrity
@@ -284,15 +286,18 @@ public class MechEntity extends Mob {
 
     /** Taking damage never kills it: whatever would, shuts it down and drops the pilot instead. */
     @Override
-    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
-        if (isInvulnerableTo(level, source) || isDisabled()) {
+    public boolean hurt(DamageSource source, float amount) {
+        if (!(level() instanceof ServerLevel level)) {
+            return false;
+        }
+        if (isInvulnerableTo(source) || isDisabled()) {
             return false;
         }
         if (hasModule(MechModule.ARMOR)) {
             amount *= 1.0F - ARMOR_BLOCKS;
         }
         if (getHealth() - amount > 1.0F) {
-            return super.hurtServer(level, source, amount);
+            return super.hurt(source, amount);
         }
         setHealth(1.0F);
         entityData.set(DATA_DISABLED, true);
@@ -305,7 +310,7 @@ public class MechEntity extends Mob {
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float multiplier, DamageSource source) {
+    public boolean causeFallDamage(float fallDistance, float multiplier, DamageSource source) {
         return false;
     }
 
@@ -723,7 +728,6 @@ public class MechEntity extends Mob {
      * is attached to (by its vehicle attachment): that is added back, so their feet are where
      * pilotOffset says.
      */
-    @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
         Vec3 feet = pilotOffset(stateProgress(0.0F)).yRot(-getYRot() * Mth.DEG_TO_RAD);
         return feet.add(0.0, passenger.getVehicleAttachmentPoint(this).y, 0.0);
@@ -772,8 +776,9 @@ public class MechEntity extends Mob {
     // ------------------------------------------------------------------ saving
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        ValueOutput output = ValueOutput.of(tag);
         output.putInt("energy", getEnergy());
         output.putBoolean("disabled", isDisabled());
         output.putInt("modules", getModules());
@@ -783,12 +788,22 @@ public class MechEntity extends Mob {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        ValueInput input = ValueInput.of(tag);
         setEnergy(input.getIntOr("energy", 0));
         entityData.set(DATA_DISABLED, input.getBooleanOr("disabled", false));
         setModules(input.getIntOr("modules", 0));
         // A mech saved halfway through boarding comes back closed and empty, or with its pilot inside
         entityData.set(DATA_STATE, State.IDLE.ordinal());
+    }
+
+    // 1.20.1 places riders itself: put each one at the 26.x attachment point
+    @Override
+    protected void positionRider(Entity passenger, Entity.MoveFunction move) {
+        if (hasPassenger(passenger)) {
+            Vec3 at = position().add(getPassengerAttachmentPoint(passenger, getDimensions(getPose()), 1.0F));
+            move.accept(passenger, at.x, at.y + passenger.getMyRidingOffset(), at.z);
+        }
     }
 }

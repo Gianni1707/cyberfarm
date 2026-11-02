@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -26,7 +25,7 @@ public class PyrolysisOvenBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.PYROLYSIS_OVEN.get());
     }
 }

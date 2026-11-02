@@ -1,5 +1,11 @@
 package com.cyberfarm.item;
 
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.world.level.Level;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
@@ -15,7 +21,6 @@ import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.Vec3;
 
@@ -70,7 +75,8 @@ public class MechFrameItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> builder = tooltip::add;
         builder.accept(Component.translatable("tooltip.cyberfarm.energy", String.format("%,d", energyOf(stack)), String.format("%,d", MechEntity.CAPACITY))
                 .withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip.cyberfarm.mech_frame.hint").withStyle(ChatFormatting.DARK_GRAY));

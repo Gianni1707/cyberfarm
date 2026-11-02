@@ -1,5 +1,9 @@
 package com.cyberfarm.item;
 
+import net.minecraft.world.InteractionResultHolder;
+
+import java.util.List;
+
 import java.util.function.Consumer;
 
 import com.cyberfarm.registry.ModDataComponents;
@@ -18,7 +22,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import org.jspecify.annotations.Nullable;
 
@@ -49,7 +52,12 @@ public class BlueprintDiscItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+        InteractionResult result = useItem(level, player, hand);
+        return new InteractionResultHolder<>(result, player.getItemInHand(hand));
+    }
+
+    private InteractionResult useItem(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         ResourceLocation id = blueprint(stack);
         if (id == null) {
@@ -72,7 +80,8 @@ public class BlueprintDiscItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
+        Consumer<Component> tooltip = tooltip::add;
         ResourceLocation id = blueprint(stack);
         VillagePlan.unlock(id != null ? id : new ResourceLocation("none")).ifPresent(unlock ->
                 tooltip.accept(unlock.displayName().copy().withStyle(ChatFormatting.AQUA)));

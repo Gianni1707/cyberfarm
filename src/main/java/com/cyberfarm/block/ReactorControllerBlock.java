@@ -1,6 +1,5 @@
 package com.cyberfarm.block;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.multiblock.TowerSize;
@@ -31,7 +30,7 @@ public class ReactorControllerBlock extends MultiblockControllerBlock {
     }
 
     @Override
-    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return state.getValue(LIT) ? createTickerHelper(type, ModBlockEntities.REACTOR_CONTROLLER.get(), (lvl, pos, st, be) -> steamPlume(lvl, pos, st)) : null;
         }

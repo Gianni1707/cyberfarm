@@ -1,5 +1,7 @@
 package com.cyberfarm.entity;
 
+import net.minecraft.nbt.CompoundTag;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -152,13 +154,13 @@ public class DroneEntity extends PathfinderMob {
     }
 
     @Override
-    protected void defineSynchedData(SynchedEntityData.Builder builder) {
-        super.defineSynchedData(builder);
-        builder.define(DATA_STATUS, STATUS_IDLE);
-        builder.define(DATA_TASKS, 0);
-        builder.define(DATA_CARRIED, ItemStack.EMPTY);
-        builder.define(DATA_STARTUP, 0L);
-        builder.define(DATA_SHUTDOWN, 0L);
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        entityData.define(DATA_STATUS, STATUS_IDLE);
+        entityData.define(DATA_TASKS, 0);
+        entityData.define(DATA_CARRIED, ItemStack.EMPTY);
+        entityData.define(DATA_STARTUP, 0L);
+        entityData.define(DATA_SHUTDOWN, 0L);
     }
 
     @Override
@@ -420,8 +422,9 @@ public class DroneEntity extends PathfinderMob {
     // ---------------------------------------------------------------- AI
 
     @Override
-    protected void customServerAiStep(ServerLevel level) {
-        super.customServerAiStep(level);
+    protected void customServerAiStep() {
+        super.customServerAiStep();
+        ServerLevel level = (ServerLevel) level();
         syncCarriedItem();
         if (landingSpot != null || entityData.get(DATA_SHUTDOWN) != 0) {
             tickPickup(level);
@@ -599,8 +602,9 @@ public class DroneEntity extends PathfinderMob {
     }
 
     @Override
-    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean killedByPlayer) {
-        super.dropCustomDeathLoot(level, source, killedByPlayer);
+    protected void dropCustomDeathLoot(DamageSource source, int looting, boolean killedByPlayer) {
+        super.dropCustomDeathLoot(source, looting, killedByPlayer);
+        ServerLevel level = (ServerLevel) level();
         spawnAtLocation(level, toItem());
         cargo.dropAll(stack -> spawnAtLocation(level, stack));
     }
@@ -611,7 +615,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     @Override
-    public boolean causeFallDamage(double fallDistance, float damageModifier, DamageSource damageSource) {
+    public boolean causeFallDamage(float fallDistance, float damageModifier, DamageSource damageSource) {
         return false;
     }
 
@@ -620,7 +624,7 @@ public class DroneEntity extends PathfinderMob {
      * through). Only /kill and the void do; it then drops as an item, so nothing is lost.
      */
     @Override
-    public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {
+    public boolean isInvulnerableTo(DamageSource source) {
         return !source.is(DamageTypeTags.BYPASSES_INVULNERABILITY);
     }
 
@@ -643,7 +647,6 @@ public class DroneEntity extends PathfinderMob {
      * offset is added back to keep the hand right on the hook. The player is also moved sideways,
      * following where they turn, so the raised hand (not their head) is right under the hook.
      */
-    @Override
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
         double sideX = 0.0;
         double sideZ = 0.0;
@@ -670,8 +673,9 @@ public class DroneEntity extends PathfinderMob {
     // ---------------------------------------------------------------- save data
 
     @Override
-    protected void addAdditionalSaveData(ValueOutput output) {
-        super.addAdditionalSaveData(output);
+    public void addAdditionalSaveData(CompoundTag tag) {
+        super.addAdditionalSaveData(tag);
+        ValueOutput output = ValueOutput.of(tag);
         output.store("modules", DroneModules.CODEC, modules);
         output.putInt("energy", energy);
         output.storeNullable("dock", BlockPos.CODEC, dockPos);
@@ -679,8 +683,9 @@ public class DroneEntity extends PathfinderMob {
     }
 
     @Override
-    protected void readAdditionalSaveData(ValueInput input) {
-        super.readAdditionalSaveData(input);
+    public void readAdditionalSaveData(CompoundTag tag) {
+        super.readAdditionalSaveData(tag);
+        ValueInput input = ValueInput.of(tag);
         modules = input.read("modules", DroneModules.CODEC).orElse(DroneModules.EMPTY);
         energy = input.getIntOr("energy", 0);
         dockPos = input.read("dock", BlockPos.CODEC).orElse(null);
@@ -688,5 +693,14 @@ public class DroneEntity extends PathfinderMob {
         entityData.set(DATA_TASKS, modules.taskMask());
         // Jobs are not saved: a reloaded drone flies home and starts over.
         setStatus(STATUS_RETURNING);
+    }
+
+    // 1.20.1 places riders itself: put each one at the 26.x attachment point
+    @Override
+    protected void positionRider(Entity passenger, Entity.MoveFunction move) {
+        if (hasPassenger(passenger)) {
+            Vec3 at = position().add(getPassengerAttachmentPoint(passenger, getDimensions(getPose()), 1.0F));
+            move.accept(passenger, at.x, at.y + passenger.getMyRidingOffset(), at.z);
+        }
     }
 }
