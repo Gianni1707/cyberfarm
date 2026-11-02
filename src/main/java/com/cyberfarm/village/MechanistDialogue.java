@@ -115,7 +115,7 @@ public final class MechanistDialogue {
                     lines.any("after", 3);
                 } else {
                     lines.building = terminal.missingBuilding();
-                    boolean unlearned = player.getInventory().contains(stack -> BlueprintDiscItem.unlearned(stack, player));
+                    boolean unlearned = player.getInventory().hasAnyMatching(stack -> BlueprintDiscItem.unlearned(stack, player));
                     lines.any(unlearned ? "unlearned" : lines.building != null ? "need_building" : "need_prosperity", 3);
                     idle(lines, level, terminal);
                 }

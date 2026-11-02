@@ -1,5 +1,7 @@
 package com.cyberfarm.menu;
 
+import net.minecraftforge.items.SlotItemHandler;
+
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.energy.EnergyUtil;
 
@@ -33,12 +35,19 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     }
 
     protected void addMachineSlot(ItemStacksResourceHandler handler, int index, int x, int y) {
-        addSlot(new ResourceHandlerSlot(handler, handler::set, index, x, y));
+        addSlot(new SlotItemHandler(handler, index, x, y));
         machineSlotCount++;
     }
 
     protected void addPlayerInventory(Inventory inventory, int top) {
-        addStandardInventorySlots(inventory, 8, top);
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 9; column++) {
+                addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, top + row * 18));
+            }
+        }
+        for (int column = 0; column < 9; column++) {
+            addSlot(new Slot(inventory, column, 8 + column * 18, top + 58));
+        }
     }
 
     public int getEnergy() {

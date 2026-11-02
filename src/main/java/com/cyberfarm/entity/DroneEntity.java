@@ -1,5 +1,7 @@
 package com.cyberfarm.entity;
 
+import net.minecraft.world.entity.MoverType;
+
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.HashSet;
@@ -150,7 +152,7 @@ public class DroneEntity extends PathfinderMob {
         this.energy = Math.min(energy, modules.energyCapacity());
         this.dockPos = dockPos.immutable();
         this.entityData.set(DATA_TASKS, modules.taskMask());
-        getAttribute(Attributes.SCALE).setBaseValue(modules.isMini() ? MINI_SCALE : 1.0);
+        refreshDimensions();
     }
 
     @Override
@@ -173,7 +175,23 @@ public class DroneEntity extends PathfinderMob {
 
     @Override
     public void travel(Vec3 input) {
-        this.travelFlying(input, this.getSpeed());
+        // The 26.x travelFlying: free flight with air drag, slower in water and lava
+        if (isControlledByLocalInstance()) {
+            if (isInWater()) {
+                moveRelative(0.02F, input);
+                move(MoverType.SELF, getDeltaMovement());
+                setDeltaMovement(getDeltaMovement().scale(0.8));
+            } else if (isInLava()) {
+                moveRelative(0.02F, input);
+                move(MoverType.SELF, getDeltaMovement());
+                setDeltaMovement(getDeltaMovement().scale(0.5));
+            } else {
+                moveRelative(getSpeed(), input);
+                move(MoverType.SELF, getDeltaMovement());
+                setDeltaMovement(getDeltaMovement().scale(0.91));
+            }
+        }
+        calculateEntityAnimation(false);
     }
 
     /** Installed modules as a bit mask of {@link DroneTask#bit()}, synced to the client. */
@@ -656,7 +674,7 @@ public class DroneEntity extends PathfinderMob {
             sideX = Mth.cos(yaw) * side;
             sideZ = Mth.sin(yaw) * side;
         }
-        return new Vec3(sideX, -PASSENGER_DROP + passenger.getVehicleAttachmentPoint(this).y, sideZ);
+        return new Vec3(sideX, -PASSENGER_DROP, sideZ);
     }
 
     @Override
@@ -699,7 +717,13 @@ public class DroneEntity extends PathfinderMob {
     protected void positionRider(Entity passenger, Entity.MoveFunction move) {
         if (hasPassenger(passenger)) {
             Vec3 at = position().add(getPassengerAttachmentPoint(passenger, getDimensions(getPose()), 1.0F));
-            move.accept(passenger, at.x, at.y + passenger.getMyRidingOffset(), at.z);
+            move.accept(passenger, at.x, at.y, at.z);
         }
+    }
+
+    // 26.x scales a Mini Drone with the scale attribute; 1.20.1 asks the entity
+    @Override
+    public float getScale() {
+        return modules != null && modules.isMini() ? (float) MINI_SCALE : 1.0F;
     }
 }

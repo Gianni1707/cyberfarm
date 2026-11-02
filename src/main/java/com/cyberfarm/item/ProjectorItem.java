@@ -208,7 +208,7 @@ public class ProjectorItem extends Item {
      * built, so it asks only for what the upgrade adds.
      */
     public static void alignUpgrade(ServerPlayer player, ItemStack stack, Structure structure) {
-        VillagePlan.unlock(structure.id()).ifPresent(unlock -> SupplyTerminalBlockEntity.villageAt(player.level(), player.blockPosition())
+        VillagePlan.unlock(structure.id()).ifPresent(unlock -> SupplyTerminalBlockEntity.villageAt(player.serverLevel(), player.blockPosition())
                 .ifPresent(terminal -> terminal.upgradeSite(unlock).ifPresent(at -> {
                     ModDataComponents.PROJECTOR_ANCHOR.set(stack, at.origin());
                     ModDataComponents.PROJECTOR_FACING.set(stack, at.facing().get2DDataValue());

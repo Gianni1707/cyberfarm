@@ -1,5 +1,7 @@
 package com.cyberfarm.drone.job;
 
+import net.minecraft.resources.ResourceLocation;
+
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -85,8 +87,8 @@ public class FishJob extends DroneJob {
                 .withParameter(LootContextParams.ORIGIN, surface)
                 .withParameter(LootContextParams.TOOL, new ItemStack(Items.FISHING_ROD))
                 .create(LootContextParamSets.FISHING);
-        ResourceKey<LootTable> table = level.getRandom().nextFloat() < TREASURE_CHANCE ? BuiltInLootTables.FISHING_TREASURE : BuiltInLootTables.FISHING;
-        List<ItemStack> catches = level.getServer().reloadableRegistries().getLootTable(table).getRandomItems(params);
+        ResourceLocation table = level.getRandom().nextFloat() < TREASURE_CHANCE ? BuiltInLootTables.FISHING_TREASURE : BuiltInLootTables.FISHING;
+        List<ItemStack> catches = level.getServer().getLootData().getLootTable(table).getRandomItems(params);
         drone.cargo().collect(level, water, catches);
         level.playSound(null, water, SoundEvents.FISHING_BOBBER_SPLASH, SoundSource.NEUTRAL, 0.6F, 1.0F);
         level.sendParticles(ParticleTypes.SPLASH, surface.x, surface.y, surface.z, 12, 0.3, 0.05, 0.3, 0.1);

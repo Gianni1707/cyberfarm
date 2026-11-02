@@ -41,6 +41,11 @@ public interface StreamCodec<B, V> {
         return operation.apply(this);
     }
 
+    @SuppressWarnings("unchecked")
+    default <S extends B> StreamCodec<S, V> cast() {
+        return (StreamCodec<S, V>) this;
+    }
+
     static <B, V> StreamCodec<B, V> unit(V value) {
         return of(buf -> value, (buf, v) -> {});
     }

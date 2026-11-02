@@ -72,7 +72,7 @@ public class RancherJob extends DroneJob {
     }
 
     private static boolean canShear(ServerLevel level, LivingEntity entity) {
-        return entity instanceof IForgeShearable shearable && shearable.isShearable(null, new ItemStack(Items.SHEARS), level, entity.blockPosition());
+        return entity instanceof IForgeShearable shearable && shearable.isShearable(new ItemStack(Items.SHEARS), level, entity.blockPosition());
     }
 
     /** shortcut: only cows, mooshrooms and goats (and mod mobs extending them); upgrade to a mob tag if modded milkables need it. */
@@ -92,7 +92,7 @@ public class RancherJob extends DroneJob {
         }
         drone.flyTowards(hover);
         if (canShear(level, animal)) {
-            List<ItemStack> drops = ((IForgeShearable) animal).onSheared(null, new ItemStack(Items.SHEARS), level, animal.blockPosition());
+            List<ItemStack> drops = ((IForgeShearable) animal).onSheared(null, new ItemStack(Items.SHEARS), level, animal.blockPosition(), 0);
             drone.cargo().collect(level, animal.blockPosition(), drops);
         } else if (isMilkable(animal)) {
             if (!milk(drone, level)) {
@@ -113,7 +113,7 @@ public class RancherJob extends DroneJob {
         }
         FakePlayer player = FakePlayerFactory.getMinecraft(level);
         player.setItemInHand(InteractionHand.MAIN_HAND, bucket);
-        animal.interact(player, InteractionHand.MAIN_HAND, animal.position());
+        animal.interact(player, InteractionHand.MAIN_HAND);
         ItemStack result = player.getItemInHand(InteractionHand.MAIN_HAND);
         player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
         drone.cargo().collect(level, animal.blockPosition(), List.of(result));

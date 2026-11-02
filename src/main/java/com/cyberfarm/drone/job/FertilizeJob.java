@@ -67,7 +67,7 @@ public class FertilizeJob extends DroneJob {
         BlockState state = level.getBlockState(pos);
         boolean plant = state.getBlock() instanceof CropBlock || state.getBlock() instanceof StemBlock || state.getBlock() instanceof SaplingBlock
                 || state.is(BlockTags.CROPS) || state.is(BlockTags.SAPLINGS);
-        return plant && state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(level, pos, state);
+        return plant && state.getBlock() instanceof BonemealableBlock growable && growable.isValidBonemealTarget(level, pos, state, false);
     }
 
     @Override

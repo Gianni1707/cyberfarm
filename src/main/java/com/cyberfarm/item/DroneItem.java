@@ -76,7 +76,7 @@ public class DroneItem extends Item {
         }
 
         ItemStack stack = context.getItemInHand();
-        DroneEntity drone = ModEntities.DRONE.get().create(level, MobSpawnType.MOB_SUMMONED);
+        DroneEntity drone = ModEntities.DRONE.get().create(level);
         if (drone == null) {
             return InteractionResult.FAIL;
         }

@@ -38,7 +38,7 @@ public class FluidBucketItem extends BucketItem {
     }
 
     public boolean isGas() {
-        return !(content instanceof FlowingFluid);
+        return !(getFluid() instanceof FlowingFluid);
     }
 
     @Override

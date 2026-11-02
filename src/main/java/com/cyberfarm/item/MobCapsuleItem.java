@@ -17,12 +17,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
-import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -31,7 +29,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import org.jspecify.annotations.Nullable;
@@ -55,14 +52,14 @@ public class MobCapsuleItem extends Item {
         if (hasMob(capsule)) {
             return InteractionResult.PASS;
         }
-        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().is(Tags.EntityType.BOSSES)) {
+        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().is(Tags.EntityTypes.BOSSES)) {
             player.displayClientMessage(Component.translatable("message.cyberfarm.capsule.refused"), true);
             return InteractionResult.FAIL;
         }
         if (player.level() instanceof ServerLevel level) {
-            TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-            mob.save(output);
-            ModDataComponents.CAPTURED_MOB.set(capsule, output.buildResult());
+            CompoundTag saved = new CompoundTag();
+            mob.save(saved);
+            ModDataComponents.CAPTURED_MOB.set(capsule, saved);
             level.playSound(null, mob.blockPosition(), SoundEvents.BUNDLE_INSERT, SoundSource.PLAYERS, 1.0F, 0.8F);
             mob.discard();
         }
@@ -91,7 +88,7 @@ public class MobCapsuleItem extends Item {
         CompoundTag data = tag.copy();
         // A copied capsule must not bring back two mobs with the same id
         data.remove("UUID");
-        Entity entity = EntityType.loadEntityRecursive(data, level, new EntitySpawnRequest(MobSpawnType.BUCKET, false), loaded -> {
+        Entity entity = EntityType.loadEntityRecursive(data, level, loaded -> {
             loaded.moveTo(pos.x, pos.y, pos.z, loaded.getYRot(), loaded.getXRot());
             return loaded;
         });

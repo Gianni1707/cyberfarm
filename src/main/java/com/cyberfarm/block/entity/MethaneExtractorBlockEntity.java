@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.world.entity.monster.Zombie;
+
 import com.cyberfarm.port.Caps;
 
 import com.cyberfarm.port.PortParticles;
@@ -206,7 +208,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     /** Monsters only, and never bosses: the gate is meant for zombies and their kind. */
     private static boolean canPullIn(Mob mob) {
         return mob.isAlive() && mob instanceof Enemy && !mob.isPassenger() && !mob.isVehicle()
-                && !mob.getType().is(Tags.EntityType.BOSSES);
+                && !mob.getType().is(Tags.EntityTypes.BOSSES);
     }
 
     /** The 1x1x2 space in the middle of the chamber. */
@@ -220,7 +222,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     }
 
     public static int rateOf(Mob mob) {
-        if (mob.getType().is(EntityTypeTags.UNDEAD)) {
+        if (mob instanceof Zombie) {
             return ZOMBIE_RATE;
         }
         if (mob instanceof Enemy) {

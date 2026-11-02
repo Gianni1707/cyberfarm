@@ -11,7 +11,7 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.FriendlyByteBuf;
+import io.netty.buffer.ByteBuf;
 import com.cyberfarm.port.net.ByteBufCodecs;
 import com.cyberfarm.port.net.StreamCodec;
 import net.minecraft.world.item.Item;
@@ -28,8 +28,8 @@ public record DroneModules(List<Item> parts) {
     public static final Codec<DroneModules> CODEC = BuiltInRegistries.ITEM.byNameCodec().listOf()
             .xmap(DroneModules::new, DroneModules::parts);
 
-    public static final StreamCodec<FriendlyByteBuf, DroneModules> STREAM_CODEC = ByteBufCodecs.registry(Registries.ITEM)
-            .apply(ByteBufCodecs.list())
+    public static final StreamCodec<ByteBuf, DroneModules> STREAM_CODEC = ByteBufCodecs.<Item>registry(Registries.ITEM)
+            .<List<Item>>apply(ByteBufCodecs.list())
             .map(DroneModules::new, DroneModules::parts);
 
     public DroneModules {

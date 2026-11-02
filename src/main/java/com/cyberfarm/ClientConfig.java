@@ -23,11 +23,11 @@ public class ClientConfig {
     public static final ForgeConfigSpec.ConfigValue<List<? extends String>> EXTRA_SOUNDS = BUILDER
             .comment("Sounds silenced by Mufflers with \"Other machines\" turned on, e.g. machines of other mods. Use a",
                     "mod id (\"mekanism\") for all of a mod's sounds, or a sound id (\"minecraft:block.furnace.fire_crackle\").")
-            .defineListAllowEmpty("extraSounds", List.of(
+            .defineListAllowEmpty(List.of("extraSounds"), () -> List.of(
                     "minecraft:block.furnace.fire_crackle",
                     "minecraft:block.blastfurnace.fire_crackle",
                     "minecraft:block.smoker.smoke"),
-                    () -> "minecraft:", entry -> entry instanceof String);
+                    entry -> entry instanceof String);
 
     static {
         BUILDER.pop();

@@ -29,7 +29,6 @@ public class CoolantFluidType extends FluidType {
     }
 
     /** The vanilla water movement (accelerate, move, drag, sink, climb out at the edges), with less push. */
-    @Override
     public boolean move(LivingEntity entity, Vec3 input, double gravity) {
         boolean falling = entity.getDeltaMovement().y <= 0.0;
         double startY = entity.getY();

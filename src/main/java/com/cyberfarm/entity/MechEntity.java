@@ -69,7 +69,8 @@ public class MechEntity extends Mob {
     private static final float WALK_SPEED = 0.22F;
     /** Reach the pilot gains, in blocks: the mech's arms are long. */
     private static final double EXTRA_REACH = 2.5;
-    private static final ResourceLocation REACH = CyberFarm.id("mech_reach");
+    // Fixed id, so the bonus is replaced rather than stacked
+    private static final UUID REACH = UUID.fromString("5b0c8a51-6f8e-4d0e-9a52-2f8b6c1d7e30");
 
     /**
      * Boarding sequence. The mech crouches a little and the front of its trunk opens like a flower;
@@ -184,9 +185,9 @@ public class MechEntity extends Mob {
                 .add(Attributes.ARMOR, 10.0)
                 .add(Attributes.MOVEMENT_SPEED, WALK_SPEED)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0)
-                .add(Attributes.STEP_HEIGHT, 1.1)
-                .add(Attributes.SAFE_FALL_DISTANCE, 64.0)
-                .add(Attributes.CAMERA_DISTANCE, 9.0);
+                // 0.6 + 0.5: the 26.x step height of 1.1. No fall damage (causeFallDamage) and,
+                // shortcut: no 26.x camera distance attribute on 1.20.1, the third-person camera stays vanilla
+                .add(ForgeMod.STEP_HEIGHT_ADDITION.get(), 0.5);
     }
 
     @Override
@@ -734,7 +735,7 @@ public class MechEntity extends Mob {
      */
     protected Vec3 getPassengerAttachmentPoint(Entity passenger, EntityDimensions dimensions, float scale) {
         Vec3 feet = pilotOffset(stateProgress(0.0F)).yRot(-getYRot() * Mth.DEG_TO_RAD);
-        return feet.add(0.0, passenger.getVehicleAttachmentPoint(this).y, 0.0);
+        return feet;
     }
 
     /** Its pilot looks out from inside it: the crosshair must not land on the mech itself. */
@@ -765,13 +766,15 @@ public class MechEntity extends Mob {
         }
     }
 
-    private static void reach(Player pilot, net.minecraft.core.Holder<net.minecraft.world.entity.ai.attributes.Attribute> attribute, boolean add) {
+    private static void reach(Player pilot, net.minecraft.world.entity.ai.attributes.Attribute attribute, boolean add) {
         AttributeInstance instance = pilot.getAttribute(attribute);
         if (instance == null) {
             return;
         }
         if (add) {
-            instance.addOrUpdateTransientModifier(new AttributeModifier(REACH, EXTRA_REACH, AttributeModifier.Operation.ADDITION));
+            if (instance.getModifier(REACH) == null) {
+                instance.addTransientModifier(new AttributeModifier(REACH, "Mech reach", EXTRA_REACH, AttributeModifier.Operation.ADDITION));
+            }
         } else {
             instance.removeModifier(REACH);
         }
@@ -807,7 +810,7 @@ public class MechEntity extends Mob {
     protected void positionRider(Entity passenger, Entity.MoveFunction move) {
         if (hasPassenger(passenger)) {
             Vec3 at = position().add(getPassengerAttachmentPoint(passenger, getDimensions(getPose()), 1.0F));
-            move.accept(passenger, at.x, at.y + passenger.getMyRidingOffset(), at.z);
+            move.accept(passenger, at.x, at.y, at.z);
         }
     }
 
