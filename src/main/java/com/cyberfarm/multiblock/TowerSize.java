@@ -1,5 +1,7 @@
 package com.cyberfarm.multiblock;
 
+import net.minecraft.util.Mth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +95,6 @@ public enum TowerSize implements Multiblock.Shape {
     }
 
     public static TowerSize byOrdinal(int ordinal) {
-        return values()[Math.clamp(ordinal, 0, values().length - 1)];
+        return values()[Mth.clamp(ordinal, 0, values().length - 1)];
     }
 }

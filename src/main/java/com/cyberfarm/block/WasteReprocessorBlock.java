@@ -1,5 +1,7 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortParticles;
+
 
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -17,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class WasteReprocessorBlock extends LitMachineBlock {
-    private static final DustParticleOptions GLOW = new DustParticleOptions(0x6CFF6C, 1.0F);
+    private static final DustParticleOptions GLOW = PortParticles.dust(0x6CFF6C, 1.0F);
 
     public WasteReprocessorBlock(Properties properties) {
         super(properties);

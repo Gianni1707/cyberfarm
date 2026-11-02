@@ -1,5 +1,7 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortParticles;
+
 
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class AcidSynthesizerBlock extends LitMachineBlock {
-    private static final DustParticleOptions FUMES = new DustParticleOptions(0x9BE04A, 0.8F);
+    private static final DustParticleOptions FUMES = PortParticles.dust(0x9BE04A, 0.8F);
 
     public AcidSynthesizerBlock(Properties properties) {
         super(properties);

@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.util.Mth;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -38,7 +40,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.gossip.GossipType;
@@ -526,9 +528,9 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** Moves what the terminal owes into the payout slot, as far as it fits. */
     private void pay() {
         while (!pending.isEmpty()) {
-            ItemStack owed = pending.getFirst();
+            ItemStack owed = pending.get(0);
             ItemStack payout = getStack(PAYOUT);
-            if (!payout.isEmpty() && !ItemStack.isSameItemSameComponents(payout, owed)) {
+            if (!payout.isEmpty() && !ItemStack.isSameItemSameTags(payout, owed)) {
                 return;
             }
             int room = owed.getMaxStackSize() - payout.getCount();
@@ -539,7 +541,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             setStack(PAYOUT, owed.copyWithCount(payout.getCount() + moved));
             owed.shrink(moved);
             if (owed.isEmpty()) {
-                pending.removeFirst();
+                pending.remove(0);
             }
             setChanged();
         }
@@ -610,7 +612,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
                 }
             }
         }
-        return type.spawn(level, spot, EntitySpawnReason.EVENT);
+        return type.spawn(level, spot, MobSpawnType.EVENT);
     }
 
     /**
@@ -641,7 +643,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
                 open.add(template);
             }
         }
-        return open.isEmpty() ? from.getFirst() : open.get(level.getRandom().nextInt(open.size()));
+        return open.isEmpty() ? from.get(0) : open.get(level.getRandom().nextInt(open.size()));
     }
 
     /**
@@ -721,12 +723,12 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
                 saved.putInt("required", contract.required);
                 saved.putInt("delivered", contract.delivered);
                 saved.putInt("emeralds", contract.emeralds);
-                saved.store("bonus", ItemStack.OPTIONAL_CODEC, contract.bonus);
+                saved.store("bonus", ItemStack.CODEC, contract.bonus);
                 saved.putInt("kind", contract.kind.ordinal());
                 saved.putLong("deadline", contract.deadline);
             }
         }
-        output.store("pending", ItemStack.OPTIONAL_CODEC.listOf(), List.copyOf(pending));
+        output.store("pending", ItemStack.CODEC.listOf(), List.copyOf(pending));
         output.storeNullable("owner", UUIDUtil.CODEC, owner);
         output.putInt("cooldown", cooldown);
         output.putInt("prosperity", prosperity);
@@ -749,17 +751,17 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             contracts[i] = null;
             input.child("contract_" + i).ifPresent(saved -> saved.read("item", BuiltInRegistries.ITEM.byNameCodec()).ifPresent(item ->
                     contracts[slot] = new Contract(item, saved.getIntOr("required", 1), saved.getIntOr("delivered", 0), saved.getIntOr("emeralds", 1),
-                            saved.read("bonus", ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY),
-                            Kind.values()[Math.clamp(saved.getIntOr("kind", 0), 0, Kind.values().length - 1)], saved.getLongOr("deadline", -1L))));
+                            saved.read("bonus", ItemStack.CODEC).orElse(ItemStack.EMPTY),
+                            Kind.values()[Mth.clamp(saved.getIntOr("kind", 0), 0, Kind.values().length - 1)], saved.getLongOr("deadline", -1L))));
         }
         pending.clear();
-        input.read("pending", ItemStack.OPTIONAL_CODEC.listOf()).ifPresent(list -> list.stream().filter(stack -> !stack.isEmpty()).forEach(pending::add));
+        input.read("pending", ItemStack.CODEC.listOf()).ifPresent(list -> list.stream().filter(stack -> !stack.isEmpty()).forEach(pending::add));
         owner = input.read("owner", UUIDUtil.CODEC).orElse(null);
         cooldown = input.getIntOr("cooldown", 0);
         prosperity = input.getIntOr("prosperity", 0);
         marketDay = input.getLongOr("market_day", -1L);
         founded = input.getBooleanOr("founded", false);
-        villageLevel = Math.clamp(input.getIntOr("village_level", 0), 0, MAX_LEVEL);
+        villageLevel = Mth.clamp(input.getIntOr("village_level", 0), 0, MAX_LEVEL);
         ownerName = input.getStringOr("owner_name", "");
         met.clear();
         input.read("met", UUIDUtil.CODEC.listOf()).ifPresent(met::addAll);

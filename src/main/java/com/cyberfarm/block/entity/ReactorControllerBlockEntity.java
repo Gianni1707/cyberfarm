@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.util.Mth;
+
 import com.cyberfarm.port.SlotRulesItemHandler;
 
 import net.minecraftforge.items.IItemHandler;
@@ -218,7 +220,7 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     public void changeBoost(int steps) {
         TowerSize size = size();
         int max = size != null ? size.maxBoost() : TowerSize.SMALL.maxBoost();
-        boost = Math.clamp(boost + steps * BOOST_STEP, 0, max);
+        boost = Mth.clamp(boost + steps * BOOST_STEP, 0, max);
         setChanged();
     }
 

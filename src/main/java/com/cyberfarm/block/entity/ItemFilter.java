@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.util.Mth;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -93,7 +95,7 @@ public class ItemFilter {
             }
             match = matchMod
                     ? BuiltInRegistries.ITEM.getKey(sample.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace())
-                    : matchComponents ? ItemStack.isSameItemSameComponents(sample, stack) : sample.is(stack.getItem());
+                    : matchComponents ? ItemStack.isSameItemSameTags(sample, stack) : sample.is(stack.getItem());
         }
         return whitelist == match;
     }
@@ -133,7 +135,7 @@ public class ItemFilter {
     /** Steps the limit up or down: through the round values, or by one when {@code fine}. */
     public void stepLimit(int step, boolean fine) {
         if (fine) {
-            limit = Math.clamp(limit + step, 0, MAX_LIMIT);
+            limit = Mth.clamp(limit + step, 0, MAX_LIMIT);
         } else if (step > 0) {
             limit = Arrays.stream(LIMITS).filter(value -> value > limit).findFirst().orElse(MAX_LIMIT);
         } else {
@@ -177,7 +179,7 @@ public class ItemFilter {
 
     public void save(ValueOutput output) {
         for (int i = 0; i < SLOTS; i++) {
-            output.store("filter_" + i, ItemStack.OPTIONAL_CODEC, items.getItem(i));
+            output.store("filter_" + i, ItemStack.CODEC, items.getItem(i));
         }
         output.putBoolean("whitelist", whitelist);
         output.putBoolean("match_components", matchComponents);
@@ -188,7 +190,7 @@ public class ItemFilter {
 
     public void load(ValueInput input) {
         for (int i = 0; i < SLOTS; i++) {
-            items.setItem(i, input.read("filter_" + i, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY));
+            items.setItem(i, input.read("filter_" + i, ItemStack.CODEC).orElse(ItemStack.EMPTY));
         }
         whitelist = input.getBooleanOr("whitelist", false);
         matchComponents = input.getBooleanOr("match_components", false);

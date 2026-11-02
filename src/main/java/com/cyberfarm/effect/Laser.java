@@ -39,7 +39,7 @@ public final class Laser {
     public static void fire(ServerLevel level, LivingEntity target, float damage, @Nullable Entity shooter, BlockPos origin) {
         Holder<DamageType> type = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE);
         DamageSource source = shooter != null ? new DamageSource(type, shooter) : new DamageSource(type, Vec3.atCenterOf(origin));
-        target.hurtServer(level, source, damage);
+        target.hurt(source, damage);
         Effects.laser(level, BlockPos.containing(target.getBoundingBox().getCenter()), origin, shooter);
         level.playSound(null, origin, SoundEvents.BLAZE_SHOOT, SoundSource.BLOCKS, 0.5F, 1.9F);
     }

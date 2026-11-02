@@ -22,15 +22,15 @@ public final class Effects {
     private Effects() {}
 
     public static void print(ServerLevel level, BlockPos pos) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new EffectPayload(PRINT, pos, pos, -1));
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), new EffectPayload(PRINT, pos, pos, -1));
     }
 
     public static void beam(ServerLevel level, Entity drone, BlockPos target) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(BEAM, target, target, drone.getId()));
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(target), new EffectPayload(BEAM, target, target, drone.getId()));
     }
 
     public static void laser(ServerLevel level, BlockPos target, BlockPos turret, @Nullable Entity drone) {
-        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(LASER, target, turret, drone != null ? drone.getId() : -1));
+        PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(target), new EffectPayload(LASER, target, turret, drone != null ? drone.getId() : -1));
     }
 
     /** Plays the reveal over the box holding all {@code blocks}; called once, as the structure forms. */
@@ -52,6 +52,6 @@ public final class Effects {
             return;
         }
         BlockPos from = new BlockPos(minX, minY, minZ);
-        PacketDistributor.sendToPlayersTrackingChunk(server, ChunkPos.containing(from), new EffectPayload(REVEAL, from, new BlockPos(maxX, maxY, maxZ), -1));
+        PacketDistributor.sendToPlayersTrackingChunk(server, new ChunkPos(from), new EffectPayload(REVEAL, from, new BlockPos(maxX, maxY, maxZ), -1));
     }
 }

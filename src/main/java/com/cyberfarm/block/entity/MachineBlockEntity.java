@@ -115,7 +115,7 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
         // Sent again now and then too, for players who loaded the chunk since
         if (!now.equals(sentStatus) || time % STATUS_RESEND == 0) {
             sentStatus = now;
-            PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new MachineStatusPayload(pos, now));
+            PacketDistributor.sendToPlayersTrackingChunk(level, new ChunkPos(pos), new MachineStatusPayload(pos, now));
         }
         BlockState state = getBlockState();
         if (state.getBlock() instanceof LitMachineBlock && state.getValue(LitMachineBlock.LIT) != now.working()) {

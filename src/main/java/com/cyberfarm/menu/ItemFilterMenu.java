@@ -86,7 +86,7 @@ public class ItemFilterMenu extends MachineMenu {
         }
         int free = -1;
         for (int i = 0; i < ItemFilter.SLOTS; i++) {
-            if (ItemStack.isSameItemSameComponents(samples.getItem(i), stack)) {
+            if (ItemStack.isSameItemSameTags(samples.getItem(i), stack)) {
                 return ItemStack.EMPTY;
             }
             if (free < 0 && samples.getItem(i).isEmpty()) {

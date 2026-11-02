@@ -21,7 +21,7 @@ import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntitySpawnRequest;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -91,8 +91,8 @@ public class MobCapsuleItem extends Item {
         CompoundTag data = tag.copy();
         // A copied capsule must not bring back two mobs with the same id
         data.remove("UUID");
-        Entity entity = EntityType.loadEntityRecursive(data, level, new EntitySpawnRequest(EntitySpawnReason.BUCKET, false), loaded -> {
-            loaded.snapTo(pos.x, pos.y, pos.z, loaded.getYRot(), loaded.getXRot());
+        Entity entity = EntityType.loadEntityRecursive(data, level, new EntitySpawnRequest(MobSpawnType.BUCKET, false), loaded -> {
+            loaded.moveTo(pos.x, pos.y, pos.z, loaded.getYRot(), loaded.getXRot());
             return loaded;
         });
         if (entity == null) {

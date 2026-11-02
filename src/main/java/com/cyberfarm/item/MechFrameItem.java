@@ -17,7 +17,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -51,12 +51,12 @@ public class MechFrameItem extends Item {
             return InteractionResult.FAIL;
         }
         Vec3 at = Vec3.atBottomCenterOf(hangar.padCentre().above());
-        MechEntity mech = ModEntities.MECH.get().create(level, EntitySpawnReason.SPAWN_ITEM_USE);
+        MechEntity mech = ModEntities.MECH.get().create(level, MobSpawnType.SPAWN_ITEM_USE);
         if (mech == null) {
             return InteractionResult.FAIL;
         }
         float yaw = hangar.facingOut().toYRot();
-        mech.snapTo(at.x, at.y, at.z, yaw, 0.0F);
+        mech.moveTo(at.x, at.y, at.z, yaw, 0.0F);
         mech.setYHeadRot(yaw);
         mech.setYBodyRot(yaw);
         // It needs room to stand: 3.5 blocks of free space

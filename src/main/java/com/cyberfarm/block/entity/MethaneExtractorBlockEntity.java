@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.PortParticles;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,7 +86,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     private static final int SYNC_INTERVAL = 10;
     /** Ticks between two puffs of the mob's slow decay: acid fumes and bits of it falling off. */
     private static final int DECAY_INTERVAL = 5;
-    private static final DustParticleOptions ACID_FUMES = new DustParticleOptions(0x9BE04A, 1.0F);
+    private static final DustParticleOptions ACID_FUMES = PortParticles.dust(0x9BE04A, 1.0F);
     private static final ItemParticleOption FLESH = new ItemParticleOption(ParticleTypes.ITEM, Items.ROTTEN_FLESH);
     /** Clients hear the acid level at least this often, even when it does not change. */
     private static final int RESYNC_INTERVAL = 100;
@@ -281,7 +283,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
                 mobs = mobsInside(level);
             }
             mobCount = mobs.size();
-            mobId = mobs.isEmpty() ? 0 : mobs.getFirst().getId();
+            mobId = mobs.isEmpty() ? 0 : mobs.get(0).getId();
             rate = mobs.stream().mapToInt(MethaneExtractorBlockEntity::rateOf).sum();
         }
         // The acid eats the mob away while its gas is drawn; a full methane tank stops it all

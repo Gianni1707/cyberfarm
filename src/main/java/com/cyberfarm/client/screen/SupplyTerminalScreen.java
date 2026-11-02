@@ -1,5 +1,7 @@
 package com.cyberfarm.client.screen;
 
+import net.minecraft.util.Mth;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -117,7 +119,7 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
             return 1.0F;
         }
         int from = level == 0 ? 0 : steps[level - 1];
-        return Math.clamp((float) (points - from) / (steps[level] - from), 0.0F, 1.0F);
+        return Mth.clamp((float) (points - from) / (steps[level] - from), 0.0F, 1.0F);
     }
 
     @Override

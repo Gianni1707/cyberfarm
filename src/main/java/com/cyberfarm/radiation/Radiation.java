@@ -66,7 +66,7 @@ public final class Radiation {
     /** A meltdown contaminates a 5x5 chunk area around the core, worst at the centre. */
     public static void meltdown(ServerLevel level, BlockPos core) {
         RadiationData data = RadiationData.get(level);
-        ChunkPos centre = ChunkPos.containing(core);
+        ChunkPos centre = new ChunkPos(core);
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
                 data.add(ChunkPos.pack(centre.x() + dx, centre.z() + dz), MELTDOWN / (1 + Math.max(Math.abs(dx), Math.abs(dz))));
@@ -113,7 +113,7 @@ public final class Radiation {
         Set<Long> scanned = new HashSet<>();
         for (ServerPlayer player : level.players()) {
             data.add(player.blockPosition(), PER_ROD * countWaste(player.getInventory()));
-            ChunkPos home = ChunkPos.containing(player.blockPosition());
+            ChunkPos home = new ChunkPos(player.blockPosition());
             for (int dx = -SCAN_RADIUS; dx <= SCAN_RADIUS; dx++) {
                 for (int dz = -SCAN_RADIUS; dz <= SCAN_RADIUS; dz++) {
                     long chunkPos = ChunkPos.pack(home.x() + dx, home.z() + dz);
@@ -178,7 +178,7 @@ public final class Radiation {
             if (radiation < SICK || level.getChunkSource().getChunkNow(cx, cz) == null) {
                 continue;
             }
-            AABB box = new AABB(cx << 4, level.getMinY(), cz << 4, (cx << 4) + 16, level.getMaxY(), (cz << 4) + 16);
+            AABB box = new AABB(cx << 4, level.getMinBuildHeight(), cz << 4, (cx << 4) + 16, level.getMaxBuildHeight() - 1, (cz << 4) + 16);
             for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, box, LivingEntity::isAlive)) {
                 expose(entity, radiation);
             }

@@ -16,14 +16,13 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
@@ -131,7 +130,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         Vec3 offset = hit.getLocation().subtract(Vec3.atCenterOf(pos));
-        Direction side = Direction.getApproximateNearest(offset.x, offset.y, offset.z);
+        Direction side = Direction.getNearest(offset.x, offset.y, offset.z);
         if (!isMachineSide(state, level, pos, side)) {
             return InteractionResult.PASS;
         }
@@ -140,7 +139,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
             level.setBlock(pos, state.setValue(EXTRACT.get(side), extract), Block.UPDATE_ALL);
             // The network now treats that block as a source, not a destination
             ConduitNetwork.invalidate();
-            level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_ON, SoundSource.BLOCKS, 0.6F, extract ? 1.4F : 0.8F);
+            level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.6F, extract ? 1.4F : 0.8F);
             player.displayClientMessage(Component.translatable(extract ? "message.cyberfarm.pipe.extract" : "message.cyberfarm.pipe.normal"), true);
         }
         return InteractionResult.SUCCESS;
@@ -174,7 +173,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         ConduitNetwork.invalidate();
     }
@@ -186,7 +185,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     }
 
     @Override
-    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         VoxelShape shape = CORE;
         for (Direction direction : Direction.values()) {
             if (state.getValue(CONNECTIONS.get(direction))) {

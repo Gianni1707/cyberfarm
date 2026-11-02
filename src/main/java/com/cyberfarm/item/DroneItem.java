@@ -24,7 +24,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -76,12 +76,12 @@ public class DroneItem extends Item {
         }
 
         ItemStack stack = context.getItemInHand();
-        DroneEntity drone = ModEntities.DRONE.get().create(level, EntitySpawnReason.MOB_SUMMONED);
+        DroneEntity drone = ModEntities.DRONE.get().create(level, MobSpawnType.MOB_SUMMONED);
         if (drone == null) {
             return InteractionResult.FAIL;
         }
         drone.setup(getModules(stack), getEnergy(stack), pos);
-        drone.snapTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5, 0.0F, 0.0F);
+        drone.moveTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5, 0.0F, 0.0F);
         level.addFreshEntity(drone);
         drone.beginStartup();
         dock.setDrone(drone.getUUID());

@@ -2,7 +2,6 @@ package com.cyberfarm.block;
 
 import com.cyberfarm.port.PortEntityBlock;
 
-import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.entity.MachineBlockEntity;
 
@@ -58,12 +57,12 @@ public abstract class MachineBlock extends PortEntityBlock {
     }
 
     @Override
-    protected BlockState rotate(BlockState state, Rotation rotation) {
+    public BlockState rotate(BlockState state, Rotation rotation) {
         return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
     }
 
     @Override
-    protected BlockState mirror(BlockState state, Mirror mirror) {
+    public BlockState mirror(BlockState state, Mirror mirror) {
         return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
@@ -72,7 +71,7 @@ public abstract class MachineBlock extends PortEntityBlock {
         builder.add(FACING);
     }
 
-    protected static <T extends PortBlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
+    protected static <T extends BlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
             Level level, BlockEntityType<T> actualType, BlockEntityType<E> expectedType) {
         return level instanceof ServerLevel
                 ? createTickerHelper(actualType, expectedType, (lvl, pos, state, machine) -> {

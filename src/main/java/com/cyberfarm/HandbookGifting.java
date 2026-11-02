@@ -29,7 +29,7 @@ public final class HandbookGifting {
         }
         Player player = event.getEntity();
         CompoundTag data = player.getPersistentData();
-        CompoundTag persisted = data.getCompoundOrEmpty(Player.PERSISTED_NBT_TAG);
+        CompoundTag persisted = data.getCompound(Player.PERSISTED_NBT_TAG);
         if (persisted.getBooleanOr(RECEIVED_TAG, false)) {
             return;
         }

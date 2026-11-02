@@ -9,6 +9,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 /** The 26.x FluidResource: a fluid with its NBT and no amount. */
 public final class FluidResource {
@@ -40,6 +41,14 @@ public final class FluidResource {
 
     public boolean is(Fluid other) {
         return fluid == other;
+    }
+
+    public boolean is(FluidType type) {
+        return fluid.getFluidType() == type;
+    }
+
+    public FluidType getFluidType() {
+        return fluid.getFluidType();
     }
 
     public boolean is(TagKey<Fluid> fluidTag) {

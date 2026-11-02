@@ -100,7 +100,7 @@ public final class MechEvents {
             return;
         }
         Player pilot = event.getPlayer();
-        Direction facing = Direction.getApproximateNearest(pilot.getLookAngle());
+        Direction facing = Direction.getNearest(pilot.getLookAngle());
         BlockPos centre = event.getPos();
         drilling = true;
         try {

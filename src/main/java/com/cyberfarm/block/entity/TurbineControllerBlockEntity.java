@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.util.Mth;
+
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import com.cyberfarm.block.TurbineControllerBlock;
@@ -98,7 +100,7 @@ public class TurbineControllerBlockEntity extends MultiblockControllerBlockEntit
             target = Math.min(1.0F, steam.amount() / (float) size.maxSteam());
         }
         float step = size != null ? 1.0F / size.spinUpTicks() : 0.02F;
-        speed = Math.clamp(speed + Math.clamp(target - speed, -step, step), 0.0F, 1.0F);
+        speed = Mth.clamp(speed + Mth.clamp(target - speed, -step, step), 0.0F, 1.0F);
         generating = 0;
         if (size != null) {
             int used = Math.min(steam.amount(), Math.round(size.maxSteam() * speed));

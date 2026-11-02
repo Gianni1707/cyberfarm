@@ -1,5 +1,7 @@
 package com.cyberfarm.village;
 
+import net.minecraft.util.Mth;
+
 import com.cyberfarm.port.net.PortCodecs;
 
 import java.util.List;
@@ -19,7 +21,7 @@ import com.cyberfarm.port.net.IPayloadContext;
 public record MechanistDialoguePayload(int entity, Component name, List<Component> lines, List<Choice> choices) implements CustomPacketPayload {
     public static final Type<MechanistDialoguePayload> TYPE = new Type<>(CyberFarm.id("mechanist_dialogue"));
     private static final StreamCodec<FriendlyByteBuf, Choice> CHOICE = ByteBufCodecs.VAR_INT.map(
-            id -> Choice.values()[Math.clamp(id, 0, Choice.values().length - 1)], Choice::ordinal).cast();
+            id -> Choice.values()[Mth.clamp(id, 0, Choice.values().length - 1)], Choice::ordinal).cast();
     public static final StreamCodec<FriendlyByteBuf, MechanistDialoguePayload> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, MechanistDialoguePayload::entity,
             PortCodecs.COMPONENT, MechanistDialoguePayload::name,

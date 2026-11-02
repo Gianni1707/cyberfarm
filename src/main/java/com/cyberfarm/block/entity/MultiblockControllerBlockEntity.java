@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.util.Mth;
+
 import java.util.List;
 
 import com.cyberfarm.block.MachineBlock;
@@ -60,7 +62,7 @@ public abstract class MultiblockControllerBlockEntity<S extends Enum<S> & Multib
     /** Size of a formed controller from its block state (also on clients), or null when incomplete. */
     public static <S> @Nullable S sizeOf(BlockState state, S[] sizes) {
         return state.getValue(MultiblockControllerBlock.FORMED)
-                ? sizes[Math.clamp(state.getValue(MultiblockControllerBlock.SIZE), 0, sizes.length - 1)] : null;
+                ? sizes[Mth.clamp(state.getValue(MultiblockControllerBlock.SIZE), 0, sizes.length - 1)] : null;
     }
 
     public @Nullable S size() {

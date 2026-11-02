@@ -26,7 +26,7 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import com.cyberfarm.port.net.ClientPacketDistributor;
 
 /**

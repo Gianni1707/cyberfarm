@@ -33,7 +33,7 @@ public class RadiationSicknessEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
-        entity.hurtServer(level, new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE)), 1.0F);
+        entity.hurt(new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE)), 1.0F);
         if (entity instanceof Player player) {
             player.causeFoodExhaustion(1.0F + amplifier);
         }

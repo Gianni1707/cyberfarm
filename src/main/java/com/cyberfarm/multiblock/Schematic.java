@@ -70,12 +70,12 @@ public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) imp
         }
         List<BlockState> states = new ArrayList<>(palette.size());
         for (int i = 0; i < palette.size(); i++) {
-            states.add(NbtUtils.readBlockState(blockLookup, palette.getCompoundOrEmpty(i)));
+            states.add(NbtUtils.readBlockState(blockLookup, palette.getCompound(i)));
         }
         List<Entry> blocks = new ArrayList<>();
         ListTag list = tag.getListOrEmpty("blocks");
         for (int i = 0; i < list.size(); i++) {
-            CompoundTag block = list.getCompoundOrEmpty(i);
+            CompoundTag block = list.getCompound(i);
             int index = block.getIntOr("state", -1);
             if (index < 0 || index >= states.size()) {
                 continue;

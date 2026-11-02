@@ -57,7 +57,7 @@ public final class DroneFlight {
             int ground = level.getHeight(Heightmap.Types.MOTION_BLOCKING, (int) Math.floor(point.x), (int) Math.floor(point.z));
             highest = Math.max(highest, ground + CLEARANCE + DroneEntity.PASSENGER_DROP);
         }
-        return Math.min(highest, level.getMaxY() - 2);
+        return Math.min(highest, level.getMaxBuildHeight() - 1 - 2);
     }
 
     public double cruiseSpeed() {

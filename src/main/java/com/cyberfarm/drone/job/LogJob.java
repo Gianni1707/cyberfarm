@@ -89,7 +89,7 @@ public class LogJob extends DroneJob {
         }
         cooldown = TICKS_PER_BLOCK;
         while (!remaining.isEmpty()) {
-            BlockPos pos = remaining.removeFirst();
+            BlockPos pos = remaining.remove(0);
             BlockState state = level.getBlockState(pos);
             if (state.is(BlockTags.LOGS) || state.is(BlockTags.LEAVES)) {
                 cut(drone, level, pos, state);

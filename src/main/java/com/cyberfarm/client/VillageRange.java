@@ -1,5 +1,7 @@
 package com.cyberfarm.client;
 
+import com.cyberfarm.port.PortParticles;
+
 import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
 
 import net.minecraft.client.Minecraft;
@@ -18,7 +20,7 @@ import org.jspecify.annotations.Nullable;
  * Only the stretch near the player is drawn; it switches itself off once the player is far away.
  */
 public final class VillageRange {
-    private static final DustParticleOptions LIGHT = new DustParticleOptions(0x2FE0FF, 1.5F);
+    private static final DustParticleOptions LIGHT = PortParticles.dust(0x2FE0FF, 1.5F);
     private static final int EVERY = 10;
     private static final double DRAWN = 48.0;
     private static final double FORGOTTEN = 256.0;

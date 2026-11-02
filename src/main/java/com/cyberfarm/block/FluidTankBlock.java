@@ -15,7 +15,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.transfer.fluid.FluidUtil;
+import net.minecraftforge.fluids.FluidUtil;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -39,7 +39,7 @@ public class FluidTankBlock extends MachineBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player,
             InteractionHand hand, BlockHitResult hit) {
-        if (level.getBlockEntity(pos) instanceof FluidTankBlockEntity tank && FluidUtil.interactWithFluidHandler(player, hand, pos, tank.getTank(), null)) {
+        if (level.getBlockEntity(pos) instanceof FluidTankBlockEntity tank && FluidUtil.interactWithFluidHandler(player, hand, tank.getTank())) {
             return InteractionResult.SUCCESS;
         }
         return super.useItemOn(stack, state, level, pos, player, hand, hit);

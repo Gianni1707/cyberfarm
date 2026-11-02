@@ -267,7 +267,7 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         MechEntity parked = null;
         if (formed) {
             List<MechEntity> mechs = level.getEntitiesOfClass(MechEntity.class, bay(), MechEntity::isParked);
-            parked = mechs.isEmpty() ? null : mechs.getFirst();
+            parked = mechs.isEmpty() ? null : mechs.get(0);
         }
         if (parked != docked) {
             applyFit();

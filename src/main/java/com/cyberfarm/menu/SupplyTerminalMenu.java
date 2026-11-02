@@ -1,5 +1,7 @@
 package com.cyberfarm.menu;
 
+import net.minecraft.util.Mth;
+
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
@@ -64,7 +66,7 @@ public class SupplyTerminalMenu extends MachineMenu {
     }
 
     public SupplyTerminalBlockEntity.Kind contractKind(int index) {
-        return SupplyTerminalBlockEntity.Kind.values()[Math.clamp(field(index, 6), 0, SupplyTerminalBlockEntity.Kind.values().length - 1)];
+        return SupplyTerminalBlockEntity.Kind.values()[Mth.clamp(field(index, 6), 0, SupplyTerminalBlockEntity.Kind.values().length - 1)];
     }
 
     /** Seconds until the contract closes, or -1 for none. */

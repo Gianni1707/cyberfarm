@@ -49,7 +49,7 @@ public class MineJob extends DroneJob {
         BoundingBox area = dock.getWorkArea();
         for (int i = 0; i < LAYERS_PER_SEARCH; i++) {
             int y = dock.getQuarryLayer();
-            if (y < level.getMinY()) {
+            if (y < level.getMinBuildHeight()) {
                 return null;
             }
             Layer layer = scanLayer(drone, level, dock, area, y);

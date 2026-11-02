@@ -35,7 +35,7 @@ public class IntakeGateBlock extends CyberFrameBlock {
     }
 
     @Override
-    protected void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         if (state.getValue(OPEN)) {
             level.setBlock(pos, state.setValue(OPEN, false), Block.UPDATE_CLIENTS);
         }
