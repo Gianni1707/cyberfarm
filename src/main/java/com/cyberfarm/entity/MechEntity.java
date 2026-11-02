@@ -1,5 +1,7 @@
 package com.cyberfarm.entity;
 
+import net.minecraft.world.entity.Pose;
+
 import net.minecraft.nbt.CompoundTag;
 
 import java.util.UUID;
@@ -805,5 +807,11 @@ public class MechEntity extends Mob {
             Vec3 at = position().add(getPassengerAttachmentPoint(passenger, getDimensions(getPose()), 1.0F));
             move.accept(passenger, at.x, at.y + passenger.getMyRidingOffset(), at.z);
         }
+    }
+
+    // 26.x sets this on the entity type; 1.20.1 asks the entity
+    @Override
+    protected float getStandingEyeHeight(Pose pose, EntityDimensions dimensions) {
+        return 3.2F;
     }
 }
