@@ -17,6 +17,7 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 
@@ -29,6 +30,12 @@ public class CyberFarmJeiPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return CyberFarm.id("jei");
+    }
+
+    /** Each blueprint disc teaches its own building, kept in its NBT: JEI lists them apart. */
+    @Override
+    public void registerItemSubtypes(ISubtypeRegistration registration) {
+        registration.useNbtForSubtypes(ModItems.BLUEPRINT_DISC.get());
     }
 
     /** Keeps JEI's bookmarks clear of the Drone Dock's side tabs. */
