@@ -1,0 +1,143 @@
+{
+  "name": "Drone Dock",
+  "icon": "cyberfarm:drone_dock",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:drone_dock",
+      "text": "The home base of a drone. Each dock hosts $(l)one drone$() and:$(br)$(li)$(l)charges$() it (up to 500 FE/t) from its own 100,000 FE buffer;$(br)$(li)$(l)stores$() the harvest in 9 slots;"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)remembers the drone's $(l)work area$();$(br)$(li)holds an $(l)item filter$() for the Quarry and Transport modules.$(br)Power the dock with a $(l:generators/combustion_generator)Combustion Generator$(/l) placed next to it, or with cables from any mod. The harvest can be pulled out with hoppers or item pipes from any side."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "You can read a dock at a glance: lights $(l)chase round its landing ring$() while a drone flies home, and $(l)arcs of energy$() jump from its corner beacons to a drone charging on it. On a Builder Swarm Dock each of the four landing rings $(l)lights up$() while a Mini Drone stands on it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:drone_dock"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click the dock to open it:$(br)$(li)$(l)Drone Work$(): what the drone is doing right now (Harvesting, Quarrying, Transporting, Charging, Returning, On hold...).$(br)$(li)$(l)Drone Position$(): where the drone is, or $(l)Docked$() when it is on the pad.",
+      "title": "The dock screen"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l)9 cargo slots$(), the $(l)Filter$() button (see below) and the dock's energy bar.$(br)$(li)$(l)Return / Resume$(): $(l)Return$() calls the drone home and keeps it there, charging but taking no new jobs (a Taxi drone first finishes the trip it is on). $(l)Resume$() lets it work again."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Two $(l)side tabs$() on the left open a panel next to the screen; click a tab again to close it. The screen remembers which one you left open."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Drone Status$() (the \"i\" tab, coloured like the drone's state): its state, the modules it carries, the work area (not for Transport and Taxi drones, which never use it) and, for Transport and Taxi drones, whether a route or a destination is set."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Battery$() (the battery tab, showing the charge): the charge level, the FE stored and whether the drone is charging or flying."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(item)Survey Tool$() sets up a dock. It has $(l)four modes$(): hold it and $(l)sneak + scroll the mouse wheel$() to switch, or $(l)right-click the air$() to go to the next one. The current mode shows above the hotbar and in the tooltip, and a click only does what that mode says. The tool never opens the",
+      "title": "The Survey Tool"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "blocks you click, so chests and machines stay closed while you set things up.$(br)$(li)$(l)**Dock$()**: a Drone Dock: the tool now configures that dock. Sneak + right-click resets it.$(br)$(li)$(l)**Area$()**: two opposite corners: the dock's work area."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)**Route$()**: two containers, source then destination: the transport route.$(br)$(li)$(l)**Taxi$()**: the block where taxi passengers land.$(br)The tool $(l)tells you each step$() above the hotbar: when you switch mode and after every click it says what to click next (\"Click the source container\", \"Click the opposite corner\"...)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The first click, in any mode, picks the dock you want to set up; after that a click does what the mode says. Dock mode only picks the dock (use it to switch to another dock): to connect the dock to a chest, use $(l)Route$() mode."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Without any setup the drone works a $(l)9x9$() area centred on the dock. To change it:$(br)$(li)Switch the tool to $(l)Area$() mode and $(l)right-click the dock$().$(br)$(li)$(l)Right-click the first corner$() of your field.$(br)$(li)$(l)Right-click the opposite corner$(). The dock now uses that area.",
+      "title": "Choosing the work area"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The area can be up to $(l)33x33$() blocks, the two corners can be at most $(l)8 blocks$() apart in height, and everything must stay within 48 blocks of the dock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The drone works its area $(l)block by block from one corner to the other$(), row after row like a Quarry, so a field is harvested and replanted in order instead of here and there."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "For drones with a $(l:drone_systems/modules)Transport Module$(/l):$(br)$(li)Switch the tool to $(l)Route$() mode and $(l)right-click the dock$().$(br)$(li)$(l)Right-click the source container$() (chest, barrel, any modded inventory, or $(l)another drone's dock$()).",
+      "title": "Setting a transport route"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock.$(br)Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a Harvester or a Quarry and bring the harvest to your storage."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "For drones with a $(l:drone_systems/modules)Taxi Module$(/l): with the tool linked to the dock, switch to $(l)Taxi$() mode and $(l)right-click the block$() where passengers should land. It can be up to 256 blocks away and needs two blocks of air above it.",
+      "title": "Setting a taxi destination"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l)Filter$() button under the dock's slots opens its filter:$(br)$(li)with a $(l:drone_systems/modules)Quarry Module$(/l), the drone $(l)keeps only the drops that pass$() and throws the rest away (e.g. a whitelist of ores, or a blacklist of cobblestone, dirt and gravel);",
+      "title": "Item filter"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)with a $(l:drone_systems/modules)Transport Module$(/l), the drone $(l)moves only the items that pass$().$(br)Click a slot with an item to add it as a sample (nothing is used up), click it empty-handed to clear it. The buttons switch between $(l)whitelist$() and $(l)blacklist$(), match items $(l)exactly$() (enchantments, damage, names) or"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "not, match $(l)by mod$(), and pick a $(l)tag$() of the first sample (e.g. #forge:ores). An empty blacklist, the default, lets everything through.$(br2)The bottom row sets a $(l)limit$() for the Transport Module: $(l)Keep at destination: N$(). The drone then stops bringing an item once the destination holds"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "N of it, and carries only what is missing, so a chest stays stocked with 64 bread instead of filling up with 2,000. The arrows step through round numbers (8, 16, 32 and on up to 4,096); hold $(l)Shift$() to step by one. It counts each item separately."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Sneak + right-click in the air$() clears a corner or route source you set by mistake (switching mode clears it too).$(br)$(li)In $(l)Dock$() mode, $(l)sneak + right-click the dock$() resets it: default 9x9 area, no transport route, no taxi destination.",
+      "title": "Fixing mistakes"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:survey_tool"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:swarm_dock",
+      "title": "Builder Swarm Dock",
+      "text": "A dock for up to $(l)four Mini Drones$() (drones built on a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l)). They share its work area, transport route, build and stock, and each parks on its own corner of the pad. Four $(l:drone_systems/modules)Builder$(/l) Mini Drones raise a"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "structure together: link it to the swarm dock with the Multiblock Projector, and they split its blocks between them.$(br)$(li)Right-click the swarm dock with a Mini Drone to deploy it; it takes up to four. Bigger drones do not fit, and Mini Drones do not fit an ordinary Drone Dock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The screen shows the swarm as one: the busiest drone's job, their batteries added up, and how many drones are on the dock."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:swarm_dock"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:drone_systems/hologram_table)Hologram Table$(/l) shows all your docks and drones on a 3D map."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:drone_dock": 3,
+    "cyberfarm:survey_tool": 24,
+    "cyberfarm:swarm_dock": 25
+  }
+}

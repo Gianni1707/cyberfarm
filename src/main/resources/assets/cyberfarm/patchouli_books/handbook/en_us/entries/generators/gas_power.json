@@ -1,0 +1,37 @@
+{
+  "name": "Gas Power",
+  "icon": "cyberfarm:gas_turbine",
+  "category": "cyberfarm:generators",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The second step of CyberFarm power: $(l)gases$(). Organic waste becomes $(l)Biogas$(), mobs shut in an extraction chamber give off $(l)Methane$(), and a $(l)Gas Turbine$() burns both into FE.$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), about 6 mB/t, 3 FE per mB, 6 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 25 mB/t, 8 FE per mB, 10 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Gases can be carried in buckets, held $(l)upside down$() since they are lighter than air:",
+      "title": "Gas buckets"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Fill one$(): right-click a machine or tank holding at least 1,000 mB of gas with an $(l)empty bucket$() (a Bio-Digester for Biogas, a Methane Outlet of the extraction chamber for Methane, a reactor port or turbine for Steam)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Empty it$(): right-click a machine, a Reactor Port or a tank of any mod to pour the 1,000 mB in.$(br)$(li)A gas cannot be poured into the world: it would just float away.$(br)$(li)$(item)Biogas Bucket$()$(br)$(li)$(item)Methane Bucket$()$(br)$(li)$(item)Steam Bucket$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Both gases are $(l)standard fluids$(): tanks, pipes and machines of other mods that handle fluids can store and move them too. They are tagged forge:gaseous, forge:biogas and forge:methane."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A typical setup: a Bio-Digester and the Methane Outlet of an extraction chamber push their gas into $(l:cables/gas_pipe)Gas Pipes$(/l), which carry it to a $(l:generators/gas_turbine)Gas Turbine$(/l) or a $(l:generators/steam_engine)Steam Engine$(/l); they push FE into $(l:cables/energy_conduit)Energy Conduits$(/l) that power your drones' docks."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "cyberfarm:elite_circuit"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "T": {
+      "item": "cyberfarm:gas_turbine"
+    },
+    "X": {
+      "item": "cyberfarm:turbine_casing"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "RTR",
+    "IXI"
+  ],
+  "result": {
+    "item": "cyberfarm:turbine_controller"
+  }
+}

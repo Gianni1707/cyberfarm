@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "group": "uranium_ingot",
+  "ingredient": {
+    "item": "cyberfarm:uranium_ore"
+  },
+  "experience": 1.0,
+  "cookingtime": 100,
+  "result": "cyberfarm:uranium_ingot"
+}

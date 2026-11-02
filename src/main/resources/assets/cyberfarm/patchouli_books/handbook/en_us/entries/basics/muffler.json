@@ -1,0 +1,51 @@
+{
+  "name": "Muffler",
+  "icon": "cyberfarm:muffler",
+  "category": "cyberfarm:basics",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:muffler",
+      "text": "A busy farm is a noisy farm: humming drones, bubbling extraction chambers, crackling generators and the mobs locked inside them. Place a $(l)Muffler$() and the sounds you choose go quiet within $(l)10 blocks$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Right-click$() the Muffler and flip the switch of each kind of sound. A new Muffler silences everything.$(br)$(li)$(l)Machines$(): CyberFarm machines: generators, the Drone Assembler, the Methane Extractor",
+      "title": "Choosing what it silences"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Drones$(): the whine of their rotors (it fades out as a drone flies into range), takeoff and landing$(br)$(li)$(l)Monsters$(): hostile mobs, like the zombie in your Methane Extractor$(br)$(li)$(l)Animals$(): passive and neutral mobs: cows, chickens, villagers..."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Other machines$(): the sounds listed in the client config: by default furnaces, blast furnaces and smokers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each Muffler keeps its own choices, so one can quiet the drone field while another keeps the mob farm silent. Your own sounds are never touched: footsteps, doors, tools, blocks you place or break, music and other players."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "In $(l)Mods → CyberFarm → Config$() (or config/cyberfarm-client.toml):$(br)$(li)$(l)Range$(): distance in blocks every Muffler covers, 1 to 64 (default 10);",
+      "title": "Client config"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Extra Sounds to Mute$(): what the $(l)Other machines$() row silences. Add a mod id (mekanism) for all of a mod's sounds, or a single sound id (minecraft:block.furnace.fire_crackle)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:muffler"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Muffler needs no power. Use several to cover a large base.",
+      "title": "Crafting"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:muffler": 7
+  }
+}

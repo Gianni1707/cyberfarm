@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "cyberfarm:carbon_fiber"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "C": {
+      "item": "cyberfarm:elite_circuit"
+    },
+    "F": {
+      "item": "cyberfarm:advanced_frame"
+    },
+    "E": {
+      "item": "minecraft:ender_eye"
+    }
+  },
+  "pattern": [
+    "KDK",
+    "CFC",
+    "KEK"
+  ],
+  "result": {
+    "item": "cyberfarm:elite_frame"
+  }
+}

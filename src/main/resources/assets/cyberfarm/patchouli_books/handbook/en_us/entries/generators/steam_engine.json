@@ -1,0 +1,77 @@
+{
+  "name": "Steam Engine",
+  "icon": "cyberfarm:steam_engine",
+  "category": "cyberfarm:generators",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A mid-game generator built in a row: an induction $(l)boiler$() burns Biogas or Methane into steam, $(l)1 to 4 cylinders$() turn it into motion and a $(l)dynamo$() at the end turns the flywheel into FE."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Steam Engine",
+      "multiblock": {
+        "pattern": [
+          [
+            "A",
+            "0",
+            "B",
+            "C"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:steam_engine[facing=north]",
+          "B": "cyberfarm:steam_engine_cylinder",
+          "C": "cyberfarm:steam_engine_dynamo",
+          "0": "cyberfarm:steam_engine_cylinder"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Place the $(l)Steam Engine$() (the boiler). Its front faces you.$(br)$(li)Behind it, in a straight line, place $(l)1 to 4 Steam Engine Cylinders$().$(br)$(li)Close the row with a $(l)Steam Engine Dynamo$().$(br)When the row is complete its blocks turn into $(l)one machine$(): a white",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "induction boiler with glowing orange coils and steam puffing from its top, a cylinder for every block with its piston pumping in a glass sleeve, the steam line running over them, and the dynamo with copper windings and a spinning flywheel. The faster the engine runs, the brighter the coils and windings glow."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The GUI shows a live side view of the engine, the cylinders found, the power made and the speed."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Pipe Biogas or Methane into the boiler. $(l)Each cylinder$() burns $(l)15 mB/t$():$(br)$(li)$(l)Biogas$(): 6, 90 FE/t, 360 FE/t$(br)$(li)$(l)Methane$(): 10, 150 FE/t, 600 FE/t",
+      "title": "Fuel and power"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A full engine on methane burns 60 mB/t, the gas of two or three zombie chambers, and makes as much as fifteen Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The engine needs about $(l)5 seconds$() to reach full speed and slows down when the fuel runs out. It stops burning fuel when its buffer (200,000 FE) is full."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The power comes out of the $(l)dynamo$(): connect $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it. Pipes and cables joining the boiler or the dynamo get a collar with a cyan ring."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:steam_engine",
+      "recipe2": "cyberfarm:steam_engine_cylinder"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:steam_engine_dynamo"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:steam_engine": 9,
+    "cyberfarm:steam_engine_cylinder": 9,
+    "cyberfarm:steam_engine_dynamo": 10
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "name": "Sulfur and Acid",
+  "icon": "cyberfarm:acid_synthesizer",
+  "category": "cyberfarm:generators",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:generators/methane_extractor)Methane Extractor$(/l) needs $(l)Acid$() to dissolve the mob in its chamber. Acid is made from $(l)Sulfur$() and water."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:nether_sulfur_ore",
+      "title": "Sulfur",
+      "text": "$(l)Nether Sulfur Ore$() is found in netherrack all over the Nether. Mine it with any pickaxe: it drops $(l)2-4 Sulfur$(), more with Fortune (Silk Touch gives the ore block)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Sulfur is tagged forge:dusts/sulfur and the ore forge:ores/sulfur, so sulfur from other mods works in the Acid Synthesizer, and other mods' crushers and processors work on our ore."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:acid_synthesizer",
+      "title": "Acid Synthesizer",
+      "text": "Uses $(l)20 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). The two windows in its front show its tanks filling up: water on the left, acid on the right, bubbling while it works."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l)) and put sulfur in the slot, by hand or with a hopper.$(br)$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber.$(br)$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:acid_synthesizer"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:acid_synthesizer": 3,
+    "cyberfarm:nether_sulfur_ore": 1,
+    "cyberfarm:sulfur": 0,
+    "cyberfarm:acid_bucket": 0
+  }
+}

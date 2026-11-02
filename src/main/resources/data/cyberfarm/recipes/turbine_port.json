@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "cyberfarm:energy_conduit"
+    },
+    "X": {
+      "item": "cyberfarm:turbine_casing"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "pattern": [
+    "E",
+    "X",
+    "B"
+  ],
+  "result": {
+    "item": "cyberfarm:turbine_port"
+  }
+}

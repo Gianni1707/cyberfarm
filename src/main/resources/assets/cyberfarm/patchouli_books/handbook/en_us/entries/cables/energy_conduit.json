@@ -1,0 +1,57 @@
+{
+  "name": "Energy Conduit",
+  "icon": "cyberfarm:energy_conduit",
+  "category": "cyberfarm:cables",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:energy_conduit",
+      "text": "Conduits carry $(l)FE$() from generators to machines, so they no longer need to touch each other."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Conduits $(l)connect by themselves$() to other conduits and to any block that uses FE, from CyberFarm or from any other mod.$(br)$(li)They $(l)store nothing$(): whatever a generator pushes in goes straight to the machines on the network, which $(l)take turns$() so none is left without power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)From each generator or battery pushing into it, up to $(l)2,000 FE/t$() enters the network through a basic conduit, $(l)16,000$() through an Advanced one and $(l)128,000$() through an Elite one. A Large Steam Turbine needs Advanced conduits at its ports."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)All tiers join into one network.$(br)$(li)Networks can be up to 1,024 conduits long."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Energy Conduit",
+      "multiblock": {
+        "pattern": [
+          [
+            "A0BC"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:combustion_generator[facing=south]",
+          "B": "cyberfarm:energy_conduit[west=true,east=true]",
+          "C": "cyberfarm:drone_assembler[facing=south]",
+          "0": "cyberfarm:energy_conduit[west=true,east=true]"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:energy_conduit",
+      "recipe2": "cyberfarm:advanced_energy_conduit"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:elite_energy_conduit"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:energy_conduit": 5,
+    "cyberfarm:advanced_energy_conduit": 5,
+    "cyberfarm:elite_energy_conduit": 6
+  }
+}

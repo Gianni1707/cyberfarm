@@ -1,0 +1,343 @@
+{
+  "name": "Resonance Core",
+  "icon": "cyberfarm:resonance_core",
+  "category": "cyberfarm:energy_storage",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:resonance_core"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A buildable battery: a polyhedral crystal floats over the pedestal, columns of $(l)Stabilizer Pylons$() on its sides hold it steady with their beams, and a shell of $(l)Resonance Cells$() around the crystal makes it bigger, tier by tier."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)1$(): none, 1,000,000 FE, 1, 2, 3-8, 16,000 FE/t$(br)$(li)$(l)2$(): 3x3x3 (26 cells), 32,000,000 FE, 2, 3, 4-10, 128,000 FE/t$(br)$(li)$(l)3$(): 5x5x5 (98 cells), 256,000,000 FE, 3, 4, 5-12, 512,000 FE/t$(br)$(li)$(l)4$(): 7x7x7 (218 cells), 2,000,000,000 FE, 4, 5, 6-14, 2,000,000 FE/t",
+      "title": "Tiers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Place the $(l)Resonance Core$() (the pedestal). Alone it is tier 1.$(br)$(li)Build a shell of $(l:energy_storage/resonance_cell)Resonance Cells$(/l) around the space above it for tiers 2-4.$(br)$(li)Put up the columns of $(l:energy_storage/stabilizer_pylon)Stabilizer Pylons$(/l) the tier asks for, on its sides.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows every tier, pylons included: sneak + right-click to pick it, then click the pedestal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every tier at its smallest, with the pylons at their closest. Drag to turn the scene.$(br2)$(l)Tier 1$()$(br2)The core alone: one pylon column, two blocks tall, at least three blocks away.",
+      "title": "What each tier looks like"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Resonance Core",
+      "multiblock": {
+        "pattern": [
+          [
+            "   C"
+          ],
+          [
+            "0  B"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:resonance_core[facing=south]",
+          "B": "cyberfarm:stabilizer_pylon[part=bottom]",
+          "C": "cyberfarm:stabilizer_pylon[part=top]",
+          "0": "cyberfarm:resonance_core[facing=south]"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Tier 2$()$(br2)A 3x3x3 shell of 26 cells and two columns, three blocks tall, four blocks away."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Resonance Core",
+      "multiblock": {
+        "pattern": [
+          [
+            "   BBB   ",
+            "   BBB   ",
+            "   BBB   "
+          ],
+          [
+            "   BBB   ",
+            "E  B B  E",
+            "   BBB   "
+          ],
+          [
+            "   BBB   ",
+            "D  BBB  D",
+            "   BBB   "
+          ],
+          [
+            "         ",
+            "C   0   C",
+            "         "
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:resonance_core[facing=south]",
+          "B": "cyberfarm:resonance_cell",
+          "C": "cyberfarm:stabilizer_pylon[part=bottom]",
+          "D": "cyberfarm:stabilizer_pylon[part=middle]",
+          "E": "cyberfarm:stabilizer_pylon[part=top]",
+          "0": "cyberfarm:resonance_core[facing=south]"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Tier 3$()$(br2)A 5x5x5 shell of 98 cells and three columns, four blocks tall, five blocks away."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Resonance Core",
+      "multiblock": {
+        "pattern": [
+          [
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "   BBBBB   ",
+            "   B   B   ",
+            "   B   B   ",
+            "   B   B   ",
+            "   BBBBB   ",
+            "           ",
+            "           ",
+            "           "
+          ],
+          [
+            "   BBBBB   ",
+            "   B   B   ",
+            "E  B   B  E",
+            "   B   B   ",
+            "   BBBBB   ",
+            "           ",
+            "           ",
+            "     E     "
+          ],
+          [
+            "   BBBBB   ",
+            "   B   B   ",
+            "D  B   B  D",
+            "   B   B   ",
+            "   BBBBB   ",
+            "           ",
+            "           ",
+            "     D     "
+          ],
+          [
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "D  BBBBB  D",
+            "   BBBBB   ",
+            "   BBBBB   ",
+            "           ",
+            "           ",
+            "     D     "
+          ],
+          [
+            "           ",
+            "           ",
+            "C    0    C",
+            "           ",
+            "           ",
+            "           ",
+            "           ",
+            "     C     "
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:resonance_core[facing=south]",
+          "B": "cyberfarm:resonance_cell",
+          "C": "cyberfarm:stabilizer_pylon[part=bottom]",
+          "D": "cyberfarm:stabilizer_pylon[part=middle]",
+          "E": "cyberfarm:stabilizer_pylon[part=top]",
+          "0": "cyberfarm:resonance_core[facing=south]"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Tier 4$()$(br2)A 7x7x7 shell of 218 cells and four columns, five blocks tall, six blocks away."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Resonance Core",
+      "multiblock": {
+        "pattern": [
+          [
+            "             ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "             "
+          ],
+          [
+            "             ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "             "
+          ],
+          [
+            "             ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   B     B   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "             "
+          ],
+          [
+            "      E      ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   B     B   ",
+            "   B     B   ",
+            "E  B     B  E",
+            "   B     B   ",
+            "   B     B   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "      E      "
+          ],
+          [
+            "      D      ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   B     B   ",
+            "   B     B   ",
+            "D  B     B  D",
+            "   B     B   ",
+            "   B     B   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "      D      "
+          ],
+          [
+            "      D      ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   B     B   ",
+            "   B     B   ",
+            "D  B     B  D",
+            "   B     B   ",
+            "   B     B   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "      D      "
+          ],
+          [
+            "      D      ",
+            "             ",
+            "             ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "D  BBBBBBB  D",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "   BBBBBBB   ",
+            "             ",
+            "             ",
+            "      D      "
+          ],
+          [
+            "      C      ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "C     0     C",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "             ",
+            "      C      "
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:resonance_core[facing=south]",
+          "B": "cyberfarm:resonance_cell",
+          "C": "cyberfarm:stabilizer_pylon[part=bottom]",
+          "D": "cyberfarm:stabilizer_pylon[part=middle]",
+          "E": "cyberfarm:stabilizer_pylon[part=top]",
+          "0": "cyberfarm:resonance_core[facing=south]"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click $(l)any part$() of the core to open it: the pedestal, any cell of the shell (finished or not) or any block of a pylon column lined up with it. The screen shows:$(br)$(li)its $(l)tier and shell$(), and whether it is $(l)Online$() or $(l)Unstable$();",
+      "title": "The screen"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)the pylon columns it has and needs (point at the line for what this tier asks for);$(br)$(li)$(l)what it found on each side$(): a linked pylon, or why one does not count (no pylon, too close, too far, too short, beam blocked); point at a side for the column's height and distance;"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)how much each pylon carries and the FE stored.$(br)$(li)Breaking a cell of the shell drops the core back a tier, and $(l)the energy that no longer fits is lost$(): empty the core before rebuilding it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Breaking the pedestal leaves the shell's cells where they are, visible again, but $(l)the energy stored is lost$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:resonance_core"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:resonance_core": 17
+  }
+}

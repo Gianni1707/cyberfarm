@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:light_blue_stained_glass_pane"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "cyberfarm:basic_circuit"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "IDI",
+    " I "
+  ],
+  "result": {
+    "item": "cyberfarm:hologram_table"
+  }
+}

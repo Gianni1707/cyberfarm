@@ -1,0 +1,139 @@
+{
+  "name": "Mech Hangar",
+  "icon": "cyberfarm:mech_hangar",
+  "category": "cyberfarm:mech",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Where your $(l:mech/mech)mech$(/l) lives: a frame it parks in, on a pad that $(l)charges$() its battery, $(l)repairs$() it and lets you $(l)fit its modules$()."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Mech Hangar",
+      "multiblock": {
+        "pattern": [
+          [
+            "     ",
+            "     ",
+            " B B ",
+            " B B ",
+            "BBBBB"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "     ",
+            "B   B"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "     ",
+            "B   B"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "     ",
+            "B   B"
+          ],
+          [
+            "     ",
+            "     ",
+            "     ",
+            "     ",
+            "B   B"
+          ],
+          [
+            "B   A",
+            "BCCCB",
+            "BC0CB",
+            "BCCCB",
+            "B   B"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:mech_hangar[facing=north]",
+          "B": "cyberfarm:hangar_frame",
+          "C": "cyberfarm:hangar_pad",
+          "0": "cyberfarm:hangar_pad"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:entity",
+      "entity": "cyberfarm:mech",
+      "name": "Mech"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The hangar is a $(l)rack$() the mech stands in, 5 blocks wide and deep and 6 high, open in front and on the sides so the mech walks in and out:",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)the $(item)Mech Hangar Console$() at the $(l)front of the left floor rail$(), its screen facing out (place it facing you as you stand in front of the hangar);$(br)$(li)two $(l)floor rails$() of $(item)Hangar Frame$(), 5 blocks long, along the sides;"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)a $(l)post$() of Hangar Frames at the back end of each rail, 5 blocks up, a $(l)beam$() across their tops and two $(l)arms$(), two blocks long, reaching forward from the beam over the pad;$(br)$(li)a 3x3 $(item)Hangar Pad$() between the rails, with the space over it left free.$(br)The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it:"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to the rack itself: white rails with treads and a cyan light line, posts with blue bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's shoulders and"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "a $(l)gantry arm$() riding on the arms, which fits the modules."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A $(l:mech/mech)Mech Frame$(/l) only unfolds here: right-click the pad and the mech unfolds in the middle of it, facing out of the hangar. Walk it back onto the pad and get out to park it: it straightens up on the stand by itself, gliding to the middle of the pad and turning to face out, and the clamps come down",
+      "title": "Parking"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "onto its shoulders. While it stands there, empty:$(br)$(li)it is $(l)charged$() at up to $(l)2,000 FE/t$() from the console's own battery (1,000,000 FE), which you fill with $(l:cables/energy_conduit)Energy Conduits$(/l) or any mod's cables;"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)it is $(l)repaired$(), 1 point of integrity every half second for 200 FE. A mech that $(l)shut down$() comes back on once it is fully repaired.$(br)You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you in just as it does outside."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Right-click the console, or with an empty hand any part or the pad of the complete hangar, for its screen. On the left, a card with the parked mech's $(l)battery$() and $(l)integrity$(), the hangar's own battery, the status (charging, repairing, ready) and the $(l)Fold$() button. On the right, the mech's",
+      "title": "The console"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "outline with its four $(l)module slots$() at their mounts (see $(l:mech/mech_modules)Modules$(/l)): the jet behind the shoulder, the armour on the trunk, the blade and the drill by the arms.$(br2)The slots show the modules the parked mech carries. Put a module in its slot to fit it, take it out to remove it, and the $(l)gantry arm$() does"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "the work: the bridge rolls along the rack's arms, the gripper drops onto the mount (the back, a forearm or the chest) and the module locks in with a flash, or comes away held in the gripper; then the arm goes home. The module is on the mech once the gripper reaches it, and the modules always travel with the mech. With no mech on"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "the pad, the slots are empty and take nothing.$(br2)The $(l)Fold$() button packs the parked mech back up: it crouches, crosses its arms, draws its head and legs in and folds down into its frame, which drops on the pad with the battery's charge and the modules in it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:mech_hangar",
+      "recipe2": "cyberfarm:hangar_frame"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:hangar_pad"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:mech_hangar": 15,
+    "cyberfarm:hangar_frame": 15,
+    "cyberfarm:hangar_pad": 16
+  }
+}

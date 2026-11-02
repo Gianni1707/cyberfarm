@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": {
+      "item": "minecraft:yellow_wool"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+  "pattern": [
+    "W W",
+    "WIW",
+    "WWW"
+  ],
+  "result": {
+    "item": "cyberfarm:hazmat_suit"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "name": "Waste Reprocessor",
+  "icon": "cyberfarm:waste_reprocessor",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:waste_reprocessor"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Makes nuclear waste safe. Each $(l)Depleted Fuel Rod$() takes 10 seconds and $(l)40 FE/t$() and becomes a block of $(l)Vitrified Waste$(); one time in three it also recovers an $(l)Uranium Ingot$(), and one time in four an $(l)Isotope Shard$(), the seed of the $(l:mech/mech_core)Mech Core$(/l)'s crystal.$(br)$(li)$(l:nuclear/radiation)Depleted Fuel Rod$(/l)$(br)$(li)$(item)Vitrified Waste$()$(br)$(li)$(l:nuclear/uranium)Uranium Ingot$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Isotope Shard$()$(br)$(li)Waste waiting inside the Reprocessor is $(l)shielded$(): it does not contaminate.$(br)$(li)Automate it: a hopper under a $(l)Reactor Port$() pulls Depleted Fuel Rods out of the reactor, and a hopper into the Reprocessor feeds them in. Hoppers below take the products out."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Vitrified Waste$() is inert glass: store it anywhere, or build with it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:waste_reprocessor"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:waste_reprocessor": 4,
+    "cyberfarm:vitrified_waste": 0,
+    "cyberfarm:isotope_shard": 0
+  }
+}

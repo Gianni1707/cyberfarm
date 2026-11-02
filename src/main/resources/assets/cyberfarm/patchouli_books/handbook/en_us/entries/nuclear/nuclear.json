@@ -1,0 +1,35 @@
+{
+  "name": "Nuclear",
+  "icon": "cyberfarm:reactor_controller",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The most powerful energy in CyberFarm, and the most demanding. A $(l)Fission Reactor$() shaped like a cooling tower burns uranium $(l)Fuel Rods$(); its core heats water into $(l)Steam$(), and $(l)Steam Turbines$() turn the steam into FE, just like a real power plant."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:nuclear/uranium)Uranium Ingot$(/l)$(br)$(li)$(l:nuclear/uranium)Fuel Rod$(/l)$(br)$(li)$(l:nuclear/fission_reactor)Fission Reactor Controller$(/l)$(br)$(li)$(l:nuclear/fission_reactor)Reactor Casing$(/l)$(br)$(li)$(l:nuclear/fission_reactor)Reactor Port$(/l)$(br)$(li)$(l:nuclear/coolant_mixer)Coolant Mixer$(/l)$(br)$(li)$(l:nuclear/steam_turbine)Steam Turbine Controller$(/l)$(br)$(li)$(l:basics/water_pump)Water Pump$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Mine $(l:nuclear/uranium)uranium$(/l) deep underground and craft $(l)Fuel Rods$().$(br)$(li)Build the $(l:nuclear/fission_reactor)Fission Reactor$(/l) tower.$(br)$(li)Feed it $(l)water$() with a $(l:basics/water_pump)Water Pump$(/l) and $(l:cables/liquid_pipe)Liquid Pipes$(/l).$(br)$(li)Send the steam to $(l:nuclear/steam_turbine)Steam Turbines$(/l) and the FE into $(l:cables/energy_conduit)Energy Conduits$(/l).",
+      "title": "The power plant"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)To run the reactor harder, cool it better with a $(l:nuclear/coolant_mixer)Coolant Mixer$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A reactor keeps burning as long as its power is on, $(l)whether or not it is cooled$(). If the heat it makes is more than the water and coolant can carry away, the core gets hotter. At $(l)80%$() an alarm sounds; at $(l)100%$() the core $(l)melts down$() and explodes. Watch the temperature bar, and turn the power down",
+      "title": "Safety first"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "(or off) when something goes wrong.$(br2)Spent rods are $(l)nuclear waste$(): left untreated they make the area $(l:nuclear/radiation)radioactive$(/l). Treat them in a $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l), and wear a $(l:nuclear/hazmat_suit)Hazmat Suit$(/l) when things go wrong."
+    }
+  ],
+  "priority": true
+}

@@ -53,6 +53,7 @@ import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.entity.MechEntity;
 import com.cyberfarm.entity.MechModule;
 import com.cyberfarm.item.DroneItem;
+import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.item.SurveyModePayload;
 import com.cyberfarm.item.SurveyToolItem;
 import com.cyberfarm.port.RenderBoxes;
@@ -125,6 +126,9 @@ public final class CyberFarmClient {
             // Item model override "cyberfarm:mini_drone": the drone was built on a Mini Drone Frame, so it gets its own sprite
             ItemProperties.register(ModItems.DRONE.get(), CyberFarm.id("mini_drone"),
                     (stack, level, owner, seed) -> DroneItem.getModules(stack).isMini() ? 1.0F : 0.0F);
+            // "cyberfarm:filled": the capsule holds a mob
+            ItemProperties.register(ModItems.MOB_CAPSULE.get(), CyberFarm.id("filled"),
+                    (stack, level, owner, seed) -> MobCapsuleItem.hasMob(stack) ? 1.0F : 0.0F);
         });
     }
 

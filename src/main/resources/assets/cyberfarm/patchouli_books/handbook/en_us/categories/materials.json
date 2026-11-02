@@ -1,0 +1,6 @@
+{
+  "name": "Materials and Progression",
+  "description": "CyberFarm grows in $(l)three tiers$(). Each one is built out of what the tier before it makes, so you always know what to build next:",
+  "icon": "cyberfarm:basic_circuit",
+  "sortnum": 1
+}

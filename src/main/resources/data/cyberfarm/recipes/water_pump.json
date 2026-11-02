@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "D": {
+      "item": "cyberfarm:advanced_circuit"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "CPC",
+    "IDI"
+  ],
+  "result": {
+    "item": "cyberfarm:water_pump"
+  }
+}

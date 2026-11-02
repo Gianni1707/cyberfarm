@@ -1,0 +1,6 @@
+{
+  "name": "Energy Storage",
+  "description": "Generators make power only while they run, and reactors make far more than a base uses at once. Energy storage keeps the surplus for later: charge it while the reactor runs at full power, draw from it at night, while a turbine spins up or when a whole drone fleet comes home to charge.",
+  "icon": "cyberfarm:resonance_core",
+  "sortnum": 4
+}

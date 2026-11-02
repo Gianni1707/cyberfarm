@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "W": {
+      "item": "minecraft:yellow_wool"
+    },
+    "G": {
+      "item": "minecraft:glass_pane"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "WGW"
+  ],
+  "result": {
+    "item": "cyberfarm:hazmat_helmet"
+  }
+}

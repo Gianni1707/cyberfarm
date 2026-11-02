@@ -1,0 +1,44 @@
+{
+  "name": "Laser Turret",
+  "icon": "cyberfarm:laser_turret",
+  "category": "cyberfarm:basics",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:laser_turret"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Monsters at the door? A $(l)Laser Turret$() keeps them out. Give it power and it watches $(l)16 blocks$() all round (a sphere 33 blocks across, as wide as the largest drone work area), turns its head toward the nearest hostile mob it can see and burns it down."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)8 damage a shot, one shot a second$(): a zombie lasts three shots.$(br)$(li)A shot costs $(l)200 FE$() from its 20,000 FE buffer: $(l)10 FE/t$() while it fights, none while nothing is in sight, so one $(l:generators/combustion_generator)Combustion Generator$(/l) keeps four turrets firing."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Every CyberFarm laser costs $(l)25 FE per point of damage$(), the turret and the $(l:drone_systems/modules)Guard Module$(/l) alike.$(br)$(li)It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.$(br)$(li)It shoots $(l)hostile mobs only$(). Players, animals, villagers and golems are safe,"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)and so are $(l)named mobs$(), mobs $(l)riding$() something (a minecart, a boat) and $(l)neutral mobs$() (endermen, zombified piglins) until they get angry. Your mob farms are safe if you name the mobs you keep."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click$() it to see what it is doing; the red lens on the barrel lights up while it aims.$(br)Power it with an $(l:cables/energy_conduit)Energy Conduit$(/l) or any other mod's cable, from any side."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A turret stays where you put it. For an area that moves with your farm, give a drone a $(l:drone_systems/modules)Guard Module$(/l): it flies over its work area and shoots the same mobs from above. For a big wave, a swarm of Mini Drones with the $(l:drone_systems/modules)Bomb Module$(/l) dives at the monsters and blows up on them.",
+      "title": "Defence drones"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:laser_turret"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:laser_turret": 7
+  }
+}

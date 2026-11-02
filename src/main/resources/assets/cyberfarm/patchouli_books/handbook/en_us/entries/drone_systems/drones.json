@@ -1,0 +1,67 @@
+{
+  "name": "Using Drones",
+  "icon": "cyberfarm:drone",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "An assembled drone shows its parts and battery in the tooltip. To put it to work, $(l)right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with it. It lands folded on the pad, opens its arms, spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It waits on the dock and $(l)charges$() until its battery is full (or until the dock runs out of power, as long as it has at least 30%).$(br)$(li)It asks its $(l:drone_systems/modules)modules$(/l) for a job (harvest, dig, carry) and does it, chaining jobs of the same kind without flying home in between.",
+      "title": "What the drone does"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It returns to the dock when its $(l)cargo is full$() (9 slots), its battery drops $(l)below 10%$(), or there is nothing left to do. With several modules, the next trip starts from the next module.$(br)$(li)It unloads into the dock, charges and starts again."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "While they work, drones hit their target with a short $(l)beam of light$() (a steady one while they dig), and flying low their rotors kick up $(l)dust$(), or spray over water."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drones fly in a $(l)straight line$() to their target, slowing down as they arrive. If something blocks the way they find a path around it. Flight speed comes from the $(l:drone_systems/drone_frames)frame$(/l) and the $(l:drone_systems/addons)Speed Addons$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The tooltip of a drone shows its $(l)flight cost$() in FE per tick. It is worked out like this:$(br2)$(l)flight cost = (frame + modules) x (1 + addon percentages)$(), rounded up.$(br)$(li)$(l:drone_systems/drone_frames)Frame$(/l): 2, 3 or 4 FE/t by tier.$(br)$(li)$(l:drone_systems/modules)Modules$(/l): +1 FE/t each (+2 for the Quarry).",
+      "title": "Power use"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:drone_systems/addons)Addons$(/l): Speed +10%, Stack +5%, Battery +5% each.$(br)Example: a Basic frame with a Harvester and 2 Speed Addons uses (2 + 1) x 1.2 = 3.6, so $(l)4 FE/t$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Jobs cost energy on top of flying (see each $(l:drone_systems/modules)module$(/l)); Fortune adds +25% per level and Silk Touch +50% to that. $(l:drone_systems/addons)Battery Addons$(/l) make longer trips possible.$(br2)Drones cannot be hurt by mobs or by players."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put the drone back in the $(l)output slot$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) with the other slots empty: the button becomes $(l)Disassemble$(). Press it and the frame, modules and addons go back into their slots, ready to be changed and assembled again. The drone's charge moves into the assembler",
+      "title": "Changing a drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "(up to its 20,000 FE buffer)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drones are $(l)indestructible$(): weapons, mobs, explosions, fire and lava cannot hurt them, and a left-click goes right through them, so you cannot knock one down by mistake.$(br2)$(l)Sneak + right-click$() the drone with an empty hand. It lands (on its dock if it is",
+      "title": "Recovering a drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "there, otherwise on the ground below), its rotors spin down, it folds its arms and then jumps into your inventory with its charge; its cargo goes to the dock, or drops on the ground if the dock is full. If its dock is broken, the drone turns back into an item by itself."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:drone": 0
+  }
+}

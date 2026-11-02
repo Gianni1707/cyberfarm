@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "P": {
+      "item": "cyberfarm:gas_pipe"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "PFP",
+    "III"
+  ],
+  "result": {
+    "item": "cyberfarm:pyrolysis_oven"
+  }
+}

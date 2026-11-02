@@ -1,0 +1,45 @@
+{
+  "name": "Uranium and Fuel Rods",
+  "icon": "cyberfarm:uranium_ingot",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:deepslate_uranium_ore"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Uranium Ore$() is rare and found deep in the Overworld, from Y 16 down to the bottom of the world, more often the deeper you go. Its green specks glow faintly in the dark. You need at least an $(l)iron pickaxe$(); Fortune gives more Raw Uranium, Silk Touch the ore block itself."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Raw Uranium$()$(br)$(li)$(item)Uranium Ingot$()$(br)$(li)$(item)Fuel Rod$()$(br)$(li)$(l:nuclear/radiation)Depleted Fuel Rod$(/l)$(br)$(li)Smelt $(l)Raw Uranium$() (or the ore) in a furnace or blast furnace into an $(l)Uranium Ingot$().$(br)$(li)A $(l)Fuel Rod$() is 3 Uranium Ingots in an iron casing.",
+      "title": "From ore to fuel"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:fuel_rod"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Fuel Rod lasts $(l)40 minutes$() in a $(l:nuclear/fission_reactor)Fission Reactor$(/l) at 100% power; its durability bar shows the fuel left. At higher power it burns proportionally faster. A spent rod becomes a $(l)Depleted Fuel Rod$() in the reactor's waste slots.",
+      "title": "Burning fuel"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Depleted Fuel Rods are $(l)nuclear waste$(): carried, stored or dropped they make the area $(l:nuclear/radiation)radioactive$(/l). Take them out of the reactor (by hand or with a hopper under a Reactor Port) and treat them in a $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l). If the reactor's waste slots fill up, it starts leaking radiation."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Uranium uses the common c: tags, so ore processors and machines from other mods handle it too."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:uranium_ore": 0,
+    "cyberfarm:deepslate_uranium_ore": 0,
+    "cyberfarm:raw_uranium": 0,
+    "cyberfarm:uranium_ingot": 0,
+    "cyberfarm:fuel_rod": 3
+  }
+}

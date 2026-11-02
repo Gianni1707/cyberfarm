@@ -1,0 +1,58 @@
+{
+  "name": "Welcome",
+  "icon": "cyberfarm:drone",
+  "category": "cyberfarm:basics",
+  "sortnum": -1,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Welcome, engineer! $(l)CyberFarm$() lets you build modular drones that run your farms for you. You assemble a drone from a $(l)frame$(), one or more $(l)function modules$() and optional $(l)addons$(), give it a $(l)Drone Dock$() to live on, and it does the work while you do something more fun."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drones and machines run on $(l)FE$() (Forge Energy), so they work with power from any other tech mod.$(br2)Using $(l)JEI$() or $(l)REI$()? Look up the Drone Assembler to see what each frame tier can hold, and the uses of any machine to see what it takes, what it makes and its numbers: organics for the Bio-Digester,"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "mobs for the Methane Extractor, fuels for the turbines, rods and coolants for the reactor and more. The info page (the \"i\" tab) of any CyberFarm machine gives a quick explanation."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "New here? Read $(l:basics/getting_started)Getting Started$(/l): your first drone, step by step. Base too loud? A $(l:basics/muffler)Muffler$(/l) silences machines, drones and mobs around it. Need water for your machines? A $(l:basics/water_pump)Water Pump$(/l) gives an endless supply. Monsters at night? A $(l:basics/laser_turret)Laser Turret$(/l) or a drone with a $(l:drone_systems/modules)Guard Module$(/l) keeps them",
+      "title": "Where to start"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "away. Then the handbook has seven sections:$(br2)$(l:materials/materials)Materials and Progression$(/l)$(br2)The three tiers and their materials: $(l:materials/aluminum)aluminum$(/l) from bauxite, $(l:materials/circuits)circuits and the Fabricator$(/l), and $(l:materials/carbon_fiber)carbon fiber$(/l) from methane.$(br2)$(l:generators/generators)Generators$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Making FE: the $(l:generators/combustion_generator)Combustion Generator$(/l), then $(l:generators/gas_power)Gas Power$(/l) with the $(l:generators/bio_digester)Bio-Digester$(/l), the $(l:generators/methane_extractor)Methane Extractor$(/l) and the $(l:generators/gas_turbine)Gas Turbine$(/l), $(l:generators/acid_synthesizer)Sulfur and Acid$(/l) and the $(l:generators/steam_engine)Steam Engine$(/l). The Generators page compares them all.$(br2)$(l:nuclear/nuclear)Nuclear$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The endgame power plant: $(l:nuclear/uranium)uranium$(/l), the $(l:nuclear/fission_reactor)Fission Reactor$(/l), the $(l:nuclear/coolant_mixer)Coolant Mixer$(/l), the $(l:nuclear/steam_turbine)Steam Turbine$(/l), $(l:nuclear/radiation)waste and radiation$(/l), the $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l) and the $(l:nuclear/hazmat_suit)Hazmat Suit and Geiger Counter$(/l).$(br2)The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows any of these structures in the world before you build it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:energy_storage/energy_storage)Energy Storage$(/l)$(br2)Keeping power for later: the $(l:energy_storage/resonance_core)Resonance Core$(/l), a battery you build bigger with a shell of $(l:energy_storage/resonance_cell)Resonance Cells$(/l), held steady by columns of $(l:energy_storage/stabilizer_pylon)Stabilizer Pylons$(/l) that are also its way in and out.$(br2)$(l:cables/cables)Cables$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Moving power and fluids: the $(l:cables/energy_conduit)Energy Conduit$(/l), the $(l:cables/gas_pipe)Gas Pipe$(/l) and the $(l:cables/liquid_pipe)Liquid Pipe$(/l), plus $(l:cables/fluid_tanks)Liquid and Gas Tanks$(/l) to store fluids.$(br2)$(l:drone_systems/drone_systems)Drones$(/l)$(br2)Building and running drones: the $(l:drone_systems/drone_assembler)Drone Assembler$(/l), $(l:drone_systems/drone_frames)Drone Frames$(/l), $(l:drone_systems/modules)Function Modules$(/l), $(l:drone_systems/addons)Addons$(/l), the $(l:drone_systems/drone_dock)Drone Dock$(/l) and $(l:drone_systems/drones)Using Drones$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:mech/mech)Mech$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump and punch, with the cockpit display showing its energy and integrity. End game: it is built around a $(l:mech/mech_core)Mech Core$(/l) grown from reactor waste. The $(l:mech/mech_hangar)Mech Hangar$(/l) charges and repairs it and fits its $(l:mech/mech_modules)modules$(/l)."
+    }
+  ],
+  "priority": true
+}

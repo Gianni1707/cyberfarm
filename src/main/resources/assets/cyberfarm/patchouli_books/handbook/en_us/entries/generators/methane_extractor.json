@@ -1,0 +1,127 @@
+{
+  "name": "Methane Extractor",
+  "icon": "cyberfarm:methane_extractor",
+  "category": "cyberfarm:generators",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The Methane Extractor is the \"shower head\" on top of an $(l)extraction chamber$(): a 3x3x4 structure where a mob is shut in and dissolved in $(l)Acid$(), giving off $(l)Methane$()."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Methane Extractor",
+      "multiblock": {
+        "pattern": [
+          [
+            "AAA ",
+            "DEFG",
+            "AAA "
+          ],
+          [
+            "ABA ",
+            "B B ",
+            "ABA "
+          ],
+          [
+            "ACA ",
+            "B B ",
+            "ABA "
+          ],
+          [
+            "AAA ",
+            "A0A ",
+            "AAA "
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:cyber_frame",
+          "B": "cyberfarm:containment_glass",
+          "C": "cyberfarm:intake_gate",
+          "D": "cyberfarm:acid_inlet",
+          "E": "cyberfarm:methane_extractor",
+          "F": "cyberfarm:methane_outlet",
+          "G": "cyberfarm:gas_pipe[west=true]",
+          "0": "cyberfarm:cyber_frame"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Floor$(): 3x3 $(item)Cyber Frame Block$()s.$(br)$(li)$(l)Walls$() (two layers): a Cyber Frame Block in each corner and $(item)Containment Glass$() in the middle of each side. The centre stays empty: that is where the mob goes.",
+      "title": "Building the chamber"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Roof$(): 8 Cyber Frame Blocks around the $(l)Methane Extractor$() in the middle.$(br)$(li)$(l)Ports$(): any Cyber Frame can be an $(item)Acid Inlet$() or a $(item)Methane Outlet$() instead. Fluids only go in and out of the chamber through them: the $(l)Acid Inlet$() (green ring) only takes acid in,"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)the $(l)Methane Outlet$() (cyan ring) only gives methane out. Pipe acid to the inlet with a $(l:cables/liquid_pipe)Liquid Pipe$(/l) and take methane from the outlet with a Gas Pipe.$(br)$(li)$(l)Intake Gate$(): any glass of the $(l)lower$() wall can be an $(item)Intake Gate$().$(br)When the structure is right the chamber powers up with a"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "chime and turns into $(l)one smooth tank$(): a glass cylinder between a white base and cap, its pillars lit in orange, the ports shown as hatches with pipe collars and the gates as roll-up doors. A finished chamber opens the GUI from any of its blocks (sneak to place blocks against it instead)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A live view into the tank: the mob inside, the acid rising around it, bubbles and arcs while it dissolves, and how much of it is $(l)left$(). The acid tank is on the left, the methane on the right.",
+      "title": "The GUI"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The mob gives off methane only while it is dissolving: pipe $(l)Acid$() from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l) into an $(l)Acid Inlet$() (or pour an Acid Bucket into it). It uses $(l)1 mB of acid per tick$() and holds 8,000 mB. While acid is pumped in you see it pour from the extractor's head into the pool, splashing as the level rises. Every",
+      "title": "Acid and methane"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "15 seconds the acid eats into the mob: holes open in its skin patch by patch, what is left turns a sickly green, and scraps of flesh and goo drop off it among more and more green fumes. In the end it is consumed completely and the chamber is ready for the next one. Without acid the GUI says $(l)NO ACID$() and nothing is produced."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The methane (up to $(l)8,000 mB$()) is pushed out of every $(l)Methane Outlet$() into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l) and tanks (when it is full, the chamber stops and no acid is used): carry it to a $(l:generators/gas_turbine)Gas Turbine$(/l) or a $(l:generators/steam_engine)Steam Engine$(/l). An empty bucket on an outlet fills a Methane Bucket."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Intake Gate$(): while the chamber is empty, the first $(l)monster$() that comes up to a gate is pulled inside; the shutter rolls up and closes behind it. Let zombies chase you past the gate, or lead them there with a mob farm. Bosses are never taken, and mobs pulled in",
+      "title": "Putting a mob inside"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 25 mB/t, 200 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Other monsters$(): 12 mB/t, 96 FE/t$(br)$(li)$(l)Animals$(): 4 mB/t, 32 FE/t$(br)A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:methane_extractor",
+      "recipe2": "cyberfarm:cyber_frame"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:mob_capsule",
+      "recipe2": "cyberfarm:containment_glass"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:acid_inlet",
+      "recipe2": "cyberfarm:methane_outlet"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:intake_gate"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:methane_extractor": 13,
+    "cyberfarm:cyber_frame": 13,
+    "cyberfarm:mob_capsule": 14,
+    "cyberfarm:containment_glass": 14,
+    "cyberfarm:acid_inlet": 15,
+    "cyberfarm:methane_outlet": 15,
+    "cyberfarm:intake_gate": 16
+  }
+}

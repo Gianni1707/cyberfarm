@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "X": {
+      "item": "minecraft:cauldron"
+    },
+    "D": {
+      "item": "cyberfarm:advanced_circuit"
+    }
+  },
+  "pattern": [
+    "IBI",
+    "GXG",
+    "IDI"
+  ],
+  "result": {
+    "item": "cyberfarm:coolant_mixer"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "cyberfarm:cyber_frame"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    }
+  },
+  "pattern": [
+    "F",
+    "B"
+  ],
+  "result": {
+    "item": "cyberfarm:acid_inlet"
+  }
+}

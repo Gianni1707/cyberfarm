@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "cyberfarm:advanced_energy_conduit"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "U": {
+      "item": "cyberfarm:elite_circuit"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "DUD",
+    "PPP"
+  ],
+  "result": {
+    "item": "cyberfarm:elite_energy_conduit",
+    "count": 8
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "R": {
+      "item": "cyberfarm:advanced_circuit"
+    },
+    "F": {
+      "item": "cyberfarm:cyber_frame"
+    }
+  },
+  "pattern": [
+    "GAG",
+    "IRI",
+    "IFI"
+  ],
+  "result": {
+    "item": "cyberfarm:resonance_core"
+  }
+}

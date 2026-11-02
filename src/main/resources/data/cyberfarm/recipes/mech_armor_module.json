@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "O": {
+      "item": "minecraft:obsidian"
+    },
+    "A": {
+      "item": "cyberfarm:advanced_frame"
+    }
+  },
+  "pattern": [
+    "IOI",
+    "OAO",
+    "IOI"
+  ],
+  "result": {
+    "item": "cyberfarm:mech_armor_module"
+  }
+}

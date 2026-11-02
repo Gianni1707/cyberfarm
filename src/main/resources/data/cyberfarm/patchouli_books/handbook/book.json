@@ -1,0 +1,10 @@
+{
+  "name": "cyberfarm.guide.handbook",
+  "landing_text": "Welcome, engineer! $(l)CyberFarm$() lets you build modular drones that run your farms for you. You assemble a drone from a $(l)frame$(), one or more $(l)function modules$() and optional $(l)addons$(), give it a $(l)Drone Dock$() to live on, and it does the work while you do something more fun.",
+  "subtitle": "Everything about drones, power and machines",
+  "model": "cyberfarm:handbook",
+  "creative_tab": "cyberfarm:main",
+  "show_progress": false,
+  "use_resource_pack": true,
+  "i18n": false
+}

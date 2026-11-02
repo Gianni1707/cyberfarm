@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "cyberfarm:advanced_gas_pipe"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "U": {
+      "item": "cyberfarm:elite_circuit"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "DUD",
+    "PPP"
+  ],
+  "result": {
+    "item": "cyberfarm:elite_gas_pipe",
+    "count": 8
+  }
+}

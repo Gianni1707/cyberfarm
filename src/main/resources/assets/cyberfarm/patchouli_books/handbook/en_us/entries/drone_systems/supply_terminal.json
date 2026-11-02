@@ -1,0 +1,89 @@
+{
+  "name": "Supply Contracts",
+  "icon": "cyberfarm:supply_terminal",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 9,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Your farm can feed a village. Place a $(item)Supply Terminal$() in one, or find one in a $(l:drone_systems/tech_village)Drone Mechanist's Outpost$(/l), and the village starts asking you for food and materials, and paying for them."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:supply_terminal"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and becomes a $(l)Drone Mechanist$(): a villager in goggles and a white work coat. While he works it, the terminal shows his level and the village's contracts.",
+      "title": "The Drone Mechanist"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Right-click$() him to talk: he has a plan for a $(l:drone_systems/tech_village)tech village$(/l). His trades are behind the $(l)Trade$() button at the end of each talk."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The board holds $(l)three contracts$(); every two minutes the mechanist fills the free places. Each asks for a quantity of one item: bread, carrots, wool and wheat at first; leather, logs, pumpkins and beef as the mechanist levels up; then iron, glass and fish; and from the expert level on,",
+      "title": "Contracts"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "aluminum, circuits and carbon fiber. The higher his level, the bigger the contracts and the better they pay, and no two are quite the same size."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put the goods in the $(l)Deliver$() slot: by hand, with a hopper, or as the destination of a $(l:drone_systems/modules)Transport drone$(/l)'s route. The terminal only takes what is still wanted, so a drone brings exactly what the contracts need and nothing more."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Some contracts pay a $(l)bonus$() besides their emeralds, shown on the row: battery cells, circuits, addons, carbon fiber, even an Anchor Addon or an Elite Circuit from a master mechanist."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The fourth place on the board is for the village's events:$(br)$(li)$(l)Market Day$(): every morning the village holds a market, a contract $(l)three times$() the usual size and pay, always with a bonus. It closes at dusk: fill it in time.",
+      "title": "Events"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Call to arms$(): while a $(l)raid$() is on the village asks for iron, arrows or shields. Fill it and $(l)two iron golems$() join the fight."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every filled contract makes the village more $(l)prosperous$(): its emeralds count as points. Once you have founded the $(l:drone_systems/tech_village)tech village$(/l) with the Mechanist, the bar under the board shows its level and how far the next one is; the $(l)Range$() switch beside it outlines the village's bounds in the world. When the bar is",
+      "title": "Prosperity"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "full and the last level's buildings stand, $(l)talk to the Mechanist$() to raise the village a level: it grows, a baby villager or an iron golem arriving, rings its bell, and makes you its hero: $(l)Hero of the Village$() for twenty minutes, stronger at each level, with big discounts and gifts from the villagers. At the top level, $(l)10$(),"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "every contract pays half again."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A filled contract:$(br)$(li)pays $(l)emeralds$(), and any bonus, into the $(l)Pay$() slot (take them by hand, or with a hopper or a drone);$(br)$(li)gives the mechanist $(l)experience$(): he levels up, from Novice to Master, unlocking bigger contracts and new trades;",
+      "title": "Rewards"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)makes the village $(l)like you$(): every villager around gives you better prices, the mechanist most of all. The goodwill goes to whoever founded the village (before that, to whoever placed the terminal)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Drone Mechanist sells CyberFarm parts for emeralds, more as he levels up:$(br)$(li)$(l)Novice$(): Basic Circuits; buys redstone$(br)$(li)$(l)Apprentice$(): Battery Cells; buys copper$(br)$(li)$(l)Journeyman$(): Advanced Circuits, Aluminum Ingots",
+      "title": "The mechanist's trades"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Expert$(): Speed and Stack Addons, Carbon Fiber$(br)$(li)$(l)Master$(): Elite Circuits, the Anchor Addon"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:supply_terminal"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:supply_terminal": 1
+  }
+}

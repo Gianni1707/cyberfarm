@@ -1,0 +1,43 @@
+{
+  "name": "Hazmat Suit and Geiger Counter",
+  "icon": "cyberfarm:hazmat_helmet",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Hazmat Suit$()$(br)$(li)$(item)Hazmat Helmet$()$(br)$(li)$(item)Hazmat Suit$()$(br)$(li)$(item)Hazmat Pants$()$(br)$(li)$(item)Hazmat Boots$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A bright yellow protective suit. Each piece keeps out $(l)25%$() of the $(l:nuclear/radiation)radiation$(/l); the $(l)full suit$() keeps out all of it. It gives little armor against everything else, and it also keeps the cold of $(l:nuclear/coolant_mixer)coolant pools$(/l) out."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:hazmat_helmet",
+      "recipe2": "cyberfarm:hazmat_suit"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:hazmat_pants",
+      "recipe2": "cyberfarm:hazmat_boots"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:geiger_counter",
+      "title": "Geiger Counter",
+      "text": "Hold it in either hand: it $(l)clicks$() faster the more radiation there is, and shows the level in $(l)Rad$() above the hotbar, green when safe, orange from 20 Rad (sickness), red from 100 Rad. A Muffler never silences it."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:geiger_counter"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:hazmat_helmet": 2,
+    "cyberfarm:hazmat_suit": 2,
+    "cyberfarm:hazmat_pants": 3,
+    "cyberfarm:hazmat_boots": 3,
+    "cyberfarm:geiger_counter": 4
+  }
+}

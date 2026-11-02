@@ -1,0 +1,84 @@
+{
+  "name": "The Tech Village",
+  "icon": "cyberfarm:supply_terminal",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Somewhere in the grasslands and woods of the Overworld a lonely $(l)Drone Mechanist$() lives in his $(l)Outpost$(): a white cabin with a dark roof, a porch, a radio mast and solar panels, a vegetable garden at its side and a $(l:drone_systems/supply_terminal)Supply Terminal$(/l) on its back wall. Outposts"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "are rare, a thousand blocks and more apart, in plains, meadows, savannas, forests, taigas and snowy plains. The Mechanist keeps close to his terminal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Right-click$() him to talk. Click, or press $(l)Space$() or $(l)Enter$(), to read on. The first time, he tells you how he came to live alone, and asks whether you will build a $(l)tech village$() with him. You can say yes, not now, or ask about that drone incident; if you turn him down he asks again next time. At the end of every talk,",
+      "title": "Talking to the Mechanist"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Trade$() opens his trades and $(l)Goodbye$() closes the window.$(br2)The player who says yes $(l)founds$() the village: the village's goodwill from its contracts goes to them. In multiplayer the village is shared: everyone can talk to the Mechanist and raise it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The village grows with its $(l)prosperity$(), the emeralds of every contract filled at the terminal (see $(l:drone_systems/supply_terminal)Supply Contracts$(/l)), and with its $(l)buildings$(). The terminal shows the village's level and the way to the next under its board. Once there are enough points and the buildings of the last level stand, $(l)talk to the$()",
+      "title": "Village levels"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Mechanist$() and he raises the village a level: it grows, a baby villager or an iron golem arriving, rings its bell, and makes the founder its hero for twenty minutes. At level $(l)10$() the village is complete, and every contract pays half again.$(br)$(li)$(l)1$(): 15, Drone Workshop I, Residence I"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)2$(): 40, Power Station I, Hydroponic Farm I$(br)$(li)$(l)3$(): 80, Outpost II, Market Hall I$(br)$(li)$(l)4$(): 130, Residence II, Watch Tower I$(br)$(li)$(l)5$(): 200, Drone Workshop II, Hydroponic Farm II$(br)$(li)$(l)6$(): 290, Power Station II, Market Hall II$(br)$(li)$(l)7$(): 400, Outpost III, Watch Tower II"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)8$(): 530, Residence III, Hydroponic Farm III$(br)$(li)$(l)9$(): 680, Power Station III, Market Hall III$(br)$(li)$(l)10$(): 850, Drone Workshop III, Watch Tower III"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Watch Tower is the village's defence. Its third tier has two Drone Docks on the gate deck: put a drone with a $(l:drone_systems/modules)Guard Module$(/l) on each, and add a few $(l:basics/laser_turret)Laser Turrets$(/l) along the palisade to keep raiders and monsters out."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:blueprint_disc",
+      "title": "Blueprint discs"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "At each level the Mechanist hands you a $(l)Blueprint Disc$() for every new building. $(l)Right-click$() a disc to learn it: it is used up, and the building appears in your $(l:basics/multiblock_projector)Multiblock Projector$(/l)'s list. Every player gets their own discs: one who was away when the village rose gets theirs at their next talk."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Project a building $(l)inside the village's bounds$() and $(l)lock$() the projection (sneak + right-click). From then on the village watches that spot: build it by hand, or link the projector to a $(l:drone_systems/drone_dock)Drone Dock$(/l) for its Builder drones, who first clear the ground, rocks and trees from the site. Once every block of",
+      "title": "Building"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "the projection is in place, the building is $(l)complete$(), and the Mechanist has a word for it at your next talk. Water and flower pots are not counted, and the farm's crops are left to you."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every building has $(l)three tiers$(), and each tier only $(l)adds$() blocks to the one before it, so an upgrade never takes anything of the building down. Pick an upgrade near its village and the projection locks itself over the building it upgrades. The Outpost's upgrades build on the Mechanist's cabin."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every building does something: the docks take drones, the generators make power, the Bio-Digester turns the harvest into biogas, the beds bring villagers and the job sites give them work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The village reaches $(l)64 blocks$() from the terminal every way. Press $(l)Range$() on the terminal to see its edge in the world: a line of cyan light along the ground, with posts at the corners. Press it again to hide it.",
+      "title": "The village's bounds"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If the terminal is broken or moved the Mechanist cannot work, and tells you so: put it back where he can reach it."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:blueprint_disc": 9
+  }
+}

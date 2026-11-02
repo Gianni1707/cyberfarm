@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "U": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "X": {
+      "item": "minecraft:composter"
+    }
+  },
+  "pattern": [
+    "IUI",
+    "GXG",
+    "ICI"
+  ],
+  "result": {
+    "item": "cyberfarm:bio_digester"
+  }
+}

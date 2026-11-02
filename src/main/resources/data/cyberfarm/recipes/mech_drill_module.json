@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "cyberfarm:advanced_frame"
+    },
+    "I": {
+      "item": "minecraft:iron_block"
+    },
+    "C": {
+      "item": "cyberfarm:advanced_circuit"
+    }
+  },
+  "pattern": [
+    " D ",
+    "DAD",
+    "ICI"
+  ],
+  "result": {
+    "item": "cyberfarm:mech_drill_module"
+  }
+}

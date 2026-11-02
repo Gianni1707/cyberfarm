@@ -1,0 +1,28 @@
+{
+  "name": "Bio-Digester",
+  "icon": "cyberfarm:bio_digester",
+  "category": "cyberfarm:generators",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:bio_digester",
+      "text": "Turns $(l)organic waste$() into $(l)Biogas$(). It needs no power: just feed it.$(br)$(li)Accepts $(l)anything a composter takes$() (seeds, crops, leaves, saplings, flowers...) and $(l)rotten flesh$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Each item takes 2 seconds. A sure-fire compost item (like a cake) gives $(l)250 mB$(), the others less, in proportion to their composting chance; rotten flesh gives $(l)200 mB$().$(br)$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Harvester drone and a hopper feeding the digester make a fully automatic biogas farm."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:bio_digester"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:bio_digester": 3
+  }
+}

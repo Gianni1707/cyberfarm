@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "X": {
+      "item": "minecraft:cauldron"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "GXG",
+    "IBI"
+  ],
+  "result": {
+    "item": "cyberfarm:electrolyzer"
+  }
+}

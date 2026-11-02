@@ -1,0 +1,6 @@
+{
+  "name": "Drones",
+  "description": "Drones are the heart of CyberFarm: modular flying workers that harvest, plant, dig, chop trees, carry items and even give you a ride, then fly home to unload and recharge.",
+  "icon": "cyberfarm:drone",
+  "sortnum": 6
+}

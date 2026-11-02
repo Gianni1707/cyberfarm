@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "minecraft:phantom_membrane"
+    },
+    "R": {
+      "item": "cyberfarm:rotor"
+    },
+    "A": {
+      "item": "cyberfarm:advanced_frame"
+    },
+    "B": {
+      "item": "minecraft:blaze_rod"
+    }
+  },
+  "pattern": [
+    "M M",
+    "RAR",
+    "B B"
+  ],
+  "result": {
+    "item": "cyberfarm:mech_jet_module"
+  }
+}

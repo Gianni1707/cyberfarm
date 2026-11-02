@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "U": {
+      "item": "cyberfarm:uranium_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "X": {
+      "item": "cyberfarm:reactor_casing"
+    },
+    "R": {
+      "item": "cyberfarm:elite_circuit"
+    }
+  },
+  "pattern": [
+    "IUI",
+    "DXD",
+    "IRI"
+  ],
+  "result": {
+    "item": "cyberfarm:reactor_controller"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "cyberfarm:advanced_frame"
+    }
+  },
+  "pattern": [
+    "  S",
+    " S ",
+    "DA "
+  ],
+  "result": {
+    "item": "cyberfarm:mech_blade_module"
+  }
+}

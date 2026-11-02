@@ -2,5 +2,13 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "cyberfarm:item/drone"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "cyberfarm:mini_drone": 1
+      },
+      "model": "cyberfarm:item/mini_drone"
+    }
+  ]
 }

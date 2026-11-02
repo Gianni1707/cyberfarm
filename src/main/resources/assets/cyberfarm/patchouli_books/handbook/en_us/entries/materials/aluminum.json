@@ -1,0 +1,40 @@
+{
+  "name": "Aluminum",
+  "icon": "cyberfarm:aluminum_ingot",
+  "category": "cyberfarm:materials",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Aluminum is the light metal of the first drone frames. You cannot smelt it straight out of its ore: just as in real life, it takes electrolysis and a steady flow of power.$(br)$(li)$(item)Bauxite Ore$()$(br)$(li)$(item)Raw Bauxite$()$(br)$(li)$(item)Alumina$()$(br)$(li)$(item)Aluminum Ingot$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, about as common as iron and mostly above y 48. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it into $(l)Alumina$(), a white powder."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put the Alumina in an $(l)Electrolyzer$(): $(l)1 Aluminum Ingot every 5 seconds at 40 FE/t$(). One $(l:generators/combustion_generator)Combustion Generator$(/l) keeps it running.$(br)Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can process our ore."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:electrolyzer"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:bauxite_ore": 0,
+    "cyberfarm:deepslate_bauxite_ore": 0,
+    "cyberfarm:raw_bauxite": 0,
+    "cyberfarm:alumina": 0,
+    "cyberfarm:aluminum_ingot": 0,
+    "cyberfarm:electrolyzer": 5
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "name": "Drone Frames",
+  "icon": "cyberfarm:basic_frame",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The frame is the base of every drone. Its $(l)tier$() decides how big the battery is, how fast the drone flies, how many function modules it can carry and how many $(l:drone_systems/addons)addons$(/l) fit in it.$(br)$(li)$(item)Basic Drone Frame$()$(br)$(li)$(item)Advanced Drone Frame$()$(br)$(li)$(item)Elite Drone Frame$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Basic Drone Frame$(): 1, 20,000 FE, 80% (2.4 blocks/s), 1, 4, 2 FE/t$(br)$(li)$(l)Advanced Drone Frame$(): 2, 60,000 FE, 130% (3.9 blocks/s), 2, 8, 3 FE/t$(br)$(li)$(l)Elite Drone Frame$(): 3, 150,000 FE, 160% (4.8 blocks/s), 3, 16, 4 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Mini Drone Frame$(): 1, 10,000 FE, 100% (3 blocks/s), 1, 2, 1 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A drone built on the $(l)Mini Drone Frame$() is a $(l)Mini Drone$(): half the size of the others, made for two jobs only: the frame takes the $(l:drone_systems/modules)Builder Module$(/l) or the $(l:drone_systems/modules)Bomb Module$(/l) and nothing else. It lives only on a $(l:drone_systems/drone_dock)Builder Swarm Dock$(/l), which takes up to four, each on its own corner of the pad."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:mini_frame"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Basic and Mini frames are made of $(l:materials/aluminum)aluminum$(/l); the Advanced and Elite frames of $(l:materials/carbon_fiber)carbon fiber$(/l), with $(l:materials/circuits)Advanced and Elite Circuits$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Speed Addons add 10% each on top of the frame speed. The flight cost is the frame's share of the drone's $(l:drone_systems/drones)power use$(/l). Higher tiers are crafted from the tier below, so you never lose your progress."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:basic_frame",
+      "recipe2": "cyberfarm:advanced_frame"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:elite_frame"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:basic_frame": 7,
+    "cyberfarm:advanced_frame": 7,
+    "cyberfarm:elite_frame": 8,
+    "cyberfarm:mini_frame": 4
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "name": "Water Pump",
+  "icon": "cyberfarm:water_pump",
+  "category": "cyberfarm:basics",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:water_pump",
+      "text": "An endless supply of water for reactors and the Coolant Mixer. Place it touching $(l)at least 2 water source blocks$() (the same rule as an infinite water source) and give it power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pumps $(l)500 mB/t$() with $(l)40 FE/t$() and pushes it into adjacent $(l:cables/liquid_pipe)Liquid Pipes$(/l) and machines (water is a liquid: a $(l:cables/gas_pipe)Gas Pipe$(/l) will not take it).$(br)$(li)One pump feeds 500 heat per tick: enough for a Small tower and a Medium one up to 250%. A Large tower at full power (2,000 heat) needs 4 pumps."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It has no GUI: $(l)right-click$() it to see what it is doing."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:water_pump"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:water_pump": 3
+  }
+}

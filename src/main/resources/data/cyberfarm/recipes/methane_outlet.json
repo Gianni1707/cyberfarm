@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "cyberfarm:cyber_frame"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "pattern": [
+    "F",
+    "H"
+  ],
+  "result": {
+    "item": "cyberfarm:methane_outlet"
+  }
+}

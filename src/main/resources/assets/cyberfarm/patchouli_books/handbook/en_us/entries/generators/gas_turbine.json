@@ -1,0 +1,28 @@
+{
+  "name": "Gas Turbine",
+  "icon": "cyberfarm:gas_turbine",
+  "category": "cyberfarm:generators",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:gas_turbine",
+      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br)$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted.$(br)$(li)Like the $(l:generators/combustion_generator)Combustion Generator$(/l), it $(l)pushes power$() into adjacent machines and $(l:cables/energy_conduit)Energy Conduits$(/l), up to 400 FE/t per side."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:gas_turbine"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:gas_turbine": 3
+  }
+}

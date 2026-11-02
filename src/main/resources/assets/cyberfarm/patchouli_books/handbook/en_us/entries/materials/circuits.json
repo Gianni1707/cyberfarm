@@ -1,0 +1,45 @@
+{
+  "name": "Circuits and the Fabricator",
+  "icon": "cyberfarm:fabricator",
+  "category": "cyberfarm:materials",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Every machine, module and frame runs on a circuit, and each tier has its own.$(br)$(li)$(item)Basic Circuit$()$(br)$(li)$(item)Advanced Circuit$()$(br)$(li)$(item)Elite Circuit$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Your first $(l)Basic Circuits$() come from a crafting table: copper, redstone and a gold nugget, $(l)one$() at a time. It is slow and dear on purpose: build a Fabricator as soon as you can.",
+      "title": "By hand"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:basic_circuit"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:fabricator",
+      "title": "The Fabricator",
+      "text": "The Fabricator makes circuits from the ingredients in its $(l)three slots$(), at $(l)40 FE/t$(). Pipe $(l)Acid$() into it for the etched circuits. Any order, any slot: it finds the recipe."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)2 Basic Circuits$(): 1 Copper Ingot, 2 Redstone, 1 Gold Nugget, none, 3 s$(br)$(li)$(l)Advanced Circuit$(): 2 Basic Circuits, 1 Gold Ingot, 250 mB, 5 s$(br)$(li)$(l)Elite Circuit$(): 1 Advanced Circuit, 1 Diamond, 1 Uranium Ingot, 500 mB, 8 s"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Acid comes from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l); the uranium from $(l:nuclear/uranium)uranium ore$(/l). Feed the Fabricator with hoppers, pipes or a $(l:drone_systems/modules)Transport drone$(/l) and keep your circuits stocked with the dock filter's $(l)limit$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:fabricator"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:basic_circuit": 2,
+    "cyberfarm:advanced_circuit": 0,
+    "cyberfarm:elite_circuit": 0,
+    "cyberfarm:fabricator": 3
+  }
+}

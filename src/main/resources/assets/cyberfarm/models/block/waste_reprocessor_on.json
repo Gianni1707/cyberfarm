@@ -60,7 +60,6 @@
         16.01
       ],
       "shade": false,
-      "light_emission": 15,
       "faces": {
         "north": {
           "uv": [
@@ -102,6 +101,10 @@
           "texture": "#side_glow",
           "cullface": "west"
         }
+      },
+      "forge_data": {
+        "block_light": 15,
+        "sky_light": 15
       }
     }
   ]

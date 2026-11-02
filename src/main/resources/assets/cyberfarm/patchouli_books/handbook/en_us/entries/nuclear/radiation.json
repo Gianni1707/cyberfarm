@@ -1,0 +1,42 @@
+{
+  "name": "Waste and Radiation",
+  "icon": "cyberfarm:depleted_fuel_rod",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:depleted_fuel_rod",
+      "text": "Every spent Fuel Rod becomes a $(l)Depleted Fuel Rod$(): nuclear waste. Left untreated it makes the area around it $(l)radioactive$(). Treat it in a $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Radiation builds up chunk by chunk (16x16 columns of the world):$(br)$(li)Depleted Fuel Rods $(l)carried$() by a player, $(l)stored$() in a chest or any container (storage blocks of other mods included), or $(l)lying on the ground$(): every rod adds a little every few seconds.",
+      "title": "What contaminates"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A Fission Reactor whose $(l)waste slots are full$(): the spent rods wait in the core and it $(l)leaks$().$(br)$(li)A $(l)meltdown$(): heavy contamination over a 5x5 chunk area, worst at the core."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Radiation fades away by itself over a few minutes once the source is gone; a meltdown site takes much longer. Waste inside the reactor's waste slots or a Waste Reprocessor is shielded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)below 20 Rad$(): harmless$(br)$(li)$(l)20 Rad$(): $(l)Radiation Sickness I$(): hunger and damage every 3 seconds$(br)$(li)$(l)100 Rad$(): $(l)Radiation Sickness II$(): also weakness, damage more often",
+      "title": "What it does"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)300 Rad$(): $(l)Radiation Sickness III$(): also nausea, damage almost every second$(br)$(li)$(l)50 Rad and more$(): the land $(l)withers$(): grass dries to dirt, plants wilt into dead bushes, leaves fall"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Radiation Sickness hits players and mobs alike and goes through normal armor. A $(l:nuclear/hazmat_suit)Hazmat Suit$(/l) keeps it out, and a $(l:nuclear/hazmat_suit)Geiger Counter$(/l) tells you how much there is. Withering land can be turned off in the common config ($(o)Radiation Withers Land$())."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:depleted_fuel_rod": 0
+  }
+}

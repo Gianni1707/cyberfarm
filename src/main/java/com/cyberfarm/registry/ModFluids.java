@@ -64,7 +64,7 @@ public class ModFluids {
     }
 
     /** Common steam tag, so steam from other mods drives our turbine and ours drives theirs. */
-    public static final TagKey<Fluid> STEAM_TAG = TagKey.create(Registries.FLUID, new ResourceLocation("c", "steam"));
+    public static final TagKey<Fluid> STEAM_TAG = TagKey.create(Registries.FLUID, new ResourceLocation("forge", "steam"));
 
     public static boolean isSteam(FluidResource resource) {
         return !resource.isEmpty() && resource.getFluid().builtInRegistryHolder().is(STEAM_TAG);

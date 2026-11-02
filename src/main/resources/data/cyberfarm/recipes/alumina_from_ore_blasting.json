@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "group": "alumina",
+  "ingredient": {
+    "item": "cyberfarm:bauxite_ore"
+  },
+  "experience": 0.5,
+  "cookingtime": 100,
+  "result": "cyberfarm:alumina"
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Generators",
+  "description": "Everything in CyberFarm runs on $(l)FE$() (Forge Energy): the Drone Assembler builds with it and the Drone Dock charges your drones with it. These machines make that power, and since FE is the standard, generators from other mods work just as well.",
+  "icon": "cyberfarm:combustion_generator",
+  "sortnum": 2
+}

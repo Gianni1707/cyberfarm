@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    }
+  },
+  "pattern": [
+    "IPI",
+    "CTC",
+    "IBI"
+  ],
+  "result": {
+    "item": "cyberfarm:fabricator"
+  }
+}

@@ -2,5 +2,13 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "cyberfarm:item/mob_capsule"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "cyberfarm:filled": 1
+      },
+      "model": "cyberfarm:item/mob_capsule_filled"
+    }
+  ]
 }

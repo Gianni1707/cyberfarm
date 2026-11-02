@@ -36,7 +36,7 @@ import com.cyberfarm.port.ItemResource;
  * The Methane Extractor's chamber needs the Acid to dissolve its mob.
  */
 public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
-    public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dusts/sulfur"));
+    public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "dusts/sulfur"));
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;

@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    },
+    "B": {
+      "item": "minecraft:blast_furnace"
+    },
+    "X": {
+      "item": "minecraft:glass"
+    },
+    "D": {
+      "item": "cyberfarm:advanced_circuit"
+    }
+  },
+  "pattern": [
+    "ICI",
+    "BXB",
+    "IDI"
+  ],
+  "result": {
+    "item": "cyberfarm:waste_reprocessor"
+  }
+}

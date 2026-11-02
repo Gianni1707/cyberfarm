@@ -1,0 +1,42 @@
+{
+  "name": "Coolant Mixer",
+  "icon": "cyberfarm:coolant_mixer",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:coolant_mixer",
+      "text": "Makes the coolants that let a $(l:nuclear/fission_reactor)Fission Reactor$(/l) run at higher power. Uses $(l)20 FE/t$(); each batch takes 2 seconds and makes $(l)500 mB$().$(br)$(li)$(l)Water$(): Lapis Lazuli, $(l)Coolant$()$(br)$(li)$(l)Coolant$(): Blue Ice, $(l)Cryo Coolant$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pipe the fluid in (water from a $(l:basics/water_pump)Water Pump$(/l), or Coolant to upgrade it), put the items in the slot by hand or with a hopper.$(br)$(li)The result is pushed into adjacent pipes and tanks by itself: pipe it to a $(l)Reactor Port$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Fill a bucket$(): right-click the Coolant Mixer (or any tank holding at least 1,000 mB of coolant) with an $(l)empty bucket$().",
+      "title": "Buckets and pools"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Empty it$(): right-click a Reactor Port or tank to pour it in, or anywhere else to pour a $(l)pool$() of coolant, just like water. An empty bucket scoops it back up.$(br)$(li)$(l)Careful$(): coolant is thick and freezing cold. Wading through a pool slows you down, and the longer you"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)stay, the more frost covers the screen; once fully frozen you take damage. $(l)Cryo Coolant$() slows you more and freezes you about four times faster. As in powder snow, $(l)leather armor$() keeps the cold out (but not the slowdown).$(br)$(li)$(item)Coolant Bucket$()$(br)$(li)$(item)Cryo Coolant Bucket$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The coolant fills the reactor's $(l)primary loop$() and decides how much heat can leave the core each tick: 200 with plain water, $(l)500$() with Coolant, $(l)1,200$() with Cryo Coolant. It is not used up like the water, but wears out slowly: 1 mB for every 400 heat it moves.",
+      "title": "Why better coolant"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:coolant_mixer"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:coolant_mixer": 6
+  }
+}

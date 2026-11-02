@@ -1,0 +1,25 @@
+{
+  "name": "Energy Storage",
+  "icon": "cyberfarm:resonance_core",
+  "category": "cyberfarm:energy_storage",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Generators make power only while they run, and reactors make far more than a base uses at once. Energy storage keeps the surplus for later: charge it while the reactor runs at full power, draw from it at night, while a turbine spins up or when a whole"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "drone fleet comes home to charge.$(br2)CyberFarm's battery is a structure you $(l)build bigger$() over time. It has three parts:$(br)$(li)$(l:energy_storage/resonance_core)Resonance Core$(/l) – the pedestal with the floating crystal: the battery itself and its screen."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:energy_storage/resonance_cell)Resonance Cell$(/l) – the blocks of the shell around the crystal: a bigger shell is a higher tier that stores more.$(br)$(li)$(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l) – columns of pylons that hold the crystal steady and are its only way in and out for power.$(br)$(li)$(l:energy_storage/resonance_core)Resonance Core$(/l)$(br)$(li)$(l:energy_storage/resonance_cell)Resonance Cell$(/l)$(br)$(li)$(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)1$(): none, 1,000,000 FE, 1, 16,000 FE/t$(br)$(li)$(l)2$(): 3x3x3, 32,000,000 FE, 2, 128,000 FE/t$(br)$(li)$(l)3$(): 5x5x5, 256,000,000 FE, 3, 512,000 FE/t$(br)$(li)$(l)4$(): 7x7x7, 2,000,000,000 FE, 4, 2,000,000 FE/t$(br)Power goes in and out $(l)through the pylons$(), so it works with $(l:cables/energy_conduit)Energy Conduits$(/l) and with any other mod's cables."
+    }
+  ],
+  "priority": true
+}

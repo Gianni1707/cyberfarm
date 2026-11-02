@@ -1,0 +1,98 @@
+{
+  "name": "Steam Turbine",
+  "icon": "cyberfarm:turbine_controller",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A horizontal hall that turns $(l)Steam$() into FE, in $(l)three sizes$(). Steam piped into its ports spins up a big rotor; the rotor drives the generator. The scene shows the Small turbine."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Steam Turbine",
+      "multiblock": {
+        "pattern": [
+          [
+            "AAA",
+            "ACA",
+            "AAA",
+            "AAA"
+          ],
+          [
+            "ABA",
+            "A A",
+            "A C",
+            "AAA"
+          ],
+          [
+            "AAA",
+            "A0A",
+            "AAA",
+            "AAA"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:turbine_casing",
+          "B": "cyberfarm:turbine_controller[facing=north]",
+          "C": "cyberfarm:turbine_port",
+          "0": "cyberfarm:turbine_casing"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Small$(): 3x3 x 4, 200 mB/t, 4, 800 FE/t$(br)$(li)$(l)Medium$(): 5x5 x 6, 600 mB/t, 5, 3,000 FE/t$(br)$(li)$(l)Large$(): 7x7 x 8, 1,600 mB/t, 6, 9,600 FE/t",
+      "title": "Building the hall"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l)front and back$() are full squares; in between only the $(l)outer ring$() is shell, and the inside must be $(l)empty$(): that is where the rotor spins."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Use $(item)Turbine Casing$()s for the shell and put the $(item)Steam Turbine Controller$() $(l)in the middle of the front$(), facing out. The hall runs straight back from it.$(br)$(li)Swap any shell blocks for $(item)Turbine Port$()s: steam goes in, FE comes out. One port for a steam pipe and one for an $(l:cables/energy_conduit)Energy$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at their ports."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Complete, the blocks disappear into one smooth $(l)white and cyan cylinder$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The rotor does not start at full speed: it $(l)spins up$() as long as there is steam, faster for small turbines (5 seconds) than for big ones (10 seconds), and $(l)spins down$() the same way when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. The rotor also stops when the",
+      "title": "Spinning up"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "energy has nowhere to go, so no steam is wasted.$(br2)The GUI shows the steam tank (32,000 mB), the output, the rotor speed and the size's ratings. Right- click any block of the formed hall to open it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A reactor makes 1 mB of steam for each unit of heat: a Medium tower with 4 rods at 300% makes 600 mB/t, just what a Medium turbine uses. If the turbines cannot keep up, the reactor's steam tank fills up and its core overheats.",
+      "title": "How many turbines?"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Steam from other mods works too (fluids tagged forge:steam)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:turbine_casing",
+      "recipe2": "cyberfarm:turbine_port"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:turbine_controller"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:turbine_controller": 12,
+    "cyberfarm:turbine_casing": 11,
+    "cyberfarm:turbine_port": 11
+  }
+}

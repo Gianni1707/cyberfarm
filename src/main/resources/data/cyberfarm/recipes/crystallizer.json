@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "minecraft:amethyst_block"
+    },
+    "G": {
+      "item": "cyberfarm:containment_glass"
+    },
+    "X": {
+      "item": "cyberfarm:acid_synthesizer"
+    },
+    "C": {
+      "item": "cyberfarm:elite_circuit"
+    }
+  },
+  "pattern": [
+    "DAD",
+    "GXG",
+    "DCD"
+  ],
+  "result": {
+    "item": "cyberfarm:crystallizer"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "cyberfarm:carbon_fiber"
+    },
+    "C": {
+      "item": "cyberfarm:advanced_circuit"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    },
+    "F": {
+      "item": "cyberfarm:basic_frame"
+    }
+  },
+  "pattern": [
+    "KCK",
+    "BFB",
+    "KCK"
+  ],
+  "result": {
+    "item": "cyberfarm:advanced_frame"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "replace": false,
+  "values": [
+    "#forge:raw_materials/uranium",
+    "#forge:raw_materials/bauxite",
+    "#forge:raw_materials/aluminum"
+  ]
+}

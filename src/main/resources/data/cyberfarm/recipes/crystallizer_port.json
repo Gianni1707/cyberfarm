@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "H": {
+      "item": "minecraft:hopper"
+    },
+    "E": {
+      "item": "cyberfarm:energy_conduit"
+    },
+    "X": {
+      "item": "cyberfarm:cyber_frame"
+    },
+    "L": {
+      "item": "cyberfarm:liquid_pipe"
+    }
+  },
+  "pattern": [
+    "IHI",
+    "EXL",
+    "III"
+  ],
+  "result": {
+    "item": "cyberfarm:crystallizer_port"
+  }
+}

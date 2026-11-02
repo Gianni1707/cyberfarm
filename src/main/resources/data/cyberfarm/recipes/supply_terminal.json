@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "minecraft:glass_pane"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "X": {
+      "item": "minecraft:emerald"
+    },
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:barrel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "CXC",
+    "IBI"
+  ],
+  "result": {
+    "item": "cyberfarm:supply_terminal"
+  }
+}

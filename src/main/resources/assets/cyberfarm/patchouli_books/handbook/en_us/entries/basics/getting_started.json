@@ -1,0 +1,73 @@
+{
+  "name": "Getting Started",
+  "icon": "cyberfarm:drone_core",
+  "category": "cyberfarm:basics",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Your first farming drone needs iron, copper, redstone, a little gold and $(l)aluminum$(). Here is the whole path; $(l:materials/materials)Materials and Progression$(/l) shows where it leads."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l)CyberFarm$() tab of the advancements screen (press L) shows where to go next: drones, power, and nuclear power up to the mech."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every drone is built around a $(item)Drone Core$(), and every machine and module around a $(l:materials/circuits)Basic Circuit$(/l): craft your first ones by hand. Frames also need $(item)Rotor$()s and a $(item)Battery Cell$().",
+      "title": "1. Craft the components"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:drone_core",
+      "recipe2": "cyberfarm:basic_circuit"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:rotor",
+      "recipe2": "cyberfarm:battery_cell"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Place a $(l:generators/combustion_generator)Combustion Generator$(/l) and feed it coal or any other furnace fuel. It pushes FE into every machine touching it, or into $(l:cables/energy_conduit)Energy Conduit$(/l)s that carry it further.$(br2)$(l)Look at any CyberFarm machine$() to see a small panel beside the crosshair: whether it is working, the FE it makes or",
+      "title": "2. Make power"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "uses each tick, how full its energy buffer is and how far its batch has got. Working machines also show it: their front lights up and moves, their lights glow in the dark, and they give off sparks, smoke, frost or bubbles depending on the machine."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drone frames are made of aluminum. Mine $(l)Bauxite Ore$(), smelt the Raw Bauxite into Alumina and put it in an $(l:materials/aluminum)Electrolyzer$(/l) next to the generator: it makes $(l:materials/aluminum)Aluminum Ingot$(/l)s (see $(l:materials/aluminum)Aluminum$(/l)). A $(l:materials/circuits)Fabricator$(/l) beside it makes Basic Circuits two at a time.",
+      "title": "3. Make aluminum"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Place a $(l:drone_systems/drone_assembler)Drone Assembler$(/l) next to the generator. Put a $(l:drone_systems/drone_frames)Basic Drone Frame$(/l) and a $(l:drone_systems/modules)Harvester Module$(/l) inside, then press $(l)Assemble$().",
+      "title": "4. Build the drone"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:basic_frame"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Place a $(l:drone_systems/drone_dock)Drone Dock$(/l) in the middle of your farm, also next to a power source (or connect it with cables from another mod). Right-click the dock with the drone to deploy it.",
+      "title": "5. Give it a home"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "By default the drone works a $(l)9x9$() area centred on the dock. Use the $(l:drone_systems/drone_dock)Survey Tool$(/l) to choose a different area: $(l)sneak + scroll$() (or right-click the air) to its $(l)Area$() mode, click the dock, then two opposite corners. The tool tells you each step above the hotbar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The drone brings everything back to the dock. Open the dock to take the items, or pull them out with a hopper or any item pipe.",
+      "title": "6. Collect the harvest"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:drone_core": 3,
+    "cyberfarm:rotor": 4,
+    "cyberfarm:battery_cell": 4
+  }
+}

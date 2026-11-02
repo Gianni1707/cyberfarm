@@ -1,0 +1,45 @@
+{
+  "name": "Drone Assembler",
+  "icon": "cyberfarm:drone_assembler",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:drone_assembler",
+      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)2,000 FE$() and takes 5 seconds."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put a $(l:drone_systems/drone_frames)drone frame$(/l) in the $(l)frame$() slot (on the left). Insert it first: the other slots stay greyed out until there is a frame.$(br)$(li)Put $(l:drone_systems/modules)function modules$(/l) in the $(l)module$() column. The frame tier decides how many module slots are unlocked.",
+      "title": "How to build a drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Optionally put $(l:drone_systems/addons)addons$(/l) in the $(l)2x2 addon grid$(). Each slot holds a stack of the same addon; the counter above the grid shows how many you used out of the frame's limit."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the pad inside the assembler's open chamber, unfolding as it is made. When the bar is full it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A drone needs $(l)at least one module$(), and the same module cannot be installed twice."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 2,000 FE.$(br2)Hover an empty slot to see what goes there."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The assembler accepts FE from any side, so place it next to a $(l:generators/combustion_generator)Combustion Generator$(/l) or connect it with cables."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:drone_assembler"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:drone_assembler": 7
+  }
+}

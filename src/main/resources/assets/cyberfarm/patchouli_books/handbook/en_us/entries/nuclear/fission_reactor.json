@@ -1,0 +1,150 @@
+{
+  "name": "Fission Reactor",
+  "icon": "cyberfarm:reactor_controller",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "A cooling tower in $(l)three sizes$(). Uranium $(l)Fuel Rods$() heat its core, $(l)water$() carries the heat away and leaves as $(l)Steam$() for $(l:nuclear/steam_turbine)Steam Turbines$(/l). The scene shows the Small tower; a $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows any size right where you want to build it."
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Fission Reactor",
+      "multiblock": {
+        "pattern": [
+          [
+            "AAAAA",
+            "A   A",
+            "A   A",
+            "A   A",
+            "AAAAA"
+          ],
+          [
+            "     ",
+            " AAA ",
+            " A A ",
+            " AAA ",
+            "     "
+          ],
+          [
+            "     ",
+            " AAA ",
+            " A A ",
+            " AAA ",
+            "     "
+          ],
+          [
+            "     ",
+            " AAA ",
+            " A A ",
+            " AAA ",
+            "     "
+          ],
+          [
+            "AAAAA",
+            "A   A",
+            "A   A",
+            "A   A",
+            "AAAAA"
+          ],
+          [
+            "AABAA",
+            "A   A",
+            "C   C",
+            "A   A",
+            "AAAAA"
+          ],
+          [
+            "AAAAA",
+            "AAAAA",
+            "AA0AA",
+            "AAAAA",
+            "AAAAA"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:reactor_casing",
+          "B": "cyberfarm:reactor_controller[facing=north]",
+          "C": "cyberfarm:reactor_port",
+          "0": "cyberfarm:reactor_casing"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Bigger towers burn more rods, reach more power and move more heat; small ones are cheap but limited:$(br)$(li)$(l)Small$(): 5x5 x 7, 2, 200%, 150 / 375 / 900 per tick$(br)$(li)$(l)Medium$(): 7x7 x 11, 4, 350%, 250 / 625 / 1,500 per tick$(br)$(li)$(l)Large$(): 9x9 x 15, 8, 500%, 400 / 1,000 / 2,400 per tick",
+      "title": "Building the tower"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every tower is a full square floor, then hollow square rings, wide at the bottom and the rim and narrow at the waist. Layer by layer from the bottom (ring width in blocks):$(br)$(li)$(l)Small$(): 5x5, 5, 5, 3, 3, 3, 5$(br)$(li)$(l)Medium$(): 7x7, 7, 7, 7, 7, 5, 5, 5, 5, 5, 7, 7$(br)$(li)$(l)Large$(): 9x9, 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Blocks outside a narrower ring do not matter; everything inside the rings must be empty.$(br)$(li)Use $(item)Reactor Casing$()s for the shell.$(br)$(li)Put the $(item)Fission Reactor Controller$() $(l)in the middle of one side of layer 2$(), facing out. The controller finds the size by itself, trying the largest first."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Swap any shell blocks for $(item)Reactor Port$()s where you want to connect pipes, cables or hoppers. Two are enough: one for water in, one for steam out.$(br)$(li)The inside must be $(l)empty$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A Large tower makes more steam than a basic $(l:cables/gas_pipe)Gas Pipe$(/l) carries (1,000 mB/t): use $(l)Advanced$() pipes at its steam port.$(br)When the tower is complete it powers up with a deep chime and $(l)turns into a real cooling tower$(): the blocky casings disappear into one smooth, curved shell of white panels with"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "glowing cyan bands, wide at the base, narrow in the middle and flared at the rim. The controller becomes a $(l)panel$() on the surface and every port a glowing $(l)hatch$(), right where a pipe or cable plugged into the port enters the tower. You can $(l)right-click any block of the tower$() to open the reactor."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Left$(): the water tank and the $(l)coolant$() tank (see below).$(br)$(li)$(l)Title$(): the size of the tower.",
+      "title": "The reactor GUI"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Middle$(): 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar per rod, cyan while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the $(l)temperature$() bar with the red alarm mark."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Bottom$(): the $(l)power$() controls, from $(o)Off$() up to the tower's maximum, in steps of 50%.$(br)$(li)$(l)Right$(): the steam tank.$(br)A new reactor starts $(l)Off$(): insert rods, connect water, then raise the power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Reactor Ports are where the outside world connects:$(br)$(li)$(l)Fuel Rods (hoppers, pipes of other mods)$(): Depleted Fuel Rods$(br)$(li)Water and coolant ($(l:cables/liquid_pipe)Liquid Pipes$(/l)): Steam, pushed out by itself ($(l:cables/gas_pipe)Gas Pipes$(/l))",
+      "title": "Ports"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each rod makes $(l)50 heat per tick at 100% power$(): 4 rods at 250% make 500. The heat goes into the $(l)water$(), 1 mB of water for each unit of heat, and leaves as the same amount of $(l)Steam$(): more power, more steam, more FE.$(br2)How much heat can leave each tick depends on the tower",
+      "title": "Power, heat and cooling"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "size (table above) and on the $(l)primary loop$() in the coolant tank: plain water moves the base amount, $(l:nuclear/coolant_mixer)Coolant$(/l) $(l)2.5 times$() as much and $(l:nuclear/coolant_mixer)Cryo Coolant$(/l) $(l)6 times$(). A Large tower at full power (8 rods at 500% = 2,000 heat) needs Cryo Coolant; a Small one at 200% (200 heat) only needs Coolant."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Coolants wear out slowly while they work (1 mB per 400 heat moved). Water and steam room are needed too: without water, or with the steam tank full because the turbines cannot keep up, the heat has nowhere to go."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Heat that cannot leave stays in the core and the $(l)temperature$() rises (hover the bar for the details).$(br)$(li)Above $(l)80%$() an $(l)alarm$() rings and the GUI flashes $(o)OVERHEATING$(). Turn the power down, add water or coolant, or make room for the steam.",
+      "title": "Overheating and meltdown"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)At $(l)100%$() the core $(l)melts down$(): the rods are destroyed, the tower $(l)explodes$() and the area around it becomes heavily $(l:nuclear/radiation)radioactive$(/l) for a long time.$(br)An idle core cools down slowly by itself."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)No escape$(): breaking a block of the tower, or the controller, while the temperature is above 80% does not save you. The core melts down anyway. Turn the power to Off and let it cool first."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:reactor_controller": 0,
+    "cyberfarm:reactor_casing": 0,
+    "cyberfarm:reactor_port": 0
+  }
+}

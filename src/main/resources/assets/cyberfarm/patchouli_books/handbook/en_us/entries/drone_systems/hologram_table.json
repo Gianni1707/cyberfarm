@@ -1,0 +1,59 @@
+{
+  "name": "Hologram Table",
+  "icon": "cyberfarm:hologram_table",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:hologram_table",
+      "text": "A table that projects a $(l)3D map$() of the land around it, with your docks and drones on it. Put one next to your drone yard and watch the whole fleet at work at a glance.$(br2)It needs $(l)no power$() and no setup. Walk up"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "to it and it $(l)wakes$(): a beam of light reaches up from the table and the land rises from the middle outwards, like a wave. Step away and it folds back down. While it is on, a $(l)radar pulse$() sweeps out from the table every few seconds, lighting up the land and every drone it passes, and a $(l)scan line$() climbs through the relief inside a"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "frame of light, lighting up the land it crosses.$(br2)$(l)Right-click$() the table to change how far it shows: $(l)16$(), $(l)24$() or $(l)32$() blocks every way. The wider the range, the wider the projection grows, so the land stays as easy to read."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l)land$() around the table, in relief: hills, water, trees and buildings in the colours of a map. As on a vanilla map, slopes rising to the south are lighter and slopes falling away are darker, so the shape of the land reads at a glance.",
+      "title": "What it shows"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Every $(l)Drone Dock$() and $(l)Builder Swarm Dock$() as a pillar of cyan light.$(br)$(li)Every $(l)drone$() as a dot that moves $(l)live$(), with a short glowing trail behind it and a thin line down to the ground to show how high it flies."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Players$() as white arrows pointing the way they look, and $(l)hostile mobs$() as red dots: you see at once if a creeper is heading for your farm.$(br)$(li)$(l)N$(), $(l)E$(), $(l)S$() and $(l)W$() on the edges of the map."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A line floating above it all that counts your $(l)docks$(), your $(l)drones$() and how many are $(l)working$(), the $(l)hostile mobs$() in range and how far the map reaches."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Cyan$(): working$(br)$(li)$(l)Amber$(): flying home$(br)$(li)$(l)Pale$(): resting or charging on its dock",
+      "title": "Reading the drones"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The land is read again every two seconds; the drones move every frame.$(br)$(li)The map's floor is the ground most of the land stands on: pits, ravines and riverbeds below it show flat, and land taller than 24 blocks above it is cut off at the top.",
+      "title": "Good to know"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It shows only what you could see yourself: chunks out of your view distance stay dark."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:hologram_table"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:hologram_table": 10
+  }
+}

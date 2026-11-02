@@ -27,7 +27,7 @@ import com.cyberfarm.port.ItemResource;
  * steady flow of FE, the way aluminum is really made. The first machine a drone frame needs.
  */
 public class ElectrolyzerBlockEntity extends MachineBlockEntity {
-    public static final TagKey<Item> ALUMINA = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dusts/alumina"));
+    public static final TagKey<Item> ALUMINA = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "dusts/alumina"));
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
     public static final int PROCESS_TIME = 100;

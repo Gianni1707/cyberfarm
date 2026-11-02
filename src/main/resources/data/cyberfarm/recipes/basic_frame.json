@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "cyberfarm:rotor"
+    },
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "D": {
+      "item": "cyberfarm:drone_core"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    }
+  },
+  "pattern": [
+    "RAR",
+    "CDB",
+    "RAR"
+  ],
+  "result": {
+    "item": "cyberfarm:basic_frame"
+  }
+}

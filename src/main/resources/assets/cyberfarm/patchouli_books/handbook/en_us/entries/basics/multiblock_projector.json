@@ -1,0 +1,52 @@
+{
+  "name": "Multiblock Projector",
+  "icon": "cyberfarm:multiblock_projector",
+  "category": "cyberfarm:basics",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "multiblock_projector",
+      "text": "Shows a multiblock $(l)in the world$() as ghost blocks: what to place and where, before you place a single block."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click$() to open the list of structures and see the blocks each one takes: the $(l:nuclear/fission_reactor)Fission Reactor$(/l) and the $(l:nuclear/steam_turbine)Steam Turbine$(/l) in all three sizes, the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber, the four tiers of the $(l:energy_storage/resonance_core)Resonance Core$(/l), the $(l:mech/mech_hangar)Mech Hangar$(/l) and the $(l:mech/mech_core)Crystallizer$(/l) chamber."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Below the multiblocks the list has $(l)schematics$(), marked in cyan: buildings saved with a $(l)Structure Block$(). Any data pack can add them: put the file in data/<namespace>/structure/schematic/. Its north side is its front, which turns towards you. Schematics up to 40 blocks a side are shown."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l:drone_systems/tech_village)tech village$(/l)'s buildings join the list once you $(l)learn$() their $(l)Blueprint Disc$(). Pick an upgrade near its village and the projection locks itself over the building it upgrades, so it shows only what the upgrade adds."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)While you hold it, the projection $(l)follows the block you look at$(): the structure $(l)stands on$() the face you aim at, the controller on the side towards you, facing you, and the rest stretches away from you."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Sneak + right-click a block$() to lock it there. Lock it on a controller you already placed and the projection lines up with it.$(br)$(li)$(l)Sneak + right-click the air$() to unlock it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with a locked projection and a drone with a $(l:drone_systems/modules)Builder Module$(/l) builds it for you."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)In $(l)creative$() mode, right-clicking a block $(l)clears the site and builds$() the structure right away (where it is locked, or where it is projected), with plain casings; swap in the ports you need."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Blocks still to place glow softly; $(l)red$() blocks are wrong, or in the way of a space that must stay empty. Correct blocks are not drawn. Above the hotbar the projector counts what is left, and says when the structure is complete. When any CyberFarm multiblock forms, a ring of light rises through it from the bottom to the top."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:multiblock_projector"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:multiblock_projector": 9
+  }
+}

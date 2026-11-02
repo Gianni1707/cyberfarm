@@ -1,0 +1,6 @@
+{
+  "name": "Nuclear",
+  "description": "The most powerful energy in CyberFarm, and the most demanding. A $(l)Fission Reactor$() shaped like a cooling tower burns uranium $(l)Fuel Rods$(); its core heats water into $(l)Steam$(), and $(l)Steam Turbines$() turn the steam into FE, just like a real power plant.",
+  "icon": "cyberfarm:reactor_controller",
+  "sortnum": 3
+}

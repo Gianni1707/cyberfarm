@@ -37,7 +37,7 @@ import org.jspecify.annotations.Nullable;
  * Elite Circuits from uranium and diamond, etched with more acid.
  */
 public class FabricatorBlockEntity extends MachineBlockEntity {
-    public static final TagKey<Item> URANIUM = TagKey.create(Registries.ITEM, new ResourceLocation("c", "ingots/uranium"));
+    public static final TagKey<Item> URANIUM = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "ingots/uranium"));
     public static final int INPUTS = 3;
     public static final int OUTPUT = 3;
     public static final int TANK_CAPACITY = 8_000;
