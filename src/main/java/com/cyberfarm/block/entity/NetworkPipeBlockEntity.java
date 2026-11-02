@@ -10,10 +10,11 @@ import com.cyberfarm.energy.ConduitNetwork;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.minecraftforge.common.capabilities.Capability;
+
+import com.cyberfarm.port.Caps;
 
 /**
  * Shared by every cable: caches the blocks its network reaches and hands out whatever enters,
@@ -46,7 +47,7 @@ public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements 
      * skipping the blocks a pipe pulls from. {@code insert} gives one receiver what is left and
      * returns how much it took.
      */
-    protected <H> int distribute(BlockCapability<H, Direction> capability, H self, int amount, ToIntBiFunction<H, Integer> insert) {
+    protected <H> int distribute(Capability<H> capability, H self, int amount, ToIntBiFunction<H, Integer> insert) {
         if (level == null || amount <= 0) {
             return 0;
         }
@@ -62,7 +63,7 @@ public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements 
             if (target.source()) {
                 continue;
             }
-            H receiver = level.getCapability(capability, target.pos(), target.side());
+            H receiver = Caps.find(capability, level, target.pos(), target.side());
             if (receiver != null && receiver != self) {
                 moved += insert.applyAsInt(receiver, amount - moved);
             }

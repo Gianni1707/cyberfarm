@@ -1,5 +1,7 @@
 package com.cyberfarm.drone;
 
+import net.minecraftforge.items.ItemHandlerHelper;
+
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -12,11 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import com.cyberfarm.port.ItemResource;
 import com.cyberfarm.port.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /** A drone's cargo hold: what it harvests, digs or carries, and the supplies it takes from its dock. */
 public class DroneCargo {
@@ -39,7 +38,12 @@ public class DroneCargo {
     }
 
     public boolean isEmpty() {
-        return ResourceHandlerUtil.isEmpty(items);
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.getStackInSlot(i).isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public int count() {
@@ -79,11 +83,7 @@ public class DroneCargo {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            int inserted = ResourceHandlerUtil.insertStacking(items, ItemResource.of(stack), stack.getCount(), transaction);
-            transaction.commit();
-            return stack.copyWithCount(stack.getCount() - inserted);
-        }
+        return ItemHandlerHelper.insertItemStacked(items, stack, false);
     }
 
     /** Stores the drops; whatever does not fit falls on the ground at {@code pos}. */

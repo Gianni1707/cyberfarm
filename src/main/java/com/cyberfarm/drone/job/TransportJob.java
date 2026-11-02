@@ -11,10 +11,10 @@ import com.cyberfarm.entity.DroneEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import com.cyberfarm.port.Caps;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import com.cyberfarm.port.ItemMoves;
 import com.cyberfarm.port.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+
+import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -45,10 +45,8 @@ public class TransportJob extends DroneJob {
         IItemHandler from = inventory(level, source);
         IItemHandler to = inventory(level, destination);
         // Only fly if at least one item could actually go from the source to the destination.
-        try (Transaction simulation = Transaction.openRoot()) {
-            if (ResourceHandlerUtil.move(from, to, resource -> dock.filter().test(resource.toStack()) && room(to, resource, dock) > 0, 1, simulation) == 0) {
-                return null;
-            }
+        if (ItemMoves.move(from, to, resource -> dock.filter().test(resource.toStack()) && room(to, resource, dock) > 0, 1, true) == 0) {
+            return null;
         }
         return new TransportJob(source, destination);
     }
@@ -76,7 +74,7 @@ public class TransportJob extends DroneJob {
         for (ItemResource resource : accepted(from, to, dock)) {
             int amount = Math.min(capacity - moved, room(to, resource, dock));
             if (amount > 0) {
-                moved += ResourceHandlerUtil.moveStacking(from, drone.cargo().handler(), resource::equals, amount, null);
+                moved += ItemMoves.move(from, drone.cargo().handler(), resource::equals, amount, false);
             }
         }
         if (moved == 0) {
@@ -96,15 +94,13 @@ public class TransportJob extends DroneJob {
         if (from == null || to == null) {
             return accepted;
         }
-        for (int i = 0; i < from.size(); i++) {
-            ItemResource resource = from.getResource(i);
+        for (int i = 0; i < from.getSlots(); i++) {
+            ItemResource resource = ItemResource.of(from.getStackInSlot(i));
             if (resource.isEmpty() || accepted.contains(resource) || !dock.filter().test(resource.toStack()) || room(to, resource, dock) <= 0) {
                 continue;
             }
-            try (Transaction simulation = Transaction.openRoot()) {
-                if (to.insert(resource, 1, simulation) > 0) {
-                    accepted.add(resource);
-                }
+            if (ItemMoves.fits(to, resource)) {
+                accepted.add(resource);
             }
         }
         return accepted;
@@ -117,16 +113,17 @@ public class TransportJob extends DroneJob {
             return Integer.MAX_VALUE;
         }
         long held = 0;
-        for (int i = 0; i < to.size(); i++) {
-            if (to.getResource(i).equals(resource)) {
-                held += to.getAmountAsLong(i);
+        for (int i = 0; i < to.getSlots(); i++) {
+            ItemStack stack = to.getStackInSlot(i);
+            if (resource.matches(stack)) {
+                held += stack.getCount();
             }
         }
         return (int) Math.max(0, limit - held);
     }
 
     private Result dropOff(DroneEntity drone, ServerLevel level) {
-        ResourceHandlerUtil.moveStacking(drone.cargo().handler(), inventory(level, destination), resource -> true, Integer.MAX_VALUE, null);
+        ItemMoves.move(drone.cargo().handler(), inventory(level, destination), resource -> true, Integer.MAX_VALUE, false);
         // Whatever did not fit goes back to the dock.
         return drone.cargo().isEmpty() ? Result.DONE : Result.RETURN;
     }

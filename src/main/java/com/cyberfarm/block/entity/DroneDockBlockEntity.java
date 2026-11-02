@@ -1,5 +1,10 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.items.ItemHandlerHelper;
+
+import com.cyberfarm.port.ItemMoves;
+import com.cyberfarm.port.SlotRulesItemHandler;
+
 import net.minecraftforge.items.IItemHandler;
 
 import java.util.HashMap;
@@ -46,12 +51,7 @@ import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
 import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
-import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import com.cyberfarm.port.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -121,22 +121,10 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
      * What pipes, hoppers and Transport drones see: with a build linked only the blocks it still
      * needs go in, so a Transport route from any storage brings exactly the missing materials.
      */
-    private final IItemHandler externalItems = new DelegatingResourceHandler<>(() -> items) {
+    private final IItemHandler externalItems = new SlotRulesItemHandler(items, slot -> true, slot -> true) {
         @Override
-        public boolean isValid(int index, ItemResource resource) {
-            return super.isValid(index, resource) && (resource.isEmpty() || wanted(resource.getItem()) > 0);
-        }
-
-        @Override
-        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            int wanted = Math.min(amount, wanted(resource.getItem()));
-            return wanted > 0 ? super.insert(index, resource, wanted, transaction) : 0;
-        }
-
-        @Override
-        public int insert(ItemResource resource, int amount, TransactionContext transaction) {
-            int wanted = Math.min(amount, wanted(resource.getItem()));
-            return wanted > 0 ? super.insert(resource, wanted, transaction) : 0;
+        protected int insertLimit(int slot, ItemStack stack) {
+            return Math.min(stack.getCount(), wanted(stack.getItem()));
         }
     };
 
@@ -187,9 +175,9 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             if (source == null) {
                 continue;
             }
-            ResourceHandlerUtil.moveStacking(items, source, resource -> !layer.containsKey(resource.getItem()), Integer.MAX_VALUE, null);
+            ItemMoves.move(items, source, resource -> !layer.containsKey(resource.getItem()), Integer.MAX_VALUE, false);
             for (Map.Entry<Item, Integer> entry : List.copyOf(missing.entrySet())) {
-                int moved = ResourceHandlerUtil.moveStacking(source, items, resource -> resource.is(entry.getKey()), entry.getValue(), null);
+                int moved = ItemMoves.move(source, items, resource -> resource.is(entry.getKey()), entry.getValue(), false);
                 if (moved >= entry.getValue()) {
                     missing.remove(entry.getKey());
                 } else if (moved > 0) {
@@ -441,11 +429,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         if (stack.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            int inserted = ResourceHandlerUtil.insertStacking(items, ItemResource.of(stack), stack.getCount(), transaction);
-            transaction.commit();
-            return stack.copyWithCount(stack.getCount() - inserted);
-        }
+        return ItemHandlerHelper.insertItemStacked(items, stack, false);
     }
 
     /** Takes up to {@code max} items of the first stack matching {@code filter}, e.g. seeds for a Planter. */

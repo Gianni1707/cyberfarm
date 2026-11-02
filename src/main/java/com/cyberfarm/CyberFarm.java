@@ -46,7 +46,7 @@ import net.neoforged.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import com.cyberfarm.port.Caps;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
@@ -109,8 +109,8 @@ public class CyberFarm {
         return new ResourceLocation(MODID, path);
     }
 
-    // Exposes FE and items to other mods' cables, pipes and hoppers.
-    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+    // Exposes FE, items and fluids to other mods' cables, pipes and hoppers (answered by PortBlockEntity).
+    private static void registerCapabilities(FMLCommonSetupEvent event) {
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());

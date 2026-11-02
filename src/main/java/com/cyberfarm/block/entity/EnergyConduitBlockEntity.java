@@ -1,15 +1,14 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.energy.EnergyUtil;
+import com.cyberfarm.port.Caps;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import com.cyberfarm.port.Caps;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * FE handler of an Energy Conduit: energy pushed in is passed on to the network's machines at once.
@@ -17,24 +16,34 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 public class EnergyConduitBlockEntity extends NetworkPipeBlockEntity {
     private final IEnergyStorage handler = new IEnergyStorage() {
         @Override
-        public long getAmountAsLong() {
+        public int getEnergyStored() {
             return 0;
         }
 
         @Override
-        public long getCapacityAsLong() {
+        public int getMaxEnergyStored() {
             return rate();
         }
 
         @Override
-        public int insert(int amount, TransactionContext transaction) {
-            return distribute(Capabilities.Energy.BLOCK, this, Math.min(amount, rate()),
-                    (receiver, left) -> receiver.insert(left, transaction));
+        public int receiveEnergy(int amount, boolean simulate) {
+            return distribute(Caps.ENERGY, this, Math.min(amount, rate()),
+                    (receiver, left) -> receiver.receiveEnergy(left, simulate));
         }
 
         @Override
-        public int extract(int amount, TransactionContext transaction) {
+        public int extractEnergy(int amount, boolean simulate) {
             return 0;
+        }
+
+        @Override
+        public boolean canReceive() {
+            return true;
+        }
+
+        @Override
+        public boolean canExtract() {
+            return false;
         }
     };
 
@@ -47,7 +56,7 @@ public class EnergyConduitBlockEntity extends NetworkPipeBlockEntity {
     public void pull(ServerLevel level, BlockPos pos, Direction side) {
         IEnergyStorage source = Caps.energy(level, pos.relative(side), side.getOpposite());
         if (source != null) {
-            EnergyHandlerUtil.move(source, handler, rate(), null);
+            EnergyUtil.move(source, handler, rate());
         }
     }
 

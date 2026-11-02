@@ -1,5 +1,7 @@
 package com.cyberfarm.item;
 
+import net.minecraftforge.fluids.FluidStack;
+
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import net.minecraft.server.level.ServerLevel;
@@ -18,9 +20,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import com.cyberfarm.port.Caps;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import com.cyberfarm.port.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
  * Bucket of a CyberFarm fluid. Right-click a machine, reactor port or tank of any mod to pour its
@@ -48,13 +47,12 @@ public class FluidBucketItem extends BucketItem {
             return InteractionResult.PASS;
         }
         if (level instanceof ServerLevel) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                // All or nothing, like a vanilla bucket
-                if (target.insert(FluidResource.of(content), AMOUNT, transaction) < AMOUNT) {
-                    return InteractionResult.FAIL;
-                }
-                transaction.commit();
+            // All or nothing, like a vanilla bucket
+            FluidStack poured = new FluidStack(getFluid(), AMOUNT);
+            if (target.fill(poured, IFluidHandler.FluidAction.SIMULATE) < AMOUNT) {
+                return InteractionResult.FAIL;
             }
+            target.fill(poured, IFluidHandler.FluidAction.EXECUTE);
             Player player = context.getPlayer();
             if (player != null) {
                 player.setItemInHand(context.getHand(), BucketItem.getEmptySuccessItem(context.getItemInHand(), player));
@@ -81,17 +79,17 @@ public class FluidBucketItem extends BucketItem {
         if (source == null) {
             return;
         }
-        for (int i = 0; i < source.size(); i++) {
-            FluidResource fluid = source.getResource(i);
-            if (fluid.isEmpty() || !(fluid.getFluid().getBucket() instanceof FluidBucketItem bucket) || source.getAmountAsLong(i) < AMOUNT) {
+        for (int i = 0; i < source.getTanks(); i++) {
+            FluidStack fluid = source.getFluidInTank(i);
+            if (fluid.isEmpty() || !(fluid.getFluid().getBucket() instanceof FluidBucketItem bucket) || fluid.getAmount() < AMOUNT) {
                 continue;
             }
-            try (Transaction transaction = Transaction.openRoot()) {
-                if (source.extract(i, fluid, AMOUNT, transaction) < AMOUNT) {
-                    continue;
-                }
-                transaction.commit();
+            FluidStack taken = fluid.copy();
+            taken.setAmount(AMOUNT);
+            if (source.drain(taken, IFluidHandler.FluidAction.SIMULATE).getAmount() < AMOUNT) {
+                continue;
             }
+            source.drain(taken, IFluidHandler.FluidAction.EXECUTE);
             Player player = event.getEntity();
             ItemStack filled = new ItemStack(bucket);
             player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(held, player, filled));

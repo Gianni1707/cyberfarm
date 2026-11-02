@@ -1,63 +1,64 @@
 package com.cyberfarm.block.entity;
 
-import net.minecraftforge.fluids.capability.IFluidHandler;
-
 import com.cyberfarm.block.GasPipeBlock;
+import com.cyberfarm.port.Caps;
+import com.cyberfarm.port.FluidResource;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import com.cyberfarm.port.Caps;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import com.cyberfarm.port.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * Fluid handler of a Gas or Liquid Pipe: whatever is pushed in goes straight to the tanks and
  * machines on the network. Works with any mod's fluid blocks.
  */
 public class GasPipeBlockEntity extends NetworkPipeBlockEntity {
-    private final IFluidHandler handler = new ResourceHandler<>() {
+    private final IFluidHandler handler = new IFluidHandler() {
         @Override
-        public int size() {
+        public int getTanks() {
             return 1;
         }
 
         @Override
-        public FluidResource getResource(int index) {
-            return FluidResource.EMPTY;
+        public FluidStack getFluidInTank(int tank) {
+            return FluidStack.EMPTY;
         }
 
         @Override
-        public long getAmountAsLong(int index) {
-            return 0;
-        }
-
-        @Override
-        public long getCapacityAsLong(int index, FluidResource resource) {
+        public int getTankCapacity(int tank) {
             return rate();
         }
 
         @Override
-        public boolean isValid(int index, FluidResource resource) {
-            return carries(resource);
+        public boolean isFluidValid(int tank, FluidStack stack) {
+            return carries(FluidResource.of(stack));
         }
 
         @Override
-        public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
-            if (resource.isEmpty() || !carries(resource)) {
+        public int fill(FluidStack resource, FluidAction action) {
+            if (resource.isEmpty() || !carries(FluidResource.of(resource))) {
                 return 0;
             }
-            return distribute(Capabilities.Fluid.BLOCK, this, Math.min(amount, rate()),
-                    (receiver, left) -> receiver.insert(resource, left, transaction));
+            return distribute(Caps.FLUID, this, Math.min(resource.getAmount(), rate()), (receiver, left) -> {
+                FluidStack offer = resource.copy();
+                offer.setAmount(left);
+                return receiver.fill(offer, action);
+            });
         }
 
         @Override
-        public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
-            return 0;
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
         }
     };
 
@@ -74,7 +75,7 @@ public class GasPipeBlockEntity extends NetworkPipeBlockEntity {
     public void pull(ServerLevel level, BlockPos pos, Direction side) {
         IFluidHandler source = Caps.fluids(level, pos.relative(side), side.getOpposite());
         if (source != null) {
-            ResourceHandlerUtil.move(source, handler, this::carries, rate(), null);
+            FluidUtil.tryFluidTransfer(handler, source, rate(), true);
         }
     }
 

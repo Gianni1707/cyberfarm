@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.SlotRulesItemHandler;
+
 import net.minecraftforge.items.IItemHandler;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -38,10 +40,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import com.cyberfarm.port.FluidResource;
 import com.cyberfarm.port.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -82,42 +82,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     private final TankGroup automationFluids = TankGroup.of(new GasTank[] {acid});
 
     /** What automation sees, here and through the ports: the isotope and amethyst go in, only the crystal comes out. */
-    private final IItemHandler automationItems = new ResourceHandler<>() {
-        @Override
-        public int size() {
-            return items.size();
-        }
-
-        @Override
-        public ItemResource getResource(int index) {
-            return items.getResource(index);
-        }
-
-        @Override
-        public long getAmountAsLong(int index) {
-            return items.getAmountAsLong(index);
-        }
-
-        @Override
-        public long getCapacityAsLong(int index, ItemResource resource) {
-            return items.getCapacityAsLong(index, resource);
-        }
-
-        @Override
-        public boolean isValid(int index, ItemResource resource) {
-            return items.isValid(index, resource);
-        }
-
-        @Override
-        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index != OUTPUT ? items.insert(index, resource, amount, transaction) : 0;
-        }
-
-        @Override
-        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index == OUTPUT ? items.extract(index, resource, amount, transaction) : 0;
-        }
-    };
+    private final IItemHandler automationItems = new SlotRulesItemHandler(items, slot -> slot != OUTPUT, slot -> slot == OUTPUT);
 
     public IFluidHandler portFluids() {
         return automationFluids;
