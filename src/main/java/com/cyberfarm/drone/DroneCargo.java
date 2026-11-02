@@ -10,11 +10,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ItemResource;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -60,7 +60,7 @@ public class DroneCargo {
         if (slot < 0) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack = ItemUtil.getStack(items, slot);
+        ItemStack stack = items.getStackInSlot(slot);
         items.set(slot, ItemResource.of(stack), stack.getCount() - 1);
         return stack.copyWithCount(1);
     }
@@ -69,7 +69,7 @@ public class DroneCargo {
     public ItemStack firstItem() {
         ItemStack shown = ItemStack.EMPTY;
         for (int i = 0; i < items.size() && shown.isEmpty(); i++) {
-            shown = ItemUtil.getStack(items, i).copyWithCount(1);
+            shown = items.getStackInSlot(i).copyWithCount(1);
         }
         return shown;
     }
@@ -99,7 +99,7 @@ public class DroneCargo {
     /** Moves everything the dock can take into it. */
     public void unloadInto(DroneDockBlockEntity dock) {
         for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(items, i);
+            ItemStack stack = items.getStackInSlot(i);
             if (!stack.isEmpty()) {
                 ItemStack rest = dock.deposit(stack);
                 items.set(i, ItemResource.of(rest), rest.getCount());
@@ -110,7 +110,7 @@ public class DroneCargo {
     /** Empties the hold, handing every stack to {@code drop}. */
     public void dropAll(Consumer<ItemStack> drop) {
         for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(items, i);
+            ItemStack stack = items.getStackInSlot(i);
             if (!stack.isEmpty()) {
                 drop.accept(stack);
                 items.set(i, ItemResource.EMPTY, 0);
@@ -120,7 +120,7 @@ public class DroneCargo {
 
     private int find(Predicate<ItemStack> filter) {
         for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = ItemUtil.getStack(items, i);
+            ItemStack stack = items.getStackInSlot(i);
             if (!stack.isEmpty() && filter.test(stack)) {
                 return i;
             }

@@ -99,9 +99,9 @@ public final class ProjectionRenderer {
         if (time - lastMessage >= 10 || time < lastMessage) {
             lastMessage = time;
             Component name = structure.displayName();
-            player.sendOverlayMessage(missing + wrong == 0
+            player.displayClientMessage(missing + wrong == 0
                     ? Component.translatable("message.cyberfarm.projector.complete", name)
-                    : Component.translatable("message.cyberfarm.projector.status", name, missing, wrong));
+                    : Component.translatable("message.cyberfarm.projector.status", name, missing, wrong), true);
         }
     }
 

@@ -12,8 +12,8 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import org.jspecify.annotations.Nullable;
 
 /**

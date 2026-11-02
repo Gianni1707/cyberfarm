@@ -88,7 +88,7 @@ public class DroneItem extends Item {
 
     private static void message(Player player, Component text) {
         if (player != null) {
-            player.sendOverlayMessage(text);
+            player.displayClientMessage(text, true);
         }
     }
 

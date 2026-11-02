@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -17,7 +18,6 @@ import org.jspecify.annotations.Nullable;
 
 /** The Mech Hangar's console: the controller at its front-left corner, with the hangar's screen. */
 public class MechHangarBlock extends MachineBlock {
-    public static final MapCodec<MechHangarBlock> CODEC = simpleCodec(MechHangarBlock::new);
     /** The hangar around it is complete. */
     public static final BooleanProperty FORMED = MethaneExtractorBlock.FORMED;
 
@@ -26,10 +26,6 @@ public class MechHangarBlock extends MachineBlock {
         registerDefaultState(defaultBlockState().setValue(FORMED, false));
     }
 
-    @Override
-    protected MapCodec<MechHangarBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -43,7 +39,7 @@ public class MechHangarBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.MECH_HANGAR.get());
     }
 }

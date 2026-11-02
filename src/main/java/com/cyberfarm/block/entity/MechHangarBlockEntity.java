@@ -36,12 +36,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.storage.ValueInput;
+import com.cyberfarm.port.ValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ItemResource;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 import org.jspecify.annotations.Nullable;
 
 /**

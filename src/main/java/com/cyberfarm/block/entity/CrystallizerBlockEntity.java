@@ -1,5 +1,9 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.items.IItemHandler;
+
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
@@ -32,11 +36,11 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.FluidResource;
+import com.cyberfarm.port.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
@@ -78,7 +82,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     private final TankGroup automationFluids = TankGroup.of(new GasTank[] {acid});
 
     /** What automation sees, here and through the ports: the isotope and amethyst go in, only the crystal comes out. */
-    private final ResourceHandler<ItemResource> automationItems = new ResourceHandler<>() {
+    private final IItemHandler automationItems = new ResourceHandler<>() {
         @Override
         public int size() {
             return items.size();
@@ -115,11 +119,11 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         }
     };
 
-    public ResourceHandler<FluidResource> portFluids() {
+    public IFluidHandler portFluids() {
         return automationFluids;
     }
 
-    public ResourceHandler<ItemResource> portItems() {
+    public IItemHandler portItems() {
         return automationItems;
     }
 

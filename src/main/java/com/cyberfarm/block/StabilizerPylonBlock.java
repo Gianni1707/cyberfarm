@@ -3,9 +3,12 @@ package com.cyberfarm.block;
 import java.util.Locale;
 
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
-import com.mojang.serialization.MapCodec;
+
+import com.cyberfarm.block.entity.CapabilityPortBlockEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
@@ -32,8 +35,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * A Resonance Core finds the columns lined up on its sides, fires their beams, and takes and gives
  * its power through every block of them.
  */
-public class StabilizerPylonBlock extends Block {
-    public static final MapCodec<StabilizerPylonBlock> CODEC = simpleCodec(StabilizerPylonBlock::new);
+public class StabilizerPylonBlock extends Block implements EntityBlock {
     public static final EnumProperty<Part> PART = EnumProperty.create("part", Part.class);
     // A socket on each side where an Energy Conduit plugs in, bridging the gap to the narrow shaft
     public static final BooleanProperty NORTH = BlockStateProperties.NORTH;
@@ -65,10 +67,6 @@ public class StabilizerPylonBlock extends Block {
                 .setValue(NORTH, false).setValue(EAST, false).setValue(SOUTH, false).setValue(WEST, false));
     }
 
-    @Override
-    protected MapCodec<StabilizerPylonBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -124,5 +122,10 @@ public class StabilizerPylonBlock extends Block {
             case MIDDLE -> MIDDLE;
             case TOP -> TOP;
         };
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new CapabilityPortBlockEntity(pos, state);
     }
 }

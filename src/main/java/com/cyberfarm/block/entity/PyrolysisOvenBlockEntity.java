@@ -18,9 +18,9 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+import com.cyberfarm.port.ItemResource;
 
 /**
  * Pyrolysis Oven: splits Methane into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon

@@ -2,9 +2,9 @@ package com.cyberfarm.energy;
 
 import java.util.function.Supplier;
 
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jspecify.annotations.Nullable;
+import javax.annotation.Nullable;
+
+import net.minecraftforge.energy.IEnergyStorage;
 
 /**
  * The energy port of a block that only fronts for another one (a Stabilizer Pylon for its Resonance
@@ -12,34 +12,50 @@ import org.jspecify.annotations.Nullable;
  * then, or does nothing when there is none. Looked up on every call, so cables keep working as the
  * structure is built, linked or broken.
  */
-public class ForwardingEnergyHandler implements EnergyHandler {
-    private final Supplier<@Nullable EnergyHandler> target;
+public class ForwardingEnergyHandler implements IEnergyStorage {
+    private final Supplier<IEnergyStorage> target;
 
-    public ForwardingEnergyHandler(Supplier<@Nullable EnergyHandler> target) {
+    public ForwardingEnergyHandler(Supplier<IEnergyStorage> target) {
         this.target = target;
     }
 
-    @Override
-    public long getAmountAsLong() {
-        EnergyHandler handler = target.get();
-        return handler != null ? handler.getAmountAsLong() : 0;
+    private @Nullable IEnergyStorage target() {
+        return target.get();
     }
 
     @Override
-    public long getCapacityAsLong() {
-        EnergyHandler handler = target.get();
-        return handler != null ? handler.getCapacityAsLong() : 0;
+    public int getEnergyStored() {
+        IEnergyStorage handler = target();
+        return handler != null ? handler.getEnergyStored() : 0;
     }
 
     @Override
-    public int insert(int amount, TransactionContext transaction) {
-        EnergyHandler handler = target.get();
-        return handler != null ? handler.insert(amount, transaction) : 0;
+    public int getMaxEnergyStored() {
+        IEnergyStorage handler = target();
+        return handler != null ? handler.getMaxEnergyStored() : 0;
     }
 
     @Override
-    public int extract(int amount, TransactionContext transaction) {
-        EnergyHandler handler = target.get();
-        return handler != null ? handler.extract(amount, transaction) : 0;
+    public int receiveEnergy(int amount, boolean simulate) {
+        IEnergyStorage handler = target();
+        return handler != null ? handler.receiveEnergy(amount, simulate) : 0;
+    }
+
+    @Override
+    public int extractEnergy(int amount, boolean simulate) {
+        IEnergyStorage handler = target();
+        return handler != null ? handler.extractEnergy(amount, simulate) : 0;
+    }
+
+    @Override
+    public boolean canReceive() {
+        IEnergyStorage handler = target();
+        return handler != null && handler.canReceive();
+    }
+
+    @Override
+    public boolean canExtract() {
+        IEnergyStorage handler = target();
+        return handler != null && handler.canExtract();
     }
 }

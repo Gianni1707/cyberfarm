@@ -1,12 +1,15 @@
 package com.cyberfarm.energy;
 
-import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+
+import net.minecraftforge.energy.EnergyStorage;
 
 /**
  * FE buffer used by every CyberFarm machine. The insert/extract limits only apply to other mods
  * (cables, other machines); the machine itself changes the buffer through the helpers below.
  */
-public class MachineEnergyHandler extends SimpleEnergyHandler {
+public class MachineEnergyHandler extends EnergyStorage {
     private final Runnable onChanged;
     /** What the machine itself made and used since {@link #takeGenerated}/{@link #takeUsed} last read it. */
     private int generated;
@@ -18,7 +21,25 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
     }
 
     @Override
-    protected void onEnergyChanged(int previousAmount) {
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        int received = super.receiveEnergy(maxReceive, simulate);
+        if (received > 0 && !simulate) {
+            onChanged.run();
+        }
+        return received;
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        int extracted = super.extractEnergy(maxExtract, simulate);
+        if (extracted > 0 && !simulate) {
+            onChanged.run();
+        }
+        return extracted;
+    }
+
+    private void set(int amount) {
+        energy = amount;
         onChanged.run();
     }
 
@@ -44,7 +65,7 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
 
     /** Changes how much other mods may put in and take out per call; 0 closes that way. */
     public void setTransferLimits(int maxInsert, int maxExtract) {
-        this.maxInsert = maxInsert;
+        this.maxReceive = maxInsert;
         this.maxExtract = maxExtract;
     }
 
@@ -88,5 +109,13 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
         int value = used;
         used = 0;
         return value;
+    }
+
+    public void serialize(ValueOutput output) {
+        output.putInt("energy", energy);
+    }
+
+    public void deserialize(ValueInput input) {
+        energy = Math.min(input.getIntOr("energy", 0), capacity);
     }
 }

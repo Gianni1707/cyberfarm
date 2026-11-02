@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidType;
 import com.cyberfarm.port.DeferredHolder;
 import com.cyberfarm.port.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.cyberfarm.port.FluidResource;
 
 public class ModFluids {
     public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CyberFarm.MODID);

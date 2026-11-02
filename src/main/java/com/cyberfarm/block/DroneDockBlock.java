@@ -1,9 +1,10 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +25,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 public class DroneDockBlock extends MachineBlock {
-    public static final MapCodec<DroneDockBlock> CODEC = simpleCodec(DroneDockBlock::new);
 
     // Landing pad plus four corner beacons
     private static final VoxelShape SHAPE = Shapes.or(
@@ -38,10 +38,6 @@ public class DroneDockBlock extends MachineBlock {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<? extends DroneDockBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -63,7 +59,7 @@ public class DroneDockBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.DRONE_DOCK.get());
     }
 }

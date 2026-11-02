@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.items.IItemHandler;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -40,14 +42,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import net.neoforged.neoforge.transfer.DelegatingResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
@@ -119,7 +121,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
      * What pipes, hoppers and Transport drones see: with a build linked only the blocks it still
      * needs go in, so a Transport route from any storage brings exactly the missing materials.
      */
-    private final ResourceHandler<ItemResource> externalItems = new DelegatingResourceHandler<>(() -> items) {
+    private final IItemHandler externalItems = new DelegatingResourceHandler<>(() -> items) {
         @Override
         public boolean isValid(int index, ItemResource resource) {
             return super.isValid(index, resource) && (resource.isEmpty() || wanted(resource.getItem()) > 0);
@@ -181,7 +183,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             if (level.getBlockEntity(at) instanceof DroneDockBlockEntity) {
                 continue;
             }
-            ResourceHandler<ItemResource> source = level.getCapability(Capabilities.Item.BLOCK, at, side.getOpposite());
+            IItemHandler source = Caps.items(level, at, side.getOpposite());
             if (source == null) {
                 continue;
             }
@@ -346,7 +348,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         setChanged();
     }
 
-    public ResourceHandler<ItemResource> getExternalItems() {
+    public IItemHandler getExternalItems() {
         return externalItems;
     }
 

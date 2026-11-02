@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.energy.MachineEnergyHandler;
@@ -17,10 +19,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+import com.cyberfarm.port.ItemResource;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -28,7 +30,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
  * Shared base for CyberFarm machines: an FE buffer, an item inventory and synced GUI data.
  * The first {@link #ENERGY_DATA_SLOTS} data slots always carry energy and capacity.
  */
-public abstract class MachineBlockEntity extends BlockEntity implements MenuProvider {
+public abstract class MachineBlockEntity extends PortBlockEntity implements MenuProvider {
     public static final int ENERGY_DATA_SLOTS = 4;
     /** The status is measured over this many ticks, and sent again at least this often regardless. */
     private static final int STATUS_INTERVAL = 20;
@@ -147,7 +149,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     }
 
     public ItemStack getStack(int index) {
-        return ItemUtil.getStack(items, index);
+        return items.getStackInSlot(index);
     }
 
     public void setStack(int index, ItemStack stack) {
@@ -187,7 +189,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         ItemStacksResourceHandler saved = new ItemStacksResourceHandler(items.size());
         saved.deserialize(input.childOrEmpty("items"));
         for (int i = 0; i < items.size(); i++) {
-            ItemStack stack = i < saved.size() ? ItemUtil.getStack(saved, i) : ItemStack.EMPTY;
+            ItemStack stack = i < saved.size() ? saved.getStackInSlot(i) : ItemStack.EMPTY;
             items.set(i, ItemResource.of(stack), stack.getCount());
         }
     }

@@ -1,14 +1,13 @@
 package com.cyberfarm.fluid;
 
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 /**
  * Several tanks of a machine exposed to pipes as one fluid handler: input tanks only take fluid
  * in (what each accepts is decided by its own {@link GasTank}), output tanks only give it out.
  */
-public class TankGroup implements ResourceHandler<FluidResource> {
+public class TankGroup implements IFluidHandler {
     private final GasTank[] tanks;
     private final boolean[] output;
 
@@ -28,37 +27,61 @@ public class TankGroup implements ResourceHandler<FluidResource> {
     }
 
     @Override
-    public int size() {
+    public int getTanks() {
         return tanks.length;
     }
 
     @Override
-    public FluidResource getResource(int index) {
-        return tanks[index].getResource(0);
+    public FluidStack getFluidInTank(int tank) {
+        return tanks[tank].getFluid();
     }
 
     @Override
-    public long getAmountAsLong(int index) {
-        return tanks[index].amount();
+    public int getTankCapacity(int tank) {
+        return tanks[tank].capacity();
     }
 
     @Override
-    public long getCapacityAsLong(int index, FluidResource resource) {
-        return tanks[index].capacity();
+    public boolean isFluidValid(int tank, FluidStack stack) {
+        return !output[tank] && tanks[tank].isFluidValid(stack);
     }
 
     @Override
-    public boolean isValid(int index, FluidResource resource) {
-        return !output[index] && tanks[index].isValid(0, resource);
+    public int fill(FluidStack resource, FluidAction action) {
+        for (int i = 0; i < tanks.length; i++) {
+            if (!output[i]) {
+                int filled = tanks[i].fill(resource, action);
+                if (filled > 0) {
+                    return filled;
+                }
+            }
+        }
+        return 0;
     }
 
     @Override
-    public int insert(int index, FluidResource resource, int amount, TransactionContext transaction) {
-        return output[index] ? 0 : tanks[index].insert(0, resource, amount, transaction);
+    public FluidStack drain(FluidStack resource, FluidAction action) {
+        for (int i = 0; i < tanks.length; i++) {
+            if (output[i]) {
+                FluidStack drained = tanks[i].drain(resource, action);
+                if (!drained.isEmpty()) {
+                    return drained;
+                }
+            }
+        }
+        return FluidStack.EMPTY;
     }
 
     @Override
-    public int extract(int index, FluidResource resource, int amount, TransactionContext transaction) {
-        return output[index] ? tanks[index].extract(0, resource, amount, transaction) : 0;
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        for (int i = 0; i < tanks.length; i++) {
+            if (output[i]) {
+                FluidStack drained = tanks[i].drain(maxDrain, action);
+                if (!drained.isEmpty()) {
+                    return drained;
+                }
+            }
+        }
+        return FluidStack.EMPTY;
     }
 }

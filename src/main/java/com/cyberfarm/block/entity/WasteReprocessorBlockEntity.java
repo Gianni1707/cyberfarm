@@ -15,9 +15,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+import com.cyberfarm.port.ItemResource;
 
 /**
  * Waste Reprocessor: treats a Depleted Fuel Rod with FE into a block of harmless Vitrified Waste,

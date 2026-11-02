@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import java.util.List;
 import java.util.function.ToIntBiFunction;
 
@@ -17,7 +19,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
  * Shared by every cable: caches the blocks its network reaches and hands out whatever enters,
  * taking turns between them so none starves.
  */
-public abstract class NetworkPipeBlockEntity extends BlockEntity implements NetworkPipeBlock.Puller {
+public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements NetworkPipeBlock.Puller {
     private List<ConduitNetwork.Endpoint> endpoints = List.of();
     private int cachedVersion = -1;
     private int nextEndpoint;

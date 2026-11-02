@@ -22,7 +22,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 
 /**
  * Configures a Drone Dock. Sneak + mouse wheel (or right-click in the air) switches between its
@@ -125,7 +125,7 @@ public class SurveyToolItem extends Item {
             message(player, Component.translatable("message.cyberfarm.survey.too_far", MAX_DOCK_DISTANCE));
             return InteractionResult.FAIL;
         }
-        if (mode == Mode.ROUTE && level.getCapability(Capabilities.Item.BLOCK, pos, null) == null) {
+        if (mode == Mode.ROUTE && Caps.items(level, pos, null) == null) {
             message(player, Component.translatable("message.cyberfarm.survey.not_container"));
             return InteractionResult.FAIL;
         }
@@ -249,7 +249,7 @@ public class SurveyToolItem extends Item {
 
     private static void message(Player player, Component text) {
         if (player != null) {
-            player.sendOverlayMessage(text);
+            player.displayClientMessage(text, true);
         }
     }
 

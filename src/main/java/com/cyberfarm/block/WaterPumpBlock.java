@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -20,21 +21,16 @@ import org.jspecify.annotations.Nullable;
 
 /** Has no GUI: right-click tells what the pump is doing. */
 public class WaterPumpBlock extends LitMachineBlock {
-    public static final MapCodec<WaterPumpBlock> CODEC = simpleCodec(WaterPumpBlock::new);
 
     public WaterPumpBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<WaterPumpBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof WaterPumpBlockEntity pump) {
-            player.sendOverlayMessage(pump.status());
+            player.displayClientMessage(pump.status(), true);
         }
         return InteractionResult.SUCCESS;
     }
@@ -45,7 +41,7 @@ public class WaterPumpBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.WATER_PUMP.get());
     }
 

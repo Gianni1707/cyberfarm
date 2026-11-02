@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.registry.ModBlockEntities;
 
@@ -7,10 +9,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.cyberfarm.port.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
@@ -18,7 +20,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * machines on the network. Works with any mod's fluid blocks.
  */
 public class GasPipeBlockEntity extends NetworkPipeBlockEntity {
-    private final ResourceHandler<FluidResource> handler = new ResourceHandler<>() {
+    private final IFluidHandler handler = new ResourceHandler<>() {
         @Override
         public int size() {
             return 1;
@@ -70,13 +72,13 @@ public class GasPipeBlockEntity extends NetworkPipeBlockEntity {
     /** Pulls up to the tier's rate out of the tank or machine on {@code side} into the network. */
     @Override
     public void pull(ServerLevel level, BlockPos pos, Direction side) {
-        ResourceHandler<FluidResource> source = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(side), side.getOpposite());
+        IFluidHandler source = Caps.fluids(level, pos.relative(side), side.getOpposite());
         if (source != null) {
             ResourceHandlerUtil.move(source, handler, this::carries, rate(), null);
         }
     }
 
-    public ResourceHandler<FluidResource> getFluidHandler() {
+    public IFluidHandler getFluidHandler() {
         return handler;
     }
 }

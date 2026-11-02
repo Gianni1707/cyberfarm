@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -19,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 
 /** The pedestal of the energy store; its crystal floats above it, drawn by the renderer. */
 public class ResonanceCoreBlock extends MachineBlock {
-    public static final MapCodec<ResonanceCoreBlock> CODEC = simpleCodec(ResonanceCoreBlock::new);
     // Base plate plus the emitter ring the crystal floats over
     private static final VoxelShape SHAPE = Shapes.or(
             Block.box(0, 0, 0, 16, 6, 16),
@@ -29,10 +29,6 @@ public class ResonanceCoreBlock extends MachineBlock {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<ResonanceCoreBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -45,7 +41,7 @@ public class ResonanceCoreBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.RESONANCE_CORE.get());
     }
 }

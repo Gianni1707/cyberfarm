@@ -14,11 +14,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
 import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ItemResource;
 
 /**
  * Bio-Digester: turns organic waste (anything a composter takes, plus rotten flesh) into Biogas,

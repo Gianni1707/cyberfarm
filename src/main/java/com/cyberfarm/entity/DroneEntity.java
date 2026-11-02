@@ -49,8 +49,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
@@ -513,7 +513,7 @@ public class DroneEntity extends PathfinderMob {
     /** A player right-clicked the waiting Taxi drone: check the trip, then let them grab the hook. */
     private void startTaxi(ServerLevel level, Player player) {
         if (job != null || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) || dock.isPaused()) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.busy"));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.taxi.busy"), true);
             return;
         }
         TaxiJob taxi = TaxiJob.plan(this, level, player, dock.getTaxiDestination(), energy, modules.flightCost());

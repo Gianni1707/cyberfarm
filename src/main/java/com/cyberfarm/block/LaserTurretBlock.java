@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.LaserTurretBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -25,17 +26,12 @@ import org.jspecify.annotations.Nullable;
 
 /** A pedestal under a turning head (drawn by its renderer). Has no GUI: right-click tells what it is doing. */
 public class LaserTurretBlock extends MachineBlock {
-    public static final MapCodec<LaserTurretBlock> CODEC = simpleCodec(LaserTurretBlock::new);
     private static final VoxelShape SHAPE = Shapes.or(Block.box(1, 0, 1, 15, 6, 15), Block.box(3, 6, 3, 13, 14, 13));
 
     public LaserTurretBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<LaserTurretBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -45,7 +41,7 @@ public class LaserTurretBlock extends MachineBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof LaserTurretBlockEntity turret) {
-            player.sendOverlayMessage(turret.status());
+            player.displayClientMessage(turret.status(), true);
         }
         return InteractionResult.SUCCESS;
     }
@@ -56,7 +52,7 @@ public class LaserTurretBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.LASER_TURRET.get());
     }
 

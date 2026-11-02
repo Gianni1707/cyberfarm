@@ -1,9 +1,10 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -28,7 +29,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import org.jspecify.annotations.Nullable;
 
 public class MethaneExtractorBlock extends MachineBlock {
-    public static final MapCodec<MethaneExtractorBlock> CODEC = simpleCodec(MethaneExtractorBlock::new);
     /** The chamber below is complete; switches the model to the lit one. */
     public static final BooleanProperty FORMED = BooleanProperty.create("formed");
 
@@ -37,10 +37,6 @@ public class MethaneExtractorBlock extends MachineBlock {
         registerDefaultState(defaultBlockState().setValue(FORMED, false));
     }
 
-    @Override
-    protected MapCodec<MethaneExtractorBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -56,7 +52,7 @@ public class MethaneExtractorBlock extends MachineBlock {
         }
         if (level instanceof ServerLevel serverLevel && level.getBlockEntity(pos) instanceof MethaneExtractorBlockEntity extractor) {
             String error = extractor.releaseFromCapsule(serverLevel, stack);
-            player.sendOverlayMessage(Component.translatable(error != null ? error : "message.cyberfarm.extractor.loaded"));
+            player.displayClientMessage(Component.translatable(error != null ? error : "message.cyberfarm.extractor.loaded"), true);
         }
         return InteractionResult.SUCCESS;
     }
@@ -95,7 +91,7 @@ public class MethaneExtractorBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.METHANE_EXTRACTOR.get());
     }
 

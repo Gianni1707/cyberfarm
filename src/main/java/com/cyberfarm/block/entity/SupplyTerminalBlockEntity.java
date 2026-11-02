@@ -55,11 +55,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -362,7 +362,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             level.playSound(null, at.origin(), SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1.0F, 1.2F);
             for (ServerPlayer player : level.players()) {
                 if (contains(player.blockPosition())) {
-                    player.sendOverlayMessage(Component.translatable("message.cyberfarm.village.built", unlock.get().displayName()));
+                    player.displayClientMessage(Component.translatable("message.cyberfarm.village.built", unlock.get().displayName()), true);
                 }
             }
             return true;
@@ -593,7 +593,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         level.playSound(null, worldPosition, SoundEvents.PLAYER_LEVELUP, SoundSource.BLOCKS, 1.0F, 1.0F);
         if (owner != null && level.getPlayerByUUID(owner) instanceof ServerPlayer player && player.distanceToSqr(Vec3.atCenterOf(worldPosition)) < RANGE * RANGE * 4) {
             player.addEffect(new MobEffectInstance(MobEffects.HERO_OF_THE_VILLAGE, 20 * 60 * 20, Math.min(reached - 1, 4)));
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.terminal.prosperity", reached));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.terminal.prosperity", reached), true);
         }
     }
 

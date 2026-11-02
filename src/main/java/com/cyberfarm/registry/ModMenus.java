@@ -25,7 +25,7 @@ import com.cyberfarm.menu.WasteReprocessorMenu;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
-import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
+import net.minecraftforge.common.extensions.IForgeMenuType;
 import com.cyberfarm.port.DeferredHolder;
 import com.cyberfarm.port.DeferredRegister;
 
@@ -33,65 +33,65 @@ public class ModMenus {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, CyberFarm.MODID);
 
     public static final DeferredHolder<MenuType<?>, MenuType<CombustionGeneratorMenu>> COMBUSTION_GENERATOR = MENUS.register("combustion_generator",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new CombustionGeneratorMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new CombustionGeneratorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<DroneAssemblerMenu>> DRONE_ASSEMBLER = MENUS.register("drone_assembler",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new DroneAssemblerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new DroneAssemblerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<BioDigesterMenu>> BIO_DIGESTER = MENUS.register("bio_digester",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new BioDigesterMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new BioDigesterMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<GasTurbineMenu>> GAS_TURBINE = MENUS.register("gas_turbine",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new GasTurbineMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new GasTurbineMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MethaneExtractorMenu>> METHANE_EXTRACTOR = MENUS.register("methane_extractor",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new MethaneExtractorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<TurbineMenu>> TURBINE = MENUS.register("turbine",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new TurbineMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new TurbineMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MechHangarMenu>> MECH_HANGAR = MENUS.register("mech_hangar",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new MechHangarMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new MechHangarMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineMenu>> STEAM_ENGINE = MENUS.register("steam_engine",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerMenu>> ELECTROLYZER = MENUS.register("electrolyzer",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<PyrolysisOvenMenu>> PYROLYSIS_OVEN = MENUS.register("pyrolysis_oven",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new PyrolysisOvenMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new PyrolysisOvenMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<FabricatorMenu>> FABRICATOR = MENUS.register("fabricator",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new FabricatorMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new FabricatorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<SupplyTerminalMenu>> SUPPLY_TERMINAL = MENUS.register("supply_terminal",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new SupplyTerminalMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new SupplyTerminalMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<AcidSynthesizerMenu>> ACID_SYNTHESIZER = MENUS.register("acid_synthesizer",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new AcidSynthesizerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new AcidSynthesizerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CoolantMixerMenu>> COOLANT_MIXER = MENUS.register("coolant_mixer",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new CoolantMixerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<WasteReprocessorMenu>> WASTE_REPROCESSOR = MENUS.register("waste_reprocessor",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new WasteReprocessorMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new WasteReprocessorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<CrystallizerMenu>> CRYSTALLIZER = MENUS.register("crystallizer",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new CrystallizerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new CrystallizerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ResonanceCoreMenu>> RESONANCE_CORE = MENUS.register("resonance_core",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ResonanceCoreMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new ResonanceCoreMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ReactorMenu>> REACTOR = MENUS.register("reactor",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new ReactorMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<ItemFilterMenu>> ITEM_FILTER = MENUS.register("item_filter",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new ItemFilterMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new ItemFilterMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<MufflerMenu>> MUFFLER = MENUS.register("muffler",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new MufflerMenu(id, inventory)));
 
     public static final DeferredHolder<MenuType<?>, MenuType<DroneDockMenu>> DRONE_DOCK = MENUS.register("drone_dock",
-            () -> IMenuTypeExtension.create((id, inventory, buf) -> new DroneDockMenu(id, inventory)));
+            () -> IForgeMenuType.create((id, inventory, buf) -> new DroneDockMenu(id, inventory)));
 }

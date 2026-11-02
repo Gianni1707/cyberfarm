@@ -12,7 +12,7 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 
 public class SupplyTerminalMenu extends MachineMenu {
     public static final int DELIVERY_X = 151;

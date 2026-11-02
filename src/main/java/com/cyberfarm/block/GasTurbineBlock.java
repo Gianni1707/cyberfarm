@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
@@ -16,16 +17,11 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class GasTurbineBlock extends LitMachineBlock {
-    public static final MapCodec<GasTurbineBlock> CODEC = simpleCodec(GasTurbineBlock::new);
 
     public GasTurbineBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<GasTurbineBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -33,7 +29,7 @@ public class GasTurbineBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.GAS_TURBINE.get());
     }
 

@@ -1,5 +1,8 @@
 package com.cyberfarm.registry;
 
+import com.cyberfarm.block.entity.CapabilityPortBlockEntity;
+import com.cyberfarm.port.PortTypes;
+
 import java.util.Set;
 
 import com.cyberfarm.CyberFarm;
@@ -40,86 +43,90 @@ import com.cyberfarm.port.DeferredRegister;
 public class ModBlockEntities {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, CyberFarm.MODID);
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CapabilityPortBlockEntity>> CAPABILITY_PORT = BLOCK_ENTITIES.register("capability_port",
+            () -> PortTypes.blockEntity(CapabilityPortBlockEntity::new, Set.of(ModBlocks.ACID_INLET.get(), ModBlocks.METHANE_OUTLET.get(),
+                    ModBlocks.STEAM_ENGINE_DYNAMO.get(), ModBlocks.CRYSTALLIZER_PORT.get(), ModBlocks.STABILIZER_PYLON.get())));
+
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR = BLOCK_ENTITIES.register("combustion_generator",
-            () -> new BlockEntityType<>(CombustionGeneratorBlockEntity::new, Set.of(ModBlocks.COMBUSTION_GENERATOR.get())));
+            () -> PortTypes.blockEntity(CombustionGeneratorBlockEntity::new, Set.of(ModBlocks.COMBUSTION_GENERATOR.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneAssemblerBlockEntity>> DRONE_ASSEMBLER = BLOCK_ENTITIES.register("drone_assembler",
-            () -> new BlockEntityType<>(DroneAssemblerBlockEntity::new, Set.of(ModBlocks.DRONE_ASSEMBLER.get())));
+            () -> PortTypes.blockEntity(DroneAssemblerBlockEntity::new, Set.of(ModBlocks.DRONE_ASSEMBLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<EnergyConduitBlockEntity>> ENERGY_CONDUIT = BLOCK_ENTITIES.register("energy_conduit",
-            () -> new BlockEntityType<>(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get(), ModBlocks.ADVANCED_ENERGY_CONDUIT.get(), ModBlocks.ELITE_ENERGY_CONDUIT.get())));
+            () -> PortTypes.blockEntity(EnergyConduitBlockEntity::new, Set.of(ModBlocks.ENERGY_CONDUIT.get(), ModBlocks.ADVANCED_ENERGY_CONDUIT.get(), ModBlocks.ELITE_ENERGY_CONDUIT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasPipeBlockEntity>> GAS_PIPE = BLOCK_ENTITIES.register("gas_pipe",
-            () -> new BlockEntityType<>(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get(),
+            () -> PortTypes.blockEntity(GasPipeBlockEntity::new, Set.of(ModBlocks.GAS_PIPE.get(), ModBlocks.ADVANCED_GAS_PIPE.get(), ModBlocks.ELITE_GAS_PIPE.get(),
                     ModBlocks.LIQUID_PIPE.get(), ModBlocks.ADVANCED_LIQUID_PIPE.get(), ModBlocks.ELITE_LIQUID_PIPE.get())));
 
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BioDigesterBlockEntity>> BIO_DIGESTER = BLOCK_ENTITIES.register("bio_digester",
-            () -> new BlockEntityType<>(BioDigesterBlockEntity::new, Set.of(ModBlocks.BIO_DIGESTER.get())));
+            () -> PortTypes.blockEntity(BioDigesterBlockEntity::new, Set.of(ModBlocks.BIO_DIGESTER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<GasTurbineBlockEntity>> GAS_TURBINE = BLOCK_ENTITIES.register("gas_turbine",
-            () -> new BlockEntityType<>(GasTurbineBlockEntity::new, Set.of(ModBlocks.GAS_TURBINE.get())));
+            () -> PortTypes.blockEntity(GasTurbineBlockEntity::new, Set.of(ModBlocks.GAS_TURBINE.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MethaneExtractorBlockEntity>> METHANE_EXTRACTOR = BLOCK_ENTITIES.register("methane_extractor",
-            () -> new BlockEntityType<>(MethaneExtractorBlockEntity::new, Set.of(ModBlocks.METHANE_EXTRACTOR.get())));
+            () -> PortTypes.blockEntity(MethaneExtractorBlockEntity::new, Set.of(ModBlocks.METHANE_EXTRACTOR.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MufflerBlockEntity>> MUFFLER = BLOCK_ENTITIES.register("muffler",
-            () -> new BlockEntityType<>(MufflerBlockEntity::new, Set.of(ModBlocks.MUFFLER.get())));
+            () -> PortTypes.blockEntity(MufflerBlockEntity::new, Set.of(ModBlocks.MUFFLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TurbineControllerBlockEntity>> TURBINE_CONTROLLER = BLOCK_ENTITIES.register("turbine_controller",
-            () -> new BlockEntityType<>(TurbineControllerBlockEntity::new, Set.of(ModBlocks.TURBINE_CONTROLLER.get())));
+            () -> PortTypes.blockEntity(TurbineControllerBlockEntity::new, Set.of(ModBlocks.TURBINE_CONTROLLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
-            () -> new BlockEntityType<>(ReactorControllerBlockEntity::new, Set.of(ModBlocks.REACTOR_CONTROLLER.get())));
+            () -> PortTypes.blockEntity(ReactorControllerBlockEntity::new, Set.of(ModBlocks.REACTOR_CONTROLLER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ReactorPortBlockEntity>> REACTOR_PORT = BLOCK_ENTITIES.register("reactor_port",
-            () -> new BlockEntityType<>(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get(), ModBlocks.TURBINE_PORT.get())));
+            () -> PortTypes.blockEntity(ReactorPortBlockEntity::new, Set.of(ModBlocks.REACTOR_PORT.get(), ModBlocks.TURBINE_PORT.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MechHangarBlockEntity>> MECH_HANGAR = BLOCK_ENTITIES.register("mech_hangar",
-            () -> new BlockEntityType<>(MechHangarBlockEntity::new, Set.of(ModBlocks.MECH_HANGAR.get())));
+            () -> PortTypes.blockEntity(MechHangarBlockEntity::new, Set.of(ModBlocks.MECH_HANGAR.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SteamEngineBlockEntity>> STEAM_ENGINE = BLOCK_ENTITIES.register("steam_engine",
-            () -> new BlockEntityType<>(SteamEngineBlockEntity::new, Set.of(ModBlocks.STEAM_ENGINE.get())));
+            () -> PortTypes.blockEntity(SteamEngineBlockEntity::new, Set.of(ModBlocks.STEAM_ENGINE.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AcidSynthesizerBlockEntity>> ACID_SYNTHESIZER = BLOCK_ENTITIES.register("acid_synthesizer",
-            () -> new BlockEntityType<>(AcidSynthesizerBlockEntity::new, Set.of(ModBlocks.ACID_SYNTHESIZER.get())));
+            () -> PortTypes.blockEntity(AcidSynthesizerBlockEntity::new, Set.of(ModBlocks.ACID_SYNTHESIZER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = BLOCK_ENTITIES.register("electrolyzer",
-            () -> new BlockEntityType<>(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
+            () -> PortTypes.blockEntity(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PyrolysisOvenBlockEntity>> PYROLYSIS_OVEN = BLOCK_ENTITIES.register("pyrolysis_oven",
-            () -> new BlockEntityType<>(PyrolysisOvenBlockEntity::new, Set.of(ModBlocks.PYROLYSIS_OVEN.get())));
+            () -> PortTypes.blockEntity(PyrolysisOvenBlockEntity::new, Set.of(ModBlocks.PYROLYSIS_OVEN.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FabricatorBlockEntity>> FABRICATOR = BLOCK_ENTITIES.register("fabricator",
-            () -> new BlockEntityType<>(FabricatorBlockEntity::new, Set.of(ModBlocks.FABRICATOR.get())));
+            () -> PortTypes.blockEntity(FabricatorBlockEntity::new, Set.of(ModBlocks.FABRICATOR.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SupplyTerminalBlockEntity>> SUPPLY_TERMINAL = BLOCK_ENTITIES.register("supply_terminal",
-            () -> new BlockEntityType<>(SupplyTerminalBlockEntity::new, Set.of(ModBlocks.SUPPLY_TERMINAL.get())));
+            () -> PortTypes.blockEntity(SupplyTerminalBlockEntity::new, Set.of(ModBlocks.SUPPLY_TERMINAL.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CoolantMixerBlockEntity>> COOLANT_MIXER = BLOCK_ENTITIES.register("coolant_mixer",
-            () -> new BlockEntityType<>(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));
+            () -> PortTypes.blockEntity(CoolantMixerBlockEntity::new, Set.of(ModBlocks.COOLANT_MIXER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerBlockEntity>> CRYSTALLIZER = BLOCK_ENTITIES.register("crystallizer",
-            () -> new BlockEntityType<>(CrystallizerBlockEntity::new, Set.of(ModBlocks.CRYSTALLIZER.get())));
+            () -> PortTypes.blockEntity(CrystallizerBlockEntity::new, Set.of(ModBlocks.CRYSTALLIZER.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WasteReprocessorBlockEntity>> WASTE_REPROCESSOR = BLOCK_ENTITIES.register("waste_reprocessor",
-            () -> new BlockEntityType<>(WasteReprocessorBlockEntity::new, Set.of(ModBlocks.WASTE_REPROCESSOR.get())));
+            () -> PortTypes.blockEntity(WasteReprocessorBlockEntity::new, Set.of(ModBlocks.WASTE_REPROCESSOR.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<FluidTankBlockEntity>> FLUID_TANK = BLOCK_ENTITIES.register("fluid_tank",
-            () -> new BlockEntityType<>(FluidTankBlockEntity::new, Set.of(ModBlocks.LIQUID_TANK.get(), ModBlocks.GAS_TANK.get())));
+            () -> PortTypes.blockEntity(FluidTankBlockEntity::new, Set.of(ModBlocks.LIQUID_TANK.get(), ModBlocks.GAS_TANK.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ResonanceCoreBlockEntity>> RESONANCE_CORE = BLOCK_ENTITIES.register("resonance_core",
-            () -> new BlockEntityType<>(ResonanceCoreBlockEntity::new, Set.of(ModBlocks.RESONANCE_CORE.get())));
+            () -> PortTypes.blockEntity(ResonanceCoreBlockEntity::new, Set.of(ModBlocks.RESONANCE_CORE.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WaterPumpBlockEntity>> WATER_PUMP = BLOCK_ENTITIES.register("water_pump",
-            () -> new BlockEntityType<>(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));
+            () -> PortTypes.blockEntity(WaterPumpBlockEntity::new, Set.of(ModBlocks.WATER_PUMP.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<LaserTurretBlockEntity>> LASER_TURRET = BLOCK_ENTITIES.register("laser_turret",
-            () -> new BlockEntityType<>(LaserTurretBlockEntity::new, Set.of(ModBlocks.LASER_TURRET.get())));
+            () -> PortTypes.blockEntity(LaserTurretBlockEntity::new, Set.of(ModBlocks.LASER_TURRET.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DroneDockBlockEntity>> DRONE_DOCK = BLOCK_ENTITIES.register("drone_dock",
-            () -> new BlockEntityType<>(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));
+            () -> PortTypes.blockEntity(DroneDockBlockEntity::new, Set.of(ModBlocks.DRONE_DOCK.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SwarmDockBlockEntity>> SWARM_DOCK = BLOCK_ENTITIES.register("swarm_dock",
-            () -> new BlockEntityType<>(SwarmDockBlockEntity::new, Set.of(ModBlocks.SWARM_DOCK.get())));
+            () -> PortTypes.blockEntity(SwarmDockBlockEntity::new, Set.of(ModBlocks.SWARM_DOCK.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HologramTableBlockEntity>> HOLOGRAM_TABLE = BLOCK_ENTITIES.register("hologram_table",
-            () -> new BlockEntityType<>(HologramTableBlockEntity::new, Set.of(ModBlocks.HOLOGRAM_TABLE.get())));
+            () -> PortTypes.blockEntity(HologramTableBlockEntity::new, Set.of(ModBlocks.HOLOGRAM_TABLE.get())));
 }

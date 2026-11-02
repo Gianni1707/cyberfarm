@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.fluid.GasTank;
@@ -28,11 +30,11 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.minecraftforge.energy.IEnergyStorage;
+import com.cyberfarm.port.FluidResource;
 
 /**
  * Steam Turbine controller: a multiblock hall in three sizes (see {@link TurbineSize}). Steam piped
@@ -144,12 +146,12 @@ public class TurbineControllerBlockEntity extends MultiblockControllerBlockEntit
     // ---------------------------------------------------------------- ports, GUI and saving
 
     @Override
-    public ResourceHandler<FluidResource> portFluids() {
+    public IFluidHandler portFluids() {
         return fluids;
     }
 
     @Override
-    public EnergyHandler portEnergy() {
+    public IEnergyStorage portEnergy() {
         return energy;
     }
 

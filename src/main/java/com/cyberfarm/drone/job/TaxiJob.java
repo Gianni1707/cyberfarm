@@ -50,7 +50,7 @@ public class TaxiJob extends DroneJob {
     public static @Nullable TaxiJob plan(DroneEntity drone, ServerLevel level, Player player, @Nullable BlockPos destination,
             int energy, int flightCost) {
         if (destination == null) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.no_destination"));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.taxi.no_destination"), true);
             return null;
         }
         Vec3 dropOff = dropOffPoint(destination);
@@ -59,7 +59,7 @@ public class TaxiJob extends DroneJob {
         double route = (cruiseY - drone.getY()) + dropOff.subtract(drone.position()).horizontalDistance() + (cruiseY - dropOff.y);
         int needed = (int) Math.ceil(2 * route / (drone.cruiseSpeed() * 0.9) * flightCost) + TRIP_COST;
         if (energy < needed) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)), true);
             return null;
         }
         return new TaxiJob(destination, player.getUUID(), cruiseY);

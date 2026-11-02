@@ -1,7 +1,6 @@
 package com.cyberfarm.block;
 
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
@@ -18,7 +17,6 @@ import net.minecraft.world.phys.BlockHitResult;
  * by a tier; once formed they vanish inside the bigger crystal. Right-clicking any of them opens the core.
  */
 public class ResonanceCellBlock extends Block {
-    public static final MapCodec<ResonanceCellBlock> CODEC = simpleCodec(ResonanceCellBlock::new);
     public static final BooleanProperty FORMED = CyberFrameBlock.FORMED;
 
     public ResonanceCellBlock(Properties properties) {
@@ -26,10 +24,6 @@ public class ResonanceCellBlock extends Block {
         registerDefaultState(defaultBlockState().setValue(FORMED, false));
     }
 
-    @Override
-    protected MapCodec<ResonanceCellBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {

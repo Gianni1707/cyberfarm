@@ -58,14 +58,14 @@ public class BlueprintDiscItem extends Item {
         Component name = VillagePlan.unlock(id).map(VillagePlan.Unlock::displayName).orElse(Component.literal(id.toString()));
         if (Blueprints.of(player).knows(id)) {
             if (!level.isClientSide()) {
-                player.sendOverlayMessage(Component.translatable("message.cyberfarm.blueprint.known", name));
+                player.displayClientMessage(Component.translatable("message.cyberfarm.blueprint.known", name), true);
             }
             return InteractionResult.FAIL;
         }
         if (!level.isClientSide()) {
             player.setData(ModVillagers.BLUEPRINTS, Blueprints.of(player).with(id));
             stack.consume(1, player);
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.blueprint.learned", name));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.blueprint.learned", name), true);
         }
         player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.4F);
         return InteractionResult.SUCCESS;

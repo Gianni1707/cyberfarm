@@ -20,9 +20,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
+import com.cyberfarm.port.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -2,6 +2,10 @@ package com.cyberfarm.fluid;
 
 import java.util.function.Predicate;
 
+import com.cyberfarm.port.Caps;
+import com.cyberfarm.port.FluidResource;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import com.cyberfarm.registry.ModFluids;
 
 import net.minecraft.core.BlockPos;
@@ -9,51 +13,54 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.minecraftforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.fluid.FluidStacksResourceHandler;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 /**
- * One-fluid tank of a CyberFarm machine, exposed to other mods as a NeoForge fluid handler.
+ * One-fluid tank of a CyberFarm machine, exposed to other mods as a Forge fluid handler.
  * {@code acceptsFromOutside} filters what pipes may push in; the machine itself fills and
  * drains it directly.
  */
-public class GasTank extends FluidStacksResourceHandler {
-    private final int capacity;
+public class GasTank extends FluidTank {
     private final Predicate<FluidResource> acceptsFromOutside;
     private final Runnable onChanged;
 
     public GasTank(int capacity, Predicate<FluidResource> acceptsFromOutside, Runnable onChanged) {
-        super(1, capacity);
-        this.capacity = capacity;
+        super(capacity);
         this.acceptsFromOutside = acceptsFromOutside;
         this.onChanged = onChanged;
     }
 
     @Override
+    public boolean isFluidValid(FluidStack stack) {
+        return acceptsFromOutside.test(FluidResource.of(stack));
+    }
+
     public boolean isValid(int index, FluidResource resource) {
         return acceptsFromOutside.test(resource);
     }
 
     @Override
-    protected void onContentsChanged(int index, FluidStack previousContents) {
+    protected void onContentsChanged() {
         onChanged.run();
     }
 
+    public FluidResource getResource(int index) {
+        return FluidResource.of(getFluid());
+    }
+
     public Fluid fluid() {
-        FluidResource resource = getResource(0);
-        return resource.isEmpty() ? Fluids.EMPTY : resource.getFluid();
+        return getFluid().isEmpty() ? Fluids.EMPTY : getFluid().getFluid();
     }
 
     public int amount() {
-        return getAmountAsInt(0);
+        return getFluidAmount();
     }
 
     public int capacity() {
-        return capacity;
+        return getCapacity();
     }
 
     /** Adds gas made by the machine itself. Returns how much fit. */
@@ -63,7 +70,8 @@ public class GasTank extends FluidStacksResourceHandler {
         }
         int added = Math.min(amount, capacity - amount());
         if (added > 0) {
-            set(0, FluidResource.of(fluid), amount() + added);
+            this.fluid = new FluidStack(fluid, amount() + added);
+            onContentsChanged();
         }
         return added;
     }
@@ -73,7 +81,12 @@ public class GasTank extends FluidStacksResourceHandler {
         int drained = Math.min(amount, amount());
         if (drained > 0) {
             int left = amount() - drained;
-            set(0, left == 0 ? FluidResource.EMPTY : getResource(0), left);
+            if (left == 0) {
+                this.fluid = FluidStack.EMPTY;
+            } else {
+                this.fluid.setAmount(left);
+            }
+            onContentsChanged();
         }
         return drained;
     }
@@ -84,11 +97,19 @@ public class GasTank extends FluidStacksResourceHandler {
             if (amount() <= 0) {
                 return;
             }
-            ResourceHandler<FluidResource> target = level.getCapability(Capabilities.Fluid.BLOCK, pos.relative(direction), direction.getOpposite());
+            IFluidHandler target = Caps.fluids(level, pos.relative(direction), direction.getOpposite());
             if (target != null) {
-                ResourceHandlerUtil.move(this, target, resource -> true, maxPerSide, null);
+                FluidUtil.tryFluidTransfer(target, this, maxPerSide, true);
             }
         }
+    }
+
+    public void serialize(ValueOutput output) {
+        writeToNBT(output.tag());
+    }
+
+    public void deserialize(ValueInput input) {
+        readFromNBT(input.tag());
     }
 
     // GUI sync: the fluid travels as a small code in a container data slot

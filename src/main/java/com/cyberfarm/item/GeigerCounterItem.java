@@ -39,8 +39,8 @@ public class GeigerCounterItem extends Item {
             ChatFormatting color = radiation >= Radiation.SICKER ? ChatFormatting.RED
                     : radiation >= Radiation.SICK ? ChatFormatting.GOLD : ChatFormatting.GREEN;
             String band = radiation >= Radiation.SICKER ? "danger" : radiation >= Radiation.SICK ? "unsafe" : "safe";
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.geiger", Math.round(radiation),
-                    Component.translatable("message.cyberfarm.geiger." + band)).withStyle(color));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.geiger", Math.round(radiation),
+                    Component.translatable("message.cyberfarm.geiger." + band)).withStyle(color), true);
         }
     }
 

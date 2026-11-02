@@ -1,5 +1,7 @@
 package com.cyberfarm.drone.job;
 
+import net.minecraftforge.items.IItemHandler;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -8,10 +10,10 @@ import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.Nullable;
 
@@ -40,8 +42,8 @@ public class TransportJob extends DroneJob {
                 || drone.isUnreachable(source) || drone.isUnreachable(destination)) {
             return null;
         }
-        ResourceHandler<ItemResource> from = inventory(level, source);
-        ResourceHandler<ItemResource> to = inventory(level, destination);
+        IItemHandler from = inventory(level, source);
+        IItemHandler to = inventory(level, destination);
         // Only fly if at least one item could actually go from the source to the destination.
         try (Transaction simulation = Transaction.openRoot()) {
             if (ResourceHandlerUtil.move(from, to, resource -> dock.filter().test(resource.toStack()) && room(to, resource, dock) > 0, 1, simulation) == 0) {
@@ -51,8 +53,8 @@ public class TransportJob extends DroneJob {
         return new TransportJob(source, destination);
     }
 
-    private static @Nullable ResourceHandler<ItemResource> inventory(ServerLevel level, BlockPos pos) {
-        return level.isLoaded(pos) ? level.getCapability(Capabilities.Item.BLOCK, pos, null) : null;
+    private static @Nullable IItemHandler inventory(ServerLevel level, BlockPos pos) {
+        return level.isLoaded(pos) ? Caps.items(level, pos, null) : null;
     }
 
     @Override
@@ -66,8 +68,8 @@ public class TransportJob extends DroneJob {
     }
 
     private Result pickUp(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
-        ResourceHandler<ItemResource> from = inventory(level, source);
-        ResourceHandler<ItemResource> to = inventory(level, destination);
+        IItemHandler from = inventory(level, source);
+        IItemHandler to = inventory(level, destination);
         // 16 items per trip, plus one stack per Stack Addon; with a limit, no more of each than the destination is short of
         int capacity = drone.transportCapacity();
         int moved = 0;
@@ -88,7 +90,7 @@ public class TransportJob extends DroneJob {
      * The items in the source that the filter lets through and the destination takes in now, so the
      * drone never loads what it would have to bring back (a Builder's dock wants only the missing blocks).
      */
-    private static Set<ItemResource> accepted(@Nullable ResourceHandler<ItemResource> from, @Nullable ResourceHandler<ItemResource> to,
+    private static Set<ItemResource> accepted(@Nullable IItemHandler from, @Nullable IItemHandler to,
             DroneDockBlockEntity dock) {
         Set<ItemResource> accepted = new HashSet<>();
         if (from == null || to == null) {
@@ -109,7 +111,7 @@ public class TransportJob extends DroneJob {
     }
 
     /** How many more of {@code resource} the destination should get: no end without a limit in the filter. */
-    private static int room(@Nullable ResourceHandler<ItemResource> to, ItemResource resource, DroneDockBlockEntity dock) {
+    private static int room(@Nullable IItemHandler to, ItemResource resource, DroneDockBlockEntity dock) {
         int limit = dock.filter().limit();
         if (limit <= 0 || to == null) {
             return Integer.MAX_VALUE;

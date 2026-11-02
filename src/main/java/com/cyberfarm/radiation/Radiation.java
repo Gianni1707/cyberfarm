@@ -1,5 +1,7 @@
 package com.cyberfarm.radiation;
 
+import net.minecraftforge.items.IItemHandler;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,10 +31,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.ItemResource;
 
 /**
  * Nuclear contamination. Untreated waste, a leaking reactor or a meltdown add radiation to the chunk
@@ -143,7 +145,7 @@ public final class Radiation {
             return 0;
         }
         // shortcut: storage networks that expose the same items through several blocks count them more than once; dedupe by handler if that proves too harsh
-        ResourceHandler<ItemResource> items = level.getCapability(Capabilities.Item.BLOCK, entity.getBlockPos(), entity.getBlockState(), entity, null);
+        IItemHandler items = Caps.items(level, entity.getBlockPos(), entity.getBlockState(), entity, null);
         if (items == null) {
             return 0;
         }

@@ -10,8 +10,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ItemResource;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 
 public class PyrolysisOvenMenu extends MachineMenu {
     public PyrolysisOvenMenu(int containerId, Inventory inventory) {

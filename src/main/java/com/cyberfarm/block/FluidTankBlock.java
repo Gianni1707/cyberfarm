@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -24,7 +25,6 @@ import org.jspecify.annotations.Nullable;
  */
 public class FluidTankBlock extends MachineBlock {
     private final boolean gas;
-    private final MapCodec<FluidTankBlock> codec = simpleCodec(properties -> new FluidTankBlock(properties, gas()));
 
     public FluidTankBlock(Properties properties, boolean gas) {
         super(properties);
@@ -35,10 +35,6 @@ public class FluidTankBlock extends MachineBlock {
         return gas;
     }
 
-    @Override
-    protected MapCodec<FluidTankBlock> codec() {
-        return codec;
-    }
 
     /** Buckets of any mod fill or empty the tank, like a cauldron. */
     @Override
@@ -54,7 +50,7 @@ public class FluidTankBlock extends MachineBlock {
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         if (!level.isClientSide() && level.getBlockEntity(pos) instanceof FluidTankBlockEntity tank) {
-            player.sendOverlayMessage(tank.status());
+            player.displayClientMessage(tank.status(), true);
         }
         return InteractionResult.SUCCESS;
     }
@@ -65,7 +61,7 @@ public class FluidTankBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.FLUID_TANK.get());
     }
 }

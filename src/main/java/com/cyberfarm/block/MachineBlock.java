@@ -1,5 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortEntityBlock;
+
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.MachineBlockEntity;
 
 import net.minecraft.core.BlockPos;
@@ -32,7 +36,7 @@ import org.jspecify.annotations.Nullable;
  * A horizontal-facing machine that opens its menu on right-click and ticks on the server; on the
  * client it gives off {@link #ambient} particles while the server says it is working.
  */
-public abstract class MachineBlock extends BaseEntityBlock {
+public abstract class MachineBlock extends PortEntityBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
 
     protected MachineBlock(Properties properties) {
@@ -68,7 +72,7 @@ public abstract class MachineBlock extends BaseEntityBlock {
         builder.add(FACING);
     }
 
-    protected static <T extends BlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
+    protected static <T extends PortBlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
             Level level, BlockEntityType<T> actualType, BlockEntityType<E> expectedType) {
         return level instanceof ServerLevel
                 ? createTickerHelper(actualType, expectedType, (lvl, pos, state, machine) -> {

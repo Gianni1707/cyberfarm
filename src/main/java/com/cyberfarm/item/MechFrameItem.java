@@ -41,7 +41,7 @@ public class MechFrameItem extends Item {
         MechHangarBlockEntity hangar = MechHangarBlockEntity.ofPad(level, context.getClickedPos());
         if (hangar == null) {
             if (context.getPlayer() != null) {
-                context.getPlayer().sendOverlayMessage(Component.translatable("message.cyberfarm.mech.hangar_only"));
+                context.getPlayer().displayClientMessage(Component.translatable("message.cyberfarm.mech.hangar_only"), true);
             }
             return InteractionResult.FAIL;
         }
@@ -57,7 +57,7 @@ public class MechFrameItem extends Item {
         // It needs room to stand: 3.5 blocks of free space
         if (!level.noCollision(mech, mech.getBoundingBox()) || !level.getEntities(mech, mech.getBoundingBox().deflate(0.1)).isEmpty()) {
             if (context.getPlayer() != null) {
-                context.getPlayer().sendOverlayMessage(Component.translatable("message.cyberfarm.mech.no_room"));
+                context.getPlayer().displayClientMessage(Component.translatable("message.cyberfarm.mech.no_room"), true);
             }
             return InteractionResult.FAIL;
         }

@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -19,7 +20,6 @@ import org.jspecify.annotations.Nullable;
 
 /** An open chamber: the drone being assembled shows inside it (see {@code AssemblerRenderer}). */
 public class DroneAssemblerBlock extends LitMachineBlock {
-    public static final MapCodec<DroneAssemblerBlock> CODEC = simpleCodec(DroneAssemblerBlock::new);
 
     // The base, a pillar on each corner and the cap
     private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(0, 14, 0, 16, 16, 16),
@@ -29,10 +29,6 @@ public class DroneAssemblerBlock extends LitMachineBlock {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<DroneAssemblerBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
@@ -45,7 +41,7 @@ public class DroneAssemblerBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.DRONE_ASSEMBLER.get());
     }
 }

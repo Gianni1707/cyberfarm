@@ -112,11 +112,11 @@ public class ProjectorItem extends Item {
         if (pinned == null) {
             boolean linked = dock.getBuildPlan() != null;
             dock.setBuildPlan(null);
-            player.sendOverlayMessage(Component.translatable(linked ? "message.cyberfarm.projector.unlinked" : "message.cyberfarm.projector.lock_first"));
+            player.displayClientMessage(Component.translatable(linked ? "message.cyberfarm.projector.unlinked" : "message.cyberfarm.projector.lock_first"), true);
             return InteractionResult.SUCCESS;
         }
         if (!pinned.controller().closerThan(dock.getBlockPos(), SurveyToolItem.MAX_DOCK_DISTANCE)) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.survey.too_far", SurveyToolItem.MAX_DOCK_DISTANCE));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.survey.too_far", SurveyToolItem.MAX_DOCK_DISTANCE), true);
             return InteractionResult.FAIL;
         }
         BuildPlan plan = new BuildPlan(structure(stack), pinned.controller(), pinned.facing());
@@ -126,8 +126,8 @@ public class ProjectorItem extends Item {
             CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, context.getClickedPos(), stack);
         }
         player.playSound(SoundEvents.BEACON_ACTIVATE, 0.4F, 1.6F);
-        player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.linked", plan.structure().displayName(),
-                plan.remaining(level), plan.obstacles(level)));
+        player.displayClientMessage(Component.translatable("message.cyberfarm.projector.linked", plan.structure().displayName(),
+                plan.remaining(level), plan.obstacles(level)), true);
         return InteractionResult.SUCCESS;
     }
 
@@ -146,7 +146,7 @@ public class ProjectorItem extends Item {
             stack.set(ModDataComponents.PROJECTOR_FACING.get(), placement.facing().get2DDataValue());
             player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.4F, 1.6F);
             if (level instanceof ServerLevel serverLevel) {
-                player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.pinned"));
+                player.displayClientMessage(Component.translatable("message.cyberfarm.projector.pinned"), true);
                 addSite(serverLevel, structure, placement);
             }
             return InteractionResult.SUCCESS;
@@ -164,7 +164,7 @@ public class ProjectorItem extends Item {
                 serverLevel.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_CLIENTS);
             }
             structure.buildInstantly(serverLevel, placement.controller(), placement.facing());
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.built", structure.displayName()));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.projector.built", structure.displayName()), true);
         }
         stack.remove(ModDataComponents.PROJECTOR_ANCHOR.get());
         player.playSound(SoundEvents.ANVIL_USE, 0.4F, 1.4F);
@@ -205,7 +205,7 @@ public class ProjectorItem extends Item {
                     stack.set(ModDataComponents.PROJECTOR_ANCHOR.get(), at.origin());
                     stack.set(ModDataComponents.PROJECTOR_FACING.get(), at.facing().get2DDataValue());
                     terminal.addSite(unlock, at);
-                    player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.aligned", unlock.displayName()));
+                    player.displayClientMessage(Component.translatable("message.cyberfarm.projector.aligned", unlock.displayName()), true);
                 })));
     }
 

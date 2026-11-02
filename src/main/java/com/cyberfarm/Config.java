@@ -73,9 +73,5 @@ public class Config {
             return BAUXITE_GENERATION.getAsBoolean();
         }
 
-        @Override
-        public MapCodec<? extends ICondition> codec() {
-            return CODEC;
-        }
     }
 }

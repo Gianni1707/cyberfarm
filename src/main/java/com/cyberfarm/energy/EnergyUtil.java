@@ -3,24 +3,31 @@ package com.cyberfarm.energy;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.minecraftforge.energy.IEnergyStorage;
+
+import com.cyberfarm.port.Caps;
 
 public final class EnergyUtil {
     private EnergyUtil() {}
 
     /** Pushes FE into every adjacent block that accepts it, from any mod. */
-    public static void pushToNeighbors(Level level, BlockPos pos, EnergyHandler source, int maxPerSide) {
+    public static void pushToNeighbors(Level level, BlockPos pos, IEnergyStorage source, int maxPerSide) {
         for (Direction direction : Direction.values()) {
-            if (source.getAmountAsLong() <= 0) {
+            if (source.getEnergyStored() <= 0) {
                 return;
             }
-            EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(direction), direction.getOpposite());
+            IEnergyStorage target = Caps.energy(level, pos.relative(direction), direction.getOpposite());
             if (target != null) {
-                EnergyHandlerUtil.move(source, target, maxPerSide, null);
+                move(source, target, maxPerSide);
             }
         }
+    }
+
+    /** Moves up to {@code max} FE from {@code source} to {@code target}. Returns the amount moved. */
+    public static int move(IEnergyStorage source, IEnergyStorage target, int max) {
+        int offered = source.extractEnergy(max, true);
+        int accepted = offered > 0 ? target.receiveEnergy(offered, true) : 0;
+        return accepted > 0 ? target.receiveEnergy(source.extractEnergy(accepted, false), false) : 0;
     }
 
     // Container data slots are synced as shorts, so ints travel as two 16-bit halves.

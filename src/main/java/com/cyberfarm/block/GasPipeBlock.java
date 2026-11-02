@@ -1,28 +1,22 @@
 package com.cyberfarm.block;
 
 import com.cyberfarm.block.entity.GasPipeBlockEntity;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.cyberfarm.port.Caps;
+import com.cyberfarm.port.FluidResource;
 
 /** Gas Pipe: carries biogas, methane and any other fluid between tanks and machines of any mod. */
 public class GasPipeBlock extends NetworkPipeBlock {
-    private final MapCodec<GasPipeBlock> codec = simpleCodec(properties -> new GasPipeBlock(properties, rate()));
 
     public GasPipeBlock(Properties properties, int rate) {
         super(properties, rate);
     }
 
-    @Override
-    protected MapCodec<? extends GasPipeBlock> codec() {
-        return codec;
-    }
 
     /** Gas Pipes carry what is lighter than air (gases, Steam); Liquid Pipes the rest. */
     public boolean carries(FluidResource resource) {
@@ -31,7 +25,7 @@ public class GasPipeBlock extends NetworkPipeBlock {
 
     @Override
     protected boolean canConnectToMachine(Level level, BlockPos pos, Direction side) {
-        return level.getCapability(Capabilities.Fluid.BLOCK, pos, side) != null;
+        return Caps.fluids(level, pos, side) != null;
     }
 
     @Override

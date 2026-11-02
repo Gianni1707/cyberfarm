@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +18,15 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Hologram Table: saves only how far it shows (its zoom). On the client it keeps the last map of the
  * land its renderer drew, so the relief is read again only every couple of seconds.
  */
-public class HologramTableBlockEntity extends BlockEntity {
+public class HologramTableBlockEntity extends PortBlockEntity {
     /** How many blocks every way the map shows, one per right-click in turn. */
     public static final int[] RADII = {16, 24, 32};
 

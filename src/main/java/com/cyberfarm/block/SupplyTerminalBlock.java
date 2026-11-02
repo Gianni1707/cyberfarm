@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
@@ -16,16 +17,11 @@ import org.jspecify.annotations.Nullable;
 
 /** Supply Terminal: the Drone Mechanist's job site, where the village posts its supply contracts. */
 public class SupplyTerminalBlock extends MachineBlock {
-    public static final MapCodec<SupplyTerminalBlock> CODEC = simpleCodec(SupplyTerminalBlock::new);
 
     public SupplyTerminalBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<SupplyTerminalBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -42,7 +38,7 @@ public class SupplyTerminalBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.SUPPLY_TERMINAL.get());
     }
 }

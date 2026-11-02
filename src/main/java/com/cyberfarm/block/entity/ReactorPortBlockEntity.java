@@ -1,5 +1,11 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.items.IItemHandler;
+
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
+import com.cyberfarm.port.PortBlockEntity;
+
 import java.util.Objects;
 
 import com.cyberfarm.multiblock.PortOwner;
@@ -9,9 +15,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.minecraftforge.energy.IEnergyStorage;
+import com.cyberfarm.port.FluidResource;
+import com.cyberfarm.port.ItemResource;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -19,7 +25,7 @@ import org.jspecify.annotations.Nullable;
  * of its structure: whatever the controller offers ({@link PortOwner}) is exposed on every side. The
  * controller tells each port where it is.
  */
-public class ReactorPortBlockEntity extends BlockEntity {
+public class ReactorPortBlockEntity extends PortBlockEntity {
     private @Nullable BlockPos controller;
 
     public ReactorPortBlockEntity(BlockPos pos, BlockState state) {
@@ -40,17 +46,17 @@ public class ReactorPortBlockEntity extends BlockEntity {
                 ? owner : null;
     }
 
-    public @Nullable ResourceHandler<ItemResource> getItemHandler() {
+    public @Nullable IItemHandler getItemHandler() {
         PortOwner owner = owner();
         return owner != null ? owner.portItems() : null;
     }
 
-    public @Nullable ResourceHandler<FluidResource> getFluidHandler() {
+    public @Nullable IFluidHandler getFluidHandler() {
         PortOwner owner = owner();
         return owner != null ? owner.portFluids() : null;
     }
 
-    public @Nullable EnergyHandler getEnergyHandler() {
+    public @Nullable IEnergyStorage getEnergyHandler() {
         PortOwner owner = owner();
         return owner != null ? owner.portEnergy() : null;
     }

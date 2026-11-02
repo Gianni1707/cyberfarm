@@ -13,8 +13,8 @@ import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import com.cyberfarm.port.ItemResource;
+import com.cyberfarm.port.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jspecify.annotations.Nullable;
 
@@ -42,12 +42,12 @@ public class DroneAssemblerMenu extends MachineMenu {
         return new ItemStacksResourceHandler(DroneAssemblerBlockEntity.SLOT_COUNT) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
-                return DroneAssemblerBlockEntity.canPlace(i -> ItemUtil.getStack(this, i), index, resource);
+                return DroneAssemblerBlockEntity.canPlace(i -> this.getStackInSlot(i), index, resource);
             }
 
             @Override
             protected int getCapacity(int index, ItemResource resource) {
-                return DroneAssemblerBlockEntity.slotCapacity(i -> ItemUtil.getStack(this, i), index, resource);
+                return DroneAssemblerBlockEntity.slotCapacity(i -> this.getStackInSlot(i), index, resource);
             }
         };
     }

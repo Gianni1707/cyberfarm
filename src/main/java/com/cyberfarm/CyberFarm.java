@@ -45,7 +45,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -111,87 +111,87 @@ public class CyberFarm {
 
     // Exposes FE and items to other mods' cables, pipes and hoppers.
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getExternalItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.DRONE_DOCK.get(), (be, side) -> be.getExternalItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
         // The extraction chamber takes acid in and gives methane out only through its ports
-        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+        Caps.registerBlock(Caps.FLUID, (level, pos, state, be, side) -> {
             MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);
             return extractor != null ? extractor.getAcidInlet() : null;
         }, ModBlocks.ACID_INLET.get());
-        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+        Caps.registerBlock(Caps.FLUID, (level, pos, state, be, side) -> {
             MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);
             return extractor != null ? extractor.getMethaneOutlet() : null;
         }, ModBlocks.METHANE_OUTLET.get());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.GAS_TURBINE.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FLUID_TANK.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
         // The Resonance Core takes and gives power only through its pylons
-        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
+        Caps.registerBlock(Caps.ENERGY, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
             ResonanceCoreBlockEntity core = ResonanceCoreBlockEntity.linkedCore(level, pos);
             return core != null ? core.getEnergy() : null;
         }), ModBlocks.STABILIZER_PYLON.get());
         // The Steam Engine gives its power out of the dynamo closing its row
-        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
+        Caps.registerBlock(Caps.ENERGY, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
             SteamEngineBlockEntity engine = SteamEngineBlockEntity.ofDynamo(level, pos);
             return engine != null ? engine.getEnergy() : null;
         }), ModBlocks.STEAM_ENGINE_DYNAMO.get());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.STEAM_ENGINE.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.MECH_HANGAR.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portItems());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.STEAM_ENGINE.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.MECH_HANGAR.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getFluids());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portItems());
         // A Crystallizer Port passes everything on to the formed Crystallizer of its chamber
-        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+        Caps.registerBlock(Caps.FLUID, (level, pos, state, be, side) -> {
             CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
             return crystallizer != null ? crystallizer.portFluids() : null;
         }, ModBlocks.CRYSTALLIZER_PORT.get());
-        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
+        Caps.registerBlock(Caps.ENERGY, (level, pos, state, be, side) -> {
             CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
             return crystallizer != null ? crystallizer.getEnergy() : null;
         }, ModBlocks.CRYSTALLIZER_PORT.get());
-        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+        Caps.registerBlock(Caps.ITEM, (level, pos, state, be, side) -> {
             CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
             return crystallizer != null ? crystallizer.portItems() : null;
         }, ModBlocks.CRYSTALLIZER_PORT.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getEnergyHandler());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getEnergyHandler());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.REACTOR_CONTROLLER.get(),
                 (be, side) -> be.isFormed() ? be.portItems() : null);
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.REACTOR_CONTROLLER.get(),
                 (be, side) -> be.isFormed() ? be.portFluids() : null);
     }
 

@@ -35,8 +35,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
@@ -482,7 +482,7 @@ public class MechEntity extends Mob {
             return InteractionResult.PASS;
         }
         if (isDisabled()) {
-            player.sendOverlayMessage(Component.translatable("message.cyberfarm.mech.disabled"));
+            player.displayClientMessage(Component.translatable("message.cyberfarm.mech.disabled"), true);
             return InteractionResult.SUCCESS;
         }
         if (!level().isClientSide()) {

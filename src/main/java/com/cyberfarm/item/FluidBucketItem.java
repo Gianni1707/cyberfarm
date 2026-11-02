@@ -1,5 +1,7 @@
 package com.cyberfarm.item;
 
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -14,10 +16,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.capabilities.Capabilities;
+import com.cyberfarm.port.Caps;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import com.cyberfarm.port.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /**
@@ -41,7 +43,7 @@ public class FluidBucketItem extends BucketItem {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        ResourceHandler<FluidResource> target = level.getCapability(Capabilities.Fluid.BLOCK, context.getClickedPos(), context.getClickedFace());
+        IFluidHandler target = Caps.fluids(level, context.getClickedPos(), context.getClickedFace());
         if (target == null) {
             return InteractionResult.PASS;
         }
@@ -75,7 +77,7 @@ public class FluidBucketItem extends BucketItem {
         if (!held.is(Items.BUCKET) || !(level instanceof ServerLevel)) {
             return;
         }
-        ResourceHandler<FluidResource> source = level.getCapability(Capabilities.Fluid.BLOCK, event.getPos(), event.getFace());
+        IFluidHandler source = Caps.fluids(level, event.getPos(), event.getFace());
         if (source == null) {
             return;
         }

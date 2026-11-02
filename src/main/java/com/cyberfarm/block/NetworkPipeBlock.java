@@ -1,5 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortEntityBlock;
+
+import com.cyberfarm.port.PortBlockEntity;
+
 import java.util.Map;
 
 import com.cyberfarm.energy.ConduitNetwork;
@@ -41,7 +45,7 @@ import org.jspecify.annotations.Nullable;
  * passes whatever is pushed in straight to the blocks on the network, up to the {@link #rate()} of
  * the pipe it was pushed into.
  */
-public abstract class NetworkPipeBlock extends BaseEntityBlock {
+public abstract class NetworkPipeBlock extends PortEntityBlock {
     public static final Map<Direction, BooleanProperty> CONNECTIONS = PipeBlock.PROPERTY_BY_DIRECTION;
     /** Per side: the pipe pulls out of the block there (right-click the arm to switch). */
     public static final Map<Direction, BooleanProperty> EXTRACT = Util.makeEnumMap(Direction.class,
@@ -137,14 +141,14 @@ public abstract class NetworkPipeBlock extends BaseEntityBlock {
             // The network now treats that block as a source, not a destination
             ConduitNetwork.invalidate();
             level.playSound(null, pos, SoundEvents.COPPER_BULB_TURN_ON, SoundSource.BLOCKS, 0.6F, extract ? 1.4F : 0.8F);
-            player.sendOverlayMessage(Component.translatable(extract ? "message.cyberfarm.pipe.extract" : "message.cyberfarm.pipe.normal"));
+            player.displayClientMessage(Component.translatable(extract ? "message.cyberfarm.pipe.extract" : "message.cyberfarm.pipe.normal"), true);
         }
         return InteractionResult.SUCCESS;
     }
 
     /** Only pipes with an arm set to extract tick. */
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide() || !isPulling(state)) {
             return null;
         }

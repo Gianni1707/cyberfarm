@@ -1,5 +1,9 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.items.IItemHandler;
+
+import net.minecraftforge.fluids.capability.IFluidHandler;
+
 import com.cyberfarm.Config;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.ReactorControllerBlock;
@@ -32,11 +36,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
+import com.cyberfarm.port.ValueInput;
+import com.cyberfarm.port.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import com.cyberfarm.port.FluidResource;
+import com.cyberfarm.port.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
@@ -306,7 +310,7 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     }
 
     /** What ports expose for items: Fuel Rods go in, Depleted Fuel Rods come out. */
-    private final ResourceHandler<ItemResource> automationItems = new ResourceHandler<>() {
+    private final IItemHandler automationItems = new ResourceHandler<>() {
         @Override
         public int size() {
             return items.size();
@@ -344,13 +348,13 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     };
 
     @Override
-    public ResourceHandler<ItemResource> portItems() {
+    public IItemHandler portItems() {
         return automationItems;
     }
 
     /** What ports expose for fluids: water and coolant go in, steam comes out. */
     @Override
-    public ResourceHandler<FluidResource> portFluids() {
+    public IFluidHandler portFluids() {
         return automationFluids;
     }
 

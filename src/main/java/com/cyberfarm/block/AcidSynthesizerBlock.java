@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -16,17 +17,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class AcidSynthesizerBlock extends LitMachineBlock {
-    public static final MapCodec<AcidSynthesizerBlock> CODEC = simpleCodec(AcidSynthesizerBlock::new);
     private static final DustParticleOptions FUMES = new DustParticleOptions(0x9BE04A, 0.8F);
 
     public AcidSynthesizerBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<AcidSynthesizerBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -34,7 +30,7 @@ public class AcidSynthesizerBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.ACID_SYNTHESIZER.get());
     }
 

@@ -1,9 +1,10 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.CombustionGeneratorBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModSounds;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jspecify.annotations.Nullable;
 
 public class CombustionGeneratorBlock extends MachineBlock {
-    public static final MapCodec<CombustionGeneratorBlock> CODEC = simpleCodec(CombustionGeneratorBlock::new);
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
 
     public CombustionGeneratorBlock(Properties properties) {
@@ -30,10 +30,6 @@ public class CombustionGeneratorBlock extends MachineBlock {
         registerDefaultState(defaultBlockState().setValue(LIT, false));
     }
 
-    @Override
-    protected MapCodec<CombustionGeneratorBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
@@ -47,7 +43,7 @@ public class CombustionGeneratorBlock extends MachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.COMBUSTION_GENERATOR.get());
     }
 

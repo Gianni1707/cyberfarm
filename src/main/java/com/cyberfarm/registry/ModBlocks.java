@@ -15,6 +15,7 @@ import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.block.CoolantBlock;
 import com.cyberfarm.block.CoolantMixerBlock;
 import com.cyberfarm.block.ContainmentGlassBlock;
+import com.cyberfarm.block.CapabilityPortBlock;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.IntakeGateBlock;
 import com.cyberfarm.block.MechHangarBlock;
@@ -107,10 +108,10 @@ public class ModBlocks {
     // The chamber's blocks never hide their neighbours' faces: once formed they are drawn as one smooth tank
     public static final DeferredBlock<CyberFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
             CyberFrameBlock::new, ModBlocks::chamberPart);
-    public static final DeferredBlock<CyberFrameBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
-            CyberFrameBlock::new, ModBlocks::chamberPart);
-    public static final DeferredBlock<CyberFrameBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
-            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<CapabilityPortBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
+            CapabilityPortBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<CapabilityPortBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
+            CapabilityPortBlock::new, ModBlocks::chamberPart);
     public static final DeferredBlock<IntakeGateBlock> INTAKE_GATE = BLOCKS.registerBlock("intake_gate",
             IntakeGateBlock::new, ModBlocks::chamberPart);
 
@@ -170,14 +171,14 @@ public class ModBlocks {
             SteamEngineBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_CYLINDER = BLOCKS.registerBlock("steam_engine_cylinder",
             CyberFrameBlock::new, p -> machine(p).noOcclusion());
-    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
-            CyberFrameBlock::new, p -> machine(p).noOcclusion());
+    public static final DeferredBlock<CapabilityPortBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
+            CapabilityPortBlock::new, p -> machine(p).noOcclusion());
     // Crystallizer: grows the Fusion Crystal at the heart of a mech's core
     public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = BLOCKS.registerBlock("crystallizer",
             CrystallizerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
     /** Takes the place of any Cyber Frame of the chamber: acid, power and items in, the crystal out. Stays visible when formed. */
-    public static final DeferredBlock<CyberFrameBlock> CRYSTALLIZER_PORT = BLOCKS.registerBlock("crystallizer_port",
-            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<CapabilityPortBlock> CRYSTALLIZER_PORT = BLOCKS.registerBlock("crystallizer_port",
+            CapabilityPortBlock::new, ModBlocks::chamberPart);
     // Mech Hangar: the console at a corner, frame pillars and beams, the charging pad
     public static final DeferredBlock<MechHangarBlock> MECH_HANGAR = BLOCKS.registerBlock("mech_hangar",
             MechHangarBlock::new, ModBlocks::machine);

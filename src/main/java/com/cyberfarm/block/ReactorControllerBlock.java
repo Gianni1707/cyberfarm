@@ -1,9 +1,10 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.multiblock.TowerSize;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,16 +19,11 @@ import org.jspecify.annotations.Nullable;
 
 /** Fission Reactor controller: FORMED when its tower is complete, LIT while the core is burning fuel. */
 public class ReactorControllerBlock extends MultiblockControllerBlock {
-    public static final MapCodec<ReactorControllerBlock> CODEC = simpleCodec(ReactorControllerBlock::new);
 
     public ReactorControllerBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<ReactorControllerBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -35,7 +31,7 @@ public class ReactorControllerBlock extends MultiblockControllerBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         if (level.isClientSide()) {
             return state.getValue(LIT) ? createTickerHelper(type, ModBlockEntities.REACTOR_CONTROLLER.get(), (lvl, pos, st, be) -> steamPlume(lvl, pos, st)) : null;
         }

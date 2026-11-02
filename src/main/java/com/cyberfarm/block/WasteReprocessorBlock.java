@@ -1,8 +1,9 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.port.PortBlockEntity;
+
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -17,17 +18,12 @@ import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
 public class WasteReprocessorBlock extends LitMachineBlock {
-    public static final MapCodec<WasteReprocessorBlock> CODEC = simpleCodec(WasteReprocessorBlock::new);
     private static final DustParticleOptions GLOW = new DustParticleOptions(0x6CFF6C, 1.0F);
 
     public WasteReprocessorBlock(Properties properties) {
         super(properties);
     }
 
-    @Override
-    protected MapCodec<WasteReprocessorBlock> codec() {
-        return CODEC;
-    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -35,7 +31,7 @@ public class WasteReprocessorBlock extends LitMachineBlock {
     }
 
     @Override
-    public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    public <T extends PortBlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.WASTE_REPROCESSOR.get());
     }
 
