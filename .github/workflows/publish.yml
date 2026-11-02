@@ -1,0 +1,51 @@
+name: Publish
+
+# Runs when a GitHub release is published: builds the jar, attaches it to the
+# release and uploads it to Modrinth and CurseForge with the release notes.
+on:
+  release:
+    types: [published]
+
+env:
+  JAVA_VERSION: '25'
+  LOADERS: neoforge
+  GAME_VERSIONS: '26.2'
+  DEPENDENCIES: guideme(optional)
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: 'temurin'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Publish
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: ${{ vars.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          curseforge-id: 1772953
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/libs/!(*-@(sources|javadoc)).jar
+          name: ${{ github.event.release.name }}
+          version-type: ${{ github.event.release.prerelease && 'beta' || 'release' }}
+          loaders: ${{ env.LOADERS }}
+          game-versions: ${{ env.GAME_VERSIONS }}
+          dependencies: ${{ env.DEPENDENCIES }}
+          java: ${{ env.JAVA_VERSION }}
