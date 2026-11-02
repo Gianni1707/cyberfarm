@@ -40,19 +40,19 @@ import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 
-import net.minecraft.resources.Identifier;
-import net.neoforged.bus.api.IEventBus;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import net.minecraftforge.common.MinecraftForge;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
-import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.cyberfarm.port.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(CyberFarm.MODID)
@@ -88,25 +88,25 @@ public class CyberFarm {
         modEventBus.addListener(CyberFarm::registerAttributes);
         modEventBus.addListener(CyberFarm::registerPayloads);
         modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
-        NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
-        NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
-        NeoForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
-        NeoForge.EVENT_BUS.addListener(MechEvents::onDismount);
-        NeoForge.EVENT_BUS.addListener(MechEvents::onDamage);
-        NeoForge.EVENT_BUS.addListener(MechEvents::onBreakSpeed);
-        NeoForge.EVENT_BUS.addListener(MechEvents::onHarvestCheck);
-        NeoForge.EVENT_BUS.addListener(MechEvents::onBlockBreak);
-        NeoForge.EVENT_BUS.addListener(Radiation::onLevelTick);
-        NeoForge.EVENT_BUS.addListener(Schematics::onServerAboutToStart);
-        NeoForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
-        NeoForge.EVENT_BUS.addListener(MechanistDialogue::onInteract);
+        MinecraftForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
+        MinecraftForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
+        MinecraftForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(MechEvents::onDismount);
+        MinecraftForge.EVENT_BUS.addListener(MechEvents::onDamage);
+        MinecraftForge.EVENT_BUS.addListener(MechEvents::onBreakSpeed);
+        MinecraftForge.EVENT_BUS.addListener(MechEvents::onHarvestCheck);
+        MinecraftForge.EVENT_BUS.addListener(MechEvents::onBlockBreak);
+        MinecraftForge.EVENT_BUS.addListener(Radiation::onLevelTick);
+        MinecraftForge.EVENT_BUS.addListener(Schematics::onServerAboutToStart);
+        MinecraftForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
+        MinecraftForge.EVENT_BUS.addListener(MechanistDialogue::onInteract);
 
         modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    public static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath(MODID, path);
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MODID, path);
     }
 
     // Exposes FE and items to other mods' cables, pipes and hoppers.

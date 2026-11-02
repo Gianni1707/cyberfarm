@@ -31,7 +31,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -208,9 +208,9 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** Each building's highest finished tier, and where it stands. */
     private final Map<String, Built> built = new HashMap<>();
     /** Where projections of unbuilt blueprints were pinned, by schematic: checked until they are complete. */
-    private final Map<Identifier, Placed> sites = new HashMap<>();
+    private final Map<ResourceLocation, Placed> sites = new HashMap<>();
     /** Buildings finished since the Mechanist last spoke of them. */
-    private final List<Identifier> news = new ArrayList<>();
+    private final List<ResourceLocation> news = new ArrayList<>();
     private int siteCheck;
 
     /** A blueprint placed in the world: where its origin is and which way its front faces. */
@@ -336,8 +336,8 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     }
 
     /** Buildings finished since the last talk, oldest first; forgotten once read. */
-    public List<Identifier> takeNews() {
-        List<Identifier> taken = List.copyOf(news);
+    public List<ResourceLocation> takeNews() {
+        List<ResourceLocation> taken = List.copyOf(news);
         if (!taken.isEmpty()) {
             news.clear();
             setChanged();
@@ -737,8 +737,8 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         output.store("met", UUIDUtil.CODEC.listOf(), List.copyOf(met));
         output.store("discs_given", Codec.unboundedMap(UUIDUtil.STRING_CODEC, Codec.INT), Map.copyOf(discsGiven));
         output.store("built", Codec.unboundedMap(Codec.STRING, Built.CODEC), Map.copyOf(built));
-        output.store("sites", Codec.unboundedMap(Identifier.CODEC, Placed.CODEC), Map.copyOf(sites));
-        output.store("news", Identifier.CODEC.listOf(), List.copyOf(news));
+        output.store("sites", Codec.unboundedMap(ResourceLocation.CODEC, Placed.CODEC), Map.copyOf(sites));
+        output.store("news", ResourceLocation.CODEC.listOf(), List.copyOf(news));
     }
 
     @Override
@@ -768,9 +768,9 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         built.clear();
         input.read("built", Codec.unboundedMap(Codec.STRING, Built.CODEC)).ifPresent(built::putAll);
         sites.clear();
-        input.read("sites", Codec.unboundedMap(Identifier.CODEC, Placed.CODEC)).ifPresent(sites::putAll);
+        input.read("sites", Codec.unboundedMap(ResourceLocation.CODEC, Placed.CODEC)).ifPresent(sites::putAll);
         news.clear();
-        input.read("news", Identifier.CODEC.listOf()).ifPresent(news::addAll);
+        input.read("news", ResourceLocation.CODEC.listOf()).ifPresent(news::addAll);
     }
 
     @Override

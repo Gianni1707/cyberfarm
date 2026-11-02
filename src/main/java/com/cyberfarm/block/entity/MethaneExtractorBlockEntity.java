@@ -51,7 +51,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 
 /**

@@ -13,9 +13,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.event.entity.EntityMountEvent;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /** What piloting a mech changes for its pilot: getting out, getting hurt, punching and digging. */
 public final class MechEvents {

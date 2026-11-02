@@ -13,7 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -26,7 +26,7 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
  * {@link MachineStatus} the server sends, so it needs no menu open.
  */
 public final class MachineOverlay {
-    private static final Identifier LAYER = CyberFarm.id("machine_overlay");
+    private static final ResourceLocation LAYER = CyberFarm.id("machine_overlay");
     private static final int CYAN = 0xFF2FE0FF;
     private static final int CYAN_FAINT = 0x302FE0FF;
     private static final int GREEN = 0xFF6CFF6C;

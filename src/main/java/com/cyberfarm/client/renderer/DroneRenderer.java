@@ -15,11 +15,11 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
 
 public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, DroneModel> {
-    private static final Identifier TEXTURE = CyberFarm.id("textures/entity/drone.png");
+    private static final ResourceLocation TEXTURE = CyberFarm.id("textures/entity/drone.png");
     /** Full-bright overlay for the cyan lights, visible in the dark. */
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/drone_glow.png"));
 
@@ -50,7 +50,7 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
     }
 
     @Override
-    public Identifier getTextureLocation(DroneRenderState state) {
+    public ResourceLocation getTextureLocation(DroneRenderState state) {
         return TEXTURE;
     }
 

@@ -10,7 +10,7 @@ import com.cyberfarm.village.VillagePlan;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,20 +38,20 @@ public class BlueprintDiscItem extends Item {
         return stack;
     }
 
-    public static @Nullable Identifier blueprint(ItemStack stack) {
+    public static @Nullable ResourceLocation blueprint(ItemStack stack) {
         return stack.get(ModDataComponents.BLUEPRINT.get());
     }
 
     /** True for a disc whose building {@code player} has not learned yet. */
     public static boolean unlearned(ItemStack stack, Player player) {
-        Identifier id = stack.getItem() instanceof BlueprintDiscItem ? blueprint(stack) : null;
+        ResourceLocation id = stack.getItem() instanceof BlueprintDiscItem ? blueprint(stack) : null;
         return id != null && !Blueprints.of(player).knows(id);
     }
 
     @Override
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        Identifier id = blueprint(stack);
+        ResourceLocation id = blueprint(stack);
         if (id == null) {
             return InteractionResult.PASS;
         }
@@ -73,8 +73,8 @@ public class BlueprintDiscItem extends Item {
 
     @Override
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
-        Identifier id = blueprint(stack);
-        VillagePlan.unlock(id != null ? id : Identifier.withDefaultNamespace("none")).ifPresent(unlock ->
+        ResourceLocation id = blueprint(stack);
+        VillagePlan.unlock(id != null ? id : new ResourceLocation("none")).ifPresent(unlock ->
                 tooltip.accept(unlock.displayName().copy().withStyle(ChatFormatting.AQUA)));
         tooltip.accept(Component.translatable("tooltip.cyberfarm.blueprint_disc").withStyle(ChatFormatting.GRAY));
     }

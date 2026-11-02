@@ -3,13 +3,13 @@ package com.cyberfarm;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.fml.ModList;
-import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /**
  * Gives every player the Drone Engineer's Handbook once, on their first login.
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
  * GuideME is looked up by id to keep it an optional dependency.
  */
 public final class HandbookGifting {
-    public static final Identifier HANDBOOK_ID = CyberFarm.id("handbook");
+    public static final ResourceLocation HANDBOOK_ID = CyberFarm.id("handbook");
     private static final String GUIDEME = "guideme";
     private static final String RECEIVED_TAG = "cyberfarm.received_handbook";
 
@@ -47,8 +47,8 @@ public final class HandbookGifting {
 
     @SuppressWarnings("unchecked")
     public static ItemStack createHandbook() {
-        Item guideItem = BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath(GUIDEME, "guide"));
-        var component = (DataComponentType<Identifier>) BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(Identifier.fromNamespaceAndPath(GUIDEME, "guide_id"));
+        Item guideItem = BuiltInRegistries.ITEM.getValue(new ResourceLocation(GUIDEME, "guide"));
+        var component = (DataComponentType<ResourceLocation>) BuiltInRegistries.DATA_COMPONENT_TYPE.getValue(new ResourceLocation(GUIDEME, "guide_id"));
         if (guideItem == Items.AIR || component == null) {
             return ItemStack.EMPTY;
         }

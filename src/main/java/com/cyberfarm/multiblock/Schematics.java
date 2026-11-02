@@ -8,11 +8,11 @@ import java.util.Optional;
 import com.cyberfarm.CyberFarm;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplateManager;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import net.minecraftforge.event.OnDatapackSyncEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -29,7 +29,7 @@ public final class Schematics {
         return all;
     }
 
-    public static Optional<Schematic> byId(Identifier id) {
+    public static Optional<Schematic> byId(ResourceLocation id) {
         return all.stream().filter(schematic -> schematic.id().equals(id)).findFirst();
     }
 
@@ -56,7 +56,7 @@ public final class Schematics {
         var blocks = server.registryAccess().lookupOrThrow(Registries.BLOCK);
         all = manager.listTemplates()
                 .filter(Schematic::isSchematic)
-                .sorted(Comparator.comparing(Identifier::toString))
+                .sorted(Comparator.comparing(ResourceLocation::toString))
                 .map(id -> manager.get(id).map(template -> {
                     Schematic schematic = Schematic.of(id, template, blocks);
                     if (schematic == null) {

@@ -8,7 +8,7 @@ import com.cyberfarm.registry.ModDataComponents;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -30,7 +30,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.Tags;
+import net.minecraftforge.common.Tags;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -116,7 +116,7 @@ public class MobCapsuleItem extends Item {
             builder.accept(Component.translatable("tooltip.cyberfarm.capsule.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
-        Component name = BuiltInRegistries.ENTITY_TYPE.getOptional(Identifier.tryParse(tag.getStringOr("id", "")))
+        Component name = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.tryParse(tag.getStringOr("id", "")))
                 .map(EntityType::getDescription)
                 .orElse(Component.literal("?"));
         builder.accept(Component.translatable("tooltip.cyberfarm.capsule.contains", name).withStyle(ChatFormatting.AQUA));

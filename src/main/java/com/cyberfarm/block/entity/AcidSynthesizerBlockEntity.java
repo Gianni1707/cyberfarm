@@ -14,7 +14,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -36,7 +36,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * The Methane Extractor's chamber needs the Acid to dissolve its mob.
  */
 public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
-    public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/sulfur"));
+    public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dusts/sulfur"));
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;

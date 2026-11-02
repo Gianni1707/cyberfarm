@@ -7,7 +7,7 @@ import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.TagKey;
@@ -27,7 +27,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * steady flow of FE, the way aluminum is really made. The first machine a drone frame needs.
  */
 public class ElectrolyzerBlockEntity extends MachineBlockEntity {
-    public static final TagKey<Item> ALUMINA = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/alumina"));
+    public static final TagKey<Item> ALUMINA = TagKey.create(Registries.ITEM, new ResourceLocation("c", "dusts/alumina"));
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
     public static final int PROCESS_TIME = 100;

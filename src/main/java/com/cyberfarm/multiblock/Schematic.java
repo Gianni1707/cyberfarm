@@ -16,7 +16,7 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -31,7 +31,7 @@ import org.jspecify.annotations.Nullable;
  * player, centred on the block aimed at, and the rest stretches away. Air, structure voids and
  * jigsaws are left out; block entity data (chest contents...) is never copied.
  */
-public record Schematic(Identifier id, Vec3i size, List<Entry> blocks) implements Structure {
+public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) implements Structure {
     /** Bigger schematics are skipped: the projection and the network message stay small. */
     public static final int MAX_SIZE = 40;
     private static final String FOLDER = "schematic/";
@@ -45,17 +45,17 @@ public record Schematic(Identifier id, Vec3i size, List<Entry> blocks) implement
     }
 
     public static final StreamCodec<ByteBuf, Schematic> STREAM_CODEC = StreamCodec.composite(
-            Identifier.STREAM_CODEC, Schematic::id,
+            ResourceLocation.STREAM_CODEC, Schematic::id,
             BlockPos.STREAM_CODEC.map(pos -> (Vec3i) pos, BlockPos::new), Schematic::size,
             Entry.STREAM_CODEC.apply(ByteBufCodecs.list()), Schematic::blocks,
             Schematic::new);
 
-    public static boolean isSchematic(Identifier id) {
+    public static boolean isSchematic(ResourceLocation id) {
         return id.getPath().startsWith(FOLDER);
     }
 
     /** Reads the template's blocks through its saved form; null when it is too big or empty. */
-    public static @Nullable Schematic of(Identifier id, StructureTemplate template, HolderGetter<Block> blockLookup) {
+    public static @Nullable Schematic of(ResourceLocation id, StructureTemplate template, HolderGetter<Block> blockLookup) {
         Vec3i size = template.getSize();
         if (size.getX() > MAX_SIZE || size.getY() > MAX_SIZE || size.getZ() > MAX_SIZE) {
             return null;

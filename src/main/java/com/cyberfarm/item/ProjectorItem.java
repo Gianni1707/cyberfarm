@@ -21,7 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -56,7 +56,7 @@ public class ProjectorItem extends Item {
 
     /** The chosen structure; a projector from before the schematics saved a multiblock's number instead. */
     public static Structure structure(ItemStack stack) {
-        Identifier id = stack.get(ModDataComponents.PROJECTOR_STRUCTURE.get());
+        ResourceLocation id = stack.get(ModDataComponents.PROJECTOR_STRUCTURE.get());
         return id != null ? Structure.byId(id).orElse(Blueprint.byOrdinal(0))
                 : Blueprint.byOrdinal(stack.getOrDefault(ModDataComponents.PROJECTOR_BLUEPRINT.get(), 0));
     }

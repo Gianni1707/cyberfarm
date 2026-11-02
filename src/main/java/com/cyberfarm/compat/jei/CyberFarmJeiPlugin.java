@@ -18,7 +18,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * JEI integration, loaded by JEI only when it is installed (also read by EMI).
@@ -27,7 +27,7 @@ import net.minecraft.resources.Identifier;
 @JeiPlugin
 public class CyberFarmJeiPlugin implements IModPlugin {
     @Override
-    public Identifier getPluginUid() {
+    public ResourceLocation getPluginUid() {
         return CyberFarm.id("jei");
     }
 

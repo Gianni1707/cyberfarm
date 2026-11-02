@@ -26,8 +26,8 @@ import com.cyberfarm.menu.WasteReprocessorMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.cyberfarm.port.DeferredHolder;
+import com.cyberfarm.port.DeferredRegister;
 
 public class ModMenus {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(Registries.MENU, CyberFarm.MODID);

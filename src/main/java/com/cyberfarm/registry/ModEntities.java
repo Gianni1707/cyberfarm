@@ -6,8 +6,8 @@ import com.cyberfarm.entity.MechEntity;
 
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.cyberfarm.port.DeferredHolder;
+import com.cyberfarm.port.DeferredRegister;
 
 public class ModEntities {
     public static final DeferredRegister.Entities ENTITIES = DeferredRegister.createEntities(CyberFarm.MODID);

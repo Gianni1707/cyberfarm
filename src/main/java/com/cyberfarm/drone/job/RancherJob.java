@@ -16,9 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.common.IShearable;
-import net.neoforged.neoforge.common.util.FakePlayer;
-import net.neoforged.neoforge.common.util.FakePlayerFactory;
+import net.minecraftforge.common.IForgeShearable;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -72,7 +72,7 @@ public class RancherJob extends DroneJob {
     }
 
     private static boolean canShear(ServerLevel level, LivingEntity entity) {
-        return entity instanceof IShearable shearable && shearable.isShearable(null, new ItemStack(Items.SHEARS), level, entity.blockPosition());
+        return entity instanceof IForgeShearable shearable && shearable.isShearable(null, new ItemStack(Items.SHEARS), level, entity.blockPosition());
     }
 
     /** shortcut: only cows, mooshrooms and goats (and mod mobs extending them); upgrade to a mob tag if modded milkables need it. */
@@ -92,7 +92,7 @@ public class RancherJob extends DroneJob {
         }
         drone.flyTowards(hover);
         if (canShear(level, animal)) {
-            List<ItemStack> drops = ((IShearable) animal).onSheared(null, new ItemStack(Items.SHEARS), level, animal.blockPosition());
+            List<ItemStack> drops = ((IForgeShearable) animal).onSheared(null, new ItemStack(Items.SHEARS), level, animal.blockPosition());
             drone.cargo().collect(level, animal.blockPosition(), drops);
         } else if (isMilkable(animal)) {
             if (!milk(drone, level)) {

@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.EntityType;
@@ -20,7 +20,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 
 /**
  * A mob in a Methane Extractor's acid falls apart as it dissolves: holes open in its skin, patch by
@@ -32,7 +32,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
  */
 public final class DissolvingMobRenderer {
     private static final ContextKey<Float> DECAY = new ContextKey<>(CyberFarm.id("decay"));
-    private static final Identifier MASK = CyberFarm.id("textures/entity/dissolve_mask.png");
+    private static final ResourceLocation MASK = CyberFarm.id("textures/entity/dissolve_mask.png");
     /** Below this the mob is drawn as usual. */
     private static final float VISIBLE_DECAY = 0.02F;
 

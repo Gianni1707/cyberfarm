@@ -33,7 +33,7 @@ import java.util.Map;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
@@ -103,16 +103,16 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
      * each side of its block (by {@link Direction#get3DDataValue}): the texture of a CyberFarm pipe
      * whose arm reaches it, {@link #PLAIN} for anything else with a block entity, or null.
      */
-    record Port(int dx, int dy, int dz, @Nullable Identifier[] links) {}
+    record Port(int dx, int dy, int dz, @Nullable ResourceLocation[] links) {}
 
     /** A link to a hopper, a tank or another mod's pipe: plain white. */
-    private static final Identifier PLAIN = CyberFarm.id("textures/entity/methane_chamber.png");
+    private static final ResourceLocation PLAIN = CyberFarm.id("textures/entity/methane_chamber.png");
     /** The arm of a CyberFarm pipe: half as wide as it is, and the plain-tube columns of its texture. */
     private static final float LINK_HALF = 2 / 16.0F;
     /** A port's coupling: as big as a pipe's, the slate of its casing. */
     private static final float COUPLING = 3 / 16.0F;
     private static final int COUPLING_COLOR = 0xFF3A4550;
-    private static final Map<Identifier, RenderType> LINK_TYPES = new HashMap<>();
+    private static final Map<ResourceLocation, RenderType> LINK_TYPES = new HashMap<>();
 
     public static class State extends BlockEntityRenderState {
         boolean formed;
@@ -157,7 +157,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
         for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-1, 0, -1), centre.offset(1, 3, 1))) {
             if (level.getBlockState(pos).is(ModBlocks.CRYSTALLIZER_PORT.get())) {
                 // A pipe, cable, hopper or tank outside the chamber: anything with a block entity
-                Identifier[] links = new Identifier[6];
+                ResourceLocation[] links = new ResourceLocation[6];
                 for (Direction side : Direction.values()) {
                     BlockPos next = pos.relative(side);
                     boolean inside = Math.abs(next.getX() - centre.getX()) <= 1 && Math.abs(next.getZ() - centre.getZ()) <= 1
@@ -364,7 +364,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
     private static void links(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light) {
         Vec3 centre = new Vec3(port.dx(), port.dy() + 0.5, port.dz());
         for (Direction side : Direction.values()) {
-            Identifier texture = port.links()[side.get3DDataValue()];
+            ResourceLocation texture = port.links()[side.get3DDataValue()];
             if (texture == null) {
                 continue;
             }

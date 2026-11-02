@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.inventory.ContainerData;
@@ -182,7 +182,7 @@ public class ItemFilter {
         output.putBoolean("whitelist", whitelist);
         output.putBoolean("match_components", matchComponents);
         output.putBoolean("match_mod", matchMod);
-        output.storeNullable("tag", Identifier.CODEC, tag == null ? null : tag.location());
+        output.storeNullable("tag", ResourceLocation.CODEC, tag == null ? null : tag.location());
         output.putInt("limit", limit);
     }
 
@@ -193,7 +193,7 @@ public class ItemFilter {
         whitelist = input.getBooleanOr("whitelist", false);
         matchComponents = input.getBooleanOr("match_components", false);
         matchMod = input.getBooleanOr("match_mod", false);
-        tag = input.read("tag", Identifier.CODEC).map(id -> TagKey.create(Registries.ITEM, id)).orElse(null);
+        tag = input.read("tag", ResourceLocation.CODEC).map(id -> TagKey.create(Registries.ITEM, id)).orElse(null);
         limit = input.getIntOr("limit", 0);
     }
 }

@@ -8,10 +8,10 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.cyberfarm.port.DeferredHolder;
+import com.cyberfarm.port.DeferredRegister;
 
 public class ModDataComponents {
     public static final DeferredRegister.DataComponents COMPONENTS = DeferredRegister.createDataComponents(Registries.DATA_COMPONENT_TYPE, CyberFarm.MODID);
@@ -47,11 +47,11 @@ public class ModDataComponents {
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
     /** Blueprint Disc: the village building (a schematic) it teaches. */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>> BLUEPRINT = COMPONENTS.registerComponentType("blueprint",
-            builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> BLUEPRINT = COMPONENTS.registerComponentType("blueprint",
+            builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
     /** Multiblock Projector: the chosen structure (a multiblock or a schematic), and where and which way it is pinned. */
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Identifier>> PROJECTOR_STRUCTURE = COMPONENTS.registerComponentType("projector_structure",
-            builder -> builder.persistent(Identifier.CODEC).networkSynchronized(Identifier.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResourceLocation>> PROJECTOR_STRUCTURE = COMPONENTS.registerComponentType("projector_structure",
+            builder -> builder.persistent(ResourceLocation.CODEC).networkSynchronized(ResourceLocation.STREAM_CODEC));
     /** The multiblock's number, as projectors saved it before the schematics; still read so they keep their choice. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> PROJECTOR_BLUEPRINT = COMPONENTS.registerComponentType("projector_blueprint",
             builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));

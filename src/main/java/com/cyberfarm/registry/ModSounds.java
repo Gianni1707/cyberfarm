@@ -4,8 +4,8 @@ import com.cyberfarm.CyberFarm;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import com.cyberfarm.port.DeferredHolder;
+import com.cyberfarm.port.DeferredRegister;
 
 /**
  * CyberFarm's own sound events (files in sounds.json, reusing vanilla audio). Every machine and drone

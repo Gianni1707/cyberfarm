@@ -13,11 +13,11 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 public class MechRenderer extends MobRenderer<MechEntity, MechRenderState, MechModel> {
-    private static final Identifier TEXTURE = CyberFarm.id("textures/entity/mech.png");
+    private static final ResourceLocation TEXTURE = CyberFarm.id("textures/entity/mech.png");
     /** Full-bright overlay for the visor, the cockpit and the thrusters. */
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/mech_glow.png"));
 
@@ -45,7 +45,7 @@ public class MechRenderer extends MobRenderer<MechEntity, MechRenderState, MechM
     }
 
     @Override
-    public Identifier getTextureLocation(MechRenderState state) {
+    public ResourceLocation getTextureLocation(MechRenderState state) {
         return TEXTURE;
     }
 

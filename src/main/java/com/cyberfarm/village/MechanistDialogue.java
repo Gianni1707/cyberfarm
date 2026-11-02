@@ -8,7 +8,7 @@ import com.cyberfarm.item.BlueprintDiscItem;
 import com.cyberfarm.registry.ModVillagers;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -19,7 +19,7 @@ import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.npc.villager.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jspecify.annotations.Nullable;
 
@@ -126,7 +126,7 @@ public final class MechanistDialogue {
 
     /** The buildings finished since the last talk: a line for each, its own for some first ones. */
     private static void news(Lines lines, SupplyTerminalBlockEntity terminal) {
-        for (Identifier id : terminal.takeNews()) {
+        for (ResourceLocation id : terminal.takeNews()) {
             VillagePlan.unlock(id).ifPresent(unlock -> {
                 lines.building = unlock.displayName();
                 if (unlock.tier() == 1 && VillagePlan.SPECIAL_FIRSTS.contains(unlock.building())) {

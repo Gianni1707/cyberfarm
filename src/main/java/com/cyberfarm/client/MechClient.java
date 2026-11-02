@@ -17,15 +17,15 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderHandEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.jspecify.annotations.Nullable;
@@ -40,9 +40,9 @@ public final class MechClient {
     public static final KeyMapping EXIT = new KeyMapping("key.cyberfarm.mech_exit", InputConstants.Type.KEYSYM, InputConstants.KEY_V, CATEGORY);
     public static final KeyMapping DRILL = new KeyMapping("key.cyberfarm.mech_drill", InputConstants.Type.KEYSYM, InputConstants.KEY_R, CATEGORY);
     public static final KeyMapping BLADE = new KeyMapping("key.cyberfarm.mech_blade", InputConstants.Type.KEYSYM, InputConstants.KEY_G, CATEGORY);
-    private static final Identifier HUD = CyberFarm.id("mech_hud");
+    private static final ResourceLocation HUD = CyberFarm.id("mech_hud");
     /** Vanilla HUD parts the cockpit replaces. */
-    private static final Set<Identifier> HIDDEN = Set.of(VanillaGuiLayers.PLAYER_HEALTH, VanillaGuiLayers.ARMOR_LEVEL, VanillaGuiLayers.FOOD_LEVEL,
+    private static final Set<ResourceLocation> HIDDEN = Set.of(VanillaGuiLayers.PLAYER_HEALTH, VanillaGuiLayers.ARMOR_LEVEL, VanillaGuiLayers.FOOD_LEVEL,
             VanillaGuiLayers.VEHICLE_HEALTH, VanillaGuiLayers.AIR_LEVEL, VanillaGuiLayers.EXPERIENCE_LEVEL,
             VanillaGuiLayers.CONTEXTUAL_INFO_BAR, VanillaGuiLayers.CONTEXTUAL_INFO_BAR_BACKGROUND);
     private static final int BOOT_TICKS = 40;

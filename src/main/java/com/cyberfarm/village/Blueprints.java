@@ -9,32 +9,32 @@ import com.mojang.serialization.MapCodec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
 /** The village buildings a player has learned from Blueprint Discs: only these show in their Multiblock Projector. */
-public record Blueprints(List<Identifier> learned) {
+public record Blueprints(List<ResourceLocation> learned) {
     public static final Blueprints NONE = new Blueprints(List.of());
-    public static final MapCodec<Blueprints> CODEC = Identifier.CODEC.listOf().fieldOf("learned").xmap(Blueprints::new, Blueprints::learned);
-    public static final StreamCodec<ByteBuf, Blueprints> STREAM_CODEC = Identifier.STREAM_CODEC.apply(ByteBufCodecs.list())
+    public static final MapCodec<Blueprints> CODEC = ResourceLocation.CODEC.listOf().fieldOf("learned").xmap(Blueprints::new, Blueprints::learned);
+    public static final StreamCodec<ByteBuf, Blueprints> STREAM_CODEC = ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list())
             .map(Blueprints::new, Blueprints::learned);
 
     public static Blueprints of(Player player) {
         return player.getData(ModVillagers.BLUEPRINTS);
     }
 
-    public boolean knows(Identifier id) {
+    public boolean knows(ResourceLocation id) {
         return learned.contains(id);
     }
 
-    public Blueprints with(Identifier id) {
-        List<Identifier> more = new ArrayList<>(learned);
+    public Blueprints with(ResourceLocation id) {
+        List<ResourceLocation> more = new ArrayList<>(learned);
         more.add(id);
         return new Blueprints(List.copyOf(more));
     }
 
     /** A village building shows in the projector once learned (always in creative); anything else always does. */
-    public static boolean canProject(Player player, Identifier structure) {
+    public static boolean canProject(Player player, ResourceLocation structure) {
         return !VillagePlan.isVillage(structure) || player.isCreative() || of(player).knows(structure);
     }
 }

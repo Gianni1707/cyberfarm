@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -63,7 +63,7 @@ public class MechEntity extends Mob {
     private static final float WALK_SPEED = 0.22F;
     /** Reach the pilot gains, in blocks: the mech's arms are long. */
     private static final double EXTRA_REACH = 2.5;
-    private static final Identifier REACH = CyberFarm.id("mech_reach");
+    private static final ResourceLocation REACH = CyberFarm.id("mech_reach");
 
     /**
      * Boarding sequence. The mech crouches a little and the front of its trunk opens like a flower;

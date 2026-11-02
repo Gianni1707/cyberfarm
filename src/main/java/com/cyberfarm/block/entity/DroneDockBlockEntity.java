@@ -27,7 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.SimpleMenuProvider;
@@ -544,7 +544,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.putBoolean("paused", paused);
         output.store("anchored", Codec.LONG.listOf(), List.copyOf(anchored));
         if (buildPlan != null) {
-            output.store("build", Identifier.CODEC, buildPlan.structure().id());
+            output.store("build", ResourceLocation.CODEC, buildPlan.structure().id());
             output.store("build_origin", BlockPos.CODEC, buildPlan.origin());
             output.store("build_facing", Direction.CODEC, buildPlan.facing());
         }
@@ -563,7 +563,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         paused = input.getBooleanOr("paused", false);
         anchored.clear();
         anchored.addAll(input.read("anchored", Codec.LONG.listOf()).orElse(List.of()));
-        Structure build = input.read("build", Identifier.CODEC).flatMap(Structure::byId).orElse(null);
+        Structure build = input.read("build", ResourceLocation.CODEC).flatMap(Structure::byId).orElse(null);
         BlockPos buildOrigin = input.read("build_origin", BlockPos.CODEC).orElse(null);
         buildPlan = build != null && buildOrigin != null
                 ? new BuildPlan(build, buildOrigin, input.read("build_facing", Direction.CODEC).orElse(Direction.NORTH)) : null;

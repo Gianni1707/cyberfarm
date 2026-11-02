@@ -71,20 +71,20 @@ import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.sounds.SoundInstance;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.IEventBus;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
-import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
@@ -92,8 +92,8 @@ import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import org.jspecify.annotations.Nullable;
 
 // Client-only entry point: never loaded on a dedicated server.
@@ -112,21 +112,21 @@ public class CyberFarmClient {
         modEventBus.addListener(MechClient::registerKeys);
         modEventBus.addListener(MechClient::registerHud);
         modEventBus.addListener(MachineOverlay::register);
-        NeoForge.EVENT_BUS.addListener(MechClient::tick);
-        NeoForge.EVENT_BUS.addListener(VillageRange::tick);
-        NeoForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
-        NeoForge.EVENT_BUS.addListener(MechClient::hideHand);
-        NeoForge.EVENT_BUS.addListener(MechClient::easeCamera);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::tick);
+        MinecraftForge.EVENT_BUS.addListener(VillageRange::tick);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::hideHand);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::easeCamera);
         modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
         modEventBus.addListener(CyberFarmClient::registerFluidModels);
-        NeoForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
-        NeoForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
-        NeoForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
-        NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
-        NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
-        NeoForge.EVENT_BUS.addListener(EffectRenderer::extract);
-        NeoForge.EVENT_BUS.addListener(EffectRenderer::submit);
-        NeoForge.EVENT_BUS.addListener(DroneDownwash::tick);
+        MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
+        MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
+        MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
+        MinecraftForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
+        MinecraftForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
+        MinecraftForge.EVENT_BUS.addListener(EffectRenderer::extract);
+        MinecraftForge.EVENT_BUS.addListener(EffectRenderer::submit);
+        MinecraftForge.EVENT_BUS.addListener(DroneDownwash::tick);
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -165,7 +165,7 @@ public class CyberFarmClient {
     }
 
     private static MufflerBlockEntity.@Nullable Category categoryOf(SoundInstance sound) {
-        Identifier id = sound.getIdentifier();
+        ResourceLocation id = sound.getIdentifier();
         if (id.getNamespace().equals(CyberFarm.MODID)) {
             // The Geiger Counter is a warning, and the mech a vehicle: never muffled
             if (id.getPath().startsWith("geiger.") || id.getPath().startsWith("mech.")) {
@@ -267,9 +267,9 @@ public class CyberFarmClient {
 
     /** Coolants look like water, animated and see-through, tinted in their own colour. */
     private static FluidModel.Unbaked liquidModel(int color) {
-        return new FluidModel.Unbaked(new Material(Identifier.withDefaultNamespace("block/water_still")),
-                new Material(Identifier.withDefaultNamespace("block/water_flow")),
-                new Material(Identifier.withDefaultNamespace("block/water_overlay")), (FluidTintSource) state -> color);
+        return new FluidModel.Unbaked(new Material(new ResourceLocation("block/water_still")),
+                new Material(new ResourceLocation("block/water_flow")),
+                new Material(new ResourceLocation("block/water_overlay")), (FluidTintSource) state -> color);
     }
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

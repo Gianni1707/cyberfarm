@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,11 +32,11 @@ public interface Structure {
         return Stream.concat(Arrays.stream(Blueprint.values()), Schematics.all().stream()).toList();
     }
 
-    static Optional<Structure> byId(Identifier id) {
+    static Optional<Structure> byId(ResourceLocation id) {
         return all().stream().filter(structure -> structure.id().equals(id)).findFirst();
     }
 
-    Identifier id();
+    ResourceLocation id();
 
     Component displayName();
 

@@ -7,7 +7,7 @@ import com.cyberfarm.CyberFarm;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * The tech village's buildings and what each village level unlocks. Every building has three tiers,
@@ -23,7 +23,7 @@ public final class VillagePlan {
 
     /** One building at one tier: the blueprint on a disc. */
     public record Unlock(String building, int tier) {
-        public Identifier schematic() {
+        public ResourceLocation schematic() {
             return CyberFarm.id(FOLDER + building + "_" + tier);
         }
 
@@ -50,12 +50,12 @@ public final class VillagePlan {
 
     private VillagePlan() {}
 
-    public static boolean isVillage(Identifier id) {
+    public static boolean isVillage(ResourceLocation id) {
         return id.getNamespace().equals(CyberFarm.MODID) && id.getPath().startsWith(FOLDER);
     }
 
     /** The building and tier a village schematic is for. */
-    public static Optional<Unlock> unlock(Identifier id) {
+    public static Optional<Unlock> unlock(ResourceLocation id) {
         if (!isVillage(id)) {
             return Optional.empty();
         }

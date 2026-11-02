@@ -1,7 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.148'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.148'
     id 'idea'
 }
 
@@ -27,9 +27,8 @@ sourceSets.main.resources {
 }
 
 repositories {
-    // GuideME (in-game handbook) is published on Maven Central
     mavenCentral()
-    // JEI
+    // Patchouli
     maven { url = "https://maven.blamejared.com" }
     // REI and its dependencies (Architectury, Cloth Config)
     maven { url = "https://maven.shedaniel.me" }
@@ -40,12 +39,11 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 25 to end users in 26.1.2, so mods should target Java 25.
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+// Minecraft 1.20.1 runs on Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
-neoForge {
-    // Specify the version of NeoForge to use.
-    version = project.neo_version
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
 
     // This line is optional. Access Transformers are automatically detected
     // accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
@@ -56,7 +54,7 @@ neoForge {
         client {
             client()
             // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 
         server {
@@ -64,7 +62,7 @@ neoForge {
             // Own folder, so a dev server and client can run side by side
             gameDirectory = project.file('run-server')
             programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 
         // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -72,11 +70,11 @@ neoForge {
         // The gametest system is also enabled by default for other run configs under the /test command.
         gameTestServer {
             type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
         }
 
         data {
-            clientData()
+            data()
             // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
             // gameDirectory = project.file('run-data')
 
@@ -119,20 +117,23 @@ configurations {
 }
 
 dependencies {
-    // GuideME renders the Drone Engineer's Handbook. The guide is data-driven, so no API is
+    // @Nullable as on 26.x (annotations only, not needed at runtime)
+    compileOnly "org.jspecify:jspecify:1.0.0"
+
+    // Patchouli renders the Drone Engineer's Handbook. The book is data-driven, so no API is
     // needed at compile time and CyberFarm still runs without it.
-    localRuntime "org.appliedenergistics:guideme:${guideme_version}"
+    modRuntimeOnly "vazkii.patchouli:Patchouli:${patchouli_version}"
 
     // Recipe viewers: both are optional. We compile against their APIs only; the dev client runs
     // one of them, picked with recipe_viewer in gradle.properties (jei or rei).
-    compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-api-neoforge:${rei_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-neoforge:${rei_version}"
+    modCompileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+    modCompileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}"
+    modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}"
     if (project.recipe_viewer == "rei") {
-        localRuntime "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+        modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rei_version}"
     } else {
-        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+        modRuntimeOnly "mezz.jei:jei-${minecraft_version}-forge:${jei_version}"
     }
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
@@ -157,7 +158,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
     var replaceProperties = [
             minecraft_version      : minecraft_version,
             minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
+            forge_version          : forge_version,
             mod_id                 : mod_id,
             mod_name               : mod_name,
             mod_license            : mod_license,
@@ -172,7 +173,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
 // this works with both building through Gradle and the IDE.
 sourceSets.main.resources.srcDir generateModMetadata
 // To avoid having to run "generateModMetadata" manually, make it run on every project reload
-neoForge.ideSyncTask generateModMetadata
+legacyForge.ideSyncTask generateModMetadata
 
 // Example configuration to allow publishing using the maven-publish plugin
 publishing {
@@ -190,6 +191,7 @@ publishing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+    options.compilerArgs << '-Xmaxerrs' << '100000'
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

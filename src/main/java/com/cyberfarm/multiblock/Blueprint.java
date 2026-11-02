@@ -12,7 +12,7 @@ import com.cyberfarm.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -76,7 +76,7 @@ public enum Blueprint implements Structure {
     }
 
     @Override
-    public Identifier id() {
+    public ResourceLocation id() {
         return CyberFarm.id(name().toLowerCase(Locale.ROOT));
     }
 
