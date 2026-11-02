@@ -189,6 +189,11 @@ public class MechanistScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
+    /** No dimming: the talk happens in the world, in front of the mechanist. */
+    @Override
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    }
+
     @Override
     public boolean isPauseScreen() {
         return false;

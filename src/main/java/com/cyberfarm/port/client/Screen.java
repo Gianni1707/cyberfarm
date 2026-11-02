@@ -12,12 +12,17 @@ public abstract class Screen extends net.minecraft.client.gui.screens.Screen {
     @Override
     public final void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         GuiGraphicsExtractor extractor = new GuiGraphicsExtractor(graphics);
+        // First, as 26.x draws it apart: the screens draw their own content before calling super
+        extractBackground(extractor, mouseX, mouseY, partialTick);
         extractRenderState(extractor, mouseX, mouseY, partialTick);
         extractor.flushTooltip();
     }
 
-    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         renderBackground(graphics.vanilla());
+    }
+
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.render(graphics.vanilla(), mouseX, mouseY, partialTick);
     }
 

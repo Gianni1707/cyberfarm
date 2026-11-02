@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "multiblock_projector",
+      "item": "cyberfarm:multiblock_projector",
       "text": "Shows a multiblock $(l)in the world$() as ghost blocks: what to place and where, before you place a single block."
     },
     {

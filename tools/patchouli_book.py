@@ -239,16 +239,21 @@ for p in sorted(glob.glob(RES + '/data/cyberfarm/recipes/*.json')):
 
 
 # --- the pages ---
+def full_id(item_id):
+    """GuideME takes ids without a namespace as ours; Patchouli always wants one."""
+    return item_id if ':' in item_id else 'cyberfarm:' + item_id
+
+
 def front_matter(text):
     m = re.match(r'---\n(.*?)\n---\n', text, re.S)
     meta = {'item_ids': []}
     for line in m.group(1).splitlines():
         line = line.strip()
         if line.startswith('- '):
-            meta['item_ids'].append(line[2:].strip())
+            meta['item_ids'].append(full_id(line[2:].strip()))
         elif ':' in line and not line.endswith(':'):
             k, v = line.split(':', 1)
-            meta[k.strip()] = v.strip()
+            meta[k.strip()] = full_id(v.strip()) if k.strip() == 'icon' else v.strip()
     return meta, text[m.end():]
 
 
@@ -373,7 +378,7 @@ def convert(name, meta, body, entry):
                 print(f'  {name}: no crafting recipe for {item}')
         elif s.startswith('<ItemImage') or s.startswith('<BlockImage'):
             flush_para()
-            item = dict(ATTR.findall(s))['id']
+            item = full_id(dict(ATTR.findall(s))['id'])
             page = {'type': 'patchouli:spotlight', 'item': item}
             if entry.pending_title:
                 page['title'] = entry.pending_title
@@ -502,3 +507,42 @@ for name, (meta, body) in sorted(PAGES.items()):
         data['extra_recipe_mappings'] = mappings
     save(f'{BOOK}/entries/{entry_id}.json', data)
     print(f'{entry_id}: {len(entry.pages)} pages')
+
+
+# --- self-check: Patchouli stops at the first bad id and shows an empty book, so check them all here ---
+def check():
+    entries = {os.path.relpath(p, BOOK + '/entries')[:-5].replace(os.sep, '/')
+               for p in glob.glob(BOOK + '/entries/**/*.json', recursive=True)}
+    errors = []
+
+    def item(i, where):
+        ns, _, path = i.partition(':')
+        if not path:
+            errors.append(f'{where}: no namespace in {i}')
+        elif ns == 'cyberfarm' and not os.path.exists(f'{ASSETS}/models/item/{path}.json'):
+            errors.append(f'{where}: no item {i}')
+
+    for e in entries:
+        d = json.load(open(f'{BOOK}/entries/{e}.json', encoding='utf-8'))
+        item(d['icon'], e)
+        for i in d.get('extra_recipe_mappings', {}):
+            item(i, e)
+        for n, pg in enumerate(d['pages']):
+            where = f'{e} page {n}'
+            if 'item' in pg:
+                item(pg['item'], where)
+            for k in ('recipe', 'recipe2'):
+                if k in pg and not os.path.exists(RES + '/data/cyberfarm/recipes/' + pg[k].split(':')[1] + '.json'):
+                    errors.append(f'{where}: no recipe {pg[k]}')
+            for target in re.findall(r'\$\(l:([^)]+)\)', pg.get('text', '')):
+                if not target.startswith('http') and target.split('#')[0] not in entries:
+                    errors.append(f'{where}: no entry {target}')
+            for state in pg.get('multiblock', {}).get('mapping', {}).values():
+                if ':' not in state:
+                    errors.append(f'{where}: no namespace in {state}')
+    for c in glob.glob(BOOK + '/categories/*.json'):
+        item(json.load(open(c, encoding='utf-8'))['icon'], c)
+    assert not errors, '\n'.join(errors)
+
+
+check()
