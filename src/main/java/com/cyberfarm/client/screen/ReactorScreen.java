@@ -3,8 +3,8 @@ package com.cyberfarm.client.screen;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.menu.ReactorMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;

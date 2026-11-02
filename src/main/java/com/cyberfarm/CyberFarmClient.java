@@ -5,7 +5,6 @@ import com.cyberfarm.client.DroneDownwash;
 import com.cyberfarm.client.DroneSoundInstance;
 import com.cyberfarm.client.EffectRenderer;
 import com.cyberfarm.client.MachineOverlay;
-import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
@@ -53,45 +52,39 @@ import com.cyberfarm.client.screen.WasteReprocessorScreen;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.entity.MechEntity;
 import com.cyberfarm.entity.MechModule;
+import com.cyberfarm.item.DroneItem;
 import com.cyberfarm.item.SurveyModePayload;
 import com.cyberfarm.item.SurveyToolItem;
+import com.cyberfarm.port.RenderBoxes;
+import com.cyberfarm.port.client.LevelRenderEvents;
+import com.cyberfarm.port.net.ClientPacketDistributor;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModEntities;
-import com.cyberfarm.registry.ModFluids;
+import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModMenus;
 
-import com.google.common.reflect.TypeToken;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.ClientAvatarEntity;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.neoforged.neoforge.client.fluid.FluidTintSource;
-import com.cyberfarm.port.net.ClientPacketDistributor;
-import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
-import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
-import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import org.jspecify.annotations.Nullable;
 
 // Client-only entry point: called by CyberFarm on the client only, never loaded on a dedicated server.
@@ -102,8 +95,7 @@ public final class CyberFarmClient {
     public static void init(IEventBus modEventBus) {
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
 
-        modEventBus.addListener(CyberFarmClient::registerScreens);
-        modEventBus.addListener((RegisterConditionalItemModelPropertyEvent event) -> event.register(CyberFarm.id("mini_drone"), MiniDroneProperty.MAP_CODEC));
+        modEventBus.addListener(CyberFarmClient::setup);
         modEventBus.addListener(CyberFarmClient::registerRenderers);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
@@ -114,17 +106,26 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(VillageRange::tick);
         MinecraftForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
         MinecraftForge.EVENT_BUS.addListener(MechClient::hideHand);
-        MinecraftForge.EVENT_BUS.addListener(MechClient::easeCamera);
-        modEventBus.addListener(CyberFarmClient::registerRenderStateModifiers);
-        modEventBus.addListener(CyberFarmClient::registerFluidModels);
+        MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::hangFromDrone);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::hidePilot);
+        MinecraftForge.EVENT_BUS.addListener(MechClient::restorePilot);
+        MinecraftForge.EVENT_BUS.addListener(DissolvingMobRenderer::pre);
+        MinecraftForge.EVENT_BUS.addListener(DissolvingMobRenderer::post);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::startDroneSound);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
-        MinecraftForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
-        MinecraftForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
-        MinecraftForge.EVENT_BUS.addListener(EffectRenderer::extract);
-        MinecraftForge.EVENT_BUS.addListener(EffectRenderer::submit);
+        MinecraftForge.EVENT_BUS.addListener(LevelRenderEvents.extract(ProjectionRenderer::extract, EffectRenderer::extract)
+                .submit(ProjectionRenderer::submit, EffectRenderer::submit)::onRender);
         MinecraftForge.EVENT_BUS.addListener(DroneDownwash::tick);
+    }
+
+    private static void setup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> {
+            registerScreens();
+            // Item model override "cyberfarm:mini_drone": the drone was built on a Mini Drone Frame, so it gets its own sprite
+            ItemProperties.register(ModItems.DRONE.get(), CyberFarm.id("mini_drone"),
+                    (stack, level, owner, seed) -> DroneItem.getModules(stack).isMini() ? 1.0F : 0.0F);
+        });
     }
 
     private static void startDroneSound(EntityJoinLevelEvent event) {
@@ -140,11 +141,24 @@ public final class CyberFarmClient {
     /** Sneak + mouse wheel with the Survey Tool in hand changes its mode instead of the hotbar slot. */
     private static void scrollSurveyMode(InputEvent.MouseScrollingEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.player != null && minecraft.gui.screen() == null && minecraft.player.isShiftKeyDown()
-                && minecraft.player.getMainHandItem().getItem() instanceof SurveyToolItem && event.getScrollDeltaY() != 0) {
+        if (minecraft.player != null && minecraft.screen == null && minecraft.player.isShiftKeyDown()
+                && minecraft.player.getMainHandItem().getItem() instanceof SurveyToolItem && event.getScrollDelta() != 0) {
             // Wheel up goes back, like the hotbar
-            ClientPacketDistributor.sendToServer(new SurveyModePayload(event.getScrollDeltaY() > 0 ? -1 : 1));
+            ClientPacketDistributor.sendToServer(new SurveyModePayload(event.getScrollDelta() > 0 ? -1 : 1));
             event.setCanceled(true);
+        }
+    }
+
+    /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight (DroneEntity#shouldRiderSit). */
+    private static void hangFromDrone(RenderPlayerEvent.Pre event) {
+        if (event.getEntity().getVehicle() instanceof DroneEntity) {
+            PlayerModel<?> model = event.getRenderer().getModel();
+            // The spear-throw pose lifts the arm straight above the head
+            if (event.getEntity().getMainArm() == HumanoidArm.RIGHT) {
+                model.rightArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+            } else {
+                model.leftArmPose = HumanoidModel.ArmPose.THROW_SPEAR;
+            }
         }
     }
 
@@ -163,7 +177,7 @@ public final class CyberFarmClient {
     }
 
     private static MufflerBlockEntity.@Nullable Category categoryOf(SoundInstance sound) {
-        ResourceLocation id = sound.getIdentifier();
+        ResourceLocation id = sound.getLocation();
         if (id.getNamespace().equals(CyberFarm.MODID)) {
             // The Geiger Counter is a warning, and the mech a vehicle: never muffled
             if (id.getPath().startsWith("geiger.") || id.getPath().startsWith("mech.")) {
@@ -181,93 +195,64 @@ public final class CyberFarmClient {
         };
     }
 
-    private static void registerScreens(RegisterMenuScreensEvent event) {
-        event.register(ModMenus.COMBUSTION_GENERATOR.get(), CombustionGeneratorScreen::new);
-        event.register(ModMenus.DRONE_ASSEMBLER.get(), DroneAssemblerScreen::new);
-        event.register(ModMenus.DRONE_DOCK.get(), DroneDockScreen::new);
-        event.register(ModMenus.BIO_DIGESTER.get(), BioDigesterScreen::new);
-        event.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
-        event.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
-        event.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
-        event.register(ModMenus.TURBINE.get(), TurbineScreen::new);
-        event.register(ModMenus.ITEM_FILTER.get(), ItemFilterScreen::new);
-        event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
-        event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
-        event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
-        event.register(ModMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
-        event.register(ModMenus.PYROLYSIS_OVEN.get(), PyrolysisOvenScreen::new);
-        event.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
-        event.register(ModMenus.SUPPLY_TERMINAL.get(), SupplyTerminalScreen::new);
-        event.register(ModMenus.CRYSTALLIZER.get(), CrystallizerScreen::new);
-        event.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
-        event.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
-        event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
-        event.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
+    private static void registerScreens() {
+        MenuScreens.register(ModMenus.COMBUSTION_GENERATOR.get(), CombustionGeneratorScreen::new);
+        MenuScreens.register(ModMenus.DRONE_ASSEMBLER.get(), DroneAssemblerScreen::new);
+        MenuScreens.register(ModMenus.DRONE_DOCK.get(), DroneDockScreen::new);
+        MenuScreens.register(ModMenus.BIO_DIGESTER.get(), BioDigesterScreen::new);
+        MenuScreens.register(ModMenus.GAS_TURBINE.get(), GasTurbineScreen::new);
+        MenuScreens.register(ModMenus.METHANE_EXTRACTOR.get(), MethaneExtractorScreen::new);
+        MenuScreens.register(ModMenus.MUFFLER.get(), MufflerScreen::new);
+        MenuScreens.register(ModMenus.TURBINE.get(), TurbineScreen::new);
+        MenuScreens.register(ModMenus.ITEM_FILTER.get(), ItemFilterScreen::new);
+        MenuScreens.register(ModMenus.REACTOR.get(), ReactorScreen::new);
+        MenuScreens.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
+        MenuScreens.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
+        MenuScreens.register(ModMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
+        MenuScreens.register(ModMenus.PYROLYSIS_OVEN.get(), PyrolysisOvenScreen::new);
+        MenuScreens.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
+        MenuScreens.register(ModMenus.SUPPLY_TERMINAL.get(), SupplyTerminalScreen::new);
+        MenuScreens.register(ModMenus.CRYSTALLIZER.get(), CrystallizerScreen::new);
+        MenuScreens.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
+        MenuScreens.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
+        MenuScreens.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
+        MenuScreens.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.DRONE.get(), DroneRenderer::new);
         event.registerEntityRenderer(ModEntities.MECH.get(), MechRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.LASER_TURRET.get(), context -> new LaserTurretRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.font()));
-        event.registerBlockEntityRenderer(ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
-        event.registerBlockEntityRenderer(ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
-        event.registerBlockEntityRenderer(ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
-        event.registerBlockEntityRenderer(ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
-        event.registerBlockEntityRenderer(ModBlockEntities.WATER_PUMP.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PISTON));
-        event.registerBlockEntityRenderer(ModBlockEntities.BIO_DIGESTER.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PADDLE));
-        event.registerBlockEntityRenderer(ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.CRYSTALLIZER.get(), context -> new CrystallizerRenderer());
-        event.registerBlockEntityRenderer(ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
+        blockEntity(event, ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
+        blockEntity(event, ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
+        blockEntity(event, ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        blockEntity(event, ModBlockEntities.LASER_TURRET.get(), context -> new LaserTurretRenderer());
+        blockEntity(event, ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.getFont()));
+        blockEntity(event, ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
+        blockEntity(event, ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
+        blockEntity(event, ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
+        blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
+        blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PISTON));
+        blockEntity(event, ModBlockEntities.BIO_DIGESTER.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PADDLE));
+        blockEntity(event, ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
+        blockEntity(event, ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
+        blockEntity(event, ModBlockEntities.STEAM_ENGINE.get(), context -> new SteamEngineRenderer());
+        blockEntity(event, ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
+        blockEntity(event, ModBlockEntities.CRYSTALLIZER.get(), context -> new CrystallizerRenderer());
+        blockEntity(event, ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
     }
 
-    /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */
-    private static void registerRenderStateModifiers(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier(new TypeToken<LivingEntityRenderer<LivingEntity, LivingEntityRenderState, ?>>() {},
-                DissolvingMobRenderer::extract);
-        event.registerAvatarEntityModifier(new AvatarRenderStateModifier() {
-            @Override
-            public <T extends Avatar & ClientAvatarEntity> void accept(T avatar, AvatarRenderState state) {
-                if (avatar.getVehicle() instanceof DroneEntity) {
-                    // The trident-throw pose lifts the arm straight above the head
-                    if (state.mainArm == HumanoidArm.RIGHT) {
-                        state.rightArmPose = HumanoidModel.ArmPose.THROW_TRIDENT;
-                    } else {
-                        state.leftArmPose = HumanoidModel.ArmPose.THROW_TRIDENT;
-                    }
-                    state.isPassenger = false;
-                }
-                MechClient.hidePilot(avatar, state);
+    /** Registers a renderer, and its render box with the block entity type, which is what 1.20.1 culls by. */
+    @SuppressWarnings("unchecked")
+    private static <T extends BlockEntity> void blockEntity(EntityRenderersEvent.RegisterRenderers event, BlockEntityType<T> type,
+            BlockEntityRendererProvider<T> provider) {
+        event.registerBlockEntityRenderer(type, context -> {
+            var renderer = provider.create(context);
+            if (renderer instanceof com.cyberfarm.port.client.BlockEntityRenderer<?, ?> port) {
+                var typed = (com.cyberfarm.port.client.BlockEntityRenderer<T, ?>) port;
+                RenderBoxes.register(type, entity -> typed.getRenderBoundingBox((T) entity));
             }
+            return renderer;
         });
-    }
-
-    /** Gases never appear in the world, but tanks and recipe viewers of any mod draw them with these textures. */
-    private static void registerFluidModels(RegisterFluidModelsEvent event) {
-        event.register(gasModel("biogas"), ModFluids.BIOGAS);
-        event.register(gasModel("methane"), ModFluids.METHANE);
-        event.register(gasModel("steam"), ModFluids.STEAM);
-        event.register(liquidModel(0xFF1FB8A8), ModFluids.COOLANT, ModFluids.FLOWING_COOLANT);
-        event.register(liquidModel(0xFF9FE4FF), ModFluids.CRYO_COOLANT, ModFluids.FLOWING_CRYO_COOLANT);
-        event.register(liquidModel(0xFF9BE04A), ModFluids.ACID);
-    }
-
-    private static FluidModel.Unbaked gasModel(String name) {
-        return new FluidModel.Unbaked(new Material(CyberFarm.id("block/" + name + "_still")),
-                new Material(CyberFarm.id("block/" + name + "_flow")), null, (FluidTintSource) null);
-    }
-
-    /** Coolants look like water, animated and see-through, tinted in their own colour. */
-    private static FluidModel.Unbaked liquidModel(int color) {
-        return new FluidModel.Unbaked(new Material(new ResourceLocation("block/water_still")),
-                new Material(new ResourceLocation("block/water_flow")),
-                new Material(new ResourceLocation("block/water_overlay")), (FluidTintSource) state -> color);
     }
 
     private static void registerLayers(EntityRenderersEvent.RegisterLayerDefinitions event) {

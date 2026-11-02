@@ -8,21 +8,21 @@ import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.multiblock.TurbineSize;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -34,7 +34,7 @@ import org.joml.Vector3f;
  * glowing hatch for every Turbine Port. Works in a local frame where x is to the controller's right,
  * y is up and z runs from the front cap to the back.
  */
-public class TurbineRenderer implements BlockEntityRenderer<TurbineControllerBlockEntity, TurbineRenderer.State> {
+public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockEntity, TurbineRenderer.State> {
     private static final RenderType SHELL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/cooling_tower.png"));
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/cooling_tower_glow.png"));
     private static final RenderType HATCH = RenderTypes.entityCutout(CyberFarm.id("textures/block/turbine_port_formed.png"));

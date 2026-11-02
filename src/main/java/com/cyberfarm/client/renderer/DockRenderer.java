@@ -8,18 +8,18 @@ import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.entity.DroneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -33,7 +33,7 @@ import org.joml.Vector3f;
  * beacons to a drone charging on the pad, and on a Swarm Dock each landing ring lights up while a
  * Mini Drone stands on it.
  */
-public class DockRenderer<T extends DroneDockBlockEntity> implements BlockEntityRenderer<T, DockRenderer.State> {
+public class DockRenderer<T extends DroneDockBlockEntity> extends BlockEntityRenderer<T, DockRenderer.State> {
     // Additive and full-bright, so the lights glow on the dark pad instead of being shaded like a surface
     private static final RenderType LIGHT = RenderTypes.eyes(CyberFarm.id("textures/entity/hologram.png"));
     private static final int CYAN = 0x2FE0FF;

@@ -12,22 +12,22 @@ import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.HologramTableBlockEntity;
 import com.cyberfarm.entity.DroneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.monster.Enemy;
@@ -50,7 +50,7 @@ import net.minecraft.world.phys.Vec3;
  * from what the client already knows (loaded chunks, their block entities, the entities it tracks),
  * so nothing is sent over the network but the zoom.
  */
-public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockEntity, HologramRenderer.State> {
+public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEntity, HologramRenderer.State> {
     /**
      * The projection is at least this wide, a little wider than the table, and shows a block at least
      * this big: zoomed out it grows instead of shrinking the land to a blur. Then its height above the
@@ -283,7 +283,9 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
             int north = i >= cells && heights[i - cells] != Integer.MIN_VALUE ? heights[i - cells] : heights[i];
             MapColor.Brightness brightness = heights[i] > north ? MapColor.Brightness.HIGH
                     : heights[i] < north ? MapColor.Brightness.LOW : MapColor.Brightness.NORMAL;
-            colours[i] = tint(mapColours[i].calculateARGBColor(brightness));
+            // 1.20.1 gives map colours as ABGR, for NativeImage
+            int abgr = mapColours[i].calculateRGBColor(brightness);
+            colours[i] = tint(abgr & 0xFF00FF00 | (abgr & 0xFF) << 16 | abgr >> 16 & 0xFF);
         }
         List<Vec3> docks = new ArrayList<>();
         int radius = grid.radius();

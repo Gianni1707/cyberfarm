@@ -27,7 +27,6 @@ import com.cyberfarm.registry.ModItems;
 
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
@@ -163,6 +162,9 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
      * shortcut: groups by entity type (zombie tag, mob category), while the extractor checks the live
      * mob (Enemy, Animal); a modded mob with an unusual category may show in the wrong group.
      */
+    private static final java.util.Set<EntityType<?>> ZOMBIES = java.util.Set.of(EntityType.ZOMBIE, EntityType.HUSK, EntityType.DROWNED,
+            EntityType.ZOMBIE_VILLAGER, EntityType.ZOMBIFIED_PIGLIN);
+
     private static void methaneExtractor(List<MachineExample> all) {
         List<ItemStack> zombies = new ArrayList<>();
         List<ItemStack> monsters = new ArrayList<>();
@@ -172,11 +174,12 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
                 continue;
             }
             ItemStack egg = new ItemStack(item);
-            EntityType<?> type = SpawnEggItem.getType(egg);
+            EntityType<?> type = ((SpawnEggItem) item).getType(null);
             if (type == null) {
                 continue;
             }
-            if (type.builtInRegistryHolder().is(EntityTypeTags.ZOMBIES)) {
+            // The zombies the extractor takes (MethaneExtractorBlockEntity: any Zombie)
+            if (ZOMBIES.contains(type)) {
                 zombies.add(egg);
             } else if (type.getCategory() == MobCategory.MONSTER) {
                 monsters.add(egg);

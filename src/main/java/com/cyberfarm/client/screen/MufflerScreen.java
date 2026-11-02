@@ -5,8 +5,8 @@ import com.cyberfarm.block.entity.MufflerBlockEntity.Category;
 import com.cyberfarm.menu.MufflerMenu;
 import com.cyberfarm.registry.ModItems;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;

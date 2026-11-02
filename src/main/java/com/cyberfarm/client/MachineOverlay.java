@@ -8,17 +8,15 @@ import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.block.entity.MachineStatus;
 import com.cyberfarm.entity.MechEntity;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 
 /**
  * A small panel beside the crosshair while the player looks at a CyberFarm machine: whether it
@@ -26,7 +24,6 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
  * {@link MachineStatus} the server sends, so it needs no menu open.
  */
 public final class MachineOverlay {
-    private static final ResourceLocation LAYER = CyberFarm.id("machine_overlay");
     private static final int CYAN = 0xFF2FE0FF;
     private static final int CYAN_FAINT = 0x302FE0FF;
     private static final int GREEN = 0xFF6CFF6C;
@@ -38,13 +35,14 @@ public final class MachineOverlay {
 
     private MachineOverlay() {}
 
-    public static void register(RegisterGuiLayersEvent event) {
-        event.registerAbove(VanillaGuiLayers.CROSSHAIR, LAYER, MachineOverlay::render);
+    public static void register(RegisterGuiOverlaysEvent event) {
+        event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "machine_overlay",
+                (gui, graphics, partialTick, width, height) -> render(new GuiGraphicsExtractor(graphics)));
     }
 
-    private static void render(GuiGraphicsExtractor graphics, DeltaTracker delta) {
+    private static void render(GuiGraphicsExtractor graphics) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.gui.hud.isHidden() || minecraft.level == null || minecraft.player == null
+        if (minecraft.options.hideGui || minecraft.level == null || minecraft.player == null
                 || minecraft.player.getVehicle() instanceof MechEntity
                 || !(minecraft.hitResult instanceof BlockHitResult hit) || hit.getType() != HitResult.Type.BLOCK
                 || !(minecraft.level.getBlockEntity(hit.getBlockPos()) instanceof MachineBlockEntity machine)) {

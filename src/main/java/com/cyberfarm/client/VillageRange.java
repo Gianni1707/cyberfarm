@@ -11,7 +11,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.minecraftforge.event.TickEvent;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -36,7 +36,10 @@ public final class VillageRange {
         shown = terminal.equals(shown) ? null : terminal.immutable();
     }
 
-    public static void tick(ClientTickEvent.Post event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel level = minecraft.level;
         Player player = minecraft.player;

@@ -3,8 +3,8 @@ package com.cyberfarm.client.screen;
 import com.cyberfarm.menu.MachineMenu;
 
 import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;

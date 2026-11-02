@@ -1,21 +1,23 @@
 package com.cyberfarm.client.renderer;
 
+import com.cyberfarm.port.client.FluidSprites;
+
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.registry.ModFluids;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * The two windows in the Acid Synthesizer's front, filled up to their tanks' levels like a tank's:
  * water on the left, acid on the right, with bubbles rising through the acid while a batch is made.
  */
-public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesizerBlockEntity, AcidSynthesizerRenderer.State> {
+public class AcidSynthesizerRenderer extends BlockEntityRenderer<AcidSynthesizerBlockEntity, AcidSynthesizerRenderer.State> {
     private static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     // The windows of the front texture, in its pixels: water in columns 3..6, acid in 9..12, rows 3..11
     private static final float WATER_LEFT = 3 / 16.0F;
@@ -67,9 +69,8 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
         state.waterFill = fill(entity.getInput());
         state.acidFill = fill(entity.getOutput());
         state.working = entity.isWorking();
-        var models = Minecraft.getInstance().getModelManager().getFluidStateModelSet();
-        state.water = models.get(Fluids.WATER.defaultFluidState()).stillMaterial().sprite();
-        state.acid = models.get(ModFluids.ACID.get().defaultFluidState()).stillMaterial().sprite();
+        state.water = FluidSprites.still(Fluids.WATER);
+        state.acid = FluidSprites.still(ModFluids.ACID.get());
         if (entity.getLevel() != null) {
             state.time = entity.getLevel().getGameTime() + partialTick;
             state.light = LightCoordsUtil.getLightCoords(entity.getLevel(), entity.getBlockPos().relative(state.facing));
@@ -123,7 +124,7 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
             float offset = corner[0] - 0.5F;
             buffer.addVertex(pose, centreX + across.getStepX() * offset, corner[1], centreZ + across.getStepZ() * offset)
                     .setColor(color)
-                    .setUv(sprite.getU(corner[0]), sprite.getV(1.0F - corner[1]))
+                    .setUv(sprite.getU(16.0F * (corner[0])), sprite.getV(16.0F * (1.0F - corner[1])))
                     .setOverlay(OverlayTexture.NO_OVERLAY)
                     .setLight(light)
                     .setNormal(pose, side.getStepX(), 0.0F, side.getStepZ());

@@ -8,20 +8,20 @@ import com.cyberfarm.block.ReactorControllerBlock;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.multiblock.TowerSize;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -32,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
  * Each Reactor Port shows as a glowing hatch and the controller as a panel, flush with the surface
  * where a pipe or cable coming along the block's axis meets it.
  */
-public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControllerBlockEntity, CoolingTowerRenderer.State> {
+public class CoolingTowerRenderer extends BlockEntityRenderer<ReactorControllerBlockEntity, CoolingTowerRenderer.State> {
     private static final RenderType SHELL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/cooling_tower.png"));
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/cooling_tower_glow.png"));
     private static final RenderType HATCH = RenderTypes.entityCutout(CyberFarm.id("textures/block/reactor_port_formed.png"));

@@ -9,24 +9,22 @@ import com.cyberfarm.entity.MechModule;
 import com.cyberfarm.entity.MechTogglePayload;
 import com.mojang.blaze3d.platform.InputConstants;
 
-import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.client.event.CalculateDetachedCameraDistanceEvent;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
-import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.minecraftforge.client.event.RenderPlayerEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
+import net.minecraftforge.event.TickEvent;
 import com.cyberfarm.port.net.ClientPacketDistributor;
 import org.jspecify.annotations.Nullable;
 
@@ -36,15 +34,14 @@ import org.jspecify.annotations.Nullable;
  * altitude, with a boot sequence each time the cockpit closes.
  */
 public final class MechClient {
-    private static final KeyMapping.Category CATEGORY = new KeyMapping.Category(CyberFarm.id("mech"));
+    private static final String CATEGORY = "key.category.cyberfarm.mech";
     public static final KeyMapping EXIT = new KeyMapping("key.cyberfarm.mech_exit", InputConstants.Type.KEYSYM, InputConstants.KEY_V, CATEGORY);
     public static final KeyMapping DRILL = new KeyMapping("key.cyberfarm.mech_drill", InputConstants.Type.KEYSYM, InputConstants.KEY_R, CATEGORY);
     public static final KeyMapping BLADE = new KeyMapping("key.cyberfarm.mech_blade", InputConstants.Type.KEYSYM, InputConstants.KEY_G, CATEGORY);
-    private static final ResourceLocation HUD = CyberFarm.id("mech_hud");
     /** Vanilla HUD parts the cockpit replaces. */
-    private static final Set<ResourceLocation> HIDDEN = Set.of(VanillaGuiLayers.PLAYER_HEALTH, VanillaGuiLayers.ARMOR_LEVEL, VanillaGuiLayers.FOOD_LEVEL,
-            VanillaGuiLayers.VEHICLE_HEALTH, VanillaGuiLayers.AIR_LEVEL, VanillaGuiLayers.EXPERIENCE_LEVEL,
-            VanillaGuiLayers.CONTEXTUAL_INFO_BAR, VanillaGuiLayers.CONTEXTUAL_INFO_BAR_BACKGROUND);
+    private static final Set<ResourceLocation> HIDDEN = Set.of(VanillaGuiOverlay.PLAYER_HEALTH.id(), VanillaGuiOverlay.ARMOR_LEVEL.id(),
+            VanillaGuiOverlay.FOOD_LEVEL.id(), VanillaGuiOverlay.MOUNT_HEALTH.id(), VanillaGuiOverlay.AIR_LEVEL.id(),
+            VanillaGuiOverlay.EXPERIENCE_BAR.id(), VanillaGuiOverlay.JUMP_BAR.id());
     private static final int BOOT_TICKS = 40;
 
     private static final int CYAN = 0xFF2FE0FF;
@@ -58,8 +55,6 @@ public final class MechClient {
     private static int bootTicks;
     private static boolean wasPiloting;
     private static boolean wasAboard;
-    /** The third-person camera's distance, eased towards the one the game asks for. */
-    private static float cameraDistance = -1.0F;
 
     private MechClient() {}
 
@@ -70,17 +65,19 @@ public final class MechClient {
     }
 
     public static void registerKeys(RegisterKeyMappingsEvent event) {
-        event.registerCategory(CATEGORY);
         event.register(EXIT);
         event.register(DRILL);
         event.register(BLADE);
     }
 
-    public static void registerHud(RegisterGuiLayersEvent event) {
-        event.registerAboveAll(HUD, MechClient::renderHud);
+    public static void registerHud(RegisterGuiOverlaysEvent event) {
+        event.registerAboveAll("mech_hud", (gui, graphics, partialTick, width, height) -> renderHud(new GuiGraphicsExtractor(graphics), partialTick));
     }
 
-    public static void tick(ClientTickEvent.Post event) {
+    public static void tick(TickEvent.ClientTickEvent event) {
+        if (event.phase != TickEvent.Phase.END) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         MechEntity mech = piloted();
         MechEntity.clientJump = mech != null && minecraft.options.keyJump.isDown();
@@ -102,13 +99,13 @@ public final class MechClient {
         }
         if (mech != null && !wasPiloting) {
             bootTicks = 0;
-            minecraft.gui.hud.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.exit_hint", EXIT.getTranslatedKeyMessage()), false);
+            minecraft.gui.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.exit_hint", EXIT.getTranslatedKeyMessage()), false);
         }
         wasPiloting = mech != null;
         // The game says to sneak to get off; in a mech that does nothing, so the line is replaced
         boolean aboard = minecraft.player != null && minecraft.player.getVehicle() instanceof MechEntity;
         if (aboard && !wasAboard && mech == null) {
-            minecraft.gui.hud.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.boarding"), false);
+            minecraft.gui.setOverlayMessage(Component.translatable("hud.cyberfarm.mech.boarding"), false);
         }
         wasAboard = aboard;
         if (mech != null) {
@@ -116,25 +113,9 @@ public final class MechClient {
         }
     }
 
-    /**
-     * The third-person camera moves out to the mech's distance when you board and back in when you
-     * get out: eased over a moment instead of jumping.
-     */
-    public static void easeCamera(CalculateDetachedCameraDistanceEvent event) {
-        float target = event.getDistance();
-        if (cameraDistance < 0.0F) {
-            cameraDistance = target;
-        }
-        cameraDistance += (target - cameraDistance) * 0.06F;
-        if (Math.abs(target - cameraDistance) < 0.01F) {
-            cameraDistance = target;
-        }
-        event.setDistance(cameraDistance);
-    }
-
     /** The cockpit's display replaces hearts, hunger, armour, air and the experience bar. */
-    public static void hideVanillaHud(RenderGuiLayerEvent.Pre event) {
-        if (HIDDEN.contains(event.getName()) && piloted() != null) {
+    public static void hideVanillaHud(RenderGuiOverlayEvent.Pre event) {
+        if (HIDDEN.contains(event.getOverlay().id()) && piloted() != null) {
             event.setCanceled(true);
         }
     }
@@ -151,37 +132,56 @@ public final class MechClient {
      * Render state modifier for players: shut in the mech the pilot is hidden. On their way in or out
      * they stand rather than sit as riders do, face the way the boarding sequence turns them and walk.
      */
-    public static void hidePilot(Entity avatar, AvatarRenderState state) {
-        if (!(avatar.getVehicle() instanceof MechEntity mech)) {
+    // The pilot's own turn, put back once they are drawn
+    private static float bodyRot;
+    private static float bodyRotO;
+    private static float headRot;
+    private static float headRotO;
+    private static @Nullable Player turned;
+
+    // Riders do not sit in a mech (MechEntity#shouldRiderSit). shortcut: the pilot does not swing their legs as they
+    // walk in or out, 1.20.1 has no way to set the walk animation; add it with an access transformer if it is missed.
+    public static void hidePilot(RenderPlayerEvent.Pre event) {
+        Player player = event.getEntity();
+        if (!(player.getVehicle() instanceof MechEntity mech)) {
             return;
         }
-        float progress = mech.stateProgress(state.partialTick);
-        if (mech.isPilotVisible(progress)) {
-            state.isPassenger = false;
-            state.bodyRot = mech.getYRot() + mech.pilotFacing(progress);
-            state.yRot = 0.0F;
-            if (mech.isPilotWalking(progress)) {
-                state.walkAnimationPos = (mech.tickCount + state.partialTick) * 0.6F;
-                state.walkAnimationSpeed = 0.7F;
-            }
-        } else {
-            state.isInvisible = true;
-            state.isInvisibleToPlayer = true;
+        float progress = mech.stateProgress(event.getPartialTick());
+        if (!mech.isPilotVisible(progress)) {
+            event.setCanceled(true);
+            return;
+        }
+        turned = player;
+        bodyRot = player.yBodyRot;
+        bodyRotO = player.yBodyRotO;
+        headRot = player.yHeadRot;
+        headRotO = player.yHeadRotO;
+        float facing = mech.getYRot() + mech.pilotFacing(progress);
+        player.yBodyRot = player.yBodyRotO = player.yHeadRot = player.yHeadRotO = facing;
+    }
+
+    public static void restorePilot(RenderPlayerEvent.Post event) {
+        Player player = turned;
+        if (player != null && event.getEntity() == player) {
+            player.yBodyRot = bodyRot;
+            player.yBodyRotO = bodyRotO;
+            player.yHeadRot = headRot;
+            player.yHeadRotO = headRotO;
+            turned = null;
         }
     }
 
     // ------------------------------------------------------------------ HUD
 
-    private static void renderHud(GuiGraphicsExtractor graphics, DeltaTracker delta) {
+    private static void renderHud(GuiGraphicsExtractor graphics, float partial) {
         Minecraft minecraft = Minecraft.getInstance();
         MechEntity mech = piloted();
-        if (mech == null || minecraft.gui.hud.isHidden()) {
+        if (mech == null || minecraft.options.hideGui) {
             return;
         }
         Font font = minecraft.font;
         int width = graphics.guiWidth();
         int height = graphics.guiHeight();
-        float partial = delta.getGameTimeDeltaPartialTick(false);
         float boot = Mth.clamp((bootTicks + partial) / BOOT_TICKS, 0.0F, 1.0F);
         int time = (int) (minecraft.level != null ? minecraft.level.getGameTime() : 0);
 

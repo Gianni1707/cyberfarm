@@ -10,8 +10,8 @@ import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.block.entity.SupplyTerminalBlockEntity.Kind;
 import com.cyberfarm.menu.SupplyTerminalMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -133,18 +133,18 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
             List<Component> lines = new ArrayList<>();
             Kind kind = menu.contractKind(i);
             if (kind != Kind.NORMAL) {
-                lines.add(Component.translatable("gui.cyberfarm.terminal.kind." + kind.name().toLowerCase()).withColor(kind == Kind.MARKET ? MARKET : DEFENSE));
+                lines.add(Component.translatable("gui.cyberfarm.terminal.kind." + kind.name().toLowerCase()).withStyle(style -> style.withColor(kind == Kind.MARKET ? MARKET : DEFENSE)));
             }
             lines.add(Component.translatable("gui.cyberfarm.terminal.contract", menu.contractRequired(i), item.getHoverName(), menu.contractEmeralds(i)));
             ItemStack bonus = menu.contractBonus(i);
             if (!bonus.isEmpty()) {
-                lines.add(Component.translatable("gui.cyberfarm.terminal.bonus", bonus.getCount(), bonus.getHoverName()).withColor(MARKET));
+                lines.add(Component.translatable("gui.cyberfarm.terminal.bonus", bonus.getCount(), bonus.getHoverName()).withStyle(style -> style.withColor(MARKET)));
             }
             int left = menu.contractSecondsLeft(i);
             if (left >= 0) {
-                lines.add(Component.translatable("gui.cyberfarm.terminal.closes", clock(left)).withColor(TEXT_DIM));
+                lines.add(Component.translatable("gui.cyberfarm.terminal.closes", clock(left)).withStyle(style -> style.withColor(TEXT_DIM)));
             }
-            graphics.setTooltipForNextFrame(lines.stream().flatMap(line -> font.split(line, TOOLTIP_WIDTH).stream()).toList(), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, lines.stream().flatMap(line -> font.split(line, TOOLTIP_WIDTH).stream()).toList(), mouseX, mouseY);
         }
         if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index <= SupplyTerminalBlockEntity.PAYOUT) {
             String key = hoveredSlot.index == SupplyTerminalBlockEntity.DELIVERY ? "deliver" : "payout";
@@ -171,6 +171,6 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
     }
 
     private void tooltip(GuiGraphicsExtractor graphics, Component text, int mouseX, int mouseY) {
-        graphics.setTooltipForNextFrame(font.split(text, TOOLTIP_WIDTH), mouseX, mouseY);
+        graphics.setTooltipForNextFrame(font, font.split(text, TOOLTIP_WIDTH), mouseX, mouseY);
     }
 }

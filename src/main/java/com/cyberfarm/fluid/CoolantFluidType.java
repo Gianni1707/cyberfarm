@@ -10,7 +10,7 @@ import net.minecraftforge.fluids.FluidType;
  * Coolant and Cryo Coolant. Living entities move through them like through water, only slower:
  * NeoForge leaves the movement in a modded fluid to its type, and without it entities stand still.
  */
-public class CoolantFluidType extends FluidType {
+public class CoolantFluidType extends TexturedFluidType {
     private static final float WATER_ACCELERATION = 0.02F;
     private static final float WATER_DRAG = 0.8F;
     private static final float SPRINT_DRAG = 0.9F;
@@ -18,8 +18,9 @@ public class CoolantFluidType extends FluidType {
     /** Fraction of the water speed an entity reaches in this coolant. */
     private final float thickness;
 
-    public CoolantFluidType(Properties properties, float thickness) {
-        super(properties);
+    public CoolantFluidType(Properties properties, float thickness, int tint) {
+        super(properties, new net.minecraft.resources.ResourceLocation("block/water_still"), new net.minecraft.resources.ResourceLocation("block/water_flow"),
+                new net.minecraft.resources.ResourceLocation("block/water_overlay"), tint);
         this.thickness = thickness;
     }
 

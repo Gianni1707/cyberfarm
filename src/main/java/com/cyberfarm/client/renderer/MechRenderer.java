@@ -9,10 +9,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
+import com.cyberfarm.port.client.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -23,7 +23,7 @@ public class MechRenderer extends MobRenderer<MechEntity, MechRenderState, MechM
 
     public MechRenderer(EntityRendererProvider.Context context) {
         super(context, new MechModel(context.bakeLayer(MechModel.LAYER)), 1.1F);
-        addLayer(new EyesLayer<>(this) {
+        addLayer(new EyesLayer<MechEntity, net.minecraft.client.model.EntityModel<MechEntity>>(this) {
             @Override
             public RenderType renderType() {
                 return GLOW;

@@ -23,9 +23,9 @@ import com.cyberfarm.multiblock.Structure;
 import com.cyberfarm.village.Blueprints;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.Screen;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -87,7 +87,7 @@ public class ProjectorScreen extends Screen {
     public static void open(InteractionHand hand, Structure selected) {
         Minecraft minecraft = Minecraft.getInstance();
         minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.BEACON_POWER_SELECT, 1.8F, 0.4F));
-        minecraft.gui.setScreen(new ProjectorScreen(hand, selected));
+        minecraft.setScreen(new ProjectorScreen(hand, selected));
     }
 
     @Override
@@ -287,12 +287,12 @@ public class ProjectorScreen extends Screen {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
         if (structures.size() > VISIBLE_ROWS) {
             scroll = Mth.clamp(scroll - (int) Math.signum(scrollY), 0, maxScroll());
             return true;
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return super.mouseScrolled(mouseX, mouseY, scrollY);
     }
 
     @Override

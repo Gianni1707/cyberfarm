@@ -6,20 +6,20 @@ import java.util.List;
 import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.multiblock.Structure;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.block.BlockStateModelSet;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -27,8 +27,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
-import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import com.cyberfarm.port.client.LevelRenderEvents.ExtractLevelRenderStateEvent;
+import com.cyberfarm.port.client.LevelRenderEvents.SubmitCustomGeometryEvent;
 
 /**
  * Draws the Multiblock Projector's ghost blocks: translucent copies of the blocks still to place, and
@@ -120,19 +120,19 @@ public final class ProjectionRenderer {
             return;
         }
         List<Ghost> toDraw = ghosts;
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
         // Gentle pulse so the ghosts read as a projection, not as real blocks
         float pulse = 0.5F + 0.15F * (float) Math.sin(System.currentTimeMillis() / 300.0);
         int alpha = (int) (pulse * 255) << 24;
-        BlockStateModelSet models = Minecraft.getInstance().getModelManager().getBlockStateModelSet();
+        BlockModelShaper models = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper();
         poseStack.pushPose();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
         event.getSubmitNodeCollector().submitCustomGeometry(poseStack, ATLAS, (pose, buffer) -> {
             for (Ghost ghost : toDraw) {
                 BlockPos pos = ghost.pos();
                 // The block's particle texture, the one its model shows as a whole (the side of most blocks)
-                TextureAtlasSprite sprite = models.getParticleMaterial(ghost.state()).sprite();
+                TextureAtlasSprite sprite = models.getParticleIcon(ghost.state());
                 float inset = ghost.wrong() ? -0.01F : 0.15F;
                 int color = ghost.wrong() ? RED : alpha | 0xFFFFFF;
                 cube(pose, buffer, sprite, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
@@ -156,7 +156,7 @@ public final class ProjectionRenderer {
     private static void face(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite sprite, int color, float nx, float ny, float nz, float... c) {
         float[][] uv = {{0, 0}, {0, 1}, {1, 1}, {1, 0}};
         for (int i = 0; i < 4; i++) {
-            buffer.addVertex(pose, c[i * 3], c[i * 3 + 1], c[i * 3 + 2]).setColor(color).setUv(sprite.getU(uv[i][0]), sprite.getV(uv[i][1]))
+            buffer.addVertex(pose, c[i * 3], c[i * 3 + 1], c[i * 3 + 2]).setColor(color).setUv(sprite.getU(16.0F * (uv[i][0])), sprite.getV(16.0F * (uv[i][1])))
                     .setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(pose, nx, ny, nz);
         }
     }

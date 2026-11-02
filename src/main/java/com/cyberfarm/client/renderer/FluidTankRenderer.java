@@ -1,27 +1,28 @@
 package com.cyberfarm.client.renderer;
 
+import com.cyberfarm.port.client.FluidSprites;
+
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
 import com.cyberfarm.fluid.GasTank;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.fluid.FluidTintSource;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
 
@@ -29,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * Draws a tank's fluid in the window of each side, up to its level, with the fluid's own texture
  * and colour, so it works for any mod's fluid. Gases are drawn see-through.
  */
-public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEntity, FluidTankRenderer.State> {
+public class FluidTankRenderer extends BlockEntityRenderer<FluidTankBlockEntity, FluidTankRenderer.State> {
     private static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     // The window of the side texture: columns 4..10, rows 3..12
     private static final float WINDOW_LEFT = 4 / 16.0F;
@@ -63,11 +64,9 @@ public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEnti
             return;
         }
         Fluid fluid = tank.fluid();
-        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
-        FluidTintSource tint = model.fluidTintSource();
-        int color = tint != null ? tint.colorAsStack(new FluidStack(fluid, tank.amount())) : 0xFFFFFFFF;
+        int color = IClientFluidTypeExtensions.of(fluid).getTintColor(new FluidStack(fluid, tank.amount()));
         int alpha = fluid.getFluidType().isLighterThanAir() ? GAS_ALPHA : 0xFF;
-        state.sprite = model.stillMaterial().sprite();
+        state.sprite = FluidSprites.still(fluid);
         state.color = (alpha << 24) | (color & 0x00FFFFFF);
         state.fill = (float) tank.amount() / tank.capacity();
         for (Direction side : Direction.Plane.HORIZONTAL) {
@@ -104,7 +103,7 @@ public class FluidTankRenderer implements BlockEntityRenderer<FluidTankBlockEnti
             float across = corner[0] - 0.5F;
             buffer.addVertex(pose, centreX + right.getStepX() * across, corner[1], centreZ + right.getStepZ() * across)
                     .setColor(color)
-                    .setUv(sprite.getU(corner[0]), sprite.getV(1.0F - corner[1]))
+                    .setUv(sprite.getU(16.0F * (corner[0])), sprite.getV(16.0F * (1.0F - corner[1])))
                     .setOverlay(OverlayTexture.NO_OVERLAY)
                     .setLight(light)
                     .setNormal(pose, side.getStepX(), 0.0F, side.getStepZ());

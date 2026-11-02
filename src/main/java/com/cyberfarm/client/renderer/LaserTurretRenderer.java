@@ -3,19 +3,19 @@ package com.cyberfarm.client.renderer;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.LaserTurretBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec3;
  * The Laser Turret's head: a steel housing with cooling fins and a barrel, turning toward the mob
  * it aims at and slowly sweeping round when there is none. The lens at the barrel's tip glows red.
  */
-public class LaserTurretRenderer implements BlockEntityRenderer<LaserTurretBlockEntity, LaserTurretRenderer.State> {
+public class LaserTurretRenderer extends BlockEntityRenderer<LaserTurretBlockEntity, LaserTurretRenderer.State> {
     private static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/hologram.png"));
     private static final float PIXEL = 1.0F / 16.0F;
     /** Most the head turns per tick, in radians, so it swings onto a new mob instead of snapping. */

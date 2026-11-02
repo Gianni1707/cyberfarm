@@ -3,7 +3,7 @@ package com.cyberfarm.client.screen;
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.menu.SteamEngineMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;

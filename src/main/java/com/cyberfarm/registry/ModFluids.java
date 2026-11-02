@@ -2,6 +2,7 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.fluid.CoolantFluidType;
+import com.cyberfarm.fluid.TexturedFluidType;
 import com.cyberfarm.fluid.GasFluid;
 
 import net.minecraft.core.registries.Registries;
@@ -21,18 +22,18 @@ public class ModFluids {
 
     // Negative density: lighter than air, like every gas
     public static final DeferredHolder<FluidType, FluidType> BIOGAS_TYPE = FLUID_TYPES.register("biogas",
-            () -> new FluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.biogas").density(-400).temperature(310).viscosity(200)));
+            () -> TexturedFluidType.gas(FluidType.Properties.create().descriptionId("fluid.cyberfarm.biogas").density(-400).temperature(310).viscosity(200), "biogas"));
     public static final DeferredHolder<FluidType, FluidType> METHANE_TYPE = FLUID_TYPES.register("methane",
-            () -> new FluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.methane").density(-700).temperature(290).viscosity(100)));
+            () -> TexturedFluidType.gas(FluidType.Properties.create().descriptionId("fluid.cyberfarm.methane").density(-700).temperature(290).viscosity(100), "methane"));
 
     public static final DeferredHolder<FluidType, FluidType> STEAM_TYPE = FLUID_TYPES.register("steam",
-            () -> new FluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.steam").density(-1000).temperature(400).viscosity(50)));
+            () -> TexturedFluidType.gas(FluidType.Properties.create().descriptionId("fluid.cyberfarm.steam").density(-1000).temperature(400).viscosity(50), "steam"));
 
     // Reactor coolants: real liquids that can be poured into the world, and freeze whoever wades in
     public static final DeferredHolder<FluidType, FluidType> COOLANT_TYPE = FLUID_TYPES.register("coolant",
-            () -> new CoolantFluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.coolant").density(1100).temperature(280).viscosity(1200), 0.7F));
+            () -> new CoolantFluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.coolant").density(1100).temperature(280).viscosity(1200), 0.7F, 0xFF1FB8A8));
     public static final DeferredHolder<FluidType, FluidType> CRYO_COOLANT_TYPE = FLUID_TYPES.register("cryo_coolant",
-            () -> new CoolantFluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.cryo_coolant").density(1200).temperature(80).viscosity(900), 0.5F));
+            () -> new CoolantFluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.cryo_coolant").density(1200).temperature(80).viscosity(900), 0.5F, 0xFF9FE4FF));
 
     public static final DeferredHolder<Fluid, GasFluid> BIOGAS = FLUIDS.register("biogas", () -> new GasFluid(BIOGAS_TYPE, ModItems.BIOGAS_BUCKET));
     public static final DeferredHolder<Fluid, ForgeFlowingFluid.Source> COOLANT = FLUIDS.register("coolant",
@@ -48,7 +49,7 @@ public class ModFluids {
 
     // Acid for the Methane Extractor's chamber: a liquid (it runs in Liquid Pipes) kept in tanks and buckets only
     public static final DeferredHolder<FluidType, FluidType> ACID_TYPE = FLUID_TYPES.register("acid",
-            () -> new FluidType(FluidType.Properties.create().descriptionId("fluid.cyberfarm.acid").density(1300).temperature(300).viscosity(1500)));
+            () -> TexturedFluidType.liquid(FluidType.Properties.create().descriptionId("fluid.cyberfarm.acid").density(1300).temperature(300).viscosity(1500), 0xFF9BE04A));
     public static final DeferredHolder<Fluid, GasFluid> ACID = FLUIDS.register("acid", () -> new GasFluid(ACID_TYPE, ModItems.ACID_BUCKET));
 
     // They flow like water

@@ -7,22 +7,22 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.client.renderer.DockRenderer;
 import com.cyberfarm.effect.Effects;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
-import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import com.cyberfarm.port.client.LevelRenderEvents.ExtractLevelRenderStateEvent;
+import com.cyberfarm.port.client.LevelRenderEvents.SubmitCustomGeometryEvent;
 
 /**
  * Draws the short moments of {@link Effects}: a block printed into place by a Builder drone, a
@@ -86,10 +86,10 @@ public final class EffectRenderer {
         if (effects.isEmpty()) {
             return;
         }
-        float time = event.getLevel().getGameTime() + Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        float time = event.getLevel().getGameTime() + Minecraft.getInstance().getPartialTick();
         List<Frame> now = new ArrayList<>();
         // A level change or a long pause can leave effects from another time: those go too
-        float partialTick = Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        float partialTick = Minecraft.getInstance().getPartialTick();
         effects.removeIf(effect -> {
             float t = (time - effect.start()) / switch (effect.kind()) {
                 case Effects.PRINT -> PRINT_TICKS;
@@ -116,7 +116,7 @@ public final class EffectRenderer {
             return;
         }
         List<Frame> toDraw = frames;
-        Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
+        Vec3 camera = event.getCamera().getPosition();
         PoseStack poseStack = event.getPoseStack();
         poseStack.pushPose();
         poseStack.translate(-camera.x, -camera.y, -camera.z);

@@ -6,20 +6,20 @@ import com.cyberfarm.block.entity.MachineStatus;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.entity.DroneEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.FastColor;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -30,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
  * starting to turn in the last moments, with a scan ring running up and down it between the
  * pillars. When it is done the assembler flashes it into the output slot (see {@code Effects.print}).
  */
-public class AssemblerRenderer implements BlockEntityRenderer<DroneAssemblerBlockEntity, AssemblerRenderer.State> {
+public class AssemblerRenderer extends BlockEntityRenderer<DroneAssemblerBlockEntity, AssemblerRenderer.State> {
     private static final RenderType HOLOGRAM = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/drone.png"));
     private static final RenderType LIGHT = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
     private static final int CYAN = 0x2FE0FF;
@@ -99,7 +99,7 @@ public class AssemblerRenderer implements BlockEntityRenderer<DroneAssemblerBloc
         poseStack.scale(-SCALE, -SCALE, SCALE);
         poseStack.translate(0.0F, -1.501F, 0.0F);
         collector.submitModel(model, state.drone, poseStack, HOLOGRAM, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-                ARGB.colorFromFloat(alpha, 0.55F + 0.45F * p, 0.95F, 1.0F), null);
+                FastColor.ARGB32.color((int) (alpha * 255), (int) ((0.55F + 0.45F * p) * 255), (int) (0.95F * 255), 255), null);
         poseStack.popPose();
         // The scan ring, up and down the drone once a second
         float sweep = Mth.sin(state.time * Mth.PI / 20.0F) * 0.5F + 0.5F;

@@ -4,17 +4,17 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
  * Gas Turbine's fan behind its front grille, the Water Pump's piston going up and down on its top,
  * the Bio-Digester's paddle stirring behind its window.
  */
-public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T, MovingPartsRenderer.State> {
+public class MovingPartsRenderer<T extends MachineBlockEntity> extends BlockEntityRenderer<T, MovingPartsRenderer.State> {
     private static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/hologram.png"));
     private static final RenderType SHADOW = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
     private static final float PIXEL = 1.0F / 16.0F;

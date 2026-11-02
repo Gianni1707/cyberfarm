@@ -5,7 +5,7 @@ import java.util.Random;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.menu.MethaneExtractorMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -76,8 +76,13 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
         if (mob != null) {
             float size = Math.max(mob.getType().getHeight(), mob.getType().getWidth());
             int scale = (int) Math.min(30, 58 / Math.max(0.5F, size));
-            InventoryScreen.extractEntityInInventoryFollowsMouse(graphics, x + VIEW_X0 + 10, y + VIEW_Y0 + 4, x + VIEW_X1 - 10, y + VIEW_Y1 - 2,
-                    scale, 0.0625F, mouseX, mouseY, mob);
+            // Feet at the bottom middle of the view, looking towards the mouse
+            int feetX = x + (VIEW_X0 + VIEW_X1) / 2;
+            int feetY = y + VIEW_Y1 - 4;
+            graphics.enableScissor(x + VIEW_X0 + 1, y + VIEW_Y0 + 1, x + VIEW_X1 - 1, y + VIEW_Y1 - 1);
+            InventoryScreen.renderEntityInInventoryFollowsMouse(graphics.vanilla(), feetX, feetY, scale,
+                    feetX - mouseX, feetY - scale * size * 0.8F - mouseY, mob);
+            graphics.disableScissor();
         }
 
         // Acid over the mob's feet, rising with the tank like the pool in the chamber

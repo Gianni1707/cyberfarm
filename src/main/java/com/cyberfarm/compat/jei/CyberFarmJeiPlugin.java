@@ -63,11 +63,11 @@ public class CyberFarmJeiPlugin implements IModPlugin {
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        registration.addCraftingStation(DroneAssemblyCategory.TYPE, ModItems.DRONE_ASSEMBLER.get());
+        registration.addRecipeCatalyst(ModItems.DRONE_ASSEMBLER.get(), DroneAssemblyCategory.TYPE);
         for (MachineExample.Machine machine : MachineExample.Machine.values()) {
-            registration.addCraftingStation(MachineCategory.type(machine), machine.block());
+            registration.addRecipeCatalyst(machine.block(), MachineCategory.type(machine));
         }
         // The generator burns the same fuels as a furnace
-        registration.addCraftingStation(RecipeTypes.SMELTING_FUEL, ModItems.COMBUSTION_GENERATOR.get());
+        registration.addRecipeCatalyst(ModItems.COMBUSTION_GENERATOR.get(), RecipeTypes.FUELING);
     }
 }

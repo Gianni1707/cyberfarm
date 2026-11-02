@@ -1,5 +1,7 @@
 package com.cyberfarm.client.renderer;
 
+import com.cyberfarm.port.client.FluidSprites;
+
 import static com.cyberfarm.client.renderer.MethaneChamberRenderer.box;
 import static com.cyberfarm.client.renderer.MethaneChamberRenderer.vertex;
 
@@ -11,18 +13,18 @@ import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -54,7 +56,7 @@ import org.jspecify.annotations.Nullable;
  * Works in a frame centred on the chamber's axis, y up from the ground; the octagons have flat
  * faces towards the four sides.
  */
-public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlockEntity, CrystallizerRenderer.State> {
+public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockEntity, CrystallizerRenderer.State> {
     private static final RenderType METAL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/methane_chamber.png"));
     private static final RenderType FIELD = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/methane_chamber_glass.png"));
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
@@ -178,8 +180,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
             }
         }
         state.ports = ports;
-        state.acidSprite = Minecraft.getInstance().getModelManager().getFluidStateModelSet()
-                .get(ModFluids.ACID.get().defaultFluidState()).stillMaterial().sprite();
+        state.acidSprite = FluidSprites.still(ModFluids.ACID.get());
     }
 
     @Override
@@ -368,7 +369,7 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
             if (texture == null) {
                 continue;
             }
-            Vec3 normal = Vec3.atLowerCornerOf(side.getUnitVec3i());
+            Vec3 normal = Vec3.atLowerCornerOf(side.getNormal());
             Vec3 from = centre.add(normal.scale(COUPLING));
             Vec3 to = centre.add(normal.scale(0.5));
             boolean plain = texture == PLAIN;
@@ -517,10 +518,10 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
         float r = BASIN - 0.01F;
         for (int i = 0; i < SIDES; i++) {
             float x0 = cornerX(r, i), z0 = cornerZ(r, i), x1 = cornerX(r, i + 1), z1 = cornerZ(r, i + 1);
-            vertex(pose, buffer, 0, surface, 0, sprite.getU(0.5F), sprite.getV(0.5F), ACID, full, 0, 1, 0);
-            vertex(pose, buffer, 0, surface, 0, sprite.getU(0.5F), sprite.getV(0.5F), ACID, full, 0, 1, 0);
-            vertex(pose, buffer, x1, surface, z1, sprite.getU(0.5F + x1 / 2), sprite.getV(0.5F + z1 / 2), ACID, full, 0, 1, 0);
-            vertex(pose, buffer, x0, surface, z0, sprite.getU(0.5F + x0 / 2), sprite.getV(0.5F + z0 / 2), ACID, full, 0, 1, 0);
+            vertex(pose, buffer, 0, surface, 0, sprite.getU(16.0F * (0.5F)), sprite.getV(16.0F * (0.5F)), ACID, full, 0, 1, 0);
+            vertex(pose, buffer, 0, surface, 0, sprite.getU(16.0F * (0.5F)), sprite.getV(16.0F * (0.5F)), ACID, full, 0, 1, 0);
+            vertex(pose, buffer, x1, surface, z1, sprite.getU(16.0F * (0.5F + x1 / 2)), sprite.getV(16.0F * (0.5F + z1 / 2)), ACID, full, 0, 1, 0);
+            vertex(pose, buffer, x0, surface, z0, sprite.getU(16.0F * (0.5F + x0 / 2)), sprite.getV(16.0F * (0.5F + z0 / 2)), ACID, full, 0, 1, 0);
         }
     }
 

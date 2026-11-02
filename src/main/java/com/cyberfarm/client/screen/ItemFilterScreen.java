@@ -5,8 +5,8 @@ import java.util.List;
 import com.cyberfarm.block.entity.ItemFilter;
 import com.cyberfarm.menu.ItemFilterMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -44,7 +44,7 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
             return ItemFilterMenu.BUTTON_TAG_NEXT;
         }
         // Shift steps the limit by one instead of to the next round value
-        boolean fine = minecraft.hasShiftDown();
+        boolean fine = hasShiftDown();
         if (isHovering(8, LIMIT_Y, ARROW, ARROW, mouseX, mouseY)) {
             return fine ? ItemFilterMenu.BUTTON_LIMIT_DOWN_ONE : ItemFilterMenu.BUTTON_LIMIT_DOWN;
         }

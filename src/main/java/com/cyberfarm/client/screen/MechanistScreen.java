@@ -17,11 +17,11 @@ import com.cyberfarm.village.MechanistDialogue.Choice;
 import com.cyberfarm.village.MechanistDialoguePayload;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.Screen;
+import com.cyberfarm.port.client.KeyEvent;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -56,7 +56,7 @@ public class MechanistScreen extends Screen {
 
     public static void open(MechanistDialoguePayload talk) {
         if (!talk.lines().isEmpty()) {
-            Minecraft.getInstance().gui.setScreen(new MechanistScreen(talk));
+            Minecraft.getInstance().setScreen(new MechanistScreen(talk));
         }
     }
 

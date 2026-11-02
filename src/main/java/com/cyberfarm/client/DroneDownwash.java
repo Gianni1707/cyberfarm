@@ -9,7 +9,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.tick.EntityTickEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 
 /**
  * The rotors' downwash: a drone flying low kicks up dust from the ground under it, or spray from
@@ -21,7 +21,7 @@ public final class DroneDownwash {
 
     private DroneDownwash() {}
 
-    public static void tick(EntityTickEvent.Post event) {
+    public static void tick(LivingEvent.LivingTickEvent event) {
         if (!(event.getEntity() instanceof DroneEntity drone) || !drone.level().isClientSide()) {
             return;
         }
@@ -47,7 +47,7 @@ public final class DroneDownwash {
             float angle = random.nextFloat() * Mth.TWO_PI;
             double x = drone.getX() + Mth.cos(angle) * 0.5;
             double z = drone.getZ() + Mth.sin(angle) * 0.5;
-            level.addParticle(water ? ParticleTypes.SPLASH : ParticleTypes.DUST_PLUME, x, surface + 0.05, z,
+            level.addParticle(water ? ParticleTypes.SPLASH : ParticleTypes.POOF, x, surface + 0.05, z,
                     Mth.cos(angle) * 0.08, 0.01, Mth.sin(angle) * 0.08);
             return;
         }

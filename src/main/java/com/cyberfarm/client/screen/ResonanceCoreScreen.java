@@ -3,7 +3,7 @@ package com.cyberfarm.client.screen;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.menu.ResonanceCoreMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;

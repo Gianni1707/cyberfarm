@@ -7,7 +7,6 @@ import java.util.Optional;
 import com.cyberfarm.compat.AssemblyExample;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
@@ -44,8 +43,4 @@ public class DroneAssemblyDisplay extends BasicDisplay {
         return DroneAssemblyReiCategory.ID;
     }
 
-    @Override
-    public @Nullable DisplaySerializer<? extends DroneAssemblyDisplay> getSerializer() {
-        return null;
-    }
 }

@@ -1,5 +1,7 @@
 package com.cyberfarm.client.renderer;
 
+import com.cyberfarm.port.client.FluidSprites;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,24 +12,23 @@ import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.FluidModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.level.CameraRenderState;
+import com.cyberfarm.port.client.LightCoordsUtil;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.BlockEntityRenderer;
+import com.cyberfarm.port.client.BlockEntityRenderState;
+import com.cyberfarm.port.client.ModelFeatureRenderer;
+import net.minecraft.client.renderer.RenderType;
+import com.cyberfarm.port.client.RenderTypes;
+import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.LightCoordsUtil;
+import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,7 +43,7 @@ import org.jspecify.annotations.Nullable;
  * for every Intake Gate.
  * Works in a frame centred on the chamber's axis, y from the extractor's bottom face.
  */
-public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtractorBlockEntity, MethaneChamberRenderer.State> {
+public class MethaneChamberRenderer extends BlockEntityRenderer<MethaneExtractorBlockEntity, MethaneChamberRenderer.State> {
     private static final RenderType METAL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/methane_chamber.png"));
     private static final RenderType GLASS = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/methane_chamber_glass.png"));
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
@@ -102,8 +103,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
         state.acid = entity.shownAcid(state.time);
         state.filling = entity.isFilling();
         state.depth = MAX_DEPTH * state.acid;
-        FluidModel model = Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(ModFluids.ACID.get().defaultFluidState());
-        state.acidSprite = model.stillMaterial().sprite();
+        state.acidSprite = FluidSprites.still(ModFluids.ACID.get());
         List<Part> parts = new ArrayList<>();
         for (BlockPos pos : MethaneExtractorBlockEntity.chamberBlocks(top)) {
             int dx = pos.getX() - top.getX();
@@ -261,8 +261,8 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
             float c0 = Mth.cos(a0), s0 = Mth.sin(a0), c1 = Mth.cos(a1), s1 = Mth.sin(a1);
             // Thinner where it leaves the head, wider where it hits the pool
             float top = r * 0.6F;
-            float u0 = sprite.getU((float) i / segments), u1 = sprite.getU((float) (i + 1) / segments);
-            float v0 = sprite.getV(scroll), v1 = sprite.getV(Math.min(1.0F, scroll + 0.5F));
+            float u0 = sprite.getU(16.0F * ((float) i / segments)), u1 = sprite.getU(16.0F * ((float) (i + 1) / segments));
+            float v0 = sprite.getV(16.0F * (scroll)), v1 = sprite.getV(16.0F * (Math.min(1.0F, scroll + 0.5F)));
             vertex(pose, buffer, r * c1, surface, r * s1, u1, v1, ACID, LightCoordsUtil.FULL_BRIGHT, c1, 0, s1);
             vertex(pose, buffer, r * c0, surface, r * s0, u0, v1, ACID, LightCoordsUtil.FULL_BRIGHT, c0, 0, s0);
             vertex(pose, buffer, top * c0, CEILING - 0.01F, top * s0, u0, v0, ACID, LightCoordsUtil.FULL_BRIGHT, c0, 0, s0);
@@ -311,16 +311,16 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
             float a0 = angle(i);
             float a1 = angle(i + 1);
             float x0 = r * Mth.cos(a0), z0 = r * Mth.sin(a0), x1 = r * Mth.cos(a1), z1 = r * Mth.sin(a1);
-            float u0 = sprite.getU((float) i / SEGMENTS), u1 = sprite.getU((float) (i + 1) / SEGMENTS);
-            vertex(pose, buffer, x1, FLOOR, z1, u1, sprite.getV(1), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a1), 0, Mth.sin(a1));
-            vertex(pose, buffer, x0, FLOOR, z0, u0, sprite.getV(1), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a0), 0, Mth.sin(a0));
-            vertex(pose, buffer, x0, surface, z0, u0, sprite.getV(0), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a0), 0, Mth.sin(a0));
-            vertex(pose, buffer, x1, surface, z1, u1, sprite.getV(0), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a1), 0, Mth.sin(a1));
+            float u0 = sprite.getU(16.0F * ((float) i / SEGMENTS)), u1 = sprite.getU(16.0F * ((float) (i + 1) / SEGMENTS));
+            vertex(pose, buffer, x1, FLOOR, z1, u1, sprite.getV(16.0F * (1)), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a1), 0, Mth.sin(a1));
+            vertex(pose, buffer, x0, FLOOR, z0, u0, sprite.getV(16.0F * (1)), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a0), 0, Mth.sin(a0));
+            vertex(pose, buffer, x0, surface, z0, u0, sprite.getV(16.0F * (0)), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a0), 0, Mth.sin(a0));
+            vertex(pose, buffer, x1, surface, z1, u1, sprite.getV(16.0F * (0)), ACID, LightCoordsUtil.FULL_BRIGHT, Mth.cos(a1), 0, Mth.sin(a1));
             // The surface as a fan of thin quads, the texture laid flat
-            vertex(pose, buffer, 0, surface, 0, sprite.getU(0.5F), sprite.getV(0.5F), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
-            vertex(pose, buffer, 0, surface, 0, sprite.getU(0.5F), sprite.getV(0.5F), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
-            vertex(pose, buffer, x1, surface, z1, sprite.getU(0.5F + x1 / 3), sprite.getV(0.5F + z1 / 3), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
-            vertex(pose, buffer, x0, surface, z0, sprite.getU(0.5F + x0 / 3), sprite.getV(0.5F + z0 / 3), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
+            vertex(pose, buffer, 0, surface, 0, sprite.getU(16.0F * (0.5F)), sprite.getV(16.0F * (0.5F)), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
+            vertex(pose, buffer, 0, surface, 0, sprite.getU(16.0F * (0.5F)), sprite.getV(16.0F * (0.5F)), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
+            vertex(pose, buffer, x1, surface, z1, sprite.getU(16.0F * (0.5F + x1 / 3)), sprite.getV(16.0F * (0.5F + z1 / 3)), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
+            vertex(pose, buffer, x0, surface, z0, sprite.getU(16.0F * (0.5F + x0 / 3)), sprite.getV(16.0F * (0.5F + z0 / 3)), ACID, LightCoordsUtil.FULL_BRIGHT, 0, 1, 0);
         }
     }
 

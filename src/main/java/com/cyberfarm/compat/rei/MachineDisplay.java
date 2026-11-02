@@ -10,7 +10,6 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.compat.MachineExample;
 
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
-import me.shedaniel.rei.api.common.display.DisplaySerializer;
 import me.shedaniel.rei.api.common.display.basic.BasicDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
@@ -47,8 +46,4 @@ public class MachineDisplay extends BasicDisplay {
         return id(example.machine());
     }
 
-    @Override
-    public @Nullable DisplaySerializer<? extends MachineDisplay> getSerializer() {
-        return null;
-    }
 }

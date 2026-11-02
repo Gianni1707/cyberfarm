@@ -8,8 +8,8 @@ import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
 
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.input.MouseButtonEvent;
+import com.cyberfarm.port.client.GuiGraphicsExtractor;
+import com.cyberfarm.port.client.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
@@ -88,8 +88,8 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
 
     /** Clicks on the tabs and the open panel are not clicks outside the GUI (which would drop the carried item). */
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
-        return super.hasClickedOutside(mouseX, mouseY, left, top) && !inSideAreas(mouseX, mouseY);
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top, int button) {
+        return super.hasClickedOutside(mouseX, mouseY, left, top, button) && !inSideAreas(mouseX, mouseY);
     }
 
     // ---------------------------------------------------------------- side tabs layout

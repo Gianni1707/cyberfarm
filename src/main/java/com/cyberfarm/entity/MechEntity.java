@@ -805,6 +805,12 @@ public class MechEntity extends Mob {
         entityData.set(DATA_STATE, State.IDLE.ordinal());
     }
 
+    // Boarding, the pilot stands and walks rather than sits
+    @Override
+    public boolean shouldRiderSit() {
+        return false;
+    }
+
     // 1.20.1 places riders itself: put each one at the 26.x attachment point
     @Override
     protected void positionRider(Entity passenger, Entity.MoveFunction move) {

@@ -1,6 +1,6 @@
 package com.cyberfarm.client.renderer;
 
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import com.cyberfarm.port.client.LivingEntityRenderState;
 
 public class MechRenderState extends LivingEntityRenderState {
     /** How open the chest is: 0 shut, 1 wide open. */

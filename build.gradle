@@ -130,6 +130,9 @@ dependencies {
     modCompileOnly "mezz.jei:jei-${minecraft_version}-forge-api:${jei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-forge:${rei_version}"
     modCompileOnly "me.shedaniel:RoughlyEnoughItems-default-plugin-forge:${rei_version}"
+    // REI's Point and Rectangle come from Cloth's math, bundled in Cloth Config
+    modCompileOnly "me.shedaniel.cloth:cloth-config-forge:11.0.99"
+    modCompileOnly "dev.architectury:architectury-forge:9.0.7"
     if (project.recipe_viewer == "rei") {
         modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rei_version}"
     } else {

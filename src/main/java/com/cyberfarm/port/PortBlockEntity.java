@@ -9,6 +9,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -108,5 +109,11 @@ public abstract class PortBlockEntity extends BlockEntity {
             }
         }
         return -1;
+    }
+
+    @Override
+    public AABB getRenderBoundingBox() {
+        java.util.function.Function<BlockEntity, AABB> box = RenderBoxes.BOXES.get(getType());
+        return box != null ? box.apply(this) : super.getRenderBoundingBox();
     }
 }
