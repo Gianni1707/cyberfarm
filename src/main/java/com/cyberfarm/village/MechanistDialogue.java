@@ -47,7 +47,7 @@ public final class MechanistDialogue {
 
     public static boolean isMechanist(Entity entity) {
         return entity instanceof Villager villager && !villager.isBaby()
-                && villager.getVillagerData().getProfession().is(ModVillagers.DRONE_MECHANIST.getKey());
+                && villager.getVillagerData().getProfession() == ModVillagers.DRONE_MECHANIST.get();
     }
 
     /** A right-click on the Mechanist talks to him instead of opening his trades. */
@@ -153,7 +153,7 @@ public final class MechanistDialogue {
 
     /** A goodbye for the time of day, or the market. */
     private static void idle(Lines lines, ServerLevel level, SupplyTerminalBlockEntity terminal) {
-        long time = level.getOverworldClockTime() % DAY;
+        long time = level.getDayTime() % DAY;
         if (terminal.marketDay()) {
             lines.add("idle.market_day");
         } else if (time < 3_000) {

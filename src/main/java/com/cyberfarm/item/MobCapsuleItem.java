@@ -55,7 +55,7 @@ public class MobCapsuleItem extends Item {
         if (hasMob(capsule)) {
             return InteractionResult.PASS;
         }
-        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().is(Tags.EntityTypes.BOSSES)) {
+        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().is(Tags.EntityType.BOSSES)) {
             player.displayClientMessage(Component.translatable("message.cyberfarm.capsule.refused"), true);
             return InteractionResult.FAIL;
         }
@@ -120,7 +120,7 @@ public class MobCapsuleItem extends Item {
             builder.accept(Component.translatable("tooltip.cyberfarm.capsule.empty").withStyle(ChatFormatting.GRAY));
             return;
         }
-        Component name = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.tryParse(tag.getStringOr("id", "")))
+        Component name = BuiltInRegistries.ENTITY_TYPE.getOptional(ResourceLocation.tryParse(tag.getString("id")))
                 .map(EntityType::getDescription)
                 .orElse(Component.literal("?"));
         builder.accept(Component.translatable("tooltip.cyberfarm.capsule.contains", name).withStyle(ChatFormatting.AQUA));

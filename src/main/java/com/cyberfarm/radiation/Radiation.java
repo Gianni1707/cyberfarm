@@ -25,14 +25,14 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.VegetationBlock;
+import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import com.cyberfarm.port.Caps;
-import net.neoforged.neoforge.event.tick.LevelTickEvent;
+import net.minecraftforge.event.TickEvent;
 import com.cyberfarm.port.ItemResource;
 
 /**
@@ -68,7 +68,7 @@ public final class Radiation {
         ChunkPos centre = new ChunkPos(core);
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                data.add(ChunkPos.asLong(centre.x() + dx, centre.z() + dz), MELTDOWN / (1 + Math.max(Math.abs(dx), Math.abs(dz))));
+                data.add(ChunkPos.asLong(centre.x + dx, centre.z + dz), MELTDOWN / (1 + Math.max(Math.abs(dx), Math.abs(dz))));
             }
         }
     }
@@ -92,8 +92,8 @@ public final class Radiation {
         return pieces / 4.0F;
     }
 
-    public static void onLevelTick(LevelTickEvent.Post event) {
-        if (!(event.getLevel() instanceof ServerLevel level)) {
+    public static void onLevelTick(TickEvent.LevelTickEvent event) {
+        if (event.phase != TickEvent.Phase.END || !(event.level instanceof ServerLevel level)) {
             return;
         }
         long time = level.getGameTime();
@@ -115,8 +115,8 @@ public final class Radiation {
             ChunkPos home = new ChunkPos(player.blockPosition());
             for (int dx = -SCAN_RADIUS; dx <= SCAN_RADIUS; dx++) {
                 for (int dz = -SCAN_RADIUS; dz <= SCAN_RADIUS; dz++) {
-                    long chunkPos = ChunkPos.asLong(home.x() + dx, home.z() + dz);
-                    LevelChunk chunk = level.getChunkSource().getChunkNow(home.x() + dx, home.z() + dz);
+                    long chunkPos = ChunkPos.asLong(home.x + dx, home.z + dz);
+                    LevelChunk chunk = level.getChunkSource().getChunkNow(home.x + dx, home.z + dz);
                     if (chunk != null && scanned.add(chunkPos)) {
                         scanChunk(level, data, chunkPos, chunk);
                     }
@@ -144,14 +144,15 @@ public final class Radiation {
             return 0;
         }
         // shortcut: storage networks that expose the same items through several blocks count them more than once; dedupe by handler if that proves too harsh
-        IItemHandler items = Caps.items(level, entity.getBlockPos(), entity.getBlockState(), entity, null);
+        IItemHandler items = entity.getCapability(Caps.ITEM, null).orElse(null);
         if (items == null) {
             return 0;
         }
         long rods = 0;
-        for (int i = 0; i < items.size(); i++) {
-            if (items.getResource(i).is(ModItems.DEPLETED_FUEL_ROD.get())) {
-                rods += items.getAmountAsLong(i);
+        for (int i = 0; i < items.getSlots(); i++) {
+            ItemStack stack = items.getStackInSlot(i);
+            if (stack.is(ModItems.DEPLETED_FUEL_ROD.get())) {
+                rods += stack.getCount();
             }
         }
         return rods;
@@ -193,7 +194,7 @@ public final class Radiation {
             return;
         }
         int amplifier = dose >= SICKEST ? 2 : dose >= SICKER ? 1 : 0;
-        entity.addEffect(new MobEffectInstance(ModEffects.RADIATION_SICKNESS, 120, amplifier));
+        entity.addEffect(new MobEffectInstance(ModEffects.RADIATION_SICKNESS.get(), 120, amplifier));
     }
 
     /** A few random surface blocks of the chunk die: grass dries up, crops wilt, leaves fall. */
@@ -213,7 +214,7 @@ public final class Radiation {
             // Plants sit on top of the motion-blocking surface
             BlockPos plant = top.above();
             BlockState plantState = level.getBlockState(plant);
-            if (plantState.getBlock() instanceof VegetationBlock && !plantState.is(Blocks.DEAD_BUSH)) {
+            if (plantState.getBlock() instanceof BushBlock && !plantState.is(Blocks.DEAD_BUSH)) {
                 level.setBlockAndUpdate(plant, Blocks.DEAD_BUSH.defaultBlockState());
             }
         }

@@ -88,7 +88,7 @@ public class BreedJob extends DroneJob {
             return Result.RETURN;
         }
         animal.setInLove(null);
-        level.playSound(null, animal.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.NEUTRAL, 0.6F, 1.0F);
+        level.playSound(null, animal.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL, 0.6F, 1.0F);
         level.sendParticles(ParticleTypes.HEART, animal.getX(), animal.getY() + animal.getBbHeight(), animal.getZ(), 3, 0.3, 0.2, 0.3, 0.0);
         drone.useJobEnergy(ENERGY_COST);
         return Result.DONE;

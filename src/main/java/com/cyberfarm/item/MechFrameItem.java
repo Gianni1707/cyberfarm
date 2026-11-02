@@ -51,7 +51,7 @@ public class MechFrameItem extends Item {
             return InteractionResult.FAIL;
         }
         Vec3 at = Vec3.atBottomCenterOf(hangar.padCentre().above());
-        MechEntity mech = ModEntities.MECH.get().create(level, MobSpawnType.SPAWN_ITEM_USE);
+        MechEntity mech = ModEntities.MECH.get().create(level, MobSpawnType.SPAWN_EGG);
         if (mech == null) {
             return InteractionResult.FAIL;
         }

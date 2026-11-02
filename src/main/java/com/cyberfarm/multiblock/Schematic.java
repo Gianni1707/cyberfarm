@@ -14,6 +14,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import com.cyberfarm.port.net.ByteBufCodecs;
@@ -63,20 +64,20 @@ public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) imp
             return null;
         }
         CompoundTag tag = template.save(new CompoundTag());
-        ListTag palette = tag.getListOrEmpty("palette");
+        ListTag palette = tag.getList("palette", Tag.TAG_COMPOUND);
         if (palette.isEmpty()) {
             // A template with several palettes (like shipwrecks): the first one
-            palette = tag.getListOrEmpty("palettes").getListOrEmpty(0);
+            palette = tag.getList("palettes", Tag.TAG_LIST).getList(0);
         }
         List<BlockState> states = new ArrayList<>(palette.size());
         for (int i = 0; i < palette.size(); i++) {
             states.add(NbtUtils.readBlockState(blockLookup, palette.getCompound(i)));
         }
         List<Entry> blocks = new ArrayList<>();
-        ListTag list = tag.getListOrEmpty("blocks");
+        ListTag list = tag.getList("blocks", Tag.TAG_COMPOUND);
         for (int i = 0; i < list.size(); i++) {
             CompoundTag block = list.getCompound(i);
-            int index = block.getIntOr("state", -1);
+            int index = block.contains("state", Tag.TAG_ANY_NUMERIC) ? block.getInt("state") : -1;
             if (index < 0 || index >= states.size()) {
                 continue;
             }
@@ -84,8 +85,8 @@ public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) imp
             if (state.isAir() || state.is(Blocks.STRUCTURE_VOID) || state.is(Blocks.JIGSAW)) {
                 continue;
             }
-            ListTag pos = block.getListOrEmpty("pos");
-            blocks.add(new Entry(new BlockPos(pos.getIntOr(0, 0), pos.getIntOr(1, 0), pos.getIntOr(2, 0)), state));
+            ListTag pos = block.getList("pos", Tag.TAG_INT);
+            blocks.add(new Entry(new BlockPos(pos.getInt(0), pos.getInt(1), pos.getInt(2)), state));
         }
         blocks.sort(Comparator.comparingInt(entry -> entry.pos().getY()));
         return blocks.isEmpty() ? null : new Schematic(id, size, List.copyOf(blocks));

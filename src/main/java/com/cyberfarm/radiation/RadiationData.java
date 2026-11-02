@@ -13,7 +13,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 
 /** Radiation of every contaminated chunk of a dimension, saved with the world. */
 public class RadiationData extends SavedData {
@@ -24,7 +25,7 @@ public class RadiationData extends SavedData {
     }
 
     public static final Codec<RadiationData> CODEC = Entry.CODEC.listOf().xmap(RadiationData::new, RadiationData::entries);
-    public static final SavedDataType<RadiationData> TYPE = new SavedDataType<>(CyberFarm.id("radiation"), RadiationData::new, CODEC);
+    private static final String NAME = CyberFarm.MODID + "_radiation";
 
     /** Kept per tick of decay: the level falls by 2% plus a little, so small leaks fade within minutes. */
     private static final float DECAY_FACTOR = 0.98F;
@@ -47,7 +48,17 @@ public class RadiationData extends SavedData {
     }
 
     public static RadiationData get(ServerLevel level) {
-        return level.getDataStorage().computeIfAbsent(TYPE);
+        return level.getDataStorage().computeIfAbsent(RadiationData::load, RadiationData::new, NAME);
+    }
+
+    private static RadiationData load(CompoundTag tag) {
+        return CODEC.parse(NbtOps.INSTANCE, tag.get("chunks")).result().orElseGet(RadiationData::new);
+    }
+
+    @Override
+    public CompoundTag save(CompoundTag tag) {
+        CODEC.encodeStart(NbtOps.INSTANCE, this).result().ifPresent(encoded -> tag.put("chunks", encoded));
+        return tag;
     }
 
     public float level(BlockPos pos) {

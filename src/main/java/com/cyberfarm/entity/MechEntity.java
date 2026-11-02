@@ -1,5 +1,7 @@
 package com.cyberfarm.entity;
 
+import net.minecraftforge.common.ForgeMod;
+
 import net.minecraft.world.entity.Pose;
 
 import net.minecraft.nbt.CompoundTag;
@@ -148,7 +150,7 @@ public class MechEntity extends Mob {
     /** How fast the modules' parts come out or go back, per tick. */
     private static final float DEPLOY_SPEED = 1.0F / 16.0F;
     /** Where the boarding pilot stood, in the mech's frame, so they walk up from there rather than jump to it. */
-    private static final EntityDataAccessor<Vector3fc> DATA_BOARD_FROM = SynchedEntityData.defineId(MechEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<Vector3f> DATA_BOARD_FROM = SynchedEntityData.defineId(MechEntity.class, EntityDataSerializers.VECTOR3);
 
     /**
      * The pilot's jump key, set by the client every tick. Movement runs on the pilot's client, so this
@@ -604,7 +606,7 @@ public class MechEntity extends Mob {
                         entityData.set(DATA_BOARD_FROM, new Vector3f((float) local.x, 0.0F, (float) local.z));
                     }
                     if (player != null && player.isAlive() && player.distanceTo(this) < 6.0F && !player.isPassenger()
-                            && player.startRiding(this, true, true)) {
+                            && player.startRiding(this, true)) {
                         setState(State.BOARDING);
                     } else {
                         setState(State.CLOSING_OUT);
@@ -652,7 +654,7 @@ public class MechEntity extends Mob {
                     // Packed: it drops as its frame, with a puff where it stood
                     level.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, getX(), getY() + 0.6, getZ(), 16, 0.5, 0.3, 0.5, 0.02);
                     level.playSound(null, getX(), getY() + 0.5, getZ(), ModSounds.MECH_CLUNK.get(), SoundSource.NEUTRAL, 1.0F, 0.8F);
-                    spawnAtLocation(level, asFrame(), 0.5F);
+                    spawnAtLocation(asFrame(), 0.5F);
                     discard();
                     return;
                 }
@@ -749,8 +751,8 @@ public class MechEntity extends Mob {
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
         if (passenger instanceof Player pilot && !level().isClientSide()) {
-            reach(pilot, Attributes.BLOCK_INTERACTION_RANGE, true);
-            reach(pilot, Attributes.ENTITY_INTERACTION_RANGE, true);
+            reach(pilot, ForgeMod.BLOCK_REACH.get(), true);
+            reach(pilot, ForgeMod.ENTITY_REACH.get(), true);
         }
     }
 
@@ -758,8 +760,8 @@ public class MechEntity extends Mob {
     protected void removePassenger(Entity passenger) {
         super.removePassenger(passenger);
         if (passenger instanceof Player pilot && !level().isClientSide()) {
-            reach(pilot, Attributes.BLOCK_INTERACTION_RANGE, false);
-            reach(pilot, Attributes.ENTITY_INTERACTION_RANGE, false);
+            reach(pilot, ForgeMod.BLOCK_REACH.get(), false);
+            reach(pilot, ForgeMod.ENTITY_REACH.get(), false);
         }
     }
 
@@ -769,7 +771,7 @@ public class MechEntity extends Mob {
             return;
         }
         if (add) {
-            instance.addOrUpdateTransientModifier(new AttributeModifier(REACH, EXTRA_REACH, AttributeModifier.Operation.ADD_VALUE));
+            instance.addOrUpdateTransientModifier(new AttributeModifier(REACH, EXTRA_REACH, AttributeModifier.Operation.ADDITION));
         } else {
             instance.removeModifier(REACH);
         }

@@ -1,5 +1,7 @@
 package com.cyberfarm.multiblock;
 
+import net.minecraft.server.level.ServerPlayer;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -48,7 +50,8 @@ public final class Schematics {
             load(event.getPlayerList().getServer());
         }
         SchematicsPayload payload = new SchematicsPayload(all);
-        event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
+        List<ServerPlayer> players = event.getPlayer() != null ? List.of(event.getPlayer()) : event.getPlayerList().getPlayers();
+        players.forEach(player -> PacketDistributor.sendToPlayer(player, payload));
     }
 
     private static void load(MinecraftServer server) {

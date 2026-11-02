@@ -10,7 +10,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.cow.AbstractCow;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -77,7 +77,7 @@ public class RancherJob extends DroneJob {
 
     /** shortcut: only cows, mooshrooms and goats (and mod mobs extending them); upgrade to a mob tag if modded milkables need it. */
     private static boolean isMilkable(LivingEntity entity) {
-        return (entity instanceof AbstractCow || entity instanceof Goat) && !entity.isBaby();
+        return (entity instanceof Cow || entity instanceof Goat) && !entity.isBaby();
     }
 
     @Override

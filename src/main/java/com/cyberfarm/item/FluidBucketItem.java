@@ -95,7 +95,7 @@ public class FluidBucketItem extends BucketItem {
             Player player = event.getEntity();
             ItemStack filled = new ItemStack(bucket);
             player.setItemInHand(event.getHand(), ItemUtils.createFilledResult(held, player, filled));
-            player.getCooldowns().addCooldown(filled, FILL_COOLDOWN);
+            player.getCooldowns().addCooldown(filled.getItem(), FILL_COOLDOWN);
             level.playSound(null, event.getPos(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);

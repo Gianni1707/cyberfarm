@@ -279,12 +279,12 @@ public class DroneEntity extends PathfinderMob {
             cargo.unloadInto(dock);
             dock.releaseDrone(getUUID());
         }
-        cargo.dropAll(stack -> spawnAtLocation(level, stack));
+        cargo.dropAll(stack -> spawnAtLocation(stack));
         ItemStack item = toItem();
         Player player = pickupBy != null ? level.getPlayerByUUID(pickupBy) : null;
         // A player who walked far away finds it where it landed
         if (player == null || player.distanceToSqr(this) > 32 * 32 || !player.addItem(item)) {
-            spawnAtLocation(level, item);
+            spawnAtLocation(item);
         } else {
             level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.3F, 1.4F);
         }
@@ -383,11 +383,10 @@ public class DroneEntity extends PathfinderMob {
      */
     public ItemStack miningTool(ServerLevel level) {
         ItemStack tool = new ItemStack(Items.DIAMOND_PICKAXE);
-        var enchantments = level.registryAccess().lookupOrThrow(Registries.ENCHANTMENT);
         if (modules.hasSilkTouch()) {
-            tool.enchant(enchantments.getOrThrow(Enchantments.SILK_TOUCH), 1);
+            tool.enchant(Enchantments.SILK_TOUCH, 1);
         } else if (modules.fortuneLevel() > 0) {
-            tool.enchant(enchantments.getOrThrow(Enchantments.FORTUNE), modules.fortuneLevel());
+            tool.enchant(Enchantments.BLOCK_FORTUNE, modules.fortuneLevel());
         }
         return tool;
     }
@@ -400,7 +399,7 @@ public class DroneEntity extends PathfinderMob {
         if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
             dock.releaseDrone(getUUID());
         }
-        cargo.dropAll(stack -> spawnAtLocation(level, stack));
+        cargo.dropAll(stack -> spawnAtLocation(stack));
         discard();
         level.explode(this, at.x, at.y, at.z, power, Level.ExplosionInteraction.TNT);
     }
@@ -579,8 +578,8 @@ public class DroneEntity extends PathfinderMob {
 
     private void dropAsItem(ServerLevel level) {
         stopJob(level);
-        spawnAtLocation(level, toItem());
-        cargo.dropAll(stack -> spawnAtLocation(level, stack));
+        spawnAtLocation(toItem());
+        cargo.dropAll(stack -> spawnAtLocation(stack));
         discard();
     }
 
@@ -605,8 +604,8 @@ public class DroneEntity extends PathfinderMob {
     protected void dropCustomDeathLoot(DamageSource source, int looting, boolean killedByPlayer) {
         super.dropCustomDeathLoot(source, looting, killedByPlayer);
         ServerLevel level = (ServerLevel) level();
-        spawnAtLocation(level, toItem());
-        cargo.dropAll(stack -> spawnAtLocation(level, stack));
+        spawnAtLocation(toItem());
+        cargo.dropAll(stack -> spawnAtLocation(stack));
     }
 
     @Override

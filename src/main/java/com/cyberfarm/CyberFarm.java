@@ -37,6 +37,9 @@ import com.cyberfarm.registry.ModVillagers;
 import com.cyberfarm.village.MechanistChoicePayload;
 import com.cyberfarm.village.MechanistDialogue;
 import com.cyberfarm.village.MechanistDialoguePayload;
+import com.cyberfarm.village.Blueprints;
+import com.cyberfarm.village.BlueprintsPayload;
+import com.cyberfarm.village.MechanistTrades;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 
@@ -84,7 +87,6 @@ public class CyberFarm {
         ModEffects.EFFECTS.register(modEventBus);
         ModVillagers.POI_TYPES.register(modEventBus);
         ModVillagers.PROFESSIONS.register(modEventBus);
-        ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
         BIOME_MODIFIERS.register(modEventBus);
 
         registerPayloads();
@@ -92,6 +94,8 @@ public class CyberFarm {
         modEventBus.addListener(CyberFarm::registerAttributes);
                 DroneDockBlockEntity.ANCHOR_TICKETS.register();
         MinecraftForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
+        MinecraftForge.EVENT_BUS.addListener(Blueprints::onPlayerLogin);
+        MinecraftForge.EVENT_BUS.addListener(MechanistTrades::onVillagerTrades);
         MinecraftForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
         MinecraftForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
@@ -215,7 +219,8 @@ public class CyberFarm {
                 .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)
-                .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle);
+                .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle)
+                .playToClient(BlueprintsPayload.TYPE, BlueprintsPayload.STREAM_CODEC, BlueprintsPayload::handle);
         PortNetwork.register();
     }
 }

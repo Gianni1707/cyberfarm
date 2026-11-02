@@ -26,14 +26,17 @@ public class RadiationSicknessEffect extends MobEffect {
     }
 
     @Override
-    public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
+    public boolean isDurationEffectTick(int duration, int amplifier) {
         int interval = Math.max(15, 60 >> amplifier);
         return duration % interval == 0;
     }
 
     @Override
-    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
-        entity.hurt(new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE)), 1.0F);
+    public void applyEffectTick(LivingEntity entity, int amplifier) {
+        if (entity.level().isClientSide()) {
+            return;
+        }
+        entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DAMAGE)), 1.0F);
         if (entity instanceof Player player) {
             player.causeFoodExhaustion(1.0F + amplifier);
         }
@@ -41,8 +44,7 @@ public class RadiationSicknessEffect extends MobEffect {
             entity.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, 100, amplifier - 1));
         }
         if (amplifier >= 2) {
-            entity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 200));
+            entity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 200));
         }
-        return true;
     }
 }

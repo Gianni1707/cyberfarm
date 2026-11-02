@@ -1,5 +1,7 @@
 package com.cyberfarm.item;
 
+import net.minecraft.server.level.ServerPlayer;
+
 import net.minecraft.world.InteractionResultHolder;
 
 import java.util.List;
@@ -71,8 +73,10 @@ public class BlueprintDiscItem extends Item {
             return InteractionResult.FAIL;
         }
         if (!level.isClientSide()) {
-            player.setData(ModVillagers.BLUEPRINTS, Blueprints.of(player).with(id));
-            stack.consume(1, player);
+            Blueprints.set((ServerPlayer) player, Blueprints.of(player).with(id));
+            if (!player.getAbilities().instabuild) {
+            stack.shrink(1);
+        }
             player.displayClientMessage(Component.translatable("message.cyberfarm.blueprint.learned", name), true);
         }
         player.playSound(SoundEvents.BEACON_POWER_SELECT, 0.6F, 1.4F);
@@ -80,8 +84,8 @@ public class BlueprintDiscItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        Consumer<Component> tooltip = tooltip::add;
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        Consumer<Component> tooltip = lines::add;
         ResourceLocation id = blueprint(stack);
         VillagePlan.unlock(id != null ? id : new ResourceLocation("none")).ifPresent(unlock ->
                 tooltip.accept(unlock.displayName().copy().withStyle(ChatFormatting.AQUA)));

@@ -75,7 +75,7 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
-        return level == null || resource.toStack().getBurnTime(null, level.fuelValues()) > 0;
+        return level == null || ForgeHooks.getBurnTime(resource.toStack(), null) > 0;
     }
 
     @Override

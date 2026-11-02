@@ -37,7 +37,7 @@ public final class Laser {
 
     /** Hits {@code target}, drawing the beam from the drone {@code shooter} or, without one, from the turret at {@code origin}. */
     public static void fire(ServerLevel level, LivingEntity target, float damage, @Nullable Entity shooter, BlockPos origin) {
-        Holder<DamageType> type = level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE);
+        Holder<DamageType> type = level.registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DAMAGE);
         DamageSource source = shooter != null ? new DamageSource(type, shooter) : new DamageSource(type, Vec3.atCenterOf(origin));
         target.hurt(source, damage);
         Effects.laser(level, BlockPos.containing(target.getBoundingBox().getCenter()), origin, shooter);

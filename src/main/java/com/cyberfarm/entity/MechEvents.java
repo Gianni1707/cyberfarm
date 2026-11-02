@@ -12,9 +12,9 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.entity.EntityMountEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 
 /** What piloting a mech changes for its pilot: getting out, getting hurt, punching and digging. */
@@ -52,7 +52,7 @@ public final class MechEvents {
     }
 
     /** The pilot is shielded by the armour: what would hit them hits the mech. A bare-handed punch from inside hits hard. */
-    public static void onDamage(LivingIncomingDamageEvent event) {
+    public static void onDamage(LivingHurtEvent event) {
         MechEntity shell = pilotedMech(event.getEntity());
         if (shell != null && event.getEntity().level() instanceof ServerLevel level && !event.getSource().is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             shell.hurt(event.getSource(), event.getAmount());
@@ -94,13 +94,13 @@ public final class MechEvents {
     }
 
     /** The drill digs 3x3: the blocks around the one dug, across the way the pilot looks. */
-    public static void onBlockBreak(BreakBlockEvent event) {
+    public static void onBlockBreak(BlockEvent.BreakEvent event) {
         MechEntity mech = pilotedMech(event.getPlayer());
         if (drilling || mech == null || !mech.isToolOn(MechModule.DRILL) || !(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
         Player pilot = event.getPlayer();
-        Direction facing = Direction.getNearest(pilot.getLookAngle());
+        Direction facing = Direction.getNearest(pilot.getLookAngle().x, pilot.getLookAngle().y, pilot.getLookAngle().z);
         BlockPos centre = event.getPos();
         drilling = true;
         try {

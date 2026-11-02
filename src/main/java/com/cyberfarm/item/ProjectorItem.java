@@ -26,7 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -224,8 +224,8 @@ public class ProjectorItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        Consumer<Component> tooltip = tooltip::add;
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> lines, TooltipFlag flag) {
+        Consumer<Component> tooltip = lines::add;
         tooltip.accept(structure(stack).displayName().copy().withStyle(ChatFormatting.AQUA));
         tooltip.accept(Component.translatable("tooltip.cyberfarm.projector").withStyle(ChatFormatting.GRAY));
     }

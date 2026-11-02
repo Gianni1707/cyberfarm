@@ -42,7 +42,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
@@ -120,7 +119,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             new Template(() -> Items.WHEAT, 64, 2, 1),
             new Template(() -> Items.BEETROOT, 48, 2, 1),
             new Template(() -> Items.APPLE, 24, 2, 1),
-            new Template(() -> Items.WOOL.white(), 32, 3, 1),
+            new Template(() -> Items.WHITE_WOOL, 32, 3, 1),
             new Template(() -> Items.COOKED_BEEF, 32, 4, 2),
             new Template(() -> Items.LEATHER, 24, 4, 2),
             new Template(() -> Items.OAK_LOG, 64, 3, 2),
@@ -271,7 +270,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     public void found(Player player) {
         founded = true;
         owner = player.getUUID();
-        ownerName = player.getGameProfile().name();
+        ownerName = player.getGameProfile().getName();
         Unlock upgrade = new Unlock(VillagePlan.OUTPOST, 2);
         Schematics.byId(upgrade.schematic()).ifPresent(schematic -> {
             Direction facing = getBlockState().getValue(MachineBlock.FACING);
@@ -479,7 +478,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             setChanged();
             return;
         }
-        long time = level.getOverworldClockTime();
+        long time = level.getDayTime();
         long day = time / DAY;
         if (event == null && day != marketDay && time % DAY < DUSK / 2) {
             marketDay = day;
@@ -567,8 +566,8 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         }
         if (contract.kind == Kind.DEFENSE) {
             // The village arms itself: two iron golems join the fight
-            spawnNear(level, EntityTypes.IRON_GOLEM);
-            spawnNear(level, EntityTypes.IRON_GOLEM);
+            spawnNear(level, EntityType.IRON_GOLEM);
+            spawnNear(level, EntityType.IRON_GOLEM);
         }
         level.playSound(null, worldPosition, SoundEvents.VILLAGER_YES, SoundSource.NEUTRAL, 1.0F, 1.0F);
         level.playSound(null, worldPosition, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.6F, 1.2F);
@@ -581,13 +580,13 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
      */
     private void milestone(ServerLevel level, int reached) {
         if (reached % 2 == 1) {
-            Villager villager = spawnNear(level, EntityTypes.VILLAGER);
+            Villager villager = spawnNear(level, EntityType.VILLAGER);
             if (villager != null) {
                 villager.setAge(-24_000);
             }
         }
         if (reached % 2 == 0) {
-            spawnNear(level, EntityTypes.IRON_GOLEM);
+            spawnNear(level, EntityType.IRON_GOLEM);
         }
         level.sendParticles(ParticleTypes.TOTEM_OF_UNDYING, worldPosition.getX() + 0.5, worldPosition.getY() + 1.5, worldPosition.getZ() + 0.5,
                 40, 0.6, 0.6, 0.6, 0.3);
@@ -631,7 +630,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             career.setAccessible(true);
             career.invoke(villager, level);
         } catch (ReflectiveOperationException | RuntimeException e) {
-            villager.setVillagerData(villager.getVillagerData().withLevel(current + 1));
+            villager.setVillagerData(villager.getVillagerData().setLevel(current + 1));
         }
     }
 
@@ -667,7 +666,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** The Drone Mechanist whose job site this terminal is, or null. */
     private @Nullable Villager mechanist(ServerLevel level) {
         for (Villager villager : level.getEntitiesOfClass(Villager.class, new AABB(worldPosition).inflate(RANGE),
-                v -> v.getVillagerData().getProfession().is(ModVillagers.DRONE_MECHANIST.getKey()))) {
+                v -> v.getVillagerData().getProfession() == ModVillagers.DRONE_MECHANIST.get())) {
             boolean here = villager.getBrain().getMemory(MemoryModuleType.JOB_SITE)
                     .map(site -> site.pos().equals(worldPosition) && site.dimension() == level.dimension()).orElse(false);
             if (here) {

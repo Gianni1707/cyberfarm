@@ -223,7 +223,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
                 ChunkPos at = drone.chunkPosition();
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dz = -1; dz <= 1; dz++) {
-                        chunks.add(ChunkPos.asLong(at.x() + dx, at.z() + dz));
+                        chunks.add(ChunkPos.asLong(at.x + dx, at.z + dz));
                     }
                 }
             }

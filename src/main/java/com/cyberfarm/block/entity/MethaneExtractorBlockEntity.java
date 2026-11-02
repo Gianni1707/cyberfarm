@@ -206,7 +206,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     /** Monsters only, and never bosses: the gate is meant for zombies and their kind. */
     private static boolean canPullIn(Mob mob) {
         return mob.isAlive() && mob instanceof Enemy && !mob.isPassenger() && !mob.isVehicle()
-                && !mob.getType().is(Tags.EntityTypes.BOSSES);
+                && !mob.getType().is(Tags.EntityType.BOSSES);
     }
 
     /** The 1x1x2 space in the middle of the chamber. */
@@ -220,7 +220,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     }
 
     public static int rateOf(Mob mob) {
-        if (mob.getType().is(EntityTypeTags.ZOMBIES)) {
+        if (mob.getType().is(EntityTypeTags.UNDEAD)) {
             return ZOMBIE_RATE;
         }
         if (mob instanceof Enemy) {

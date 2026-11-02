@@ -8,7 +8,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraft.world.inventory.ContainerInput;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.inventory.Slot;
@@ -68,7 +68,7 @@ public class ItemFilterMenu extends MachineMenu {
     }
 
     @Override
-    public void clicked(int slotId, int button, ContainerInput input, Player player) {
+    public void clicked(int slotId, int button, ClickType input, Player player) {
         if (slotId >= 0 && slotId < ItemFilter.SLOTS) {
             ItemStack carried = getCarried();
             samples.setItem(slotId, carried.isEmpty() ? ItemStack.EMPTY : carried.copyWithCount(1));
