@@ -77,7 +77,7 @@ import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -86,8 +86,6 @@ import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
-import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import com.cyberfarm.port.net.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
@@ -96,13 +94,13 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import org.jspecify.annotations.Nullable;
 
-// Client-only entry point: never loaded on a dedicated server.
-@Mod(value = CyberFarm.MODID, dist = Dist.CLIENT)
-public class CyberFarmClient {
-    public CyberFarmClient(IEventBus modEventBus, ModContainer container) {
-        // Mods screen > CyberFarm > Config
-        container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
-        container.registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
+// Client-only entry point: called by CyberFarm on the client only, never loaded on a dedicated server.
+// shortcut: Forge 1.20.1 has no built-in config screen, so the options live in the config files only.
+public final class CyberFarmClient {
+    private CyberFarmClient() {}
+
+    public static void init(IEventBus modEventBus) {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ClientConfig.SPEC);
 
         modEventBus.addListener(CyberFarmClient::registerScreens);
         modEventBus.addListener((RegisterConditionalItemModelPropertyEvent event) -> event.register(CyberFarm.id("mini_drone"), MiniDroneProperty.MAP_CODEC));

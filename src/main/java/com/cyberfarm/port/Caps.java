@@ -84,6 +84,13 @@ public final class Caps {
         return be == null ? null : be.getCapability(cap, side).orElse(null);
     }
 
+    /** The 26.x level.invalidateCapabilities(pos): what the block there exposes may have changed. */
+    public static void invalidate(Level level, BlockPos pos) {
+        if (level.getBlockEntity(pos) instanceof PortBlockEntity be) {
+            be.refreshCaps();
+        }
+    }
+
     public static @Nullable IEnergyStorage energy(Level level, BlockPos pos, @Nullable Direction side) {
         return find(ENERGY, level, pos, side);
     }

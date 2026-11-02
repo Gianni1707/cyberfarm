@@ -103,7 +103,7 @@ public class LaserTurretBlockEntity extends MachineBlockEntity {
     private boolean canShoot(ServerLevel level, LivingEntity entity) {
         Vec3 eyes = entity.getEyePosition();
         return entity.level() == level && Laser.isTarget(entity) && eyes.distanceToSqr(muzzle()) <= RANGE * RANGE
-                && level.clip(new ClipContext(muzzle(), eyes, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty()))
+                && level.clip(new ClipContext(muzzle(), eyes, ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, (net.minecraft.world.entity.Entity) null))
                         .getType() == HitResult.Type.MISS;
     }
 

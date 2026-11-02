@@ -38,36 +38,40 @@ import com.cyberfarm.village.MechanistChoicePayload;
 import com.cyberfarm.village.MechanistDialogue;
 import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
-import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.neoforged.fml.ModContainer;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import com.cyberfarm.port.Caps;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.neoforged.neoforge.common.conditions.ICondition;
-import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
+import net.minecraftforge.common.world.BiomeModifier;
+import com.cyberfarm.worldgen.BauxiteOreModifier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import com.cyberfarm.port.net.PortNetwork;
 import com.cyberfarm.port.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
     public static final String MODID = "cyberfarm";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    private static final DeferredRegister<MapCodec<? extends ICondition>> CONDITIONS =
-            DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, MODID);
+    private static final DeferredRegister<Codec<? extends BiomeModifier>> BIOME_MODIFIERS =
+            DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, MODID);
 
     static {
-        CONDITIONS.register("bauxite_generation", () -> Config.BauxiteGenerationCondition.CODEC);
+        BIOME_MODIFIERS.register("bauxite_ore", () -> BauxiteOreModifier.CODEC);
     }
 
-    public CyberFarm(IEventBus modEventBus, ModContainer modContainer) {
+    public CyberFarm() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         ModBlocks.BLOCKS.register(modEventBus);
         ModItems.ITEMS.register(modEventBus);
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
@@ -81,12 +85,12 @@ public class CyberFarm {
         ModVillagers.POI_TYPES.register(modEventBus);
         ModVillagers.PROFESSIONS.register(modEventBus);
         ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
-        CONDITIONS.register(modEventBus);
+        BIOME_MODIFIERS.register(modEventBus);
 
         registerPayloads();
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
-                modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
+                DroneDockBlockEntity.ANCHOR_TICKETS.register();
         MinecraftForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
@@ -101,7 +105,10 @@ public class CyberFarm {
         MinecraftForge.EVENT_BUS.addListener(Schematics::onDatapackSync);
         MinecraftForge.EVENT_BUS.addListener(MechanistDialogue::onInteract);
 
-        modContainer.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            CyberFarmClient.init(modEventBus);
+        }
     }
 
     public static ResourceLocation id(String path) {

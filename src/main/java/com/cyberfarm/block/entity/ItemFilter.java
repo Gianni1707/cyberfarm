@@ -152,7 +152,7 @@ public class ItemFilter {
 
     /** Tags of the first sample item, sorted so client and server agree on the order. */
     public static List<TagKey<Item>> tagsOf(ItemStack sample) {
-        return sample.typeHolder().tags().sorted(Comparator.comparing((TagKey<Item> key) -> key.location().toString())).toList();
+        return sample.getTags().sorted(Comparator.comparing((TagKey<Item> key) -> key.location().toString())).toList();
     }
 
     public ItemStack firstSample() {

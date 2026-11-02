@@ -51,11 +51,11 @@ public class RadiationData extends SavedData {
     }
 
     public float level(BlockPos pos) {
-        return levels.get(ChunkPos.pack(pos));
+        return levels.get(ChunkPos.asLong(pos));
     }
 
     public void add(BlockPos pos, float amount) {
-        add(ChunkPos.pack(pos), amount);
+        add(ChunkPos.asLong(pos), amount);
     }
 
     public void add(long chunk, float amount) {

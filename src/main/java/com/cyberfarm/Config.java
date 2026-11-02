@@ -1,9 +1,7 @@
 package com.cyberfarm;
 
-import com.mojang.serialization.MapCodec;
 
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.neoforged.neoforge.common.conditions.ICondition;
 
 public class Config {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -63,15 +61,4 @@ public class Config {
 
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
-    /** Datapack condition {@code cyberfarm:bauxite_generation}: keeps the bauxite biome modifier out when the option is off. */
-    public record BauxiteGenerationCondition() implements ICondition {
-        public static final BauxiteGenerationCondition INSTANCE = new BauxiteGenerationCondition();
-        public static final MapCodec<BauxiteGenerationCondition> CODEC = MapCodec.unit(INSTANCE);
-
-        @Override
-        public boolean test(IContext context) {
-            return BAUXITE_GENERATION.getAsBoolean();
-        }
-
-    }
 }

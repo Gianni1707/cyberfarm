@@ -16,7 +16,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
-import net.minecraft.world.entity.npc.villager.Villager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -47,7 +47,7 @@ public final class MechanistDialogue {
 
     public static boolean isMechanist(Entity entity) {
         return entity instanceof Villager villager && !villager.isBaby()
-                && villager.getVillagerData().profession().is(ModVillagers.DRONE_MECHANIST.getKey());
+                && villager.getVillagerData().getProfession().is(ModVillagers.DRONE_MECHANIST.getKey());
     }
 
     /** A right-click on the Mechanist talks to him instead of opening his trades. */

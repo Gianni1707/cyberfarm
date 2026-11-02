@@ -294,7 +294,7 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
             meltRods();
             BlockPos core = size.floorCentre(pos, state.getValue(MachineBlock.FACING)).above();
             MinecraftServer server = serverLevel.getServer();
-            server.schedule(new TickTask(server.getTickCount(), () -> explode(serverLevel, core, size)));
+            server.tell(new TickTask(server.getTickCount(), () -> explode(serverLevel, core, size)));
         }
         super.preRemoveSideEffects(pos, state);
     }

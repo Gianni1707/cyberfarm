@@ -1,5 +1,9 @@
 package com.cyberfarm.port;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
@@ -19,6 +23,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 /** The 26.x DeferredRegister API (with its Blocks/Items/Entities flavours) on top of Forge's. */
 public class DeferredRegister<T> {
     protected final net.minecraftforge.registries.DeferredRegister<T> forge;
+    private final List<DeferredHolder<T, ? extends T>> entries = new ArrayList<>();
 
     protected DeferredRegister(ResourceKey<? extends Registry<T>> registry, String modId) {
         this.forge = net.minecraftforge.registries.DeferredRegister.create(registry, modId);
@@ -41,7 +46,17 @@ public class DeferredRegister<T> {
     }
 
     public <I extends T> DeferredHolder<T, I> register(String name, Supplier<? extends I> sup) {
-        return new DeferredHolder<>(forge.register(name, sup));
+        return track(new DeferredHolder<>(forge.register(name, sup)));
+    }
+
+    protected <H extends DeferredHolder<T, ? extends T>> H track(H holder) {
+        entries.add(holder);
+        return holder;
+    }
+
+    /** Everything registered here, in order. */
+    public Collection<DeferredHolder<T, ? extends T>> getEntries() {
+        return Collections.unmodifiableList(entries);
     }
 
     public void register(IEventBus bus) {
@@ -55,7 +70,7 @@ public class DeferredRegister<T> {
 
         public <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> factory,
                 UnaryOperator<BlockBehaviour.Properties> props) {
-            return new DeferredBlock<>(forge.register(name, () -> factory.apply(props.apply(BlockBehaviour.Properties.of()))));
+            return track(new DeferredBlock<>(forge.register(name, () -> factory.apply(props.apply(BlockBehaviour.Properties.of())))));
         }
 
         public <B extends Block> DeferredBlock<B> registerBlock(String name, Function<BlockBehaviour.Properties, ? extends B> factory) {
@@ -74,7 +89,7 @@ public class DeferredRegister<T> {
 
         public <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> factory,
                 UnaryOperator<Item.Properties> props) {
-            return new DeferredItem<>(forge.register(name, () -> factory.apply(props.apply(new Item.Properties()))));
+            return track(new DeferredItem<>(forge.register(name, () -> factory.apply(props.apply(new Item.Properties())))));
         }
 
         public <I extends Item> DeferredItem<I> registerItem(String name, Function<Item.Properties, ? extends I> factory) {
@@ -105,7 +120,7 @@ public class DeferredRegister<T> {
 
         public <E extends Entity> DeferredHolder<EntityType<?>, EntityType<E>> registerEntityType(String name,
                 EntityType.EntityFactory<E> factory, MobCategory category, UnaryOperator<EntityType.Builder<E>> builder) {
-            return new DeferredHolder<>(forge.register(name, () -> builder.apply(EntityType.Builder.of(factory, category)).build(name)));
+            return track(new DeferredHolder<>(forge.register(name, () -> builder.apply(EntityType.Builder.of(factory, category)).build(name))));
         }
     }
 }

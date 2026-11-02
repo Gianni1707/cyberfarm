@@ -13,7 +13,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import com.cyberfarm.port.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 /**
  * Base menu for CyberFarm machines. Machine slots come first, then the player inventory.

@@ -12,11 +12,11 @@ import net.minecraftforge.fluids.ForgeFlowingFluid;
 import net.minecraftforge.fluids.FluidType;
 import com.cyberfarm.port.DeferredHolder;
 import com.cyberfarm.port.DeferredRegister;
-import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import com.cyberfarm.port.FluidResource;
 
 public class ModFluids {
-    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CyberFarm.MODID);
+    public static final DeferredRegister<FluidType> FLUID_TYPES = DeferredRegister.create(ForgeRegistries.Keys.FLUID_TYPES, CyberFarm.MODID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, CyberFarm.MODID);
 
     // Negative density: lighter than air, like every gas

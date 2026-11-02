@@ -1,53 +1,86 @@
 package com.cyberfarm.item;
 
-import org.jspecify.annotations.Nullable;
-
-import net.minecraft.world.level.Level;
-
 import java.util.List;
 
-import java.util.EnumMap;
-import java.util.function.Consumer;
+import org.jspecify.annotations.Nullable;
 
 import com.cyberfarm.CyberFarm;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.item.equipment.EquipmentAssets;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
 /**
  * A piece of the Hazmat Suit: each one keeps out a quarter of the radiation, the full suit all of
  * it (see {@code Radiation.protection}). Little armor, and it keeps the cold of coolant out too.
  */
-public class HazmatSuitItem extends Item {
-    public static final ArmorMaterial MATERIAL = new ArmorMaterial(15, defense(), 10, SoundEvents.ARMOR_EQUIP_LEATHER, 0.0F, 0.0F,
-            ItemTags.REPAIRS_LEATHER_ARMOR, ResourceKey.create(EquipmentAssets.ROOT_ID, CyberFarm.id("hazmat")));
+public class HazmatSuitItem extends ArmorItem {
+    public static final ArmorMaterial MATERIAL = new ArmorMaterial() {
+        @Override
+        public int getDurabilityForType(Type type) {
+            // Base durability 15 as on 26.x, scaled per piece like vanilla
+            return 15 * switch (type) {
+                case HELMET -> 11;
+                case CHESTPLATE -> 16;
+                case LEGGINGS -> 15;
+                case BOOTS -> 13;
+            };
+        }
 
-    private static EnumMap<ArmorType, Integer> defense() {
-        EnumMap<ArmorType, Integer> map = new EnumMap<>(ArmorType.class);
-        map.put(ArmorType.HELMET, 1);
-        map.put(ArmorType.CHESTPLATE, 3);
-        map.put(ArmorType.LEGGINGS, 2);
-        map.put(ArmorType.BOOTS, 1);
-        map.put(ArmorType.BODY, 3);
-        return map;
-    }
+        @Override
+        public int getDefenseForType(Type type) {
+            return switch (type) {
+                case HELMET, BOOTS -> 1;
+                case CHESTPLATE -> 3;
+                case LEGGINGS -> 2;
+            };
+        }
 
-    public HazmatSuitItem(Properties properties, ArmorType type) {
-        super(properties.humanoidArmor(MATERIAL, type));
+        @Override
+        public int getEnchantmentValue() {
+            return 10;
+        }
+
+        @Override
+        public SoundEvent getEquipSound() {
+            return SoundEvents.ARMOR_EQUIP_LEATHER;
+        }
+
+        @Override
+        public Ingredient getRepairIngredient() {
+            return Ingredient.of(Items.LEATHER);
+        }
+
+        @Override
+        public String getName() {
+            return CyberFarm.id("hazmat").toString();
+        }
+
+        @Override
+        public float getToughness() {
+            return 0.0F;
+        }
+
+        @Override
+        public float getKnockbackResistance() {
+            return 0.0F;
+        }
+    };
+
+    public HazmatSuitItem(Properties properties, Type type) {
+        super(MATERIAL, type, properties);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag) {
-        Consumer<Component> builder = tooltip::add;
-        builder.accept(Component.translatable("tooltip.cyberfarm.hazmat").withStyle(ChatFormatting.YELLOW));
+        tooltip.add(Component.translatable("tooltip.cyberfarm.hazmat").withStyle(ChatFormatting.YELLOW));
     }
 }

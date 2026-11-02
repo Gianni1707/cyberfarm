@@ -15,7 +15,6 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.ItemStack;
 import com.cyberfarm.port.ItemResource;
 import com.cyberfarm.port.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
 import org.jspecify.annotations.Nullable;
 
 public class DroneAssemblerMenu extends MachineMenu {

@@ -1,11 +1,12 @@
 package com.cyberfarm.registry;
 
+import com.cyberfarm.item.LoreBlockItem;
+import net.minecraft.world.item.ArmorItem;
+
 import java.util.List;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.component.ItemLore;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.drone.AddonType;
@@ -30,7 +31,6 @@ import com.cyberfarm.item.SurveyToolItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.equipment.ArmorType;
 import com.cyberfarm.port.DeferredItem;
 import com.cyberfarm.port.DeferredRegister;
 
@@ -56,10 +56,10 @@ public class ModItems {
     public static final DeferredItem<BlockItem> GAS_TURBINE = ITEMS.registerSimpleBlockItem(ModBlocks.GAS_TURBINE);
     public static final DeferredItem<BlockItem> METHANE_EXTRACTOR = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_EXTRACTOR);
     public static final DeferredItem<BlockItem> CYBER_FRAME = ITEMS.registerSimpleBlockItem(ModBlocks.CYBER_FRAME);
-    public static final DeferredItem<BlockItem> ACID_INLET = ITEMS.registerSimpleBlockItem(ModBlocks.ACID_INLET,
-            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.acid_inlet", ChatFormatting.GREEN)));
-    public static final DeferredItem<BlockItem> METHANE_OUTLET = ITEMS.registerSimpleBlockItem(ModBlocks.METHANE_OUTLET,
-            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.methane_outlet", ChatFormatting.AQUA)));
+    public static final DeferredItem<LoreBlockItem> ACID_INLET = ITEMS.registerItem("acid_inlet",
+            p -> new LoreBlockItem(ModBlocks.ACID_INLET.get(), p, "tooltip.cyberfarm.acid_inlet", ChatFormatting.GREEN));
+    public static final DeferredItem<LoreBlockItem> METHANE_OUTLET = ITEMS.registerItem("methane_outlet",
+            p -> new LoreBlockItem(ModBlocks.METHANE_OUTLET.get(), p, "tooltip.cyberfarm.methane_outlet", ChatFormatting.AQUA));
     public static final DeferredItem<BlockItem> INTAKE_GATE = ITEMS.registerSimpleBlockItem(ModBlocks.INTAKE_GATE);
     public static final DeferredItem<BlockItem> MUFFLER = ITEMS.registerSimpleBlockItem(ModBlocks.MUFFLER);
     public static final DeferredItem<MobCapsuleItem> MOB_CAPSULE = ITEMS.registerItem("mob_capsule", MobCapsuleItem::new);
@@ -80,10 +80,10 @@ public class ModItems {
     public static final DeferredItem<BlockItem> TURBINE_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.TURBINE_PORT);
     public static final DeferredItem<BlockItem> WASTE_REPROCESSOR = ITEMS.registerSimpleBlockItem(ModBlocks.WASTE_REPROCESSOR);
     public static final DeferredItem<BlockItem> VITRIFIED_WASTE = ITEMS.registerSimpleBlockItem(ModBlocks.VITRIFIED_WASTE);
-    public static final DeferredItem<HazmatSuitItem> HAZMAT_HELMET = ITEMS.registerItem("hazmat_helmet", p -> new HazmatSuitItem(p, ArmorType.HELMET));
-    public static final DeferredItem<HazmatSuitItem> HAZMAT_SUIT = ITEMS.registerItem("hazmat_suit", p -> new HazmatSuitItem(p, ArmorType.CHESTPLATE));
-    public static final DeferredItem<HazmatSuitItem> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", p -> new HazmatSuitItem(p, ArmorType.LEGGINGS));
-    public static final DeferredItem<HazmatSuitItem> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", p -> new HazmatSuitItem(p, ArmorType.BOOTS));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_HELMET = ITEMS.registerItem("hazmat_helmet", p -> new HazmatSuitItem(p, ArmorItem.Type.HELMET));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_SUIT = ITEMS.registerItem("hazmat_suit", p -> new HazmatSuitItem(p, ArmorItem.Type.CHESTPLATE));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", p -> new HazmatSuitItem(p, ArmorItem.Type.LEGGINGS));
+    public static final DeferredItem<HazmatSuitItem> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", p -> new HazmatSuitItem(p, ArmorItem.Type.BOOTS));
     public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
@@ -188,8 +188,8 @@ public class ModItems {
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
     public static final DeferredItem<BlockItem> CRYSTALLIZER = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER);
-    public static final DeferredItem<BlockItem> CRYSTALLIZER_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER_PORT,
-            p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.crystallizer_port", ChatFormatting.LIGHT_PURPLE)));
+    public static final DeferredItem<LoreBlockItem> CRYSTALLIZER_PORT = ITEMS.registerItem("crystallizer_port",
+            p -> new LoreBlockItem(ModBlocks.CRYSTALLIZER_PORT.get(), p, "tooltip.cyberfarm.crystallizer_port", ChatFormatting.LIGHT_PURPLE));
     public static final DeferredItem<Item> FUSION_CRYSTAL = ITEMS.registerSimpleItem("fusion_crystal", p -> p.rarity(Rarity.RARE));
     public static final DeferredItem<Item> MECH_CORE = ITEMS.registerSimpleItem("mech_core", p -> p.rarity(Rarity.EPIC));
     public static final DeferredItem<MechFrameItem> MECH_FRAME = ITEMS.registerItem("mech_frame", MechFrameItem::new, p -> p.stacksTo(1));
@@ -208,8 +208,4 @@ public class ModItems {
     public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
     public static final DeferredItem<BlueprintDiscItem> BLUEPRINT_DISC = ITEMS.registerItem("blueprint_disc", BlueprintDiscItem::new);
 
-    /** One coloured, non-italic line under an item's name. */
-    private static ItemLore lore(String key, ChatFormatting color) {
-        return new ItemLore(List.of(Component.translatable(key).withStyle(style -> style.withColor(color).withItalic(false))));
-    }
 }

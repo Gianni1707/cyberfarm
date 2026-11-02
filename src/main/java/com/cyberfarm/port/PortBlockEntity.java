@@ -62,6 +62,21 @@ public abstract class PortBlockEntity extends BlockEntity {
         return saveWithoutMetadata();
     }
 
+    public CompoundTag saveCustomOnly(HolderLookup.Provider registries) {
+        return saveWithoutMetadata();
+    }
+
+    /** Tells pipes holding this block's handlers to look them up again (26.x invalidateCapabilities). */
+    public void refreshCaps() {
+        for (int i = 0; i < optionals.length; i++) {
+            if (optionals[i] != null) {
+                optionals[i].invalidate();
+                optionals[i] = null;
+                handlers[i] = null;
+            }
+        }
+    }
+
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> cap, @Nullable Direction side) {
         int capIndex = indexOf(cap);
@@ -83,13 +98,7 @@ public abstract class PortBlockEntity extends BlockEntity {
     @Override
     public void invalidateCaps() {
         super.invalidateCaps();
-        for (int i = 0; i < optionals.length; i++) {
-            if (optionals[i] != null) {
-                optionals[i].invalidate();
-                optionals[i] = null;
-                handlers[i] = null;
-            }
-        }
+        refreshCaps();
     }
 
     private static int indexOf(Capability<?> cap) {

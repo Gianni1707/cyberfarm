@@ -157,7 +157,7 @@ public class ModBlocks {
     // Walls of the Methane Extractor's chamber: see-through, tinted, framed
     public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
             ContainmentGlassBlock::new, p -> p.mapColor(MapColor.NONE).strength(1.5F, 6.0F).sound(SoundType.GLASS).noOcclusion()
-                    .isValidSpawn(Blocks::never).isRedstoneConductor((s, l, q) -> false).isSuffocating((s, l, q) -> false)
+                    .isValidSpawn((s, l, q, e) -> false).isRedstoneConductor((s, l, q) -> false).isSuffocating((s, l, q) -> false)
                     .isViewBlocking((s, l, q) -> false));
 
     // Sulfur in the Nether's netherrack, and the machine that turns it into acid
@@ -216,7 +216,7 @@ public class ModBlocks {
             StabilizerPylonBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
 
     private static BlockBehaviour.Properties liquid(BlockBehaviour.Properties properties) {
-        return properties.mapColor(MapColor.ICE).replaceable().noCollision().strength(100.0F).pushReaction(PushReaction.DESTROY)
+        return properties.mapColor(MapColor.ICE).replaceable().noCollission().strength(100.0F).pushReaction(PushReaction.DESTROY)
                 .noLootTable().liquid().sound(SoundType.EMPTY);
     }
 

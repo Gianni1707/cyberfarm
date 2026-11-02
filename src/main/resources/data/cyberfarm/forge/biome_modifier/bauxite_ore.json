@@ -1,0 +1,6 @@
+{
+  "type": "cyberfarm:bauxite_ore",
+  "biomes": "#minecraft:is_overworld",
+  "features": "cyberfarm:bauxite_ore",
+  "step": "underground_ores"
+}

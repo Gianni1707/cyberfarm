@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.Caps;
+
 import com.cyberfarm.port.PortParticles;
 
 import java.util.ArrayList;
@@ -87,7 +89,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     /** Ticks between two puffs of the mob's slow decay: acid fumes and bits of it falling off. */
     private static final int DECAY_INTERVAL = 5;
     private static final DustParticleOptions ACID_FUMES = PortParticles.dust(0x9BE04A, 1.0F);
-    private static final ItemParticleOption FLESH = new ItemParticleOption(ParticleTypes.ITEM, Items.ROTTEN_FLESH);
+    private static final ItemParticleOption FLESH = new ItemParticleOption(ParticleTypes.ITEM, new ItemStack(Items.ROTTEN_FLESH));
     /** Clients hear the acid level at least this often, even when it does not change. */
     private static final int RESYNC_INTERVAL = 100;
 
@@ -204,7 +206,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     /** Monsters only, and never bosses: the gate is meant for zombies and their kind. */
     private static boolean canPullIn(Mob mob) {
         return mob.isAlive() && mob instanceof Enemy && !mob.isPassenger() && !mob.isVehicle()
-                && !mob.getType().builtInRegistryHolder().is(Tags.EntityTypes.BOSSES);
+                && !mob.getType().is(Tags.EntityTypes.BOSSES);
     }
 
     /** The 1x1x2 space in the middle of the chamber. */
@@ -218,7 +220,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     }
 
     public static int rateOf(Mob mob) {
-        if (mob.getType().builtInRegistryHolder().is(EntityTypeTags.ZOMBIES)) {
+        if (mob.getType().is(EntityTypeTags.ZOMBIES)) {
             return ZOMBIE_RATE;
         }
         if (mob instanceof Enemy) {
@@ -273,7 +275,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
             if (changed) {
                 // The ports' pipes must look their capabilities up again
                 for (BlockPos part : chamberBlocks(pos)) {
-                    level.invalidateCapabilities(part.immutable());
+                    Caps.invalidate(level, part.immutable());
                 }
             }
             findPorts(level);

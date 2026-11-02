@@ -50,7 +50,7 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
 import com.cyberfarm.port.Caps;
-import net.neoforged.neoforge.common.world.chunk.TicketController;
+import com.cyberfarm.port.TicketController;
 import com.cyberfarm.port.ItemResource;
 import org.jspecify.annotations.Nullable;
 
@@ -98,7 +98,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private @Nullable BuildPlan buildPlan;
 
     /**
-     * Anchor Addon: the chunks a dock keeps loaded for its drones. NeoForge keeps the tickets over a
+     * Anchor Addon: the chunks a dock keeps loaded for its drones. Forge keeps the tickets over a
      * restart; those of a dock that is gone are dropped as the world loads.
      */
     public static final TicketController ANCHOR_TICKETS = new TicketController(CyberFarm.id("drone_anchor"), (level, tickets) -> {
@@ -223,7 +223,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
                 ChunkPos at = drone.chunkPosition();
                 for (int dx = -1; dx <= 1; dx++) {
                     for (int dz = -1; dz <= 1; dz++) {
-                        chunks.add(ChunkPos.pack(at.x() + dx, at.z() + dz));
+                        chunks.add(ChunkPos.asLong(at.x() + dx, at.z() + dz));
                     }
                 }
             }
@@ -232,17 +232,17 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             return Set.of();
         }
         Set<Long> ordered = new LinkedHashSet<>();
-        ordered.add(ChunkPos.pack(worldPosition));
+        ordered.add(ChunkPos.asLong(worldPosition));
         ordered.addAll(chunks);
         for (BlockPos end : new BlockPos[] {transportSource, transportDestination}) {
             if (end != null) {
-                ordered.add(ChunkPos.pack(end));
+                ordered.add(ChunkPos.asLong(end));
             }
         }
         BoundingBox area = getWorkArea();
         for (int x = area.minX() >> 4; x <= area.maxX() >> 4; x++) {
             for (int z = area.minZ() >> 4; z <= area.maxZ() >> 4; z++) {
-                ordered.add(ChunkPos.pack(x, z));
+                ordered.add(ChunkPos.asLong(x, z));
             }
         }
         return ordered.stream().limit(Config.ANCHOR_MAX_CHUNKS.get()).collect(Collectors.toCollection(LinkedHashSet::new));

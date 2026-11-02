@@ -4,7 +4,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.minecraftforge.energy.IEnergyStorage;
 import com.cyberfarm.port.FluidResource;
 import com.cyberfarm.port.ItemResource;

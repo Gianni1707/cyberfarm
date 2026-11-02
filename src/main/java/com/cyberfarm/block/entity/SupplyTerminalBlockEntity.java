@@ -47,8 +47,8 @@ import net.minecraft.world.entity.ai.gossip.GossipType;
 import net.minecraft.world.entity.ai.memory.MemoryModuleType;
 import net.minecraft.world.entity.ai.memory.WalkTarget;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
-import net.minecraft.world.entity.npc.villager.Villager;
-import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.npc.VillagerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -432,7 +432,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         if (--checkCooldown <= 0) {
             checkCooldown = MECHANIST_CHECK;
             Villager mechanist = mechanist(level);
-            mechanistLevel = mechanist != null ? mechanist.getVillagerData().level() : 0;
+            mechanistLevel = mechanist != null ? mechanist.getVillagerData().getLevel() : 0;
             if (mechanist != null) {
                 events(level);
                 // He keeps close to his terminal: wandered off, he walks back
@@ -555,7 +555,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         }
         Villager mechanist = mechanist(level);
         if (mechanist != null) {
-            int villagerLevel = mechanist.getVillagerData().level();
+            int villagerLevel = mechanist.getVillagerData().getLevel();
             mechanist.setVillagerXp(mechanist.getVillagerXp() + 5 + 5 * villagerLevel);
             levelUp(mechanist, level);
             level.sendParticles(ParticleTypes.HAPPY_VILLAGER, mechanist.getX(), mechanist.getY() + 2.0, mechanist.getZ(), 8, 0.4, 0.3, 0.4, 0.0);
@@ -622,7 +622,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
      * his next level-up from trading.
      */
     private static void levelUp(Villager villager, ServerLevel level) {
-        int current = villager.getVillagerData().level();
+        int current = villager.getVillagerData().getLevel();
         if (!VillagerData.canLevelUp(current) || villager.getVillagerXp() < VillagerData.getMaxXpPerLevel(current)) {
             return;
         }
@@ -667,7 +667,7 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** The Drone Mechanist whose job site this terminal is, or null. */
     private @Nullable Villager mechanist(ServerLevel level) {
         for (Villager villager : level.getEntitiesOfClass(Villager.class, new AABB(worldPosition).inflate(RANGE),
-                v -> v.getVillagerData().profession().is(ModVillagers.DRONE_MECHANIST.getKey()))) {
+                v -> v.getVillagerData().getProfession().is(ModVillagers.DRONE_MECHANIST.getKey()))) {
             boolean here = villager.getBrain().getMemory(MemoryModuleType.JOB_SITE)
                     .map(site -> site.pos().equals(worldPosition) && site.dimension() == level.dimension()).orElse(false);
             if (here) {

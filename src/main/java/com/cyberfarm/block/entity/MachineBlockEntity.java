@@ -23,7 +23,6 @@ import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
 import com.cyberfarm.port.ItemResource;
 import com.cyberfarm.port.ItemStacksResourceHandler;
-import net.neoforged.neoforge.transfer.item.ItemUtil;
 import com.cyberfarm.port.net.PacketDistributor;
 
 /**
@@ -76,12 +75,12 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
         this.items = new ItemStacksResourceHandler(slots) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
-                return isItemValid(index, resource);
+                return MachineBlockEntity.this.isItemValid(index, resource);
             }
 
             @Override
             protected int getCapacity(int index, ItemResource resource) {
-                return Math.min(super.getCapacity(index, resource), getSlotLimit(index, resource));
+                return Math.min(super.getCapacity(index, resource), MachineBlockEntity.this.getSlotLimit(index, resource));
             }
 
             @Override

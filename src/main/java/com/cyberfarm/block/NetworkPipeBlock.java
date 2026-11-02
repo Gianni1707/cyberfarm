@@ -48,8 +48,11 @@ import org.jspecify.annotations.Nullable;
 public abstract class NetworkPipeBlock extends PortEntityBlock {
     public static final Map<Direction, BooleanProperty> CONNECTIONS = PipeBlock.PROPERTY_BY_DIRECTION;
     /** Per side: the pipe pulls out of the block there (right-click the arm to switch). */
-    public static final Map<Direction, BooleanProperty> EXTRACT = Util.makeEnumMap(Direction.class,
-            side -> BooleanProperty.create("extract_" + side.getSerializedName()));
+    public static final Map<Direction, BooleanProperty> EXTRACT = Util.make(new java.util.EnumMap<Direction, BooleanProperty>(Direction.class), map -> {
+        for (Direction side : Direction.values()) {
+            map.put(side, BooleanProperty.create("extract_" + side.getSerializedName()));
+        }
+    });
 
     /** A pipe's block entity, which pulls from the blocks its arms are set to extract from. */
     public interface Puller {

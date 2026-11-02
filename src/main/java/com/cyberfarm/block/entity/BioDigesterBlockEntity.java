@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.world.level.block.ComposterBlock;
+
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.menu.BioDigesterMenu;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -16,8 +18,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
-import net.neoforged.neoforge.registries.datamaps.builtin.Compostable;
-import net.neoforged.neoforge.registries.datamaps.builtin.NeoForgeDataMaps;
 import com.cyberfarm.port.ItemResource;
 
 /**
@@ -44,8 +44,7 @@ public class BioDigesterBlockEntity extends MachineBlockEntity {
         if (stack.is(Items.ROTTEN_FLESH)) {
             return MB_PER_ROTTEN_FLESH;
         }
-        Compostable compostable = stack.typeHolder().getData(NeoForgeDataMaps.COMPOSTABLES);
-        return compostable == null ? 0 : (int) (compostable.chance() * MB_PER_COMPOST);
+        return (int) (ComposterBlock.COMPOSTABLES.getFloat(stack.getItem()) * MB_PER_COMPOST);
     }
 
     public GasTank getTank() {

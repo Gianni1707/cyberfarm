@@ -55,7 +55,7 @@ public class MobCapsuleItem extends Item {
         if (hasMob(capsule)) {
             return InteractionResult.PASS;
         }
-        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().builtInRegistryHolder().is(Tags.EntityTypes.BOSSES)) {
+        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().is(Tags.EntityTypes.BOSSES)) {
             player.displayClientMessage(Component.translatable("message.cyberfarm.capsule.refused"), true);
             return InteractionResult.FAIL;
         }

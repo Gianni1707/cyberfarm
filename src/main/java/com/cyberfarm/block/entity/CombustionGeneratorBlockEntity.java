@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.common.ForgeHooks;
+
 import com.cyberfarm.block.CombustionGeneratorBlock;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.menu.CombustionGeneratorMenu;
@@ -57,7 +59,7 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
             return;
         }
         // Half the furnace burn time: one coal = 800 ticks * 40 FE = 32,000 FE
-        int duration = fuel.getBurnTime(null, level.fuelValues()) / 2;
+        int duration = ForgeHooks.getBurnTime(fuel, null) / 2;
         if (duration <= 0) {
             return;
         }

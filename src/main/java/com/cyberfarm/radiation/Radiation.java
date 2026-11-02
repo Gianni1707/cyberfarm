@@ -33,7 +33,6 @@ import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.AABB;
 import com.cyberfarm.port.Caps;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import com.cyberfarm.port.ItemResource;
 
 /**
@@ -69,7 +68,7 @@ public final class Radiation {
         ChunkPos centre = new ChunkPos(core);
         for (int dx = -2; dx <= 2; dx++) {
             for (int dz = -2; dz <= 2; dz++) {
-                data.add(ChunkPos.pack(centre.x() + dx, centre.z() + dz), MELTDOWN / (1 + Math.max(Math.abs(dx), Math.abs(dz))));
+                data.add(ChunkPos.asLong(centre.x() + dx, centre.z() + dz), MELTDOWN / (1 + Math.max(Math.abs(dx), Math.abs(dz))));
             }
         }
     }
@@ -116,7 +115,7 @@ public final class Radiation {
             ChunkPos home = new ChunkPos(player.blockPosition());
             for (int dx = -SCAN_RADIUS; dx <= SCAN_RADIUS; dx++) {
                 for (int dz = -SCAN_RADIUS; dz <= SCAN_RADIUS; dz++) {
-                    long chunkPos = ChunkPos.pack(home.x() + dx, home.z() + dz);
+                    long chunkPos = ChunkPos.asLong(home.x() + dx, home.z() + dz);
                     LevelChunk chunk = level.getChunkSource().getChunkNow(home.x() + dx, home.z() + dz);
                     if (chunk != null && scanned.add(chunkPos)) {
                         scanChunk(level, data, chunkPos, chunk);

@@ -295,7 +295,7 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         if (docked != null) {
             status = 3;
             int room = MechEntity.CAPACITY - docked.getEnergy();
-            int charge = Math.min(CHARGE_RATE, Math.min(room, energy.getAmountAsInt()));
+            int charge = Math.min(CHARGE_RATE, Math.min(room, energy.getEnergy()));
             if (charge > 0 && energy.consume(charge)) {
                 docked.setEnergy(docked.getEnergy() + charge);
                 status = 1;

@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.minecraftforge.energy.IEnergyStorage;
 import com.cyberfarm.port.FluidResource;
 

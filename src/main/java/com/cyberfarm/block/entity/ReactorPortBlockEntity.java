@@ -1,5 +1,7 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.Caps;
+
 import net.minecraftforge.items.IItemHandler;
 
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -14,7 +16,6 @@ import com.cyberfarm.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.minecraftforge.energy.IEnergyStorage;
 import com.cyberfarm.port.FluidResource;
 import com.cyberfarm.port.ItemResource;
@@ -36,7 +37,7 @@ public class ReactorPortBlockEntity extends PortBlockEntity {
         if (!Objects.equals(this.controller, controller)) {
             this.controller = controller;
             if (level != null) {
-                level.invalidateCapabilities(worldPosition);
+                Caps.invalidate(level, worldPosition);
             }
         }
     }
