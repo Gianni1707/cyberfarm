@@ -732,7 +732,7 @@
   "category.cyberfarm.electrolyzer": "Electrolyzer",
   "category.cyberfarm.pyrolysis_oven": "Pyrolysis Oven",
   "category.cyberfarm.fabricator": "Fabricator",
-  "info.block.cyberfarm.bauxite_ore": "The ore of aluminum, in stone and deepslate across the Overworld, from y -16 to y 112, most common around y 48. Drops Raw Bauxite; tagged forge:ores/bauxite.",
+  "info.block.cyberfarm.bauxite_ore": "The ore of aluminum, in stone and deepslate across the Overworld, from y -32 to y 80, most common around y 24. Drops Raw Bauxite; tagged forge:ores/bauxite.",
   "info.item.cyberfarm.raw_bauxite": "Smelt or blast it into Alumina.",
   "info.item.cyberfarm.alumina": "Aluminum oxide, smelted from bauxite. The Electrolyzer turns it into Aluminum Ingots. Tagged forge:dusts/alumina.",
   "info.item.cyberfarm.aluminum_ingot": "Made by the Electrolyzer from Alumina. The light metal of the Basic and Mini Drone Frames. Tagged forge:ingots/aluminum: other mods' aluminum works too.",
