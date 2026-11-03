@@ -25,8 +25,8 @@ ore: just as in real life, it takes electrolysis and a steady flow of power.
   <ItemIcon id="aluminum_ingot" />
 </ItemGrid>
 
-1. Mine **Bauxite Ore**: rusty clumps in stone and deepslate, about as common as iron and mostly
-   above y 48. It drops **Raw Bauxite** (Fortune helps).
+1. Mine **Bauxite Ore**: rusty clumps in stone and deepslate, about as common as iron, from y -16
+   to y 112 and most common around y 48. It drops **Raw Bauxite** (Fortune helps).
 2. Smelt or blast it into **Alumina**, a white powder.
 3. Put the Alumina in an **Electrolyzer**: **1 Aluminum Ingot every 5 seconds at 40 FE/t**. One
    [Combustion Generator](combustion_generator.md) keeps it running.
