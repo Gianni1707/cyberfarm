@@ -2,8 +2,8 @@
 
 ![A CyberFarm base at sunset: drones over the wheat, the cooling tower behind](docs/images/hero.png)
 
-**CyberFarm** is a tech mod for **Minecraft 26.2 (NeoForge)** about modular drones that run your
-farms, the power plants that keep them flying and, at the end of it all, a mech you pilot yourself.
+**CyberFarm** is a tech mod for **Minecraft 26.2, 26.1.2 and 1.20.1** (NeoForge, and Forge on 1.20.1)
+about modular drones that run your farms, the power plants that keep them flying and, at the end of it all, a mech you pilot yourself.
 It starts with a combustion generator and a first drone, and grows through biogas, methane and
 steam up to a nuclear reactor with its own cooling tower. Clean white-and-cyan sci-fi style, FE
 power, and machines you can watch at work.
@@ -25,7 +25,7 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 - The **Laser Turret**: on FE, it watches 16 blocks all round and burns down the mobs it sees.
 - **Bomb** drones: Mini Drones that dive at a mob and explode, up to four per Swarm Dock.
 - Lasers cost 25 FE per point of damage; named, riding and neutral mobs are left alone.
-- Aluminum works with other mods' ores and machines (`c:ores/aluminum`).
+- Aluminum works with other mods' ores and machines (`forge:ores/aluminum`).
 
 **0.8.0: the tech village**
 - **Supply contracts** at the **Supply Terminal**, the job site of a new villager, the **Drone
@@ -158,8 +158,8 @@ Tanks** and **Gas Tanks** store 32 buckets and show the fluid inside through the
 ## Compatibility
 
 - **JEI** and **REI**: recipe pages for every machine, drone assembly and info pages.
-- Fluids, items and energy use the standard NeoForge capabilities and common `c:` tags (aluminum is
-  `c:ingots/aluminum`), so pipes, tanks and machines of other mods work with CyberFarm's and the
+- Fluids, items and energy use the standard Forge capabilities and common `forge:` tags (aluminum is
+  `forge:ingots/aluminum`), so pipes, tanks and machines of other mods work with CyberFarm's and the
   other way round.
 - A **Muffler** silences machines, drones and mobs around it.
 
@@ -180,21 +180,24 @@ a lot.
 
 ## Requirements
 
-| | Version |
-| --- | --- |
-| Minecraft | 26.2 |
-| NeoForge | 26.2.0.93 or newer |
-| Java | 25 |
-| [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | optional, for the in-game handbook |
-| JEI or REI | optional, for recipe pages |
+| | 26.2 | 26.1.2 | 1.20.1 |
+| --- | --- | --- | --- |
+| Loader | NeoForge 26.2.0.93 or newer | NeoForge 26.1.2.97 or newer | Forge 47.1.3 or newer, or NeoForge 1.20.1 |
+| Java | 25 | 25 | 17 |
+| In-game handbook (optional) | [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | [Patchouli](https://www.curseforge.com/minecraft/mc-mods/patchouli) |
+| Recipe pages (optional) | JEI or REI | JEI or REI | JEI or REI |
+| Source branch | `master` | `mc/26.1.2` | `mc/1.20.1` |
 
 ## Installation
 
-Download `cyberfarm-<version>.jar` from the [releases](https://github.com/Gianni1707/cyberfarm/releases)
-and put it in the `mods` folder of a NeoForge 26.2 instance, plus GuideME for the handbook. It is
-needed on both the server and the client.
+Download the jar for your Minecraft version from [CurseForge](https://www.curseforge.com/minecraft/mc-mods/cyberfarm)
+or the [releases](https://github.com/Gianni1707/cyberfarm/releases) (`cyberfarm-<version>+mc<minecraft>.jar`)
+and put it in the `mods` folder, plus the handbook mod for that version. It is needed on both the
+server and the client.
 
 ## Building from source
+
+Each Minecraft version is built from its own branch (see the table above).
 
 ```bash
 ./gradlew build
