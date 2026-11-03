@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, about as common as iron and mostly above y 48. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it into $(l)Alumina$(), a white powder."
+      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, about as common as iron, from y -16 to y 112 and most common around y 48. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it into $(l)Alumina$(), a white powder."
     },
     {
       "type": "patchouli:text",
