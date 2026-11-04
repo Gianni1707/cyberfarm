@@ -1,0 +1,150 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/drone_dock_port",
+    "atlas": "cyberfarm:block/models/drone_dock_port",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light",
+    "gas_pipe_up": "cyberfarm:block/gas_pipe"
+  },
+  "elements": [
+    {
+      "from": [
+        5.5,
+        1,
+        0.75
+      ],
+      "to": [
+        10.5,
+        10.5,
+        2.5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            5,
+            2.5,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            2.5,
+            5,
+            5,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            2.5,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            2.5,
+            0,
+            5,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            5,
+            0,
+            6,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            6,
+            0,
+            7,
+            5
+          ],
+          "texture": "#atlas"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        5,
+        0
+      ],
+      "to": [
+        11,
+        11,
+        0.75
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            5,
+            5,
+            8,
+            5.5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            8,
+            5,
+            11,
+            5.5
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            7,
+            0,
+            10,
+            3
+          ],
+          "texture": "#atlas",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            10,
+            0,
+            13,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            13,
+            0,
+            13.5,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            13.5,
+            0,
+            14,
+            3
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

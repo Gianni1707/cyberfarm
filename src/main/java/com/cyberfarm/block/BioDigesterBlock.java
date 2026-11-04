@@ -33,6 +33,11 @@ public class BioDigesterBlock extends LitMachineBlock {
     }
 
     @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.BIO_DIGESTER.get());
     }

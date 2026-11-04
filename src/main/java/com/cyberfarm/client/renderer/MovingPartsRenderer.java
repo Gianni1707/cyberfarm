@@ -123,13 +123,13 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
         box(pose, buffer, -2.5F * PIXEL, top, -2.5F * PIXEL, 2.5F * PIXEL, top + PIXEL, 2.5F * PIXEL, STEEL_DARK, state.light);
     }
 
-    /** A two-armed paddle's shadow turning slowly behind the digester's window. */
+    /** A two-armed paddle's shadow turning slowly in the sludge behind the tank's porthole. */
     private static void paddle(PoseStack.Pose pose, VertexConsumer buffer, State state) {
-        float z = -0.5F - 0.002F;
-        float y = 6.5F * PIXEL;
+        float z = -0.5F + 1.25F * PIXEL - 0.002F;
+        float y = 7.0F * PIXEL;
         for (int i = 0; i < 2; i++) {
             float angle = state.phase * 0.08F + i * Mth.PI;
-            blade(pose, buffer, angle, 0.0F, 2.4F * PIXEL, 0.5F * PIXEL, y, z, SLUDGE, state.light);
+            blade(pose, buffer, angle, 0.0F, 1.4F * PIXEL, 0.4F * PIXEL, y, z, SLUDGE, state.light);
         }
     }
 
