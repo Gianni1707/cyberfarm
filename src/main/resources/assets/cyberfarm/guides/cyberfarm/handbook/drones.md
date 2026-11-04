@@ -13,7 +13,8 @@ item_ids:
 <ItemImage id="cyberfarm:drone" scale="2" float="left" />
 
 An assembled drone shows its parts and battery in the tooltip. To put it to work,
-**right-click a [Drone Dock](drone_dock.md)** with it. It lands folded on the pad, opens its arms,
+**right-click a [Drone Dock](drone_dock.md)** with it. It lands folded on the pad, facing the dock's
+front (the side that faced you when you placed it, the same way it parks whenever it comes home), opens its arms,
 spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock).
 
 <br clear="all" />

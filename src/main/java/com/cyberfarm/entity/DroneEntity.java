@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.drone.AddonType;
@@ -49,6 +50,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
@@ -471,11 +473,20 @@ public class DroneEntity extends PathfinderMob {
         return corner < 0 ? pad : pad.add((corner & 1) == 0 ? -CORNER_OFFSET : CORNER_OFFSET, 0.0, (corner & 2) == 0 ? -CORNER_OFFSET : CORNER_OFFSET);
     }
 
+    /** Parked, a drone faces the way its dock's front does. */
+    public static float parkedYaw(BlockState dock) {
+        return dock.hasProperty(MachineBlock.FACING) ? dock.getValue(MachineBlock.FACING).toYRot() : 0.0F;
+    }
+
+    private boolean flyHome() {
+        return flight.flyHome(dockHover(), parkedYaw(level().getBlockState(dockPos)));
+    }
+
     private void tickDocked(ServerLevel level, DroneDockBlockEntity dock) {
         if (isWaitingForPassenger(dock)) {
             flyTowards(dockHover().add(0.0, TAXI_WAIT_HEIGHT, 0.0));
         } else {
-            flight.flyHome(dockHover());
+            flyHome();
         }
         cargo.unloadInto(dock);
 
@@ -544,7 +555,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void tickReturning() {
-        if (flight.flyHome(dockHover())) {
+        if (flyHome()) {
             unreachable.clear();
             scanCooldown = SCAN_INTERVAL;
             setStatus(STATUS_IDLE);

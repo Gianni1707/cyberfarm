@@ -1,4 +1,4 @@
-"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester and Drone Dock.
+"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock and Builder Swarm Dock.
 
 Each machine is a list of boxes, like a Blockbench model. Every face gets its own patch in one texture atlas per
 machine, painted from a small set of source materials and baked with bevelled edges and a top-to-bottom gradient,
@@ -24,6 +24,7 @@ PALETTE = {  # ramps shift hue: highlights warm, shadows cool
     "y": "#e8b830", "u": "#fff2a8", "v": "#ffc23d", "w": "#ff7a1f", "x": "#b8391a",      # hazard, fire
     "m": "#b6f08a", "o": "#5fcf6a", "p": "#2f8a52", "j": "#d6f3f7",                      # liquid, glint
     "A": "#ffc98a", "B": "#ef8f3e", "C": "#b65a26", "D": "#6e3420",                      # copper
+    "H": "#0e7c99",                                                                      # dim cyan marking
     "K": "#3a1a12", "M": "#6e2c18",                                                      # cold firebox
 }
 UNSHADED = set("gG")
@@ -147,6 +148,17 @@ def pad():
     return t
 
 
+def swarm_pad():
+    """Builder Swarm Dock pad: a small landing frame under each Mini Drone's parking spot (DroneEntity.CORNER_OFFSET)."""
+    t = Tex("2")
+    t.rect(0, 0, 15, 0, "1")
+    t.rect(0, 0, 0, 15, "1")
+    for cx, cy in ((5, 5), (10, 5), (5, 10), (10, 10)):
+        t.rect(cx - 1, cy - 1, cx + 1, cy + 1, "H")
+        t.px(cx, cy, "G")
+    return t
+
+
 def liquid():
     t = Tex("o")
     for x, y in ((6, 5), (9, 9), (5, 11), (10, 4)):
@@ -174,7 +186,7 @@ def light(lit):
 
 
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
-             "pad": pad(), "liquid": liquid(), "copper": plate("A", "B", "C", "D")}
+             "pad": pad(), "swarm_pad": swarm_pad(), "liquid": liquid(), "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 PIPES = {"gas_pipe_up": "gas_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
 
@@ -231,9 +243,9 @@ def bio_digester():
     ]
 
 
-def drone_dock():
+def drone_dock(pad_top="pad"):
     # pad top stays at 6 px and the beacons sit on the corners, where the drone and DockRenderer expect them
-    pad = {"up": "pad", "south": "trim", "east": "trim"}
+    pad = {"up": pad_top, "south": "trim", "east": "trim"}
     parts = [
         ((0, 0, 0), (16, 1, 16), "plinth"),
         *octagon(1, 1, 1, 15, 4.5, 15, 3, {"up": "body", "south": "body", "east": "body"}),
@@ -447,8 +459,10 @@ def top_port(bottom):
     return [((5.5, bottom, 5.5), (10.5, 15.25, 10.5), "body"), ((5, 15.25, 5), (11, 16, 11), "copper")]
 
 
-def blockstate(name, lit, ports):
-    """Multipart: the machine for each facing (and lit state), plus a port wherever a pipe is plugged in."""
+def blockstate(name, lit, ports, port_of=None):
+    """Multipart: the machine for each facing (and lit state), plus a port wherever a pipe is plugged in
+    (port_of: reuse another machine's port models)."""
+    port_of = port_of or name
     parts = []
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         for on in ((False, True) if lit else (None,)):
@@ -462,12 +476,12 @@ def blockstate(name, lit, ports):
                 apply["y"] = y
             parts.append({"when": when, "apply": apply})
     for side, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
-        apply = {"model": f"cyberfarm:block/{name}_port"}
+        apply = {"model": f"cyberfarm:block/{port_of}_port"}
         if y:
             apply["y"] = y
         parts.append({"when": {side: "true"}, "apply": apply})
     if "up" in ports:
-        parts.append({"when": {"up": "true"}, "apply": {"model": f"cyberfarm:block/{name}_port_up"}})
+        parts.append({"when": {"up": "true"}, "apply": {"model": f"cyberfarm:block/{port_of}_port_up"}})
     (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
@@ -479,7 +493,8 @@ if __name__ == "__main__":
     for name, parts, lit_variant, translucent in (
             ("combustion_generator", combustion_generator(), True, False),
             ("bio_digester", bio_digester(), True, False),
-            ("drone_dock", drone_dock(), False, False)):
+            ("drone_dock", drone_dock(), False, False),
+            ("swarm_dock", drone_dock("swarm_pad"), False, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     # how far in each body sits from the block edge decides how deep its sockets go
@@ -490,3 +505,4 @@ if __name__ == "__main__":
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
+    blockstate("swarm_dock", False, set(), port_of="drone_dock")

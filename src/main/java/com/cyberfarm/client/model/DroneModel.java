@@ -111,17 +111,17 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(32, 6).addBox(-3.0F, 3.0F, -0.5F, 6.0F, 1.0F, 1.0F),
                 PartPose.ZERO);
 
-        // Pivot on its own axis so it can spin
+        // Under the middle of the hull, spinning on its own axis
         body.addOrReplaceChild("drill", CubeListBuilder.create()
                         .texOffs(48, 0).addBox(-1.0F, 1.0F, -1.0F, 2.0F, 1.0F, 2.0F)
                         .texOffs(56, 0).addBox(-0.5F, 2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offset(0.0F, 0.0F, -3.0F));
+                PartPose.ZERO);
 
         body.addOrReplaceChild("claw", CubeListBuilder.create()
                         .texOffs(32, 10).addBox(-2.0F, 1.0F, -1.0F, 4.0F, 1.0F, 2.0F)
                         .texOffs(44, 10).addBox(-2.0F, 2.0F, -0.5F, 1.0F, 2.0F, 1.0F)
                         .texOffs(44, 10).addBox(1.0F, 2.0F, -0.5F, 1.0F, 2.0F, 1.0F),
-                PartPose.offset(0.0F, 0.0F, 3.0F));
+                PartPose.ZERO);
 
         // Planter: green seed tank on top, behind the core
         body.addOrReplaceChild("seed_tank", CubeListBuilder.create()
