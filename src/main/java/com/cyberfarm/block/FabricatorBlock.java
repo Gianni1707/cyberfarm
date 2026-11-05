@@ -5,15 +5,25 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
+/** A roller line: the card runs under a feed roller and the acid drum (the model, see tools/machinemodels.py). */
 public class FabricatorBlock extends LitMachineBlock {
     public static final MapCodec<FabricatorBlock> CODEC = simpleCodec(FabricatorBlock::new);
+
+    // The low body, then the bearing blocks, the roller and the drum (whichever way it faces)
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(1, 0, 1, 15, 10, 15), Block.box(1.5, 10, 1.5, 14.5, 15.5, 14.5));
 
     public FabricatorBlock(Properties properties) {
         super(properties);
@@ -23,6 +33,20 @@ public class FabricatorBlock extends LitMachineBlock {
     protected MapCodec<FabricatorBlock> codec() {
         return CODEC;
     }
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    /** Nothing extra: FabricatorRenderer animates the print run. */
+    @Override
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

@@ -76,6 +76,19 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     private int progress;
     private int recipeTime = 1;
 
+    /** Block events for FabricatorRenderer: a recipe started (its time in ticks as the parameter), a card is done. */
+    private static final int EVENT_START = 1;
+    private static final int EVENT_DONE = 2;
+    /**
+     * Client side, for FabricatorRenderer: the time of the recipe it last heard start (0 = none yet: the status
+     * carries the progress but not how long the recipe takes), when that was, when the last card was done, and how
+     * many cards it has seen done (so the rollers keep their angle from card to card).
+     */
+    public int shownTime;
+    public long startTime;
+    public long doneTime;
+    public int cards;
+
     public FabricatorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FABRICATOR.get(), pos, state, INPUTS + 1, CAPACITY, MAX_INPUT, 0);
     }
@@ -127,7 +140,10 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
                 && getStack(OUTPUT).getCount() + recipe.count() <= recipe.output().getMaxStackSize();
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             recipeTime = recipe.time();
-            if (++progress >= recipe.time()) {
+            if (++progress == 1) {
+                level.blockEvent(pos, state.getBlock(), EVENT_START, recipe.time());
+            }
+            if (progress >= recipe.time()) {
                 progress = 0;
                 int[] slots = slotsFor(recipe);
                 for (int i = 0; i < slots.length; i++) {
@@ -138,12 +154,31 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
                 ItemStack out = getStack(OUTPUT);
                 setStack(OUTPUT, out.isEmpty() ? recipe.output() : out.copyWithCount(out.getCount() + recipe.count()));
                 level.playSound(null, pos, ModSounds.ASSEMBLER_WORK.get(), SoundSource.BLOCKS, 0.6F, 1.4F);
+                level.blockEvent(pos, state.getBlock(), EVENT_DONE, 0);
             }
             setChanged();
         } else if (!canRun && progress != 0) {
             progress = 0;
             setChanged();
         }
+    }
+
+    /** The server must answer true, or the event is not sent to the players around. */
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        if (id != EVENT_START && id != EVENT_DONE) {
+            return super.triggerEvent(id, param);
+        }
+        if (level != null && level.isClientSide()) {
+            if (id == EVENT_START) {
+                shownTime = param;
+                startTime = level.getGameTime();
+            } else {
+                doneTime = level.getGameTime();
+                cards++;
+            }
+        }
+        return true;
     }
 
     /** Whether {@code stack} is an ingredient of any recipe. */

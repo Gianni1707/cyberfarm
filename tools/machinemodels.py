@@ -1,5 +1,5 @@
-"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock, Builder Swarm Dock and
-Drone Assembler.
+"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock, Builder Swarm Dock,
+Drone Assembler and Fabricator.
 
 Each machine is a list of boxes, like a Blockbench model. Every face gets its own patch in one texture atlas per
 machine, painted from a small set of source materials and baked with bevelled edges and a top-to-bottom gradient,
@@ -175,6 +175,62 @@ def print_bed():
     return t
 
 
+def bed():
+    """The Fabricator's conveyor bed: dark, with slats every other texel where the card runs (x 4..11)."""
+    t = Tex("4")
+    for r in range(0, N, 2):
+        t.rect(4, r, 11, r, "2")
+    return t
+
+
+def card():
+    """A circuit card, painted by world position (game frame: x = column, z = row) where it rests on the tray
+    (x 4.75..11.25, z 2.25..5.55): dark board with an emerald trace frame round its chip and steel vias.
+    FabricatorRenderer samples the same texels from textures/entity/fabricator_card.png."""
+    t = Tex("3")
+    t.rect(6, 2, 10, 2, "H")
+    t.rect(6, 5, 10, 5, "H")
+    t.rect(6, 2, 6, 5, "H")
+    t.rect(10, 2, 10, 5, "H")
+    t.px(6, 2, "a")
+    t.px(10, 2, "a")
+    return t
+
+
+def tray_front():
+    """The Fabricator tray's front edge: its readout, four segments dark until the machine works (row y 8..9)."""
+    t = lid()
+    t.rect(0, 7, 15, 7, "h")
+    return t
+
+
+def chip_pins():
+    """Chip sides: black moulding with steel pins every other pixel."""
+    t = Tex("5")
+    for x in range(0, N, 2):
+        t.rect(x, 0, x, 15, "b")
+    return t
+
+
+def chip_top():
+    """Chip lid: mid steel, so the chip reads against the dark board, with a lighter pin-1 corner."""
+    t = Tex("c")
+    for x in range(N):
+        for y in range(N):
+            if (x + y) % 5 == 0:
+                t.px(x, y, "b")
+    t.px(7, 3, "a")
+    return t
+
+
+def drum():
+    """The Fabricator's acid drum: plain dark teal shell with a weld seam ring."""
+    t = Tex("3")
+    t.rect(8, 0, 8, 15, "4")
+    t.rect(9, 0, 9, 15, "2")
+    return t
+
+
 def liquid():
     t = Tex("o")
     for x, y in ((6, 5), (9, 9), (5, 11), (10, 4)):
@@ -202,9 +258,11 @@ def light(lit):
 
 
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
-             "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "liquid": liquid(),
+             "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "bed": bed(), "card": card(), "tray_front": tray_front(), "chip_pins": chip_pins(),
+             "chip_top": chip_top(), "drum": drum(), "liquid": liquid(),
              "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
+STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
 PIPES = {"gas_pipe_up": "gas_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
 
 
@@ -218,6 +276,12 @@ def round_tank(x0, y0, z0, x1, y1, z1, mat):
     w = (x1 - x0) / 6
     return [((x0 + 2 * w, y0, z0), (x1 - 2 * w, y1, z1), mat), ((x0, y0, z0 + 2 * w), (x1, y1, z1 - 2 * w), mat),
             ((x0 + w, y0, z0 + w), (x1 - w, y1, z1 - w), mat)]
+
+
+def roller(x0, x1, cy, cz, r, mat):
+    """Twelve-sided cylinder lying along x: round_tank()'s section turned on its side."""
+    return [((x0, cy - r / 3, cz - r), (x1, cy + r / 3, cz + r), mat), ((x0, cy - r, cz - r / 3), (x1, cy + r, cz + r / 3), mat),
+            ((x0, cy - 2 * r / 3, cz - 2 * r / 3), (x1, cy + 2 * r / 3, cz + 2 * r / 3), mat)]
 
 
 def combustion_generator():
@@ -299,6 +363,44 @@ def drone_assembler():
         ((6, 14.5, 0.5), (10, 16, 10.5), dark),                                          # cantilever arm
         ((5.5, 13.75, 5.25), (10.5, 15.25, 10.75), "copper"),                            # print head
         ((6.5, 13.25, 6.5), (9.5, 13.75, 9.5), "light"),                                 # lens, above the ring's top
+    ]
+
+
+def fabricator():
+    # A card runs on the bed from under a steel feed roller and the horizontal acid drum, out between the pinch
+    # roller and the bed onto the front tray. While it works FabricatorRenderer draws the moving card, chip, rollers,
+    # print head and progress bar, so the lit model leaves the card out and the lip lamp off; the unlit model shows
+    # the card at rest. The drum is 4.8 px across (z 5.6..10.4), so the top port's housing saddles it 0.1 px clear
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    bed_spec = {"up": "bed", "south": "plinth", "east": "plinth"}
+    card_spec = {"up": "card", "south": "plinth", "east": "plinth"}   # dark edges: the emerald traces never meet the mint
+    chip = {"up": "chip_top", "south": "chip_pins", "east": "chip_pins"}
+    return [
+        ((1, 0, 1), (15, 1, 15), "plinth"),
+        *octagon(2, 1, 2, 14, 8, 14, 2, dark),
+        *octagon(1.6, 2.5, 1.6, 14.4, 3.25, 14.4, 2, "copper"),                  # foot band, below the ports (5..11)
+        ((2.5, 5.5, 12), (3.5, 7, 12.15), "light"),                              # status lights on the front corners
+        ((12.5, 5.5, 12), (13.5, 7, 12.15), "light"),
+        ((5, 1.5, 1.85), (11, 4.75, 2), {"up": "lid", "south": "grille", "east": "grille", "north": "grille"}),  # back vent
+        ((2, 8, 2.5), (3.5, 12.5, 10.75), dark),                                 # bearing blocks for the roller and drum
+        ((12.5, 8, 2.5), (14, 12.5, 10.75), dark),
+        ((1.6, 9.25, 2.75), (2, 11, 4.75), "copper"),                            # roller bearing caps, clear of a side
+        ((14, 9.25, 2.75), (14.4, 11, 4.75), "copper"),                          # port's collar (from z 5)
+        ((4, 8, 2), (12, 9.5, 5), "lid"),                                        # feed table
+        ((4, 8, 10.25), (12, 9.5, 14), {"up": "lid", "south": "tray_front", "east": "lid"}),   # front tray, readout
+        ((4.5, 9.5, 2.5), (11.5, 10, 13.75), bed_spec),                          # conveyor bed
+        ((4.75, 10, 10.45), (11.25, 10.3, 13.75), card_spec, "unlit"),           # the card at rest, and its chip
+        ((6.5, 10.3, 11.45), (9.5, 11.05, 13.25), chip, "unlit"),
+        *roller(4.75, 11.25, 11.08, 10.6, 0.7, "pipe"),                          # pinch roller at the exit (the renderer
+        ((4.25, 8, 9.75), (4.75, 11.9, 11.5), dark),                             # turns a 0.77 one over it), its bearings
+        ((11.25, 8, 9.75), (11.75, 11.9, 11.5), dark),
+        *roller(3.5, 12.5, 11.25, 3.75, 1.25, "pipe"),                           # feed roller, resting on the card
+        *roller(4.25, 11.75, 12.75, 8, 2.4, "drum"),                             # acid drum
+        *roller(3.5, 4.25, 12.75, 8, 2.75, "copper"),                            # its end bands
+        *roller(11.75, 12.5, 12.75, 8, 2.75, "copper"),
+        ((5.5, 11.98, 10.4), (10.5, 12.7, 10.55), "light_off"),                  # lip lamp: the renderer's print head
+        ((12.5, 12.6, 7.25), (12.65, 13.6, 8.75), "light"),                      # level gauges on the end bands
+        ((3.35, 12.6, 7.25), (3.5, 13.6, 8.75), "light"),
     ]
 
 
@@ -420,13 +522,14 @@ def num(v):
 
 
 def build(name, parts, lit_variant, translucent=False):
+    """parts: (from, to, material spec), plus an optional "lit" or "unlit" for a box in one model only."""
     elements = []
-    for frm, to, spec in parts:
+    for frm, to, spec, *only in parts:
         frm, to = flip((frm, to))
-        elements.append((frm, to, spec))
+        elements.append((frm, to, spec, only[0] if only else None))
     patches = {}
-    for n, (frm, to, spec) in enumerate(elements):
-        if isinstance(spec, str) and (spec in EMISSIVE or spec in PIPES):
+    for n, (frm, to, spec, _) in enumerate(elements):
+        if isinstance(spec, str) and (spec in EMISSIVE or spec in STILL_LIGHTS or spec in PIPES):
             continue
         for face in FACES:
             patches[(n, face)] = bake_face(material_for(spec, DESIGN_FACE.get(face, face)), face, frm, to)
@@ -440,9 +543,12 @@ def build(name, parts, lit_variant, translucent=False):
 
     def model(lit):
         out = []
-        for n, (frm, to, spec) in enumerate(elements):
+        for n, (frm, to, spec, only) in enumerate(elements):
+            if only and only != ("lit" if lit else "unlit"):
+                continue
             faces = {}
-            emissive = isinstance(spec, str) and spec in EMISSIVE
+            still = isinstance(spec, str) and spec in STILL_LIGHTS
+            emissive = isinstance(spec, str) and spec in EMISSIVE or still
             for face in FACES:
                 if isinstance(spec, str) and spec in PIPES:
                     h = to[1] - frm[1]
@@ -465,13 +571,16 @@ def build(name, parts, lit_variant, translucent=False):
                     face_json["cullface"] = face
                 faces[face] = face_json
             element = {"from": [num(c) for c in frm], "to": [num(c) for c in to]}
-            if emissive and lit:
+            if emissive and lit and not still:
                 element.update({"shade": False, "light_emission": 15})
             element["faces"] = faces
             out.append(element)
         textures = {"particle": f"cyberfarm:block/models/{name}", "atlas": f"cyberfarm:block/models/{name}"}
         for mat, tex in EMISSIVE.items():
             textures[mat] = f"cyberfarm:block/{tex}" + ("" if lit else "_off")
+        for mat, tex in STILL_LIGHTS.items():
+            if any(spec == mat for _, _, spec, _ in elements):
+                textures[mat] = f"cyberfarm:block/{tex}_off"
         for mat, tex in PIPES.items():
             textures[mat] = f"cyberfarm:block/{tex}"
         data = {"parent": "minecraft:block/block",
@@ -484,6 +593,25 @@ def build(name, parts, lit_variant, translucent=False):
     if lit_variant:
         model(lit=True)
     return size
+
+
+def card_texture():
+    """textures/entity/fabricator_card.png, sampled by FabricatorRenderer with fixed uvs: the card top (0..8 x 0..4,
+    the card material's texels x 4..11, z 2..5), its edge (row 4), the chip top (8..11 x 0..2), the chip's pins
+    (8..14, row 2) and a white texel (15, 15) for the vertex-coloured rollers."""
+    img = [[(0, 0, 0, 0)] * N for _ in range(N)]
+    for r in range(4):
+        for c in range(8):
+            img[r][c] = rgba(MATERIALS["card"].g[2 + r][4 + c])
+    for c in range(8):
+        img[4][c] = rgba("4")
+    for r in range(2):
+        for c in range(3):
+            img[r][8 + c] = rgba(MATERIALS["chip_top"].g[r][c])
+    for c in range(6):
+        img[2][8 + c] = rgba(MATERIALS["chip_pins"].g[0][c])
+    img[15][15] = (255, 255, 255, 255)
+    save_png(ASSETS / "textures/entity/fabricator_card.png", img)
 
 
 def to_rgba(tex):
@@ -543,17 +671,22 @@ if __name__ == "__main__":
             ("bio_digester", bio_digester(), True, False),
             ("drone_dock", drone_dock(), False, False),
             ("swarm_dock", drone_dock("swarm_pad"), False, False),
-            ("drone_assembler", drone_assembler(), True, False)):
+            ("drone_assembler", drone_assembler(), True, False),
+            ("fabricator", fabricator(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
+    card_texture()
     # how far in each body sits from the block edge decides how deep its sockets go
     build("combustion_generator_port", side_port(3.25), False)
     build("combustion_generator_port_up", top_port(10), False)
     build("bio_digester_port", side_port(2.25), False)
     build("drone_dock_port", side_port(2.5, y0=1), False)
     build("drone_assembler_port", low_port(), False)
+    build("fabricator_port", side_port(2), False)
+    build("fabricator_port_up", top_port(12.75), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")
     blockstate("drone_assembler", True, set())
+    blockstate("fabricator", True, {"up"})

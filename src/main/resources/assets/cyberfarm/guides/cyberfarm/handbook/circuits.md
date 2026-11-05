@@ -33,7 +33,11 @@ Your first **Basic Circuits** come from a crafting table: copper, redstone and a
 <BlockImage id="cyberfarm:fabricator" scale="4" float="left" />
 
 The Fabricator makes circuits from the ingredients in its **three slots**, at **40 FE/t**. Pipe
-**Acid** into it for the etched circuits. Any order, any slot: it finds the recipe.
+**Acid** into it for the etched circuits: Liquid Pipes plug into any side, or into the top where they clamp onto
+its acid drum. Any order, any slot: it finds the recipe. While it works, the card slides out from under the
+drum in short steps, like paper from a printer: the print head sweeps the drum's lip before each step, the rollers
+turn and the chip comes out between them; the light bar on the tray shows how far the circuit is. When it is done
+the card flashes away and the next one starts.
 
 <br clear="all" />
 
