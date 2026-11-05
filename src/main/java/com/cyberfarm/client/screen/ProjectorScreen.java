@@ -133,7 +133,7 @@ public class ProjectorScreen extends Screen {
         if (sweep < 1.0F) {
             // The beam's leading edge, with a soft glow over what it just drew
             int edge = top + shown;
-            graphics.fillGradient(left, edge - 8, left + WIDTH, edge, 0x002FE0FF, 0x662FE0FF);
+            graphics.fillGradient(left, edge - 8, left + WIDTH, edge, 0x0000B894, 0x6600B894);
             graphics.fill(left, edge - 1, left + WIDTH, edge + 1, ACCENT);
             return;
         }
@@ -188,7 +188,7 @@ public class ProjectorScreen extends Screen {
             int fill = on ? ACCENT_DIM : index == hovered ? PANEL_LIGHT : PANEL_DARK;
             graphics.fill(x + LIST_X, rowY, x + LIST_X + rowWidth, rowY + ROW - 1, SLOT_BORDER);
             graphics.fill(x + LIST_X + 1, rowY + 1, x + LIST_X + rowWidth - 1, rowY + ROW - 2, fill);
-            // A cyan mark tells the schematics from the multiblocks
+            // An emerald mark tells the schematics from the multiblocks
             if (!(structure instanceof Blueprint)) {
                 graphics.fill(x + LIST_X + 1, rowY + 1, x + LIST_X + 3, rowY + ROW - 2, ACCENT);
             }

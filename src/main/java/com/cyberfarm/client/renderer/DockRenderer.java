@@ -36,8 +36,8 @@ import org.joml.Vector3f;
 public class DockRenderer<T extends DroneDockBlockEntity> implements BlockEntityRenderer<T, DockRenderer.State> {
     // Additive and full-bright, so the lights glow on the dark pad instead of being shaded like a surface
     private static final RenderType LIGHT = RenderTypes.eyes(CyberFarm.id("textures/entity/hologram.png"));
-    private static final int CYAN = 0x2FE0FF;
-    private static final int PALE = 0xB8F6FF;
+    private static final int LAMP = 0xD1FEE7;
+    private static final int PALE = 0xFFFFFF;
     /** The pad's top, the corner beacons' lamps and the drone's middle above its feet. */
     private static final float PAD = 6.0F / 16.0F;
     private static final float BEACON = 9.0F / 16.0F;

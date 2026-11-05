@@ -24,7 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * Draws a complete Mech Hangar as one rack, its frames hidden: white floor rails with dark treads
- * and a cyan light line, two posts with blue bands and light strips braced to the rails, a beam
+ * and a light line, two posts with blue bands and light strips braced to the rails, a beam
  * across their tops with two arms reaching forward, hydraulic struts from the posts to the arms,
  * and two clamps that come down onto a parked mech's shoulders. A gantry rides on the arms: a
  * bridge, a trolley and a telescopic gripper that carries modules to the mech's mounts and back.
@@ -39,7 +39,7 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
     private static final int DARK = 0xFF2B3036;
     private static final int STEEL = 0xFF8A96A2;
     private static final int BLUE = 0xFF1F8FD0;
-    private static final int CYAN = 0xFF2FE0FF;
+    private static final int LAMP = 0xFFD1FEE7;
     /** The arms' and clamps' place across the rack: over the parked mech's shoulders. */
     private static final float[] SHOULDERS = {1.34F, 2.66F};
     /** Where the gripper takes each module, by MechModule order (w, y, d): the back unit, beside each forearm, before the chest. */
@@ -162,25 +162,25 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
             Rack rack = new Rack(pose, buffer, state, LightCoordsUtil.FULL_BRIGHT);
             for (int w : new int[] {0, 4}) {
                 float out = w == 0 ? -0.33F : 0.33F;
-                rack.beam(w + out * 1.48F, 0.62F, -0.45F, w + out * 1.48F, 0.62F, 4.45F, 0.03F, CYAN);
-                rack.beam(w, 0.6F, 3.62F, w, 5.4F, 3.62F, 0.04F, CYAN);
+                rack.beam(w + out * 1.48F, 0.62F, -0.45F, w + out * 1.48F, 0.62F, 4.45F, 0.03F, LAMP);
+                rack.beam(w, 0.6F, 3.62F, w, 5.4F, 3.62F, 0.04F, LAMP);
             }
-            rack.beam(0.2F, 5.55F, 3.59F, 3.8F, 5.55F, 3.59F, 0.03F, CYAN);
+            rack.beam(0.2F, 5.55F, 3.59F, 3.8F, 5.55F, 3.59F, 0.03F, LAMP);
             if (state.clamp > 0.9F) {
                 for (float w : SHOULDERS) {
-                    rack.beam(w, clampY + 0.12F, 1.75F, w, clampY + 0.12F, 2.25F, 0.03F, CYAN);
+                    rack.beam(w, clampY + 0.12F, 1.75F, w, clampY + 0.12F, 2.25F, 0.03F, LAMP);
                 }
             }
-            rack.beam(1.0F, GANTRY_Y + 0.1F, gantry.d, 3.0F, GANTRY_Y + 0.1F, gantry.d, 0.025F, CYAN);
+            rack.beam(1.0F, GANTRY_Y + 0.1F, gantry.d, 3.0F, GANTRY_Y + 0.1F, gantry.d, 0.025F, LAMP);
             if (gantry.carrying) {
                 float m = gantry.y - MODULE_DROP;
-                rack.beam(gantry.w, m + 0.02F, gantry.d, gantry.w, m + 0.06F, gantry.d, 0.15F, CYAN);
+                rack.beam(gantry.w, m + 0.02F, gantry.d, gantry.w, m + 0.06F, gantry.d, 0.15F, LAMP);
             }
             // A flash as the module locks onto its mount
             if (state.fitModule >= 0 && state.fit > 0.47F && state.fit < 0.56F) {
                 float[] mount = MOUNTS[state.fitModule];
                 float size = 0.08F + 0.1F * Mth.sin((state.fit - 0.47F) / 0.09F * Mth.PI);
-                rack.beam(mount[0], mount[1] - size, mount[2], mount[0], mount[1] + size, mount[2], size, CYAN);
+                rack.beam(mount[0], mount[1] - size, mount[2], mount[0], mount[1] + size, mount[2], size, LAMP);
             }
         });
         poseStack.popPose();

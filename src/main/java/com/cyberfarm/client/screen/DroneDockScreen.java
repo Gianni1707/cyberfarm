@@ -224,7 +224,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             graphics.fill(cx - 1, cy - 2, cx + 1, cy + 6, color);
             graphics.fill(cx - 2, cy + 5, cx + 2, cy + 6, color);
         } else if (tab == TAB_BUILD) {
-            // A block under the ghost of the next one, cyan while there is something to build
+            // A block under the ghost of the next one, emerald while there is something to build
             int color = !menu.hasBuild() ? TEXT_DIM : menu.getBuildRemaining() > 0 ? ACCENT : TEXT;
             graphics.fill(cx - 6, cy + 1, cx + 6, cy + 7, TEXT_DIM);
             graphics.fill(cx - 5, cy + 2, cx + 5, cy + 6, PANEL_LIGHT);

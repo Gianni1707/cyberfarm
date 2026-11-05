@@ -69,7 +69,7 @@ up a big rotor; the rotor drives the generator. The scene shows the Small turbin
   itself also gives power to cables touching it. Medium and Large turbines make more than a basic
   conduit carries: use **Advanced** conduits (16,000 FE/t) at their ports.
 
-Complete, the blocks disappear into one smooth **white and cyan cylinder**: the controller becomes a
+Complete, the blocks disappear into one smooth **white and pale green cylinder**: the controller becomes a
 panel on the front, every port a glowing hatch, and at the back you can see the **rotor**. A
 [Multiblock Projector](multiblock_projector.md) shows the layout of any size in the world.
 

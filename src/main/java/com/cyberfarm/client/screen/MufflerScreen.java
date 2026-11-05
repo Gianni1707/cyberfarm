@@ -79,7 +79,7 @@ public class MufflerScreen extends MachineScreen<MufflerMenu> {
             graphics.item(icon(category), left + 6, top + 2);
             graphics.text(font, Component.translatable(category.translationKey()), left + 26, top + 6, on ? TEXT : TEXT_DIM, false);
 
-            // Switch: knob on the right and cyan track when on
+            // Switch: knob on the right and emerald track when on
             int sx = left + ROW_WIDTH - SWITCH_WIDTH - 6;
             int sy = top + (ROW_HEIGHT - SWITCH_HEIGHT) / 2;
             graphics.fill(sx - 1, sy - 1, sx + SWITCH_WIDTH + 1, sy + SWITCH_HEIGHT + 1, SLOT_BORDER);

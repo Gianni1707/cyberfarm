@@ -83,7 +83,7 @@ work.
 ## The village's bounds
 
 The village reaches **64 blocks** from the terminal every way. Press **Range** on the terminal to
-see its edge in the world: a line of cyan light along the ground, with posts at the corners. Press
+see its edge in the world: a line of pale green light along the ground, with posts at the corners. Press
 it again to hide it.
 
 If the terminal is broken or moved the Mechanist cannot work, and tells you so: put it back where

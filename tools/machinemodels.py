@@ -1,4 +1,5 @@
-"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock and Builder Swarm Dock.
+"""Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock, Builder Swarm Dock and
+Drone Assembler.
 
 Each machine is a list of boxes, like a Blockbench model. Every face gets its own patch in one texture atlas per
 machine, painted from a small set of source materials and baked with bevelled edges and a top-to-bottom gradient,
@@ -18,13 +19,13 @@ ASSETS = ROOT / "src/main/resources/assets/cyberfarm"
 N = 16
 
 PALETTE = {  # ramps shift hue: highlights warm, shadows cool
-    "1": "#6c7a88", "2": "#4a5664", "3": "#333c47", "4": "#232a33", "5": "#12161c",     # body
-    "a": "#e4ecf0", "b": "#b4c0ca", "c": "#7c8894", "s": "#0b1014",                     # trim, recess
-    "g": "#d4fbff", "G": "#2fe0ff", "h": "#145c6c",                                      # cyan light
+    "1": "#5b7771", "2": "#395853", "3": "#233e3b", "4": "#132423", "5": "#071314",     # dark teal body
+    "a": "#bdc6c5", "b": "#b1bebc", "c": "#7c8989", "s": "#030909",                     # steel trim (kept under the lights), recess
+    "g": "#ffffff", "G": "#d1fee7", "h": "#055b57",                                      # near-white light, off
     "y": "#e8b830", "u": "#fff2a8", "v": "#ffc23d", "w": "#ff7a1f", "x": "#b8391a",      # hazard, fire
     "m": "#b6f08a", "o": "#5fcf6a", "p": "#2f8a52", "j": "#d6f3f7",                      # liquid, glint
-    "A": "#ffc98a", "B": "#ef8f3e", "C": "#b65a26", "D": "#6e3420",                      # copper
-    "H": "#0e7c99",                                                                      # dim cyan marking
+    "A": "#a5ead4", "B": "#5ec2b8", "C": "#488d91", "D": "#496973",                      # mint enamel accent
+    "H": "#00b894",                                                                      # emerald marking
     "K": "#3a1a12", "M": "#6e2c18",                                                      # cold firebox
 }
 UNSHADED = set("gG")
@@ -159,6 +160,21 @@ def swarm_pad():
     return t
 
 
+def print_bed():
+    """Drone Assembler pad: dark build plate, engraved centre cross, dim cyan corner brackets, copper contact."""
+    t = Tex("3")
+    t.rect(0, 0, 15, 0, "2")
+    t.rect(0, 0, 0, 15, "2")
+    t.rect(3, 8, 12, 8, "4")
+    t.rect(8, 3, 8, 12, "4")
+    for cx, cy, dx, dy in ((3, 3, 1, 1), (12, 3, -1, 1), (3, 12, 1, -1), (12, 12, -1, -1)):
+        t.px(cx, cy, "H")
+        t.px(cx + dx, cy, "H")
+        t.px(cx, cy + dy, "H")
+    t.rect(7, 7, 8, 8, "C")
+    return t
+
+
 def liquid():
     t = Tex("o")
     for x, y in ((6, 5), (9, 9), (5, 11), (10, 4)):
@@ -186,7 +202,8 @@ def light(lit):
 
 
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
-             "pad": pad(), "swarm_pad": swarm_pad(), "liquid": liquid(), "copper": plate("A", "B", "C", "D")}
+             "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "liquid": liquid(),
+             "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 PIPES = {"gas_pipe_up": "gas_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
 
@@ -259,6 +276,30 @@ def drone_dock(pad_top="pad"):
             ((x + 0.75, 8, z + 0.75), (x + 2.25, 9, z + 2.25), "light"),
         ]
     return parts
+
+
+def drone_assembler():
+    # The pad top stays at 4 px and nothing solid enters the scan ring's square (2.2..13.8) below 13.2:
+    # AssemblerRenderer draws the drone being built there as a hologram
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    bed = {"up": "print_bed", "south": "trim", "east": "trim"}
+    return [
+        ((0, 0, 0), (16, 1, 16), "plinth"),
+        *octagon(1, 1, 1, 15, 3, 15, 3, {"up": "body", "south": "body", "east": "body"}),
+        *octagon(0.6, 1.75, 0.6, 15.4, 2.5, 15.4, 3, "copper"),
+        *octagon(2, 3, 2, 14, 4, 14, 2, bed),
+        ((3, 1, 0.5), (13, 14, 2), dark),                                                # spine, chamber face at z 2
+        ((2.6, 6, 0.1), (13.4, 7, 1.9), "copper"),
+        ((4.5, 4.5, 2), (5.5, 12.5, 2.15), "light"),                                     # emitter strips facing the drone
+        ((10.5, 4.5, 2), (11.5, 12.5, 2.15), "light"),
+        # service hatch, narrower than a back port's cheeks (5..6, 10..11) so their faces never meet
+        ((5.25, 7.75, 0.2), (10.75, 12.5, 0.5), {"up": "lid", "south": "body", "east": "body", "north": "grille"}),
+        ((7, 12.75, 0.25), (9, 13.5, 0.5), "light"),                                     # status lamp on the back
+        ((2.5, 14, 0.25), (13.5, 15.25, 2.5), dark),                                     # spine cap
+        ((6, 14.5, 0.5), (10, 16, 10.5), dark),                                          # cantilever arm
+        ((5.5, 13.75, 5.25), (10.5, 15.25, 10.75), "copper"),                            # print head
+        ((6.5, 13.25, 6.5), (9.5, 13.75, 9.5), "light"),                                 # lens, above the ring's top
+    ]
 
 
 # --------------------------------------------------------------------------- baking
@@ -455,6 +496,13 @@ def side_port(depth, y0=5.5):
     return [((5.5, y0, 16 - depth), (10.5, 10.5, 15.25), "body"), ((5, 5, 15.25), (11, 11, 16), "copper")]
 
 
+def low_port():
+    """Socket that keeps an open chamber in view: a copper saddle under the pipe arm, fed by a post from the base,
+    nothing above the pipe."""
+    return [((6, 1, 15), (10, 5, 16), "body"), ((5, 5, 15), (11, 6, 16), "copper"),
+            ((5, 6, 15), (6, 10, 16), "copper"), ((10, 6, 15), (11, 10, 16), "copper")]
+
+
 def top_port(bottom):
     return [((5.5, bottom, 5.5), (10.5, 15.25, 10.5), "body"), ((5, 15.25, 5), (11, 16, 11), "copper")]
 
@@ -494,7 +542,8 @@ if __name__ == "__main__":
             ("combustion_generator", combustion_generator(), True, False),
             ("bio_digester", bio_digester(), True, False),
             ("drone_dock", drone_dock(), False, False),
-            ("swarm_dock", drone_dock("swarm_pad"), False, False)):
+            ("swarm_dock", drone_dock("swarm_pad"), False, False),
+            ("drone_assembler", drone_assembler(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     # how far in each body sits from the block edge decides how deep its sockets go
@@ -502,7 +551,9 @@ if __name__ == "__main__":
     build("combustion_generator_port_up", top_port(10), False)
     build("bio_digester_port", side_port(2.25), False)
     build("drone_dock_port", side_port(2.5, y0=1), False)
+    build("drone_assembler_port", low_port(), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")
+    blockstate("drone_assembler", True, set())

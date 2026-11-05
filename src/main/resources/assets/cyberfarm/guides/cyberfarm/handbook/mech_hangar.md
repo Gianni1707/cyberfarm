@@ -69,7 +69,7 @@ on the sides so the mech walks in and out:
 
 The [Multiblock Projector](multiblock_projector.md) shows it: sneak + right-click to pick *Mech
 Hangar*, then look where the console goes. When it is complete the frames give way to the rack
-itself: white rails with treads and a cyan light line, posts with blue bands braced to the rails,
+itself: white rails with treads and a pale green light line, posts with blue bands braced to the rails,
 the beam and its arms, hydraulic struts, two **clamps** that come down onto a parked mech's
 shoulders and a **gantry arm** riding on the arms, which fits the modules.
 

@@ -53,7 +53,7 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
             graphics.fill(sx + 4, sy + 7, sx + 12, sy + 9, PANEL_LIGHT);
         }
 
-        // Core: one bar per rod the tower burns, cyan while burning
+        // Core: one bar per rod the tower burns, emerald while burning
         int cx = x + CORE_X;
         int cy = y + CORE_Y;
         graphics.fill(cx - 1, cy - 1, cx + 22, cy + 35, SLOT_BORDER);

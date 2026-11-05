@@ -147,7 +147,7 @@ Blocks outside a narrower ring do not matter; everything inside the rings must b
   **Advanced** pipes at its steam port.
 
 When the tower is complete it powers up with a deep chime and **turns into a real cooling tower**: the
-blocky casings disappear into one smooth, curved shell of white panels with glowing cyan bands,
+blocky casings disappear into one smooth, curved shell of white panels with glowing pale green bands,
 wide at the base, narrow in the middle and flared at the rim. The controller becomes a **panel** on
 the surface and every port a glowing **hatch**, right where a pipe or cable plugged into the port
 enters the tower. You can **right-click any block of the tower** to open the reactor.
@@ -157,7 +157,7 @@ enters the tower. You can **right-click any block of the tower** to open the rea
 - **Left**: the water tank and the **coolant** tank (see below).
 - **Title**: the size of the tower.
 - **Middle**: 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar
-  per rod, cyan while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the
+  per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the
   **temperature** bar with the red alarm mark.
 - **Bottom**: the **power** controls, from *Off* up to the tower's maximum, in steps of 50%.
 - **Right**: the steam tank.

@@ -27,8 +27,8 @@ import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
  */
 public final class MachineOverlay {
     private static final Identifier LAYER = CyberFarm.id("machine_overlay");
-    private static final int CYAN = 0xFF2FE0FF;
-    private static final int CYAN_FAINT = 0x302FE0FF;
+    private static final int MARK = 0xFF00B894;
+    private static final int MARK_FAINT = 0x3000B894;
     private static final int GREEN = 0xFF6CFF6C;
     private static final int AMBER = 0xFFFFB347;
     private static final int GREY = 0xFF8A9AA6;
@@ -61,7 +61,7 @@ public final class MachineOverlay {
         lines.add(machine.getDisplayName());
         colours.add(TEXT);
         lines.add(Component.translatable(status.working() ? "hud.cyberfarm.machine.working" : "hud.cyberfarm.machine.idle"));
-        colours.add(status.working() ? CYAN : GREY);
+        colours.add(status.working() ? MARK : GREY);
         if (status.made() > 0) {
             lines.add(Component.translatable("hud.cyberfarm.machine.made", rate(status.made())));
             colours.add(GREEN);
@@ -94,26 +94,26 @@ public final class MachineOverlay {
         int x = 0;
         int y = 0;
         graphics.fill(x - 4, y - 4, x + width + 4, y + height + 2, BACKGROUND);
-        graphics.fill(x - 4, y - 4, x - 3, y + height + 2, CYAN);
+        graphics.fill(x - 4, y - 4, x - 3, y + height + 2, MARK);
         for (int i = 0; i < lines.size(); i++) {
             graphics.text(font, lines.get(i), x, y, colours.get(i), true);
             y += 10;
         }
         if (status.capacity() > 0) {
             graphics.text(font, energy, x, y, TEXT, true);
-            bar(graphics, x, y + 9, width, (float) status.energy() / status.capacity(), CYAN);
+            bar(graphics, x, y + 9, width, (float) status.energy() / status.capacity(), MARK);
             y += 14;
         }
         if (status.progress() >= 0) {
             Component progress = Component.translatable("hud.cyberfarm.machine.progress", Math.round(status.progress() * 100));
             graphics.text(font, progress, x, y, TEXT, true);
-            bar(graphics, x + font.width(progress) + 4, y + 2, width - font.width(progress) - 4, status.progress(), status.working() ? CYAN : GREY);
+            bar(graphics, x + font.width(progress) + 4, y + 2, width - font.width(progress) - 4, status.progress(), status.working() ? MARK : GREY);
         }
         graphics.pose().popMatrix();
     }
 
     private static void bar(GuiGraphicsExtractor graphics, int x, int y, int width, float fill, int colour) {
-        graphics.fill(x, y, x + width, y + 3, CYAN_FAINT);
+        graphics.fill(x, y, x + width, y + 3, MARK_FAINT);
         graphics.fill(x, y, x + Math.round(width * Mth.clamp(fill, 0.0F, 1.0F)), y + 3, colour);
     }
 

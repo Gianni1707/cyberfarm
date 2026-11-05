@@ -66,7 +66,7 @@ structure where a mob is shut in and dissolved in **Acid**, giving off **Methane
 - **Roof**: 8 Cyber Frame Blocks around the **Methane Extractor** in the middle.
 - **Ports**: any Cyber Frame can be an <ItemLink id="acid_inlet" /> or a <ItemLink id="methane_outlet" />
   instead. Fluids only go in and out of the chamber through them: the **Acid Inlet** (green ring)
-  only takes acid in, the **Methane Outlet** (cyan ring) only gives methane out. Pipe acid to the
+  only takes acid in, the **Methane Outlet** (pale green ring) only gives methane out. Pipe acid to the
   inlet with a [Liquid Pipe](liquid_pipe.md) and take methane from the outlet with a Gas Pipe.
 - **Intake Gate**: any glass of the **lower** wall can be an <ItemLink id="intake_gate" />.
 

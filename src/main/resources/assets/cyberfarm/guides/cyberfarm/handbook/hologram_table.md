@@ -31,7 +31,7 @@ The wider the range, the wider the projection grows, so the land stays as easy t
 - The **land** around the table, in relief: hills, water, trees and buildings
   in the colours of a map. As on a vanilla map, slopes rising to the south are lighter and slopes
   falling away are darker, so the shape of the land reads at a glance.
-- Every **Drone Dock** and **Builder Swarm Dock** as a pillar of cyan light.
+- Every **Drone Dock** and **Builder Swarm Dock** as a pillar of emerald light.
 - Every **drone** as a dot that moves **live**, with a short glowing trail behind it and a thin
   line down to the ground to show how high it flies.
 - **Players** as white arrows pointing the way they look, and **hostile mobs** as red dots: you see
@@ -44,7 +44,7 @@ The wider the range, the wider the projection grows, so the land stays as easy t
 
 | Colour | The drone is |
 | --- | --- |
-| Cyan | working |
+| Emerald | working |
 | Amber | flying home |
 | Pale | resting or charging on its dock |
 

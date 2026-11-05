@@ -51,7 +51,7 @@ The engine needs about **5 seconds** to reach full speed and slows down when the
 It stops burning fuel when its buffer (200,000 FE) is full.
 
 The power comes out of the **dynamo**: connect [Energy Conduits](energy_conduit.md) or machines to it.
-Pipes and cables joining the boiler or the dynamo get a collar with a cyan ring.
+Pipes and cables joining the boiler or the dynamo get a collar with a pale green ring.
 
 <Row>
   <RecipeFor id="steam_engine" />

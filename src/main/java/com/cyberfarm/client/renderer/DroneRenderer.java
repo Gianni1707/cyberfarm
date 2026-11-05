@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 
 public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, DroneModel> {
     private static final Identifier TEXTURE = CyberFarm.id("textures/entity/drone.png");
-    /** Full-bright overlay for the cyan lights, visible in the dark. */
+    /** Full-bright overlay for the lights, visible in the dark. */
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/drone_glow.png"));
 
     public DroneRenderer(EntityRendererProvider.Context context) {

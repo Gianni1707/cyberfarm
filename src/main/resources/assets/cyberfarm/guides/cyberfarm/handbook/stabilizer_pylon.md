@@ -36,7 +36,7 @@ ring that faces the crystal, at the crystal's height.
   within the distance in the table, counted from the pedestal.
 - Nothing may stand between a column and the crystal at the crystal's height.
 
-With enough columns the core is **Online**: the crystal spins and shines cyan and its heart grows as
+With enough columns the core is **Online**: the crystal spins and shines white and its heart grows as
 it fills up. With too few it is **Unstable**: the crystal slows down and flickers violet and
 **nothing goes in or out**. What it already stores is kept.
 

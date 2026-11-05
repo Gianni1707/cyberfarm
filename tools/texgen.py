@@ -20,17 +20,17 @@ ROOT = Path(__file__).resolve().parent.parent
 TEXTURES = ROOT / "src/main/resources/assets/cyberfarm/textures"
 
 PALETTE = {
-    "K": "#0b0e11",  # deep outline
-    "k": "#14181d",  # outline
-    "s": "#101418",  # screen / recess
-    "D": "#22282e",  # shadow panel
-    "d": "#2c333b",  # dark panel
-    "m": "#4a5561",  # mid panel
-    "l": "#7d8a96",  # light panel
-    "w": "#c9d3dc",  # white edge / steel
-    "b": "#0e7c99",  # deep cyan
-    "c": "#2fe0ff",  # cyan glow
-    "C": "#b8f6ff",  # bright core
+    "K": "#050a0b",  # deep outline
+    "k": "#0b1515",  # outline
+    "s": "#081011",  # screen / recess
+    "D": "#1b2a29",  # shadow panel
+    "d": "#233433",  # dark panel
+    "m": "#405453",  # mid panel
+    "l": "#728583",  # light panel
+    "w": "#c9d4d2",  # white edge / steel
+    "b": "#055b57",  # light, off
+    "c": "#d1fee7",  # light glow (near-white)
+    "C": "#ffffff",  # bright core
     "o": "#ff8c1a",  # orange
     "O": "#ffd04d",  # amber
     "r": "#a8321f",  # red
@@ -502,12 +502,12 @@ PALETTE.update(URANIUM_SHADES)
 
 # Drone icon shades, the drone model's own ramps (DRONE_BODY, DRONE_COPPER[2], DRONE_CREAM, DRONE_GUNMETAL, ...)
 DRONE_ICON_SHADES = {
-    "H": "#6c7a88", "M": "#4a5664", "Z": "#232a33",                    # dark body
-    "u": "#b65a26",                                                    # the one flat dark copper
-    "t": "#fbf5e4", "T": "#e6dab8", "e": "#c2b28c",                    # cream tank
-    "n": "#5a6370", "q": "#3d444d", "Q": "#2a2f36",                    # gunmetal motors
-    "p": "#3a3f47", "P": "#1d2026",                                    # carbon blades
-    "I": "#b4c0ca", "j": "#7c8894",                                    # steel mast
+    "H": "#5b7771", "M": "#395853", "Z": "#132423",                    # dark teal body
+    "u": "#5ec2b8",                                                    # the one flat mint enamel
+    "t": "#eff5f0", "T": "#d3ddd9", "e": "#a6b5b2",                    # white ceramic tank
+    "n": "#5f6c6c", "q": "#414d4e", "Q": "#2d3839",                    # gunmetal motors
+    "p": "#303737", "P": "#131819",                                    # carbon blades
+    "I": "#b1bebc", "j": "#7c8989",                                    # steel mast
 }
 PALETTE.update(DRONE_ICON_SHADES)
 
@@ -933,7 +933,7 @@ def extractor_side(formed):
 # 6..9 (a straight run joins them into one tube), the coupling box at junctions columns/rows 5..10.
 PIPE_CONTENT = {
     # main colour, highlight
-    "energy": ((47, 224, 255, 255), (184, 246, 255, 255)),
+    "energy": ((209, 254, 231, 255), (255, 255, 255, 255)),
     "gas": ((255, 176, 40, 255), (255, 226, 140, 255)),
     "liquid": ((52, 124, 230, 255), (150, 200, 255, 255)),
 }
@@ -1012,10 +1012,10 @@ def mix(a, b, t):
 
 # A machine's front with the power off: its lights (cyan, green, the uranium readout) one step
 # dimmer and its fire out
-POWERED_OFF = {"C": "c", "c": "b", "b": "#0a4a5c", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
+POWERED_OFF = {"C": "c", "c": "b", "b": "#033a37", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
                "O": "l", "o": "m", "r": "d"}
 # ...and while it works: a band of light sweeping down its lights, one step brighter
-SWEEP = {"b": "c", "c": "C", "C": "#ecfeff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
+SWEEP = {"b": "c", "c": "C", "C": "#ffffff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
 FLAMES = ("r", "o", "O")
 # What glows in the dark on a working machine's front: its lights and any fire
 FRONT_GLOW = GLOW_KEYS | {"#ecfeff", "g", "G", "#e6ffe9", "4", "5", "#e8ffd0"} | set(FLAMES)
@@ -1724,12 +1724,12 @@ def side_rows(c, faces, rows):
                     c.rect(x0, y0 + i, x1, y0 + i, color)
 
 
-DRONE_BODY = ("#6c7a88", "#4a5664", "#333c47", "#232a33")      # same ramps as the machine models
-DRONE_COPPER = ("#ffc98a", "#ef8f3e", "#b65a26", "#6e3420")
-DRONE_CREAM = ("#fbf5e4", "#e6dab8", "#c2b28c", "#8e8264")
-DRONE_GUNMETAL = ("#5a6370", "#3d444d", "#2a2f36", "#1a1d22")
-DRONE_CARBON = ("#3a3f47", "#1d2026")
-DRONE_STEEL = ("#e4ecf0", "#b4c0ca", "#7c8894", "#4a5561")
+DRONE_BODY = ("#5b7771", "#395853", "#233e3b", "#132423")      # same ramps as the machine models
+DRONE_COPPER = ("#5ec2b8",) * 4                                # the one flat mint enamel accent
+DRONE_CREAM = ("#eff5f0", "#d3ddd9", "#a6b5b2", "#6f7e7d")    # white ceramic tank
+DRONE_GUNMETAL = ("#5f6c6c", "#414d4e", "#2d3839", "#1b2325")
+DRONE_CARBON = ("#303737", "#131819")
+DRONE_STEEL = ("#e1eae9", "#b1bebc", "#7c8989", "#515e5e")
 
 
 def mix(a, b, t):
@@ -1739,10 +1739,10 @@ def mix(a, b, t):
 
 # A machine's front with the power off: its lights (cyan, green, the uranium readout) one step
 # dimmer and its fire out
-POWERED_OFF = {"C": "c", "c": "b", "b": "#0a4a5c", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
+POWERED_OFF = {"C": "c", "c": "b", "b": "#033a37", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
                "O": "l", "o": "m", "r": "d"}
 # ...and while it works: a band of light sweeping down its lights, one step brighter
-SWEEP = {"b": "c", "c": "C", "C": "#ecfeff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
+SWEEP = {"b": "c", "c": "C", "C": "#ffffff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
 FLAMES = ("r", "o", "O")
 # What glows in the dark on a working machine's front: its lights and any fire
 FRONT_GLOW = GLOW_KEYS | {"#ecfeff", "g", "G", "#e6ffe9", "4", "5", "#e8ffd0"} | set(FLAMES)
@@ -2451,10 +2451,10 @@ def side_rows(c, faces, rows):
                     c.rect(x0, y0 + i, x1, y0 + i, color)
 
 
-DRONE_BODY = ("#6c7a88", "#4a5664", "#333c47", "#232a33")      # same ramps as the machine models
-DRONE_COPPER = ("#ffc98a", "#ef8f3e", "#b65a26", "#6e3420")
-DRONE_CREAM = ("#fbf5e4", "#e6dab8", "#c2b28c", "#8e8264")
-DRONE_STEEL = ("#e4ecf0", "#b4c0ca", "#7c8894", "#4a5561")
+DRONE_BODY = ("#5b7771", "#395853", "#233e3b", "#132423")      # same ramps as the machine models
+DRONE_COPPER = ("#5ec2b8",) * 4                                # the one flat mint enamel accent
+DRONE_CREAM = ("#eff5f0", "#d3ddd9", "#a6b5b2", "#6f7e7d")    # white ceramic tank
+DRONE_STEEL = ("#e1eae9", "#b1bebc", "#7c8989", "#515e5e")
 
 
 def bevel_box(c, u, v, w, h, d, ramp):
