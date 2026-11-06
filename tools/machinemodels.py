@@ -617,7 +617,9 @@ def machine_parts():
               ("turbine_door_left", turbine[11:12]), ("turbine_door_right", turbine[12:13]),
               ("mixer_water_tank", mixer[:7]), ("mixer_coolant_tank", mixer[8:15]),
               ("mixer_water_saddle", mixer[7:8]), ("mixer_coolant_saddle", mixer[15:16]), ("mixer_rail", mixer[16:18]),
-              *[(f"mixer_hood_{i}", panel) for i, panel in enumerate(coolant_mixer_hood())]]
+              *[(f"mixer_hood_{i}", panel) for i, panel in enumerate(coolant_mixer_hood())],
+              ("steam_piston", steam_engine_piston()), ("steam_wheel", steam_engine_wheel()),
+              *steam_engine_cylinder_parts().items(), *steam_engine_dynamo_parts().items()]
     variants = {}
     for part, (name, parts) in enumerate(groups):
         build(f"part_{name}", parts, False)
@@ -654,11 +656,15 @@ def small_multiblock_blockstate(name, frame_sides, up=False):
 
 
 def hidden_frame():
-    """Never drawn (HiddenFrameBlock), but its breaking particles need a model."""
+    """Usually never drawn (HiddenFrameBlock), but its breaking particles need a model. A cell a machine's own model can't reach
+    shows its piece, turned as the machine is."""
     (ASSETS / "models/block/hidden_frame.json").write_text(
         json.dumps({"textures": {"particle": "cyberfarm:block/cyber_frame"}, "elements": []}, indent=2) + "\n")
-    (ASSETS / "blockstates/hidden_frame.json").write_text(
-        json.dumps({"variants": {"": {"model": "cyberfarm:block/hidden_frame"}}}, indent=2) + "\n")
+    variants = {}
+    for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        for piece, model in enumerate(("hidden_frame", "steam_engine_cylinder", "steam_engine_dynamo")):
+            variants[f"facing={facing},piece={piece}"] = {"model": f"cyberfarm:block/{model}", **({"y": y} if y and piece else {})}
+    (ASSETS / "blockstates/hidden_frame.json").write_text(json.dumps({"variants": variants}, indent=2) + "\n")
 
 
 def gas_turbine_parts():
@@ -821,6 +827,101 @@ def supply_terminal_parts():
             ((4.6, 10, 15.1), (7.1, 13.8, 15.16), "light_off"),
             ((8, 10, 15.1), (10.5, 13.8, 15.16), "light_off"),
             ((12.1, 13, 15.1), (14.6, 13.8, 15.16), "light_off")]
+
+
+def steam_engine_plinth(z0, z1):
+    """A base standing on four feet round the down socket, with its light lines."""
+    return [((0.5, 0, z0), (15.5, 0.75, 5), "plinth"), ((0.5, 0, 11), (15.5, 0.75, z1), "plinth"),
+            ((0.5, 0, 5), (5, 0.75, 11), "plinth"), ((11, 0, 5), (15.5, 0.75, 11), "plinth"),
+            ((0.5, 0.75, z0), (15.5, 2.5, z1), "plinth"),
+            ((0.4, 1.2, z0), (0.5, 2, z1), "light"), ((15.5, 1.2, z0), (15.6, 2, z1), "light")]
+
+
+def steam_engine_boiler():
+    """The Steam Engine's boiler: its coils, tagged "unlit", are drawn by SteamEngineRenderer once it is open."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    rings = [(a, b, "copper", "unlit") for y0, y1 in ((5, 6), (8.6, 9.6)) for a, b, _ in octagon(1.2, y0, 1.2, 14.8, y1, 14.8, 3.6, "copper")]
+    return [*steam_engine_plinth(0, 15.5), ((1, 1.2, 15.5), (15, 2, 15.6), "light"),
+            *octagon(1.5, 2.5, 1.5, 14.5, 13, 14.5, 3.5, dark), *rings,
+            *octagon(3, 13, 3, 13, 14.7, 13, 2, "lid"), ((7, 11, 14.5), (9, 12, 14.6), "light"),
+            ((5.8, 13.6, 1.2), (10.2, 15.85, 4.8), "trim"), ((5, 13.2, 0), (11, 16, 1.2), "trim")]    # the steam line's start
+
+
+def steam_engine_piston():
+    """Head and rod at rest, always the renderer's."""
+    y = 7.4
+    return [*octagon(5.2, y, 5.2, 10.8, y + 2.4, 10.8, 1, "trim"), *octagon(5.4, y + 2.4, 5.4, 10.6, y + 3, 10.6, 1, "light"),
+            ((6.75, y - 5.6, 6.75), (9.25, y, 9.25), "trim")]    # always into the base, even at the top of its stroke
+
+
+def steam_engine_cylinder_parts():
+    """A cylinder as it composes on its rail plate: steel posts round a piston (steam_engine_piston, the renderer's), and a
+    length of the steam line with a flange at each end, so the row joins up."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    return {"steam_rail": [((0.5, 0, 0), (15.5, 2.5, 16), "plinth"),
+                           ((0.4, 1.2, 0), (0.5, 2, 16), "light"), ((15.5, 1.2, 0), (15.6, 2, 16), "light")],
+            "steam_base": octagon(2.5, 2.5, 2.5, 13.5, 4.5, 13.5, 0.8, dark),
+            "steam_posts": [((x, 4.5, z), (x + 1.4, 13, z + 1.4), "trim") for x in (3.3, 11.3) for z in (3.3, 11.3)],
+            "steam_lid": octagon(3, 13, 3, 13, 13.8, 13, 1, "lid"),
+            "steam_line": [((5.8, 13.8, 1.2), (10.2, 15.85, 14.8), "trim"),
+                           ((5, 13.4, 0), (11, 16, 1.2), "trim"), ((5, 13.4, 14.8), (11, 16, 16), "trim")]}
+
+
+def steam_engine_wheel():
+    """The flywheel's spokes, hub and lug, on the axle at x 8, y 9."""
+    return [((3.8, 7.5, 2.9), (12.2, 10.5, 4.1), "trim"), ((6.5, 4.8, 2.9 + LAYER), (9.5, 13.2, 4.1 - LAYER), "trim"),
+            ((6.3, 7.3, 2.7), (9.7, 10.7, 4.3), "lid"), ((9.9, 7.75, 2.7), (12.4, 10.25, 4.3), "light")]
+
+
+def steam_engine_dynamo_parts():
+    """A drum with two windings, the steam line's end on top towards the cylinders, and at the row's far end the rim of the
+    flywheel (steam_engine_wheel, the renderer's) on a short axle: nothing that looks like a socket."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+
+    def drum(z0, z1, x0, y0, x1, y1, cut, mat):
+        return [((x0 + cut, y0, z0), (x1 - cut, y1, z1), mat), ((x0, y0 + cut, z0 + LAYER), (x1, y1 - cut, z1 - LAYER), mat)]
+
+    return {"steam_dynamo_rail": steam_engine_plinth(0.5, 16),
+            "steam_drum": [((3.5, 2.5, 5.5), (12.5, 4.25, 14.5), dark), *drum(5, 15.2, 1.5, 4.25, 14.5, 13.75, 3, dark),
+                           *drum(12, 13, 1.2, 4.15, 14.8, 13.85, 3.2, "copper"), *drum(8, 9, 1.2, 4.15, 14.8, 13.85, 3.2, "copper")],
+            "steam_rim": [((3.3, 13.7, 2.5), (12.7, 15.2, 4.5), "trim"), ((3.3, 2.8, 2.5), (12.7, 4.3, 4.5), "trim"),
+                          ((1.8, 4.3, 2.5), (3.3, 13.7, 4.5), "trim"), ((12.7, 4.3, 2.5), (14.2, 13.7, 4.5), "trim")],
+            "steam_shaft": [((6.8, 7.8, 4.3), (9.2, 10.2, 5.2), "trim"), ((5, 13.4, 14.4), (11, 16, 16), "trim")]}
+
+
+def steam_engine_blockstate():
+    """The boiler; its coils are the renderer's once open. A socket wherever a pipe plugs in, never on the side towards the row."""
+    sides = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
+    opposite = {"north": "south", "east": "west", "south": "north", "west": "east"}
+    parts = []
+    for facing, y in sides:
+        turn = {"y": y} if y else {}
+        parts.append({"when": {"facing": facing, "stage": "0|1|3"}, "apply": {"model": "cyberfarm:block/steam_engine", **turn}})
+        parts.append({"when": {"facing": facing, "stage": "2"}, "apply": {"model": "cyberfarm:block/steam_engine_on", **turn}})
+        for side, turned in sides:
+            if side != opposite[facing]:
+                parts.append({"when": {"facing": facing, side: "true"},
+                              "apply": {"model": "cyberfarm:block/steam_engine_port", **({"y": turned} if turned else {})}})
+    parts.append({"when": {"up": "true"}, "apply": {"model": "cyberfarm:block/steam_engine_port_up"}})
+    parts.append({"when": {"down": "true"}, "apply": {"model": "cyberfarm:block/steam_engine_port_down"}})
+    (ASSETS / "blockstates/steam_engine.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+
+
+def methane_extractor():
+    """Alone, a spray head: a ring docked under the body on four tubes, its nozzles for feet. No sockets: fluids reach the
+    chamber only through its Acid Inlets and Methane Outlets."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    mint = {"up": "copper", "south": "copper", "east": "copper"}
+    return [((0.5, 0, 0.5), (3.1, 1, 3.1), "trim"), ((12.9, 0, 0.5), (15.5, 1, 3.1), "trim"),
+            ((0.5, 0, 12.9), (3.1, 1, 15.5), "trim"), ((12.9, 0, 12.9), (15.5, 1, 15.5), "trim"),
+            ((0.5, 1, 0.5), (15.5, 3.5, 2.5), "copper"), ((0.5, 1, 13.5), (15.5, 3.5, 15.5), "copper"),
+            ((0.5, 1, 2.5), (2.5, 3.5, 13.5), "copper"), ((13.5, 1, 2.5), (15.5, 3.5, 13.5), "copper"),
+            ((0.5, 3.5, 0.5), (4.3, 7, 4.3), cap), ((11.7, 3.5, 0.5), (15.5, 7, 4.3), cap),
+            ((0.5, 3.5, 11.7), (4.3, 7, 15.5), cap), ((11.7, 3.5, 11.7), (15.5, 7, 15.5), cap),
+            *octagon(1, 7, 1, 15, 11, 15, 4, dark), *octagon(0.6, 8.5, 0.6, 15.4, 9.6, 15.4, 4, mint),
+            *round_tank(4, 11, 4, 12, 14.5, 12, cap), *round_tank(5.5, 14.5, 5.5, 10.5, 16, 10.5, dark),
+            ((7.2, 8.8, 14.9), (8.8, 10.2, 15.15), "light")]
 
 
 def water_pump():
@@ -1163,7 +1264,11 @@ if __name__ == "__main__":
             ("gas_turbine_body", gas_turbine_parts()[0], True, False),
             ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False),
             ("waste_reprocessor", waste_reprocessor_parts(), True, False),
-            ("supply_terminal", supply_terminal_parts(), False, False)):
+            ("supply_terminal", supply_terminal_parts(), False, False),
+            ("methane_extractor", methane_extractor(), True, False),
+            ("steam_engine", steam_engine_boiler(), True, False),
+            ("steam_engine_cylinder", [box for part in steam_engine_cylinder_parts().values() for box in part], False, False),
+            ("steam_engine_dynamo", [box for part in steam_engine_dynamo_parts().values() for box in part], False, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -1186,6 +1291,13 @@ if __name__ == "__main__":
     build("crystallizer", crystallizer_controller(), False)
     build("crystallizer_port_socket", side_port(3), False)
     build("waste_reprocessor_port", low_port(), False)
+    (ASSETS / "blockstates/methane_extractor.json").write_text(json.dumps({"variants": {
+        f"facing={facing},formed={formed}": {"model": f"cyberfarm:block/{'hidden_frame' if formed == 'true' else 'methane_extractor'}",
+                                             **({"y": y} if y and formed == "false" else {})}
+        for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)) for formed in ("false", "true")}}, indent=2) + "\n")
+    build("steam_engine_port", side_port(4), False)
+    build("steam_engine_port_up", top_port(14.7), False)
+    build("steam_engine_port_down", [((5, 0, 5), (11, 0.75, 11), "copper")], False)
     build("waste_reprocessor_item", waste_reprocessor_item(), False)
     radiation_mark()
     build("gas_turbine", gas_turbine_loose(), False)
@@ -1207,4 +1319,5 @@ if __name__ == "__main__":
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
     hidden_frame()
+    steam_engine_blockstate()
     machine_parts()

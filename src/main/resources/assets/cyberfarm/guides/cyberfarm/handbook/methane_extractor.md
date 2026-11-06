@@ -70,9 +70,11 @@ structure where a mob is shut in and dissolved in **Acid**, giving off **Methane
   inlet with a [Liquid Pipe](liquid_pipe.md) and take methane from the outlet with a Gas Pipe.
 - **Intake Gate**: any glass of the **lower** wall can be an <ItemLink id="intake_gate" />.
 
-When the structure is right the chamber powers up with a chime and turns into **one smooth tank**:
-a glass cylinder between a white base and cap, its pillars lit in orange, the ports shown as hatches
-with pipe collars and the gates as roll-up doors. A finished chamber opens the GUI from any of its blocks (sneak to
+When the structure is right the chamber powers up with a chime and becomes **one machine**, a sibling of the
+[Crystallizer](mech_core.md): a stepped octagonal plinth, four pylons and a crown with the extractor's head in its hub, and between
+them a stepped glass bell with the mob in plain view. Ports show as couplings where a pipe joins them, gates as roll-up doors
+between two pylons. The acid pools in the bell's lowest step, and while a mob dissolves a spray ring strokes up and down
+around its head on four rods. A finished chamber opens the GUI from any of its blocks (sneak to
 place blocks against it instead).
 
 ## The GUI

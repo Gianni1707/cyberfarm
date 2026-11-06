@@ -14,11 +14,13 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
  */
 public class MachinePartBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 14);
+    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 25);
     public static final int TURBINE_DUCT = 0, TURBINE_NOZZLE = 1, TURBINE_DOOR_LEFT = 2, TURBINE_DOOR_RIGHT = 3;
     public static final int MIXER_WATER_TANK = 4, MIXER_COOLANT_TANK = 5, MIXER_WATER_SADDLE = 6, MIXER_COOLANT_SADDLE = 7, MIXER_RAIL = 8;
     /** The Coolant Mixer's hood: front, back and end panels, each a right and a left. */
     public static final int MIXER_HOOD = 9;
+    public static final int STEAM_PISTON = 15, STEAM_WHEEL = 16, STEAM_RAIL = 17, STEAM_BASE = 18, STEAM_POSTS = 19, STEAM_LID = 20, STEAM_LINE = 21;
+    public static final int STEAM_DYNAMO_RAIL = 22, STEAM_DRUM = 23, STEAM_RIM = 24, STEAM_SHAFT = 25;
 
     public MachinePartBlock(Properties properties) {
         super(properties);

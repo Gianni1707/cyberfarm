@@ -14,6 +14,7 @@ import com.cyberfarm.client.model.MechModel;
 import com.cyberfarm.client.renderer.MechRenderer;
 import com.cyberfarm.client.renderer.MovingPartsRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
 import com.cyberfarm.client.renderer.AssemblerRenderer;
@@ -132,6 +133,7 @@ public class CyberFarmClient {
         NeoForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(FrameDroneRenderer::submit);
         NeoForge.EVENT_BUS.addListener(EffectRenderer::extract);
         NeoForge.EVENT_BUS.addListener(EffectRenderer::submit);
         NeoForge.EVENT_BUS.addListener(DroneDownwash::tick);

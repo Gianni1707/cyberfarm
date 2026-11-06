@@ -62,8 +62,6 @@ public final class InfoPages {
                 page(ModItems.SULFUR.get()),
                 page(ModItems.ACID_BUCKET.get()),
                 page(ModItems.STEAM_ENGINE.get()),
-                page(ModItems.STEAM_ENGINE_CYLINDER.get()),
-                page(ModItems.STEAM_ENGINE_DYNAMO.get()),
                 page(ModItems.NETHER_SULFUR_ORE.get()),
                 page(ModItems.CONTAINMENT_GLASS.get()),
                 page(ModItems.ACID_INLET.get()),

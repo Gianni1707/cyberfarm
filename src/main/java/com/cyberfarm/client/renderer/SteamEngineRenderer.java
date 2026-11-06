@@ -1,69 +1,80 @@
 package com.cyberfarm.client.renderer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.MachineBlock;
-import com.cyberfarm.block.NetworkPipeBlock;
+import com.cyberfarm.block.MachinePartBlock;
+import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 /**
- * Draws a complete Steam Engine as one machine, its blocks hidden: a white induction boiler with
- * glowing orange coils, a cylinder per block with its piston moving in a glass sleeve, the steam
- * line over them, and the dynamo with copper windings and its flywheel. All on a dark plinth with a
- * light line. Works in a frame centred on the boiler where +x runs back along the row.
+ * What moves on the assembled Steam Engine: a piston in every cylinder, the dynamo's flywheel and the boiler's coils, brighter the
+ * faster it runs. Once, on assembling, the rail plates run out from under the boiler like a tape measure and each cell composes on
+ * its plate. The parts are the static models' own boxes ({@link MachinePartBlock}), so nothing changes when they stop.
+ * <p>
+ * 4 part models and 4 boxes once assembled; during the 3.3 s of an opening 23 part models, rarely. Within the default 64 blocks.
  */
 public class SteamEngineRenderer implements BlockEntityRenderer<SteamEngineBlockEntity, SteamEngineRenderer.State> {
-    private static final RenderType METAL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/methane_chamber.png"));
-    private static final RenderType GLASS = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/methane_chamber_glass.png"));
-    private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
+    private static final int CYLINDERS = SteamEngineBlockEntity.CYLINDERS;
+    /** Half a piston's stroke: 5 px in all. */
+    private static final float SWING = 2.5F;
+    /** The flywheel's axis height on the dynamo. */
+    private static final float WHEEL_Y = 9.0F;
+    private static final int MINT = 0xFF5EC2B8;
+    private static final float CELL = 16.0F;
+    /** The boiler's coil rings, each of two crossed boxes. */
+    private static final float[][] RINGS = {{5.0F, 6.0F}, {8.6F, 9.6F}};
 
-    private static final int SEGMENTS = 24;
-    private static final int SPOKES = 6;
-    private static final int SHELL = 0xFFE3E9ED;
-    private static final int DARK = 0xFF2A3138;
-    private static final int STEEL = 0xFF8A96A2;
-    private static final int GLASS_TINT = 0x50A8E4F0;
-    private static final int LAMP = 0xFFD1FEE7;
-    private static final int ORANGE = 0xFFFF8C1A;
-    private static final int COPPER = 0xFFE08A45;
+    /** A rail plate's run, in seconds; how far under the floor it runs, and how much deeper for each plate already ahead of it. */
+    private static final float RAIL_GAP = 0.2F, RAIL_TIME = 0.7F, RAIL_DEPTH = 2.6F, RAIL_STACK = 2.7F;
+    /** When each cylinder starts composing, and the dynamo. */
+    private static final float CYLINDER_START = 1.1F, CYLINDER_GAP = 0.35F, DYNAMO_START = 2.0F;
 
-    private static final float BASE_TOP = -0.3F;
-    private static final float WHEEL_RADIUS = 0.72F;
-    private static final float WHEEL_Y = 0.22F;
+    /** A part rising out of its rail plate: from this depth, starting this long after its cell does, for so many seconds. */
+    private record Step(int part, float depth, float from, float seconds) {
+        float eased(float second, float start) {
+            return ease(second, start + from, start + from + seconds);
+        }
+
+        float rise(float second, float start) {
+            return -depth * (1.0F - eased(second, start));
+        }
+    }
+
+    private static final Step[] CYLINDER = {new Step(MachinePartBlock.STEAM_BASE, 2.15F, 0.0F, 0.45F),
+            new Step(MachinePartBlock.STEAM_LINE, 13.65F, 0.2F, 0.5F), new Step(MachinePartBlock.STEAM_POSTS, 10.65F, 0.35F, 0.5F),
+            new Step(MachinePartBlock.STEAM_LID, 11.45F, 0.7F, 0.35F)};
+    private static final Step PISTON = new Step(MachinePartBlock.STEAM_PISTON, 8.05F, 0.9F, 0.4F);
+    private static final Step[] DYNAMO = {new Step(MachinePartBlock.STEAM_DRUM, 11.5F, 0.0F, 0.6F),
+            new Step(MachinePartBlock.STEAM_RIM, 12.85F, 0.4F, 0.6F), new Step(MachinePartBlock.STEAM_SHAFT, 13.65F, 0.8F, 0.4F)};
+    private static final Step WHEEL = new Step(MachinePartBlock.STEAM_WHEEL, 12.85F, 0.4F, 0.6F);
 
     public static class State extends BlockEntityRenderState {
-        int cylinders;
+        int stage;
         Direction facing = Direction.NORTH;
+        float seconds;
         float angle;
-        float speed;
-        float time;
-        int light;
-        /** Sides of the boiler and of the dynamo a pipe or cable comes in from. */
-        List<Direction> boilerSockets = List.of();
-        List<Direction> dynamoSockets = List.of();
+        float brightness;
+        boolean rings;
+        MovingBlockRenderState[] pistons = {};
+        @Nullable MovingBlockRenderState wheel;
+        /** The plates and the cells' other parts while they aren't the static models yet, or null. */
+        MovingBlockRenderState @Nullable [] parts;
     }
 
     @Override
@@ -75,275 +86,117 @@ public class SteamEngineRenderer implements BlockEntityRenderer<SteamEngineBlock
     public void extractRenderState(SteamEngineBlockEntity entity, State state, float partialTick, Vec3 camera,
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderState.extractBase(entity, state, breakProgress);
-        state.cylinders = entity.cylinders();
+        Level level = entity.getLevel();
+        state.stage = level == null ? SmallMultiblockBlock.LOOSE : entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
+        state.parts = null;
+        if (level == null) {
+            return;
+        }
+        float time = level.getGameTime() + partialTick;
+        state.seconds = entity.shownOpening(state.stage, time) / 20.0F;
+        if (state.stage == SmallMultiblockBlock.LOOSE) {
+            return;
+        }
+        boolean holding = entity.shownHolding(state.stage, time);
+        state.rings = state.stage == SmallMultiblockBlock.OPEN || holding;
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.angle = entity.angle(partialTick);
-        state.speed = entity.speed();
-        Level level = entity.getLevel();
-        if (level != null) {
-            state.time = level.getGameTime() + partialTick;
-            state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().above());
-            BlockPos dynamo = entity.dynamoPos();
-            state.boilerSockets = sockets(level, entity.getBlockPos());
-            state.dynamoSockets = dynamo != null ? sockets(level, dynamo) : List.of();
+        float pulse = 0.75F + 0.25F * Mth.sin(time * (0.1F + 0.3F * entity.speed()));
+        state.brightness = 0.55F + 0.45F * entity.speed() * pulse;
+        BlockPos pos = entity.getBlockPos();
+        Direction back = state.facing.getOpposite();
+        state.pistons = new MovingBlockRenderState[CYLINDERS];
+        for (int i = 0; i < CYLINDERS; i++) {
+            state.pistons[i] = ModelParts.movingPart(level, pos.relative(back, i + 1), PISTON.part(), state.facing);
+        }
+        BlockPos dynamo = pos.relative(back, CYLINDERS + 1);
+        state.wheel = ModelParts.movingPart(level, dynamo, WHEEL.part(), state.facing);
+        if (state.stage != SmallMultiblockBlock.OPEN || holding) {
+            MovingBlockRenderState[] parts = new MovingBlockRenderState[CYLINDERS * (CYLINDER.length + 1) + DYNAMO.length + 1];
+            int next = 0;
+            for (int i = 1; i <= CYLINDERS; i++) {
+                parts[next++] = ModelParts.movingPart(level, pos.relative(back, i), MachinePartBlock.STEAM_RAIL, state.facing);
+                for (Step step : CYLINDER) {
+                    parts[next++] = ModelParts.movingPart(level, pos.relative(back, i), step.part(), state.facing);
+                }
+            }
+            parts[next++] = ModelParts.movingPart(level, dynamo, MachinePartBlock.STEAM_DYNAMO_RAIL, state.facing);
+            for (Step step : DYNAMO) {
+                parts[next++] = ModelParts.movingPart(level, dynamo, step.part(), state.facing);
+            }
+            state.parts = parts;
         }
     }
 
-    /** The sides of {@code pos} a pipe or cable is connected to. */
-    private static List<Direction> sockets(Level level, BlockPos pos) {
-        List<Direction> sides = new ArrayList<>();
-        for (Direction side : Direction.values()) {
-            BlockState neighbor = level.getBlockState(pos.relative(side));
-            if (side != Direction.DOWN && neighbor.getBlock() instanceof NetworkPipeBlock
-                    && neighbor.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()))) {
-                sides.add(side);
-            }
-        }
-        return sides;
+    private static float ease(float t, float from, float to) {
+        float x = Mth.clamp((t - from) / (to - from), 0.0F, 1.0F);
+        return x * x * (3.0F - 2.0F * x);
+    }
+
+    /** How far out a cell's rail plate has run, from 0 under the boiler to 1 in its place. */
+    private static float run(float second, int cell) {
+        return ease(second, RAIL_GAP * (cell - 1), RAIL_GAP * (cell - 1) + RAIL_TIME);
+    }
+
+    /** A plate's height at that point: under the floor, stacked below those ahead of it, until the last cell of its run. */
+    private static float railY(int cell, float run) {
+        float left = CELL * cell * (1.0F - run);
+        return -RAIL_DEPTH * Math.min(1.0F, left / CELL) - RAIL_STACK * (cell - 1) * (1.0F - ease(run, 0.0F, 0.25F));
     }
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        int n = state.cylinders;
-        if (n <= 0) {
+        MovingBlockRenderState wheel = state.wheel;
+        if (state.stage == SmallMultiblockBlock.LOOSE || wheel == null) {
             return;
         }
-        int light = state.light;
-        float angle = state.angle;
-        float dynamo = n + 1;
-        Direction back = state.facing.getOpposite();
-        poseStack.pushPose();
-        poseStack.translate(0.5F, 0.5F, 0.5F);
-        // Collars from the boiler and the dynamo out to the pipes and cables, in the world's own axes
-        float dynamoX = back.getStepX() * dynamo;
-        float dynamoZ = back.getStepZ() * dynamo;
-        collector.submitCustomGeometry(poseStack, METAL, (pose, buffer) -> {
-            for (Direction side : state.boilerSockets) {
-                collar(pose, buffer, 0, 0, 0, side, side == Direction.UP ? 0.4F : 0.36F, STEEL, 0.17F, light);
+        float second = state.seconds;
+        MovingBlockRenderState[] parts = state.parts;
+        int next = 0;
+        for (int i = 1; i <= CYLINDERS; i++) {
+            float run = run(second, i);
+            float y = railY(i, run);
+            float z = i * CELL * run;
+            float start = CYLINDER_START + CYLINDER_GAP * (i - 1);
+            if (parts != null) {
+                ModelParts.slid(poseStack, collector, parts[next++], state.facing, 0.0F, y, z);
+                for (Step step : CYLINDER) {
+                    ModelParts.slid(poseStack, collector, parts[next++], state.facing, 0.0F, y + step.rise(second, start), z);
+                }
             }
-            for (Direction side : state.dynamoSockets) {
-                collar(pose, buffer, dynamoX, 0, dynamoZ, side, side == Direction.UP ? 0.4F : 0.36F, STEEL, 0.17F, light);
-            }
-        });
-        collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {
-            int full = LightCoordsUtil.FULL_BRIGHT;
-            for (Direction side : state.boilerSockets) {
-                collar(pose, buffer, 0, 0, 0, side, 0.46F, LAMP, 0.19F, full);
-            }
-            for (Direction side : state.dynamoSockets) {
-                collar(pose, buffer, dynamoX, 0, dynamoZ, side, 0.46F, LAMP, 0.19F, full);
-            }
-        });
-        // +x now points from the boiler back along the row
-        poseStack.mulPose(Axis.YP.rotation(-(float) Math.atan2(back.getStepZ(), back.getStepX())));
-
-        collector.submitCustomGeometry(poseStack, METAL, (pose, buffer) -> {
-            // Plinth under the whole row
-            box(pose, buffer, -0.48F, -0.5F, -0.46F, dynamo + 0.48F, BASE_TOP, 0.46F, DARK, light);
-            // Boiler: a white tank with a domed cap and the steam line out of its top
-            vcyl(pose, buffer, 0, 0, 0.42F, BASE_TOP, 0.32F, SHELL, light);
-            vcyl(pose, buffer, 0, 0, 0.3F, 0.32F, 0.42F, SHELL, light);
-            hdisc(pose, buffer, 0, 0, 0.32F, 0.3F, 0.42F, SHELL, light);
-            hdisc(pose, buffer, 0, 0, 0.42F, 0.0F, 0.3F, STEEL, light);
-            // The steam line runs beside the pistons, dropping into each cylinder
-            hcyl(pose, buffer, 0.0F, n + 0.0F, 0.52F, -0.32F, 0.07F, STEEL, light);
-            for (int i = 0; i <= n; i++) {
-                vcyl(pose, buffer, i, -0.32F, 0.07F, i == 0 ? 0.3F : 0.15F, 0.52F, STEEL, light);
-            }
-            for (int i = 1; i <= n; i++) {
-                cylinder(pose, buffer, i, angle + i * Mth.HALF_PI, light);
-            }
-            // Dynamo: a drum lying along the row, the flywheel on its back
-            hcyl(pose, buffer, dynamo - 0.45F, dynamo + 0.4F, 0.05F, 0, 0.4F, SHELL, light);
-            xdisc(pose, buffer, dynamo - 0.45F, 0.05F, 0, 0.0F, 0.4F, 0, SHELL, light);
-            xdisc(pose, buffer, dynamo + 0.4F, 0.05F, 0, 0.0F, 0.4F, 0, DARK, light);
-            hcyl(pose, buffer, dynamo + 0.4F, dynamo + 0.56F, WHEEL_Y, 0, 0.07F, STEEL, light);
-            flywheel(pose, buffer, dynamo + 0.56F, angle, light);
-        });
-        collector.submitCustomGeometry(poseStack, GLASS, (pose, buffer) -> {
-            for (int i = 1; i <= n; i++) {
-                vcyl(pose, buffer, i, 0, 0.2F, 0.22F, 0.6F, GLASS_TINT, light);
-            }
-        });
-        collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {
-            int full = LightCoordsUtil.FULL_BRIGHT;
-            float pulse = 0.7F + 0.3F * Mth.sin(state.time * (0.1F + 0.3F * state.speed));
-            int coil = scale(ORANGE, 0.35F + 0.65F * Math.max(state.speed, 0.15F) * pulse);
-            // Light line along both sides of the plinth
-            box(pose, buffer, -0.46F, -0.42F, -0.465F, dynamo + 0.46F, -0.38F, -0.46F, LAMP, full);
-            box(pose, buffer, -0.46F, -0.42F, 0.46F, dynamo + 0.46F, -0.38F, 0.465F, LAMP, full);
-            // Induction coils round the boiler, brighter the faster it runs
-            for (float y : new float[] {-0.18F, -0.02F, 0.14F}) {
-                vcyl(pose, buffer, 0, 0, 0.425F, y, y + 0.06F, coil, full);
-            }
-            hdisc(pose, buffer, 0, 0, 0.421F, 0.18F, 0.24F, LAMP, full);
-            for (int i = 1; i <= n; i++) {
-                // The piston head, lit up inside its glass sleeve
-                float head = pistonHead(angle + i * Mth.HALF_PI);
-                vcyl(pose, buffer, i, 0, 0.17F, head, head + 0.05F, LAMP, full);
-                vcyl(pose, buffer, i, 0, 0.305F, 0.0F, 0.04F, LAMP, full);
-            }
-            // Copper windings on the dynamo, and the flywheel's rim
-            for (int k = 0; k < 3; k++) {
-                float x = dynamo - 0.3F + k * 0.22F;
-                hcyl(pose, buffer, x, x + 0.08F, 0.05F, 0, 0.405F, scale(COPPER, 0.5F + 0.5F * state.speed), full);
-            }
-            xring(pose, buffer, dynamo + 0.6F, 0.9F * WHEEL_RADIUS, WHEEL_RADIUS, angle, LAMP, full);
-        });
-        poseStack.popPose();
-    }
-
-    /**
-     * A square sleeve from {@code from} out to the block's face on {@code side}, around the point
-     * ({@code cx}, {@code cy}, {@code cz}): {@code half} is half its width.
-     */
-    private static void collar(PoseStack.Pose pose, VertexConsumer buffer, float cx, float cy, float cz, Direction side, float from,
-            int color, float half, int light) {
-        float[] lo = {cx - half, cy - half, cz - half};
-        float[] hi = {cx + half, cy + half, cz + half};
-        int axis = side.getAxis().ordinal();
-        float centre = axis == 0 ? cx : axis == 1 ? cy : cz;
-        int sign = side.getAxisDirection().getStep();
-        // Up and down are measured from the block's centre, the sides from the machine's axis
-        float base = axis == 1 ? 0.0F : centre;
-        lo[axis] = base + sign * (sign > 0 ? from : 0.5F);
-        hi[axis] = base + sign * (sign > 0 ? 0.5F : from);
-        box(pose, buffer, lo[0], lo[1], lo[2], hi[0], hi[1], hi[2], color, light);
-    }
-
-    /** Height of a piston head at crank angle {@code a}. */
-    private static float pistonHead(float a) {
-        return 0.34F + 0.12F * Mth.sin(a);
-    }
-
-    /** One cylinder block: a white body with a dark band, the glass sleeve's frame and the piston rod. */
-    private static void cylinder(PoseStack.Pose pose, VertexConsumer buffer, float x, float a, int light) {
-        vcyl(pose, buffer, x, 0, 0.3F, BASE_TOP, 0.22F, SHELL, light);
-        vcyl(pose, buffer, x, 0, 0.31F, -0.12F, -0.04F, DARK, light);
-        hdisc(pose, buffer, x, 0, 0.22F, 0.2F, 0.3F, SHELL, light);
-        hdisc(pose, buffer, x, 0, 0.6F, 0.12F, 0.24F, STEEL, light);
-        vcyl(pose, buffer, x, 0, 0.24F, 0.6F, 0.64F, STEEL, light);
-        for (int k = 0; k < 4; k++) {
-            float pa = Mth.HALF_PI * k + Mth.HALF_PI / 2;
-            float px = x + 0.215F * Mth.cos(pa);
-            float pz = 0.215F * Mth.sin(pa);
-            box(pose, buffer, px - 0.02F, 0.22F, pz - 0.02F, px + 0.02F, 0.6F, pz + 0.02F, STEEL, light);
+            // It only starts pumping once it is up, so the head never pokes through its plate
+            float lift = SWING * Mth.sin(state.angle + i * Mth.HALF_PI) * PISTON.eased(second, start);
+            ModelParts.slid(poseStack, collector, state.pistons[i - 1], state.facing, 0.0F, y + PISTON.rise(second, start) + lift, z);
         }
-        float head = pistonHead(a);
-        vcyl(pose, buffer, x, 0, 0.04F, head, 0.74F, STEEL, light);
-        vcyl(pose, buffer, x, 0, 0.17F, head - 0.06F, head, STEEL, light);
-    }
-
-    private static void flywheel(PoseStack.Pose pose, VertexConsumer buffer, float x, float spin, int light) {
-        xdisc(pose, buffer, x, WHEEL_Y, 0, 0.0F, 0.12F, spin, STEEL, light);
-        xdisc(pose, buffer, x, WHEEL_Y, 0, 0.78F * WHEEL_RADIUS, 0.9F * WHEEL_RADIUS, spin, DARK, light);
-        hcyl(pose, buffer, x - 0.03F, x + 0.03F, WHEEL_Y, 0, 0.9F * WHEEL_RADIUS, DARK, light);
-        for (int s = 0; s < SPOKES; s++) {
-            float a = spin + s * Mth.TWO_PI / SPOKES;
-            float r0 = 0.12F;
-            float r1 = 0.8F * WHEEL_RADIUS;
-            float w = 0.04F;
-            float cy = Mth.cos(a), cz = Mth.sin(a), py = -cz * w, pz = cy * w;
-            quad(pose, buffer, STEEL, light, 1, 0, 0,
-                    x, WHEEL_Y + cy * r0 - py, cz * r0 - pz, x, WHEEL_Y + cy * r1 - py, cz * r1 - pz,
-                    x, WHEEL_Y + cy * r1 + py, cz * r1 + pz, x, WHEEL_Y + cy * r0 + py, cz * r0 + pz);
+        int cell = CYLINDERS + 1;
+        float run = run(second, cell);
+        float y = railY(cell, run);
+        float z = cell * CELL * run;
+        if (parts != null) {
+            ModelParts.slid(poseStack, collector, parts[next++], state.facing, 0.0F, y, z);
+            for (Step step : DYNAMO) {
+                ModelParts.slid(poseStack, collector, parts[next++], state.facing, 0.0F, y + step.rise(second, DYNAMO_START), z);
+            }
+        }
+        ModelParts.spun(poseStack, collector, wheel, state.facing, z, WHEEL_Y, y + WHEEL.rise(second, DYNAMO_START), -state.angle);
+        if (state.rings) {
+            int ring = ARGB.scaleRGB(MINT, state.brightness);
+            poseStack.pushPose();
+            ModelParts.enterModel(poseStack, state.facing);
+            collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
+                for (float[] band : RINGS) {
+                    ModelParts.box(pose, buffer, 4.8F, band[0], 1.2F, 11.2F, band[1], 14.8F, ring, ring, LightCoordsUtil.FULL_BRIGHT);
+                    ModelParts.box(pose, buffer, 1.2F, band[0] + 0.02F, 4.8F, 14.8F, band[1] - 0.02F, 11.2F, ring, ring, LightCoordsUtil.FULL_BRIGHT);
+                }
+            });
+            poseStack.popPose();
         }
     }
 
-    private static int scale(int color, float factor) {
-        float f = Mth.clamp(factor, 0.0F, 1.0F);
-        int r = (int) (((color >> 16) & 0xFF) * f);
-        int g = (int) (((color >> 8) & 0xFF) * f);
-        int b = (int) ((color & 0xFF) * f);
-        return (color & 0xFF000000) | (r << 16) | (g << 8) | b;
-    }
-
-    private static float angle(int segment) {
-        return Mth.TWO_PI * segment / SEGMENTS;
-    }
-
-    /** An upright cylinder's side at ({@code cx}, {@code cz}). */
-    private static void vcyl(PoseStack.Pose pose, VertexConsumer buffer, float cx, float cz, float r, float y0, float y1, int color, int light) {
-        for (int i = 0; i < SEGMENTS; i++) {
-            float c0 = Mth.cos(angle(i)), s0 = Mth.sin(angle(i)), c1 = Mth.cos(angle(i + 1)), s1 = Mth.sin(angle(i + 1));
-            float u0 = (float) i / SEGMENTS, u1 = (float) (i + 1) / SEGMENTS;
-            vertex(pose, buffer, cx + r * c1, y0, cz + r * s1, u1, 1, color, light, c1, 0, s1);
-            vertex(pose, buffer, cx + r * c0, y0, cz + r * s0, u0, 1, color, light, c0, 0, s0);
-            vertex(pose, buffer, cx + r * c0, y1, cz + r * s0, u0, 0, color, light, c0, 0, s0);
-            vertex(pose, buffer, cx + r * c1, y1, cz + r * s1, u1, 0, color, light, c1, 0, s1);
-        }
-    }
-
-    /** A flat horizontal ring (a disc when {@code inner} is 0) at height {@code y}. */
-    private static void hdisc(PoseStack.Pose pose, VertexConsumer buffer, float cx, float cz, float y, float inner, float outer, int color, int light) {
-        for (int i = 0; i < SEGMENTS; i++) {
-            float c0 = Mth.cos(angle(i)), s0 = Mth.sin(angle(i)), c1 = Mth.cos(angle(i + 1)), s1 = Mth.sin(angle(i + 1));
-            quad(pose, buffer, color, light, 0, 1, 0,
-                    cx + inner * c0, y, cz + inner * s0, cx + inner * c1, y, cz + inner * s1,
-                    cx + outer * c1, y, cz + outer * s1, cx + outer * c0, y, cz + outer * s0);
-        }
-    }
-
-    /** A cylinder lying along x, from {@code x0} to {@code x1}, its axis at ({@code cy}, {@code cz}). */
-    private static void hcyl(PoseStack.Pose pose, VertexConsumer buffer, float x0, float x1, float cy, float cz, float r, int color, int light) {
-        for (int i = 0; i < SEGMENTS; i++) {
-            float c0 = Mth.cos(angle(i)), s0 = Mth.sin(angle(i)), c1 = Mth.cos(angle(i + 1)), s1 = Mth.sin(angle(i + 1));
-            float u0 = (float) i / SEGMENTS, u1 = (float) (i + 1) / SEGMENTS;
-            vertex(pose, buffer, x0, cy + r * c1, cz + r * s1, u1, 1, color, light, 0, c1, s1);
-            vertex(pose, buffer, x0, cy + r * c0, cz + r * s0, u0, 1, color, light, 0, c0, s0);
-            vertex(pose, buffer, x1, cy + r * c0, cz + r * s0, u0, 0, color, light, 0, c0, s0);
-            vertex(pose, buffer, x1, cy + r * c1, cz + r * s1, u1, 0, color, light, 0, c1, s1);
-        }
-    }
-
-    /** A flat ring standing across the row at {@code x}, turned by {@code spin}. */
-    private static void xdisc(PoseStack.Pose pose, VertexConsumer buffer, float x, float cy, float cz, float inner, float outer, float spin,
-            int color, int light) {
-        for (int i = 0; i < SEGMENTS; i++) {
-            float a0 = spin + angle(i), a1 = spin + angle(i + 1);
-            float c0 = Mth.cos(a0), s0 = Mth.sin(a0), c1 = Mth.cos(a1), s1 = Mth.sin(a1);
-            quad(pose, buffer, color, light, 1, 0, 0,
-                    x, cy + inner * c0, cz + inner * s0, x, cy + outer * c0, cz + outer * s0,
-                    x, cy + outer * c1, cz + outer * s1, x, cy + inner * c1, cz + inner * s1);
-        }
-    }
-
-    /** The flywheel's glowing rim, broken into dashes so its turning shows. */
-    private static void xring(PoseStack.Pose pose, VertexConsumer buffer, float x, float inner, float outer, float spin, int color, int light) {
-        for (int i = 0; i < SEGMENTS; i += 2) {
-            float a0 = spin + angle(i), a1 = spin + angle(i + 1);
-            float c0 = Mth.cos(a0), s0 = Mth.sin(a0), c1 = Mth.cos(a1), s1 = Mth.sin(a1);
-            quad(pose, buffer, color, light, 1, 0, 0,
-                    x, WHEEL_Y + inner * c0, inner * s0, x, WHEEL_Y + outer * c0, outer * s0,
-                    x, WHEEL_Y + outer * c1, outer * s1, x, WHEEL_Y + inner * c1, inner * s1);
-        }
-    }
-
-    private static void quad(PoseStack.Pose pose, VertexConsumer buffer, int color, int light, float nx, float ny, float nz, float... p) {
-        float[][] uv = {{0, 0}, {1, 0}, {1, 1}, {0, 1}};
-        for (int i = 0; i < 4; i++) {
-            vertex(pose, buffer, p[i * 3], p[i * 3 + 1], p[i * 3 + 2], uv[i][0], uv[i][1], color, light, nx, ny, nz);
-        }
-    }
-
-    private static void box(PoseStack.Pose pose, VertexConsumer buffer, float x0, float y0, float z0, float x1, float y1, float z1, int color, int light) {
-        quad(pose, buffer, color, light, 0, 1, 0, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0);
-        quad(pose, buffer, color, light, 0, -1, 0, x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1);
-        quad(pose, buffer, color, light, -1, 0, 0, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0);
-        quad(pose, buffer, color, light, 1, 0, 0, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1);
-        quad(pose, buffer, color, light, 0, 0, -1, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0);
-        quad(pose, buffer, color, light, 0, 0, 1, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1);
-    }
-
-    private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float u, float v, int color, int light,
-            float nx, float ny, float nz) {
-        buffer.addVertex(pose, x, y, z).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light)
-                .setNormal(pose, nx, ny, nz);
-    }
-
-    // The row runs up to 5 blocks behind the boiler: keep drawing while any of it is in view
+    // The row runs 4 blocks behind the boiler: keep drawing while any of it is in view
     @Override
     public AABB getRenderBoundingBox(SteamEngineBlockEntity entity) {
-        return new AABB(entity.getBlockPos()).inflate(SteamEngineBlockEntity.MAX_CYLINDERS + 3.0);
+        Direction back = entity.getBlockState().getValue(MachineBlock.FACING).getOpposite();
+        return new AABB(entity.getBlockPos()).expandTowards(back.getStepX() * (CYLINDERS + 1.0), 0.0, back.getStepZ() * (CYLINDERS + 1.0));
     }
 }

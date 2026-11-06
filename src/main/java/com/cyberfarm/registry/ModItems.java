@@ -105,8 +105,6 @@ public class ModItems {
     public static final DeferredItem<BlockItem> CONTAINMENT_GLASS = ITEMS.registerSimpleBlockItem(ModBlocks.CONTAINMENT_GLASS);
     public static final DeferredItem<BlockItem> ACID_SYNTHESIZER = ITEMS.registerSimpleBlockItem(ModBlocks.ACID_SYNTHESIZER);
     public static final DeferredItem<BlockItem> STEAM_ENGINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE);
-    public static final DeferredItem<BlockItem> STEAM_ENGINE_CYLINDER = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE_CYLINDER);
-    public static final DeferredItem<BlockItem> STEAM_ENGINE_DYNAMO = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE_DYNAMO);
 
     // Crafting components
     // Materials and circuits: aluminum for the first frames, carbon fiber for the advanced ones

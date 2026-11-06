@@ -16,7 +16,7 @@ Makes the coolants that let a [Fission Reactor](fission_reactor.md) run at highe
 **20 FE/t**; each batch takes 2 seconds and makes **500 mB**.
 
 It is a small multiblock: **place a Cyber Frame on its right**, seen from its front, against the open flange.
-**Right-click** the machine and sparks show the spot (hold sneak to place the frame against the machine itself). When the frame is
+**Right-click** the machine and a mini drone flies out and projects the frame where it goes (hold sneak to place the frame against the machine itself). When the frame is
 there the machine assembles and opens, and both tanks show their levels. It does not work until then, so a Mixer
 placed before this change waits for its frame, with its contents kept.
 

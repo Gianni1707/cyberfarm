@@ -20,7 +20,7 @@ public class SteamEngineMenu extends MachineMenu {
         addPlayerInventory(inventory, 114);
     }
 
-    /** Cylinders in the row, 0 while it is not complete. */
+    /** Cylinders in the row, 0 until it is open. */
     public int getCylinders() {
         return extra(0);
     }

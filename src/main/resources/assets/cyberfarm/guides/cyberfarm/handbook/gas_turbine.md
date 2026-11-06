@@ -15,7 +15,7 @@ item_ids:
 Burns **Biogas** or **Methane** into FE, 20 mB per tick.
 
 It is a small multiblock: **place a Cyber Frame in front of it and one behind**. **Right-click** the machine
-and sparks show the spots (hold sneak to place a frame against the machine itself). With both there it assembles: the
+and mini drones fly out and project the frames where they go (hold sneak to place a frame against the machine itself). With both there it assembles: the
 duct and the nozzle slide out of the drum and the rotor blooms. It does not work until then, so a turbine placed before this
 change waits for its frames, with its gas kept; move any pipe that sits where a frame goes.
 
