@@ -859,16 +859,6 @@ def digester_top():
     return c
 
 
-def turbine_front():
-    """Gas Turbine front: a dark duct round the burner; the fan in it is drawn by MovingPartsRenderer."""
-    c = panel(24)
-    c.disc(7.5, 7.5, 6.2, "K")
-    c.disc(7.5, 7.5, 5.2, "s")
-    c.disc(7.5, 7.5, 5.2, "D", r_inner=4.6)
-    c.disc(7.5, 7.5, 1.6, "O")
-    return c
-
-
 def extractor_bottom(formed):
     """The shower head: faces down into the chamber."""
     c = panel(25)
@@ -3464,8 +3454,6 @@ def build_all():
         "item/depleted_fuel_rod": fuel_rod(True),
         **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
-        **lit_front("gas_turbine", turbine_front),
-        "block/gas_turbine_top": generator_top(),
         "block/methane_extractor_bottom": extractor_bottom(False),
         "block/methane_extractor_top": extractor_top(False),
         "block/methane_extractor_side": extractor_side(False),

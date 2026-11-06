@@ -24,19 +24,16 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The moving part of a small machine, turning while it works and winding down when it stops: the
- * Gas Turbine's fan behind its front grille, the Bio-Digester's paddle stirring behind its window.
+ * Bio-Digester's paddle stirring behind its window.
  */
 public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T, MovingPartsRenderer.State> {
-    private static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/hologram.png"));
     private static final RenderType SHADOW = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
     private static final float PIXEL = 1.0F / 16.0F;
     /** Ticks to spin up from still to full speed, or down again. */
     private static final float SPIN_UP = 30.0F;
-    private static final int STEEL = 0xFF8C99A5;
-    private static final int STEEL_DARK = 0xFF4A5561;
     private static final int SLUDGE = 0x90253F14;
 
-    public enum Part { FAN, PADDLE }
+    public enum Part { PADDLE }
 
     public static class State extends BlockEntityRenderState {
         Direction facing = Direction.NORTH;
@@ -76,20 +73,9 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
         poseStack.translate(0.5F, 0.0F, 0.5F);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - state.facing.toYRot()));
         switch (part) {
-            case FAN -> collector.submitCustomGeometry(poseStack, SOLID, (pose, buffer) -> fan(pose, buffer, state));
             case PADDLE -> collector.submitCustomGeometry(poseStack, SHADOW, (pose, buffer) -> paddle(pose, buffer, state));
         }
         poseStack.popPose();
-    }
-
-    /** Four blades turning round the burner in the middle of the front's disc. */
-    private static void fan(PoseStack.Pose pose, VertexConsumer buffer, State state) {
-        float z = -0.5F - 0.002F;
-        float y = 0.5F;
-        for (int i = 0; i < 4; i++) {
-            float angle = state.phase * 0.6F + i * Mth.HALF_PI;
-            blade(pose, buffer, angle, 1.8F * PIXEL, 4.9F * PIXEL, 0.9F * PIXEL, y, z, i % 2 == 0 ? STEEL : STEEL_DARK, state.light);
-        }
     }
 
     /** One fan blade, a strip from {@code inner} to {@code outer} out from the middle, swept back a little. */

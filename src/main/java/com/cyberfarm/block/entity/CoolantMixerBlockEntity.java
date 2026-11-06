@@ -1,23 +1,14 @@
 package com.cyberfarm.block.entity;
 
-import com.cyberfarm.block.CoolantMixerBlock;
-import com.cyberfarm.block.CyberFrameBlock;
-import com.cyberfarm.block.HiddenFrameBlock;
+import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.menu.CoolantMixerMenu;
 import com.cyberfarm.registry.ModBlockEntities;
-import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,9 +30,9 @@ import org.jspecify.annotations.Nullable;
 /**
  * Coolant Mixer: makes the Fission Reactor's better coolants with FE.
  * Water + Lapis Lazuli → Coolant; Coolant + Blue Ice → Cryo Coolant.
- * It works once assembled with its Cyber Frame, see {@link CoolantMixerBlock}.
+ * It works once assembled with its Cyber Frame, see {@link SmallMultiblockBlock}.
  */
-public class CoolantMixerBlockEntity extends MachineBlockEntity {
+public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;
@@ -49,10 +40,7 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
-    public static final int OPEN_TICKS = 60;
-    /** How long the renderer goes on drawing after a stage changes, while the chunk rebuilds under it. */
-    public static final int REBUILD_TICKS = 20;
-    private static final int FORM_CHECK_INTERVAL = 10;
+    private static final int OPEN_TICKS = 60;
     private static final int SYNC_INTERVAL = 5;
 
     private record Recipe(Fluid input, Item item, Fluid output) {}
@@ -72,14 +60,9 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {input}, output);
     private int progress;
-    private int stageTicks;
-    private int stageWas = -1;
     /** What the clients last heard, so the fluid in the sight glasses stays up to date. */
     private int syncedInput = -1;
     private int syncedOutput = -1;
-    /** Client side, for the renderer: the stage it last saw, and when. */
-    public int shownStage = -1;
-    public float shownStageTime;
 
     public CoolantMixerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COOLANT_MIXER.get(), pos, state, 1, CAPACITY, MAX_INPUT, 0);
@@ -104,10 +87,9 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        int stage = state.getValue(CoolantMixerBlock.STAGE);
-        advanceStage(level, pos, state, stage);
+        boolean open = advanceStage(level, pos, state);
         Recipe recipe = recipeFor(input.fluid(), getStack(0));
-        boolean canRun = stage == CoolantMixerBlock.OPEN && recipe != null && input.amount() >= BATCH
+        boolean canRun = open && recipe != null && input.amount() >= BATCH
                 && output.capacity() - output.amount() >= BATCH
                 && (output.amount() == 0 || output.fluid() == recipe.output());
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
@@ -132,35 +114,9 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
         }
     }
 
-    /** A frame on its right assembles it; the opening and the fold-back take their time before the next stage. */
-    private void advanceStage(ServerLevel level, BlockPos pos, BlockState state, int stage) {
-        if (stage != stageWas) {
-            stageWas = stage;
-            stageTicks = 0;
-        }
-        stageTicks++;
-        if (stage == CoolantMixerBlock.LOOSE && level.getGameTime() % FORM_CHECK_INTERVAL == 0) {
-            Direction side = CoolantMixerBlock.frameSide(state);
-            BlockState frame = level.getBlockState(pos.relative(side));
-            if (frame.is(ModBlocks.CYBER_FRAME.get()) && !frame.getValue(CyberFrameBlock.FORMED)) {
-                level.setBlock(pos.relative(side), ModBlocks.HIDDEN_FRAME.get().defaultBlockState().setValue(HiddenFrameBlock.TO_MACHINE, side.getOpposite()), Block.UPDATE_ALL);
-                level.setBlock(pos, level.getBlockState(pos).setValue(CoolantMixerBlock.STAGE, CoolantMixerBlock.OPENING), Block.UPDATE_ALL);
-            }
-        } else if (stage == CoolantMixerBlock.OPENING && stageTicks >= OPEN_TICKS) {
-            level.setBlock(pos, state.setValue(CoolantMixerBlock.STAGE, CoolantMixerBlock.OPEN), Block.UPDATE_ALL);
-        } else if (stage == CoolantMixerBlock.CLOSING && stageTicks >= OPEN_TICKS + REBUILD_TICKS) {
-            level.setBlock(pos, state.setValue(CoolantMixerBlock.STAGE, CoolantMixerBlock.LOOSE), Block.UPDATE_ALL);
-        }
-    }
-
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveCustomOnly(registries);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override

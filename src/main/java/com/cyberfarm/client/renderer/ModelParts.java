@@ -2,15 +2,24 @@ package com.cyberfarm.client.renderer;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.MachineBlockEntity;
+import com.cyberfarm.fluid.GasTank;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
+import net.neoforged.neoforge.fluids.FluidStack;
+import org.jspecify.annotations.Nullable;
 
 /**
  * What the machines' renderers share to draw parts that move inside a block model: the model's frame, plain
@@ -20,6 +29,8 @@ final class ModelParts {
     /** Solid parts: this texture's white texel, tinted by the vertex colours. */
     static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
     static final float WHITE_UV = 15.5F / 16.0F;
+    /** Fluids in sight glasses. */
+    static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     private static final float PIXEL = 1.0F / 16.0F;
     private static final float CARRY = 25.0F;
 
@@ -47,6 +58,32 @@ final class ModelParts {
     static float progress(MachineBlockEntity entity, float time, int recipeTicks) {
         float carried = entity.status.working() ? Math.min(time - entity.statusTime, CARRY) / recipeTicks : 0.0F;
         return Mth.clamp(entity.status.progress() + carried, 0.0F, 1.0F);
+    }
+
+    static float fluidFill(GasTank tank) {
+        return tank.capacity() > 0 ? Math.min(1.0F, (float) tank.amount() / tank.capacity()) : 0.0F;
+    }
+
+    private static FluidModel fluidModel(Fluid fluid) {
+        return Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
+    }
+
+    static @Nullable TextureAtlasSprite fluidSprite(GasTank tank) {
+        return tank.amount() > 0 ? fluidModel(tank.fluid()).stillMaterial().sprite() : null;
+    }
+
+    static int fluidTint(GasTank tank) {
+        if (tank.amount() <= 0) {
+            return 0;
+        }
+        FluidTintSource source = fluidModel(tank.fluid()).fluidTintSource();
+        return source != null ? source.colorAsStack(new FluidStack(tank.fluid(), tank.amount())) : 0xFFFFFFFF;
+    }
+
+    /** The colour of a fluid's surface line. */
+    static int lighter(int rgb) {
+        int r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
+        return r + (255 - r) * 2 / 5 << 16 | g + (255 - g) * 2 / 5 << 8 | b + (255 - b) * 2 / 5;
     }
 
     /** A plain box, its top one colour and the rest another. Rotate the pose before it to tilt the box: the normals follow. */

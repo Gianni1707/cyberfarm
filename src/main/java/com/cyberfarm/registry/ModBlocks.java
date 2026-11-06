@@ -98,7 +98,7 @@ public class ModBlocks {
             BioDigesterBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<GasTurbineBlock> GAS_TURBINE = BLOCKS.registerBlock("gas_turbine",
-            GasTurbineBlock::new, ModBlocks::litMachine);
+            GasTurbineBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<MethaneExtractorBlock> METHANE_EXTRACTOR = BLOCKS.registerBlock("methane_extractor",
             MethaneExtractorBlock::new,
