@@ -3338,20 +3338,6 @@ def circuit(board, trace, chip_light):
     return c
 
 
-def electrolyzer_front(frame=None):
-    """An electrolysis cell: two electrodes in a bath, bubbles rising off them while it works."""
-    c = panel(66)
-    c.rect(3, 2, 12, 12, "K")
-    c.rect(4, 3, 11, 11, "#1a2c3a")
-    c.rect(4, 7, 11, 11, "#2a5a7a")
-    c.rect(5, 3, 5, 10, "l")
-    c.rect(10, 3, 10, 10, "#b07040")
-    for x, y in rising([(6, 10), (9, 9), (6, 7), (9, 11)], frame, 7, 5):
-        c.set(x, y, "#a8e0ff")
-    c.rect(3, 13, 12, 13, "c")
-    return c
-
-
 def pyrolysis_oven_front():
     """A kiln door with a grate of glowing coals, a gauge and a methane feed pipe."""
     c = panel(67)
@@ -3537,7 +3523,6 @@ def build_all():
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
-        **lit_front("electrolyzer", electrolyzer_front),
         **lit_front("pyrolysis_oven", pyrolysis_oven_front),
         **lit_front("fabricator", fabricator_front),
         "block/supply_terminal_front": supply_terminal_front(),
