@@ -163,7 +163,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> NETHER_SULFUR_ORE = BLOCKS.registerSimpleBlock("nether_sulfur_ore",
             p -> p.mapColor(MapColor.NETHER).strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE).requiresCorrectToolForDrops());
     public static final DeferredBlock<AcidSynthesizerBlock> ACID_SYNTHESIZER = BLOCKS.registerBlock("acid_synthesizer",
-            AcidSynthesizerBlock::new, ModBlocks::litMachine);
+            AcidSynthesizerBlock::new, p -> litMachine(p).noOcclusion());
     // Steam Engine: the boiler controls a row of cylinders closed by a dynamo
     // A complete engine is drawn whole by the boiler's renderer: its blocks hide and never cull their neighbours
     public static final DeferredBlock<SteamEngineBlock> STEAM_ENGINE = BLOCKS.registerBlock("steam_engine",

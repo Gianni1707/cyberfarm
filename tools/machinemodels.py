@@ -1,5 +1,5 @@
 """Builds the 3D machine models (prototype): Combustion Generator, Bio-Digester, Drone Dock, Builder Swarm Dock,
-Drone Assembler and Fabricator.
+Drone Assembler, Fabricator and Acid Synthesizer.
 
 Each machine is a list of boxes, like a Blockbench model. Every face gets its own patch in one texture atlas per
 machine, painted from a small set of source materials and baked with bevelled edges and a top-to-bottom gradient,
@@ -231,6 +231,24 @@ def drum():
     return t
 
 
+def slot():
+    """A dark recess: a sight glass's slot (the renderer draws the fluid in front of it), a socket."""
+    t = Tex("s")
+    t.rect(0, 0, 15, 0, "5")
+    t.rect(0, 0, 0, 15, "5")
+    return t
+
+
+def rotor():
+    """A turning collar at rest: steel with a dark seam every fourth texel, like a roller's faces."""
+    t = Tex("b")
+    for x in range(0, N, 4):
+        t.rect(x, 0, x, 15, "5")
+        t.rect(x + 1, 0, x + 1, 15, "a")
+        t.rect(x + 3, 0, x + 3, 15, "c")
+    return t
+
+
 def liquid():
     t = Tex("o")
     for x, y in ((6, 5), (9, 9), (5, 11), (10, 4)):
@@ -259,7 +277,7 @@ def light(lit):
 
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
              "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "bed": bed(), "card": card(), "tray_front": tray_front(), "chip_pins": chip_pins(),
-             "chip_top": chip_top(), "drum": drum(), "liquid": liquid(),
+             "chip_top": chip_top(), "drum": drum(), "slot": slot(), "rotor": rotor(), "liquid": liquid(),
              "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
@@ -290,6 +308,14 @@ def roller(x0, x1, cy, cz, r, mat):
     return [((x0, cy - r / 3, cz - r), (x1, cy + r / 3, cz + r), mat),
             ((x0 + LAYER, cy - r, cz - r / 3), (x1 - LAYER, cy + r, cz + r / 3), mat),
             ((x0 + 2 * LAYER, cy - 2 * r / 3, cz - 2 * r / 3), (x1 - 2 * LAYER, cy + 2 * r / 3, cz + 2 * r / 3), mat)]
+
+
+def zdisc(cx, cy, z0, z1, r, mat):
+    """Twelve-sided disc facing the front: roller()'s section turned to lie along z."""
+    assert z1 - z0 > 4 * LAYER, "too thin for its layers: the inner boxes would turn inside out"
+    return [((cx - r / 3, cy - r, z0), (cx + r / 3, cy + r, z1), mat),
+            ((cx - r, cy - r / 3, z0 + LAYER), (cx + r, cy + r / 3, z1 - LAYER), mat),
+            ((cx - 2 * r / 3, cy - 2 * r / 3, z0 + 2 * LAYER), (cx + 2 * r / 3, cy + 2 * r / 3, z1 - 2 * LAYER), mat)]
 
 
 def combustion_generator():
@@ -412,6 +438,43 @@ def fabricator():
         ((3.4, 12.35, 7), (3.5, 13.85, 9), "plinth"),
         ((3.25, 12.6, 7.25), (3.4, 13.6, 8.75), "light"),
     ]
+
+
+def acid_synthesizer():
+    # A contact tower between two tanks: water on the left and acid on the right from the front (the flip to north
+    # mirrors x), piped straight into their sides. AcidSynthesizerRenderer draws the fluids in the slots and turns a
+    # collar over the still one (keep ACID_* in step with it), at the tower's axis (8, 6)
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    parts = [
+        ((1, 0, 1), (15, 1, 15), "plinth"),
+        *octagon(1, 1, 1, 15, 4, 15, 3, dark),                              # base
+        *octagon(0.6, 2, 0.6, 15.4, 2.75, 15.4, 3, "copper"),               # foot band, below the ports
+        *round_tank(5.5, 4, 3.5, 10.5, 10.5, 8.5, dark),                    # tower, below the collar
+        *round_tank(5.1, 9, 3.1, 10.9, 9.75, 8.9, "copper"),
+        *round_tank(5.55, 10.6, 3.55, 10.45, 12.65, 8.45, "rotor"),         # still collar, under the renderer's
+        *round_tank(5.5, 12.75, 3.5, 10.5, 14, 8.5, dark),                  # tower, above the collar
+        *round_tank(5.1, 13, 3.1, 10.9, 13.75, 8.9, "copper"),
+        *round_tank(6, 14, 4, 10, 15, 8, cap),
+        ((7.25, 15, 5.25), (8.75, 16, 6.75), "pipe"),                       # chimney
+        ((6.5, 12.8, 1.75), (9.5, 13.75, 3.6), dark),                       # sulphur chute, above the collar
+        ((6, 13.75, 1.25), (10, 15, 3.6), {"up": "grille", "south": "copper", "east": "copper"}),   # sulphur hopper
+        *zdisc(8, 6.25, 8.4, 11.75, 2.25, dark),                            # pump between the tanks
+        *zdisc(8, 6.25, 11.75, 12, 2.25, "copper"),
+        *zdisc(8, 6.25, 12, 12.1, 1.25, "slot"),                            # its socket, and a status lamp
+        ((7.5, 5.75, 12.1), (8.5, 6.75, 12.3), "light"),
+    ]
+    for x0 in (10.75, 1):                                                   # water, acid
+        x1 = x0 + 4.25
+        parts += [
+            *round_tank(x0, 4, 6, x1, 12.5, 10.25, dark),
+            *round_tank(x0 - 0.2, 4.75, 5.8, x1 + 0.2, 5.5, 10.45, "copper"),
+            *round_tank(x0 - 0.2, 11.25, 5.8, x1 + 0.2, 12, 10.45, "copper"),
+            *round_tank(x0 + 0.5, 12.5, 6.5, x1 - 0.5, 13.25, 9.75, cap),
+            ((x0 + 0.625, 5.5, 10), (x1 - 0.625, 11.25, 10.6), "trim"),     # gauge frame, 3 px
+            ((x0 + 1.125, 5.9, 10.6), (x1 - 1.125, 10.85, 10.7), "slot"),   # sight glass, 2 px
+        ]
+    return parts
 
 
 # --------------------------------------------------------------------------- baking
@@ -682,7 +745,8 @@ if __name__ == "__main__":
             ("drone_dock", drone_dock(), False, False),
             ("swarm_dock", drone_dock("swarm_pad"), False, False),
             ("drone_assembler", drone_assembler(), True, False),
-            ("fabricator", fabricator(), True, False)):
+            ("fabricator", fabricator(), True, False),
+            ("acid_synthesizer", acid_synthesizer(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -694,9 +758,11 @@ if __name__ == "__main__":
     build("drone_assembler_port", low_port(), False)
     build("fabricator_port", side_port(2), False)
     build("fabricator_port_up", top_port(12.75), False)
+    build("acid_synthesizer_port", side_port(2, y0=3.5), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")
     blockstate("drone_assembler", True, set())
     blockstate("fabricator", True, {"up"})
+    blockstate("acid_synthesizer", True, set())

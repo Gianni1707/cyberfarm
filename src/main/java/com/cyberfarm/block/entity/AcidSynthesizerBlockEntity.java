@@ -49,7 +49,7 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {input}, output);
     private int progress;
-    /** What the clients last heard, so the fluid in the front windows stays up to date. */
+    /** What the clients last heard, so the fluid in the sight glasses stays up to date. */
     private int syncedInput = -1;
     private int syncedOutput = -1;
     private boolean syncedWorking;
