@@ -506,7 +506,6 @@ def nuclear_blocks():
                     model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
                     variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
-    lit_machine("water_pump", "water_pump_top")
     for tank in ("liquid_tank", "gas_tank"):
         write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
             "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})

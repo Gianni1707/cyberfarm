@@ -5,7 +5,6 @@ import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.FabricatorBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -33,9 +32,8 @@ import net.minecraft.world.phys.Vec3;
  * the north-facing model (tools/machinemodels.py, fabricator()).
  */
 public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEntity, FabricatorRenderer.State> {
-    private static final RenderType CARD = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
+    private static final RenderType CARD = ModelParts.SOLID;
     private static final RenderType GLOW = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
-    private static final float PIXEL = 1.0F / 16.0F;
     private static final int LAMP = 0xD1FEE7;
     private static final int STEEL = 0xFFBDC6C5;
     private static final int STEEL_DARK = 0xFFB1BEBC;
@@ -137,11 +135,7 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
             return;
         }
         poseStack.pushPose();
-        // A frame where the front looks north (-z), as in the block's model, in model pixels
-        poseStack.translate(0.5F, 0.0F, 0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - state.facing.toYRot()));
-        poseStack.scale(PIXEL, PIXEL, PIXEL);
-        poseStack.translate(-8.0F, 0.0F, -8.0F);
+        ModelParts.enterModel(poseStack, state.facing);
         collector.submitCustomGeometry(poseStack, CARD, (pose, buffer) -> {
             if (!state.idle) {
                 card(pose, buffer, state.cardZ, state.light);
@@ -196,7 +190,7 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
 
     /** A twelve-faced steel roller along x, turned by {@code angle}, with a dark seam on every third face so it reads as turning. */
     private static void roller(PoseStack.Pose pose, VertexConsumer buffer, float x0, float x1, float cy, float cz, float r, float angle, int light) {
-        float white = 15.5F / 16;
+        float white = ModelParts.WHITE_UV;
         for (int k = 0; k < 12; k++) {
             float a0 = angle + k * Mth.PI / 6;
             float a1 = a0 + Mth.PI / 6;

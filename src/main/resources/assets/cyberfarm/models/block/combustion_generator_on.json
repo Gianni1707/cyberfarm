@@ -5,8 +5,7 @@
     "particle": "cyberfarm:block/models/combustion_generator",
     "atlas": "cyberfarm:block/models/combustion_generator",
     "fire": "cyberfarm:block/machine_fire",
-    "light": "cyberfarm:block/machine_light",
-    "gas_pipe_up": "cyberfarm:block/gas_pipe"
+    "light": "cyberfarm:block/machine_light"
   },
   "elements": [
     {

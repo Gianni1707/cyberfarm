@@ -1,6 +1,5 @@
 package com.cyberfarm.client.renderer;
 
-import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
@@ -8,7 +7,6 @@ import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.registry.ModFluids;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.LightCoordsUtil;
@@ -39,10 +37,6 @@ import org.jspecify.annotations.Nullable;
  */
 public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesizerBlockEntity, AcidSynthesizerRenderer.State> {
     private static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
-    private static final RenderType STEEL_PART = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
-    private static final float PIXEL = 1.0F / 16.0F;
-    /** The white texel of that texture, tinted by the vertex colours. */
-    private static final float WHITE = 15.5F / 16.0F;
     private static final int STEEL = 0xFFBDC6C5;
     private static final int STEEL_DARK = 0xFF7C8989;
     private static final int SEAM = 0xFF071314;
@@ -107,13 +101,9 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
             return;
         }
         poseStack.pushPose();
-        // A frame where the front looks north (-z), as in the block's model, in model pixels
-        poseStack.translate(0.5F, 0.0F, 0.5F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - state.facing.toYRot()));
-        poseStack.scale(PIXEL, PIXEL, PIXEL);
-        poseStack.translate(-8.0F, 0.0F, -8.0F);
+        ModelParts.enterModel(poseStack, state.facing);
         if (state.lit) {
-            collector.submitCustomGeometry(poseStack, STEEL_PART, (pose, buffer) -> collar(pose, buffer, state.time * TURN_PER_TICK, state.light));
+            collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> collar(pose, buffer, state.time * TURN_PER_TICK, state.light));
         }
         collector.submitCustomGeometry(poseStack, FLUID, (pose, buffer) -> {
             glass(pose, buffer, WATER_X, state.waterFill, water, WATER_COLOR, WATER_SURFACE, state.light);
@@ -167,21 +157,16 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
             float x1 = COLLAR_X + COLLAR_R * cos1, z1 = COLLAR_Z + COLLAR_R * sin1;
             int side = k % 3 == 0 ? SEAM : k % 2 == 0 ? STEEL : STEEL_DARK;
             float nx = Mth.cos(mid), nz = Mth.sin(mid);
-            steelVertex(pose, buffer, x1, COLLAR_Y1, z1, side, light, nx, 0.0F, nz);
-            steelVertex(pose, buffer, x1, COLLAR_Y0, z1, side, light, nx, 0.0F, nz);
-            steelVertex(pose, buffer, x0, COLLAR_Y0, z0, side, light, nx, 0.0F, nz);
-            steelVertex(pose, buffer, x0, COLLAR_Y1, z0, side, light, nx, 0.0F, nz);
+            ModelParts.vertex(pose, buffer, x1, COLLAR_Y1, z1, side, light, nx, 0.0F, nz);
+            ModelParts.vertex(pose, buffer, x1, COLLAR_Y0, z1, side, light, nx, 0.0F, nz);
+            ModelParts.vertex(pose, buffer, x0, COLLAR_Y0, z0, side, light, nx, 0.0F, nz);
+            ModelParts.vertex(pose, buffer, x0, COLLAR_Y1, z0, side, light, nx, 0.0F, nz);
             int top = k % 3 == 0 ? SEAM : STEEL;
-            steelVertex(pose, buffer, x1, COLLAR_Y1, z1, top, light, 0.0F, 1.0F, 0.0F);
-            steelVertex(pose, buffer, x0, COLLAR_Y1, z0, top, light, 0.0F, 1.0F, 0.0F);
-            steelVertex(pose, buffer, COLLAR_X + COLLAR_INNER * cos0, COLLAR_Y1, COLLAR_Z + COLLAR_INNER * sin0, top, light, 0.0F, 1.0F, 0.0F);
-            steelVertex(pose, buffer, COLLAR_X + COLLAR_INNER * cos1, COLLAR_Y1, COLLAR_Z + COLLAR_INNER * sin1, top, light, 0.0F, 1.0F, 0.0F);
+            ModelParts.vertex(pose, buffer, x1, COLLAR_Y1, z1, top, light, 0.0F, 1.0F, 0.0F);
+            ModelParts.vertex(pose, buffer, x0, COLLAR_Y1, z0, top, light, 0.0F, 1.0F, 0.0F);
+            ModelParts.vertex(pose, buffer, COLLAR_X + COLLAR_INNER * cos0, COLLAR_Y1, COLLAR_Z + COLLAR_INNER * sin0, top, light, 0.0F, 1.0F, 0.0F);
+            ModelParts.vertex(pose, buffer, COLLAR_X + COLLAR_INNER * cos1, COLLAR_Y1, COLLAR_Z + COLLAR_INNER * sin1, top, light, 0.0F, 1.0F, 0.0F);
         }
-    }
-
-    private static void steelVertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, int colour, int light, float nx, float ny, float nz) {
-        buffer.addVertex(pose, x, y, z).setColor(colour).setUv(WHITE, WHITE).setOverlay(OverlayTexture.NO_OVERLAY)
-                .setLight(light).setNormal(pose, nx, ny, nz);
     }
 
     @Override

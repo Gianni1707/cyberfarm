@@ -477,24 +477,6 @@ def blueprint_disc():
     return c
 
 
-def water_pump_front(frame=None):
-    c = panel(52)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 11, 11, "#2a4f9a", noise=8, seed=52)
-    for x, y in rising(((5, 9), (8, 6), (10, 10), (6, 5)), frame, 4, 8):
-        c.set(x, y, "#7fb0ff")
-    c.rect(3, 13, 12, 13, "b")
-    return c
-
-
-def water_pump_top():
-    c = panel(53)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "#2a4f9a")
-    c.rect(4, 7, 11, 8, "m")
-    return c
-
-
 # Uranium shades for the item sprites: outline, dark, mid, light, glow; then rock greys
 URANIUM_SHADES = {"1": "#14200d", "2": "#26501a", "3": "#3c8a24", "4": "#62d13a", "5": "#c4ff9a",
                   "6": "#2b2c28", "7": "#454640", "8": "#62635b", "9": "#7f8077"}
@@ -3489,8 +3471,6 @@ def build_all():
         "block/reactor_controller": reactor_controller("off"),
         "block/reactor_controller_formed": reactor_controller("formed"),
         "block/reactor_controller_on": reactor_controller("on"),
-        **lit_front("water_pump", water_pump_front),
-        "block/water_pump_top": water_pump_top(),
         "block/laser_turret_side": turret_side(),
         "block/laser_turret_top": turret_top(),
         "block/laser_turret_ring": turret_ring(),

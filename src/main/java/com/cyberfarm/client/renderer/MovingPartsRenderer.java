@@ -24,8 +24,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The moving part of a small machine, turning while it works and winding down when it stops: the
- * Gas Turbine's fan behind its front grille, the Water Pump's piston going up and down on its top,
- * the Bio-Digester's paddle stirring behind its window.
+ * Gas Turbine's fan behind its front grille, the Bio-Digester's paddle stirring behind its window.
  */
 public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockEntityRenderer<T, MovingPartsRenderer.State> {
     private static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/hologram.png"));
@@ -37,7 +36,7 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
     private static final int STEEL_DARK = 0xFF4A5561;
     private static final int SLUDGE = 0x90253F14;
 
-    public enum Part { FAN, PISTON, PADDLE }
+    public enum Part { FAN, PADDLE }
 
     public static class State extends BlockEntityRenderState {
         Direction facing = Direction.NORTH;
@@ -65,14 +64,9 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
             return;
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
-        state.light = LightCoordsUtil.getLightCoords(level, part == Part.PISTON ? entity.getBlockPos().above() : entity.getBlockPos().relative(state.facing));
+        state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().relative(state.facing));
         float time = level.getGameTime() + partialTick;
-        float elapsed = entity.motionTime == 0.0F ? 0.0F : Mth.clamp(time - entity.motionTime, 0.0F, 5.0F);
-        entity.motionTime = time;
-        float target = entity.status.working() ? 1.0F : 0.0F;
-        entity.motionSpeed += Mth.clamp(target - entity.motionSpeed, -elapsed / SPIN_UP, elapsed / SPIN_UP);
-        entity.motionPhase += entity.motionSpeed * elapsed;
-        state.phase = entity.motionPhase;
+        state.phase = ModelParts.advance(entity, time, entity.status.working() ? 1.0F : 0.0F, SPIN_UP);
     }
 
     @Override
@@ -83,7 +77,6 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - state.facing.toYRot()));
         switch (part) {
             case FAN -> collector.submitCustomGeometry(poseStack, SOLID, (pose, buffer) -> fan(pose, buffer, state));
-            case PISTON -> collector.submitCustomGeometry(poseStack, SOLID, (pose, buffer) -> piston(pose, buffer, state));
             case PADDLE -> collector.submitCustomGeometry(poseStack, SHADOW, (pose, buffer) -> paddle(pose, buffer, state));
         }
         poseStack.popPose();
@@ -115,14 +108,6 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
         }
     }
 
-    /** A rod with a cap rising and sinking out of the middle of the pump's top. */
-    private static void piston(PoseStack.Pose pose, VertexConsumer buffer, State state) {
-        float lift = (1.0F - Mth.cos(state.phase * 0.35F)) * 0.5F;
-        float top = 1.0F + PIXEL + lift * 3.0F * PIXEL;
-        box(pose, buffer, -PIXEL, 1.0F, -PIXEL, PIXEL, top, PIXEL, STEEL, state.light);
-        box(pose, buffer, -2.5F * PIXEL, top, -2.5F * PIXEL, 2.5F * PIXEL, top + PIXEL, 2.5F * PIXEL, STEEL_DARK, state.light);
-    }
-
     /** A two-armed paddle's shadow turning slowly in the sludge behind the tank's porthole. */
     private static void paddle(PoseStack.Pose pose, VertexConsumer buffer, State state) {
         float z = -0.5F + 1.25F * PIXEL - 0.002F;
@@ -133,20 +118,6 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
         }
     }
 
-    private static void box(PoseStack.Pose pose, VertexConsumer buffer, float x0, float y0, float z0, float x1, float y1, float z1, int colour, int light) {
-        quad(pose, buffer, colour, light, 0, 1, 0, x0, y1, z0, x0, y1, z1, x1, y1, z1, x1, y1, z0);
-        quad(pose, buffer, colour, light, 0, 0, -1, x0, y0, z0, x0, y1, z0, x1, y1, z0, x1, y0, z0);
-        quad(pose, buffer, colour, light, 0, 0, 1, x1, y0, z1, x1, y1, z1, x0, y1, z1, x0, y0, z1);
-        quad(pose, buffer, colour, light, -1, 0, 0, x0, y0, z1, x0, y1, z1, x0, y1, z0, x0, y0, z0);
-        quad(pose, buffer, colour, light, 1, 0, 0, x1, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1);
-    }
-
-    private static void quad(PoseStack.Pose pose, VertexConsumer buffer, int colour, int light, float nx, float ny, float nz, float... c) {
-        for (int i = 0; i < 4; i++) {
-            vertex(pose, buffer, c[i * 3], c[i * 3 + 1], c[i * 3 + 2], colour, light, nx, ny, nz);
-        }
-    }
-
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, int colour, int light, float nx, float ny, float nz) {
         buffer.addVertex(pose, x, y, z).setColor(colour).setUv(0.5F, 0.5F).setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light).setNormal(pose, nx, ny, nz);
@@ -154,6 +125,6 @@ public class MovingPartsRenderer<T extends MachineBlockEntity> implements BlockE
 
     @Override
     public AABB getRenderBoundingBox(T entity) {
-        return new AABB(entity.getBlockPos()).expandTowards(0.0, 0.5, 0.0);
+        return new AABB(entity.getBlockPos());
     }
 }

@@ -5,8 +5,7 @@
     "particle": "cyberfarm:block/models/acid_synthesizer",
     "atlas": "cyberfarm:block/models/acid_synthesizer",
     "fire": "cyberfarm:block/machine_fire",
-    "light": "cyberfarm:block/machine_light",
-    "gas_pipe_up": "cyberfarm:block/gas_pipe"
+    "light": "cyberfarm:block/machine_light"
   },
   "elements": [
     {
