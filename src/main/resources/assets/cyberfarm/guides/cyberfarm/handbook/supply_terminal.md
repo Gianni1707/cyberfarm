@@ -20,7 +20,9 @@ materials, and paying for them.
 
 An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and
 becomes a **Drone Mechanist**: a villager in goggles and a white work coat. While he works it, the
-terminal shows his level and the village's contracts.
+terminal shows his level and the village's contracts. Its board shows them from afar too: a lit card
+per open contract filling up as you deliver, the event's in steel, blinking in a raid. A finished contract's
+card drops behind the board and a new one rises. The header is lit while he works it.
 
 **Right-click** him to talk: he has a plan for a [tech village](tech_village.md). His trades are
 behind the **Trade** button at the end of each talk.

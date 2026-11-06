@@ -185,6 +185,19 @@ public class CyberFarm {
             CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
             return crystallizer != null ? crystallizer.portItems() : null;
         }, ModBlocks.CRYSTALLIZER_PORT.get());
+        // So do the formed chamber's floor edges and roof middle, without a port
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.portFluids() : null;
+        }, ModBlocks.CYBER_FRAME.get());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.getEnergy() : null;
+        }, ModBlocks.CYBER_FRAME.get());
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.portItems() : null;
+        }, ModBlocks.CYBER_FRAME.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());

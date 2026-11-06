@@ -3,12 +3,14 @@ package com.cyberfarm.client.renderer;
 import com.cyberfarm.block.CoolantMixerBlock;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.block.MachinePartBlock;
 import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -27,15 +29,15 @@ import org.jspecify.annotations.Nullable;
  * The assembled Coolant Mixer: both tanks' fluids in their sight glasses, the carriage running between them while it
  * works, and the bench opening once when it is assembled, folding back when it comes apart.
  * <p>
- * Idle, 2 boxes and up to 6 fluid quads. During the 3 s of an opening 26 boxes (156 quads), rarely. All within the default
+ * Idle, 2 boxes and up to 6 fluid quads; during the 3 s of an opening the moving parts' models too, the same as the finished
+ * machine's ({@link MachinePartBlock}), so nothing changes when they stop. All within the default
  * 64 blocks. Coordinates are model pixels of the north-facing model (tools/machinemodels.py, coolant_mixer_parts()); the
  * tables use the design frame, as that file does.
  */
 public class CoolantMixerRenderer implements BlockEntityRenderer<CoolantMixerBlockEntity, CoolantMixerRenderer.State> {
-    private static final int LID = 0xFF395853, BODY = 0xFF233E3B, STEEL_TOP = 0xFFBDC6C5, STEEL = 0xFFB1BEBC;
-    private static final int SLOT = 0xFF030909, BEAM = 0xFF5B7771, MINT = 0xFF5EC2B8, GLINT = 0x40FFFFFF;
+    private static final int LID = 0xFF395853, STEEL_TOP = 0xFFBDC6C5, STEEL = 0xFFB1BEBC;
+    private static final int MINT = 0xFF5EC2B8, GLINT = 0x40FFFFFF;
     /** After a stage changes the renderer keeps drawing this long, a hair larger, while the chunk rebuilds under it. */
-    private static final float GROW = 0.02F;
     private static final float SLIDE = 4.5F, SINK = 5.1F, RISE = 6.5F, PISTON = 2.7F, RAIL_LIFT = 5.0F, SETTLE = 0.05F;
     private static final float SWING = 2.5F, RAMP = 10.0F;
     private static final float GLASS_Y0 = 9.4F, GLASS_Y1 = 15.0F, GLASS_W = 5.0F, GLASS_Z = 3.9F, WATER_GLASS_X = 7.0F, COOLANT_GLASS_X = -12.0F;
@@ -47,38 +49,18 @@ public class CoolantMixerRenderer implements BlockEntityRenderer<CoolantMixerBlo
         return new Box(x0 - 16.0F, y0, 16.0F - z1, x1 - 16.0F, y1, 16.0F - z0, top, side);
     }
 
-    private static Box[] tank(float x0) {
-        float x1 = x0 + 9.0F;
-        return new Box[] {
-                box(x0 + 2.25F, 7.5F, 2.5F, x1 - 2.25F, 15.5F, 11.5F, LID, BODY),
-                box(x0, 7.52F, 4.75F, x1, 15.48F, 9.25F, LID, BODY),
-                box(x0 + 1.0F, 15.5F, 3.5F, x1 - 1.0F, 16.0F, 10.5F, LID, STEEL),
-                box(x0 + 0.6F, 7.55F, 3.1F, x1 - 0.6F, 8.3F, 11.75F, STEEL_TOP, STEEL),
-                box(x0 + 1.5F, 8.3F, 11.5F, x0 + 2.0F, 15.5F, 12.25F, STEEL_TOP, STEEL),
-                box(x1 - 2.0F, 8.3F, 11.5F, x1 - 1.5F, 15.5F, 12.25F, STEEL_TOP, STEEL),
-                box(x0 + 2.0F, 9.4F, 11.5F, x1 - 2.0F, 15.0F, 12.1F, SLOT, SLOT)};
-    }
-
-    private static final Box[] WATER_TANK = tank(21.0F), COOLANT_TANK = tank(2.0F);
-    private static final Box[] WATER_SADDLE = {box(22.0F, 3.0F, 3.5F, 29.0F, 7.6F, 10.5F, BODY, BODY)};
-    private static final Box[] COOLANT_SADDLE = {box(3.0F, 3.0F, 3.5F, 10.0F, 7.6F, 10.5F, BODY, BODY)};
-    private static final Box[] RAIL = {box(11.5F, 5.1F, 3.0F, 20.5F, 9.9F, 4.9F, LID, BEAM), box(12.0F, 7.6F, 4.9F, 20.0F, 8.4F, 4.95F, SLOT, SLOT)};
     private static final Box[] CARRIAGE = {box(14.25F, 7.0F, 4.85F, 17.75F, 9.8F, 9.0F, LID, MINT), box(14.5F, 5.4F, 7.2F, 17.5F, 7.01F, 8.8F, STEEL_TOP, STEEL)};
-    /** The hood's panels, sunk into the bench at rest: {right half, left half}, then when each pair sinks. */
-    private static final Box[][] HOOD = {
-            {box(3.1F, 0.16F, 12.3F, 11.4F, 4.95F, 13.4F, LID, BODY), box(20.6F, 0.16F, 12.3F, 28.9F, 4.95F, 13.4F, LID, BODY)},
-            {box(3.1F, 0.16F, 1.1F, 11.4F, 4.95F, 2.3F, LID, BODY), box(20.6F, 0.16F, 1.1F, 28.9F, 4.95F, 2.3F, LID, BODY)},
-            {box(1.1F, 0.16F, 3.1F, 1.9F, 4.95F, 12.9F, LID, BODY), box(30.1F, 0.16F, 3.1F, 30.9F, 4.95F, 12.9F, LID, BODY)}};
+    /** When each pair of hood panels sinks: front, back, ends. */
     private static final float[][] SINK_T = {{20.0F, 30.0F}, {23.0F, 33.0F}, {26.0F, 36.0F}};
+    private static final int HOOD_PANELS = 6;
 
     public static class State extends BlockEntityRenderState {
         int stage;
         Direction facing = Direction.NORTH;
         int light;
-        /** How far the opening has got, and whether the renderer still has to draw what the static model will show. */
+        /** How far the opening has got, and the parts' models while they aren't the static model's yet, or null. */
         float t;
-        boolean tanks;
-        float grow;
+        MovingBlockRenderState @Nullable [] parts;
         float carriage;
         @Nullable TextureAtlasSprite inputSprite;
         @Nullable TextureAtlasSprite outputSprite;
@@ -107,9 +89,13 @@ public class CoolantMixerRenderer implements BlockEntityRenderer<CoolantMixerBlo
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;
         }
-        boolean holding = entity.shownHolding(state.stage, time);
-        state.tanks = state.stage != SmallMultiblockBlock.OPEN || holding;
-        state.grow = holding ? GROW : 0.0F;
+        state.parts = null;
+        if (state.stage != SmallMultiblockBlock.OPEN || entity.shownHolding(state.stage, time)) {
+            state.parts = new MovingBlockRenderState[MachinePartBlock.MIXER_HOOD + HOOD_PANELS];
+            for (int part = MachinePartBlock.MIXER_WATER_TANK; part < state.parts.length; part++) {
+                state.parts[part] = ModelParts.movingPart(level, entity.getBlockPos(), part, entity.getBlockState().getValue(MachineBlock.FACING));
+            }
+        }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
         boolean working = state.stage == SmallMultiblockBlock.OPEN && entity.getBlockState().getValue(LitMachineBlock.LIT);
@@ -146,27 +132,25 @@ public class CoolantMixerRenderer implements BlockEntityRenderer<CoolantMixerBlo
         float coolantRise = -RISE * (1.0F - settle(t, 35.0F, 53.0F));
         float railRise = -RAIL_LIFT * (1.0F - smooth(t, 46.0F, 60.0F));
         int light = state.light;
-        poseStack.pushPose();
-        ModelParts.enterModel(poseStack, state.facing);
-        collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
-            if (state.tanks) {
-                draw(pose, buffer, WATER_TANK, -inward, waterRise, state.grow, light);
-                draw(pose, buffer, COOLANT_TANK, inward, coolantRise, state.grow, light);
-                draw(pose, buffer, WATER_SADDLE, -inward, Math.max(waterRise, -PISTON), state.grow, light);
-                draw(pose, buffer, COOLANT_SADDLE, inward, Math.max(coolantRise, -PISTON), state.grow, light);
-                draw(pose, buffer, RAIL, 0.0F, railRise, state.grow, light);
-            }
-            if (state.stage != SmallMultiblockBlock.OPEN) {
-                for (int i = 0; i < HOOD.length; i++) {
-                    if (t < SINK_T[i][1]) {
-                        float sink = SINK * (1.0F - smooth(t, SINK_T[i][0], SINK_T[i][1]));
-                        draw(pose, buffer, new Box[] {HOOD[i][0]}, inward, sink, 0.0F, light);
-                        draw(pose, buffer, new Box[] {HOOD[i][1]}, -inward, sink, 0.0F, light);
-                    }
+        MovingBlockRenderState[] parts = state.parts;
+        if (parts != null) {
+            Direction f = state.facing;
+            ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_WATER_TANK], f, -inward, waterRise, 0.0F);
+            ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_COOLANT_TANK], f, inward, coolantRise, 0.0F);
+            ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_WATER_SADDLE], f, -inward, Math.max(waterRise, -PISTON), 0.0F);
+            ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_COOLANT_SADDLE], f, inward, Math.max(coolantRise, -PISTON), 0.0F);
+            ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_RAIL], f, 0.0F, railRise, 0.0F);
+            for (int i = 0; i < SINK_T.length; i++) {
+                if (t < SINK_T[i][1]) {
+                    float sink = SINK * (1.0F - smooth(t, SINK_T[i][0], SINK_T[i][1]));
+                    ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_HOOD + 2 * i], f, inward, sink, 0.0F);
+                    ModelParts.slid(poseStack, collector, parts[MachinePartBlock.MIXER_HOOD + 2 * i + 1], f, -inward, sink, 0.0F);
                 }
             }
-            draw(pose, buffer, CARRIAGE, state.carriage, railRise, 0.0F, light);
-        });
+        }
+        poseStack.pushPose();
+        ModelParts.enterModel(poseStack, state.facing);
+        collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> draw(pose, buffer, CARRIAGE, state.carriage, railRise, light));
         collector.submitCustomGeometry(poseStack, ModelParts.FLUID, (pose, buffer) -> {
             glass(pose, buffer, WATER_GLASS_X - inward, waterRise, state.inputFill, state.inputSprite, state.inputColour, light);
             glass(pose, buffer, COOLANT_GLASS_X + inward, coolantRise, state.outputFill, state.outputSprite, state.outputColour, light);
@@ -174,9 +158,9 @@ public class CoolantMixerRenderer implements BlockEntityRenderer<CoolantMixerBlo
         poseStack.popPose();
     }
 
-    private static void draw(PoseStack.Pose pose, VertexConsumer buffer, Box[] boxes, float dx, float dy, float grow, int light) {
+    private static void draw(PoseStack.Pose pose, VertexConsumer buffer, Box[] boxes, float dx, float dy, int light) {
         for (Box b : boxes) {
-            ModelParts.box(pose, buffer, b.x0 + dx - grow, b.y0 + dy - grow, b.z0 - grow, b.x1 + dx + grow, b.y1 + dy + grow, b.z1 + grow, b.top, b.side, light);
+            ModelParts.box(pose, buffer, b.x0 + dx, b.y0 + dy, b.z0, b.x1 + dx, b.y1 + dy, b.z1, b.top, b.side, light);
         }
     }
 

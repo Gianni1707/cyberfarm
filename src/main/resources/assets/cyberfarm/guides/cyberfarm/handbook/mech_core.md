@@ -78,8 +78,9 @@ Any of the Cyber Frames, in the floor, the corners or the roof, can be a
 
 The [Multiblock Projector](multiblock_projector.md) shows it: pick *Crystallizer*. Complete, the
 chamber turns into one machine: a stepped octagonal plinth with the acid in a basin sunk in its
-top, four white pylons holding up a crown with an emitter in its hub, a violet energy field
-between them and a console on the plinth's front.
+top, four pylons holding up a crown with an emitter in its hub, a violet energy field between them
+and a console on the plinth's front, under the radiation mark. Alone, the Crystallizer is a small pedestal
+with a seed of the crystal in its basin.
 
 Put an Isotope Shard and **4 Amethyst Shards** in the Crystallizer and pipe **2,000 mB of Acid**
 into it: in **30 seconds** at **1,000 FE/t** (600,000 FE in all) it grows one Fusion Crystal.
@@ -87,9 +88,9 @@ That much power wants a reactor or several Steam Engines behind it.
 
 ## Ports
 
-Acid, power and items go in through the Crystallizer itself or through any **Crystallizer Port**
-of the chamber: Liquid Pipes, Energy Conduits (or any mod's cables), hoppers and item pipes all
-connect to them. The Isotope Shards and Amethyst Shards find their own slots, and automation can
+Acid, power and items go in through the Crystallizer itself, through any **Crystallizer Port** of the
+chamber, or through the formed chamber's **plinth, at the middle of each side, and the middle of its
+roof**, from outside: Liquid Pipes, Energy Conduits (or any mod's cables), hoppers and item pipes all connect to them. The Isotope Shards and Amethyst Shards find their own slots, and automation can
 take only the **Fusion Crystal** out: never the ingredients, never the acid. Once the chamber is
 complete each port becomes a node of your pipes set on the machine: a coupling like the pipes'
 own, with a violet window, in the plinth, against a pylon or under the crown (a port in the floor

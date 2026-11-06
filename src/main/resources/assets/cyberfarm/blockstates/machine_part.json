@@ -1,0 +1,229 @@
+{
+  "variants": {
+    "facing=north,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct"
+    },
+    "facing=east,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 90
+    },
+    "facing=south,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 180
+    },
+    "facing=west,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 270
+    },
+    "facing=north,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle"
+    },
+    "facing=east,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 90
+    },
+    "facing=south,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 180
+    },
+    "facing=west,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 270
+    },
+    "facing=north,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left"
+    },
+    "facing=east,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 90
+    },
+    "facing=south,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 180
+    },
+    "facing=west,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 270
+    },
+    "facing=north,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right"
+    },
+    "facing=east,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 90
+    },
+    "facing=south,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 180
+    },
+    "facing=west,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 270
+    },
+    "facing=north,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank"
+    },
+    "facing=east,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 90
+    },
+    "facing=south,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 180
+    },
+    "facing=west,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 270
+    },
+    "facing=north,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank"
+    },
+    "facing=east,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 90
+    },
+    "facing=south,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 180
+    },
+    "facing=west,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 270
+    },
+    "facing=north,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle"
+    },
+    "facing=east,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 90
+    },
+    "facing=south,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 180
+    },
+    "facing=west,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 270
+    },
+    "facing=north,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle"
+    },
+    "facing=east,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 90
+    },
+    "facing=south,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 180
+    },
+    "facing=west,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 270
+    },
+    "facing=north,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail"
+    },
+    "facing=east,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 90
+    },
+    "facing=south,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 180
+    },
+    "facing=west,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 270
+    },
+    "facing=north,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0"
+    },
+    "facing=east,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 90
+    },
+    "facing=south,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 180
+    },
+    "facing=west,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 270
+    },
+    "facing=north,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1"
+    },
+    "facing=east,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 90
+    },
+    "facing=south,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 180
+    },
+    "facing=west,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 270
+    },
+    "facing=north,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2"
+    },
+    "facing=east,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 90
+    },
+    "facing=south,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 180
+    },
+    "facing=west,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 270
+    },
+    "facing=north,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3"
+    },
+    "facing=east,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 90
+    },
+    "facing=south,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 180
+    },
+    "facing=west,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 270
+    },
+    "facing=north,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4"
+    },
+    "facing=east,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 90
+    },
+    "facing=south,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 180
+    },
+    "facing=west,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 270
+    },
+    "facing=north,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5"
+    },
+    "facing=east,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 90
+    },
+    "facing=south,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 180
+    },
+    "facing=west,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 270
+    }
+  }
+}

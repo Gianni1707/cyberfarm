@@ -140,6 +140,33 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         return null;
     }
 
+    /** Whether pipes reach the chamber at this offset from its centre without a port: the middle of the floor's edges, and the roof's middle. */
+    public static boolean isTap(int dx, int dy, int dz) {
+        return dy == 0 && Math.abs(dx) + Math.abs(dz) == 1 || dy == 3 && dx == 0 && dz == 0;
+    }
+
+    /** The formed Crystallizer a Cyber Frame at {@code pos} passes things on to, through its outer faces, or null. */
+    public static @Nullable CrystallizerBlockEntity ofTap(Level level, BlockPos pos, BlockState state, @Nullable Direction side) {
+        if (!state.getValue(CyberFrameBlock.FORMED)) {
+            return null;
+        }
+        CrystallizerBlockEntity crystallizer = ofChamberBlock(level, pos);
+        if (crystallizer == null) {
+            return null;
+        }
+        BlockPos centre = crystallizer.centre();
+        if (!isTap(pos.getX() - centre.getX(), pos.getY() - centre.getY(), pos.getZ() - centre.getZ())) {
+            return null;
+        }
+        return side == null || !crystallizer.inChamber(pos.relative(side)) ? crystallizer : null;
+    }
+
+    private boolean inChamber(BlockPos pos) {
+        BlockPos centre = centre();
+        return Math.abs(pos.getX() - centre.getX()) <= 1 && Math.abs(pos.getZ() - centre.getZ()) <= 1
+                && pos.getY() >= centre.getY() && pos.getY() <= centre.getY() + 3;
+    }
+
     @Override
     protected float progress() {
         return progress / (float) PROCESS_TIME;
@@ -221,7 +248,9 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         for (Blueprint.Ghost ghost : Blueprint.CRYSTALLIZER.ghosts(worldPosition, facing())) {
             BlockState part = level.getBlockState(ghost.pos());
             if (!ghost.pos().equals(worldPosition) && part.hasProperty(CyberFrameBlock.FORMED) && part.getValue(CyberFrameBlock.FORMED) != formed) {
-                level.setBlock(ghost.pos(), part.setValue(CyberFrameBlock.FORMED, formed), Block.UPDATE_CLIENTS);
+                // With the neighbours told, so pipes beside it connect or let go
+                level.setBlock(ghost.pos(), part.setValue(CyberFrameBlock.FORMED, formed), Block.UPDATE_ALL);
+                level.invalidateCapabilities(ghost.pos());
             }
         }
     }

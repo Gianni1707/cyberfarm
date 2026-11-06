@@ -2,6 +2,7 @@ package com.cyberfarm.client.renderer;
 
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.block.MachinePartBlock;
 import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.block.entity.GasTurbineBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -9,6 +10,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -25,17 +27,15 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * The assembled Gas Turbine: its rotor turning as fast as it makes power, the gas in the two sight glasses on its flanks,
- * and once, on assembling, the duct and nozzle sliding out, the doors swinging open and the blades blooming.
+ * and once, on assembling, the sleeved duct and nozzle sliding out of the drum, the doors swinging open and the blades blooming.
+ * The moving parts are the models of the finished machine ({@link MachinePartBlock}), so nothing changes when they stop.
  * <p>
- * 7 boxes (42 quads) and up to 12 fluid quads once assembled; during the 3 s of an opening 13 boxes more, rarely. All within
- * the default 64 blocks. Coordinates are model pixels of the north-facing model; the tables use the design frame, as
- * tools/machinemodels.py does (gas_turbine_parts()).
+ * 7 boxes (42 quads) and up to 12 fluid quads once assembled; during the 3 s of an opening the four parts' models too, rarely.
+ * All within the default 64 blocks. Coordinates are model pixels of the north-facing model (tools/machinemodels.py, gas_turbine_parts()).
  */
 public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEntity, GasTurbineRenderer.State> {
-    private static final int LID = 0xFF395853, BODY = 0xFF233E3B, STEEL_TOP = 0xFFBDC6C5, STEEL = 0xFFB1BEBC;
-    private static final int SLOT = 0xFF030909, BEAM = 0xFF5B7771, MINT = 0xFF5EC2B8, GLINT = 0x40FFFFFF;
-    private static final float HOLD_GROW = 0.02F;
-    private static final float COWL_SLIDE = 7.9F, TAIL_SLIDE = 5.9F;
+    private static final int BODY = 0xFF233E3B, STEEL_TOP = 0xFFBDC6C5, STEEL = 0xFFB1BEBC, MINT = 0xFF5EC2B8, GLINT = 0x40FFFFFF;
+    private static final float DUCT_SLIDE = 7.9F, NOZZLE_SLIDE = 9.3F;
     /** The engine's axis; the blades' root, tip, width and depth; the hub's radius and depth. */
     private static final float CX = 8.0F, CY = 9.5F, ROOT = 1.7F, TIP = 4.3F, BLADE_W = 3.2F;
     private static final float BLADE_Z0 = 16.0F - 27.5F, BLADE_Z1 = 16.0F - 26.3F, HUB = 1.8F, HUB_Z0 = 16.0F - 28.2F, HUB_Z1 = 16.0F - 24.2F;
@@ -47,37 +47,13 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
     /** The sight glasses: their faces' x, height and depth, filling from the back. */
     private static final float GLASS_EAST = 15.2F, GLASS_WEST = 0.8F, GLASS_Y0 = 2.2F, GLASS_Y1 = 5.2F, GLASS_FRONT = 3.0F, GLASS_BACK = 13.0F;
 
-    private record Box(float x0, float y0, float z0, float x1, float y1, float z1, int top, int side) {}
-
-    /** The design frame has the front at high z. */
-    private static Box box(float x0, float y0, float z0, float x1, float y1, float z1, int top, int side) {
-        return new Box(x0, y0, 16.0F - z1, x1, y1, 16.0F - z0, top, side);
-    }
-
-    private static final Box[] COWL = {
-            box(2.0F, 3.5F, 24.0F, 14.0F, 4.5F, 30.0F, LID, MINT),
-            box(2.0F, 14.5F, 24.0F, 14.0F, 15.5F, 30.0F, LID, MINT),
-            box(2.0F, 4.5F, 24.0F, 3.0F, 14.5F, 30.0F, LID, MINT),
-            box(13.0F, 4.5F, 24.0F, 14.0F, 14.5F, 30.0F, LID, MINT),
-            box(3.0F, 4.5F, 24.0F, 13.0F, 14.5F, 24.2F, SLOT, SLOT),
-            box(6.5F, 7.5F, 16.0F, 9.5F, 11.5F, 24.0F, BEAM, BEAM)};
-    private static final Box[] TAIL = {
-            box(6.2F, 7.7F, -6.2F, 9.8F, 11.3F, 1.2F, BEAM, BEAM),
-            box(4.308F, 4.3F, -9.0F, 11.692F, 14.7F, -6.0F, LID, BODY),
-            box(2.8F, 5.808F, -8.98F, 13.2F, 13.192F, -6.02F, LID, BODY),
-            box(5.586F, 6.1F, -9.2F, 10.414F, 12.9F, -8.9F, SLOT, SLOT),
-            box(4.6F, 7.086F, -9.18F, 11.4F, 11.914F, -8.92F, SLOT, SLOT)};
-    private static final Box DOOR_LEFT = box(3.05F, 4.55F, 29.2F, 7.98F, 14.45F, 29.5F, STEEL_TOP, STEEL);
-    private static final Box DOOR_RIGHT = box(8.02F, 4.55F, 29.2F, 12.95F, 14.45F, 29.5F, STEEL_TOP, STEEL);
-
     public static class State extends BlockEntityRenderState {
         int stage;
         Direction facing = Direction.NORTH;
         int light;
         float t;
-        /** Whether the renderer still has to draw what the static model will show. */
-        boolean parts;
-        float grow;
+        /** The parts' models while they aren't the static model's yet, or null. */
+        MovingBlockRenderState @Nullable [] parts;
         float angle;
         @Nullable TextureAtlasSprite sprite;
         float fill;
@@ -95,6 +71,7 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
         BlockEntityRenderState.extractBase(entity, state, breakProgress);
         Level level = entity.getLevel();
         state.stage = level == null ? SmallMultiblockBlock.LOOSE : entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
+        state.parts = null;
         if (level == null) {
             return;
         }
@@ -103,10 +80,14 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;
         }
-        boolean holding = entity.shownHolding(state.stage, time);
-        state.parts = state.stage != SmallMultiblockBlock.OPEN || holding;
-        state.grow = holding ? HOLD_GROW : 0.0F;
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
+        if (state.stage != SmallMultiblockBlock.OPEN || entity.shownHolding(state.stage, time)) {
+            state.parts = new MovingBlockRenderState[] {
+                    ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.TURBINE_DUCT, state.facing),
+                    ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.TURBINE_NOZZLE, state.facing),
+                    ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.TURBINE_DOOR_LEFT, state.facing),
+                    ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.TURBINE_DOOR_RIGHT, state.facing)};
+        }
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
         boolean working = state.stage == SmallMultiblockBlock.OPEN && entity.getBlockState().getValue(LitMachineBlock.LIT);
         // Free running: it slows down and stays wherever it stops, so a stop never jumps
@@ -127,22 +108,21 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
             return;
         }
         float t = state.t;
-        float cowl = COWL_SLIDE * (1.0F - ease(t, 0.0F, 24.0F));
-        float tail = -TAIL_SLIDE * (1.0F - ease(t, 4.0F, 32.0F));
+        float duct = DUCT_SLIDE * (1.0F - ease(t, 0.0F, 24.0F));
         float bloom = ease(t, 42.0F, 60.0F);
         int light = state.light;
+        MovingBlockRenderState[] parts = state.parts;
+        if (parts != null) {
+            ModelParts.slid(poseStack, collector, parts[0], state.facing, 0.0F, 0.0F, duct);
+            ModelParts.slid(poseStack, collector, parts[1], state.facing, 0.0F, 0.0F, -NOZZLE_SLIDE * (1.0F - ease(t, 4.0F, 32.0F)));
+            // The models hold the doors open, flat against the duct's walls
+            ModelParts.swung(poseStack, collector, parts[2], state.facing, HINGE_LEFT, HINGE_Z + duct, Mth.HALF_PI * (1.0F - ease(t, 24.0F, 40.0F)));
+            ModelParts.swung(poseStack, collector, parts[3], state.facing, HINGE_RIGHT, HINGE_Z + duct, -Mth.HALF_PI * (1.0F - ease(t, 26.0F, 42.0F)));
+        }
         poseStack.pushPose();
         ModelParts.enterModel(poseStack, state.facing);
-        if (state.parts) {
-            collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
-                draw(pose, buffer, COWL, cowl, state.grow, light);
-                draw(pose, buffer, TAIL, tail, state.grow, light);
-            });
-            door(poseStack, collector, DOOR_LEFT, HINGE_LEFT, -ease(t, 24.0F, 40.0F) * Mth.HALF_PI, cowl, state.grow, light);
-            door(poseStack, collector, DOOR_RIGHT, HINGE_RIGHT, ease(t, 26.0F, 42.0F) * Mth.HALF_PI, cowl, state.grow, light);
-        }
         if (bloom >= 0.05F) {
-            rotor(poseStack, collector, state.angle, bloom, cowl, light);
+            rotor(poseStack, collector, state.angle, bloom, duct, light);
         }
         collector.submitCustomGeometry(poseStack, ModelParts.FLUID, (pose, buffer) -> {
             glass(pose, buffer, GLASS_EAST, 1.0F, state, light);
@@ -151,39 +131,19 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
         poseStack.popPose();
     }
 
-    private static void draw(PoseStack.Pose pose, VertexConsumer buffer, Box[] boxes, float dz, float grow, int light) {
-        for (Box b : boxes) {
-            drawBox(pose, buffer, b, dz, grow, light);
-        }
-    }
-
-    private static void drawBox(PoseStack.Pose pose, VertexConsumer buffer, Box b, float dz, float grow, int light) {
-        ModelParts.box(pose, buffer, b.x0 - grow, b.y0 - grow, b.z0 + dz - grow, b.x1 + grow, b.y1 + grow, b.z1 + dz + grow, b.top, b.side, light);
-    }
-
-    private static void door(PoseStack poseStack, SubmitNodeCollector collector, Box door, float hinge, float angle, float cowl, float grow, int light) {
-        poseStack.pushPose();
-        poseStack.translate(hinge, 0.0F, HINGE_Z + cowl);
-        poseStack.mulPose(Axis.YP.rotation(angle));
-        poseStack.translate(-hinge, 0.0F, -HINGE_Z);
-        collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> drawBox(pose, buffer, door, 0.0F, grow, light));
-        poseStack.popPose();
-    }
-
     /** The hub grows first, then the blades, one of them mint so the turning is never lost. */
-    private static void rotor(PoseStack poseStack, SubmitNodeCollector collector, float angle, float bloom, float cowl, int light) {
+    private static void rotor(PoseStack poseStack, SubmitNodeCollector collector, float angle, float bloom, float duct, int light) {
         float hub = Math.max(0.4F, HUB * Math.min(1.0F, bloom * 2.0F));
         float cut = 0.29F * hub;
         float tip = Mth.lerp(bloom, ROOT, TIP);
         for (int i = 0; i <= BLADES; i++) {
             int blade = i;
             poseStack.pushPose();
-            poseStack.translate(CX, CY, cowl);
+            poseStack.translate(CX, CY, duct);
             poseStack.mulPose(Axis.ZP.rotation(angle + (i < BLADES ? i * Mth.TWO_PI / BLADES : 0.0F)));
             collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
                 if (blade < BLADES) {
-                    int colour = blade == 0 ? MINT : STEEL;
-                    ModelParts.box(pose, buffer, ROOT, -BLADE_W / 2.0F, BLADE_Z0, tip, BLADE_W / 2.0F, BLADE_Z1, blade == 0 ? MINT : STEEL_TOP, colour, light);
+                    ModelParts.box(pose, buffer, ROOT, -BLADE_W / 2.0F, BLADE_Z0, tip, BLADE_W / 2.0F, BLADE_Z1, blade == 0 ? MINT : STEEL_TOP, blade == 0 ? MINT : STEEL, light);
                 } else {
                     ModelParts.box(pose, buffer, cut - hub, -hub, HUB_Z0, hub - cut, hub, HUB_Z1, BODY, BODY, light);
                     ModelParts.box(pose, buffer, -hub, cut - hub, HUB_Z0 + 0.02F, hub, hub - cut, HUB_Z1 - 0.02F, BODY, BODY, light);

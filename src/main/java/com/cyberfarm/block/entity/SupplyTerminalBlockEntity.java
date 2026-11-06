@@ -26,11 +26,16 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,6 +59,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -87,6 +93,9 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** Places on the board: three ordinary contracts, then the event's. */
     public static final int CONTRACTS = 4;
     public static final int EVENT = 3;
+    /** What the board's cards show, as the clients hear it: for each place 2 bits of kind and 4 of fill, then whether a mechanist works it. */
+    public static final int CARD_NORMAL = 1, CARD_MARKET = 2, CARD_DEFENSE = 3, FILL_STEPS = 8;
+    private static final int PLACE_BITS = 6, MECHANIST_BIT = 1 << CONTRACTS * PLACE_BITS;
     /** GUI data per contract: item, required, delivered, emeralds, bonus item, bonus count, kind, seconds left. */
     public static final int CONTRACT_DATA = 8;
     /** Ticks between refills of the free ordinary places on the board. */
@@ -188,6 +197,10 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     }
 
     private final @Nullable Contract[] contracts = new Contract[CONTRACTS];
+    private int sentBoard = -1;
+    /** Client side: the board as last heard, or -1 before anything has arrived. */
+    private int board = -1;
+    public final Card[] cards = {new Card(), new Card(), new Card(), new Card()};
     /** Rewards earned that did not fit in the payout slot yet. */
     private final List<ItemStack> pending = new ArrayList<>();
     private @Nullable UUID owner;
@@ -456,6 +469,99 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
         expire(level);
         deliver(level);
         pay();
+        int now = boardCode();
+        if (now != sentBoard) {
+            sentBoard = now;
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        }
+    }
+
+    private int boardCode() {
+        int code = mechanistLevel > 0 ? MECHANIST_BIT : 0;
+        for (int i = 0; i < CONTRACTS; i++) {
+            Contract contract = contracts[i];
+            if (contract != null) {
+                int kind = switch (contract.kind) {
+                    case NORMAL -> CARD_NORMAL;
+                    case MARKET -> CARD_MARKET;
+                    case DEFENSE -> CARD_DEFENSE;
+                };
+                int fill = Math.min(contract.delivered * FILL_STEPS / Math.max(contract.required, 1), FILL_STEPS);
+                code |= (kind | fill << 2) << i * PLACE_BITS;
+            }
+        }
+        return code;
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("board", boardCode());
+        return tag;
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
+    }
+
+    /** Client side: a place's card kind, or -1 before anything has arrived. */
+    public int boardKind(int place) {
+        return board < 0 ? -1 : board >> place * PLACE_BITS & 3;
+    }
+
+    public int boardFill(int place) {
+        return board < 0 ? 0 : board >> place * PLACE_BITS + 2 & 15;
+    }
+
+    public boolean boardHasMechanist() {
+        return board >= 0 && (board & MECHANIST_BIT) != 0;
+    }
+
+    /** Client side, for the renderer: one place's card, moving when its contract changes and at rest on the first news of it. */
+    public static final class Card {
+        public static final int RESTING = 0, DROPPING = 1, RISING = 2;
+        public static final float MOVE_TICKS = 20.0F;
+        public int kind;
+        public int motion = RESTING;
+        public float moveStart;
+        public float fillFrom;
+        public float fillTo;
+        public float fillStart;
+        private boolean known;
+
+        public void update(int targetKind, int targetFill, float time) {
+            if (targetKind < 0) {
+                return;
+            }
+            if (!known) {
+                known = true;
+                kind = targetKind;
+                fillFrom = targetFill;
+                fillTo = targetFill;
+                return;
+            }
+            if (motion != RESTING && time - moveStart >= MOVE_TICKS) {
+                kind = motion == DROPPING ? 0 : kind;
+                motion = RESTING;
+            }
+            if (motion == RESTING && targetKind != kind) {
+                moveStart = time;
+                if (kind != 0) {
+                    motion = DROPPING;
+                } else {
+                    kind = targetKind;
+                    motion = RISING;
+                    fillFrom = targetFill;
+                    fillTo = targetFill;
+                }
+            }
+            if (motion != DROPPING && targetKind == kind && targetFill != fillTo) {
+                fillFrom = fillTo;
+                fillTo = targetFill;
+                fillStart = time;
+            }
+        }
     }
 
     /** Posts the day's Market Day each morning and a call for arms while a raid is on; ends a call when its raid does. */
@@ -743,6 +849,11 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
 
     @Override
     protected void loadAdditional(ValueInput input) {
+        int heard = input.getIntOr("board", -1);
+        if (heard >= 0) {
+            board = heard;   // the clients' update, never saved
+            return;
+        }
         super.loadAdditional(input);
         for (int i = 0; i < CONTRACTS; i++) {
             int slot = i;

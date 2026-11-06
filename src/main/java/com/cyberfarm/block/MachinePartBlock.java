@@ -1,0 +1,32 @@
+package com.cyberfarm.block;
+
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+
+/**
+ * Never placed: its states name the models of the parts that move while a small multiblock opens, which the machines'
+ * renderers draw as a piston draws what it pushes. So they look exactly like the static model they become.
+ */
+public class MachinePartBlock extends Block {
+    public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 14);
+    public static final int TURBINE_DUCT = 0, TURBINE_NOZZLE = 1, TURBINE_DOOR_LEFT = 2, TURBINE_DOOR_RIGHT = 3;
+    public static final int MIXER_WATER_TANK = 4, MIXER_COOLANT_TANK = 5, MIXER_WATER_SADDLE = 6, MIXER_COOLANT_SADDLE = 7, MIXER_RAIL = 8;
+    /** The Coolant Mixer's hood: front, back and end panels, each a right and a left. */
+    public static final int MIXER_HOOD = 9;
+
+    public MachinePartBlock(Properties properties) {
+        super(properties);
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(PART, 0));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING, PART);
+    }
+}

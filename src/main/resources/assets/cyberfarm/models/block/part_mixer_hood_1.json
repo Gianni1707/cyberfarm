@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_mixer_hood_1",
+    "atlas": "cyberfarm:block/models/part_mixer_hood_1",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        4.6,
+        0.16,
+        2.6
+      ],
+      "to": [
+        12.9,
+        4.95,
+        3.7
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            2,
+            5,
+            10,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            0,
+            10,
+            8,
+            11
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            8,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            8,
+            0,
+            16,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            0,
+            5,
+            1,
+            10
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            1,
+            5,
+            2,
+            10
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

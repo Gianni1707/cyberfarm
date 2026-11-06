@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_mixer_water_saddle",
+    "atlas": "cyberfarm:block/models/part_mixer_water_saddle",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        6,
+        3,
+        5.5
+      ],
+      "to": [
+        13,
+        7.6,
+        12.5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            3.5,
+            3.5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            3.5,
+            0,
+            7,
+            3.5
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            7,
+            0,
+            10.5,
+            2.5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            10.5,
+            0,
+            14,
+            2.5
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            0,
+            3.5,
+            3.5,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            3.5,
+            3.5,
+            7,
+            6
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}
