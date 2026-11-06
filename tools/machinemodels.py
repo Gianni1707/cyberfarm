@@ -512,6 +512,31 @@ def electrolyzer():
             ((6.65, 14.9, 14.3), (7.85, 15, 14.5), "pipe", "unlit")]
 
 
+def pyrolysis_oven():
+    """A low body, a banded retort tube along the front with a glowing slit, the methane tank behind. The boxes tagged
+    "unlit" are the shuttle and the fibre's stub at rest; PyrolysisOvenRenderer draws them while it works."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+
+    def lamp(x):
+        return [((x, 4, 15), (x + 1.6, 6, 15.08), "plinth"), ((x + 0.1, 4.15, 15.08), (x + 1.5, 5.85, 15.2), "light")]
+
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(1, 1, 1, 15, 8.5, 15, 2, dark),                   # low body, to 1 px of every side for the ports
+            *lamp(2.2), *lamp(12.2),
+            *round_tank(8.5, 8.5, 2, 14, 15.2, 6.9, dark),             # methane tank behind
+            *round_tank(8.2, 11.5, 1.7, 14.3, 12.3, 7.2, "copper"),
+            *round_tank(9, 15.2, 2.5, 13.5, 16, 6.4, cap),
+            ((10, 10.8, 6.9), (12.5, 12.8, 7.6), "pipe"),              # tank to tube
+            *roller(1.2, 14.8, 12, 11, 3.5, dark),                     # the retort tube
+            *roller(1.8, 2.6, 12, 11, 3.9, "copper"),
+            *roller(13.4, 14.2, 12, 11, 3.9, "copper"),
+            ((2.8, 11.1, 14.5), (13.2, 12.9, 14.7), "slot"),
+            ((3.2, 11.5, 14.7), (12.8, 12.5, 14.82), "fire"),          # the glowing slit
+            ((10, 10.6, 15), (13, 13.4, 15.7), "copper", "unlit"),     # the shuttle and the fibre's stub at rest
+            ((11.8, 11.5, 14.9), (13.1, 12.7, 15.2), "trim", "unlit")]
+
+
 def water_pump():
     """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
     in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
@@ -842,7 +867,8 @@ if __name__ == "__main__":
             ("fabricator", fabricator(), True, False),
             ("acid_synthesizer", acid_synthesizer(), True, False),
             ("water_pump", water_pump(), True, False),
-            ("electrolyzer", electrolyzer(), True, False)):
+            ("electrolyzer", electrolyzer(), True, False),
+            ("pyrolysis_oven", pyrolysis_oven(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -859,6 +885,7 @@ if __name__ == "__main__":
     build("water_pump_port_up", water_pump_port_up(), False)
     build("water_pump_intake", water_pump_intake(), False)
     build("electrolyzer_port", low_port(), False)
+    build("pyrolysis_oven_port", low_port(), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
@@ -868,3 +895,4 @@ if __name__ == "__main__":
     blockstate("acid_synthesizer", True, set())
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     blockstate("electrolyzer", True, set())
+    blockstate("pyrolysis_oven", True, set())

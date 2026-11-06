@@ -131,7 +131,7 @@ public class ModBlocks {
     public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = BLOCKS.registerBlock("electrolyzer",
             ElectrolyzerBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<PyrolysisOvenBlock> PYROLYSIS_OVEN = BLOCKS.registerBlock("pyrolysis_oven",
-            PyrolysisOvenBlock::new, ModBlocks::litMachine);
+            PyrolysisOvenBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",
             FabricatorBlock::new, p -> litMachine(p).noOcclusion());
     // Supply contracts: the Drone Mechanist's job site in a village

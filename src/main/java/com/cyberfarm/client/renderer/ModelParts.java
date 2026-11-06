@@ -21,6 +21,7 @@ final class ModelParts {
     static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
     static final float WHITE_UV = 15.5F / 16.0F;
     private static final float PIXEL = 1.0F / 16.0F;
+    private static final float CARRY = 25.0F;
 
     private ModelParts() {
     }
@@ -40,6 +41,12 @@ final class ModelParts {
         entity.motionSpeed += Mth.clamp(target - entity.motionSpeed, -elapsed / ramp, elapsed / ramp);
         entity.motionPhase += entity.motionSpeed * elapsed;
         return entity.motionPhase;
+    }
+
+    /** The recipe's progress now, 0 to 1. It comes every 20 ticks and is carried on for no longer, so a stalled machine stops its parts. */
+    static float progress(MachineBlockEntity entity, float time, int recipeTicks) {
+        float carried = entity.status.working() ? Math.min(time - entity.statusTime, CARRY) / recipeTicks : 0.0F;
+        return Mth.clamp(entity.status.progress() + carried, 0.0F, 1.0F);
     }
 
     /** A plain box, its top one colour and the rest another. Rotate the pose before it to tilt the box: the normals follow. */
