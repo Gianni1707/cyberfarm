@@ -32,4 +32,9 @@ time in four an **Isotope Shard**, the seed of the [Mech Core](mech_core.md)'s c
   hopper into the Reprocessor feeds them in. Hoppers below take the products out.
 - **Vitrified Waste** is inert glass: store it anywhere, or build with it.
 
+While it works its disc turns a quarter at each quarter of the batch: the rod waits on the left, melts at the
+top, leaves as glass on the right and the pocket comes round empty at the bottom. The plaque on its roof marks it as a
+machine that handles radioactive material, and stands a little above the block: leave the space over it free to see it.
+[Energy Conduits](energy_conduit.md) plug in on its front, sides or back.
+
 <RecipeFor id="waste_reprocessor" />

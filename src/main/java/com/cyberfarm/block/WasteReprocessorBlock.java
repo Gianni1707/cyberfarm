@@ -5,20 +5,28 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
+/** A disc of four pockets before a shielded plate, with the radiation mark on the roof (see tools/machinemodels.py; WasteReprocessorRenderer draws the pockets). */
 public class WasteReprocessorBlock extends LitMachineBlock {
     public static final MapCodec<WasteReprocessorBlock> CODEC = simpleCodec(WasteReprocessorBlock::new);
+    /** Green outside the palette, on purpose: it says "radioactive". */
     private static final DustParticleOptions GLOW = new DustParticleOptions(0x6CFF6C, 1.0F);
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(1, 1, 1, 15, 16, 15));
 
     public WasteReprocessorBlock(Properties properties) {
         super(properties);
@@ -27,6 +35,16 @@ public class WasteReprocessorBlock extends LitMachineBlock {
     @Override
     protected MapCodec<WasteReprocessorBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override
@@ -39,16 +57,18 @@ public class WasteReprocessorBlock extends LitMachineBlock {
         return machineTicker(level, type, ModBlockEntities.WASTE_REPROCESSOR.get());
     }
 
-    /** A radioactive glow and a little smoke off the top while it reprocesses. */
+    /** A radioactive glow and a little smoke out of the top pocket, where the rod melts, while it reprocesses. */
     @Override
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(6) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.3);
-            level.addParticle(GLOW, at.x, at.y, at.z, 0.0, 0.02, 0.0);
+        Direction front = state.getValue(FACING);
+        double x = pos.getX() + 0.5 + front.getStepX() * 4.9 / 16.0;
+        double y = pos.getY() + 14.2 / 16.0;
+        double z = pos.getZ() + 0.5 + front.getStepZ() * 4.9 / 16.0;
+        if (random.nextInt(12) == 0) {
+            level.addParticle(GLOW, x, y, z, 0.0, 0.02, 0.0);
         }
-        if (random.nextInt(10) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.2);
-            level.addParticle(ParticleTypes.SMOKE, at.x, at.y, at.z, 0.0, 0.03, 0.0);
+        if (random.nextInt(24) == 0) {
+            level.addParticle(ParticleTypes.SMOKE, x, y, z, 0.0, 0.03, 0.0);
         }
     }
 }

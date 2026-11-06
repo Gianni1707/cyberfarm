@@ -289,7 +289,8 @@ MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "
              "strainer": strainer(), "beam": plate("c", "1", "2", "3"), "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
-PIPES = {"gas_pipe_up": "gas_pipe", "liquid_pipe_up": "liquid_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
+PIPES = {"gas_pipe_up": "gas_pipe", "liquid_pipe_up": "liquid_pipe"}
+DECALS = {"radiation_mark": "radiation_mark"}   # a box whose front shows a whole texture, finer than the atlas; the rest of it one texel   # vertical stubs drawn with the real pipe texture, like the pipe blocks
 
 
 # --------------------------------------------------------------------------- models, front facing +z (south)
@@ -672,6 +673,62 @@ def gas_turbine_loose():
     return [(a, b, "light_off" if spec == "light" else spec) for a, b, spec in gas_turbine_parts()[0]]
 
 
+def waste_reprocessor_parts():
+    """A shielded back plate with a disc in front, and on the roof a plaque with the radiation mark, standing above the
+    block because the disc leaves no room under it. WasteReprocessorRenderer draws the disc's pockets."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(1, 1, 1, 15, 3, 15, 2, dark),
+            *octagon(1.5, 3, 2, 14.5, 14.8, 9.6, 1.2, dark),
+            *zdisc(8, 9, 9.6, 12.2, 5.7, "beam"),
+            *zdisc(8, 9, 12.2, 12.4, 5.5, "trim"),
+            *zdisc(8, 9, 12.4, 12.5, 1.6, "copper"),                   # the disc's hub
+            *zdisc(8, 9, 11, 11.4, 5.8, "copper"),
+            ((11.4, 2.4, 15), (14.2, 4, 15.08), "plinth"),
+            ((11.6, 2.6, 15.08), (14, 3.8, 15.2), "light"),
+            ((3.8, 14.8, 6.6), (12.2, 15.7, 9.6), "lid"),              # the plaque's seat and its stepped brace
+            ((6.6, 15.7, 6.9), (9.4, 19.2, 8.2), "lid"),
+            ((6.6, 15.7, 5.4), (9.4, 17.4, 6.9), "lid"),
+            ((5, 15.7, 8.2), (11, 21.7, 9.4), "radiation_mark")]
+
+
+def waste_reprocessor_item():
+    """The item: the block's model with the disc's pockets at rest, which in the world the renderer draws."""
+    def pocket(x, y, content):
+        boxes = [((x - 1.6, y - 1.6, 12.46), (x + 1.6, y + 1.6, 12.61), "slot")]
+        if content:
+            boxes.append(((x - 1.3, y - 1.3, 12.61), (x + 1.3, y + 1.3, 12.91), content))
+        return boxes
+
+    body = [(a, b, "light_off" if spec == "light" else spec) for a, b, spec in waste_reprocessor_parts()]
+    return [*body, *pocket(8, 12.6, "light_off"), *pocket(4.4, 9, "body"), *pocket(8, 5.4, None), *pocket(11.6, 9, "copper")]
+
+
+def radiation_mark():
+    """textures/block/radiation_mark.png: a steel frame, a dark plate, an emerald trefoil from its true geometry (hub radius
+    1, blades 1.5 to 5, 60 degrees wide). A power of two, not to lower the block atlas's mipmaps; a whole-texel one can't draw it."""
+    size, frame = 32, 3
+    scale = (size / 2 - frame - 1) / 5
+    samples = 6
+    img = []
+    for j in range(size):
+        row = []
+        for i in range(size):
+            if min(i, j, size - 1 - i, size - 1 - j) < frame:
+                row.append(rgba("a"))
+                continue
+            hits = 0
+            for a in range(samples):
+                for b in range(samples):
+                    x, y = (i + (a + 0.5) / samples - size / 2) / scale, (size / 2 - j - (b + 0.5) / samples) / scale
+                    r, angle = math.hypot(x, y), math.degrees(math.atan2(y, x)) % 360
+                    blade = 1.5 <= r <= 5 and any(abs((angle - c + 180) % 360 - 180) <= 30 for c in (90, 210, 330))
+                    hits += r <= 1 or blade
+            row.append(rgba("H") if hits * 2 >= samples * samples else rgba("5"))
+        img.append(row)
+    save_png(ASSETS / "textures/block/radiation_mark.png", img)
+
+
 def water_pump():
     """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
     in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
@@ -846,7 +903,7 @@ def build(name, parts, lit_variant, translucent=False):
         elements.append((frm, to, spec, only[0] if only else None))
     patches = {}
     for n, (frm, to, spec, _) in enumerate(elements):
-        if isinstance(spec, str) and (spec in EMISSIVE or spec in STILL_LIGHTS or spec in PIPES):
+        if isinstance(spec, str) and (spec in EMISSIVE or spec in STILL_LIGHTS or spec in PIPES or spec in DECALS):
             continue
         for face in FACES:
             patches[(n, face)] = bake_face(material_for(spec, DESIGN_FACE.get(face, face)), face, frm, to)
@@ -867,7 +924,9 @@ def build(name, parts, lit_variant, translucent=False):
             still = isinstance(spec, str) and spec in STILL_LIGHTS
             emissive = isinstance(spec, str) and spec in EMISSIVE or still
             for face in FACES:
-                if isinstance(spec, str) and spec in PIPES:
+                if isinstance(spec, str) and spec in DECALS:
+                    face_json = {"uv": [0, 0, 16, 16] if face == "north" else [0, 0, 1, 1], "texture": "#" + spec}
+                elif isinstance(spec, str) and spec in PIPES:
                     h = to[1] - frm[1]
                     if face in ("up", "down"):
                         face_json = {"uv": [6, 6, 10, 10], "texture": "#" + spec}
@@ -899,7 +958,7 @@ def build(name, parts, lit_variant, translucent=False):
         for mat, tex in STILL_LIGHTS.items():
             if any(spec == mat for _, _, spec, _ in elements):
                 textures[mat] = f"cyberfarm:block/{tex}_off"
-        for mat, tex in PIPES.items():
+        for mat, tex in {**PIPES, **DECALS}.items():
             if any(spec == mat for _, _, spec, _ in elements):
                 textures[mat] = f"cyberfarm:block/{tex}"
         data = {"parent": "minecraft:block/block",
@@ -1008,7 +1067,8 @@ if __name__ == "__main__":
             ("coolant_mixer_body", coolant_mixer_parts()[0], True, False),
             ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False),
             ("gas_turbine_body", gas_turbine_parts()[0], True, False),
-            ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False)):
+            ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False),
+            ("waste_reprocessor", waste_reprocessor_parts(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -1028,6 +1088,9 @@ if __name__ == "__main__":
     build("pyrolysis_oven_port", low_port(), False)
     build("coolant_mixer", coolant_mixer_loose(), False)
     build("coolant_mixer_port", coolant_mixer_port(), False)
+    build("waste_reprocessor_port", low_port(), False)
+    build("waste_reprocessor_item", waste_reprocessor_item(), False)
+    radiation_mark()
     build("gas_turbine", gas_turbine_loose(), False)
     build("gas_turbine_port", side_port(4.5), False)
     build("gas_turbine_port_up", top_port(12), False)
@@ -1041,6 +1104,7 @@ if __name__ == "__main__":
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     blockstate("electrolyzer", True, set())
     blockstate("pyrolysis_oven", True, set())
+    blockstate("waste_reprocessor", True, set())
     small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)

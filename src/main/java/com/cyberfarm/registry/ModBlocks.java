@@ -198,7 +198,7 @@ public class ModBlocks {
             p -> new FluidTankBlock(p, true), ModBlocks::machine);
 
     public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
-            WasteReprocessorBlock::new, ModBlocks::litMachine);
+            WasteReprocessorBlock::new, p -> litMachine(p).noOcclusion());
     /** Treated nuclear waste: inert glass, safe to store or build with. */
     public static final DeferredBlock<Block> VITRIFIED_WASTE = BLOCKS.registerSimpleBlock("vitrified_waste",
             p -> p.mapColor(MapColor.COLOR_GREEN).strength(3.0F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().lightLevel(state -> 2));
