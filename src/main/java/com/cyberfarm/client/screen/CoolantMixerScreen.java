@@ -24,8 +24,6 @@ public class CoolantMixerScreen extends MachineScreen<CoolantMixerMenu> {
         drawTank(graphics, x + INPUT_X, y + TANK_Y, TANK_HEIGHT, menu.getInputAmount(), cap, menu.getInputFluid());
         drawTank(graphics, x + OUTPUT_X, y + TANK_Y, TANK_HEIGHT, menu.getOutputAmount(), cap, menu.getOutputFluid());
         drawProgressBar(graphics, x + 88, y + 40, 28, 6, menu.getProgress(), ACCENT);
-        graphics.text(font, Component.translatable("gui.cyberfarm.mixer.recipe1"), x + 34, y + 60, TEXT_DIM, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.mixer.recipe2"), x + 34, y + 70, TEXT_DIM, false);
     }
 
     @Override

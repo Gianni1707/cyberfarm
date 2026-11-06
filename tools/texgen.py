@@ -527,16 +527,6 @@ def turret_ring():
     return c
 
 
-def coolant_mixer_front():
-    c = panel(54)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 7, 11, "#1fb8a8", noise=8, seed=54)
-    c.rect(8, 4, 11, 11, "#a8e8ff", noise=6, seed=55)
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(3, 13, 12, 13, "c")
-    return c
-
-
 # The vanilla bucket's shape: A..L are its metal greys, P..T the five shades of the fluid
 BUCKET_TEMPLATE = [
     "................",
@@ -3445,7 +3435,6 @@ def build_all():
         "block/laser_turret_side": turret_side(),
         "block/laser_turret_top": turret_top(),
         "block/laser_turret_ring": turret_ring(),
-        **lit_front("coolant_mixer", coolant_mixer_front),
         "block/coolant_still": gas_texture("#178f84", "#4fe0d0", 7),
         "block/coolant_flow": gas_texture("#178f84", "#4fe0d0", 8),
         "block/cryo_coolant_still": gas_texture("#8fd8f5", "#ffffff", 9),

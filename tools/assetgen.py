@@ -410,7 +410,12 @@ def blocks():
     write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
     ores = ["uranium_ore", "deepslate_uranium_ore"]
     bauxite = ["bauxite_ore", "deepslate_bauxite_ore"]
-    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + bauxite + ["nether_sulfur_ore"]]})
+    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + bauxite + ["nether_sulfur_ore", "hidden_frame"]]})
+    write(DATA / "loot_table/blocks/hidden_frame.json", {
+        "type": "minecraft:block",
+        "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "conditions": [{"condition": "minecraft:survives_explosion"}],
+                   "entries": [{"type": "minecraft:item", "name": f"{NS}:cyber_frame"}]}],
+        "random_sequence": f"{NS}:blocks/hidden_frame"})
     write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
     write(RES / "data/minecraft/tags/block/needs_stone_tool.json", {"values": [f"{NS}:{n}" for n in bauxite]})
     write(RES / "data/c/tags/fluid/steam.json", {"values": [f"{NS}:steam"]})
@@ -510,7 +515,6 @@ def nuclear_blocks():
         write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
             "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
         facing_blockstate(tank)
-    lit_machine("coolant_mixer", "machine_top")
     lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
     orientable("supply_terminal", "supply_terminal_front", "machine_top")

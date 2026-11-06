@@ -24,6 +24,7 @@ import com.cyberfarm.block.EnergyConduitBlock;
 import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
+import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.LiquidPipeBlock;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
@@ -107,6 +108,8 @@ public class ModBlocks {
     // The chamber's blocks never hide their neighbours' faces: once formed they are drawn as one smooth tank
     public static final DeferredBlock<CyberFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
             CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<HiddenFrameBlock> HIDDEN_FRAME = BLOCKS.registerBlock("hidden_frame",
+            HiddenFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CyberFrameBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
             CyberFrameBlock::new, ModBlocks::chamberPart);
     public static final DeferredBlock<CyberFrameBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
@@ -151,7 +154,7 @@ public class ModBlocks {
     public static final DeferredBlock<ReactorPortBlock> TURBINE_PORT = BLOCKS.registerBlock("turbine_port",
             ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
-            CoolantMixerBlock::new, ModBlocks::litMachine);
+            CoolantMixerBlock::new, p -> litMachine(p).noOcclusion());
 
     // Walls of the Methane Extractor's chamber: see-through, tinted, framed
     public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
