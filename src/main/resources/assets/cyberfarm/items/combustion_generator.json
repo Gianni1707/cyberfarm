@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "cyberfarm:block/combustion_generator"
+    "model": "cyberfarm:block/combustion_generator_item"
   }
 }

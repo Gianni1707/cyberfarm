@@ -13,7 +13,7 @@ item_ids:
 <BlockImage id="cyberfarm:combustion_generator" p:lit="true" scale="4" float="left" />
 
 The first power source of CyberFarm. It burns **any furnace fuel** (coal, charcoal, wood,
-blaze rods, lava buckets...) and turns it into FE.
+blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.
 
 <br clear="all" />
 

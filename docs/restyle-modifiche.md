@@ -3,33 +3,33 @@
 Elenco di tutto ciò che è cambiato finora. I motivi delle scelte sono in
 [restyle-scelte-di-design.md](restyle-scelte-di-design.md).
 
-Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit locali da `ce455a6` in poi, non pushati.
+Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit da `ce455a6` a `c69404f`. Il primo è già su GitHub, gli altri 16 non sono ancora pushati.
 
 ## Riepilogo per macchina
 
-| Macchina | Cosa è adesso | Parte animata | Stato |
-|---|---|---|---|
-| Combustion Generator | Modello 3D | Modello | Commit |
-| Bio-Digester | Multiblocco: tamburo alto 2 e tank | Apertura, pala dietro l'oblò, gas nel vetro | Commit |
-| Drone Dock | Modello 3D | Luci sul pad, archi di ricarica | Commit |
-| Swarm Dock | Modello proprio, con 4 segni di atterraggio | Come il Dock | Commit |
-| Drone Assembler | Base, spina dorsale, testina a sbalzo | Ologramma del drone | Commit |
-| Fabricator | Multiblocco lungo 2, con magazzino | Apertura, scheda dal magazzino al vassoio, rulli | Commit |
-| Acid Synthesizer | Multiblocco 3x1x2, torre tra due serbatoi alti | Apertura, collare e bolle, fluidi a livello reale | Commit |
-| Water Pump | Cavallo di pompaggio | Manovella, bilanciere, asta | Commit |
-| Electrolyzer | Vasca con punzone | Punzone, 4 colpi per lingotto | Commit |
-| Pyrolysis Oven | Multiblocco 2x1, una sola macchina | Apertura, navetta che tira la fibra | Commit |
-| Coolant Mixer | Multiblocco 2x1 con due serbatoi | Apertura, carrello | Commit |
-| Gas Turbine | Multiblocco 1x3 | Apertura, rotore | Commit |
-| Waste Reprocessor | Carosello sotto un simbolo radioattivo | Disco a 4 tasche | Commit |
-| Crystallizer | Piedistallo; camera nella palette | Cristallo e campo viola | Commit |
-| Supply Terminal | Bacheca su un palo | Schede con i contratti veri | Commit |
-| Steam Engine | Multiblocco 1x5 con 3 cilindri | Apertura "a nastro", pistoni, volano | Commit |
-| Methane Extractor | Testa con anello; camera a gradoni | Anello spruzzatore | Commit |
-| Mech Hangar | Stessa forma, solo palette | Come prima | Commit |
-| Reattore | Torre a 8 lati, pelle a piastre | Come prima | Commit |
-| Turbina | Scafo a 8 lati, pelle a piastre | Come prima | Commit |
-| Liquid Tank, Gas Tank | Modulari, con vetro unico | Livello del fluido | Commit |
+| Macchina | Cosa è adesso | Parte animata |
+|---|---|---|
+| Combustion Generator | Modello 3D con ventola sul camino | Ventola a 6 palette, fuoco acceso, fumo e crepitio |
+| Bio-Digester | Multiblocco: tamburo alto 2 e tank | Apertura, pala dietro l'oblò, gas nel vetro |
+| Drone Dock | Modello 3D | Luci sul pad, archi di ricarica |
+| Swarm Dock | Modello proprio, con 4 segni di atterraggio | Come il Dock |
+| Drone Assembler | Base, spina dorsale, testina a sbalzo | Ologramma del drone |
+| Fabricator | Multiblocco lungo 2, con magazzino | Apertura, scheda dal magazzino al vassoio, rulli |
+| Acid Synthesizer | Multiblocco 3x1x2, torre tra due serbatoi alti | Apertura, collare e bolle, fluidi a livello reale |
+| Water Pump | Cavallo di pompaggio | Manovella, bilanciere, asta |
+| Electrolyzer | Vasca con punzone | Punzone, 4 colpi per lingotto |
+| Pyrolysis Oven | Multiblocco 2x1, una sola macchina | Apertura, navetta che tira la fibra |
+| Coolant Mixer | Multiblocco 2x1 con due serbatoi | Apertura, carrello |
+| Gas Turbine | Multiblocco 1x3 | Apertura, rotore |
+| Waste Reprocessor | Carosello sotto un simbolo radioattivo | Disco a 4 tasche |
+| Crystallizer | Piedistallo; camera nella palette | Cristallo e campo viola |
+| Supply Terminal | Bacheca su un palo | Schede con i contratti veri |
+| Steam Engine | Multiblocco 1x5 con 3 cilindri | Apertura "a nastro", pistoni, volano |
+| Methane Extractor | Testa con anello; camera a gradoni | Anello spruzzatore |
+| Mech Hangar | Stessa forma, solo palette | Come prima |
+| Reattore | Torre a 8 lati, pelle a piastre | Come prima |
+| Turbina | Scafo a 8 lati, pelle a piastre | Come prima |
+| Liquid Tank, Gas Tank | Modulari, con vetro unico | Livello del fluido |
 
 ## Modifiche trasversali
 
@@ -57,12 +57,31 @@ Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit locali da
 - Droni più grandi per reattore, turbina, Crystallizer, camera del metano e Mech Hangar.
 - Reattore e turbina: si parte dalla taglia con più blocchi piazzati e ogni clic passa alla successiva.
 
-**Renderer nuovi**
-`ModelParts`, `ShellTiles`, `FrameDroneRenderer`, `FabricatorRenderer`, `WaterPumpRenderer`, `ElectrolyzerRenderer`,
-`PyrolysisOvenRenderer`, `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`.
+**Striscia di luce alla base** (`c69404f`)
+- `foot_light` in `tools/machinemodels.py`: una striscia su tutto il contorno della base, che si accende quando la macchina lavora.
+- Ce l'hanno: Combustion Generator, Bio-Digester, Drone Dock e Swarm Dock, Drone Assembler, Fabricator, Acid Synthesizer, Water Pump, Electrolyzer,
+  Pyrolysis Oven, Coolant Mixer, Gas Turbine, Waste Reprocessor, Supply Terminal, Crystallizer da solo.
+- Lo Steam Engine ha la sua, più alta, che ora chiude il giro anche davanti e in fondo alla fila.
+- Non ce l'hanno: il Methane Extractor da solo (non ha base) e le strutture grandi.
+- Il Bio-Digester ha una base unica sotto tamburo e tank.
+
+**Renderer**
+- Nuovi: `ModelParts`, `ShellTiles`, `FrameDroneRenderer`, `FabricatorRenderer`, `WaterPumpRenderer`, `ElectrolyzerRenderer`, `PyrolysisOvenRenderer`,
+  `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`, `BioDigesterRenderer`, `CombustionGeneratorRenderer`.
+- Riscritti: `AcidSynthesizerRenderer`, `FluidTankRenderer`.
+- Tolto: `MovingPartsRenderer`, sostituito da `BioDigesterRenderer`.
 
 **Suoni**
-- Nuovi suoni per Bio-Digester, Water Pump, Gas Turbine e Resonance Core, tutti da audio vanilla.
+- Tutti da audio vanilla, definiti in `tools/assetgen.py` (`sounds()`):
+
+| Macchina | Suono | Quando |
+|---|---|---|
+| Bio-Digester | Bolle | A ogni oggetto digerito |
+| Water Pump | Pistone | Ogni 30 tick mentre pompa |
+| Gas Turbine | Rombo di fiamma | Ogni 60 tick mentre brucia |
+| Resonance Core | Ronzio | Ogni 80 tick mentre è online |
+
+- Restano muti tank e Muffler, passivi, e i dock, dove suona il drone.
 
 ## Modifiche che cambiano il gioco
 
@@ -97,9 +116,9 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 | `b8ddb06` | Steam Engine e Methane Extractor rifatti; mini droni |
 | `ebc427b` | Droni grandi; Mech Hangar nella palette |
 | `b3b00c5` | Reattore e turbina a 8 lati; i droni scorrono le taglie |
-| Ultimo | Tank modulari; Acid Synthesizer, Bio-Digester, Fabricator e forno più grandi; striscia di luce; suoni; documenti |
+| `c69404f` | Tank modulari; Acid Synthesizer, Bio-Digester, Fabricator e forno più grandi; striscia di luce; suoni; documenti |
 
-## Ultimo commit: tank, Acid Synthesizer, Bio-Digester, Fabricator, Pyrolysis Oven
+## Dettagli di `c69404f`
 
 **Bio-Digester, Fabricator, Pyrolysis Oven**
 - Passano a piccolo multiblocco con modelli `_lone`, `_parts` e parti mobili `BIO_*`, `FAB_*`, `OVEN_*`.
@@ -110,15 +129,13 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - `AcidSynthesizerBlock` ed entità passano a piccolo multiblocco; `AcidSynthesizerRenderer` riscritto.
 - `SmallMultiblockBlock`: frame anche fuori dai bracci. `HiddenFrameBlock`: `TO_MACHINE` vale anche verso il basso.
 
-### Tank
-
-**Codice**
+**Tank: codice**
 - `FluidTankBlock`: stato per ogni lato (faccia, presa, unito); click col secchio, messaggio di rifiuto, shift + destro.
 - `FluidTankBlockEntity`: fusione in parallelepipedi fino a 16 per lato, fluido condiviso.
 - `FluidTankRenderer`: vetro, fluido a volume, segno sul coperchio.
 - `CyberFarm`, `ModBlocks`: capacità del fluido, evento del click, `noOcclusion`.
 
-**Risorse**
+**Tank: risorse**
 - `tools/machinemodels.py`: pezzi di cornice, piastre, prese; blockstate multipart.
 - `tools/assetgen.py`, `tools/texgen.py`: tolti i vecchi modelli e texture dei tank.
 - Texture nuove: `tank_glass`, `tank_waves`, `tank_waves_x2`, `tank_cloud`, `tank_cloud_x2`.
@@ -128,9 +145,17 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 **Limiti noti**
 - Il segno sul coperchio sparisce con un tubo al centro, invece di spostarsi.
 - Un tank a cavallo di due chunk può ignorare i blocchi non caricati finché non cambia o non si ricarica.
-- Non provato in partita da Claude: i giudizi in gioco sono dell'utente.
-- Il messaggio di rifiuto del secchio non è stato visto all'opera. Resta da chiarire la segnalazione sui fluidi nel tank sbagliato:
-  il salvataggio delle 14:27 mostrava tutti i tank col fluido giusto, ma le prove successive non sono state controllate.
+- Claude non può giocare: i giudizi in gioco sono dell'utente, che ha approvato il risultato prima del commit.
+- La segnalazione sui fluidi nel tank sbagliato è stata lasciata cadere senza una prova: il salvataggio controllato aveva ogni tank col fluido giusto, e il dubbio
+  dell'utente su quale segno indicasse cosa fa pensare a un equivoco. Il guasto non è escluso del tutto.
+- Il messaggio di rifiuto del secchio non è stato confermato in partita.
+- Il Muffler non è stato provato coi suoni nuovi.
+- Dock e Supply Terminal non hanno un modello acceso: non è verificato se lì la striscia resta accesa o spenta.
+- Nel Bio-Digester le fasce d'acciaio del tamburo e la seconda luce compaiono solo a fine apertura.
+
+**Errore da ricordare**
+- La prima striscia sul contorno usciva di 0,1 px dal limite dei modelli (-16..32) e il forno e il Coolant Mixer diventavano cubi neri e viola.
+  Ora la base cede quel tanto alla striscia.
 
 ## Cosa manca
 
@@ -140,12 +165,14 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - Controllo della palette su Laser Turret, Resonance Core e Hologram Table.
 - Scintille di default rimaste su Assembler e dock, da verificare.
 - Mech Repair Bay.
+- Suono comune per le aperture dei multiblocchi, che ora sono silenziose (proposto, non chiesto).
 
 **Da decidere o rimandati**
 - Bilancio dello Steam Engine e Gas Turbine del villaggio.
 - Piccoli multiblocchi nel proiettore.
 - Rotazione e specchiatura delle prese.
 - Linee dei generatori non più usate.
+- Uniformare l'altezza della striscia dello Steam Engine con le altre, se stona.
 
 **Prima di pubblicare**
 - Prova su server dedicato.
