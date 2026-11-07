@@ -115,6 +115,17 @@ final class ModelParts {
         return Mth.clamp(entity.status.progress() + carried, 0.0F, 1.0F);
     }
 
+    static float smooth(float t, float from, float to) {
+        float x = Mth.clamp((t - from) / (to - from), 0.0F, 1.0F);
+        return x * x * (3.0F - 2.0F * x);
+    }
+
+    /** Rises past its place by a little, then settles. */
+    static float settle(float t, float from, float to) {
+        float x = Mth.clamp((t - from) / (to - from), 0.0F, 1.0F);
+        return x < 0.8F ? 1.05F * smooth(x, 0.0F, 0.8F) : 1.05F - 0.05F * smooth(x, 0.8F, 1.0F);
+    }
+
     static float fluidFill(GasTank tank) {
         return tank.capacity() > 0 ? Math.min(1.0F, (float) tank.amount() / tank.capacity()) : 0.0F;
     }

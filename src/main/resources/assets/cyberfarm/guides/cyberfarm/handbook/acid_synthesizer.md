@@ -32,9 +32,13 @@ the Acid Synthesizer, and other mods' crushers and processors work on our ore.
 
 <BlockImage id="cyberfarm:acid_synthesizer" scale="4" float="left" />
 
+A machine that needs room: it takes **5 Cyber Frames**, one on each side and three on top, 3 blocks wide and 2 tall with the
+machine at the bottom of the middle. Right-click it alone and drones show where they go. Once complete, the frames hide and the
+tanks and the tower rise out of its base. It doesn't work until then; breaking a frame folds it back.
+
 Uses **20 FE/t**. Each batch takes 2 seconds: **1 Sulfur + 500 mB Water → 500 mB Acid**. The gauges on
 its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round
-its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect on any side.
+its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front and behind.
 
 - Pipe water in (from a [Water Pump](water_pump.md)) and put sulfur in the slot, by hand or with a hopper.
 - The acid is pushed into adjacent pipes and tanks by itself: pipe it to an **Acid Inlet** of the

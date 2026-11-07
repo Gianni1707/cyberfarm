@@ -5,6 +5,7 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
@@ -12,10 +13,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import org.jspecify.annotations.Nullable;
 
-public class BioDigesterBlock extends LitMachineBlock {
+import java.util.List;
+
+/** A small multiblock: with a Cyber Frame above it and one on its left, as the player sees its front, it assembles into a tall drum and a tank (BioDigesterRenderer draws what moves). */
+public class BioDigesterBlock extends SmallMultiblockBlock {
     public static final MapCodec<BioDigesterBlock> CODEC = simpleCodec(BioDigesterBlock::new);
 
     public BioDigesterBlock(Properties properties) {
@@ -33,8 +36,18 @@ public class BioDigesterBlock extends LitMachineBlock {
     }
 
     @Override
-    protected boolean hasPipePorts() {
-        return true;
+    public List<Direction> frameSides(BlockState state) {
+        return List.of(state.getValue(FACING).getClockWise());
+    }
+
+    @Override
+    public List<BlockPos> frameCells(BlockState state, BlockPos pos) {
+        return List.of(pos.above(), pos.relative(state.getValue(FACING).getClockWise()));
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.bio_digester.needs_frames";
     }
 
     @Override
@@ -46,8 +59,9 @@ public class BioDigesterBlock extends LitMachineBlock {
     @Override
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(4) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.3);
-            level.addParticle(ParticleTypes.BUBBLE_POP, at.x, at.y, at.z, 0.0, 0.02, 0.0);
+            double across = (random.nextDouble() - 0.5) * 0.3;
+            double along = (random.nextDouble() - 0.5) * 0.3;
+            level.addParticle(ParticleTypes.BUBBLE_POP, pos.getX() + 0.5 + across, pos.getY() + 31.8 / 16.0, pos.getZ() + 0.5 + along, 0.0, 0.02, 0.0);
         }
     }
 }

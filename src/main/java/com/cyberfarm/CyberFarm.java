@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -90,6 +91,7 @@ public class CyberFarm {
         modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(FluidTankBlock::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
         NeoForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(MechEvents::onDismount);
@@ -137,7 +139,7 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.handler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());

@@ -76,11 +76,11 @@ public abstract class SmallMultiblockBlockEntity extends MachineBlockEntity {
                 return;
             }
         }
-        for (Direction side : machine.frameSides(state)) {
-            BlockState hidden = ModBlocks.HIDDEN_FRAME.get().defaultBlockState().setValue(HiddenFrameBlock.TO_MACHINE, side.getOpposite());
-            for (int i = 1; i <= machine.frameDepth(); i++) {
-                level.setBlock(pos.relative(side, i), hidden, Block.UPDATE_ALL);
-            }
+        for (BlockPos cell : machine.frameCells(state, pos)) {
+            // A frame above goes down first, one beside it along its row
+            Direction toMachine = cell.getY() > pos.getY() ? Direction.DOWN
+                    : Direction.getApproximateNearest(pos.getX() - cell.getX(), 0.0F, pos.getZ() - cell.getZ());
+            level.setBlock(cell, ModBlocks.HIDDEN_FRAME.get().defaultBlockState().setValue(HiddenFrameBlock.TO_MACHINE, toMachine), Block.UPDATE_ALL);
         }
         level.setBlock(pos, level.getBlockState(pos).setValue(SmallMultiblockBlock.STAGE, SmallMultiblockBlock.OPENING), Block.UPDATE_ALL);
     }

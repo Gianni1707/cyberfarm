@@ -28,6 +28,10 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> COOLANT_MIXER_WORK = register("coolant_mixer.work");
     public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_TURBINE_WORK = register("steam_turbine.work");
     public static final DeferredHolder<SoundEvent, SoundEvent> REPROCESSOR_WORK = register("waste_reprocessor.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIO_DIGESTER_WORK = register("bio_digester.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> WATER_PUMP_WORK = register("water_pump.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GAS_TURBINE_WORK = register("gas_turbine.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CORE_HUM = register("resonance_core.hum");
     /** Not a machine: the Muffler leaves it alone (see CyberFarmClient). */
     public static final DeferredHolder<SoundEvent, SoundEvent> GEIGER_CLICK = register("geiger.click");
     public static final DeferredHolder<SoundEvent, SoundEvent> GENERATOR_CRACKLE = register("combustion_generator.crackle");

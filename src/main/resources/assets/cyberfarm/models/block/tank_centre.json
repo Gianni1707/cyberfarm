@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/tank_centre",
+    "atlas": "cyberfarm:block/models/tank_centre",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        3,
+        13,
+        3
+      ],
+      "to": [
+        13,
+        15,
+        13
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            5,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            5,
+            0,
+            10,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            10,
+            0,
+            15,
+            1
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            0,
+            5,
+            5,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            5,
+            5,
+            10,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            10,
+            5,
+            15,
+            6
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

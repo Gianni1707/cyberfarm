@@ -1,19 +1,726 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "cyberfarm:block/liquid_tank"
+  "multipart": [
+    {
+      "when": {
+        "north": "face|socket",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column"
+      }
     },
-    "facing=east": {
-      "model": "cyberfarm:block/liquid_tank",
-      "y": 90
+    {
+      "when": {
+        "north": "face|socket",
+        "west": "face|socket",
+        "up": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end"
+      }
     },
-    "facing=south": {
-      "model": "cyberfarm:block/liquid_tank",
-      "y": 180
+    {
+      "when": {
+        "north": "face|socket",
+        "west": "face|socket",
+        "down": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "x": 180,
+        "y": 90
+      }
     },
-    "facing=west": {
-      "model": "cyberfarm:block/liquid_tank",
-      "y": 270
+    {
+      "when": {
+        "north": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "face|socket",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "face|socket",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "joined",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "north": "joined",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate"
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "face|socket",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "face|socket",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "joined",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "north": "joined",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "face|socket",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "face|socket",
+        "north": "face|socket",
+        "up": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "face|socket",
+        "north": "face|socket",
+        "down": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "east": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "face|socket",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "face|socket",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "joined",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b"
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "east": "joined",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "face|socket",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "face|socket",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "joined",
+        "north": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "east": "joined",
+        "north": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "x": 180,
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "face|socket",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "face|socket",
+        "east": "face|socket",
+        "up": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "face|socket",
+        "east": "face|socket",
+        "down": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "south": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "face|socket",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "face|socket",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "joined",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "south": "joined",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "face|socket",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "face|socket",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "joined",
+        "east": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "south": "joined",
+        "east": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "x": 180,
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "face|socket",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "face|socket",
+        "south": "face|socket",
+        "up": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "face|socket",
+        "south": "face|socket",
+        "down": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_column_end",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "west": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "face|socket",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "face|socket",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "joined",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket",
+        "west": "joined",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_strip",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_strip_plate",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "face|socket",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_corner",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "face|socket",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through_b",
+        "x": 180,
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "joined",
+        "south": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_through",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket",
+        "west": "joined",
+        "south": "joined"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_corner_plate",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "up": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_centre"
+      }
+    },
+    {
+      "when": {
+        "down": "face|socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/tank_centre",
+        "x": 180
+      }
+    },
+    {
+      "when": {
+        "up": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket_up"
+      }
+    },
+    {
+      "when": {
+        "down": "socket"
+      },
+      "apply": {
+        "model": "cyberfarm:block/liquid_tank_socket_up",
+        "x": 180
+      }
     }
-  }
+  ]
 }

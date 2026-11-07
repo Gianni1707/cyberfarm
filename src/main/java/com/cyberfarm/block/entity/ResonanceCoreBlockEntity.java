@@ -6,6 +6,8 @@ import com.cyberfarm.block.ResonanceCellBlock;
 import com.cyberfarm.effect.Effects;
 import com.cyberfarm.menu.ResonanceCoreMenu;
 import com.cyberfarm.registry.ModBlockEntities;
+import com.cyberfarm.registry.ModSounds;
+import net.minecraft.sounds.SoundSource;
 import com.cyberfarm.registry.ModBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -100,6 +102,9 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         return radius + 1.5F;
     }
 
+    /** Its hum comes round this often while it is online. */
+    private static final int HUM_TICKS = 80;
+
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (level.getGameTime() % SCAN_INTERVAL == 0) {
@@ -124,6 +129,9 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         energy.setCapacity(capacity(tier));
         int transfer = status == STATUS_ONLINE ? transfer(tier) : 0;
         energy.setTransferLimits(transfer, transfer);
+        if (status == STATUS_ONLINE && level.getGameTime() % HUM_TICKS == 0) {
+            level.playSound(null, pos, ModSounds.RESONANCE_CORE_HUM.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
 
         if (level.getGameTime() % SYNC_INTERVAL == 0) {
             long synced = (long) packedPylons() << 32 | radius << 16 | status << 8 | fillPercent();

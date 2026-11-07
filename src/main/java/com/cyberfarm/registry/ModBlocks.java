@@ -190,9 +190,9 @@ public class ModBlocks {
     public static final DeferredBlock<LaserTurretBlock> LASER_TURRET = BLOCKS.registerBlock("laser_turret",
             LaserTurretBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
-            p -> new FluidTankBlock(p, false), ModBlocks::machine);
+            p -> new FluidTankBlock(p, false), p -> machine(p).noOcclusion());
     public static final DeferredBlock<FluidTankBlock> GAS_TANK = BLOCKS.registerBlock("gas_tank",
-            p -> new FluidTankBlock(p, true), ModBlocks::machine);
+            p -> new FluidTankBlock(p, true), p -> machine(p).noOcclusion());
 
     public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
             WasteReprocessorBlock::new, p -> litMachine(p).noOcclusion());

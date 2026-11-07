@@ -6,7 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -20,8 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
  * back the others when it folds or goes (see SmallMultiblockBlockEntity).
  */
 public class HiddenFrameBlock extends Block {
-    /** Towards the machine, along any frames in between. */
-    public static final EnumProperty<Direction> TO_MACHINE = HorizontalDirectionalBlock.FACING;
+    /** Towards the machine, along any frames in between, which may turn on the way. */
+    public static final EnumProperty<Direction> TO_MACHINE = DirectionalBlock.FACING;
     public static final int NOTHING = 0, STEAM_CYLINDER = 1, STEAM_DYNAMO = 2;
     public static final IntegerProperty PIECE = IntegerProperty.create("piece", NOTHING, STEAM_DYNAMO);
 
@@ -44,7 +44,7 @@ public class HiddenFrameBlock extends Block {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         BlockPos machine = pos.relative(state.getValue(TO_MACHINE));
         while (level.getBlockState(machine).is(this)) {
-            machine = machine.relative(state.getValue(TO_MACHINE));
+            machine = machine.relative(level.getBlockState(machine).getValue(TO_MACHINE));
         }
         return level.getBlockState(machine).useWithoutItem(level, player, hitResult.withPosition(machine));
     }

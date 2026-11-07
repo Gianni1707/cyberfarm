@@ -26,7 +26,9 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * Pyrolysis Oven: splits Methane into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon
  * onto String into Carbon Fiber, the material of the advanced drone frames.
  */
-public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
+public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 56;
+
     public static final int STRING = 0;
     public static final int OUTPUT = 1;
     public static final int TANK_CAPACITY = 8_000;
@@ -55,7 +57,8 @@ public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
                 && hasRoomFor(OUTPUT, ModItems.CARBON_FIBER.get());
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             if (++progress >= PROCESS_TIME) {
@@ -71,6 +74,11 @@ public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
             progress = 0;
             setChanged();
         }
+    }
+
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override

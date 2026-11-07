@@ -18,7 +18,8 @@ ROOT = Path(__file__).resolve().parent.parent
 ASSETS = ROOT / "src/main/resources/assets/cyberfarm"
 N = 16
 
-PALETTE = {  # ramps shift hue: highlights warm, shadows cool
+PALETTE = {"\u03c6": "#5ec2b8", "\u03c3": "#b1bebc", "\u03c4": "#4a6b65", "\u03c5": "#5c807a", "\u03c8": "#5f847d", "\u03c7": "#597d76",
+             # ramps shift hue: highlights warm, shadows cool
     "1": "#5b7771", "2": "#395853", "3": "#233e3b", "4": "#132423", "5": "#071314",     # dark teal body
     "a": "#bdc6c5", "b": "#b1bebc", "c": "#7c8989", "s": "#030909",                     # steel trim (kept under the lights), recess
     "g": "#ffffff", "G": "#d1fee7", "h": "#055b57",                                      # near-white light, off
@@ -29,7 +30,7 @@ PALETTE = {  # ramps shift hue: highlights warm, shadows cool
     "P": "#b88cff", "Q": "#6a34c0", "R": "#e5d2ff",                                      # the Fusion Crystal's violet, on its own seed only
     "K": "#3a1a12", "M": "#6e2c18",                                                      # cold firebox
 }
-UNSHADED = set("gG")
+UNSHADED = set("gG\u03c4\u03c5\u03c8\u03c7\u03c6\u03c3")   # a tank's frame is in pieces, which a bevel each would show
 
 
 def rgba(key):
@@ -72,6 +73,51 @@ def plate(hi, mid, lo, deep):
     t.rect(4, 4, 8, 4, hi)                 # sheen on the inner plate
     for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
         t.px(x, y, hi)
+    return t
+
+
+def tank_frame(line, shape):
+    """A tank's frame, by where it falls in the block: a light outer line and, along the window, a line in the colour of its kind. An upright
+    has them lengthwise, a strip crosswise, so they run on across a joint; only a true corner turns them, around the window's corner."""
+    t = Tex("\u03c4")
+    start, end = (2, 13) if shape == "corner" else (0, 15)
+    if shape != "column":
+        t.rect(0, 0, 15, 0, "\u03c5")
+        t.rect(0, 15, 15, 15, "\u03c5")
+        t.rect(start, 2, end, 2, line)
+        t.rect(start, 13, end, 13, line)
+    if shape != "strip":
+        t.rect(0, 0, 0, 15, "\u03c5")
+        t.rect(15, 0, 15, 15, "\u03c5")
+        t.rect(2, start, 2, end, line)
+        t.rect(13, start, 13, end, line)
+    return t
+
+
+def oven_body():
+    """The body without a panel in each block, for a machine that must read as one."""
+    t = Tex("3")
+    t.rect(0, 0, 15, 1, "2")
+    t.rect(0, 13, 15, 15, "4")
+    t.rect(0, 2, 15, 2, "5")
+    t.rect(0, 12, 15, 12, "5")
+    return t
+
+
+def oven_top():
+    t = Tex("2")
+    t.rect(0, 0, 15, 0, "1")
+    t.rect(0, 15, 15, 15, "4")
+    return t
+
+
+def tank_plate():
+    """A tank's lid and floor: a check that tiles, so nothing marks where its blocks meet."""
+    t = Tex("\u03c8")
+    for x in range(16):
+        for y in range(16):
+            if (x // 2 + y // 2) % 2:
+                t.px(x, y, "\u03c7")
     return t
 
 
@@ -288,6 +334,8 @@ MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "
              "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "bed": bed(), "card": card(), "tray_front": tray_front(), "chip_pins": chip_pins(),
              "chip_top": chip_top(), "drum": drum(), "slot": slot(), "rotor": rotor(), "liquid": liquid(),
              "strainer": strainer(), "beam": plate("c", "1", "2", "3"),
+             **{f"{kind}_tank_{shape}": tank_frame(line, shape) for kind, line in (("liquid", "\u03c3"), ("gas", "\u03c6")) for shape in ("column", "strip", "corner")},
+             "tank_plate": tank_plate(), "oven_body": oven_body(), "oven_top": oven_top(),
              "crystal": plate("P", "P", "Q", "Q"), "crystal_tip": plate("R", "R", "P", "P"), "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
@@ -540,6 +588,162 @@ def pyrolysis_oven():
             ((11.8, 11.5, 14.9), (13.1, 12.7, 15.2), "trim", "unlit")]
 
 
+def bio_digester_lone():
+    """Alone, the machine as it was, with a plate where the upper drum docks and one on the side the tank goes; no gas stub, as a frame goes up there."""
+    return [*[box for box in bio_digester() if box[2] != "gas_pipe_up"],
+            ((6, 14.5, 6), (10, 15.2, 10), "copper"), ((6.8, 15.2, 6.8), (9.2, 15.4, 9.2), "slot"),
+            ((14, 1.8, 6.2), (14.55, 4.2, 9.8), "copper"), ((14.55, 2.3, 6.8), (14.7, 3.7, 9.2), "slot")]
+
+
+def bio_digester_parts():
+    """The drum two blocks tall and a tank beside it: the lower drum, then what moves in the opening (upper drum, its two rings, the tank),
+    then what only the open machine shows. Upper parts are a hair inside the drum's planes, as they start inside it."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    lid = {"up": "lid", "south": "trim", "east": "trim"}
+    body = [box for box in bio_digester() if box[2] != "gas_pipe_up"][:-len(round_tank(4, 13, 4, 12, 14.5, 12, lid))]
+    body[0] = ((1, 0, 1), (31, 1, 15), "plinth")      # one base under drum and tank
+    top = [*round_tank(2.02, 13, 2.02, 13.98, 29, 13.98, dark), *round_tank(4, 29, 4, 12, 30.5, 12, lid),
+           ((6, 30.5, 6), (10, 31.2, 10), "trim"), ((7.2, 31.2, 7.2), (8.8, 31.6, 8.8), "lid")]    # a closed vent cap
+
+    def ring(y):
+        return round_tank(1.62, y, 1.62, 14.38, y + 0.75, 14.38, "copper")
+
+    z0, z1, face = 2.3, 13.7, 14.1
+    tank = [*round_tank(18, 1, z0, 30, 13, z1, dark), *round_tank(17.6, 3, z0 - 0.4, 30.4, 3.75, z1 + 0.4, "copper"), *round_tank(17.6, 10, z0 - 0.4, 30.4, 10.75, z1 + 0.4, "copper"),
+            *round_tank(20, 13, z0 + 2, 28, 14.5, z1 - 2, lid), ((22.5, 14.5, 7), (25.5, 14.9, 9), "trim"),
+            ((21.5, 4.5, z1 - 0.5), (26.5, 9.5, face), "trim"), ((22.3, 5, face), (25.7, 9, face + 0.1), "slot"),     # gauge frame and sight glass
+            ((21.7, 6, face), (22.1, 6.35, face + 0.07), "body"), ((25.9, 6, face), (26.3, 6.35, face + 0.07), "body"),
+            ((21.7, 7.6, face), (22.1, 7.95, face + 0.07), "body"), ((25.9, 7.6, face), (26.3, 7.95, face + 0.07), "body"),
+            *roller(13.5, 18.5, 6.2, 8, 1.3, dark), *roller(14, 14.5, 6.2, 8, 1.65, "copper"), *roller(17, 17.5, 6.2, 8, 1.65, "copper")]    # its pipe to the drum
+    finish = [((7, 25.5, 13.75), (9, 26.25, 14.25), "light")]     # a second running light, and steel straps on the front flats
+    for x in (6.5, 9.1):
+        finish += [((x, 13.2, 13.98), (x + 0.4, 16.2, 14.18), "trim"), ((x, 17.3, 13.98), (x + 0.4, 22.7, 14.18), "trim"), ((x, 23.9, 13.98), (x + 0.4, 28.4, 14.18), "trim")]
+    return body, top, ring(16.5), ring(23), tank, finish
+
+
+def fabricator_parts():
+    """The line one block longer, into a block behind the machine: a bed, two more rollers and the card magazine it starts from. All of it starts inside
+    the machine: first the base slides out, then the rest rises out of the base (the base's planes a hair inside the machine's). FabricatorRenderer runs the card and turns the rollers."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    base = [((1.02, 0, -15), (14.98, 1, 1), "plinth"), *octagon(2.02, 1, -14, 13.98, 7.98, 2, 2, dark), *octagon(1.62, 2.5, -13.6, 14.38, 3.25, 1.98, 2, "copper"),
+            ((5, 1.5, -14.15), (11, 4.75, -14), {"up": "lid", "south": "grille", "east": "grille", "north": "grille"})]
+    bed = [((4, 8, -14), (12, 9.5, 2), "lid"), ((4.5, 9.5, -13.5), (11.5, 10, 2.5), {"up": "bed", "south": "plinth", "east": "plinth"}),
+           ((2, 8, -14), (3.5, 9.6, 2.5), dark), ((12.5, 8, -14), (14, 9.6, 2.5), dark)]
+
+    def idler(z):
+        return [*roller(3.5, 12.5, 11.2, z, 0.9, "pipe"), ((2, 9.6, z - 0.8), (3.5, 11.6, z + 0.8), dark), ((12.5, 9.6, z - 0.8), (14, 11.6, z + 0.8), dark),
+                ((1.6, 9.25, z - 0.8), (2, 10.9, z + 0.8), "copper"), ((14, 9.25, z - 0.8), (14.4, 10.9, z + 0.8), "copper")]
+
+    magazine = [((4.5, 10.4, -13.5), (11.5, 12.8, -10), dark), ((5.5, 10.5, -10), (10.5, 11.7, -9.88), "slot")]
+    finish = [((2.5, 5.5, -12.15), (3.5, 7, -12), "light"), ((12.5, 5.5, -12.15), (13.5, 7, -12), "light")]
+    return base, bed, idler(-3), idler(-9), magazine, finish
+
+
+def fabricator_lone():
+    return [*fabricator(), ((4, 1.2, 0.9), (12, 3.2, 1.6), "copper"), ((5, 1.7, 0.75), (11, 2.7, 0.9), "slot")]
+
+
+def pyrolysis_oven_lone():
+    return [*pyrolysis_oven(), ((15, 6.2, 6.2), (15.5, 8, 9.8), "copper"), ((15.5, 6.6, 6.8), (15.65, 7.6, 9.2), "slot")]
+
+
+def pyrolysis_oven_open():
+    """The oven on two blocks, one machine: one body, one tube with one slit, one long tank, in materials that don't repeat a panel every block."""
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+
+    def lamp(x):
+        return [((x, 4, 15), (x + 1.6, 6, 15.08), "plinth"), ((x + 0.1, 4.15, 15.08), (x + 1.5, 5.85, 15.2), "light")]
+
+    fire = [((x, 11.5, 14.7), (min(x + 8, 28.8), 12.5, 14.82), "fire") for x in (3.2, 11.2, 19.2, 27.2)]
+    return [((0, 0, 0), (32, 1, 16), {"up": "oven_top", "down": "oven_top", "south": "plinth", "east": "plinth"}),
+            *octagon(1, 1, 1, 31, 8.5, 15, 2, long), *lamp(2.2), *lamp(28.2),
+            *pyrolysis_oven_tank(),
+            *roller(1.2, 30.8, 12, 11, 3.5, long), *roller(1.8, 2.6, 12, 11, 3.9, "copper"), *roller(29.4, 30.2, 12, 11, 3.9, "copper"),
+            ((2.8, 11.1, 14.5), (29.2, 12.9, 14.7), "slot"), *fire,
+            ((26, 10.6, 15), (29, 13.4, 15.7), "copper", "unlit"), ((27.8, 11.5, 14.9), (29.1, 12.7, 15.2), "trim", "unlit")]
+
+
+def pyrolysis_oven_tank():
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    return [*octagon(8.4, 8.5, 1.9, 23.6, 15.4, 7, 1.5, long), *octagon(8.1, 11.5, 1.6, 23.9, 12.3, 7.3, 1.5, "copper"), *octagon(9, 15.4, 2.4, 23, 16.2, 6.5, 1.2, cap),
+            ((14.75, 10.8, 7), (17.25, 12.8, 7.6), "pipe")]
+
+
+def pyrolysis_oven_moving():
+    """What moves in the opening: the base and the tube sliding out of the machine, a hair inside its planes, and the long tank rising round the short one."""
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    base = [((16, 0, 0.02), (32, 1, 15.98), {"up": "oven_top", "down": "oven_top", "south": "plinth", "east": "plinth"}), *octagon(15, 1, 1.02, 31, 8.48, 14.98, 2, long)]
+    tube = [*roller(14.8, 30.8, 12, 11, 3.48, long), *roller(29.4, 30.2, 12, 11, 3.9, "copper"), ((15, 11.1, 14.5), (29.2, 12.9, 14.7), "slot")]
+    return base, tube, pyrolysis_oven_tank()
+
+
+def acid_synthesizer_lone():
+    """Alone, the machine as it was on one block, with a docking plate at the foot of each end, where its frames go."""
+    return [*acid_synthesizer(),
+            ((0.3, 1.1, 4.5), (0.8, 3.7, 11.5), "copper"), ((0.15, 1.6, 5.5), (0.7, 3.2, 10.5), "slot"),
+            ((15.2, 1.1, 4.5), (15.7, 3.7, 11.5), "copper"), ((15.3, 1.6, 5.5), (15.85, 3.2, 10.5), "slot")]
+
+
+def acid_synthesizer_parts():
+    """The same machine on 3x1x2, the machine block at the bottom of the middle: the base, then what rises out of it in the opening
+    (water tank, acid tank, tower, tower top, chimney), and the pump's lamp. AcidSynthesizerRenderer keeps its glasses and its collar on these numbers."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    cx, tz, tr, rt = 8, 6, 4.6, 6.5     # tower axis and radius, tank radius
+    bt, col0, col1 = 30, 21.16, 25.26   # tower top, collar
+    base = [((-15, 0, 1), (31, 1, 15), "plinth"), *octagon(-15, 1, 1, 31, 4, 15, 3.5, dark), *octagon(-15.4, 2, 0.6, 31.4, 2.75, 15.4, 3.5, "copper")]
+    front = tz + tr
+
+    def hoop(y):
+        return round_tank(cx - tr - 0.4, y, tz - tr - 0.4, cx + tr + 0.4, y + 0.75, tz + tr + 0.4, "copper")
+
+    def straps(y0, y1):
+        return [((cx + dx - 0.35, y0, front + 0.02), (cx + dx + 0.35, y1, front + 0.22), "trim") for dx in (-tr * 0.38, tr * 0.38)]
+
+    pump_r, pump_y, pump_z = 3.6, 8.5, front - 0.1
+    tower = [*round_tank(cx - tr, 4, tz - tr, cx + tr, col0 - 0.1, tz + tr, dark),
+             *round_tank(cx - tr + 0.05, col0, tz - tr + 0.05, cx + tr - 0.05, col1, tz + tr - 0.05, "rotor"),   # still collar, under the renderer's
+             *hoop(6.06), *hoop(10.01), *hoop(17.73), *straps(4.3, col0 - 0.3),
+             *zdisc(cx, pump_y, pump_z, pump_z + 2.5, pump_r, dark), *zdisc(cx, pump_y, pump_z + 2.5, pump_z + 2.75, pump_r, "copper"),
+             *zdisc(cx, pump_y, pump_z + 2.75, pump_z + 2.85, pump_r * 0.55, "slot")]
+    lamp = [((cx - 0.5, pump_y - 0.5, pump_z + 2.85), (cx + 0.5, pump_y + 0.5, pump_z + 3.05), "light")]
+    scale = tr / 2.5
+    top = [*round_tank(cx - tr, col1 + 0.1, tz - tr, cx + tr, bt, tz + tr, dark), *hoop(25), *hoop(29), *straps(col1 + 0.3, bt - 1.3),
+           *round_tank(cx - tr + 0.6, bt, tz - tr + 0.6, cx + tr - 0.6, bt + 1, tz + tr - 0.6, cap),
+           ((cx - 1.5 * scale, col1 + 0.15, tz - tr - 1.75 * scale), (cx + 1.5 * scale, col1 + 2.05, tz - tr + 0.1), dark),    # sulphur chute
+           ((cx - 2 * scale, col1 + 2.05, tz - tr - 2.25 * scale), (cx + 2 * scale, bt + 1, tz - tr + 0.1), {"up": "grille", "south": "copper", "east": "copper"})]
+    chimney_r = 1.88
+    chimney = [((cx - chimney_r, bt + 1, tz - chimney_r), (cx + chimney_r, 32, tz + chimney_r), "pipe")]
+
+    def tank(centre, sign):
+        z, tall = tz + 2, 25
+        x0, x1, glass = centre - rt, centre + rt, 2.82
+        y0, y1, face = 5.5, 23.75, z + rt
+        parts = [*round_tank(x0, 4, z - rt, x1, tall, z + rt, dark)]
+        for a, b in ((4.75, 5.5), (14.1, 14.85), (23.75, 24.5)):
+            parts += round_tank(x0 - 0.2, a, z - rt - 0.2, x1 + 0.2, b, z + rt + 0.2, "copper")
+        parts += [*round_tank(x0 + 1, tall, z - rt + 1, x1 - 1, tall + 1.5, z + rt - 1, cap),
+                  *round_tank(centre - 1.4, tall + 1.5, z - 1.4, centre + 1.4, tall + 1.95, z + 1.4, "trim"),
+                  ((centre - glass, y0, face - 0.25), (centre + glass, y1, face + 0.35), "trim"),                   # gauge frame
+                  ((centre - glass + 0.65, y0 + 0.45, face + 0.35), (centre + glass - 0.65, y1 - 0.45, face + 0.45), "slot")]   # sight glass
+        y = y0 + 1.2
+        while y < y1 - 1.2:     # scale ticks on the frame's margins
+            parts += [((centre + side * (glass - 0.35) - 0.2, y, face + 0.35), (centre + side * (glass - 0.35) + 0.2, y + 0.35, face + 0.42), "body") for side in (-1, 1)]
+            y += 1.6
+        for side in (-1, 1):    # vents on its flanks
+            parts.append(((centre + side * rt - 0.1, 6.7, z - rt / 3 + 0.35), (centre + side * rt + 0.1, 22.55, z + rt / 3 - 0.35), "grille"))
+        # Its pipe to the pump comes up with it
+        xa, xb = sorted((centre - sign * (rt - 3.5), cx + sign * (pump_r - 0.2)))
+        parts += roller(xa, xb, pump_y, pump_z + 1.25, 1.56, dark)
+        for a, b in ((xa + 0.1, xa + 1), (xb - 1, xb - 0.1), ((xa + xb) / 2 - 0.45, (xa + xb) / 2 + 0.45)):
+            parts += roller(a, b, pump_y, pump_z + 1.25, 1.91, "copper")
+        return parts
+
+    return base, tank(24, 1), tank(-8, -1), tower, top, chimney, lamp
+
+
 def coolant_mixer_parts():
     """A 2x1 bench: (the body, the opened parts), authored in x 0..32 and shifted so the machine block is x 0..16 and its
     Cyber Frame x -16..0. CoolantMixerRenderer draws the same boxes moving, and the hood and carriage always."""
@@ -619,7 +823,11 @@ def machine_parts():
               ("mixer_water_saddle", mixer[7:8]), ("mixer_coolant_saddle", mixer[15:16]), ("mixer_rail", mixer[16:18]),
               *[(f"mixer_hood_{i}", panel) for i, panel in enumerate(coolant_mixer_hood())],
               ("steam_piston", steam_engine_piston()), ("steam_wheel", steam_engine_wheel()),
-              *steam_engine_cylinder_parts().items(), *steam_engine_dynamo_parts().items()]
+              *steam_engine_cylinder_parts().items(), *steam_engine_dynamo_parts().items(),
+              *zip(("acid_water", "acid_acid", "acid_tower", "acid_top", "acid_chimney"), acid_synthesizer_parts()[1:6]),
+              *zip(("bio_top", "bio_ring_low", "bio_ring_high", "bio_tank"), bio_digester_parts()[1:5]),
+              *zip(("fab_base", "fab_bed", "fab_idler_near", "fab_idler_far", "fab_magazine"), fabricator_parts()[:5]),
+              *zip(("oven_base", "oven_tube", "oven_tank"), pyrolysis_oven_moving())]
     variants = {}
     for part, (name, parts) in enumerate(groups):
         build(f"part_{name}", parts, False)
@@ -664,6 +872,9 @@ def hidden_frame():
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         for piece, model in enumerate(("hidden_frame", "steam_engine_cylinder", "steam_engine_dynamo")):
             variants[f"facing={facing},piece={piece}"] = {"model": f"cyberfarm:block/{model}", **({"y": y} if y and piece else {})}
+    for facing in ("up", "down"):       # a frame stacked on another: never a piece
+        for piece in range(3):
+            variants[f"facing={facing},piece={piece}"] = {"model": "cyberfarm:block/hidden_frame"}
     (ASSETS / "blockstates/hidden_frame.json").write_text(json.dumps({"variants": variants}, indent=2) + "\n")
 
 
@@ -841,7 +1052,7 @@ def steam_engine_boiler():
     """The Steam Engine's boiler: its coils, tagged "unlit", are drawn by SteamEngineRenderer once it is open."""
     dark = {"up": "lid", "south": "body", "east": "body"}
     rings = [(a, b, "copper", "unlit") for y0, y1 in ((5, 6), (8.6, 9.6)) for a, b, _ in octagon(1.2, y0, 1.2, 14.8, y1, 14.8, 3.6, "copper")]
-    return [*steam_engine_plinth(0, 15.5), ((1, 1.2, 15.5), (15, 2, 15.6), "light"),
+    return [*steam_engine_plinth(0, 15.5), ((0.4, 1.2, 15.5), (15.6, 2, 15.6), "light"), ((0.5, 1.2, -0.1), (15.5, 2, 0), "light"),   # its back line goes under the row once assembled
             *octagon(1.5, 2.5, 1.5, 14.5, 13, 14.5, 3.5, dark), *rings,
             *octagon(3, 13, 3, 13, 14.7, 13, 2, "lid"), ((7, 11, 14.5), (9, 12, 14.6), "light"),
             ((5.8, 13.6, 1.2), (10.2, 15.85, 4.8), "trim"), ((5, 13.2, 0), (11, 16, 1.2), "trim")]    # the steam line's start
@@ -881,7 +1092,7 @@ def steam_engine_dynamo_parts():
     def drum(z0, z1, x0, y0, x1, y1, cut, mat):
         return [((x0 + cut, y0, z0), (x1 - cut, y1, z1), mat), ((x0, y0 + cut, z0 + LAYER), (x1, y1 - cut, z1 - LAYER), mat)]
 
-    return {"steam_dynamo_rail": steam_engine_plinth(0.5, 16),
+    return {"steam_dynamo_rail": [*steam_engine_plinth(0.5, 16), ((0.5, 1.2, 0.4), (15.5, 2, 0.5), "light")],
             "steam_drum": [((3.5, 2.5, 5.5), (12.5, 4.25, 14.5), dark), *drum(5, 15.2, 1.5, 4.25, 14.5, 13.75, 3, dark),
                            *drum(12, 13, 1.2, 4.15, 14.8, 13.85, 3.2, "copper"), *drum(8, 9, 1.2, 4.15, 14.8, 13.85, 3.2, "copper")],
             "steam_rim": [((3.3, 13.7, 2.5), (12.7, 15.2, 4.5), "trim"), ((3.3, 2.8, 2.5), (12.7, 4.3, 4.5), "trim"),
@@ -922,6 +1133,100 @@ def methane_extractor():
             *octagon(1, 7, 1, 15, 11, 15, 4, dark), *octagon(0.6, 8.5, 0.6, 15.4, 9.6, 15.4, 4, mint),
             *round_tank(4, 11, 4, 12, 14.5, 12, cap), *round_tank(5.5, 14.5, 5.5, 10.5, 16, 10.5, dark),
             ((7.2, 8.8, 14.9), (8.8, 10.2, 15.15), "light")]
+
+
+# A tank has a frame only around its outside, so its blocks can't be told apart: uprights where two shown sides meet, and on top and below
+# a 3x3 grid of frame or plate, by which neighbours are part of the tank. The sides are open: FluidTankRenderer draws the glass and the fluid.
+TANK_COLUMN = (0, 3, 13), (3, 13, 16)
+TANK_COLUMN_END = (0, 13, 13), (3, 16, 16)
+TANK_CENTRE = [((3, 13, 3), (13, 15, 13), "tank_plate")]
+TANK_STRIP = (3, 13, 13), (13, 16, 16)
+TANK_STRIP_PLATE = [((3, 13, 13), (13, 15, 16), "tank_plate")]
+TANK_CORNER = (0, 13, 13), (3, 16, 16)
+TANK_CORNER_B = (13, 13, 13), (16, 16, 16)
+TANK_CORNER_PLATE = [((0, 13, 13), (3, 15, 16), "tank_plate")]
+
+
+def tank_item(name):
+    """A lone block, for the item."""
+    def turned(box, times):
+        (x0, y0, z0), (x1, y1, z1), *rest = box
+        for _ in range(times):
+            x0, z0, x1, z1 = z0, 16 - x1, z1, 16 - x0
+        return ((min(x0, x1), y0, min(z0, z1)), (max(x0, x1), y1, max(z0, z1)), *rest)
+
+    def upside_down(box):
+        (x0, y0, z0), (x1, y1, z1), *rest = box
+        return ((x0, 16 - y1, z0), (x1, 16 - y0, z1), *rest)
+
+    lid = [*TANK_CENTRE]
+    for times in range(4):
+        lid += [turned((*TANK_STRIP, f"{name}_strip"), times), turned((*TANK_CORNER, f"{name}_corner"), times)]
+    uprights = [turned((*TANK_COLUMN, f"{name}_column"), times) for times in range(4)]
+    return [*lid, *[upside_down(box) for box in lid], *uprights]
+
+
+def tank_blockstate(name):
+    """Which of the shared pieces each block shows. Turned over with x: 180, a piece on the north edge lands on the south one, one in the north-west corner in the south-west."""
+    shown = "face|socket"
+    sides = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
+    parts = []
+
+    def part(when, model, x=0, y=0):
+        apply = {"model": f"cyberfarm:block/{model}"}
+        if x:
+            apply["x"] = x
+        if y:
+            apply["y"] = y
+        parts.append({"when": when, "apply": apply})
+
+    for i, (side, r) in enumerate(sides):
+        before = sides[i - 1][0]
+        part({side: shown, before: shown}, f"{name}_column", y=r)
+        part({side: shown, before: shown, "up": "joined"}, f"{name}_column_end", y=r)
+        part({side: shown, before: shown, "down": "joined"}, f"{name}_column_end", x=180, y=(r + 90) % 360)
+        part({side: "socket"}, f"{name}_socket", y=r)
+        for cap, x, edge, corner in (("up", 0, r, r), ("down", 180, (r + 180) % 360, (r + 90) % 360)):
+            part({cap: shown, side: shown}, f"{name}_strip", x=x, y=edge)
+            part({cap: shown, side: "joined"}, "tank_strip_plate", x=x, y=edge)
+            part({cap: shown, side: shown, before: shown}, f"{name}_corner", x=x, y=corner)
+            # One of the two sides goes on into the next block: the frame runs straight through this corner, along the other
+            if cap == "up":
+                part({cap: shown, side: shown, before: "joined"}, f"{name}_through", y=r)
+                part({cap: shown, side: "joined", before: shown}, f"{name}_through_b", y=(r - 90) % 360)
+            else:
+                part({cap: shown, side: shown, before: "joined"}, f"{name}_through_b", x=x, y=(r + 180) % 360)
+                part({cap: shown, side: "joined", before: shown}, f"{name}_through", x=x, y=(r + 90) % 360)
+            part({cap: shown, side: "joined", before: "joined"}, "tank_corner_plate", x=x, y=corner)
+    part({"up": shown}, "tank_centre")
+    part({"down": shown}, "tank_centre", x=180)
+    part({"up": "socket"}, f"{name}_socket_up")
+    part({"down": "socket"}, f"{name}_socket_up", x=180)
+    (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+
+
+def tank_glass():
+    """Mostly clear, with a faint streak, in the blocks atlas so the renderer can draw it with the fluid behind it."""
+    pixels = [[(214, 240, 238, 26) for _ in range(16)] for _ in range(16)]
+    for x in range(4, 9):
+        pixels[x][x] = (214, 240, 238, 110)
+    for x, y in ((3, 12), (9, 5)):
+        pixels[15 - y][x] = (214, 240, 238, 70)
+    save_png(ASSETS / "textures/block/tank_glass.png", pixels)
+
+
+def tanks():
+    for name, parts in (("tank_centre", TANK_CENTRE), ("tank_strip_plate", TANK_STRIP_PLATE), ("tank_corner_plate", TANK_CORNER_PLATE)):
+        build(name, parts, False)
+    tank_glass()
+    for name, trim in (("liquid_tank", "trim"), ("gas_tank", "copper")):
+        build(f"{name}_socket", [((4.5, 4.5, 13.5), (11.5, 11.5, 16.012), trim)], False)
+        build(f"{name}_socket_up", [((4.5, 14.5, 4.5), (11.5, 16.012, 11.5), trim)], False)
+        for piece, box, shape in (("column", TANK_COLUMN, "column"), ("column_end", TANK_COLUMN_END, "column"), ("strip", TANK_STRIP, "strip"),
+                                  ("corner", TANK_CORNER, "corner"), ("through", TANK_CORNER, "strip"), ("through_b", TANK_CORNER_B, "strip")):
+            build(f"{name}_{piece}", [(*box, f"{name}_{shape}")], False)
+        build(name, tank_item(name), False)
+        tank_blockstate(name)
 
 
 def water_pump():
@@ -1090,8 +1395,35 @@ def num(v):
     return int(v) if float(v).is_integer() else round(v, 4)
 
 
+FOOT_LIGHT = {f"{name}{suffix}" for name in ("bio_digester", "fabricator", "acid_synthesizer", "pyrolysis_oven", "coolant_mixer", "gas_turbine") for suffix in ("", "_body", "_open")} | {
+    "combustion_generator", "drone_dock", "swarm_dock", "drone_assembler", "water_pump", "electrolyzer", "waste_reprocessor", "waste_reprocessor_item",
+    "supply_terminal", "methane_extractor", "crystallizer"}
+
+
+def foot_light(name, parts):
+    """The strip of light round a machine's base, as on the Steam Engine's boiler: all round its outline, however many blocks the base spans."""
+    bases = [(frm, to) for frm, to, spec, *_ in parts if frm[1] == 0 and (spec == "plinth" or isinstance(spec, dict) and spec.get("south") == "plinth")]
+    if not bases:
+        print(f"{name}: no base for the foot light")
+        return parts
+    y0, y1, out = 0.15, 0.85, 0.1
+
+    def inside(a, b):
+        """A model can't reach past -16..32: a base that far gives up a sliver of itself to its strip."""
+        return ((max(a[0], -16 + out), a[1], max(a[2], -16 + out)), (min(b[0], 32 - out), b[1], min(b[2], 32 - out)))
+
+    parts = [(*inside(frm, to), *rest) if (frm, to) in bases else (frm, to, *rest) for frm, to, *rest in parts]
+    bases = [inside(frm, to) for frm, to in bases]
+    x0, z0 = min(frm[0] for frm, _ in bases), min(frm[2] for frm, _ in bases)
+    x1, z1 = max(to[0] for _, to in bases), max(to[2] for _, to in bases)
+    return [*parts, ((x0, y0, z1), (x1, y1, z1 + out), "light"), ((x0, y0, z0 - out), (x1, y1, z0), "light"),
+            ((x0 - out, y0, z0), (x0, y1, z1), "light"), ((x1, y0, z0), (x1 + out, y1, z1), "light")]
+
+
 def build(name, parts, lit_variant, translucent=False):
     """parts: (from, to, material spec), plus an optional "lit" or "unlit" for a box in one model only."""
+    if name in FOOT_LIGHT:
+        parts = foot_light(name, parts)
     elements = []
     for frm, to, spec, *only in parts:
         frm, to = flip((frm, to))
@@ -1250,15 +1582,19 @@ if __name__ == "__main__":
         save_png(ASSETS / f"textures/block/{tex}_off.png", to_rgba(maker(False)))
     for name, parts, lit_variant, translucent in (
             ("combustion_generator", combustion_generator(), True, False),
-            ("bio_digester", bio_digester(), True, False),
+            ("bio_digester_body", bio_digester_parts()[0], True, False),
+            ("bio_digester_open", sum(bio_digester_parts(), []), True, False),
             ("drone_dock", drone_dock(), False, False),
             ("swarm_dock", drone_dock("swarm_pad"), False, False),
             ("drone_assembler", drone_assembler(), True, False),
-            ("fabricator", fabricator(), True, False),
-            ("acid_synthesizer", acid_synthesizer(), True, False),
+            ("fabricator_body", fabricator(), True, False),
+            ("fabricator_open", [*fabricator(), *sum(fabricator_parts(), [])], True, False),
+            ("acid_synthesizer_body", acid_synthesizer_parts()[0], True, False),
+            ("acid_synthesizer_open", sum(acid_synthesizer_parts(), []), True, False),
             ("water_pump", water_pump(), True, False),
             ("electrolyzer", electrolyzer(), True, False),
-            ("pyrolysis_oven", pyrolysis_oven(), True, False),
+            ("pyrolysis_oven_body", pyrolysis_oven(), True, False),
+            ("pyrolysis_oven_open", pyrolysis_oven_open(), True, False),
             ("coolant_mixer_body", coolant_mixer_parts()[0], True, False),
             ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False),
             ("gas_turbine_body", gas_turbine_parts()[0], True, False),
@@ -1275,16 +1611,20 @@ if __name__ == "__main__":
     # how far in each body sits from the block edge decides how deep its sockets go
     build("combustion_generator_port", side_port(3.25), False)
     build("combustion_generator_port_up", top_port(10), False)
+    build("bio_digester", bio_digester_lone(), False)
     build("bio_digester_port", side_port(2.25), False)
     build("drone_dock_port", side_port(2.5, y0=1), False)
     build("drone_assembler_port", low_port(), False)
+    build("fabricator", fabricator_lone(), False)
     build("fabricator_port", side_port(2), False)
     build("fabricator_port_up", top_port(12.75), False)
+    build("acid_synthesizer", acid_synthesizer_lone(), False)
     build("acid_synthesizer_port", side_port(2, y0=3.5), False)
     build("water_pump_port", low_port(), False)
     build("water_pump_port_up", water_pump_port_up(), False)
     build("water_pump_intake", water_pump_intake(), False)
     build("electrolyzer_port", low_port(), False)
+    build("pyrolysis_oven", pyrolysis_oven_lone(), False)
     build("pyrolysis_oven_port", low_port(), False)
     build("coolant_mixer", coolant_mixer_loose(), False)
     build("coolant_mixer_port", coolant_mixer_port(), False)
@@ -1304,15 +1644,15 @@ if __name__ == "__main__":
     build("gas_turbine_port", side_port(4.5), False)
     build("gas_turbine_port_up", top_port(12), False)
     blockstate("combustion_generator", True, {"up"})
-    blockstate("bio_digester", True, set())
+    small_multiblock_blockstate("bio_digester", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")
     blockstate("drone_assembler", True, set())
-    blockstate("fabricator", True, {"up"})
-    blockstate("acid_synthesizer", True, set())
+    small_multiblock_blockstate("fabricator", {"north": {"south"}, "east": {"west"}, "south": {"north"}, "west": {"east"}}, up=True)
+    small_multiblock_blockstate("acid_synthesizer", {"north": {"west", "east"}, "east": {"north", "south"}, "south": {"east", "west"}, "west": {"south", "north"}})
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     blockstate("electrolyzer", True, set())
-    blockstate("pyrolysis_oven", True, set())
+    small_multiblock_blockstate("pyrolysis_oven", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     blockstate("waste_reprocessor", True, set())
     crystallizer_blockstate()
     small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
@@ -1320,4 +1660,5 @@ if __name__ == "__main__":
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
     hidden_frame()
     steam_engine_blockstate()
+    tanks()
     machine_parts()

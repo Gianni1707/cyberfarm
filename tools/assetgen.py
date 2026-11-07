@@ -497,10 +497,6 @@ def nuclear_blocks():
                     model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
                     variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
-    for tank in ("liquid_tank", "gas_tank"):
-        write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
-            "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
-        facing_blockstate(tank)
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
     facing_blockstate("supply_terminal")
     # A villager job site, for mods that look for them
@@ -878,6 +874,10 @@ def sounds():
         "reactor.hum": files("block/beacon/ambient", pitch=0.5, volume=0.9),
         "reactor.alarm": files("note/pling", pitch=1.6, volume=1.0) + files("note/bell", pitch=1.4, volume=0.8),
         "coolant_mixer.work": files("block/brewing_stand/brew", 2, pitch=1.3, volume=0.4),
+        "bio_digester.work": files("block/bubble_column/upwards_ambient", 5, pitch=0.6, volume=0.4),
+        "water_pump.work": files("tile/piston/in", pitch=0.6, volume=0.25) + files("tile/piston/out", pitch=0.6, volume=0.25),
+        "gas_turbine.work": files("fire/fire", pitch=1.6, volume=0.3),
+        "resonance_core.hum": files("block/beacon/ambient", pitch=1.5, volume=0.25),
         "waste_reprocessor.work": files("block/beacon/power1", pitch=0.7, volume=0.5),
         "geiger.click": files("random/click", pitch=2.0, volume=0.3),
         "steam_turbine.work": files("random/fizz", pitch=0.5, volume=0.25),

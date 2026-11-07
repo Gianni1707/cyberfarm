@@ -2,12 +2,15 @@ package com.cyberfarm.client.renderer;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.block.MachinePartBlock;
+import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.block.entity.FabricatorBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.MovingBlockRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
@@ -20,15 +23,17 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.jspecify.annotations.Nullable;
 
 /**
- * The Fabricator printing a circuit, like paper out of a printer: the card comes out from under the acid drum in
- * seven short steps over the recipe, the print head sweeping the drum's lip before each one, while the pinch roller
+ * The Fabricator printing a circuit, like paper out of a printer: the card leaves its magazine at the back of the line and comes out
+ * from under the acid drum in seven steps over the recipe, the print head sweeping the drum's lip before each one, while the pinch roller
  * at the exit and the feed roller behind turn with it and the chip comes out between them; the bar on the tray
  * shows how far the recipe is. When a card is done it flashes away and the next one starts.
  * <p>
  * Drawn only while the machine works (the lit model leaves the card out and the lip lamp off; the unlit one shows
- * the card at rest): about 36 quads per Fabricator, within the default 64 blocks. Coordinates are model pixels of
+ * the card at rest): about 60 quads per Fabricator, within the default 64 blocks. During the 3 s of an opening, the moving parts' models
+ * too: the base slides out of the machine and the rest rises out of it. Coordinates are model pixels of
  * the north-facing model (tools/machinemodels.py, fabricator()).
  */
 public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEntity, FabricatorRenderer.State> {
@@ -41,12 +46,16 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
     private static final int WHITE = 0xFFFFFFFF;
     /** The card: its width, thickness and length; its front edge from under the pinch roller to its rest on the tray. */
     private static final float CARD_X0 = 4.75F, CARD_X1 = 11.25F, CARD_Y = 10.0F, CARD_T = 0.3F, CARD_LEN = 3.3F;
-    private static final float Z_START = 5.6F, Z_REST = 2.25F;
+    private static final float Z_START = 26.0F, Z_REST = 2.25F;
     /** The chip on the card; nothing of it behind the nip, so it comes out of the rollers as the card feeds. */
     private static final float CHIP_X0 = 6.5F, CHIP_X1 = 9.5F, CHIP_FRONT = 0.5F, CHIP_BACK = 2.3F, CHIP_H = 0.75F, NIP = 4.6F;
     /** Over the fallback rollers in the model (their corners stay inside these 12-gons' flats). */
     private static final float PINCH_Y = 11.08F, PINCH_Z = 5.4F, PINCH_R = 0.77F;
     private static final float FEED_Y = 11.25F, FEED_Z = 12.25F, FEED_R = 1.37F, FEED_X0 = 3.5F, FEED_X1 = 12.5F;
+    /** The two rollers in the block behind. */
+    private static final float IDLER_Y = 11.2F, IDLER_NEAR_Z = 19.0F, IDLER_FAR_Z = 25.0F, IDLER_R = 0.97F;
+    /** The base's slide out of the machine, and how far the rest sinks into it. */
+    private static final float BASE_SLIDE = 12.0F, BED_SINK = 2.5F, ROLLER_SINK = 5.0F;
     /** Seven feeds over progress 0..0.85, then the card rests until it is done; each feed takes this many ticks. */
     private static final int STEPS = 7;
     private static final float TRAVEL_END = 0.85F;
@@ -57,6 +66,9 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
     private static final float LIP_X0 = 5.5F, LIP_X1 = 10.5F, HEAD = 1.5F;
 
     public static class State extends BlockEntityRenderState {
+        int stage;
+        float t;
+        MovingBlockRenderState @Nullable [] parts;
         Direction facing = Direction.NORTH;
         int light;
         /** Nothing printing: no card, head or bar. */
@@ -88,6 +100,16 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().above());
         float time = level.getGameTime() + partialTick;
+        state.stage = entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
+        state.t = entity.shownOpening(state.stage, time);
+        state.parts = null;
+        if (state.stage == SmallMultiblockBlock.OPENING || state.stage == SmallMultiblockBlock.CLOSING
+                || state.stage == SmallMultiblockBlock.OPEN && entity.shownHolding(state.stage, time)) {
+            state.parts = new MovingBlockRenderState[MachinePartBlock.FAB_MAGAZINE - MachinePartBlock.FAB_BASE + 1];
+            for (int i = 0; i < state.parts.length; i++) {
+                state.parts[i] = ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.FAB_BASE + i, state.facing);
+            }
+        }
         state.sinceDone = entity.cards > 0 ? time - entity.doneTime : Float.MAX_VALUE;
         // A player who arrives mid-recipe doesn't know how long it takes: an empty bed until the next one starts
         if (!entity.status.working() || entity.shownTime == 0 || entity.doneTime > entity.startTime) {
@@ -130,6 +152,16 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        MovingBlockRenderState[] parts = state.parts;
+        if (parts != null) {
+            float t = state.t;
+            float slide = -BASE_SLIDE * (1.0F - ModelParts.smooth(t, 0.0F, 26.0F));
+            ModelParts.slid(poseStack, collector, parts[0], state.facing, 0.0F, 0.0F, slide);
+            ModelParts.slid(poseStack, collector, parts[1], state.facing, 0.0F, -BED_SINK * (1.0F - ModelParts.settle(t, 22.0F, 36.0F)), slide);
+            ModelParts.slid(poseStack, collector, parts[2], state.facing, 0.0F, -ROLLER_SINK * (1.0F - ModelParts.settle(t, 32.0F, 44.0F)), slide);
+            ModelParts.slid(poseStack, collector, parts[3], state.facing, 0.0F, -ROLLER_SINK * (1.0F - ModelParts.settle(t, 38.0F, 50.0F)), slide);
+            ModelParts.slid(poseStack, collector, parts[4], state.facing, 0.0F, -ROLLER_SINK * (1.0F - ModelParts.settle(t, 46.0F, 58.0F)), slide);
+        }
         boolean flashing = state.sinceDone < FLASH_TICKS;
         if (state.idle && !flashing) {
             return;
@@ -141,6 +173,8 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
                 card(pose, buffer, state.cardZ, state.light);
                 roller(pose, buffer, CARD_X0, CARD_X1, PINCH_Y, PINCH_Z, PINCH_R, -state.travel / PINCH_R, state.light);
                 roller(pose, buffer, FEED_X0, FEED_X1, FEED_Y, FEED_Z, FEED_R, -state.travel / FEED_R, state.light);
+                roller(pose, buffer, FEED_X0, FEED_X1, IDLER_Y, IDLER_NEAR_Z, IDLER_R, -state.travel / IDLER_R, state.light);
+                roller(pose, buffer, FEED_X0, FEED_X1, IDLER_Y, IDLER_FAR_Z, IDLER_R, -state.travel / IDLER_R, state.light);
             }
             if (flashing && state.sinceDone < 2.0F) {
                 card(pose, buffer, Z_REST, state.light);   // the finished card, under its flash for a moment
@@ -241,6 +275,7 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
 
     @Override
     public AABB getRenderBoundingBox(FabricatorBlockEntity entity) {
-        return new AABB(entity.getBlockPos());
+        Direction back = entity.getBlockState().getValue(MachineBlock.FACING).getOpposite();
+        return new AABB(entity.getBlockPos()).expandTowards(back.getStepX(), 0.0, back.getStepZ());
     }
 }

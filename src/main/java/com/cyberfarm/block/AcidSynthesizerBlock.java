@@ -19,8 +19,14 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-/** A contact tower between two tanks (the model, see tools/machinemodels.py; AcidSynthesizerRenderer draws the rest). */
-public class AcidSynthesizerBlock extends LitMachineBlock {
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * A small multiblock: with Cyber Frames on both sides and three on top it assembles into a 3x1x2 contact tower between two tall
+ * tanks, which rise out of its base (see tools/machinemodels.py; AcidSynthesizerRenderer draws what moves).
+ */
+public class AcidSynthesizerBlock extends SmallMultiblockBlock {
     public static final MapCodec<AcidSynthesizerBlock> CODEC = simpleCodec(AcidSynthesizerBlock::new);
     private static final VoxelShape SHAPE = Block.box(0.5, 0, 0.5, 15.5, 15, 15.5);
 
@@ -34,8 +40,25 @@ public class AcidSynthesizerBlock extends LitMachineBlock {
     }
 
     @Override
-    protected boolean hasPipePorts() {
-        return true;
+    public List<Direction> frameSides(BlockState state) {
+        Direction front = state.getValue(FACING);
+        return List.of(front.getClockWise(), front.getCounterClockWise());
+    }
+
+    /** The row beside it, then the row above. */
+    @Override
+    public List<BlockPos> frameCells(BlockState state, BlockPos pos) {
+        List<BlockPos> cells = new ArrayList<>(super.frameCells(state, pos));
+        for (BlockPos beside : List.copyOf(cells)) {
+            cells.add(beside.above());
+        }
+        cells.add(pos.above());
+        return cells;
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.acid_synthesizer.needs_frames";
     }
 
     @Override
@@ -58,7 +81,7 @@ public class AcidSynthesizerBlock extends LitMachineBlock {
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(10) == 0) {
             Direction front = state.getValue(FACING);
-            level.addParticle(ParticleTypes.WHITE_SMOKE, pos.getX() + 0.5 - front.getStepX() * 0.125, pos.getY() + 16.2 / 16.0,
+            level.addParticle(ParticleTypes.WHITE_SMOKE, pos.getX() + 0.5 - front.getStepX() * 0.125, pos.getY() + 32.2 / 16.0,
                     pos.getZ() + 0.5 - front.getStepZ() * 0.125, 0.0, 0.03, 0.0);
         }
     }

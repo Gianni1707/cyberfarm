@@ -960,29 +960,6 @@ def pipe_extract():
     return c
 
 
-def tank_side(accent):
-    """Tank wall: a steel frame around a dark window (columns 4..10, rows 3..12) where the
-    tank's renderer draws the fluid at its level, with gauge marks beside it."""
-    c = panel(61 if accent == "y" else 62)
-    c.rect(3, 2, 11, 13, "K")
-    c.rect(4, 3, 10, 12, (24, 30, 36, 255))
-    # Opaque glint: one see-through pixel would put the whole block in the translucent layer,
-    # and the gas drawn in the window would then hide its wall and show the world behind it.
-    c.set(4, 3, (133, 136, 139, 255))
-    for y in range(3, 13, 3):
-        c.set(12, y, "m")
-    c.rect(3, 14, 11, 14, accent)
-    return c
-
-
-def tank_top():
-    c = panel(64)
-    c.disc(7.5, 7.5, 4.5, "K")
-    c.disc(7.5, 7.5, 3.5, "m")
-    c.rect(6, 6, 9, 9, "l")
-    return c
-
-
 # --------------------------------------------------------------------------- animation
 
 def strip(frames, frametime=2, interpolate=False):
@@ -3420,9 +3397,6 @@ def build_all():
         **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
         **{f"block/{tier}liquid_pipe": clean_pipe("liquid", tier) for tier in PIPE_RIMS},
         "block/pipe_extract": pipe_extract(),
-        "block/liquid_tank_side": tank_side("c"),
-        "block/gas_tank_side": tank_side("y"),
-        "block/tank_top": tank_top(),
         "block/biogas_still": gas("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas("#6cc4dc", "#d4f4ff", 3),

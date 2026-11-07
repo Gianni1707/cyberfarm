@@ -3,7 +3,7 @@
     {
       "when": {
         "facing": "north",
-        "lit": "false"
+        "stage": "0"
       },
       "apply": {
         "model": "cyberfarm:block/fabricator"
@@ -12,16 +12,47 @@
     {
       "when": {
         "facing": "north",
+        "stage": "1|3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_body"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "stage": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "stage": "1|3",
         "lit": "true"
       },
       "apply": {
-        "model": "cyberfarm:block/fabricator_on"
+        "model": "cyberfarm:block/fabricator_body_on"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "stage": "2",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open_on"
       }
     },
     {
       "when": {
         "facing": "east",
-        "lit": "false"
+        "stage": "0"
       },
       "apply": {
         "model": "cyberfarm:block/fabricator",
@@ -31,17 +62,51 @@
     {
       "when": {
         "facing": "east",
+        "stage": "1|3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_body",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "1|3",
         "lit": "true"
       },
       "apply": {
-        "model": "cyberfarm:block/fabricator_on",
+        "model": "cyberfarm:block/fabricator_body_on",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "2",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open_on",
         "y": 90
       }
     },
     {
       "when": {
         "facing": "south",
-        "lit": "false"
+        "stage": "0"
       },
       "apply": {
         "model": "cyberfarm:block/fabricator",
@@ -51,17 +116,51 @@
     {
       "when": {
         "facing": "south",
+        "stage": "1|3",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_body",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "1|3",
         "lit": "true"
       },
       "apply": {
-        "model": "cyberfarm:block/fabricator_on",
+        "model": "cyberfarm:block/fabricator_body_on",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "2",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open_on",
         "y": 180
       }
     },
     {
       "when": {
         "facing": "west",
-        "lit": "false"
+        "stage": "0"
       },
       "apply": {
         "model": "cyberfarm:block/fabricator",
@@ -71,15 +170,50 @@
     {
       "when": {
         "facing": "west",
-        "lit": "true"
+        "stage": "1|3",
+        "lit": "false"
       },
       "apply": {
-        "model": "cyberfarm:block/fabricator_on",
+        "model": "cyberfarm:block/fabricator_body",
         "y": 270
       }
     },
     {
       "when": {
+        "facing": "west",
+        "stage": "2",
+        "lit": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "1|3",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_body_on",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "2",
+        "lit": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_open_on",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
         "north": "true"
       },
       "apply": {
@@ -88,6 +222,7 @@
     },
     {
       "when": {
+        "facing": "north",
         "east": "true"
       },
       "apply": {
@@ -97,6 +232,36 @@
     },
     {
       "when": {
+        "facing": "north",
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
         "south": "true"
       },
       "apply": {
@@ -106,6 +271,56 @@
     },
     {
       "when": {
+        "facing": "south",
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/fabricator_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
         "west": "true"
       },
       "apply": {
