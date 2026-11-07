@@ -129,6 +129,9 @@ public final class FrameDroneRenderer {
         final float size;
         final double range;
         final List<Drone> drones = new ArrayList<>();
+        /** Which of the structure's sizes it shows; called back, it only has to get home. */
+        int sizeIndex;
+        boolean closing;
 
         Hint(Level level, BlockPos machine, float start, float size, double range) {
             this.level = level;
@@ -147,7 +150,8 @@ public final class FrameDroneRenderer {
     /** A second click calls them back. */
     private static boolean recalled(Level level, BlockPos machine, float now) {
         for (Hint hint : HINTS) {
-            if (hint.level == level && hint.machine.equals(machine)) {
+            if (hint.level == level && hint.machine.equals(machine) && !hint.closing) {
+                hint.closing = true;
                 hint.drones.forEach(drone -> drone.leave(now - hint.start));
                 return true;
             }
@@ -177,33 +181,55 @@ public final class FrameDroneRenderer {
 
     /**
      * A click on the controller of an unfinished big structure: bigger drones go out, each for a group of the blocks it lacks.
-     * With several sizes to choose from, the one nearest to done is the one being built.
+     * With several sizes they start from the one with the most blocks already placed, the smallest if none, so the ground never decides;
+     * each further click shows the next size, and after the largest they come home.
      */
     public static void clickedStructure(Level level, BlockPos controller, BlockState state, Blueprint... sizes) {
         float now = level.getGameTime();
-        if (recalled(level, controller, now)) {
+        int shown = -1;
+        for (Hint hint : HINTS) {
+            if (hint.level == level && hint.machine.equals(controller) && !hint.closing) {
+                shown = hint.sizeIndex;
+            }
+        }
+        if (shown >= 0) {
+            recalled(level, controller, now);
+            if (shown + 1 < sizes.length) {
+                launch(level, controller, state, sizes, shown + 1, now);
+            }
             return;
         }
-        List<Target> missing = null;
-        Blueprint chosen = sizes[0];
-        for (Blueprint size : sizes) {
-            List<Target> lacking = new ArrayList<>();
-            for (Structure.Ghost ghost : size.ghosts(controller, state.getValue(MachineBlock.FACING))) {
-                if (!ghost.ok().test(level.getBlockState(ghost.pos()))) {
-                    lacking.add(new Target(ghost.pos(), ghost.show(), ghost.ok()));
+        int best = 0;
+        int mostPlaced = -1;
+        for (int i = 0; i < sizes.length; i++) {
+            int placed = 0;
+            for (Structure.Ghost ghost : sizes[i].ghosts(controller, state.getValue(MachineBlock.FACING))) {
+                if (ghost.show() != null && !ghost.pos().equals(controller) && ghost.ok().test(level.getBlockState(ghost.pos()))) {
+                    placed++;
                 }
             }
-            if (missing == null || lacking.size() < missing.size()) {
-                missing = lacking;
-                chosen = size;
+            if (placed > mostPlaced) {
+                mostPlaced = placed;
+                best = i;
             }
         }
-        if (missing == null || missing.isEmpty()) {
+        launch(level, controller, state, sizes, best, now);
+    }
+
+    private static void launch(Level level, BlockPos controller, BlockState state, Blueprint[] sizes, int index, float now) {
+        List<Target> missing = new ArrayList<>();
+        for (Structure.Ghost ghost : sizes[index].ghosts(controller, state.getValue(MachineBlock.FACING))) {
+            if (!ghost.ok().test(level.getBlockState(ghost.pos()))) {
+                missing.add(new Target(ghost.pos(), ghost.show(), ghost.ok()));
+            }
+        }
+        if (missing.isEmpty()) {
             return;
         }
         int wrong = (int) missing.stream().filter(target -> cellOf(level, target) == Cell.BLOCKED).count();
-        Minecraft.getInstance().player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.status", chosen.displayName(), missing.size() - wrong, wrong));
+        Minecraft.getInstance().player.sendOverlayMessage(Component.translatable("message.cyberfarm.projector.status", sizes[index].displayName(), missing.size() - wrong, wrong));
         Hint hint = new Hint(level, controller, now, BIG, BIG_RANGE);
+        hint.sizeIndex = index;
         for (List<Target> group : groups(missing)) {
             hint.drones.add(new Drone(controller, group, hint.drones.size()));
         }

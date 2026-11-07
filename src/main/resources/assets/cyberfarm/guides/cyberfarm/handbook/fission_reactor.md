@@ -15,7 +15,7 @@ item_ids:
 A cooling tower in **three sizes**. Uranium **Fuel Rods** heat its core, **water** carries the heat
 away and leaves as **Steam** for [Steam Turbines](steam_turbine.md). The scene shows the Small tower;
 a [Multiblock Projector](multiblock_projector.md) shows any size right where you want to build it.
-Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They show the size nearest to done.
+Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They start from the size you have built the most of; click again for the next size.
 
 <GameScene zoom={3} interactive={true}>
   <Block id="cyberfarm:reactor_casing" x="0" y="0" z="0" />
@@ -148,7 +148,7 @@ Blocks outside a narrower ring do not matter; everything inside the rings must b
   **Advanced** pipes at its steam port.
 
 When the tower is complete it powers up with a deep chime and **turns into a real cooling tower**: the
-blocky casings disappear into one smooth, curved shell of white panels with glowing pale green bands,
+blocky casings disappear into one faceted, octagonal shell of enamel panels with glowing mint bands,
 wide at the base, narrow in the middle and flared at the rim. The controller becomes a **panel** on
 the surface and every port a glowing **hatch**, right where a pipe or cable plugged into the port
 enters the tower. You can **right-click any block of the tower** to open the reactor.
