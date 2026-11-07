@@ -3008,16 +3008,16 @@ def mech_texture():
 # --------------------------------------------------------------------------- mech hangar
 
 def hangar_frame(formed):
-    """A hangar pillar: white plating, blue and white hazard stripes; formed, cyan lines light up."""
+    """A hangar pillar: enamel plating, mint stripes; formed, its lines light up."""
     c = Canvas()
     c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, MECH_WHITE, noise=3, seed=70)
-    c.frame(1, 1, 14, 14, MECH_SEAM)
+    c.rect(1, 1, 14, 14, "#395853", noise=3, seed=70)
+    c.frame(1, 1, 14, 14, "#233e3b")
     for y in range(2, 14):
         for x in range(2, 14):
             if y in (2, 3, 12, 13):
-                c.set(x, y, MECH_RED if (x + y) // 2 % 2 else MECH_WHITE)
-    c.rect(6, 5, 9, 10, MECH_DARK)
+                c.set(x, y, "#5ec2b8" if (x + y) // 2 % 2 else "#395853")
+    c.rect(6, 5, 9, 10, "#132423")
     if formed:
         c.rect(7, 5, 8, 10, "c")
         for x, y in ((2, 7), (13, 7), (2, 8), (13, 8)):
@@ -3028,26 +3028,26 @@ def hangar_frame(formed):
 
 
 def hangar_pad(formed):
-    """The charging pad's top, like the rack: a white plate with a blue rim and ring; formed, the ring glows."""
+    """The charging pad's top, like the rack: an enamel plate with a mint rim and ring; formed, the ring glows."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=71)
-    c.frame(0, 0, 15, 15, MECH_RED)
-    c.frame(1, 1, 14, 14, MECH_SEAM)
-    c.disc(7.5, 7.5, 5.8, "c" if formed else MECH_RED, r_inner=4.6)
-    c.disc(7.5, 7.5, 2.2, "C" if formed else MECH_SEAM)
+    c.rect(0, 0, 15, 15, "#395853", noise=3, seed=71)
+    c.frame(0, 0, 15, 15, "#5ec2b8")
+    c.frame(1, 1, 14, 14, "#233e3b")
+    c.disc(7.5, 7.5, 5.8, "c" if formed else "#5ec2b8", r_inner=4.6)
+    c.disc(7.5, 7.5, 2.2, "C" if formed else "#233e3b")
     for x, y in ((7, 2), (8, 2), (7, 13), (8, 13), (2, 7), (2, 8), (13, 7), (13, 8)):
-        c.set(x, y, "c" if formed else MECH_DARK)
+        c.set(x, y, "c" if formed else "#132423")
     return c
 
 
 def hangar_pad_side():
-    """The pad's sides, like the rails: white with a blue band and a light line."""
+    """The pad's sides, like the rails: enamel with a mint band and a light line."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=74)
-    c.frame(0, 0, 15, 15, MECH_SEAM)
-    c.rect(0, 9, 15, 11, MECH_RED)
+    c.rect(0, 0, 15, 15, "#395853", noise=3, seed=74)
+    c.frame(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 9, 15, 11, "#5ec2b8")
     c.rect(2, 10, 13, 10, "c")
-    c.rect(0, 15, 15, 15, MECH_DARK)
+    c.rect(0, 15, 15, 15, "#132423")
     return c
 
 def mech_hangar_front(lit):

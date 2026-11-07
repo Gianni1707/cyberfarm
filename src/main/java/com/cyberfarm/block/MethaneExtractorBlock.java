@@ -1,5 +1,7 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
+import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -87,6 +89,18 @@ public class MethaneExtractorBlock extends MachineBlock {
                 return;
             }
         }
+    }
+
+    /** Until it is complete, a click sends out the drones that show what it lacks, instead of opening the GUI. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (state.getValue(FORMED)) {
+            return super.useWithoutItem(state, level, pos, player, hitResult);
+        }
+        if (level.isClientSide()) {
+            FrameDroneRenderer.clickedStructure(level, pos, state, Blueprint.METHANE_CHAMBER);
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

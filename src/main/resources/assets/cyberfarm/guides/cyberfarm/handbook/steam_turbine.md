@@ -72,6 +72,7 @@ up a big rotor; the rotor drives the generator. The scene shows the Small turbin
 Complete, the blocks disappear into one smooth **white and pale green cylinder**: the controller becomes a
 panel on the front, every port a glowing hatch, and at the back you can see the **rotor**. A
 [Multiblock Projector](multiblock_projector.md) shows the layout of any size in the world.
+Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They show the size nearest to done.
 
 ## Spinning up
 

@@ -23,8 +23,8 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Draws a complete Mech Hangar as one rack, its frames hidden: white floor rails with dark treads
- * and a light line, two posts with blue bands and light strips braced to the rails, a beam
+ * Draws a complete Mech Hangar as one rack, its frames hidden: floor rails with dark treads
+ * and a light line, two posts with mint bands and light strips braced to the rails, a beam
  * across their tops with two arms reaching forward, hydraulic struts from the posts to the arms,
  * and two clamps that come down onto a parked mech's shoulders. A gantry rides on the arms: a
  * bridge, a trolley and a telescopic gripper that carries modules to the mech's mounts and back.
@@ -35,10 +35,10 @@ import net.minecraft.world.phys.Vec3;
 public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity, HangarRenderer.State> {
     private static final RenderType METAL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/methane_chamber.png"));
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
-    private static final int SHELL = 0xFFE3E9ED;
-    private static final int DARK = 0xFF2B3036;
-    private static final int STEEL = 0xFF8A96A2;
-    private static final int BLUE = 0xFF1F8FD0;
+    private static final int SHELL = 0xFF395853;
+    private static final int DARK = 0xFF233E3B;
+    private static final int STEEL = 0xFF7C8989;
+    private static final int BAND = 0xFF5EC2B8;
     private static final int LAMP = 0xFFD1FEE7;
     /** The arms' and clamps' place across the rack: over the parked mech's shoulders. */
     private static final float[] SHOULDERS = {1.34F, 2.66F};
@@ -109,13 +109,13 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
             for (int w : new int[] {0, 4}) {
                 // Floor rail as high as the pad, treads across its top, and its post braced to it
                 rack.beam(w, 0.5F, -0.48F, w, 0.5F, 4.48F, 0.48F, SHELL);
-                rack.beam(w, 0.62F, -0.49F, w, 0.62F, 4.49F, 0.485F, BLUE);
+                rack.beam(w, 0.62F, -0.49F, w, 0.62F, 4.49F, 0.485F, BAND);
                 for (float t = -0.2F; t <= 4.2F; t += 0.5F) {
                     rack.beam(w - 0.34F, 1.0F, t, w + 0.34F, 1.0F, t, 0.05F, DARK);
                 }
                 rack.beam(w, 0.0F, 4.0F, w, 5.9F, 4.0F, 0.36F, SHELL);
-                rack.beam(w, 1.35F, 4.0F, w, 1.7F, 4.0F, 0.4F, BLUE);
-                rack.beam(w, 4.15F, 4.0F, w, 4.5F, 4.0F, 0.4F, BLUE);
+                rack.beam(w, 1.35F, 4.0F, w, 1.7F, 4.0F, 0.4F, BAND);
+                rack.beam(w, 4.15F, 4.0F, w, 4.5F, 4.0F, 0.4F, BAND);
                 rack.beam(w, 1.0F, 2.3F, w, 2.6F, 4.0F, 0.14F, SHELL);
             }
             // The beam across the top, capped dark, and the arms forward over the pad
@@ -142,8 +142,8 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
                 rack.beam(w, 5.84F, d - 0.2F, w, 5.84F, d + 0.2F, 0.08F, DARK);
             }
             rack.beam(0.8F, GANTRY_Y, d, 3.2F, GANTRY_Y, d, 0.1F, SHELL);
-            rack.beam(0.78F, GANTRY_Y, d, 0.82F, GANTRY_Y, d, 0.12F, BLUE);
-            rack.beam(3.18F, GANTRY_Y, d, 3.22F, GANTRY_Y, d, 0.12F, BLUE);
+            rack.beam(0.78F, GANTRY_Y, d, 0.82F, GANTRY_Y, d, 0.12F, BAND);
+            rack.beam(3.18F, GANTRY_Y, d, 3.22F, GANTRY_Y, d, 0.12F, BAND);
             float w = gantry.w;
             float y = gantry.y;
             rack.beam(w, GANTRY_Y - 0.12F, d, w, GANTRY_Y + 0.14F, d, 0.17F, DARK);
@@ -155,7 +155,7 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
             if (gantry.carrying) {
                 float m = y - MODULE_DROP;
                 rack.beam(w, m - 0.13F, d, w, m + 0.13F, d, 0.14F, SHELL);
-                rack.beam(w, m - 0.13F, d, w, m - 0.07F, d, 0.145F, BLUE);
+                rack.beam(w, m - 0.13F, d, w, m - 0.07F, d, 0.145F, BAND);
             }
         });
         collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {

@@ -76,7 +76,7 @@ The crystal grows in a **chamber** 3 blocks wide and deep and 4 high:
 Any of the Cyber Frames, in the floor, the corners or the roof, can be a
 <ItemLink id="crystallizer_port" /> instead: the projector suggests one at the back of the floor.
 
-The [Multiblock Projector](multiblock_projector.md) shows it: pick *Crystallizer*. Complete, the
+Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The [Multiblock Projector](multiblock_projector.md) shows it too: pick *Crystallizer*. Complete, the
 chamber turns into one machine: a stepped octagonal plinth with the acid in a basin sunk in its
 top, four pylons holding up a crown with an emitter in its hub, a violet energy field between them
 and a console on the plinth's front, under the radiation mark. Alone, the Crystallizer is a small pedestal

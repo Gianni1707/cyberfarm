@@ -15,6 +15,7 @@ item_ids:
 A cooling tower in **three sizes**. Uranium **Fuel Rods** heat its core, **water** carries the heat
 away and leaves as **Steam** for [Steam Turbines](steam_turbine.md). The scene shows the Small tower;
 a [Multiblock Projector](multiblock_projector.md) shows any size right where you want to build it.
+Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They show the size nearest to done.
 
 <GameScene zoom={3} interactive={true}>
   <Block id="cyberfarm:reactor_casing" x="0" y="0" z="0" />

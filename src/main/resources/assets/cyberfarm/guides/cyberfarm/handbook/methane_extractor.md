@@ -70,6 +70,8 @@ structure where a mob is shut in and dissolved in **Acid**, giving off **Methane
   inlet with a [Liquid Pipe](liquid_pipe.md) and take methane from the outlet with a Gas Pipe.
 - **Intake Gate**: any glass of the **lower** wall can be an <ItemLink id="intake_gate" />.
 
+Right-click the extractor while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. 
+
 When the structure is right the chamber powers up with a chime and becomes **one machine**, a sibling of the
 [Crystallizer](mech_core.md): a stepped octagonal plinth, four pylons and a crown with the extractor's head in its hub, and between
 them a stepped glass bell with the mob in plain view. Ports show as couplings where a pipe joins them, gates as roll-up doors

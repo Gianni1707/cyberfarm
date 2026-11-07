@@ -67,9 +67,9 @@ on the sides so the mech walks in and out:
   tops and two **arms**, two blocks long, reaching forward from the beam over the pad;
 - a 3x3 <ItemLink id="hangar_pad" /> between the rails, with the space over it left free.
 
-The [Multiblock Projector](multiblock_projector.md) shows it: sneak + right-click to pick *Mech
+Right-click the console while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The [Multiblock Projector](multiblock_projector.md) shows it too: sneak + right-click to pick *Mech
 Hangar*, then look where the console goes. When it is complete the frames give way to the rack
-itself: white rails with treads and a pale green light line, posts with blue bands braced to the rails,
+itself: rails with treads and a pale green light line, posts with mint bands braced to the rails,
 the beam and its arms, hydraulic struts, two **clamps** that come down onto a parked mech's
 shoulders and a **gantry arm** riding on the arms, which fits the modules.
 
