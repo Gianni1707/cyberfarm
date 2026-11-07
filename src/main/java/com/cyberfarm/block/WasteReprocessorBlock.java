@@ -21,8 +21,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
+import java.util.List;
+
 /** A disc of four pockets before a shielded plate, with the radiation mark on the roof (see tools/machinemodels.py; WasteReprocessorRenderer draws the pockets). */
-public class WasteReprocessorBlock extends LitMachineBlock {
+public class WasteReprocessorBlock extends SmallMultiblockBlock {
     public static final MapCodec<WasteReprocessorBlock> CODEC = simpleCodec(WasteReprocessorBlock::new);
     /** Green outside the palette, on purpose: it says "radioactive". */
     private static final DustParticleOptions GLOW = new DustParticleOptions(0x6CFF6C, 1.0F);
@@ -37,9 +39,15 @@ public class WasteReprocessorBlock extends LitMachineBlock {
         return CODEC;
     }
 
+    /** With a Cyber Frame on top the plate grows up a block, over a magazine. */
     @Override
-    protected boolean hasPipePorts() {
-        return true;
+    public List<Direction> frameSides(BlockState state) {
+        return List.of(Direction.UP);
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.waste_reprocessor.needs_frame";
     }
 
     @Override
@@ -62,7 +70,7 @@ public class WasteReprocessorBlock extends LitMachineBlock {
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
         Direction front = state.getValue(FACING);
         double x = pos.getX() + 0.5 + front.getStepX() * 4.9 / 16.0;
-        double y = pos.getY() + 14.2 / 16.0;
+        double y = pos.getY() + 15.8 / 16.0;
         double z = pos.getZ() + 0.5 + front.getStepZ() * 4.9 / 16.0;
         if (random.nextInt(12) == 0) {
             level.addParticle(GLOW, x, y, z, 0.0, 0.02, 0.0);

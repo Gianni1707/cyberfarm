@@ -14,7 +14,7 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
  */
 public class MachinePartBlock extends Block {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
-    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 42);
+    public static final IntegerProperty PART = IntegerProperty.create("part", 0, 49);
     public static final int TURBINE_DUCT = 0, TURBINE_NOZZLE = 1, TURBINE_DOOR_LEFT = 2, TURBINE_DOOR_RIGHT = 3;
     public static final int MIXER_WATER_TANK = 4, MIXER_COOLANT_TANK = 5, MIXER_WATER_SADDLE = 6, MIXER_COOLANT_SADDLE = 7, MIXER_RAIL = 8;
     /** The Coolant Mixer's hood: front, back and end panels, each a right and a left. */
@@ -25,6 +25,8 @@ public class MachinePartBlock extends Block {
     public static final int BIO_TOP = 31, BIO_RING_LOW = 32, BIO_RING_HIGH = 33, BIO_TANK = 34;
     public static final int FAB_BASE = 35, FAB_BED = 36, FAB_IDLER_NEAR = 37, FAB_IDLER_FAR = 38, FAB_MAGAZINE = 39;
     public static final int OVEN_BASE = 40, OVEN_TUBE = 41, OVEN_TANK = 42;
+    public static final int ELEC_BASE = 43, ELEC_BATH = 44, ELEC_ANODE = 45, ELEC_BUS = 46;
+    public static final int REPRO_TOP = 47, REPRO_DISC = 48, REPRO_MAGAZINE = 49;
 
     public MachinePartBlock(Properties properties) {
         super(properties);

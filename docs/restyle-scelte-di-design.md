@@ -36,8 +36,8 @@ Anche le regole salvate nella memoria di Claude restano su questo PC. Per lavora
    dichiara il costo.
 8. **Se l'utente dà l'immagine o la forma, si usa quella.** Quando indica esattamente cosa vuole non servono altri fogli di idee: va
    applicato e fatto vedere in gioco.
-9. **Dopo ogni avvio si controlla il log** cercando `Failed to load model` e `Missing block model`. Un modello rotto si vede come cubo
-   nero e viola, e "Missing model" da solo non lo trova.
+9. **Dopo ogni avvio si controlla il log** cercando `Failed to load model`, `Missing block model`, `Missing textures in model` e
+   `Using missing texture`. Un modello o una texture rotti si vedono neri e viola, e "Missing model" da solo non li trova.
 
 ### Il giro di una proposta
 
@@ -75,6 +75,7 @@ Ha sostituito il vecchio grigio-blu con rame e ciano, troppo simile a Oritech. N
 - **Ogni presa visibile deve collegarsi davvero.** Un attacco che sembra collegabile e non lo è non va bene.
 - **Niente facce grandi e piatte senza dettaglio,** e niente forme troppo tonde per Minecraft.
 - **Tubi veri:** nei modelli si usano le texture reali dei tubi, mai inventate.
+- **Muffler:** blocco singolo, un peso su una bobina che rimbalza secondo quanti suoni silenzia. Scartati la torre a cassetti e il tamburo a ventola.
 - **Combustion Generator:** la parte mobile è una ventola a 6 palette sul camino. Scartati il bilanciere sullo sportello e le alette davanti al fuoco.
 - **Fluidi veri:** dove si vede un fluido, livello e colore vengono dal tank reale.
 - **Stessa forma, solo più grande.** Quando una macchina piace, si ingrandisce senza ridisegnarla: "modificalo leggermente". È il metodo che ha funzionato meglio.
@@ -110,8 +111,10 @@ Per le macchine avanzate che hanno bisogno di spazio, come 2x1 o 1x3.
 | Bio-Digester | Tamburo alto 2 e tank accanto | 2, sopra e a sinistra | Davanti, dietro e a destra |
 | Fabricator | Lungo 2, con magazzino delle schede | 1 dietro | Davanti, sui lati e sopra |
 | Pyrolysis Oven | 2x1, un tubo e un tank lungo | 1 a sinistra | Davanti, dietro e a destra |
+| Electrolyzer | 2x1, una vasca, catodo e anodo | 1 a sinistra | Davanti, dietro e a destra |
+| Waste Reprocessor | Alto 2, con caricatore | 1 sopra | Su tutti i lati |
 
-Destra e sinistra valgono guardando la macchina dal davanti. Scartati: Acid Synthesizer 3x1 basso e con silo; Bio-Digester col tank alto 2; Fabricator lungo 3; forno lungo 3.
+Destra e sinistra valgono guardando la macchina dal davanti. Scartati: Acid Synthesizer 3x1 basso e con silo; Bio-Digester col tank alto 2; Fabricator lungo 3; forno lungo 3; Electrolyzer alto 2; Waste Reprocessor 2x2. La Water Pump resta a blocco singolo.
 
 ## Droni al posto delle indicazioni
 

@@ -14,6 +14,8 @@ item_ids:
 
 <BlockImage id="cyberfarm:waste_reprocessor" scale="4" float="left" />
 
+It takes a **Cyber Frame** on top: right-click it alone and a drone shows where. Once complete, its plate grows up a block with the plaque on it. It doesn't work until then; breaking the frame folds it back.
+
 Makes nuclear waste safe. Each **Depleted Fuel Rod** takes 10 seconds and **40 FE/t** and becomes
 a block of **Vitrified Waste**; one time in three it also recovers an **Uranium Ingot**, and one
 time in four an **Isotope Shard**, the seed of the [Mech Core](mech_core.md)'s crystal.

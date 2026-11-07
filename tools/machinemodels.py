@@ -686,6 +686,85 @@ def pyrolysis_oven_moving():
     return base, tube, pyrolysis_oven_tank()
 
 
+def muffler_parts():
+    """A stepped absorber base with a coil's seat. MufflerRenderer draws the weight and the coil, which the item shows at rest."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    return [((1, 0, 1), (15, 1, 15), "plinth"), *octagon(2, 1, 2, 14, 3.5, 14, 2, dark), *octagon(2.6, 2.4, 2.6, 13.4, 3, 13.4, 2, "copper"),
+            *octagon(3.2, 3.5, 3.2, 12.8, 5.5, 12.8, 1.7, dark), *octagon(4.2, 5.5, 4.2, 11.8, 7.5, 11.8, 1.5, "trim")]
+
+
+def muffler_item():
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    return [*muffler_parts(), ((4, 10.6, 4), (12, 13.6, 12), cap), ((3.6, 11.7, 3.6), (12.4, 12.5, 12.4), "copper"),
+            *[((5, y, 5), (11, y + 0.6, 11), "trim") for y in (7.9, 8.8, 9.7)]]
+
+
+def electrolyzer_lone():
+    return [*electrolyzer(), ((14, 6.4, 6.2), (14.5, 7.9, 9.8), "copper"), ((14.5, 6.9, 6.8), (14.62, 7.4, 9.2), "slot")]
+
+
+def electrolyzer_open():
+    """The cell on two blocks, one machine: the bath and its window run on, an anode column at the far end answers the cathode, a bus bar joins them."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    parts = [((0, 0, 0), (32, 1, 16), {"up": "oven_top", "down": "oven_top", "south": "plinth", "east": "plinth"}),
+             *octagon(2, 1, 2, 30, 8, 14, 2, long), *octagon(1.6, 2.5, 1.6, 30.4, 3.25, 14.4, 2, "copper")]
+    for x in (2.4, 28.4):
+        parts += [((x, 5.35, 14), (x + 1.2, 7.15, 14.08), "plinth"), ((x + 0.1, 5.5, 14.08), (x + 1.1, 7, 14.2), "light")]
+    return [*parts, *octagon(3.5, 8, 7, 28.5, 15, 13.4, 1.5, long),
+            *round_tank(2.5, 8, 2.5, 7.5, 15.2, 6.9, dark), *round_tank(2.2, 11, 2.2, 7.8, 11.75, 7.2, "copper"), *round_tank(3, 15.2, 3, 7, 16, 6.4, cap),
+            *electrolyzer_moving()[2], *electrolyzer_moving()[3],
+            ((5.5, 10.2, 13.4), (26.5, 14.9, 13.8), "slot"), ((5.5, 10.2, 13.8), (26.5, 10.7, 14.2), "light"),
+            ((4.5, 9.2, 13.4), (27.5, 10.2, 14.5), long), ((4.5, 10.2, 13.4), (5.5, 15, 14.5), long),
+            ((26.5, 10.2, 13.4), (27.5, 15, 14.5), long), ((8.5, 10.2, 13.4), (9, 15, 14.5), long), ((20.5, 10.2, 13.4), (21, 15, 14.5), long),
+            ((5.4, 15.05, 12.8), (8.6, 16, 14.8), dark), ((8.7, 15, 7.5), (12.5, 16, 14.8), dark), ((9, 14.6, 13.4), (10.6, 15, 14.5), dark),
+            ((5.8, 13.9, 14.26), (8.3, 14.9, 14.55), "trim", "unlit"), ((6.65, 14.9, 14.3), (7.85, 15, 14.5), "pipe", "unlit")]
+
+
+def electrolyzer_moving():
+    """What moves in the opening: the far end of the base sliding out, a hair inside the machine's planes, then the bath and the anode rising out of it, and the bus bar."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    base = [((16, 0, 0.02), (32, 1, 15.98), {"up": "oven_top", "down": "oven_top", "south": "plinth", "east": "plinth"}),
+            *octagon(14, 1, 2.02, 30, 7.98, 13.98, 2, long), *octagon(14, 2.5, 1.62, 30.4, 3.25, 14.38, 2, "copper")]
+    bath = [*octagon(12.5, 8, 7.02, 28.5, 14.98, 13.38, 1.5, long), ((10.6, 10.2, 13.4), (26.5, 14.9, 13.78), "slot"),
+            ((11.5, 9.2, 13.4), (27.5, 10.2, 14.48), long), ((26.5, 10.2, 13.4), (27.5, 15, 14.48), long), ((20.5, 10.2, 13.4), (21, 15, 14.48), long)]
+    anode = [*round_tank(24.5, 8, 2.5, 29.5, 14.4, 6.9, dark), *round_tank(24.2, 11, 2.2, 29.8, 11.75, 7.2, "copper"), *round_tank(25, 14.4, 3, 29, 15.1, 6.4, cap)]
+    bus = [((7.5, 15.1, 3.9), (24.5, 15.8, 5.1), "copper")]
+    return base, bath, anode, bus
+
+
+def waste_reprocessor_body():
+    """What stays put in the opening: the base and the plate's lower half. The disc moves up on the taller plate."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}), *octagon(1, 1, 1, 15, 3, 15, 2, dark),
+            *octagon(1.5, 3, 2, 14.5, 14.8, 9.6, 1.2, dark), ((11.4, 2.4, 15), (14.2, 4, 15.08), "plinth"), ((11.6, 2.6, 15.08), (14, 3.8, 15.2), "light")]
+
+
+def waste_reprocessor_moving():
+    """The plate's top, carrying the plaque up from where it sits on the lone machine; the disc, a little bigger; the loading magazine above it."""
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    top = [*octagon(1.52, 14.8, 2.02, 14.48, 24.8, 9.58, 1.2, long), ((3.8, 24.8, 6.6), (12.2, 25.7, 9.6), "lid"), ((6.6, 25.7, 6.9), (9.4, 29.2, 8.2), "lid"),
+           ((6.6, 25.7, 5.4), (9.4, 27.4, 6.9), "lid"), ((5, 25.7, 8.2), (11, 31.7, 9.4), "radiation_mark")]
+    disc = [*zdisc(8, 10.6, 9.6, 12.2, 6.3, "beam"), *zdisc(8, 10.6, 12.2, 12.4, 6.1, "trim"), *zdisc(8, 10.6, 12.4, 12.5, 1.76, "copper"), *zdisc(8, 10.6, 11, 11.4, 6.4, "copper")]
+    magazine = [((3, 17.5, 9.6), (13, 23.2, 10.9), long), ((4.5, 18.8, 10.9), (11.5, 21.9, 11), "slot"), ((2.6, 23.2, 9.6), (13.4, 23.9, 11.2), "copper")]
+    return top, disc, magazine
+
+
+def waste_reprocessor_open():
+    """Two blocks tall, one machine: the plate goes on up, with the magazine over the disc and the plaque on the roof."""
+    long = {"up": "oven_top", "south": "oven_body", "east": "oven_body"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "oven_top", "down": "oven_top", "south": "plinth", "east": "plinth"}), *octagon(1, 1, 1, 15, 3, 15, 2, long),
+            *octagon(1.5, 3, 2, 14.5, 24.8, 9.6, 1.2, long), ((11.4, 2.4, 15), (14.2, 4, 15.08), "plinth"), ((11.6, 2.6, 15.08), (14, 3.8, 15.2), "light"),
+            *waste_reprocessor_moving()[0][len(octagon(1.52, 14.8, 2.02, 14.48, 24.8, 9.58, 1.2, long)):], *waste_reprocessor_moving()[1], *waste_reprocessor_moving()[2]]
+
+
+def waste_reprocessor_lone():
+    return [*waste_reprocessor_parts(), ((14.4, 6, 4.2), (14.9, 8, 7.8), "copper"), ((14.9, 6.4, 4.8), (15, 7.6, 7.2), "slot")]
+
+
 def acid_synthesizer_lone():
     """Alone, the machine as it was on one block, with a docking plate at the foot of each end, where its frames go."""
     return [*acid_synthesizer(),
@@ -834,7 +913,9 @@ def machine_parts():
               *zip(("acid_water", "acid_acid", "acid_tower", "acid_top", "acid_chimney"), acid_synthesizer_parts()[1:6]),
               *zip(("bio_top", "bio_ring_low", "bio_ring_high", "bio_tank"), bio_digester_parts()[1:5]),
               *zip(("fab_base", "fab_bed", "fab_idler_near", "fab_idler_far", "fab_magazine"), fabricator_parts()[:5]),
-              *zip(("oven_base", "oven_tube", "oven_tank"), pyrolysis_oven_moving())]
+              *zip(("oven_base", "oven_tube", "oven_tank"), pyrolysis_oven_moving()),
+              *zip(("elec_base", "elec_bath", "elec_anode", "elec_bus"), electrolyzer_moving()),
+              *zip(("repro_top", "repro_disc", "repro_magazine"), waste_reprocessor_moving())]
     variants = {}
     for part, (name, parts) in enumerate(groups):
         build(f"part_{name}", parts, False)
@@ -1366,6 +1447,8 @@ def bake_face(mat, face, frm, to):
 def pack(patches):
     """Shelf-pack the face patches into the smallest square power-of-two atlas."""
     size = 16
+    while any(len(img[0]) > size or len(img) > size for img in patches.values()):     # a long face alone needs the room
+        size *= 2
     while True:
         spots, x, y, shelf = {}, 0, 0, 0
         for key, img in sorted(patches.items(), key=lambda kv: -len(kv[1])):
@@ -1403,6 +1486,7 @@ def num(v):
 
 
 FOOT_LIGHT = {f"{name}{suffix}" for name in ("bio_digester", "fabricator", "acid_synthesizer", "pyrolysis_oven", "coolant_mixer", "gas_turbine") for suffix in ("", "_body", "_open")} | {
+    "muffler", "muffler_item", "electrolyzer_body", "electrolyzer_open", "waste_reprocessor_body", "waste_reprocessor_open", "electrolyzer",
     "combustion_generator", "combustion_generator_item", "drone_dock", "swarm_dock", "drone_assembler", "water_pump", "electrolyzer", "waste_reprocessor", "waste_reprocessor_item",
     "supply_terminal", "methane_extractor", "crystallizer"}
 
@@ -1599,14 +1683,16 @@ if __name__ == "__main__":
             ("acid_synthesizer_body", acid_synthesizer_parts()[0], True, False),
             ("acid_synthesizer_open", sum(acid_synthesizer_parts(), []), True, False),
             ("water_pump", water_pump(), True, False),
-            ("electrolyzer", electrolyzer(), True, False),
+            ("electrolyzer_body", electrolyzer(), True, False),
+            ("electrolyzer_open", electrolyzer_open(), True, False),
             ("pyrolysis_oven_body", pyrolysis_oven(), True, False),
             ("pyrolysis_oven_open", pyrolysis_oven_open(), True, False),
             ("coolant_mixer_body", coolant_mixer_parts()[0], True, False),
             ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False),
             ("gas_turbine_body", gas_turbine_parts()[0], True, False),
             ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False),
-            ("waste_reprocessor", waste_reprocessor_parts(), True, False),
+            ("waste_reprocessor_body", waste_reprocessor_body(), True, False),
+            ("waste_reprocessor_open", waste_reprocessor_open(), True, False),
             ("supply_terminal", supply_terminal_parts(), False, False),
             ("methane_extractor", methane_extractor(), True, False),
             ("steam_engine", steam_engine_boiler(), True, False),
@@ -1647,6 +1733,10 @@ if __name__ == "__main__":
     build("steam_engine_port_down", [((5, 0, 5), (11, 0.75, 11), "copper")], False)
     build("waste_reprocessor_item", waste_reprocessor_item(), False)
     build("combustion_generator_item", combustion_generator_item(), False)
+    build("muffler", muffler_parts(), False)
+    build("muffler_item", muffler_item(), False)
+    build("electrolyzer", electrolyzer_lone(), False)
+    build("waste_reprocessor", waste_reprocessor_lone(), False)
     radiation_mark()
     build("gas_turbine", gas_turbine_loose(), False)
     build("gas_turbine_port", side_port(4.5), False)
@@ -1659,9 +1749,9 @@ if __name__ == "__main__":
     small_multiblock_blockstate("fabricator", {"north": {"south"}, "east": {"west"}, "south": {"north"}, "west": {"east"}}, up=True)
     small_multiblock_blockstate("acid_synthesizer", {"north": {"west", "east"}, "east": {"north", "south"}, "south": {"east", "west"}, "west": {"south", "north"}})
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
-    blockstate("electrolyzer", True, set())
+    small_multiblock_blockstate("electrolyzer", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     small_multiblock_blockstate("pyrolysis_oven", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
-    blockstate("waste_reprocessor", True, set())
+    small_multiblock_blockstate("waste_reprocessor", {"north": set(), "east": set(), "south": set(), "west": set()})
     crystallizer_blockstate()
     small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
