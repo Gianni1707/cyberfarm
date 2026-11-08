@@ -39,6 +39,16 @@ public final class EffectRenderer {
     private static final float REVEAL_TICKS = 32.0F;
     private static final float BEAM_TICKS = 8.0F;
     private static final float LASER_TICKS = 6.0F;
+    private static final float SPRAY_TICKS = 16.0F;
+    private static final int SPRAY_DROPS = 20;
+    private static final int SEED_GREEN = 0x9DFFB8;
+    private static final int SEED_DARK = 0x3FBF6F;
+    private static final int FERTILIZER_WHITE = 0xEFF5F0;
+    private static final int FERTILIZER_GREY = 0xA6B5B2;
+    private static final int FEED_STRAW = 0xE6CF7A;
+    private static final int FEED_HAY = 0xC9A84A;
+    /** Height above the drone's feet of the nozzles on its pump, where the spray leaves it. */
+    private static final double NOZZLES = 3.0 / 16.0;
 
     private record Effect(int kind, BlockPos from, BlockPos to, int source, long start) {}
 
@@ -71,7 +81,7 @@ public final class EffectRenderer {
                 level.addParticle(ParticleTypes.ELECTRIC_SPARK, from.getX() + random.nextDouble(), from.getY() + random.nextDouble(),
                         from.getZ() + random.nextDouble(), 0.0, 0.0, 0.0);
             }
-        } else {
+        } else if (kind == Effects.REVEAL) {
             // Motes of light rising off the structure's base as the ring sets off
             for (int i = 0; i < 24; i++) {
                 double x = from.getX() + random.nextDouble() * (to.getX() - from.getX() + 1);
@@ -95,6 +105,7 @@ public final class EffectRenderer {
                 case Effects.PRINT -> PRINT_TICKS;
                 case Effects.BEAM -> BEAM_TICKS;
                 case Effects.LASER -> LASER_TICKS;
+                case Effects.SPRAY_SEEDS, Effects.SPRAY_FERTILIZER, Effects.SPRAY_FEED -> SPRAY_TICKS;
                 default -> REVEAL_TICKS;
             };
             if (t < 0.0F || t >= 1.0F) {
@@ -127,6 +138,9 @@ public final class EffectRenderer {
                     case Effects.BEAM -> beam(pose, buffer, frame.origin(), frame.effect().from(), frame.t());
                     case Effects.LASER -> laser(pose, buffer, frame.origin() != null ? frame.origin().add(0.0, 0.1, 0.0) : turretMuzzle(frame.effect().to()),
                             frame.effect().from(), frame.t());
+                    case Effects.SPRAY_SEEDS -> spray(pose, buffer, frame.origin(), frame.effect().from(), frame.t(), SEED_GREEN, SEED_DARK);
+                    case Effects.SPRAY_FERTILIZER -> spray(pose, buffer, frame.origin(), frame.effect().from(), frame.t(), FERTILIZER_WHITE, FERTILIZER_GREY);
+                    case Effects.SPRAY_FEED -> spray(pose, buffer, frame.origin(), frame.effect().from(), frame.t(), FEED_STRAW, FEED_HAY);
                     default -> reveal(pose, buffer, frame.effect().from(), frame.effect().to(), frame.t());
                 }
             }
@@ -141,6 +155,27 @@ public final class EffectRenderer {
         float fade = 1.0F - t * t;
         DockRenderer.segment(pose, buffer, from, to, 0.012F, (int) (0xF0 * fade) << 24 | PALE);
         DockRenderer.segment(pose, buffer, from, to, 0.035F, (int) (0x50 * fade) << 24 | LAMP);
+    }
+
+    /** Drops leaving the pump one after the other, falling faster as they go and fanning out over the block. */
+    private static void spray(PoseStack.Pose pose, VertexConsumer buffer, Vec3 drone, BlockPos target, float t, int light, int dark) {
+        Vec3 nozzle = drone.add(0.0, NOZZLES, 0.0);
+        Vec3 to = Vec3.atBottomCenterOf(target).add(0.0, 0.1, 0.0);
+        for (int i = 0; i < SPRAY_DROPS; i++) {
+            float p = (t - 0.45F * i / SPRAY_DROPS) / 0.55F;
+            if (p <= 0.0F || p >= 1.0F) {
+                continue;
+            }
+            // The same fan every time: the golden angle spreads the drops evenly round the block
+            float angle = i * 2.4F;
+            float spread = 0.08F + 0.34F * (i * 7 % SPRAY_DROPS) / SPRAY_DROPS;
+            float x = Mth.lerp(p, (float) nozzle.x, (float) to.x + Mth.cos(angle) * spread);
+            float y = Mth.lerp(p * p, (float) nozzle.y, (float) to.y);
+            float z = Mth.lerp(p, (float) nozzle.z, (float) to.z + Mth.sin(angle) * spread);
+            float size = 0.02F + 0.012F * (i % 3);
+            box(pose, buffer, x - size, y - size, z - size, x + size, y + size, z + size,
+                    (int) (0xE8 * (1.0F - p * p)) << 24 | (i % 3 == 0 ? dark : light));
+        }
     }
 
     /** A Laser Turret's beam leaves from the middle of its head. */

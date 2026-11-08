@@ -4,6 +4,7 @@ import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.registry.ModBlocks;
+import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,6 +14,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -28,6 +30,8 @@ public abstract class SmallMultiblockBlockEntity extends MachineBlockEntity {
     private static final int CLOSE_SPEED = 2;
     private static final int CLOSE_WAIT_TICKS = 4;
     private static final int FORM_CHECK_INTERVAL = 10;
+    /** Ticks between the knocks of a machine assembling. */
+    private static final int ASSEMBLE_KNOCK = 9;
 
     private int stageTicks;
     private int stageWas = -1;
@@ -61,6 +65,10 @@ public abstract class SmallMultiblockBlockEntity extends MachineBlockEntity {
             level.setBlock(pos, state.setValue(SmallMultiblockBlock.STAGE, SmallMultiblockBlock.CLOSING), Block.UPDATE_ALL);
         } else if (stage == SmallMultiblockBlock.OPENING && stageTicks >= openTicks()) {
             level.setBlock(pos, state.setValue(SmallMultiblockBlock.STAGE, SmallMultiblockBlock.OPEN), Block.UPDATE_ALL);
+            level.playSound(null, pos, ModSounds.MULTIBLOCK_LOCK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        } else if (stage == SmallMultiblockBlock.OPENING && stageTicks % ASSEMBLE_KNOCK == 0) {
+            // Knocks while its parts move into place, each a little higher or lower than the last
+            level.playSound(null, pos, ModSounds.MULTIBLOCK_ASSEMBLE.get(), SoundSource.BLOCKS, 1.0F, 0.85F + level.getRandom().nextFloat() * 0.3F);
         } else if (stage == SmallMultiblockBlock.CLOSING && stageTicks >= openTicks() / CLOSE_SPEED + CLOSE_WAIT_TICKS) {
             releaseFrames(level, pos, state);
             level.setBlock(pos, state.setValue(SmallMultiblockBlock.STAGE, SmallMultiblockBlock.LOOSE), Block.UPDATE_ALL);
@@ -83,6 +91,7 @@ public abstract class SmallMultiblockBlockEntity extends MachineBlockEntity {
             level.setBlock(cell, ModBlocks.HIDDEN_FRAME.get().defaultBlockState().setValue(HiddenFrameBlock.TO_MACHINE, toMachine), Block.UPDATE_ALL);
         }
         level.setBlock(pos, level.getBlockState(pos).setValue(SmallMultiblockBlock.STAGE, SmallMultiblockBlock.OPENING), Block.UPDATE_ALL);
+        level.playSound(null, pos, ModSounds.MULTIBLOCK_UNLATCH.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
     }
 
     private static boolean frameGone(ServerLevel level, BlockPos pos, BlockState state) {

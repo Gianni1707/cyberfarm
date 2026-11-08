@@ -337,7 +337,8 @@ MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "
              **{f"{kind}_tank_{shape}": tank_frame(line, shape) for kind, line in (("liquid", "\u03c3"), ("gas", "\u03c6")) for shape in ("column", "strip", "corner")},
              "tank_plate": tank_plate(), "oven_body": oven_body(), "oven_top": oven_top(),
              "crystal": plate("P", "P", "Q", "Q"), "crystal_tip": plate("R", "R", "P", "P"), "copper": plate("A", "B", "C", "D")}
-EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
+EMISSIVE = {"fire": "machine_fire", "light": "machine_light", "pylon_light": "stabilizer_pylon_light"}   # material -> texture name (+ "_off")
+DRAWN_BY_TEXGEN = {"pylon_light"}   # emissive materials whose texture texgen.py draws, animated
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
 PIPES = {"gas_pipe_up": "gas_pipe", "liquid_pipe_up": "liquid_pipe"}
 DECALS = {"radiation_mark": "radiation_mark"}   # a box whose front shows a whole texture, finer than the atlas; the rest of it one texel   # vertical stubs drawn with the real pipe texture, like the pipe blocks
@@ -1572,6 +1573,11 @@ def build(name, parts, lit_variant, translucent=False):
             out.append(element)
         textures = {"particle": f"cyberfarm:block/models/{name}", "atlas": f"cyberfarm:block/models/{name}"}
         for mat, tex in EMISSIVE.items():
+            if mat in DRAWN_BY_TEXGEN:
+                # Only where it is used, and lit as texgen draws it
+                if any(spec == mat for _, _, spec, _ in elements):
+                    textures[mat] = f"cyberfarm:block/{tex}"
+                continue
             textures[mat] = f"cyberfarm:block/{tex}" + ("" if lit else "_off")
         for mat, tex in STILL_LIGHTS.items():
             if any(spec == mat for _, _, spec, _ in elements):
@@ -1666,8 +1672,63 @@ def blockstate(name, lit, ports, port_of=None, top_turns=False, below=None):
     (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
+def resonance_core_base():
+    """The Resonance Core's stepped base, with a focus plate under the crystal its renderer draws."""
+    return [
+        ((0, 0, 0), (16, 3, 16), "plinth"),
+        ((1, 3, 1), (15, 6, 15), "body"),
+        ((2, 5, 2), (14, 6, 14), "trim"),
+        ((3, 6, 3), (13, 7.5, 13), "trim"),
+        ((5, 7.5, 5), (11, 8, 11), "copper"),
+        ((6.5, 7.9, 6.5), (9.5, 8.15, 9.5), "light"),
+        ((7, 3, 14.9), (9, 4.6, 15.1), "light"),     # status lamp on the front
+    ]
+
+
+def resonance_cell():
+    """A Resonance Cell before its shell forms: an open cage of posts and bars round a glowing node."""
+    return [
+        *[((x, y, z), (x + 3, y + 3, z + 3), "trim") for x in (0, 13) for y in (0, 13) for z in (0, 13)],
+        *[((x, y, 3), (x + 3, y + 3, 13), "body") for x in (0, 13) for y in (0, 13)],
+        *[((3, y, z), (13, y + 3, z + 3), "body") for y in (0, 13) for z in (0, 13)],
+        *[((x, 3, z), (x + 3, 13, z + 3), "body") for x in (0, 13) for z in (0, 13)],
+        ((6.75, 3, 6.75), (9.25, 13, 9.25), "plinth"), ((3, 6.75, 6.75), (13, 9.25, 9.25), "plinth"),
+        ((6.75, 6.75, 3), (9.25, 9.25, 13), "plinth"),
+        ((5.5, 5.5, 5.5), (10.5, 10.5, 10.5), "light"),
+    ]
+
+
+def stabilizer_pylon():
+    """A pylon column's pieces. The shaft is a cross whose arms' faces, 5 px wide at 4 and 12, take the conduit socket; a
+    continuous edge of light runs up its four corners from the footing to the cradle, so the column reads as one tall thing,
+    with a pulse rising along it (stabilizer_pylon_light, animated by texgen). On top a cradle with a pad, where the
+    column's stabilising drone rests (ResonanceCoreRenderer, PAD_TOP)."""
+    footing = [((2, 0, 2), (14, 3, 14), "plinth"), ((3, 3, 3), (13, 5, 13), "trim")]
+    cradle = [
+        ((5, 9, 5), (11, 12, 11), "plinth"),
+        ((1.5, 12, 1.5), (14.5, 14, 14.5), "trim"),
+        ((3, 14, 3), (13, 14.6, 13), "pad"),
+        *[((x, 14, z), (x + 2, 15.5, z + 2), "body") for x in (1.5, 12.5) for z in (1.5, 12.5)],
+        *[((x, 15.5, z), (x + 2, 16, z + 2), "copper") for x in (1.5, 12.5) for z in (1.5, 12.5)],
+        *[((x + 0.5, 14.6, z + 0.5), (x + 1.5, 15.3, z + 1.5), "light") for x in (1.5, 12.5) for z in (1.5, 12.5)],
+    ]
+    def shaft(y0, y1):
+        boxes = [((5.5, y0, 4), (10.5, y1, 12), "body"), ((4, y0, 5.5), (5.5, y1, 10.5), "body"), ((10.5, y0, 5.5), (12, y1, 10.5), "body")]
+        # Off the footing's top step by a hair, so the light's end never shares its face
+        start = y0 + (0.6 if y0 == 5 else 0)
+        return boxes + [((x, start, z), (x + 1, y1, z + 1), "pylon_light") for x in (4, 11) for z in (4, 11)]
+    return {
+        "single": footing + shaft(5, 9) + cradle,
+        "bottom": footing + shaft(5, 16),
+        "middle": shaft(0, 16),
+        "top": shaft(0, 9) + cradle,
+    }
+
+
 if __name__ == "__main__":
     for mat, tex in EMISSIVE.items():
+        if mat in DRAWN_BY_TEXGEN:
+            continue
         maker = fire if mat == "fire" else light
         save_png(ASSETS / f"textures/block/{tex}.png", to_rgba(maker(True)))
         save_png(ASSETS / f"textures/block/{tex}_off.png", to_rgba(maker(False)))
@@ -1734,6 +1795,12 @@ if __name__ == "__main__":
     build("waste_reprocessor_item", waste_reprocessor_item(), False)
     build("combustion_generator_item", combustion_generator_item(), False)
     build("muffler", muffler_parts(), False)
+    build("resonance_core", foot_light("resonance_core", resonance_core_base()), False)
+    build("resonance_cell", resonance_cell(), False)
+    for part, pieces in stabilizer_pylon().items():
+        build(f"stabilizer_pylon_{part}", pieces, False)
+    # Where a conduit plugs into the shaft, the same socket as every machine's pipe port
+    build("stabilizer_pylon_socket", side_port(4), False)
     build("muffler_item", muffler_item(), False)
     build("electrolyzer", electrolyzer_lone(), False)
     build("waste_reprocessor", waste_reprocessor_lone(), False)

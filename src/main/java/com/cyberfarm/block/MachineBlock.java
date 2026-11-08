@@ -4,7 +4,6 @@ import com.cyberfarm.block.entity.MachineBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -124,25 +123,8 @@ public abstract class MachineBlock extends BaseEntityBlock {
                 });
     }
 
-    /**
-     * Called every client tick while the machine works: by default a spark now and then off one of
-     * its sides. Machines with a look of their own override it.
-     */
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(10) == 0) {
-            Vec3 at = onSide(state, level, pos, random);
-            level.addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 0.0, 0.0, 0.0);
-        }
-    }
-
-    /** A random point just outside one of the machine's four sides, between its foot and its top. */
-    protected static Vec3 onSide(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        Direction side = Direction.Plane.HORIZONTAL.getRandomDirection(random);
-        double along = random.nextDouble() * 0.8 - 0.4;
-        double x = pos.getX() + 0.5 + side.getStepX() * 0.52 + (side.getAxis() == Direction.Axis.Z ? along : 0.0);
-        double z = pos.getZ() + 0.5 + side.getStepZ() * 0.52 + (side.getAxis() == Direction.Axis.X ? along : 0.0);
-        return new Vec3(x, pos.getY() + 0.05 + random.nextDouble() * (top(state, level, pos) - 0.1), z);
-    }
+    /** Called every client tick while the machine works. Nothing by default: a machine shows its work its own way. */
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 
     /** A random point on the machine's top, within {@code spread} of its middle. */
     protected static Vec3 onTop(BlockState state, Level level, BlockPos pos, RandomSource random, double spread) {

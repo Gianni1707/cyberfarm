@@ -3,6 +3,7 @@ package com.cyberfarm.client;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
 import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.multiblock.Structure;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -31,8 +32,8 @@ import net.neoforged.neoforge.client.event.ExtractLevelRenderStateEvent;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
 
 /**
- * Draws the Multiblock Projector's ghost blocks: translucent copies of the blocks still to place, and
- * red ones where a block is wrong or must be removed. Correct blocks are not drawn.
+ * Draws the Multiblock Projector's preview while it isn't pinned: translucent copies of the blocks still to place, and
+ * red ones where a block is wrong or must be removed. Correct blocks are not drawn. Pinned, {@link FrameDroneRenderer} takes over.
  */
 public final class ProjectionRenderer {
     private static final int MAX_DISTANCE = 64;
@@ -61,7 +62,8 @@ public final class ProjectionRenderer {
         }
         Level level = event.getLevel();
         Structure structure = ProjectorItem.structure(stack);
-        ProjectorItem.Placement placement = ProjectorItem.pinned(stack);
+        ProjectorItem.Placement pinned = ProjectorItem.pinned(stack);
+        ProjectorItem.Placement placement = pinned;
         if (placement == null && minecraft.hitResult instanceof BlockHitResult hit && hit.getType() == HitResult.Type.BLOCK) {
             // Not pinned: the projection follows the block the player looks at
             placement = ProjectorItem.placement(level, hit.getBlockPos(), hit.getDirection(), player, structure);
@@ -75,6 +77,7 @@ public final class ProjectionRenderer {
             return;
         }
         List<Ghost> found = new ArrayList<>();
+        List<Structure.Ghost> lacking = new ArrayList<>();
         int missing = 0;
         int wrong = 0;
         for (Structure.Ghost ghost : structure.ghosts(controller, facing)) {
@@ -82,6 +85,7 @@ public final class ProjectionRenderer {
             if (ghost.ok().test(state)) {
                 continue;
             }
+            lacking.add(ghost);
             if (ghost.show() == null) {
                 // Must be empty: show what is in the way, in red
                 found.add(new Ghost(ghost.pos(), state, true));
@@ -94,7 +98,12 @@ public final class ProjectionRenderer {
                 wrong++;
             }
         }
-        ghosts = found;
+        if (pinned != null) {
+            // Pinned, mini drones project it; the plain ghosts only preview where it would go
+            FrameDroneRenderer.project(level, player.blockPosition(), structure, controller, facing, lacking);
+        } else {
+            ghosts = found;
+        }
         long time = level.getGameTime();
         if (time - lastMessage >= 10 || time < lastMessage) {
             lastMessage = time;

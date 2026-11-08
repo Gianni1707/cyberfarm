@@ -25,7 +25,6 @@
     "cyberfarm:turbine_casing",
     "cyberfarm:turbine_port",
     "cyberfarm:water_pump",
-    "cyberfarm:hidden_frame",
     "cyberfarm:coolant_mixer",
     "cyberfarm:waste_reprocessor",
     "cyberfarm:vitrified_waste",
@@ -54,6 +53,7 @@
     "cyberfarm:deepslate_uranium_ore",
     "cyberfarm:bauxite_ore",
     "cyberfarm:deepslate_bauxite_ore",
-    "cyberfarm:nether_sulfur_ore"
+    "cyberfarm:nether_sulfur_ore",
+    "cyberfarm:hidden_frame"
   ]
 }

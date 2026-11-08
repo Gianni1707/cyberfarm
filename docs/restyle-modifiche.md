@@ -3,7 +3,7 @@
 Elenco di tutto ciò che è cambiato finora. I motivi delle scelte sono in
 [restyle-scelte-di-design.md](restyle-scelte-di-design.md).
 
-Stato al 7 novembre 2026, branch `machine-models-prototype`: 19 commit da `ce455a6` in poi. Il primo è già su GitHub, gli altri 18 non sono pushati.
+Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commit da `ce455a6`) e, per minerali, icone, attrezzi del drone, proiettore, villaggio, batteria e suoni, sul branch `restyle-icons-drones` che parte da lì. Tutto su GitHub, nulla ancora unito a `master`.
 
 ## Riepilogo per macchina
 
@@ -47,7 +47,7 @@ Stato al 7 novembre 2026, branch `machine-models-prototype`: 19 commit da `ce455
 - `tools/machinemodels.py`: genera modelli a box, atlante, smussi e gradienti.
 - Prese dei tubi visibili dove si collega qualcosa, tramite `MachineBlock.hasPipePorts()`.
 - Correzione dello sfarfallio tra facce coincidenti (`8555828`).
-- Le macchine non fanno più scintille generiche.
+- Le macchine non fanno più scintille generiche: anche Assembler, dock, Resonance Core e Supply Terminal, e l'effetto di base è stato tolto da `MachineBlock`.
 
 **Piccoli multiblocchi** (`e36ec96`, `b8ddb06`)
 - Nuove classi `SmallMultiblockBlock`, `SmallMultiblockBlockEntity`, `HiddenFrameBlock`, `MachinePartBlock`.
@@ -84,7 +84,45 @@ Stato al 7 novembre 2026, branch `machine-models-prototype`: 19 commit da `ce455
 
 - Restano muti tank e Muffler, passivi, e i dock, dove suona il drone.
 
+**Minerali**
+- Nuovi overlay di bauxite, uranio e zolfo, simili a ferro e rame vanilla, con la funzione `pixel_art()` in `tools/texgen.py`.
+- `texgen.py` si fermava dal commit `b3b00c5` perché mancavano `HAZMAT` e `HAZMAT_DARK`: rimesse.
+
+**Attrezzi sul drone**
+- Nuovi Harvester, Transport, Logger, Taxi, Rancher e Bomb, con movimento; dettagli propri per Builder, Breeder e Fisher. Texture del drone a 128x64.
+- Planter e Fertilizer tengono il serbatoio e hanno sotto una pompetta che spruzza sul blocco (`Effects.spray`). Guard e Quarry invariati.
+- Con più moduli sotto lo scafo, gli attrezzi si dividono lo spazio da davanti a dietro.
+- Quando è posato davvero (un blocco subito sotto i piedi) ciò che scende sotto i pattini rientra e non entra più nel pad. In aria resta tutto fuori, anche da inattivo.
+
+**Icone**
+- 32 icone ridisegnate nello stile "indurito", in `tools/item_icons.py`; `build_all()` le scrive sopra le vecchie.
+- Blueprint Disc nella palette.
+- Il circuito avanzato passa da blu ad ambra: i tier sono menta, ambra, viola.
+- Tuta, pantaloni e stivali Hazmat, telai, Rancher, Fertilizer e Planter tengono il concept originale, ridisegnato. I moduli del meka sono schede orizzontali.
+- Tolto da `texgen.py` il vecchio codice che le disegnava (circa 500 righe); le 182 texture generate restano identiche.
+
+**Strutture del Mechanist**
+- Outpost e tutti gli edifici del villaggio nella palette (`tools/schemgen.py`, `tools/village_buildings.py`), 21 strutture rigenerate.
+
+**Batteria e torri**
+- Resonance Core, Resonance Cell e Stabilizer Pylon nella palette, modelli da `machinemodels.py`; cella non formata a gabbia aperta.
+- Fusto dei piloni a croce con quattro spigoli di luce continui e un impulso animato; le prese sono quelle delle macchine.
+- Ogni colonna collegata manda un drone che orbita il cristallo con un raggio, al posto del raggio del pilone (`ResonanceCoreRenderer`).
+- `assetgen.py` riportava la bauxite ai valori di prima della 0.9.5: corretto, ora rigenera il JSON della release.
+
+**Proiettore**
+- Da bloccata, la struttura la proiettano mini droni che partono dal giocatore (`FrameDroneRenderer.project`). I piccoli multiblocchi restano fuori.
+
+**Bilancio**
+- Numeri invariati, verificati. Gas Turbine e Bio-Digester del villaggio avevano perso i Cyber Frame: rimessi, con tubi e tramoggia spostati. Una schematica accetta il frame nascosto.
+
+**Suono di apertura**
+- Suono di montaggio per tutti i piccoli multiblocchi, da `SmallMultiblockBlockEntity`: scatto allo sblocco, colpi meccanici durante l'apertura, colpo secco alla fine.
+
 ## Modifiche che cambiano il gioco
+
+- **Edifici del villaggio già costruiti:** con i blocchi nuovi risultano non finiti, il livello del villaggio può fermarsi e i Builder collegati rompono i blocchi vecchi per rimetterli. Gli Outpost già generati restano com'erano.
+- **Legno warped:** ora gli edifici chiedono legno del Nether.
 
 Non solo estetica, da tenere presenti per i mondi esistenti:
 
@@ -164,14 +202,9 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 ## Cosa manca
 
 **Restyle**
-- Console del Mech Hangar (da decidere).
-- Scintille di default rimaste su Assembler e dock, da verificare.
-- Mech Repair Bay.
-- Suono comune per le aperture dei multiblocchi, che ora sono silenziose (proposto, non chiesto).
+- Niente: il restyle è finito.
 
 **Da decidere o rimandati**
-- Bilancio dello Steam Engine e Gas Turbine del villaggio.
-- Piccoli multiblocchi nel proiettore.
 - Rotazione e specchiatura delle prese.
 - Linee dei generatori non più usate.
 - Uniformare l'altezza della striscia dello Steam Engine con le altre, se stona.

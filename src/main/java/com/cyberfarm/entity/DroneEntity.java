@@ -69,6 +69,8 @@ public class DroneEntity extends PathfinderMob {
     public static final int STATUS_CHARGING = 2;
     public static final int STATUS_WORKING = 3;
     public static final int STATUS_RETURNING = 4;
+    private float stowPrevious;
+    private float stowNow;
 
     /** Height above the dock block where the drone parks: just over the 6px pad. */
     public static final double DOCK_HEIGHT = 0.4;
@@ -205,6 +207,22 @@ public class DroneEntity extends PathfinderMob {
     public float shutdownTicks(float partialTick) {
         long start = entityData.get(DATA_SHUTDOWN);
         return start == 0 ? -1.0F : Math.max(0.0F, level().getGameTime() - start + partialTick);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide()) {
+            // An idle drone may be hovering in the air: only something right under its feet counts as parked
+            boolean parked = entityData.get(DATA_SHUTDOWN) != 0 || !level().noCollision(this, getBoundingBox().move(0.0, -0.25, 0.0));
+            stowPrevious = stowNow;
+            stowNow = Mth.approach(stowNow, parked ? 1.0F : 0.0F, 0.1F);
+        }
+    }
+
+    /** Client only: from 0 in the air to 1 resting on something, how far what hangs under the skids has tucked up. */
+    public float stow(float partialTick) {
+        return Mth.lerp(partialTick, stowPrevious, stowNow);
     }
 
     /** How far the arms are open, from 0 (folded, deploying or picked up) to 1. */

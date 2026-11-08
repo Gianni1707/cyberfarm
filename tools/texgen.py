@@ -16,6 +16,8 @@ import sys
 import zlib
 from pathlib import Path
 
+from item_icons import ICONS
+
 ROOT = Path(__file__).resolve().parent.parent
 TEXTURES = ROOT / "src/main/resources/assets/cyberfarm/textures"
 
@@ -126,10 +128,6 @@ class Canvas:
         png += chunk(b"IEND", b"")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(png)
-
-
-def recolor(rows, mapping):
-    return ["".join(mapping.get(ch, ch) for ch in row) for row in rows]
 
 
 def from_ascii(rows, size=16):
@@ -321,19 +319,40 @@ def cyber_frame_formed():
 
 # --------------------------------------------------------------------------- nuclear
 
-URANIUM = "#5fdc3a"
-URANIUM_DARK = "#2f7a22"
 CONCRETE = "#4a6b65"
 
 
-def uranium_ore_overlay():
-    """Transparent overlay drawn over vanilla stone or deepslate: glowing uranium specks."""
+def pixel_art(rows, tones):
+    """A transparent texture from 16 rows of 16 characters; each key of tones is a colour, '.' stays clear."""
+    assert len(rows) == 16 and all(len(r) == 16 for r in rows), rows
     c = Canvas()
-    for cx, cy in ((3, 3), (11, 4), (6, 9), (12, 11), (3, 13)):
-        c.rect(cx, cy, cx + 1, cy + 1, URANIUM_DARK)
-        c.set(cx, cy, URANIUM)
-        c.set(cx + 1, cy + 1, "G")
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                c.set(x, y, tones[ch])
     return c
+
+
+def uranium_ore_overlay():
+    """Over vanilla stone or deepslate: soft clumps with a muted rim, in a sickly yellow green."""
+    return pixel_art([
+        "..........112...",
+        ".11......12331..",
+        "1233......2342..",
+        ".2342.......3...",
+        "..23.....1......",
+        "......11223.....",
+        "....1223344.....",
+        ".....23455332...",
+        ".......2343.....",
+        "..............11",
+        "..112.......1233",
+        ".12332......2344",
+        "..23442..112..23",
+        "...2.3..12331...",
+        "..........234...",
+        "................",
+    ], {"1": "#6b7250", "2": "#728a3a", "3": "#8fae3e", "4": "#b6d254", "5": "#dcee8c"})
 
 
 def reactor_casing(formed):
@@ -427,35 +446,14 @@ def turbine_controller(state):
     return c
 
 
-def multiblock_projector():
-    """A blueprint tablet: a grid with the outline of a cooling tower, so it reads as 'shows a structure'."""
-    c = Canvas()
-    c.rect(1, 1, 14, 14, "k")
-    c.rect(2, 2, 13, 13, (14, 52, 90, 255))
-    for i in range(2, 14, 3):
-        c.rect(i, 2, i, 13, (30, 80, 128, 255))
-        c.rect(2, i, 13, i, (30, 80, 128, 255))
-    for x0, x1, y in ((4, 11, 12), (5, 10, 11), (6, 9, 8), (6, 9, 7), (5, 10, 4), (4, 11, 3)):
-        c.set(x0, y, "C")
-        c.set(x1, y, "C")
-    c.rect(4, 12, 11, 12, "C")
-    c.rect(4, 3, 11, 3, "c")
-    for y in (5, 6, 9, 10):
-        c.set(5 if y in (5, 10) else 6, y, "c")
-        c.set(10 if y in (5, 10) else 9, y, "c")
-    c.rect(1, 14, 14, 14, "m")
-    c.set(12, 14, "c")
-    return c
-
-
 def blueprint_disc():
-    """A data disc in blueprint blue: a cyan rim, a lighter track, a silver hub, a glint."""
+    """A data disc in dark teal: a pale rim, a lighter track, a silver hub, a glint."""
     c = Canvas()
     c.disc(7.5, 7.5, 7.0, "k")
     c.disc(7.5, 7.5, 6.2, "C")
-    c.disc(7.5, 7.5, 5.4, (14, 52, 90, 255))
-    c.disc(7.5, 7.5, 4.4, (30, 80, 128, 255))
-    c.disc(7.5, 7.5, 3.4, (14, 52, 90, 255))
+    c.disc(7.5, 7.5, 5.4, "#233e3b")
+    c.disc(7.5, 7.5, 4.4, "#488d91")
+    c.disc(7.5, 7.5, 3.4, "#233e3b")
     c.disc(7.5, 7.5, 2.0, "m")
     c.disc(7.5, 7.5, 0.9, "k")
     for x, y in ((3, 6), (4, 4), (6, 3), (11, 10), (10, 11)):
@@ -663,43 +661,7 @@ def vitrified_waste():
     return c
 
 
-def hazmat_item(piece):
-    """Inventory icons of the yellow Hazmat Suit."""
-    c = Canvas()
-    if piece == "helmet":
-        c.rect(3, 3, 12, 12, "k")
-        c.rect(4, 4, 11, 11, HAZMAT)
-        c.rect(4, 4, 11, 4, "#f4dc6a")
-        c.rect(5, 6, 10, 9, "K")
-        c.rect(6, 7, 9, 8, "b")
-        c.set(6, 7, "c")
-        c.rect(3, 12, 12, 12, HAZMAT_DARK)
-    elif piece == "suit":
-        c.rect(2, 2, 13, 14, "k")
-        c.rect(3, 3, 12, 13, HAZMAT)
-        c.rect(6, 2, 9, 4, "k")
-        c.rect(6, 3, 9, 3, None)
-        c.rect(1, 3, 2, 9, "k")
-        c.rect(13, 3, 14, 9, "k")
-        c.rect(7, 5, 8, 13, HAZMAT_DARK)
-        c.rect(3, 10, 12, 10, "K")
-        c.set(10, 6, "c")
-    elif piece == "pants":
-        c.rect(3, 2, 12, 14, "k")
-        c.rect(4, 3, 11, 13, HAZMAT)
-        c.rect(7, 7, 8, 14, None)
-        c.rect(7, 7, 8, 7, "k")
-        c.rect(6, 8, 6, 13, "k")
-        c.rect(9, 8, 9, 13, "k")
-        c.rect(4, 3, 11, 3, "K")
-        c.rect(4, 12, 6, 13, HAZMAT_DARK)
-        c.rect(9, 12, 11, 13, HAZMAT_DARK)
-    else:  # boots
-        for x0 in (2, 9):
-            c.rect(x0, 6, x0 + 5, 13, "k")
-            c.rect(x0 + 1, 7, x0 + 4, 12, HAZMAT)
-            c.rect(x0 + 1, 11, x0 + 4, 12, "K")
-    return c
+HAZMAT = "#e8c21f"
 
 
 HAZMAT_SHADE = "#c9a414"
@@ -786,22 +748,6 @@ def hazmat_layer(leggings):
     return c
 
 
-def geiger_counter():
-    c = Canvas()
-    c.rect(2, 4, 11, 14, "k")
-    c.rect(3, 5, 10, 13, HAZMAT)
-    c.rect(4, 6, 9, 9, "K")
-    c.rect(5, 7, 8, 8, "#c4ff9a")
-    c.set(7, 8, "r")
-    c.set(6, 7, "K")
-    c.rect(4, 11, 5, 12, "K")
-    c.rect(8, 11, 9, 12, "r")
-    c.rect(12, 6, 12, 10, "K")
-    c.rect(13, 2, 13, 7, "m")
-    c.rect(12, 1, 14, 2, "l")
-    return c
-
-
 def radiation_icon():
     """Mob effect icon (18x18): the radiation trefoil, three black blades on yellow."""
     c = Canvas(18, 18)
@@ -860,22 +806,6 @@ def uranium_ingot():
         "................",
         "................",
     ])
-
-
-def fuel_rod(depleted):
-    """Steel rod with a uranium window; a depleted rod is dark with a hazard band."""
-    c = Canvas()
-    for i in range(12):
-        x, y = 2 + i, 13 - i
-        c.rect(x, y - 1, x + 1, y, "k")
-        c.set(x, y - 1, "l" if not depleted else "m")
-    for i in range(3, 9):
-        x, y = 2 + i, 13 - i
-        c.set(x + 1, y, "#3a3f2a" if depleted else URANIUM)
-        c.set(x, y - 1, "y" if depleted and i in (4, 7) else ("#5c6146" if depleted else "G"))
-    c.rect(1, 13, 2, 14, "w")
-    c.rect(13, 1, 14, 2, "w")
-    return c
 
 
 def digester_front(frame=None):
@@ -941,6 +871,22 @@ def pipe_extract():
 
 
 # --------------------------------------------------------------------------- animation
+
+def stabilizer_pylon_light():
+    """The edges of light up a Stabilizer Pylon: a brighter pulse climbs through the part a model shows (rows 4..12),
+    then starts again at the bottom. Glow colour only, as the edges are 1 px wide."""
+    dim, glow = "#6fa89a", "#d1fee7"
+    frames = []
+    for step in range(10):
+        c = Canvas()
+        c.rect(0, 0, 15, 15, dim)
+        y = 12 - step
+        if 2 <= y <= 13:
+            c.rect(0, max(0, y - 1), 15, min(15, y + 1), mix(dim, glow, 0.55))
+            c.rect(0, y, 15, y, glow)
+        frames.append(c)
+    return strip(frames, frametime=2, interpolate=True)
+
 
 def strip(frames, frametime=2, interpolate=False):
     """Stacks equal frames into one tall texture, marked animated so it is saved with a .mcmeta."""
@@ -1135,71 +1081,6 @@ def dock_beacon():
 
 # --------------------------------------------------------------------------- energy storage
 
-def core_side():
-    """Pedestal side (6 px high on the block): dark plate with a cyan status strip."""
-    c = panel(70)
-    c.rect(0, 9, 15, 9, "k")
-    c.rect(0, 10, 15, 14, "D", noise=3, seed=71)
-    c.rect(0, 15, 15, 15, "k")
-    c.rect(2, 12, 13, 12, "b")
-    for x in (4, 8, 12):
-        c.set(x, 12, "c")
-    return c
-
-
-def core_front():
-    """Like the side, with the steel name plate of the R-ZPE cell."""
-    c = core_side()
-    c.rect(4, 10, 11, 14, "w")
-    c.frame(4, 10, 11, 14, "l")
-    c.rect(5, 12, 10, 12, "m")
-    c.set(2, 12, "g")
-    c.set(13, 12, "g")
-    return c
-
-
-def core_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, "D", noise=3, seed=72)
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        c.set(x, y, "l")
-    return c
-
-
-def core_ring():
-    """The emitter ring the crystal floats over: a glowing circle in a steel collar."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "m", noise=3, seed=73)
-    c.disc(7.5, 7.5, 7.0, "l", r_inner=6.0)
-    c.disc(7.5, 7.5, 5.6, "b")
-    c.disc(7.5, 7.5, 4.2, "c", r_inner=3.2)
-    c.disc(7.5, 7.5, 1.6, "C")
-    c.rect(0, 0, 15, 1, "c")   # side faces of the ring: lit rim
-    return c
-
-
-def pylon_side():
-    """Obelisk body: near-black panels split by a glowing violet strip."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 0, 14, 15, "D", noise=3, seed=74)
-    c.rect(1, 0, 2, 15, "d")
-    c.rect(7, 0, 8, 15, "v")
-    c.rect(7, 2, 8, 13, "V")
-    c.rect(4, 0, 4, 15, "k")
-    c.rect(11, 0, 11, 15, "k")
-    return c
-
-
-def pylon_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=75)
-    c.disc(7.5, 7.5, 3.6, "v")
-    c.disc(7.5, 7.5, 2.0, "V")
-    return c
-
 
 def resonance_cell():
     """Shell block of the Resonance Core: a steel frame around a dark crystal lattice."""
@@ -1217,31 +1098,6 @@ def resonance_cell():
     c.frame(1, 1, 14, 14, "l")
     for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
         c.set(x, y, "w")
-    return c
-
-
-def pylon_emitter():
-    """The emitter ring at the top of a pylon (5 rows high on the model): steel rims around a
-    glowing violet lens band that runs all the way round, so the beam leaves it on any side."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(0, 0, 15, 0, "l")
-    c.rect(0, 1, 15, 3, "v")
-    c.rect(0, 2, 15, 2, "V")
-    for x in range(1, 16, 4):
-        c.set(x, 2, "w")
-    c.rect(0, 4, 15, 4, "l")
-    return c
-
-
-def pylon_port():
-    """Face of the socket where a cable meets a pylon: a cyan ring like the conduits' energy band."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=77)
-    c.disc(7.5, 7.5, 6.0, "b", r_inner=4.5)
-    c.disc(7.5, 7.5, 3.5, "s")
-    c.disc(7.5, 7.5, 1.5, "c")
     return c
 
 
@@ -1303,24 +1159,6 @@ ITEM_ASCII = {
         "..kddddddddddk..",
         "...kkddddddkk...",
         ".....kkkkkk.....",
-        "................",
-    ],
-    "item/basic_frame": [
-        "................",
-        "................",
-        "..kkkk....kkkk..",
-        "..kllk....kllk..",
-        "..klmkkkkkkmlk..",
-        "..kkmmmmmmmmkk..",
-        "....km....mk....",
-        "....km.cc.mk....",
-        "....km.cc.mk....",
-        "....km....mk....",
-        "..kkmmmmmmmmkk..",
-        "..klmkkkkkkmlk..",
-        "..kllk....kllk..",
-        "..kkkk....kkkk..",
-        "................",
         "................",
     ],
     "item/rotor": [
@@ -1413,24 +1251,6 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
-    "item/planter_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "....kkkkkkkk....",
-        "....kwGGGGmk....",
-        "....kGgyggGk....",
-        "....kggggygk....",
-        "....kgyggggk....",
-        "....kgggyggk....",
-        "....kkkkkkkk....",
-        ".....kmmmmk.....",
-        "......kmmk......",
-        ".......kk.......",
-        ".......gg.......",
-        "......g..g......",
-        "................",
-    ],
     "item/taxi_module": [
         "................",
         "....kkkkkkkk....",
@@ -1521,42 +1341,6 @@ ITEM_ASCII = {
         "......K..K......",
         "................",
         "................",
-        "................",
-    ],
-    "item/survey_tool": [
-        "................",
-        ".....k..........",
-        ".....kc.........",
-        "......k.........",
-        "....kkkkkkkk....",
-        "....kssssssk....",
-        "....kscbbcsk....",
-        "....ksbccbsk....",
-        "....kscbbcsk....",
-        "....kssssssk....",
-        "....kmmmmmmk....",
-        "....kmcmmOmk....",
-        "....kkkkkkkk....",
-        "......kmmk......",
-        "......kmmk......",
-        "......kkkk......",
-    ],
-    "item/handbook": [
-        "................",
-        "..kkkkkkkkkkk...",
-        "..kbbbbbbbbbkw..",
-        "..kbccccccbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbccccccbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kkkkkkkkkkkw..",
-        "...wwwwwwwwwww..",
         "................",
     ],
 }
@@ -1862,71 +1646,6 @@ def dock_beacon():
 
 # --------------------------------------------------------------------------- energy storage
 
-def core_side():
-    """Pedestal side (6 px high on the block): dark plate with a cyan status strip."""
-    c = panel(70)
-    c.rect(0, 9, 15, 9, "k")
-    c.rect(0, 10, 15, 14, "D", noise=3, seed=71)
-    c.rect(0, 15, 15, 15, "k")
-    c.rect(2, 12, 13, 12, "b")
-    for x in (4, 8, 12):
-        c.set(x, 12, "c")
-    return c
-
-
-def core_front():
-    """Like the side, with the steel name plate of the R-ZPE cell."""
-    c = core_side()
-    c.rect(4, 10, 11, 14, "w")
-    c.frame(4, 10, 11, 14, "l")
-    c.rect(5, 12, 10, 12, "m")
-    c.set(2, 12, "g")
-    c.set(13, 12, "g")
-    return c
-
-
-def core_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, "D", noise=3, seed=72)
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        c.set(x, y, "l")
-    return c
-
-
-def core_ring():
-    """The emitter ring the crystal floats over: a glowing circle in a steel collar."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "m", noise=3, seed=73)
-    c.disc(7.5, 7.5, 7.0, "l", r_inner=6.0)
-    c.disc(7.5, 7.5, 5.6, "b")
-    c.disc(7.5, 7.5, 4.2, "c", r_inner=3.2)
-    c.disc(7.5, 7.5, 1.6, "C")
-    c.rect(0, 0, 15, 1, "c")   # side faces of the ring: lit rim
-    return c
-
-
-def pylon_side():
-    """Obelisk body: near-black panels split by a glowing violet strip."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 0, 14, 15, "D", noise=3, seed=74)
-    c.rect(1, 0, 2, 15, "d")
-    c.rect(7, 0, 8, 15, "v")
-    c.rect(7, 2, 8, 13, "V")
-    c.rect(4, 0, 4, 15, "k")
-    c.rect(11, 0, 11, 15, "k")
-    return c
-
-
-def pylon_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=75)
-    c.disc(7.5, 7.5, 3.6, "v")
-    c.disc(7.5, 7.5, 2.0, "V")
-    return c
-
 
 def resonance_cell():
     """Shell block of the Resonance Core: a steel frame around a dark crystal lattice."""
@@ -1944,31 +1663,6 @@ def resonance_cell():
     c.frame(1, 1, 14, 14, "l")
     for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
         c.set(x, y, "w")
-    return c
-
-
-def pylon_emitter():
-    """The emitter ring at the top of a pylon (5 rows high on the model): steel rims around a
-    glowing violet lens band that runs all the way round, so the beam leaves it on any side."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(0, 0, 15, 0, "l")
-    c.rect(0, 1, 15, 3, "v")
-    c.rect(0, 2, 15, 2, "V")
-    for x in range(1, 16, 4):
-        c.set(x, 2, "w")
-    c.rect(0, 4, 15, 4, "l")
-    return c
-
-
-def pylon_port():
-    """Face of the socket where a cable meets a pylon: a cyan ring like the conduits' energy band."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=77)
-    c.disc(7.5, 7.5, 6.0, "b", r_inner=4.5)
-    c.disc(7.5, 7.5, 3.5, "s")
-    c.disc(7.5, 7.5, 1.5, "c")
     return c
 
 
@@ -2030,24 +1724,6 @@ ITEM_ASCII = {
         "..kddddddddddk..",
         "...kkddddddkk...",
         ".....kkkkkk.....",
-        "................",
-    ],
-    "item/basic_frame": [
-        "................",
-        "................",
-        "..kkkk....kkkk..",
-        "..kllk....kllk..",
-        "..klmkkkkkkmlk..",
-        "..kkmmmmmmmmkk..",
-        "....km....mk....",
-        "....km.cc.mk....",
-        "....km.cc.mk....",
-        "....km....mk....",
-        "..kkmmmmmmmmkk..",
-        "..klmkkkkkkmlk..",
-        "..kllk....kllk..",
-        "..kkkk....kkkk..",
-        "................",
         "................",
     ],
     "item/rotor": [
@@ -2140,24 +1816,6 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
-    "item/planter_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "....kkkkkkkk....",
-        "....kwGGGGmk....",
-        "....kGgyggGk....",
-        "....kggggygk....",
-        "....kgyggggk....",
-        "....kgggyggk....",
-        "....kkkkkkkk....",
-        ".....kmmmmk.....",
-        "......kmmk......",
-        ".......kk.......",
-        ".......gg.......",
-        "......g..g......",
-        "................",
-    ],
     "item/taxi_module": [
         "................",
         "....kkkkkkkk....",
@@ -2248,42 +1906,6 @@ ITEM_ASCII = {
         "......K..K......",
         "................",
         "................",
-        "................",
-    ],
-    "item/survey_tool": [
-        "................",
-        ".....k..........",
-        ".....kc.........",
-        "......k.........",
-        "....kkkkkkkk....",
-        "....kssssssk....",
-        "....kscbbcsk....",
-        "....ksbccbsk....",
-        "....kscbbcsk....",
-        "....kssssssk....",
-        "....kmmmmmmk....",
-        "....kmcmmOmk....",
-        "....kkkkkkkk....",
-        "......kmmk......",
-        "......kmmk......",
-        "......kkkk......",
-    ],
-    "item/handbook": [
-        "................",
-        "..kkkkkkkkkkk...",
-        "..kbbbbbbbbbkw..",
-        "..kbccccccbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbccccccbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kkkkkkkkkkkw..",
-        "...wwwwwwwwwww..",
         "................",
     ],
 }
@@ -2460,8 +2082,137 @@ def shaded_box(c, u, v, w, h, d, ramp):
     return faces
 
 
+def drone_tools(c):
+    """The module tools, in the texture's right half. DroneModel.java holds the same coordinates."""
+    gun, steel, cream = DRONE_GUNMETAL, DRONE_STEEL, DRONE_CREAM
+    mint, dark, lamp = "#5ec2b8", "#132423", "#d1fee7"
+    flat = (mint,) * 4
+    around = ("right", "front", "left", "back")
+
+    # Harvester: a striped head and a notched rail with toothed blades sliding along it
+    head = shaded_box(c, 64, 0, 3, 2, 4, gun)
+    for name in around:
+        x0, y0, x1, y1 = head[name]
+        for x in range(x0, x1 + 1):
+            c.rect(x, y0, x, y1, mint if (x - x0) % 2 == 0 else dark)
+    x0, y0, x1, y1 = head["bottom"]
+    c.rect(x0, y0, x1, y1, dark)
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, lamp)
+    x0, y0, x1, y1 = head["top"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, gun[2])
+    rail = shaded_box(c, 80, 0, 6, 1, 1, steel)
+    tooth = shaded_box(c, 94, 0, 2, 1, 1, steel)
+    for name in ("front", "back"):
+        x0, y0, x1, _ = rail[name]
+        for x in range(x0, x1 + 1, 2):
+            c.set(x, y0, dark)
+        _, y0, x1, _ = tooth[name]
+        c.set(x1, y0, mint)
+
+    # Transport: a housing with two lights, steel jaws with mint toes
+    housing = shaded_box(c, 100, 0, 3, 2, 2, gun)
+    x0, y0, x1, _ = housing["front"]
+    c.rect(x0, y0, x1, y0, mint)
+    c.set(x0, y0 + 1, lamp)
+    c.set(x1, y0 + 1, lamp)
+    jaw = shaded_box(c, 112, 0, 1, 2, 1, steel)
+    for name in around:
+        x0, _, _, y1 = jaw[name]
+        c.set(x0, y1, dark)
+    shaded_box(c, 116, 0, 1, 1, 1, flat)
+
+    # Logger: a disc with real teeth, a mint hub, a bracket to the hull
+    for x0, y0, x1, y1 in box_faces(64, 6, 0, 5, 5).values():
+        if x1 - x0 != 4 or y1 - y0 != 4:
+            continue
+        for j in range(5):
+            for i in range(5):
+                if i in (0, 4) and j in (0, 4):
+                    c.set(x0 + i, y0 + j, None)
+                elif i in (0, 4) or j in (0, 4):
+                    c.set(x0 + i, y0 + j, dark if (i + j) % 2 else steel[0])
+                else:
+                    c.set(x0 + i, y0 + j, steel[1] if (i + j) % 2 else steel[2])
+        c.set(x0 + 2, y0 + 2, mint)
+    shaded_box(c, 74, 6, 1, 1, 1, flat)
+    shaded_box(c, 78, 6, 2, 1, 1, gun)
+
+    # Taxi: a winch drum, a braided cable, a steel hook with a mint tip
+    drum = shaded_box(c, 84, 6, 3, 1, 2, gun)
+    x0, y0, x1, _ = drum["front"]
+    c.set(x0, y0, mint)
+    c.set(x1, y0, mint)
+    cable = shaded_box(c, 94, 6, 1, 10, 1, gun)
+    for name in around:
+        x0, y0, _, y1 = cable[name]
+        for y in range(y0 + 1, y1 + 1, 2):
+            c.set(x0, y, gun[2])
+    shaded_box(c, 98, 6, 3, 1, 1, steel)
+    tip = shaded_box(c, 106, 6, 1, 1, 1, steel)
+    x0, y0, _, _ = tip["top"]
+    c.set(x0, y0, mint)
+
+    # Rancher: long blades, bright towards the tip, a mint pivot bolt, a bracket to the hull
+    blade = shaded_box(c, 110, 6, 1, 1, 6, steel)
+    for name in ("right", "left"):
+        x0, y0, x1, _ = blade[name]
+        c.rect(x0, y0, x0 + 3, y0, steel[0])
+        c.rect(x0 + 4, y0, x1, y0, gun[1])
+    shaded_box(c, 124, 6, 1, 3, 1, flat)
+
+    # Bomb: a banded casing, a red detonator, an axle and an arming vane
+    case = shaded_box(c, 68, 17, 3, 3, 3, gun)
+    for name in around:
+        x0, y0, x1, _ = case[name]
+        c.rect(x0, y0 + 1, x1, y0 + 1, mint)
+    x0, y0, x1, y1 = case["top"]
+    c.rect(x0, y0, x1, y1, gun[1])
+    x0, y0, _, _ = case["front"]
+    c.set(x0 + 1, y0 + 2, dark)
+    shaded_box(c, 80, 17, 1, 1, 1, ("#ff2a1f",) * 4)
+    shaded_box(c, 84, 17, 1, 1, 1, steel)
+    for u, colour, w, h in ((88, steel[1], 3, 1), (96, steel[2], 1, 3)):
+        for x0, y0, x1, y1 in (v for n, v in box_faces(u, 17, w, h, 0).items() if n in ("front", "back")):
+            c.rect(x0, y0, x1, y1, colour)
+            c.set(x0, y0, mint)
+
+    # Small details: the Builder's level, the Breeder's feed trough with grain showing, the Fisher's float
+    level = shaded_box(c, 98, 17, 3, 1, 1, flat)
+    x0, y0, _, _ = level["front"]
+    c.set(x0 + 1, y0, lamp)
+    shaded_box(c, 76, 24, 1, 2, 1, gun)
+    rack = shaded_box(c, 64, 28, 5, 2, 3, steel)
+    hay, straw = "#c9a84a", "#e6cf7a"
+    for name in around:
+        x0, y0, x1, y1 = rack[name]
+        for x in range(x0, x1 + 1):
+            if (x - x0) % 2:
+                c.rect(x, y0, x, y1, straw if (x - x0) % 4 == 1 else hay)
+    for name, step in (("bottom", 2), ("top", 2)):
+        x0, y0, x1, y1 = rack[name]
+        for x in range(x0, x1 + 1):
+            c.rect(x, y0, x, y1, steel[2] if (x - x0) % step == 0 else straw if (x - x0) % 4 == 1 else hay)
+    # Planter and Fertilizer: the pump's stem, and its spray bar with three nozzles along the bottom
+    shaded_box(c, 106, 17, 1, 1, 1, gun)
+    bar = shaded_box(c, 84, 24, 3, 1, 1, steel)
+    x0, y0, x1, _ = bar["bottom"]
+    c.rect(x0, y0, x1, y0, dark)
+    for x in range(x0, x1 + 1, 2):
+        c.set(x, y0, mint)
+    for name in ("front", "back"):
+        x0, y0, x1, _ = bar[name]
+        c.set(x0, y0, mint)
+        c.set(x1, y0, mint)
+    bob = shaded_box(c, 112, 17, 2, 2, 2, cream)
+    for name in around:
+        x0, y0, x1, _ = bob[name]
+        c.rect(x0, y0, x1, y0, mint)
+    x0, y0, x1, y1 = bob["top"]
+    c.rect(x0, y0, x1, y1, mint)
+
+
 def drone_texture():
-    c = Canvas(64, 64)
+    c = Canvas(128, 64)
     # Chassis 5x2x6: engraved top with bolts and a vent, side seams, a status light on the back
     chassis = shaded_box(c, 0, 0, 5, 2, 6, DRONE_BODY)
     x0, y0, x1, y1 = chassis["top"]
@@ -2530,42 +2281,16 @@ def drone_texture():
     skid = shaded_box(c, 0, 32, 1, 1, 7, DRONE_BODY)
     x0, y0, x1, y1 = skid["bottom"]
     c.rect(x0, y0, x1, y1, "#15181d")
-    # Harvester head 4x2x4 with hazard stripes, and its blade 6x1x1
-    head = paint_box(c, 32, 0, 4, 2, 4, "m", bottom="k", seed=7)
-    for name in ("right", "front", "left", "back"):
-        x0, y0, x1, y1 = head[name]
-        for x in range(x0, x1 + 1):
-            c.rect(x, y0, x, y1, "y" if (x - y0) % 2 == 0 else "k")
-    hx0, hy0, hx1, hy1 = head["bottom"]
-    c.rect(hx0 + 1, hy0 + 1, hx1 - 1, hy1 - 1, "c")
-    paint_box(c, 32, 6, 6, 1, 1, "w", top="l", seed=8)
     # Quarry drill: base 2x1x2 and bit 1x2x1, steel with a cyan ring
     paint_box(c, 48, 0, 2, 1, 2, "m", top="l", bottom="b", seed=9)
     bit = paint_box(c, 56, 0, 1, 2, 1, "w", bottom="l", seed=10)
     side_rows(c, bit, ["w", "l"])
-    # Transport claw: body 4x1x2 and two amber prongs 1x2x1
-    claw = paint_box(c, 32, 10, 4, 1, 2, "d", top="m", bottom="k", seed=11)
-    side_rows(c, claw, ["b"])
-    prong = paint_box(c, 44, 10, 1, 2, 1, "y", bottom="k", seed=12)
-    side_rows(c, prong, ["k", "y"])
     # Planter seed tank 3x2x1: green glass with a light rim
     tank = paint_box(c, 0, 40, 3, 2, 1, "g", top="m", seed=13)
     side_rows(c, tank, ["G", "g"])
-    # Taxi cable 1x11x1 and hook (bar 3x1x1, tip 1x1x1): dark cable, steel hook with a cyan tip
-    paint_box(c, 8, 40, 1, 11, 1, "k", top="m", seed=14)
-    paint_box(c, 12, 40, 3, 1, 1, "l", top="w", bottom="m", seed=15)
-    paint_box(c, 20, 40, 1, 1, 1, "c", seed=16)
-    # Rancher shear blades 1x1x4: steel with a dark edge
-    blade = paint_box(c, 32, 40, 1, 1, 4, "w", top="l", bottom="k", seed=17)
-    side_rows(c, blade, ["w"])
     # Fertilizer canister 2x3x2: white with a green band and a dark cap
     can = paint_box(c, 44, 40, 2, 3, 2, "w", top="k", bottom="m", seed=18)
     side_rows(c, can, ["w", "g", "w"])
-    # Logger saw blade 0x5x5 (a flat disc): steel with dark teeth
-    for name, (x0, y0, x1, y1) in box_faces(48, 10, 0, 5, 5).items():
-        c.rect(x0, y0, x1, y1, "w")
-        c.frame(x0, y0, x1, y1, "k")
-        c.set((x0 + x1) // 2, (y0 + y1) // 2, "m")
     # Guard laser: steel mount 2x2x2, barrel 1x1x4 with a dark band, red lens 1x1x1
     paint_box(c, 0, 52, 2, 2, 2, "l", top="w", bottom="d", seed=19)
     barrel = paint_box(c, 8, 52, 1, 1, 4, "m", top="l", bottom="d", seed=20)
@@ -2573,91 +2298,12 @@ def drone_texture():
         x0, y0, x1, y1 = barrel[name]
         c.set(x0 + 1, y0, "k")
     paint_box(c, 20, 52, 1, 1, 1, "#ff2a1f", seed=21)
-    # Bomb charge 3x3x3: dark casing with a hazard band, red detonator 1x1x1
-    charge = paint_box(c, 28, 52, 3, 3, 3, "d", top="m", bottom="k", seed=22)
-    side_rows(c, charge, ["d", "y", "d"])
-    paint_box(c, 40, 52, 1, 1, 1, "#ff2a1f", seed=23)
+    drone_tools(c)
     return c
 
 
 # --------------------------------------------------------------------------- output
 ITEM_ASCII.update({
-    # Rancher Module: open shears over a tuft of wool
-    "item/rancher_module": [
-        "................",
-        "..kk........kk..",
-        ".kwwk......kwwk.",
-        ".kwlk......klwk.",
-        "..kwwk....kwwk..",
-        "...kwwk..kwwk...",
-        "....kwwkkwwk....",
-        ".....kwwwwk.....",
-        "......kcck......",
-        ".....kmkkmk.....",
-        "....kmk..kmk....",
-        "...kok....kok...",
-        "..kook....kook..",
-        "..kook....kook..",
-        "...kk......kk...",
-        "................",
-    ],
-    # Fertilizer Module: a white canister with a green band, dripping
-    "item/fertilizer_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        ".....kkkkkk.....",
-        "....kwwwwwlk....",
-        "....kwwwwwlk....",
-        "....kggggggk....",
-        "....kgGggggk....",
-        "....kggggggk....",
-        "....kwwwwwlk....",
-        "....kwwwwwlk....",
-        "....kkkkkkkk....",
-        "......kmmk......",
-        ".......kk.......",
-        ".......GG.......",
-        "........G.......",
-    ],
-    # Fisher Module: the drone's cap with a line down to a hook and a fish on it
-    "item/fisher_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "...kkkkkkkkkk...",
-        "...kmmbccbmmk...",
-        "...kkkkkkkkkk...",
-        ".......kk.......",
-        ".......kw.......",
-        ".......kw.......",
-        ".......kw.......",
-        "....kk.kw.......",
-        "...kbck.kw......",
-        "..kbcCCk.kw.....",
-        "...kbck..kwk....",
-        "....kk...kk.....",
-        "................",
-    ],
-    # Breeder Module: a feed canister with a heart on it
-    "item/breeder_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        ".....kkkkkk.....",
-        "....kwwwwwlk....",
-        "....kwrwwrlk....",
-        "....krrrrrrk....",
-        "....krrrrrrk....",
-        "....kwrrrrlk....",
-        "....kwwrrwlk....",
-        "....kwwwwwlk....",
-        "....kkkkkkkk....",
-        "......kyyk......",
-        ".......kk.......",
-        ".......yy.......",
-        "........y.......",
-    ],
     # Builder Module: the claw holds a block over the cyan ghost of where it goes
     "item/builder_module": [
         "................",
@@ -2698,72 +2344,36 @@ ITEM_ASCII.update({
         "................",
         "................",
     ],
-    # Bomb Module: the drone's cap with a striped charge under it and a lit fuse
-    "item/bomb_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "...kkkkkkkkkk...",
-        "...kmmbccbmmk...",
-        "...kkkkkkkkkk...",
-        ".......kk.......",
-        ".....kkkkkk.....",
-        "....kddddddk....",
-        "....kyykyykk....",
-        "....kddddddk....",
-        "....kddddddk....",
-        ".....kkkkkk.....",
-        ".......rk.......",
-        "......Oo........",
-        ".......O........",
-    ],
 })
 for _name, _rows in list(ITEM_ASCII.items())[-7:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 
-def saw_icon():
-    """Logger Module icon: a circular saw blade with teeth and a glowing hub."""
-    c = Canvas()
-    c.disc(7.5, 7.5, 6.9, "k")
-    c.disc(7.5, 7.5, 6.0, "w")
-    c.disc(7.5, 7.5, 4.6, "l")
-    for i in range(12):
-        angle = math.tau * i / 12
-        c.set(round(7.5 + 7.2 * math.cos(angle)), round(7.5 + 7.2 * math.sin(angle)), "k")
-        c.set(round(7.5 + 5.4 * math.cos(angle)), round(7.5 + 5.4 * math.sin(angle)), "m")
-    c.disc(7.5, 7.5, 2.0, "k")
-    c.disc(7.5, 7.5, 1.2, "c")
-    return c
-
-
 # --------------------------------------------------------------------------- acid and steam engine
 
-SULFUR = "#e8d43a"
-SULFUR_DARK = "#9a8a16"
 ACID = "#9be04a"
 
 
 def sulfur_ore_overlay():
-    """Transparent overlay drawn over netherrack: clusters of yellow sulfur crystals."""
-    c = Canvas()
-    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
-        c.rect(cx, cy, cx + 1, cy + 1, SULFUR_DARK)
-        c.set(cx, cy, SULFUR)
-        c.set(cx + 1, cy, "#fff3a0")
-    return c
-
-
-def sulfur_dust():
-    """A small heap of yellow powder."""
-    c = Canvas()
-    for y in range(7, 14):
-        half = (y - 6) + 1
-        c.rect(8 - half, y, 7 + half, y, SULFUR, noise=18, seed=y)
-    c.rect(2, 14, 13, 14, SULFUR_DARK)
-    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
-        c.set(x, y, "#fff3a0")
-    return c
+    """Over netherrack: soft clumps with a muted rim, in a pale lemon that nether gold's orange can't be taken for."""
+    return pixel_art([
+        "................",
+        "...112.....11...",
+        "..12332...1233..",
+        "...2344....2342.",
+        "....23......23..",
+        "........1.......",
+        ".......12231....",
+        "..11..12334421..",
+        ".1233..234552...",
+        "..2343..2332....",
+        "...22..........1",
+        ".........1122.23",
+        "...11...123342..",
+        "..1233...23442..",
+        "...23.....22....",
+        "................",
+    ], {"1": "#7d5c28", "2": "#a88a2e", "3": "#cdb643", "4": "#e7d966", "5": "#f6eea0"})
 
 
 def containment_glass():
@@ -2866,44 +2476,6 @@ def _mech_box(c, u, v, w, h, d, color=MECH_WHITE, seam=MECH_SEAM, seed=0):
         if x1 - x0 >= 3 and y1 - y0 >= 3:
             c.frame(x0, y0, x1, y1, seam)
     return faces
-
-
-def mech_frame_icon():
-    """The folded mech as an item: a small white and blue figure with a cyan visor."""
-    rows = [
-        "................",
-        ".......RR.......",
-        "......wCCw......",
-        "......wwww......",
-        "...RRwwccwwRR...",
-        "..RwwwwccwwwwR..",
-        "..ww.wwwwww.ww..",
-        "..ww.wRRRRw.ww..",
-        "..dd..wddw..dd..",
-        "......wwww......",
-        ".....ww..ww.....",
-        ".....ww..ww.....",
-        ".....ww..ww.....",
-        ".....RR..RR.....",
-        "....RRR..RRR....",
-        "................",
-    ]
-    mapping = {"w": MECH_WHITE, "R": MECH_RED, "d": MECH_DARK, "c": "c", "C": "C"}
-    c = Canvas()
-    for y, row in enumerate(rows):
-        for x, ch in enumerate(row):
-            if ch in mapping:
-                c.set(x, y, mapping[ch])
-    # A dark outline so it reads on any background
-    outline = []
-    for y in range(16):
-        for x in range(16):
-            if c.pixels[y][x] is None and any(0 <= x + dx < 16 and 0 <= y + dy < 16 and c.pixels[y + dy][x + dx] is not None
-                                              for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                outline.append((x, y))
-    for x, y in outline:
-        c.set(x, y, "K")
-    return c
 
 
 def mech_texture():
@@ -3097,26 +2669,6 @@ def mech_hangar_front(lit):
     return c
 
 
-def mech_module_icon(kind):
-    """A module: a white casing with a blue edge and the module's sign."""
-    c = Canvas()
-    c.rect(2, 3, 13, 13, "k")
-    c.rect(3, 4, 12, 12, MECH_WHITE, noise=4, seed=73)
-    c.rect(3, 12, 12, 12, MECH_RED)
-    c.rect(3, 4, 12, 4, MECH_SEAM)
-    sign = {
-        "jet": [(5, 9), (6, 8), (7, 7), (8, 7), (9, 8), (10, 9), (7, 9), (8, 9), (7, 10), (8, 10)],
-        "drill": [(7, 5), (8, 5), (6, 6), (9, 6), (7, 7), (8, 7), (6, 8), (9, 8), (7, 9), (8, 9), (7, 10), (8, 10)],
-        "blade": [(10, 5), (9, 6), (8, 7), (7, 8), (6, 9), (5, 10), (9, 5), (8, 6), (7, 7), (6, 8)],
-        "armor": [(5, 6), (6, 6), (9, 6), (10, 6), (5, 7), (10, 7), (5, 8), (10, 8), (6, 9), (9, 9), (7, 10), (8, 10), (7, 6), (8, 6)],
-    }[kind]
-    for x, y in sign:
-        c.set(x, y, "c")
-    c.set(2, 3, None)
-    c.set(13, 3, None)
-    return c
-
-
 def gem(c, cx, cy, rx, ry, colors, angle=0.0):
     """A faceted gem on `c`: a rhombus centred on (cx, cy), half-axes rx and ry, turned by `angle`
     radians. colors = (outline, dark facet, light facet, glint): lit from the top left."""
@@ -3156,19 +2708,6 @@ def fusion_crystal():
     return c
 
 
-def mech_core():
-    """The heart of a mech: a white ring with a blue band holding a Fusion Crystal."""
-    c = Canvas()
-    c.disc(7.5, 7.5, 7.0, "k")
-    c.disc(7.5, 7.5, 6.2, MECH_WHITE)
-    c.disc(7.5, 7.5, 6.2, MECH_RED, r_inner=5.2)
-    c.disc(7.5, 7.5, 4.4, "k")
-    gem(c, 7.5, 7.5, 3.0, 4.2, ("#2a1250", "#6a34c0", "#b88cff", "#ffffff"))
-    for x, y in ((7, 1), (8, 1), (7, 14), (8, 14), (1, 7), (1, 8), (14, 7), (14, 8)):
-        c.set(x, y, MECH_SEAM)
-    return c
-
-
 def crystallizer_port():
     """A Cyber Frame with a pipe socket ringed in violet."""
     return chamber_port("#8a4fd8", "#d6b8ff")
@@ -3191,14 +2730,26 @@ ALUMINUM = {"1": "#2c3238", "2": "#5e6872", "3": "#8e98a2", "4": "#c2cad2", "5":
 
 
 def bauxite_ore_overlay():
-    """Transparent overlay over stone or deepslate: rusty clumps of bauxite."""
-    c = Canvas()
-    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
-        c.rect(cx, cy, cx + 2, cy + 1, "#7a3418")
-        c.set(cx, cy, "#cf6f3a")
-        c.set(cx + 1, cy, "#a24a24")
-        c.set(cx + 2, cy + 1, "#4a1e0e")
-    return c
+    """Over stone or deepslate: clumps of two minerals side by side, rust beside pale ochre."""
+    return pixel_art([
+        "................",
+        "..aa.......11...",
+        ".abca.....1231..",
+        "..bb..11..2343..",
+        "..a..1231..22ab.",
+        "....12343...abca",
+        "....2343.....bb.",
+        "...aa22.........",
+        "..abca.....11...",
+        "...bb.....1231..",
+        "..........2343aa",
+        ".11........22abc",
+        "1231...aa.....bb",
+        "2343..abca..1...",
+        ".22....bb...23..",
+        "................",
+    ], {"1": "#6f5a4a", "2": "#8a4426", "3": "#b35f33", "4": "#d98a58",
+        "a": "#94805a", "b": "#c9a86a", "c": "#e8cf9a"})
 
 
 def raw_bauxite():
@@ -3207,18 +2758,6 @@ def raw_bauxite():
 
 def aluminum_ingot():
     return tinted(uranium_ingot(), ALUMINUM)
-
-
-def alumina():
-    """A small heap of white alumina powder."""
-    c = Canvas()
-    for y in range(7, 14):
-        half = (y - 6) + 1
-        c.rect(8 - half, y, 7 + half, y, "#e8ecf0", noise=10, seed=y + 40)
-    c.rect(2, 14, 13, 14, "#a8b0b8")
-    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
-        c.set(x, y, "#ffffff")
-    return c
 
 
 def carbon_fiber():
@@ -3231,24 +2770,6 @@ def carbon_fiber():
     c.frame(2, 2, 13, 13, "#0b0d10")
     for i in range(3, 9):
         c.set(i + 2, i - 1, "#6a7480")
-    return c
-
-
-def circuit(board, trace, chip_light):
-    """A circuit board: a coloured board with copper traces, gold pins and a chip whose light shows the tier."""
-    c = Canvas()
-    c.rect(1, 3, 14, 12, "k")
-    c.rect(2, 4, 13, 11, board, noise=6, seed=91)
-    for y in (5, 10):
-        c.rect(3, y, 12, y, trace)
-    for x in (3, 12):
-        c.rect(x, 5, x, 10, trace)
-    c.rect(5, 6, 10, 9, "K")
-    c.rect(6, 7, 9, 8, "#22262c")
-    c.set(7, 7, chip_light)
-    for x in (5, 7, 9, 10):
-        c.set(x, 5, "O")
-        c.set(x, 10, "O")
     return c
 
 
@@ -3333,7 +2854,6 @@ def build_all():
         "block/turbine_controller": turbine_controller("off"),
         "block/turbine_controller_formed": turbine_controller("formed"),
         "block/turbine_controller_on": turbine_controller("on"),
-        "item/multiblock_projector": multiblock_projector(),
         "item/blueprint_disc": blueprint_disc(),
         "block/reactor_casing": reactor_casing(False),
         "block/reactor_casing_formed": reactor_casing(True),
@@ -3358,19 +2878,12 @@ def build_all():
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
         "entity/machine_shell": machine_shell(False),
         "block/vitrified_waste": vitrified_waste(),
-        "item/hazmat_helmet": hazmat_item("helmet"),
-        "item/hazmat_suit": hazmat_item("suit"),
-        "item/hazmat_pants": hazmat_item("pants"),
-        "item/hazmat_boots": hazmat_item("boots"),
-        "item/geiger_counter": geiger_counter(),
         "entity/equipment/humanoid/hazmat": hazmat_layer(False),
         "entity/equipment/humanoid_leggings/hazmat": hazmat_layer(True),
         "mob_effect/radiation_sickness": radiation_icon(),
         "entity/machine_shell_glow": machine_shell(True),
         "item/raw_uranium": raw_uranium(),
         "item/uranium_ingot": uranium_ingot(),
-        "item/fuel_rod": fuel_rod(False),
-        "item/depleted_fuel_rod": fuel_rod(True),
         **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
         **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
@@ -3380,36 +2893,23 @@ def build_all():
         "block/biogas_flow": gas("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas("#6cc4dc", "#d4f4ff", 3),
         "block/methane_flow": gas("#6cc4dc", "#d4f4ff", 4),
-        "block/resonance_core_side": core_side(),
-        "block/resonance_core_front": core_front(),
-        "block/resonance_core_top": core_top(),
-        "block/resonance_core_ring": core_ring(),
-        "block/stabilizer_pylon_side": pylon_side(),
-        "block/stabilizer_pylon_top": pylon_top(),
-        "block/stabilizer_pylon_emitter": pylon_emitter(),
-        "block/stabilizer_pylon_port": pylon_port(),
+        "block/stabilizer_pylon_light": stabilizer_pylon_light(),
         "block/resonance_cell": resonance_cell(),
         "entity/resonance_crystal": crystal_shell(),
         "entity/resonance_glow": crystal_glow(),
         "entity/stabilizer_beam": stabilizer_beam(),
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
-        "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
         **lit_front("fabricator", fabricator_front),
         "entity/villager/profession/drone_mechanist": villager_drone_mechanist(),
         "entity/zombie_villager/profession/drone_mechanist": villager_drone_mechanist(),
         "block/bauxite_ore_overlay": bauxite_ore_overlay(),
         "item/raw_bauxite": raw_bauxite(),
-        "item/alumina": alumina(),
         "item/aluminum_ingot": aluminum_ingot(),
         "item/carbon_fiber": carbon_fiber(),
-        "item/basic_circuit": circuit("#2f8a4a", "#c87a3a", "g"),
-        "item/advanced_circuit": circuit("#1f4f9a", "#d8a040", "c"),
-        "item/elite_circuit": circuit("#5a2f9a", "#e8c050", "V"),
         "block/crystallizer_port": crystallizer_port(),
         "item/isotope_shard": isotope_shard(),
         "item/fusion_crystal": fusion_crystal(),
-        "item/mech_core": mech_core(),
         "block/containment_glass": containment_glass(),
         "block/acid_inlet": chamber_port(ACID, "#e4ffb0"),
         "block/methane_outlet": chamber_port("c", "C"),
@@ -3421,18 +2921,11 @@ def build_all():
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)
-    textures["item/logger_module"] = saw_icon()
     for name, icon in ADDON_ICONS.items():
         textures[name] = addon_chip(icon)
-    # Higher frame tiers reuse the basic frame with their own accent colors
-    # The Mini Frame is drawn white, like the mod's clean panels
-    for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"}),
-                          ("item/mini_frame", {"l": "w", "m": "l", "c": "C"})):
-        textures[name] = from_ascii(recolor(ITEM_ASCII["item/basic_frame"], mapping))
     mech = mech_texture()
     textures["entity/mech"] = mech
     textures["entity/mech_glow"] = mech.glow_mask()
-    textures["item/mech_frame"] = mech_frame_icon()
     textures["block/hangar_frame"] = hangar_frame(False)
     textures["block/hangar_frame_formed"] = hangar_frame(True)
     textures["block/hangar_pad"] = hangar_pad(False)
@@ -3440,11 +2933,11 @@ def build_all():
     textures["block/hangar_pad_side"] = hangar_pad_side()
     textures["block/mech_hangar_front"] = mech_hangar_front(False)
     textures["block/mech_hangar_front_on"] = mech_hangar_front(True)
-    for kind in ("jet", "drill", "blade", "armor"):
-        textures[f"item/mech_{kind}_module"] = mech_module_icon(kind)
     drone = drone_texture()
     textures["entity/drone"] = drone
     textures["entity/drone_glow"] = drone.glow_mask()
+    for name, (rows, tones) in ICONS.items():
+        textures[name] = pixel_art(rows, tones)
     return textures
 
 

@@ -23,9 +23,12 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The floating crystal of a Resonance Core: a slowly turning rhombic dodecahedron of glass panels
- * around a glowing heart that grows with the charge, plus a beam from the emitter on top of every
- * linked Stabilizer Pylon. A bigger shell makes a bigger crystal, filling the vanished cells.
+ * around a glowing heart that grows with the charge. A bigger shell makes a bigger crystal, filling the vanished cells.
  * Online it spins and shines white; unstable it slows, dims and flickers violet.
+ * <p>
+ * Every linked Stabilizer Pylon column sends a drone: it lifts off the column's cradle, glides out and circles the crystal,
+ * holding it with a beam from its belly. Unstable, the orbit slows and lurches, the drones tilt and the beams turn violet.
+ * Each frame, per drone: FrameDroneRenderer's 26 boxes and a beam, so up to 4 drones while the core is in view.
  */
 public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreBlockEntity, ResonanceCoreRenderer.State> {
     private static final RenderType SHELL = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/resonance_crystal.png"));
@@ -36,9 +39,21 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
     private static final float BASE_SIZE = 0.45F;
     private static final float SHELL_FILL = 1.3F;
     private static final float BEAM_WIDTH = 0.06F;
-    /** The beam leaves through a glowing lens on the emitter ring, on the side facing the crystal. */
-    private static final float LENS_OUT = 5.5F / 16;
-    private static final float LENS_SIZE = 0.11F;
+    private static final float DRONE_BEAM_WIDTH = 0.03F;
+
+    private static final float PIXEL = 1 / 16.0F;
+    /** The drones are half as big again as the mini drones, so they read from afar. */
+    private static final float DRONE_SIZE = 1.5F;
+    /** Over the drone's feet, the lens on its belly the beam leaves from. */
+    private static final float DRONE_LENS = 2.1F * DRONE_SIZE * PIXEL;
+    /** In ticks: rising off the cradle, then gliding to the orbit. */
+    private static final float LIFT_TICKS = 30.0F, GLIDE_TICKS = 50.0F, LIFT_HEIGHT = 14.0F * PIXEL;
+    /** The orbit: over the crystal's centre, a little outside the shell, never closer than a block to a column. */
+    private static final float ORBIT_RISE = 14.0F * PIXEL, ORBIT_OUT = 10.0F * PIXEL;
+    /** Radians a tick: a lap in six seconds; unstable, much slower and in lurches. Reaching a new speed takes this many ticks. */
+    private static final float ORBIT_SPEED = 0.0524F, UNSTABLE_SPEED = 0.4F, SPEED_RAMP = 40.0F;
+    private static final float BOB = 1.5F * PIXEL, BOB_PERIOD = 40.0F, JITTER = 4.0F * PIXEL, TILT = 12.0F;
+    private static final int LENS_ONLINE = 0xFFD1FEE7;
 
     private static final int SHELL_ONLINE = 0xD0FFFFFF;
     private static final int SHELL_OFFLINE = 0xA08890A0;
@@ -61,6 +76,8 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
         float time;
         final int[] pylonDistance = new int[4];
         final int[] pylonHeight = new int[4];
+        float droneAngle;
+        final float[] droneLaunched = new float[4];
     }
 
     @Override
@@ -76,10 +93,30 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
         state.status = entity.status();
         state.fill = entity.fillPercent() / 100.0F;
         state.time = entity.getLevel() != null ? entity.getLevel().getGameTime() + partialTick : 0.0F;
+        boolean first = Float.isNaN(entity.droneTime);
+        float dt = first ? 0.0F : Mth.clamp(state.time - entity.droneTime, 0.0F, 5.0F);
+        entity.droneTime = state.time;
         for (Direction side : Direction.Plane.HORIZONTAL) {
-            state.pylonDistance[side.get2DDataValue()] = entity.pylonDistance(side);
-            state.pylonHeight[side.get2DDataValue()] = entity.pylonHeight(side);
+            int i = side.get2DDataValue();
+            state.pylonDistance[i] = entity.pylonDistance(side);
+            state.pylonHeight[i] = entity.pylonHeight(side);
+            boolean linked = state.pylonDistance[i] > 0;
+            if (linked && !entity.droneLinked[i]) {
+                // A column just linked: its drone takes off now. One already linked when the core loaded is up there already
+                entity.droneLaunched[i] = first ? Float.NaN : state.time;
+            }
+            entity.droneLinked[i] = linked;
+            state.droneLaunched[i] = entity.droneLaunched[i];
         }
+        // The orbit turns on steadily online; unstable it lurches, slow then quick, never back
+        boolean online = state.status == ResonanceCoreBlockEntity.STATUS_ONLINE;
+        float target = online ? ORBIT_SPEED : ORBIT_SPEED * UNSTABLE_SPEED * (1.0F + 1.2F * Math.max(0.0F, Mth.sin(state.time * 0.35F)));
+        entity.droneSpeed += Mth.clamp(target - entity.droneSpeed, -ORBIT_SPEED / SPEED_RAMP * dt, ORBIT_SPEED / SPEED_RAMP * dt);
+        if (first) {
+            entity.droneSpeed = target;
+        }
+        entity.droneAngle = (entity.droneAngle + entity.droneSpeed * dt) % Mth.TWO_PI;
+        state.droneAngle = entity.droneAngle;
     }
 
     @Override
@@ -109,22 +146,58 @@ public class ResonanceCoreRenderer implements BlockEntityRenderer<ResonanceCoreB
 
         int beamColor = scale(online ? BEAM_ONLINE : BEAM_UNSTABLE, flicker * (0.85F + Mth.sin(time * 0.3F) * 0.15F));
         Vec3 crystal = new Vec3(0.5, crystalY, 0.5);
-        float lens = LENS_SIZE * (1.0F + Mth.sin(time * 0.4F) * 0.15F);
-        for (Direction side : Direction.Plane.HORIZONTAL) {
-            int distance = state.pylonDistance[side.get2DDataValue()];
-            if (distance <= 0) {
-                continue;
+        float radius = (state.radius + 0.5F) * Mth.SQRT_OF_TWO + ORBIT_OUT;
+        for (int distance : state.pylonDistance) {
+            if (distance > 0) {
+                radius = Math.min(radius, distance - 1.0F);
             }
-            float emitterY = state.pylonHeight[side.get2DDataValue()] - 1 + StabilizerPylonBlock.EMITTER_Y;
-            // On the ring's face toward the core, which lies the opposite way from the pylon
-            Vec3 exit = new Vec3(0.5 + side.getStepX() * (distance - LENS_OUT), emitterY, 0.5 + side.getStepZ() * (distance - LENS_OUT));
-            collector.submitCustomGeometry(poseStack, BEAM, (pose, buffer) -> beam(pose, buffer, exit, crystal, beamColor));
-            poseStack.pushPose();
-            poseStack.translate(exit.x, exit.y, exit.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(time * 4.0F));
-            collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> polyhedron(pose, buffer, lens, beamColor));
-            poseStack.popPose();
         }
+        for (Direction side : Direction.Plane.HORIZONTAL) {
+            int i = side.get2DDataValue();
+            int distance = state.pylonDistance[i];
+            if (distance > 0) {
+                drone(poseStack, collector, state, side, i, distance, radius, crystal, online, beamColor);
+            }
+        }
+    }
+
+    /** One column's drone: on its way from the cradle to the orbit, or circling the crystal with its beam on it. */
+    private static void drone(PoseStack poseStack, SubmitNodeCollector collector, State state, Direction side, int i, int distance,
+            float radius, Vec3 crystal, boolean online, int beamColor) {
+        float time = state.time;
+        // Its place in the orbit: the column's own bearing, turned with the orbit, so the drones keep evenly apart
+        float angle = (float) Math.atan2(side.getStepZ(), side.getStepX()) + state.droneAngle;
+        float wobble = online ? 0.0F : JITTER * Mth.sin(time * 0.9F + i);
+        Vec3 slot = new Vec3(0.5 + Mth.cos(angle) * (radius + wobble), crystal.y + ORBIT_RISE + BOB * Mth.sin(Mth.TWO_PI * time / BOB_PERIOD + i),
+                0.5 + Mth.sin(angle) * (radius + wobble));
+        Vec3 pad = new Vec3(0.5 + side.getStepX() * distance, state.pylonHeight[i] - 1 + StabilizerPylonBlock.PAD_TOP, 0.5 + side.getStepZ() * distance);
+        float flown = Float.isNaN(state.droneLaunched[i]) ? Float.MAX_VALUE : time - state.droneLaunched[i];
+        Vec3 at;
+        if (flown < LIFT_TICKS) {
+            at = pad.add(0.0, LIFT_HEIGHT * ease(flown / LIFT_TICKS), 0.0);
+        } else if (flown < LIFT_TICKS + GLIDE_TICKS) {
+            at = pad.add(0.0, LIFT_HEIGHT, 0.0).lerp(slot, ease((flown - LIFT_TICKS) / GLIDE_TICKS));
+        } else {
+            at = slot;
+        }
+        poseStack.pushPose();
+        poseStack.translate(at.x, at.y, at.z);
+        poseStack.mulPose(Axis.YP.rotation((float) Math.atan2(crystal.x - at.x, crystal.z - at.z)));
+        if (!online) {
+            poseStack.mulPose(Axis.ZP.rotationDegrees(TILT * Mth.sin(time * 0.5F + i)));
+        }
+        poseStack.scale(PIXEL * DRONE_SIZE, PIXEL * DRONE_SIZE, PIXEL * DRONE_SIZE);
+        FrameDroneRenderer.drone(poseStack, collector, time + i, online ? LENS_ONLINE : BEAM_UNSTABLE, state.lightCoords);
+        poseStack.popPose();
+        if (flown >= LIFT_TICKS + GLIDE_TICKS) {
+            Vec3 lens = at.add(0.0, DRONE_LENS, 0.0);
+            collector.submitCustomGeometry(poseStack, BEAM, (pose, buffer) -> beam(pose, buffer, lens, crystal, beamColor, DRONE_BEAM_WIDTH));
+        }
+    }
+
+    private static float ease(float x) {
+        x = Mth.clamp(x, 0.0F, 1.0F);
+        return x * x * (3.0F - 2.0F * x);
     }
 
     static void polyhedron(PoseStack.Pose pose, VertexConsumer buffer, float size, int color) {

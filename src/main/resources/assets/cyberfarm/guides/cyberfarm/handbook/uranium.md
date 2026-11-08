@@ -17,7 +17,7 @@ item_ids:
 <BlockImage id="cyberfarm:deepslate_uranium_ore" scale="3" float="left" />
 
 **Uranium Ore** is rare and found deep in the Overworld, from Y 16 down to the bottom of the world,
-more often the deeper you go. Its green specks glow faintly in the dark. You need at least an
+more often the deeper you go. Its yellow-green clumps glow faintly in the dark. You need at least an
 **iron pickaxe**; Fortune gives more Raw Uranium, Silk Touch the ore block itself.
 
 <br clear="all" />

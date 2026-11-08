@@ -27,7 +27,7 @@ Modules tell a drone **what job to do**. Install them in the
 
 A drone with more than one module **takes turns**: after each trip back to the dock it tries
 the next module first, so no job is forgotten. You can see the installed modules on the drone
-itself: each one adds its own tool under the hull.
+itself: each one adds its own tool on it, and those under the hull share the space from front to back.
 
 ## Power use
 
@@ -117,6 +117,7 @@ are moved.
 The drone plants seeds on **empty farmland** in its work area. It loads up to a stack of seeds
 **from its dock** before each trip, so it works perfectly with a Harvester: harvested seeds go to
 the dock and the Planter puts them back in the ground. You can also fill the dock with a hopper.
+Its tank feeds a pump under the hull, which sprays green on each block it sows.
 
 <br clear="all" />
 
@@ -189,7 +190,7 @@ back to the dock.
 
 The drone **grows the crops, stems and saplings** of its work area with fertilizer from the dock,
 until they are fully grown. It works with **any fertilizer**: bone meal, or fertilizers from
-other mods (everything in the `c:fertilizers` tag).
+other mods (everything in the `c:fertilizers` tag). The white canister on its shoulder feeds a pump under the hull, which sprays each plant.
 
 <br clear="all" />
 
@@ -261,6 +262,7 @@ The drone **fishes** in the water of its work area and brings the catch to the d
 <ItemImage id="cyberfarm:breeder_module" scale="2" float="left" />
 
 The drone **feeds the animals** of its work area so they breed, with their food from the dock.
+A hay rack hangs under its hull, and feed falls from it on each animal it feeds.
 
 <br clear="all" />
 

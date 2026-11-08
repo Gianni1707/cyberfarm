@@ -12,7 +12,7 @@ item_ids:
 
 <BlockImage id="cyberfarm:stabilizer_pylon" scale="4" float="left" />
 
-Columns of pylons hold a [Resonance Core](resonance_core.md)'s crystal steady with their beams,
+Columns of pylons hold a [Resonance Core](resonance_core.md)'s crystal steady: each sends out a drone that circles it,
 and they are the **only way power goes in and out** of the core.
 
 <br clear="all" />
@@ -27,8 +27,8 @@ and they are the **only way power goes in and out** of the core.
 ## Building the columns
 
 Stack <ItemLink id="stabilizer_pylon" />s into **columns**: the bottom block gets a footing, the
-top one the glowing **emitter ring**. The beam leaves through a pulsing lens on the side of the
-ring that faces the crystal, at the crystal's height.
+top one a **cradle** with a landing pad. When a column links up, its drone lifts off the cradle, flies to the
+crystal and circles it, holding it steady with a beam. Unstable, the drones falter, tilt and their beams turn violet.
 
 - Put the columns on the **same level** as the pedestal, **in line with it** on its sides
   (north, south, east, west), one column per side.

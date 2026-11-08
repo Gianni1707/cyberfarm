@@ -4,7 +4,7 @@ Questo documento serve a riprendere il restyle da un'altra chat o da un altro PC
 Raccoglie cosa è stato deciso, perché e cosa è stato bocciato. L'elenco di ciò che è già stato fatto è in
 [restyle-modifiche.md](restyle-modifiche.md).
 
-Stato al 7 novembre 2026, branch `machine-models-prototype`, commit `c69404f`.
+Stato all'8 novembre 2026, branch `restyle-icons-drones` (parte da `machine-models-prototype`).
 
 ## Da leggere prima: cosa non è su git
 
@@ -134,7 +134,9 @@ Il vecchio sistema per indicare i blocchi mancanti era troppo uguale a Oritech. 
   Le facce piatte guardano i quattro lati, dove arrivano i tubi.
 - **Pelle "piastre e fasce",** una tessera da 16 pixel per blocco, dentro e fuori: la vecchia immagine stirata perdeva i dettagli.
 - **Porte in rilievo** sulle facce. Su reattore e turbina vanno bene così: l'utente ha detto di lasciarle.
-- **Mech Hangar: solo palette.** Forma e collisioni originali, console a cubo compresa.
+- **Mech Hangar: solo palette.** Forma e collisioni originali. La console resta a cubo (deciso dall'utente).
+- **Strutture del Mechanist nella palette:** corpo in terracotta ciano, legno warped per finiture, porte e tetti in legno, accenti in cemento ciano, vetro ciano, luci in sea lantern. Via le strisce gialle e nere e le fasce arancio e lime. Solo blocchi ottenibili in sopravvivenza, perché li piazzano i droni: niente prismarine, che pure ha il colore giusto. Forme invariate.
+- **Suono di montaggio:** per tutti i piccoli multiblocchi, scatto, colpi meccanici durante l'apertura e un colpo secco alla fine. Bocciato il ronzio del beacon: non si sentiva e non sapeva di montaggio.
 - **Metodo:** sulle strutture grandi "stessa forma, solo palette" è stato quello che ha funzionato meglio.
 - **Crystallizer:** resta multiblocco 3x3x4, da solo è un piedistallo modellato.
 - **Methane Extractor:** sorella del Crystallizer, con campana di vetro a gradoni. La gabbia quadrata è stata bocciata.
@@ -201,6 +203,57 @@ riempie il resto: una barra sottile centrata su un tank largo non si può fare c
 | Nuvola piena a molti colori | Stonava con le onde |
 | Segno che gira verso chi guarda | "non ha senso" |
 
+## Attrezzi sul drone
+
+Stesso attrezzo e stesso posto, disegno e movimento migliori. Approvati Harvester, Transport, Logger, Taxi, Bomb, e i dettagli di Builder (livella) e Fisher (galleggiante).
+
+- **Planter e Fertilizer:** il serbatoio piace e resta com'è. Sotto hanno una pompetta che **spruzza** il contenuto: bocciati il piolo seminatore e la bombola a fasce con leva e ugello.
+- **Rancher:** cesoie sotto lo scafo, non di lato.
+- **Breeder:** rastrelliera del fieno a listelli sotto i pattini, con il mangime che cade sull'animale. Bocciate la bocchetta dietro il serbatoio (non si vedeva) e la mangiatoia piccola tra i pattini ("non si capisce").
+- **Taxi e Fisher:** l'uncino deve restare visibile anche da fermi.
+- **Più moduli insieme:** "fai dei mix": si dividono lo spazio sotto lo scafo da davanti a dietro, quelli lunghi si accorciano. Uno solo resta al centro, identico.
+- **Compenetrazioni:** niente deve attraversare gambe, pattini o la fascia del serbatoio centrale. Sono state segnalate in gioco, non si vedevano sul foglio.
+- **Guard:** resta come era; bocciato il rifacimento con le alette.
+- **Quarry:** già revisionato, non si tocca.
+
+## Minerali
+
+Scelta dell'utente: **simili a ferro e rame vanilla**. Texture piatte su roccia vanilla, 12 facce come prima; forme e colori nostri, nessun pixel copiato.
+
+- **Uranio e zolfo come il ferro:** grumi larghi e storti, bordo smorzato che sfuma nella roccia, centro chiaro. Verde giallo per non confondersi con lo smeraldo, giallo limone per non confondersi con l'oro del Nether.
+- **Bauxite come il rame:** due minerali affiancati, ruggine e ocra pallida.
+- Il deepslate usa lo stesso overlay della pietra. L'uranio tiene la luce di blocco 3.
+
+| Bocciato | Motivo o giudizio |
+|---|---|
+| Noduli grossi, vene, cristalli sporgenti (57 facce) | "non mi piacciono" |
+| Incavati, con buchi nella roccia | "non mi piacciono" |
+| Stile vanilla con grumi piccoli o a filamenti, bauxite rossa | "non mi piacciono" |
+| Grumi tondi e simmetrici | Scartati prima di mostrarli: sembravano sfere |
+
+## Icone
+
+Da rifare, scelte dall'utente: i moduli Planter, Logger, Rancher, Fertilizer, Fisher, Breeder e Bomb; telai; circuiti; Mech Core, Mech Frame e moduli del meka; allumina e zolfo; Fuel Rod, barra esausta, Geiger, Hazmat; Survey Tool, proiettore, Handbook. Il Blueprint Disc cambia solo colore (fatto). Le altre icone restano.
+
+Stile scelto, "indurito", partito da una barra che piaceva all'utente ma sapeva "troppo di Faithful": nativo 16x16, pixel messi a mano, forme dure e squadrate, contorno scuro tinto del colore che tocca, materiali che si leggono come acciaio, vetro o combustibile. I moduli Logger, Fisher, Breeder e Bomb hanno lo stesso gancio di quelli tenuti. Hazmat e Geiger restano gialli. I moduli del meka sono **schede orizzontali** con i contatti sul lato e il simbolo della funzione (scelta dell'utente, bocciate quelle verticali). Si giudica in gioco.
+
+**Tuta, pantaloni e stivali Hazmat, telai, Rancher, Fertilizer e Planter tornano al concept originale** ("avevano un ottimo concept, solo troppo semplici e brutte"): stesso oggetto e stessa composizione, ridisegnati con più toni, luce coerente e piccoli dettagli. Dopo tanti tentativi questa è la regola: non cambiare oggetto a un'icona che ha già un'idea chiara.
+
+Bocciate per questi gruppi: tuta gonfia, giacca snella, armatura vanilla, tuta col cappuccio, gilet; telai a cornice, a chassis dall'alto e di lato, a piastra, ad H; Rancher con forbici e lana, secchio, matassa, marchio all'orecchio; Fertilizer con granuli, sacco, ugello, scatola; Planter con germoglio, semi nella terra, bustina, seme, piolo.
+
+Bocciate: "sagoma grande", cartuccia scura, 32x32 ("troppo Faithful": pixel più fini del vanilla, troppo morbido), tessera chiara; "tecnico scuro", "smalto chiaro", "senza contorno" ("non mi piacciono"). Sia qui sia sui minerali ha funzionato partire da un riferimento dato dall'utente.
+
+## Batteria e torri
+
+Direzione "sentinelle in orbita", scelta fra tre (bocciate le stazioni di relè ferme e la corona che gira): un drone per colonna esce dalla culla in cima e orbita il cristallo, grande 1,5 volte i mini droni perché a 8 blocchi si veda. Il raggio parte dal drone, non più dal pilone.
+
+Fusto delle colonne: a croce con quattro spigoli di luce continui e un impulso che sale, perché la colonna si legga come una cosa sola. Bocciati la scatola scura con due fasce menta ripetute a ogni blocco; scartati il traliccio e il dissipatore ad alette, che ripetono un motivo per blocco.
+
+## Scartati
+
+- **Piccoli multiblocchi nel proiettore:** non ci vanno, hanno già i loro droni.
+- **Mech Repair Bay:** non si fa. Il meka si ripara già nell'Hangar, che ricarica e monta anche i moduli; chi arriva al Drone Workshop III ne ha già uno. Nell'edificio resta il piedistallo di andesite.
+
 ## Bocciature generali
 
 Da non riproporre:
@@ -219,8 +272,6 @@ Da non riproporre:
 
 ## Lasciati in sospeso
 
-- Bilancio dello Steam Engine e Gas Turbine del villaggio: "vediamo dopo".
-- Console del Mech Hangar: da decidere, ora resta a cubo.
 
 ## Strumenti
 

@@ -3,6 +3,7 @@ package com.cyberfarm.drone.job;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -100,6 +101,7 @@ public class FertilizeJob extends DroneJob {
             drone.markUnreachable(plant);
             return Result.DONE;
         }
+        Effects.spray(level, drone, Effects.SPRAY_FERTILIZER, plant);
         drone.useJobEnergy(ENERGY_COST);
         return Result.DONE;
     }
