@@ -40,9 +40,9 @@ Place a <ItemLink id="combustion_generator" /> and feed it coal or any other fur
 It pushes FE into every machine touching it, or into <ItemLink id="energy_conduit" />s that carry
 it further.
 
-**Look at any CyberFarm machine** to see a small panel beside the crosshair: whether it is
+**Look at any CyberFarm machine** to see a small panel floating just over it: whether it is
 working, the FE it makes or uses each tick, how full its energy buffer is and how far its batch
-has got. Working machines also show it: their front lights up and moves, their lights glow in the
+has got. With Jade or WTHIT installed the panel stays away and that mod's own takes over. Working machines also show it: their front lights up and moves, their lights glow in the
 dark, and some give off smoke, frost or bubbles depending on the machine.
 
 ## 3. Make aluminum
@@ -65,8 +65,11 @@ Place a <ItemLink id="drone_dock" /> in the middle of your farm, also next to a 
 (or connect it with cables from another mod). Right-click the dock with the drone to deploy it.
 
 By default the drone works a **9x9** area centred on the dock. Use the <ItemLink id="survey_tool" />
-to choose a different area: **sneak + scroll** (or right-click the air) to its **Area** mode, click
-the dock, then two opposite corners. The tool tells you each step above the hotbar.
+to choose a different area: click the dock, then two opposite corners. The tool reads what the drone
+does and tells you each step above the hotbar.
+
+**Look at a drone**, even from far away, to see a panel over it with what it is doing, its charge and
+what it carries.
 
 ## 6. Collect the harvest
 

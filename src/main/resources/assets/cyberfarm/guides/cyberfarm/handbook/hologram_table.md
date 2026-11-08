@@ -26,6 +26,21 @@ The wider the range, the wider the projection grows, so the land stays as easy t
 
 <br clear="all" />
 
+## Bigger tables
+
+Tables placed side by side **merge by themselves**, with no frames: **4** in a square make a **2x2**
+and **9** make a **3x3**. A merged table has one bigger projection, reaches further and writes the
+**name of every drone** over its dot. Break a table and the others split up again.
+
+| Table | Range | Drone names |
+| --- | --- | --- |
+| 1x1 | 16, 24, 32 | no |
+| 2x2 | 16, 24, 32, 48 | yes |
+| 3x3 | 16, 24, 32, 48, 64 | yes |
+
+A drone's name is the one you gave it (rename it in an anvil, or use a name tag), or else what its
+first module makes it, such as *Harvester Drone*.
+
 ## What it shows
 
 - The **land** around the table, in relief: hills, water, trees and buildings

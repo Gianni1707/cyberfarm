@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jspecify.annotations.Nullable;
@@ -32,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  * What the machines' renderers share to draw parts that move inside a block model: the model's frame, plain
  * tinted boxes and the spin-up and wind-down.
  */
-final class ModelParts {
+public final class ModelParts {
     /** Solid parts: this texture's white texel, tinted by the vertex colours. */
     static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
     static final float WHITE_UV = 15.5F / 16.0F;
@@ -130,7 +131,7 @@ final class ModelParts {
         return tank.capacity() > 0 ? Math.min(1.0F, (float) tank.amount() / tank.capacity()) : 0.0F;
     }
 
-    private static FluidModel fluidModel(Fluid fluid) {
+    static FluidModel fluidModel(Fluid fluid) {
         return Minecraft.getInstance().getModelManager().getFluidStateModelSet().get(fluid.defaultFluidState());
     }
 
@@ -144,6 +145,22 @@ final class ModelParts {
         }
         FluidTintSource source = fluidModel(tank.fluid()).fluidTintSource();
         return source != null ? source.colorAsStack(new FluidStack(tank.fluid(), tank.amount())) : 0xFFFFFFFF;
+    }
+
+    /** A liquid's colour as one plain colour: its tint, or where it has none (lava and others that paint their colour in the texture) its map colour. With none, the Sponge Module's mint. */
+    public static int liquidColour(Level level, Fluid fluid) {
+        if (fluid == Fluids.EMPTY) {
+            return 0x5EC2B8;
+        }
+        FluidTintSource source = fluidModel(fluid).fluidTintSource();
+        int tint = source != null ? source.colorAsStack(new FluidStack(fluid, 1000)) & 0xFFFFFF : 0xFFFFFF;
+        return tint != 0xFFFFFF ? tint : fluid.defaultFluidState().createLegacyBlock().getMapColor(level, BlockPos.ZERO).col;
+    }
+
+    /** This much of the way from a colour to white. */
+    static int towardsWhite(int rgb, float amount) {
+        int r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
+        return Math.round(r + (255 - r) * amount) << 16 | Math.round(g + (255 - g) * amount) << 8 | Math.round(b + (255 - b) * amount);
     }
 
     /** The colour of a fluid's surface line. */

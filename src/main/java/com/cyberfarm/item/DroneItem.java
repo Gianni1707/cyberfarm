@@ -13,6 +13,7 @@ import com.cyberfarm.registry.ModEntities;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -76,6 +77,7 @@ public class DroneItem extends Item {
             return InteractionResult.FAIL;
         }
         drone.setup(getModules(stack), getEnergy(stack), pos);
+        drone.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
         drone.snapTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5,
                 DroneEntity.parkedYaw(level.getBlockState(pos)), 0.0F);
         drone.setYBodyRot(drone.getYRot());

@@ -53,8 +53,8 @@ import net.minecraft.world.phys.Vec3;
 public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockEntity, HologramRenderer.State> {
     /**
      * The projection is at least this wide, a little wider than the table, and shows a block at least
-     * this big: zoomed out it grows instead of shrinking the land to a blur. Then its height above the
-     * table's base.
+     * this big: zoomed out it grows instead of shrinking the land to a blur. A merged table's projection
+     * starts that many times wider. Then its height above the table's base.
      */
     private static final float MIN_WIDTH = 1.6F;
     private static final float BLOCK = MIN_WIDTH / 49;
@@ -95,10 +95,10 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
      * how tall a block shows: never less than at 24 blocks, so the hills still read as hills.
      */
     public record Grid(int radius, int step, int cells, float width, float scale, float rise) {
-        static Grid of(int radius) {
+        static Grid of(int radius, int size) {
             int step = radius > 32 ? 2 : 1;
             int cells = 2 * (radius / step) + 1;
-            float width = Math.max(MIN_WIDTH, cells * step * BLOCK);
+            float width = Math.max(MIN_WIDTH * size, cells * step * BLOCK);
             float scale = width / (cells * step);
             return new Grid(radius, step, cells, width, scale, Math.max(scale, BLOCK));
         }
@@ -121,8 +121,14 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
     /** A marker on the map: where, what colour, and for players which way they look. */
     private record Mark(Vec3 at, int colour, float yaw) {}
 
+    private record Label(Vec3 at, FormattedCharSequence text, int colour) {}
+
     public static class State extends BlockEntityRenderState {
-        Grid grid = Grid.of(24);
+        Grid grid = Grid.of(24, 1);
+        /** A 2x2's middle is the corner of the cell that draws it. */
+        float shift;
+        /** The drones' names, on a merged table only. */
+        final List<Label> labels = new ArrayList<>();
         float[] tops = new float[0];
         int[] colours = new int[0];
         float peak;
@@ -158,9 +164,12 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
         state.trails.clear();
         state.players.clear();
         state.mobs.clear();
+        state.labels.clear();
         state.working = 0;
         Level level = entity.getLevel();
-        if (level == null) {
+        // The other cells of a merged table leave it to the middle one
+        if (level == null || !entity.isMaster()) {
+            state.power = 0.0F;
             return;
         }
         long now = level.getGameTime();
@@ -169,7 +178,8 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
         BlockPos centre = entity.getBlockPos();
         // Rises while a player is near, folds away when they leave
         Player viewer = Minecraft.getInstance().player;
-        boolean near = viewer != null && viewer.distanceToSqr(Vec3.atCenterOf(centre)) < WAKE_DISTANCE * WAKE_DISTANCE;
+        double wake = WAKE_DISTANCE + entity.size();
+        boolean near = viewer != null && viewer.distanceToSqr(Vec3.atCenterOf(centre)) < wake * wake;
         float elapsed = entity.lastFrame == 0.0F ? 0.0F : Mth.clamp(time - entity.lastFrame, 0.0F, 5.0F);
         entity.lastFrame = time;
         entity.power = Mth.clamp(entity.power + (near ? elapsed : -elapsed) / BOOT_TICKS, 0.0F, 1.0F);
@@ -177,7 +187,9 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
         if (state.power <= 0.0F) {
             return;
         }
-        Grid grid = Grid.of(entity.radius());
+        int size = entity.size();
+        Grid grid = Grid.of(entity.radius(), size);
+        state.shift = size == 2 ? -0.5F : 0.0F;
         if (grid.radius() != entity.mapRadius || now - entity.mappedAt >= REFRESH_TICKS || now < entity.mappedAt) {
             map(entity, level, grid);
             entity.mappedAt = now;
@@ -204,6 +216,9 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
             }
             Vec3 at = onMap(entity, grid, drone.getPosition(partialTick));
             state.drones.add(new Mark(at, colour, 0.0F));
+            if (size > 1) {
+                state.labels.add(new Label(at, drone.label().getVisualOrderText(), colour));
+            }
             ArrayDeque<Vec3> trail = entity.trails.computeIfAbsent(drone.getId(), id -> new ArrayDeque<>());
             if (sample) {
                 trail.addLast(at);
@@ -328,6 +343,8 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
         if (state.tops.length == 0 || state.power <= 0.0F) {
             return;
         }
+        poseStack.pushPose();
+        poseStack.translate(state.shift, 0.0F, state.shift);
         float power = state.power;
         // Markers, trails, the frame and the compass fade in once the land has risen
         float overlay = Mth.clamp((power - 0.7F) / 0.3F, 0.0F, 1.0F);
@@ -383,6 +400,22 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
         });
         if (overlay > 0.0F) {
             summary(state, poseStack, collector, camera, overlay);
+            labels(state, poseStack, collector, camera, overlay);
+        }
+        poseStack.popPose();
+    }
+
+    /** The drones' names over their dots, always turned towards the viewer. */
+    private void labels(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera, float overlay) {
+        int alpha = Math.max(0x10, (int) (0xFF * overlay)) << 24;
+        for (Label label : state.labels) {
+            poseStack.pushPose();
+            poseStack.translate(label.at().x, label.at().y + 0.07, label.at().z);
+            poseStack.mulPose(camera.orientation);
+            poseStack.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
+            collector.submitText(poseStack, -font.width(label.text()) / 2.0F, 0.0F, label.text(), false, Font.DisplayMode.NORMAL,
+                    LightCoordsUtil.FULL_BRIGHT, alpha | label.colour(), (int) (0x50 * overlay) << 24, 0);
+            poseStack.popPose();
         }
     }
 
@@ -598,6 +631,8 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
 
     @Override
     public AABB getRenderBoundingBox(HologramTableBlockEntity entity) {
-        return new AABB(entity.getBlockPos()).inflate(1.5, 2.5, 1.5);
+        Grid grid = Grid.of(entity.radius(), entity.size());
+        float side = grid.width() / 2 + 0.5F;
+        return new AABB(entity.getBlockPos()).inflate(side, FLOOR + (MAX_RELIEF + 9) * grid.rise() + 0.5F, side);
     }
 }

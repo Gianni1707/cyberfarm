@@ -18,7 +18,7 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
-    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module",
+    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module", "sponge_module", "tank_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
@@ -175,7 +175,32 @@ def dock_model():
             *posts,
         ],
     })
-    write(ASSETS / "blockstates/hologram_table.json", {"variants": {"": {"model": f"{NS}:block/hologram_table"}}})
+    # Merged tables: one model per kind of cell, turned by the blockstate. The inner sides are left out, so the
+    # deck reads as one, and the outer ones use one uniform texture, so the glow line runs on unbroken
+    edge_face = lambda side: {"texture": "#edge", "uv": [0, 11, 16, 16], "cullface": side}
+    for size, kind, outer in ((2, "corner", ("north", "west")), (3, "corner", ("north", "west")), (3, "edge", ("north",)), (3, "centre", ())):
+        elements = [
+            {"from": [0, 0, 0], "to": [16, 5, 16],
+             "faces": {**{side: edge_face(side) for side in outer}, "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
+            # The pulse: an overlay that glows
+            {"from": [0, 5.02, 0], "to": [16, 5.03, 16], "light_emission": 15, "faces": {"up": {"texture": "#ring"}}},
+        ]
+        if kind == "corner":
+            elements.append(posts[0])
+        write(ASSETS / f"models/block/hologram_table_{size}_{kind}.json", {
+            "parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+            "textures": {"particle": tex("hologram_table_edge"), "edge": tex("hologram_table_edge"), "top": tex(f"hologram_top_{size}_{kind}"),
+                         "ring": tex(f"hologram_ring_{size}_{kind}"), "bottom": tex("machine_bottom"), "beacon": tex("drone_dock_beacon")},
+            "elements": elements,
+        })
+    # cell: 0 alone, 1-4 a 2x2, 5-13 a 3x3, row by row from the north-west; as in HologramTableBlock
+    cells = {"cell=0": {"model": f"{NS}:block/hologram_table"}}
+    for cell, turn in zip(range(1, 5), (0, 90, 270, 180)):
+        cells[f"cell={cell}"] = {"model": f"{NS}:block/hologram_table_2_corner", "y": turn}
+    for cell, (kind, turn) in zip(range(5, 14), (("corner", 0), ("edge", 0), ("corner", 90), ("edge", 270), ("centre", 0), ("edge", 90),
+                                                 ("corner", 270), ("edge", 180), ("corner", 180))):
+        cells[f"cell={cell}"] = {"model": f"{NS}:block/hologram_table_3_{kind}", "y": turn}
+    write(ASSETS / "blockstates/hologram_table.json", {"variants": cells})
     # The Builder Swarm Dock: the same pad with four landing rings on top
     write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
 
@@ -329,7 +354,7 @@ def blocks():
     energy_storage_models()
     laser_turret_models()
 
-    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
+    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "dock_tank", "hologram_table",
              "biomass_press", "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
@@ -690,6 +715,9 @@ def recipes():
     # Defence: an amethyst lens focuses the laser
     shaped("guard_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:amethyst_shard", "C": copper, "D": circuit})
     shaped("bomb_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:tnt", "C": copper, "D": circuit})
+    # A bucket, not a sponge: real sponges come only from ocean monuments
+    shaped("sponge_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bucket", "C": copper, "D": circuit})
+    shaped("tank_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:cauldron", "C": copper, "D": circuit})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
@@ -706,6 +734,7 @@ def recipes():
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": circuit, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": circuit, "I": iron})
     shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
+    shaped("dock_tank", ["IGI", "GBG", "IDI"], {"I": iron, "G": "minecraft:glass_pane", "B": "minecraft:bucket", "D": circuit})
     shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": circuit})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)

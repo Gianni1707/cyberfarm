@@ -20,6 +20,7 @@ public final class InfoPages {
                 page(ModItems.DRONE_DOCK.get()),
                 page(ModItems.SWARM_DOCK.get()),
                 page(ModItems.HOLOGRAM_TABLE.get()),
+                page(ModItems.DOCK_TANK.get()),
                 page(ModItems.MINI_FRAME.get()),
                 page(ModItems.ENERGY_CONDUIT.get()),
                 page(ModItems.ADVANCED_ENERGY_CONDUIT.get()),
@@ -111,7 +112,9 @@ public final class InfoPages {
                 page(ModItems.FISHER_MODULE.get()),
                 page(ModItems.BREEDER_MODULE.get()),
                 page(ModItems.GUARD_MODULE.get()),
-                page(ModItems.BOMB_MODULE.get()));
+                page(ModItems.BOMB_MODULE.get()),
+                page(ModItems.SPONGE_MODULE.get()),
+                page(ModItems.TANK_MODULE.get()));
     }
 
     private static Page page(Item item) {

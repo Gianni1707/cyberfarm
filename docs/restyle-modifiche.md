@@ -135,11 +135,25 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 - **Shift+click:** un oggetto rifiutato non compare più per un istante nello slot; il client non anticipa più lo spostamento (`MachineMenu`).
 - **Transport e volo:** nei tragitti lunghi il drone sale prima a quota di attraversamento e poi va dritto (`DroneFlight.flyOver`). Il ritorno al dock veniva dall'abbandono dopo 5 s bloccato. Durante la salita quel conteggio non corre.
 - **Raggio:** il limite è di 48 blocchi dal dock, in chunk caricati. Non è cambiato: ora è scritto nella guida.
-- **Harvester:** le piante mature che hanno `age` al massimo e si raccolgono col clic vengono raccolte senza spaccarle (`HarvestJob.pick`, con un `FakePlayer`). Le `CropBlock` si ripiantano sempre.
+- **Harvester:** le piante mature che hanno `age` al massimo e si raccolgono col clic vengono raccolte senza spaccarle (`HarvestJob.pick`, con un `FakePlayer`). Le `CropBlock` non si ripiantano più: ci pensa il Planter.
 - **Supply Terminal:** tolto il timer in alto a destra.
+
+## Pannelli, droni e liquidi
+
+- **Pannello di stato (`StatusPanel`):** al posto dell'overlay accanto al mirino, un pannello sopra ciò che guardi, disegnato sull'interfaccia: macchine, Fluid Tank, Dock Tank e droni. Su macchine e tank sparisce con Jade, WTHIT o WAILA; sui droni resta.
+- **Hologram Table 2x2 e 3x3:** tavoli affiancati si fondono da soli, raggio fino a 48 e 64, nomi dei droni. Anello di luce con texture animata.
+- **Survey Tool guidato:** legge i moduli del drone e chiede solo area, rotta o destinazione. Niente più modalità da scegliere.
+- **Mini droni per l'area (`DockAreaView`):** col pulsante Area della dock volano sugli angoli e illuminano i blocchi.
+- **Sponge Module:** aspira qualsiasi liquido in un'area, 3x3 alla volta. Cappa aspirante sul modello.
+- **Tank Module:** lattina da 32 secchi sul fianco. Conserva il liquido della spugna e sposta liquidi fra tank col Transport.
+- **Dock Tank:** blocco accanto alla dock, solo per conservare; barra nella GUI della dock.
+- **Pinza del Transport:** oggetto piccolo stretto fra le ganasce.
+- **Setup di prova:** `/function cyberfarm:test_setup`, da `tools/testsetup.py`.
 
 ## Modifiche che cambiano il gioco
 
+- **Harvester:** non ripianta più, serve il Planter. Corretto anche il bug per cui non raccoglieva le colture.
+- **Compenetrazioni dei droni:** spostati il laser e ristretto il serbatoio dei semi.
 - **Edifici del villaggio già costruiti:** con i blocchi nuovi risultano non finiti, il livello del villaggio può fermarsi e i Builder collegati rompono i blocchi vecchi per rimetterli. Gli Outpost già generati restano com'erano.
 - **Legno warped:** ora gli edifici chiedono legno del Nether.
 
@@ -240,3 +254,4 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - Prova su server dedicato.
 - Merge su `master`: i branch sono già su GitHub.
 - Porting sulle altre versioni di Minecraft.
+- Decidere se togliere il setup di prova (`data/cyberfarm/function/test_setup*`).

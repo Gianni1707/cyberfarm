@@ -18,6 +18,8 @@ item_ids:
   - cyberfarm:breeder_module
   - cyberfarm:guard_module
   - cyberfarm:bomb_module
+  - cyberfarm:sponge_module
+  - cyberfarm:tank_module
 ---
 
 # Function Modules
@@ -48,14 +50,19 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 | Breeder Module | +1 FE/t | 15 FE per animal fed |
 | Guard Module | +2 FE/t | 150 FE per shot |
 | Bomb Module | +1 FE/t | the Mini Drone itself |
+| Sponge Module | +2 FE/t | 20 FE per 3x3 |
+| Tank Module | +1 FE/t | none |
 
 ## Harvester Module
 
 <ItemImage id="cyberfarm:harvester_module" scale="2" float="left" />
 
-The drone looks for **fully grown crops** in its work area, harvests them and **replants**
-them, using one of the dropped seeds if there is one. It also harvests **melons and pumpkins**, and
-**picks** ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place.
+The drone looks for **fully grown crops** in its work area and harvests them, bringing crops and
+seeds to the dock. It also harvests **melons and pumpkins**, and **picks** ripe plants that give their
+fruit to a right-click, like sweet berry bushes, leaving the plant in place.
+
+It **does not replant**: the field stays bare. For a farm that runs by itself add a
+[Planter Module](modules.md), on a frame with room for both or on a second drone sharing the seeds.
 
 Works with wheat, carrots, potatoes, beetroot and modded crops and bushes built like the vanilla ones.
 A [Fortune Addon](addons.md) gives more crops and seeds.
@@ -106,8 +113,8 @@ climbs over it; if it stays stuck for 5 seconds it gives that container up and g
 
 <br clear="all" />
 
-Set the route with the [Survey Tool](drone_dock.md) in **Route** mode: click the source
-container, then the destination. Any inventory works, including ones from other mods and **other drones' docks**: a
+Set the route with the [Survey Tool](drone_dock.md): click the dock, the source container, then
+the destination. Any inventory works, including ones from other mods and **other drones' docks**: a
 Transport drone can collect what a Harvester or a Quarry brings home. Items that do not fit in the
 destination are brought back to the dock. The [dock filter](drone_dock.md) decides **which items**
 are moved.
@@ -159,7 +166,7 @@ it** to grab the hook: you hang below it with one hand while it carries you to t
 
 <br clear="all" />
 
-1. With the [Survey Tool](drone_dock.md) linked to the dock and in **Taxi** mode, **right-click
+1. With the [Survey Tool](drone_dock.md) linked to the dock, **right-click
    the block** you want to land on (up to 256 blocks from the dock, with two blocks of air above it).
 2. Right-click the waiting drone.
 3. It climbs above the terrain, flies straight to the destination and puts you down gently.
@@ -321,4 +328,47 @@ at it and explodes**.
   swarm takes out a whole group.
 
 <RecipeFor id="bomb_module" />
+
+## Sponge Module
+
+<ItemImage id="cyberfarm:sponge_module" scale="2" float="left" />
+
+The drone **sucks up any liquid** from its work area, water, lava or a modded one, lowering a hood over
+the surface. Its rings and gauge lamp take the colour of what it holds.
+
+<br clear="all" />
+
+- It **only works with a surveyed area**: the default area around the dock is never touched. Mark it
+  with the [Survey Tool](drone_dock.md).
+- It flies to the highest source in the area and takes the **3x3** around it, sources and currents
+  alike, then the next, until the area is dry. A pool deeper than the area is followed down to its
+  floor, up to 32 blocks under it.
+- On its own it **throws the liquid away** and carries on, without going home.
+- To keep the liquid, put a **Tank Module** on the same drone: it then holds one kind of liquid at a
+  time and brings it to the dock.
+- Kelp and seagrass break and drop; waterlogged blocks just dry out.
+- Water running in from outside the area is left alone: it dries up once its source is gone, so
+  to drain a river mark the stretch with its sources.
+
+<RecipeFor id="sponge_module" />
+
+## Tank Module
+
+<ItemImage id="cyberfarm:tank_module" scale="2" float="left" />
+
+A windowed **canister** on the drone's flank, holding **32 buckets** of one liquid. You can read its
+colour and level from outside, and its pump works while it does. It has no job of its own: it works with
+the modules beside it.
+
+<br clear="all" />
+
+- **With a Sponge Module** the drone keeps what it sucks up, one kind at a time, and brings it to the dock.
+  There it goes into a [Dock Tank](drone_dock.md) if there is one; with none, or with that one full or
+  holding another liquid, it stays on board. When the canister is full and nothing can empty it, **the
+  drone stops on its dock** until there is room.
+- **With a Transport Module** a route between two tanks carries liquid from one to the other. Set it
+  with the [Survey Tool](drone_dock.md) as usual: click the source tank, then the destination. If the
+  route also has items to move, the drone carries those first.
+
+<RecipeFor id="tank_module" />
 

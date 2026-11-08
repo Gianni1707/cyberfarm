@@ -49,7 +49,7 @@ import org.jspecify.annotations.Nullable;
  */
 public final class FrameDroneRenderer {
     /** See-through and writing no depth, so the beam never cuts what stands behind it. */
-    private static final RenderType BEAM = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
+    public static final RenderType BEAM = RenderTypes.eyes(CyberFarm.id("textures/entity/methane_chamber_glow.png"));
     private static final RenderType ATLAS = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
 
     private static final float PIXEL = 1 / 16.0F;
@@ -70,7 +70,8 @@ public final class FrameDroneRenderer {
     private static final int GROUP = 3, MAX_DRONES = 8;
 
     private static final int SHELL = 0xFF395853, DARK = 0xFF233E3B, STEEL = 0xFF7C8989, STEEL_LIGHT = 0xFFBDC6C5, BAND = 0xFF5EC2B8, SCREEN = 0xFF071314;
-    private static final int LAMP = 0xFFD1FEE7, LENS_OFF = 0xFF055B57, AMBER = 0xFFFFB347;
+    private static final int LAMP = 0xFFD1FEE7, AMBER = 0xFFFFB347;
+    public static final int LENS_OFF = 0xFF055B57;
 
     /** A pinned projection stops being kept up this long after its projector was last seen pinned there. */
     private static final float PROJECTOR_GRACE = 5.0F;
@@ -460,7 +461,7 @@ public final class FrameDroneRenderer {
     }
 
     /** The mini drone at its feet's height: chassis, visor, band, antenna on its stem, a projector in three steps, then four arms with spinning blades. */
-    static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light) {
+    public static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light) {
         float k = SCALE;
         int full = LightCoordsUtil.FULL_BRIGHT;
         collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
@@ -486,6 +487,14 @@ public final class FrameDroneRenderer {
                     ModelParts.box(pose, buffer, -3.0F * k, 0.0F, -0.5F * k, 3.0F * k, 0.2F, 0.5F * k, STEEL_LIGHT, STEEL_LIGHT, light));
             poseStack.popPose();
         }
+    }
+
+    /** The cone of light under a drone, in pixels from its feet, reaching down to {@code bottom}: for what else mini drones light. */
+    public static void beam(PoseStack poseStack, SubmitNodeCollector collector, float bottom, float wide, float alpha) {
+        collector.submitCustomGeometry(poseStack, BEAM, (pose, buffer) -> {
+            cone(pose, buffer, 1.0F, 0.0F, LENS_Y, bottom, wide, alpha);
+            cone(pose, buffer, 0.0F, 1.0F, LENS_Y, bottom, wide, alpha);
+        });
     }
 
     /** An octagon of three boxes. */

@@ -69,7 +69,8 @@ A drone is put together in the **Drone Assembler** from three kinds of parts:
   storage to another, of any mod), **Planter**, **Logger** (fells whole trees and replants),
   **Rancher** (shears and milks), **Fertilizer**, **Fisher** (vanilla fishing loot, treasure
   included), **Breeder**, **Taxi** (carries you, hanging from its hook), **Builder**, **Guard**
-  (hunts hostile mobs with a laser) and **Bomb** (Mini Drones only);
+  (hunts hostile mobs with a laser), **Bomb** (Mini Drones only), **Sponge** (sucks up any liquid
+  from an area) and **Tank** (keeps that liquid, and carries it between tanks with a Transport Module);
 - **addons**: Speed, Stack, Battery, Fortune, Silk Touch and Anchor.
 
 ![Frames, modules and addons](docs/images/drones.png)
@@ -77,8 +78,10 @@ A drone is put together in the **Drone Assembler** from three kinds of parts:
 ![A drone taking shape in the Drone Assembler](docs/images/assembler.gif)
 
 Every drone lives on a **Drone Dock**, which charges it and stores what it brings back. The
-**Survey Tool** marks its work area, its transport route or its taxi destination, and the dock's
-item filter decides what it keeps. There is no programming: an area and a dock are all a drone needs.
+**Survey Tool** reads what the drone on the dock does and asks for what it needs: a work area, a
+transport route or a taxi destination. The dock's **Area** button sends mini drones to light up what is
+set, a **Dock Tank** against it stores liquids, and its item filter decides what it keeps. There is no
+programming: an area and a dock are all a drone needs.
 
 **Building with drones.** The **Multiblock Projector** shows any CyberFarm multiblock, or a
 schematic, as ghost blocks. Lock it in place, link it to a dock, and its Builder drones raise it
@@ -100,7 +103,9 @@ over its work area and a Mini Drone with the **Bomb** module dives at them.
 
 **Watching your base.** The **Hologram Table** projects the land around it in relief, with your
 docks as pillars of light, your drones moving live with their trails, players as arrows and hostile
-mobs as red dots. Right-click it to zoom between 16, 24 and 32 blocks.
+mobs as red dots. Right-click it to zoom between 16, 24 and 32 blocks. Tables side by side merge into
+a 2x2 or 3x3 that reaches 48 or 64 blocks and writes each drone's name. Look at a machine, a tank or a
+drone for a panel over it with what it is doing.
 
 ![The Hologram Table showing the city square around it](docs/images/hologram.png)
 

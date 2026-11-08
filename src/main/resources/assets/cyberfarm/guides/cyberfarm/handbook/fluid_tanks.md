@@ -33,6 +33,8 @@ the arm of the pipe that touches it, so the pipe **pulls** from the tank (an ora
 it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you see into the tank,
 right through to the other side, and the fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount.
 
+**Look at a tank** to see a panel over it with what is inside and how full it is, one panel for a whole joined tank.
+
 A tank is a handy buffer: put one between a Methane Extractor and the Gas Turbines, or between a
 Water Pump and a Fission Reactor, and it keeps the flow going when production dips.
 

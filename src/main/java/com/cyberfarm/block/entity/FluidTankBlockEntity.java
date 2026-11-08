@@ -140,6 +140,14 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
         return shownFluid;
     }
 
+    public int shownAmount() {
+        return shownAmount;
+    }
+
+    public int shownCapacity() {
+        return blocks() * CAPACITY;
+    }
+
     public float shownFill() {
         return (float) shownAmount / (blocks() * CAPACITY);
     }

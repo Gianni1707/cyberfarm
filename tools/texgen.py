@@ -1040,6 +1040,68 @@ def hologram_table_side():
     return c
 
 
+HOLOGRAM_BK, HOLOGRAM_ST = (11, 21, 21, 255), (64, 84, 83, 255)
+HOLOGRAM_CORE = (209, 254, 231, 255)
+# size -> the emitter's outer radius and its core's half width, in pixels of the whole table
+HOLOGRAM_EMITTER = {2: (7, 3), 3: (8, 4)}
+# (size, kind) -> the cell's corner in the table's pixels, the table's middle, whether its north and west sides are outer ones
+HOLOGRAM_CELLS = {(2, "corner"): ((0, 0), 16, True, True), (3, "corner"): ((0, 0), 24, True, True),
+                  (3, "edge"): ((16, 0), 24, True, False), (3, "centre"): ((16, 16), 24, False, False)}
+
+
+def hologram_metric(dx, dy):
+    """Distance on an octagon, the same under every quarter turn: rotated cells line up into one ring."""
+    return max(abs(dx), abs(dy), (abs(dx) + abs(dy)) * 0.72)
+
+
+def hologram_cell_top(size, kind):
+    """The plate of a merged Hologram Table's cell: its share of the outer border and of the emitter."""
+    (ox, oy), middle, north, west = HOLOGRAM_CELLS[(size, kind)]
+    rng = random.Random(11 + size * 3 + len(kind))
+    body = [(39, 56, 55, 255), (35, 52, 51, 255), (34, 51, 50, 255), (32, 49, 48, 255), (33, 50, 49, 255)]
+    outer, core = HOLOGRAM_EMITTER[size]
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            dx, dy = ox + x + 0.5 - middle, oy + y + 0.5 - middle
+            m = hologram_metric(dx, dy)
+            colour = body[rng.randrange(5)]
+            if north and y < 2 or west and x < 2:
+                colour = HOLOGRAM_BK if (north and y == 0) or (west and x == 0) else HOLOGRAM_ST
+            if m <= outer:
+                colour = (5, 91, 87, 255) if m > outer - 2 else HOLOGRAM_BK if m > core else (255, 255, 255, 255) if max(abs(dx), abs(dy)) <= 1 else HOLOGRAM_CORE
+            c.set(x, y, colour)
+    return c
+
+
+def hologram_cell_ring(size, kind):
+    """The pulse running out from the emitter: 16 frames x 5 ticks = 4 s, in step across all the cells."""
+    (ox, oy), middle, north, west = HOLOGRAM_CELLS[(size, kind)]
+    outer, _ = HOLOGRAM_EMITTER[size]
+    frames = []
+    for frame in range(16):
+        c = Canvas()
+        r0 = outer + 2 * frame
+        t = min(1.0, (r0 - outer) / 26)
+        colour = mix(HOLOGRAM_CORE, (94, 194, 184, 255), t)
+        for y in range(16):
+            for x in range(16):
+                if not (north and y < 2 or west and x < 2) and r0 < hologram_metric(ox + x + 0.5 - middle, oy + y + 0.5 - middle) <= r0 + 2:
+                    c.set(x, y, colour)
+        frames.append(c)
+    return strip(frames, frametime=5)
+
+
+def hologram_table_edge():
+    """A merged table's outer side, the same on every column so the glow line runs on unbroken from block to block."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, HOLOGRAM_BK)
+    c.rect(0, 12, 15, 12, HOLOGRAM_ST)
+    c.rect(0, 13, 15, 13, HOLOGRAM_CORE)
+    c.rect(0, 14, 15, 14, HOLOGRAM_ST)
+    return c
+
+
 def swarm_dock_top():
     """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross. The
     rings are dim: each lights up while a drone stands on it (see DockRenderer)."""
@@ -2203,6 +2265,26 @@ def drone_tools(c):
         x0, y0, x1, _ = bar[name]
         c.set(x0, y0, mint)
         c.set(x1, y0, mint)
+    # Sponge: the housing, the tube with a seam, the hood with a dark mouth; DroneRenderer draws its rings and lamp
+    shaded_box(c, 64, 40, 3, 1, 3, gun)
+    tube = shaded_box(c, 80, 40, 2, 6, 2, steel)
+    for name in around:
+        x0, y0, x1, _ = tube[name]
+        c.rect(x0, y0 + 2, x1, y0 + 2, steel[3])
+    hood = shaded_box(c, 88, 40, 5, 1, 5, steel)
+    x0, y0, x1, y1 = hood["bottom"]
+    c.rect(x0, y0, x1, y1, steel[2])
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, "#071314")
+    c.set(x0 + 2, y0 + 2, steel[3])
+    # Tank: the lid and floor with a mint stripe, posts, the clamp to the hull, the dark plate behind the window, the pump's handle and rod
+    tank_cap = shaded_box(c, 64, 46, 3, 1, 4, cream)
+    x0, y0, x1, y1 = tank_cap["top"]
+    c.rect(x0 + 1, y0, x0 + 1, y1, mint)
+    shaded_box(c, 80, 48, 1, 3, 1, gun)
+    shaded_box(c, 88, 48, 1, 1, 2, steel)
+    paint_box(c, 96, 48, 1, 3, 3, "#071314")
+    shaded_box(c, 104, 48, 1, 1, 3, steel)
+    shaded_box(c, 112, 48, 1, 3, 1, gun)
     bob = shaded_box(c, 112, 17, 2, 2, 2, cream)
     for name in around:
         x0, y0, x1, _ = bob[name]
@@ -2938,6 +3020,10 @@ def build_all():
     textures["entity/drone_glow"] = drone.glow_mask()
     for name, (rows, tones) in ICONS.items():
         textures[name] = pixel_art(rows, tones)
+    textures["block/hologram_table_edge"] = hologram_table_edge()
+    for size, kind in HOLOGRAM_CELLS:
+        textures[f"block/hologram_top_{size}_{kind}"] = hologram_cell_top(size, kind)
+        textures[f"block/hologram_ring_{size}_{kind}"] = hologram_cell_ring(size, kind)
     return textures
 
 
