@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import java.util.function.Supplier;
 
 import com.cyberfarm.block.entity.BioDigesterBlockEntity;
+import com.cyberfarm.block.entity.BiomassPressBlockEntity;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
 import com.cyberfarm.block.entity.FabricatorBlockEntity;
@@ -50,6 +51,7 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
 
     /** A machine page: its id, title and the block shown as icon and workstation. */
     public enum Machine {
+        BIOMASS_PRESS("biomass_press", ModItems.BIOMASS_PRESS),
         BIO_DIGESTER("bio_digester", ModItems.BIO_DIGESTER),
         METHANE_EXTRACTOR("methane_extractor", ModItems.METHANE_EXTRACTOR),
         GAS_TURBINE("gas_turbine", ModItems.GAS_TURBINE),
@@ -145,17 +147,21 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
 
     /** Organic items grouped by the biogas they make, one page per amount. */
     private static void bioDigester(List<MachineExample> all) {
-        Map<Integer, List<ItemStack>> byAmount = new TreeMap<>();
+        // The press's waste, by the chance each has of giving a Biomass
+        Map<Integer, List<ItemStack>> byChance = new TreeMap<>();
         for (Item item : BuiltInRegistries.ITEM) {
             ItemStack stack = new ItemStack(item);
-            int amount = BioDigesterBlockEntity.biogasFor(stack);
-            if (amount > 0) {
-                byAmount.computeIfAbsent(amount, key -> new ArrayList<>()).add(stack);
+            int chance = Math.round(BiomassPressBlockEntity.biomassChance(stack) * 100.0F);
+            if (chance > 0) {
+                byChance.computeIfAbsent(chance, key -> new ArrayList<>()).add(stack);
             }
         }
-        byAmount.forEach((amount, items) -> all.add(new MachineExample(Machine.BIO_DIGESTER, List.of(items), List.of(), List.of(),
-                List.of(new FluidAmount(ModFluids.BIOGAS.get(), amount)),
-                List.of(note("per_item", BioDigesterBlockEntity.PROCESS_TIME / 20)))));
+        ItemStack biomass = new ItemStack(ModItems.BIOMASS.get());
+        byChance.forEach((chance, items) -> all.add(new MachineExample(Machine.BIOMASS_PRESS, List.of(items), List.of(), List.of(biomass), List.of(),
+                List.of(note("chance", biomass.getHoverName(), chance), note("per_item", BiomassPressBlockEntity.PROCESS_TIME / 20)))));
+        all.add(new MachineExample(Machine.BIO_DIGESTER, List.of(List.of(biomass)), List.of(), List.of(),
+                List.of(new FluidAmount(ModFluids.BIOGAS.get(), BioDigesterBlockEntity.MB_PER_BIOMASS)),
+                List.of(note("per_item", BioDigesterBlockEntity.PROCESS_TIME / 20))));
     }
 
     /**

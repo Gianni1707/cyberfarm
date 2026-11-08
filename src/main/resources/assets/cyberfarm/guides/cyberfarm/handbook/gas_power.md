@@ -8,10 +8,11 @@ navigation:
 
 # Gas Power
 
-The second step of CyberFarm power: **gases**. Organic waste becomes **Biogas**, mobs shut in an
+The second step of CyberFarm power: **gases**. Organic waste, pressed into Biomass, becomes **Biogas**, mobs shut in an
 extraction chamber give off **Methane**, and a **Gas Turbine** burns both into FE.
 
 <ItemGrid>
+  <ItemIcon id="biomass_press" />
   <ItemIcon id="bio_digester" />
   <ItemIcon id="methane_extractor" />
   <ItemIcon id="gas_turbine" />

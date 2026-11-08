@@ -13,6 +13,7 @@ standard, generators from other mods work just as well.
 
 <ItemGrid>
   <ItemIcon id="combustion_generator" />
+  <ItemIcon id="biomass_press" />
   <ItemIcon id="bio_digester" />
   <ItemIcon id="methane_extractor" />
   <ItemIcon id="gas_turbine" />

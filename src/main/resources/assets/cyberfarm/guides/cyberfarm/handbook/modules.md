@@ -54,9 +54,10 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 <ItemImage id="cyberfarm:harvester_module" scale="2" float="left" />
 
 The drone looks for **fully grown crops** in its work area, harvests them and **replants**
-using one of the dropped seeds. It also harvests **melons and pumpkins**.
+them, using one of the dropped seeds if there is one. It also harvests **melons and pumpkins**, and
+**picks** ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place.
 
-Works with wheat, carrots, potatoes, beetroot and any modded crop built like the vanilla ones.
+Works with wheat, carrots, potatoes, beetroot and modded crops and bushes built like the vanilla ones.
 A [Fortune Addon](addons.md) gives more crops and seeds.
 
 <br clear="all" />
@@ -99,6 +100,9 @@ has items and the destination has room.
 
 A load is **16 items**; each [Stack Addon](addons.md) adds a full stack (64 items), up to 9 stacks.
 While loaded, the drone carries the item **in its claw**, so you can see what it is moving.
+
+Both containers must be within **48 blocks of the dock**, in loaded chunks. If something stands in the way, the drone
+climbs over it; if it stays stuck for 5 seconds it gives that container up and goes home until its next trip.
 
 <br clear="all" />
 
@@ -189,7 +193,7 @@ back to the dock.
 <ItemImage id="cyberfarm:fertilizer_module" scale="2" float="left" />
 
 The drone **grows the crops, stems and saplings** of its work area with fertilizer from the dock,
-until they are fully grown. It works with **any fertilizer**: bone meal, or fertilizers from
+until they are fully grown. It works with **any fertilizer**: bone meal, Biomass (weak: it grows the plant one time in three), or fertilizers from
 other mods (everything in the `c:fertilizers` tag). The white canister on its shoulder feeds a pump under the hull, which sprays each plant.
 
 <br clear="all" />

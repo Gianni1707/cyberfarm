@@ -30,6 +30,8 @@ public final class InfoPages {
                 page(ModItems.LIQUID_PIPE.get()),
                 page(ModItems.ADVANCED_LIQUID_PIPE.get()),
                 page(ModItems.ELITE_LIQUID_PIPE.get()),
+                page(ModItems.BIOMASS_PRESS.get()),
+                page(ModItems.BIOMASS.get()),
                 page(ModItems.BIO_DIGESTER.get()),
                 page(ModItems.GAS_TURBINE.get()),
                 page(ModItems.METHANE_EXTRACTOR.get()),

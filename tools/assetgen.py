@@ -25,7 +25,7 @@ FLAT_ITEMS = [
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
-    "sulfur", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
+    "sulfur", "biomass", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
     "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
 ]
 
@@ -330,7 +330,7 @@ def blocks():
     laser_turret_models()
 
     names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
-             "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
+             "biomass_press", "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine",
@@ -715,6 +715,7 @@ def recipes():
         shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": advanced_circuit}, count=8)
         shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": elite_circuit}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
+    shaped("biomass_press", ["IPI", "CXC", "IUI"], {"I": iron, "P": "minecraft:piston", "C": copper, "X": "minecraft:composter", "U": circuit})
     shaped("bio_digester", ["IUI", "GXG", "ICI"], {"I": iron, "U": circuit, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
     shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": circuit})
     shaped("acid_inlet", ["F", "B"], {"F": f"{NS}:cyber_frame", "B": "minecraft:bucket"})
@@ -835,6 +836,7 @@ def sounds():
         "coolant_mixer.work": files("block/brewing_stand/brew", 2, pitch=1.3, volume=0.4),
         "bio_digester.work": files("block/bubble_column/upwards_ambient", 5, pitch=0.6, volume=0.4),
         "water_pump.work": files("tile/piston/in", pitch=0.6, volume=0.25) + files("tile/piston/out", pitch=0.6, volume=0.25),
+        "biomass_press.work": files("tile/piston/in", pitch=0.7, volume=0.35) + files("mob/slime/big", 4, pitch=0.8, volume=0.3),
         "gas_turbine.work": files("fire/fire", pitch=1.6, volume=0.3),
         "resonance_core.hum": files("block/beacon/ambient", pitch=1.5, volume=0.25),
         "waste_reprocessor.work": files("block/beacon/power1", pitch=0.7, volume=0.5),

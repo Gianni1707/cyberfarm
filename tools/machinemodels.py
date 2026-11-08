@@ -337,6 +337,25 @@ MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "
              **{f"{kind}_tank_{shape}": tank_frame(line, shape) for kind, line in (("liquid", "\u03c3"), ("gas", "\u03c6")) for shape in ("column", "strip", "corner")},
              "tank_plate": tank_plate(), "oven_body": oven_body(), "oven_top": oven_top(),
              "crystal": plate("P", "P", "Q", "Q"), "crystal_tip": plate("R", "R", "P", "P"), "copper": plate("A", "B", "C", "D")}
+def organic_material(base, dark, bright, edge):
+    """The Biomass's colours, flecked."""
+    t = Tex(base)
+    for y in range(N):
+        for x in range(N):
+            n = (x * 7 + y * 13 + (x * y) % 5) % 11
+            if n < 3:
+                t.px(x, y, dark)
+            elif n == 7:
+                t.px(x, y, bright)
+    t.rect(0, N - 1, N - 1, N - 1, edge)
+    t.rect(N - 1, 0, N - 1, N - 1, edge)
+    return t
+
+
+PALETTE.update({"\u00e0": "#7f9d42", "\u00e1": "#5a7a2c", "\u00e2": "#a8c463", "\u00e3": "#6b4e2e", "\u00e4": "#4a3520", "\u00e5": "#26331a"})
+MATERIALS["mash"] = organic_material("\u00e0", "\u00e1", "\u00e2", "\u00e5")
+MATERIALS["pulp"] = organic_material("\u00e3", "\u00e4", "\u00e3", "\u00e5")
+
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light", "pylon_light": "stabilizer_pylon_light"}   # material -> texture name (+ "_off")
 DRAWN_BY_TEXGEN = {"pylon_light"}   # emissive materials whose texture texgen.py draws, animated
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
@@ -916,7 +935,9 @@ def machine_parts():
               *zip(("fab_base", "fab_bed", "fab_idler_near", "fab_idler_far", "fab_magazine"), fabricator_parts()[:5]),
               *zip(("oven_base", "oven_tube", "oven_tank"), pyrolysis_oven_moving()),
               *zip(("elec_base", "elec_bath", "elec_anode", "elec_bus"), electrolyzer_moving()),
-              *zip(("repro_top", "repro_disc", "repro_magazine"), waste_reprocessor_moving())]
+              *zip(("repro_top", "repro_disc", "repro_magazine"), waste_reprocessor_moving()),
+              ("press_tower", biomass_press_tower()), ("press_head", biomass_press_head()),
+              ("press_mash", [((3.7, 5.2, 3.4), (12.3, 13, 13.6), "mash")])]
     variants = {}
     for part, (name, parts) in enumerate(groups):
         build(f"part_{name}", parts, False)
@@ -1486,7 +1507,7 @@ def num(v):
     return int(v) if float(v).is_integer() else round(v, 4)
 
 
-FOOT_LIGHT = {f"{name}{suffix}" for name in ("bio_digester", "fabricator", "acid_synthesizer", "pyrolysis_oven", "coolant_mixer", "gas_turbine") for suffix in ("", "_body", "_open")} | {
+FOOT_LIGHT = {f"{name}{suffix}" for name in ("biomass_press", "bio_digester", "fabricator", "acid_synthesizer", "pyrolysis_oven", "coolant_mixer", "gas_turbine") for suffix in ("", "_body", "_open")} | {
     "muffler", "muffler_item", "electrolyzer_body", "electrolyzer_open", "waste_reprocessor_body", "waste_reprocessor_open", "electrolyzer",
     "combustion_generator", "combustion_generator_item", "drone_dock", "swarm_dock", "drone_assembler", "water_pump", "electrolyzer", "waste_reprocessor", "waste_reprocessor_item",
     "supply_terminal", "methane_extractor", "crystallizer"}
@@ -1672,6 +1693,54 @@ def blockstate(name, lit, ports, port_of=None, top_turns=False, below=None):
     (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
+def biomass_press_body():
+    """What stays put in the Biomass Press: the base, the floor of its open chamber, the low walls and the nozzle. BiomassPressRenderer draws the mash."""
+    body = {"up": "lid", "south": "body", "east": "body"}
+    return [
+        ((1, 0, 1), (15, 1, 15), "plinth"),
+        ((1.5, 1, 1.5), (14.5, 5, 14.5), body),
+        ((2, 5, 2), (14, 5.2, 14), "pulp"),
+        ((1.5, 5, 1.5), (3.5, 14, 14.5), body), ((12.5, 5, 1.5), (14.5, 14, 14.5), body), ((3.5, 5, 1.5), (12.5, 14, 3), body),
+        *octagon(1.1, 2.5, 1.1, 14.9, 3.25, 14.9, 2, "copper"),
+        ((0, 6.5, 6), (1.5, 9.5, 10), "trim"),
+        ((-3.8, 7, 6.5), (0, 9, 9.5), "trim"), ((-3.78, 7.2, 6.8), (-3.7, 8.8, 9.2), "slot"),
+        ((7, 2, 14.5), (9, 2.9, 15.1), "light"),
+    ]
+
+
+def biomass_press_tower(plate=True):
+    """The upper walls and crown, a hair inside the low walls as they start in them, with the plate on its rod at rest at the top."""
+    body = {"up": "lid", "south": "body", "east": "body"}
+    trim = {"up": "lid", "south": "trim", "east": "trim"}
+    return [
+        ((1.52, 14, 1.52), (3.48, 26, 14.48), body), ((12.52, 14, 1.52), (14.48, 26, 14.48), body), ((3.52, 14, 1.52), (12.48, 26, 2.98), body),
+        ((1.2, 19.5, 1.2), (1.52, 20.25, 14.8), "copper"), ((14.48, 19.5, 1.2), (14.8, 20.25, 14.8), "copper"),
+        *octagon(1.5, 26, 1.5, 14.5, 28, 14.5, 2, trim),
+        ((3.6, 22.5, 3.1), (12.4, 24.5, 13.9), trim, "unlit"),
+        ((6.5, 24.5, 6.5), (9.5, 26, 9.5), "pipe", "unlit"),
+    ]
+
+
+def biomass_press_head():
+    """What comes up last through the crown: the drive's casing, and the funnel a hopper feeds."""
+    trim = {"up": "lid", "south": "trim", "east": "trim"}
+    return [
+        *round_tank(6, 28, 4, 10, 30.5, 8, trim),
+        ((2.2, 28, 9), (7, 31.5, 9.9), trim), ((2.2, 28, 13.1), (7, 31.5, 14), trim), ((2.2, 28, 9.9), (3.1, 31.5, 13.1), trim), ((6.1, 28, 9.9), (7, 31.5, 13.1), trim),
+        ((3.1, 28, 9.9), (6.1, 28.05, 13.1), "slot"),
+    ]
+
+
+def biomass_press_lone():
+    """Alone, a squat press under a closed crown, with a plate where its frame goes."""
+    trim = {"up": "lid", "south": "trim", "east": "trim"}
+    return [
+        *biomass_press_body(),
+        ((3.6, 10.5, 3.1), (12.4, 12.5, 13.9), trim), ((6.5, 12.5, 6.5), (9.5, 14, 9.5), "pipe"),
+        *octagon(1.5, 14, 1.5, 14.5, 16, 14.5, 2, trim),
+    ]
+
+
 def resonance_core_base():
     """The Resonance Core's stepped base, with a focus plate under the crystal its renderer draws."""
     return [
@@ -1744,6 +1813,8 @@ if __name__ == "__main__":
             ("acid_synthesizer_body", acid_synthesizer_parts()[0], True, False),
             ("acid_synthesizer_open", sum(acid_synthesizer_parts(), []), True, False),
             ("water_pump", water_pump(), True, False),
+            ("biomass_press_body", biomass_press_body(), True, False),
+            ("biomass_press_open", [*biomass_press_body(), *biomass_press_tower(), *biomass_press_head()], True, False),
             ("electrolyzer_body", electrolyzer(), True, False),
             ("electrolyzer_open", electrolyzer_open(), True, False),
             ("pyrolysis_oven_body", pyrolysis_oven(), True, False),
@@ -1766,6 +1837,7 @@ if __name__ == "__main__":
     build("combustion_generator_port", side_port(3.25), False)
     build("combustion_generator_port_up", top_port(10), False)
     build("bio_digester", bio_digester_lone(), False)
+    build("biomass_press", biomass_press_lone(), False)
     build("bio_digester_port", side_port(2.25), False)
     build("drone_dock_port", side_port(2.5, y0=1), False)
     build("drone_assembler_port", low_port(), False)
@@ -1809,6 +1881,7 @@ if __name__ == "__main__":
     build("gas_turbine_port", side_port(4.5), False)
     build("gas_turbine_port_up", top_port(12), False)
     blockstate("combustion_generator", True, {"up"})
+    small_multiblock_blockstate("biomass_press", {})
     small_multiblock_blockstate("bio_digester", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")

@@ -30,6 +30,7 @@ import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.block.entity.LaserTurretBlockEntity;
+import com.cyberfarm.block.entity.BiomassPressBlockEntity;
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -82,6 +83,8 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AcidSynthesizerBlockEntity>> ACID_SYNTHESIZER = BLOCK_ENTITIES.register("acid_synthesizer",
             () -> new BlockEntityType<>(AcidSynthesizerBlockEntity::new, Set.of(ModBlocks.ACID_SYNTHESIZER.get())));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiomassPressBlockEntity>> BIOMASS_PRESS = BLOCK_ENTITIES.register("biomass_press",
+            () -> new BlockEntityType<>(BiomassPressBlockEntity::new, Set.of(ModBlocks.BIOMASS_PRESS.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = BLOCK_ENTITIES.register("electrolyzer",
             () -> new BlockEntityType<>(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
 

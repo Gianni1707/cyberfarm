@@ -19,8 +19,8 @@ import net.minecraft.world.item.Items;
 
 /**
  * The village's board: three ordinary contracts and the event's, each with its progress, pay and
- * bonus; the delivery and payout slots (named in their tooltips); the mechanist's level and the next
- * contracts on the title line; and the village's level and prosperity under the board, beside the
+ * bonus; the delivery and payout slots (named in their tooltips); the mechanist's level
+ * on the title line; and the village's level and prosperity under the board, beside the
  * Range switch that outlines the village's bounds in the world.
  */
 public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
@@ -72,10 +72,10 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
             graphics.item(EMERALD, left + 95, top);
             graphics.text(font, "x" + menu.contractEmeralds(i), left + 112, top + 4, ACCENT, false);
         }
-        // The mechanist and the next contracts, right-aligned on the title line
+        // The mechanist, right-aligned on the title line
         int level = menu.mechanistLevel();
         Component status = level > 0
-                ? Component.translatable("gui.cyberfarm.terminal.status", level, clock(menu.nextContractSeconds()))
+                ? Component.translatable("gui.cyberfarm.terminal.status", level)
                 : Component.translatable("gui.cyberfarm.terminal.no_mechanist");
         graphics.text(font, status, x + imageWidth - 8 - font.width(status), y + 6, level > 0 ? TEXT_DIM : WARM, false);
         // The village: its level and the way to the next

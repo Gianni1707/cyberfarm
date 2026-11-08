@@ -12,19 +12,17 @@ item_ids:
 
 <BlockImage id="cyberfarm:bio_digester" scale="4" float="left" />
 
-Turns **organic waste** into **Biogas**. It needs no power: just feed it.
+Digests **Biomass** into **Biogas**. It needs no power: just feed it from a [Biomass Press](biomass_press.md).
 
 It takes **2 Cyber Frames**, one above it and one on its left as you face it. Right-click it alone and drones show where they go. Once complete, the upper drum rises and a tank slides out beside it, its sight glass showing the gas. It doesn't work until then; breaking a frame folds it back.
 
 <br clear="all" />
 
-- Accepts **anything a composter takes** (seeds, crops, leaves, saplings, flowers...) and
-  **rotten flesh**.
-- Each item takes 2 seconds. A sure-fire compost item (like a cake) gives **250 mB**, the others
-  less, in proportion to their composting chance; rotten flesh gives **200 mB**.
+- Accepts only <ItemLink id="biomass" />.
+- Each Biomass takes 2 seconds and gives **250 mB** of Biogas.
 - Holds **8,000 mB** and pushes the gas into adjacent [Gas Pipes](gas_pipe.md), tanks or a
   [Gas Turbine](gas_turbine.md). Pipes connect to the machine block, on its free sides.
 
-A Harvester drone and a hopper feeding the digester make a fully automatic biogas farm.
+A Harvester drone, a hopper into a [Biomass Press](biomass_press.md) and the press's nozzle pointing at the digester make a fully automatic biogas farm.
 
 <RecipeFor id="bio_digester" />

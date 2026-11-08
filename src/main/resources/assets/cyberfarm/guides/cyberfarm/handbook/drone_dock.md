@@ -96,6 +96,8 @@ For drones with a [Transport Module](modules.md):
    drone's dock**).
 3. **Right-click the destination container**. The route is saved on the dock.
 
+Both must be within **48 blocks of the dock**, and their chunks loaded: an [Anchor Addon](addons.md) keeps them so.
+
 Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a
 Harvester or a Quarry and bring the harvest to your storage.
 

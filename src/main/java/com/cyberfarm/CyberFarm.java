@@ -3,6 +3,7 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.FluidTankBlock;
+import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -41,6 +42,8 @@ import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -124,7 +127,14 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
+        // A press's frame has its funnel on top: a hopper there feeds the press
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            BlockPos below = pos.below();
+            return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
+                    ? level.getCapability(Capabilities.Item.BLOCK, below, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
         // The extraction chamber takes acid in and gives methane out only through its ports
         event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
             MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);

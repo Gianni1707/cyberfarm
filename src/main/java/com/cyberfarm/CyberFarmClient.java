@@ -39,8 +39,10 @@ import com.cyberfarm.client.renderer.PyrolysisOvenRenderer;
 import com.cyberfarm.client.renderer.SupplyTerminalRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.renderer.WasteReprocessorRenderer;
+import com.cyberfarm.client.renderer.BiomassPressRenderer;
 import com.cyberfarm.client.renderer.WaterPumpRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
+import com.cyberfarm.client.screen.BiomassPressScreen;
 import com.cyberfarm.client.screen.ElectrolyzerScreen;
 import com.cyberfarm.client.screen.FabricatorScreen;
 import com.cyberfarm.client.screen.PyrolysisOvenScreen;
@@ -208,6 +210,7 @@ public class CyberFarmClient {
         event.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         event.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
+        event.register(ModMenus.BIOMASS_PRESS.get(), BiomassPressScreen::new);
         event.register(ModMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
         event.register(ModMenus.PYROLYSIS_OVEN.get(), PyrolysisOvenScreen::new);
         event.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
@@ -232,6 +235,7 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
         event.registerBlockEntityRenderer(ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
         event.registerBlockEntityRenderer(ModBlockEntities.GAS_TURBINE.get(), context -> new GasTurbineRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.BIOMASS_PRESS.get(), context -> new BiomassPressRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.SUPPLY_TERMINAL.get(), context -> new SupplyTerminalRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.MUFFLER.get(), context -> new MufflerRenderer());

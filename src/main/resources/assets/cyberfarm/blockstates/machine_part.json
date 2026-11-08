@@ -749,6 +749,51 @@
     "facing=west,part=49": {
       "model": "cyberfarm:block/part_repro_magazine",
       "y": 270
+    },
+    "facing=north,part=50": {
+      "model": "cyberfarm:block/part_press_tower"
+    },
+    "facing=east,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 90
+    },
+    "facing=south,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 180
+    },
+    "facing=west,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 270
+    },
+    "facing=north,part=51": {
+      "model": "cyberfarm:block/part_press_head"
+    },
+    "facing=east,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 90
+    },
+    "facing=south,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 180
+    },
+    "facing=west,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 270
+    },
+    "facing=north,part=52": {
+      "model": "cyberfarm:block/part_press_mash"
+    },
+    "facing=east,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 90
+    },
+    "facing=south,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 180
+    },
+    "facing=west,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 270
     }
   }
 }
