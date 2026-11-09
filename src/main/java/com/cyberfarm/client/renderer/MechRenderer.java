@@ -8,6 +8,7 @@ import com.cyberfarm.entity.MechModule;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
@@ -18,7 +19,7 @@ import net.minecraft.world.entity.player.Player;
 
 public class MechRenderer extends MobRenderer<MechEntity, MechRenderState, MechModel> {
     private static final Identifier TEXTURE = CyberFarm.id("textures/entity/mech.png");
-    /** Full-bright overlay for the visor, the cockpit and the thrusters. */
+    /** Full-bright overlay for the eyes, the gem, the chest's V, the cockpit and the thrusters. */
     private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/mech_glow.png"));
 
     public MechRenderer(EntityRendererProvider.Context context) {
@@ -27,6 +28,14 @@ public class MechRenderer extends MobRenderer<MechEntity, MechRenderState, MechM
             @Override
             public RenderType renderType() {
                 return GLOW;
+            }
+
+            // Shut down, its lights are out
+            @Override
+            public void submit(PoseStack poseStack, SubmitNodeCollector collector, int lightCoords, MechRenderState state, float yRot, float xRot) {
+                if (!state.disabled) {
+                    super.submit(poseStack, collector, lightCoords, state, yRot, xRot);
+                }
             }
         });
     }

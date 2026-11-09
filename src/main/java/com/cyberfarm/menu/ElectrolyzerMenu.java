@@ -24,13 +24,13 @@ public class ElectrolyzerMenu extends MachineMenu {
 
     public ElectrolyzerMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.ELECTROLYZER.get(), containerId, data, access, ModBlocks.ELECTROLYZER.get());
-        addMachineSlot(items, ElectrolyzerBlockEntity.INPUT, 44, 35);
-        addMachineSlot(items, ElectrolyzerBlockEntity.OUTPUT, 116, 35);
+        addMachineSlot(items, ElectrolyzerBlockEntity.INPUT, 58, 35);
+        addMachineSlot(items, ElectrolyzerBlockEntity.OUTPUT, 120, 35);
         addPlayerInventory(inventory, 84);
     }
 
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

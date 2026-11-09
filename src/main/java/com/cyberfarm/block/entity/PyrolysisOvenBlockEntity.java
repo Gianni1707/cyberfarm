@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -26,19 +25,20 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * Pyrolysis Oven: splits Methane into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon
  * onto String into Carbon Fiber, the material of the advanced drone frames.
  */
-public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
+public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 56;
+
     public static final int STRING = 0;
     public static final int OUTPUT = 1;
     public static final int TANK_CAPACITY = 8_000;
     public static final int METHANE_PER_FIBER = 250;
     public static final int PROCESS_TIME = 80;
-    public static final int ENERGY_PER_TICK = 60;
+    public static final int ENERGY_PER_TICK = 120;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 1_000;
 
     private final GasTank methane = new GasTank(TANK_CAPACITY, resource -> resource.is(ModFluids.METHANE.get().getFluidType()), this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {methane});
-    private int progress;
 
     public PyrolysisOvenBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.PYROLYSIS_OVEN.get(), pos, state, 2, CAPACITY, MAX_INPUT, 0);
@@ -50,27 +50,30 @@ public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
                 && hasRoomFor(OUTPUT, ModItems.CARBON_FIBER.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
-                progress = 0;
-                methane.drain(METHANE_PER_FIBER);
-                ItemStack string = getStack(STRING);
-                setStack(STRING, string.copyWithCount(string.getCount() - 1));
-                addOne(OUTPUT, ModItems.CARBON_FIBER.get());
-                level.playSound(null, pos, ModSounds.GENERATOR_CRACKLE.get(), SoundSource.BLOCKS, 0.8F, 0.8F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            methane.drain(METHANE_PER_FIBER);
+            take(STRING, 1);
+            addOne(OUTPUT, ModItems.CARBON_FIBER.get());
+            level.playSound(null, pos, ModSounds.GENERATOR_CRACKLE.get(), SoundSource.BLOCKS, 0.8F, 0.8F);
         }
+    }
+
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override
@@ -78,11 +81,17 @@ public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
         return index == STRING && resource.is(Items.STRING);
     }
 
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
+    }
+
     @Override
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> methane.amount();
             case 3 -> methane.fluidCode();
             default -> 0;
@@ -98,14 +107,12 @@ public class PyrolysisOvenBlockEntity extends MachineBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         methane.serialize(output.child("methane"));
-        output.putInt("progress", progress);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         methane.deserialize(input.childOrEmpty("methane"));
-        progress = input.getIntOr("progress", 0);
     }
 
     @Override

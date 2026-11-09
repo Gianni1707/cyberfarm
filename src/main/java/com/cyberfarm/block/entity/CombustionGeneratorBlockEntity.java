@@ -22,7 +22,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 /** Burns any furnace fuel into FE and pushes it into adjacent blocks. */
 public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
     public static final int CAPACITY = 50_000;
-    public static final int GENERATION_PER_TICK = 40;
+    public static final int GENERATION_PER_TICK = 60;
     public static final int OUTPUT_PER_TICK = 400;
 
     private int burnTime;
@@ -34,12 +34,14 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        if (burnTime > 0) {
+        // The fire holds while the buffer has no room for a whole tick of it, so no fuel burns for power nobody takes
+        boolean room = energy.getCapacity() - energy.getEnergy() >= GENERATION_PER_TICK;
+        if (burnTime > 0 && room) {
             burnTime--;
             energy.generate(GENERATION_PER_TICK);
             setChanged();
         }
-        if (burnTime <= 0 && !energy.isFull()) {
+        if (burnTime <= 0 && room) {
             consumeFuel(level);
         }
 
@@ -56,7 +58,7 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
         if (fuel.isEmpty()) {
             return;
         }
-        // Half the furnace burn time: one coal = 800 ticks * 40 FE = 32,000 FE
+        // Half the furnace burn time: one coal = 800 ticks * 60 FE = 48,000 FE
         int duration = fuel.getBurnTime(null, level.fuelValues()) / 2;
         if (duration <= 0) {
             return;

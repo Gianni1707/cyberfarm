@@ -20,6 +20,7 @@ public final class InfoPages {
                 page(ModItems.DRONE_DOCK.get()),
                 page(ModItems.SWARM_DOCK.get()),
                 page(ModItems.HOLOGRAM_TABLE.get()),
+                page(ModItems.DOCK_TANK.get()),
                 page(ModItems.MINI_FRAME.get()),
                 page(ModItems.ENERGY_CONDUIT.get()),
                 page(ModItems.ADVANCED_ENERGY_CONDUIT.get()),
@@ -30,6 +31,8 @@ public final class InfoPages {
                 page(ModItems.LIQUID_PIPE.get()),
                 page(ModItems.ADVANCED_LIQUID_PIPE.get()),
                 page(ModItems.ELITE_LIQUID_PIPE.get()),
+                page(ModItems.BIOMASS_PRESS.get()),
+                page(ModItems.BIOMASS.get()),
                 page(ModItems.BIO_DIGESTER.get()),
                 page(ModItems.GAS_TURBINE.get()),
                 page(ModItems.METHANE_EXTRACTOR.get()),
@@ -52,6 +55,8 @@ public final class InfoPages {
                 page(ModItems.ALUMINA.get()),
                 page(ModItems.ALUMINUM_INGOT.get()),
                 page(ModItems.ELECTROLYZER.get()),
+                page(ModItems.TRANSMITTER_DISH.get()),
+                page(ModItems.RECEIVER_DISH.get()),
                 page(ModItems.PYROLYSIS_OVEN.get()),
                 page(ModItems.CARBON_FIBER.get()),
                 page(ModItems.FABRICATOR.get()),
@@ -62,8 +67,6 @@ public final class InfoPages {
                 page(ModItems.SULFUR.get()),
                 page(ModItems.ACID_BUCKET.get()),
                 page(ModItems.STEAM_ENGINE.get()),
-                page(ModItems.STEAM_ENGINE_CYLINDER.get()),
-                page(ModItems.STEAM_ENGINE_DYNAMO.get()),
                 page(ModItems.NETHER_SULFUR_ORE.get()),
                 page(ModItems.CONTAINMENT_GLASS.get()),
                 page(ModItems.ACID_INLET.get()),
@@ -111,7 +114,9 @@ public final class InfoPages {
                 page(ModItems.FISHER_MODULE.get()),
                 page(ModItems.BREEDER_MODULE.get()),
                 page(ModItems.GUARD_MODULE.get()),
-                page(ModItems.BOMB_MODULE.get()));
+                page(ModItems.BOMB_MODULE.get()),
+                page(ModItems.SPONGE_MODULE.get()),
+                page(ModItems.TANK_MODULE.get()));
     }
 
     private static Page page(Item item) {

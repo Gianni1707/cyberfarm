@@ -1,5 +1,5 @@
 {
   "textures": {
-    "particle": "cyberfarm:block/crystallizer_front"
+    "particle": "cyberfarm:block/models/crystallizer"
   }
 }

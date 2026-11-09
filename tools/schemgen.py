@@ -170,22 +170,25 @@ class Schematic:
 
 # ---------------------------------------------------------------------------- the schematics
 
-WHITE = state("white_concrete")
+BODY = state("cyan_terracotta")
 LIGHT = state("light_gray_concrete")
 GREY = state("gray_concrete")
 DARK = state("polished_deepslate")
-QUARTZ = state("smooth_quartz")
+TRIM = state("warped_planks")
 FRAME = state("cyberfarm:cyber_frame")
 LAMP = state("sea_lantern")
-CYAN = state("cyan_concrete")
-GLASS = state("light_blue_stained_glass")
-PANE = state("light_blue_stained_glass_pane")
+ACCENT = state("cyan_concrete")
+GLASS = state("cyan_stained_glass")
+PANE = state("cyan_stained_glass_pane")
 BARS = state("iron_bars")
 
 
 # ---------------------------------------------------------------------------- preview
 
 COLOURS = {
+    "cyan_terracotta": (87, 91, 91), "warped_planks": (43, 105, 99), "warped_slab": (43, 105, 99), "warped_stairs": (43, 105, 99),
+    "warped_stem": (53, 90, 88), "stripped_warped_stem": (57, 150, 147), "warped_fence": (43, 105, 99), "warped_trapdoor": (43, 105, 99), "warped_door": (43, 105, 99),
+    "cyan_stained_glass": (76, 127, 153), "cyan_stained_glass_pane": (84, 135, 160),
     "white_concrete": (220, 224, 228), "light_gray_concrete": (150, 152, 150), "gray_concrete": (70, 74, 78),
     "polished_deepslate": (60, 60, 66), "smooth_quartz": (236, 230, 222), "cyber_frame": (40, 46, 54),
     "sea_lantern": (190, 230, 225), "cyan_concrete": (24, 130, 145), "light_blue_stained_glass": (110, 170, 220),

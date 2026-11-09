@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_turbine_door_right",
+    "atlas": "cyberfarm:block/models/part_turbine_door_right",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        12.65,
+        4.55,
+        -13.2
+      ],
+      "to": [
+        12.95,
+        14.45,
+        -8.27
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            12,
+            0,
+            13,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            13,
+            0,
+            14,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            1,
+            10
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            1,
+            0,
+            2,
+            10
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            2,
+            0,
+            7,
+            10
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            7,
+            0,
+            12,
+            10
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

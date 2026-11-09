@@ -2,7 +2,7 @@
 navigation:
   title: Multiblock Projector
   parent: index.md
-  position: 4
+  position: 5
   icon: cyberfarm:multiblock_projector
 item_ids:
   - cyberfarm:multiblock_projector
@@ -12,17 +12,16 @@ item_ids:
 
 <ItemImage id="multiblock_projector" scale="4" float="left" />
 
-Shows a multiblock **in the world** as ghost blocks: what to place and where, before you place a
-single block.
+Shows a multiblock **in the world**: what to place and where, before you place a single block.
 
 <br clear="all" />
 
 - **Right-click** to open the list of structures and see the blocks each one takes: the [Fission Reactor](fission_reactor.md) and the
   [Steam Turbine](steam_turbine.md) in all three sizes, the
-  [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
-  [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
+  [Methane Extractor](methane_extractor.md) chamber, tiers 2 to 4 of the
+  [Resonance Core](resonance_core.md) (tier 1 is the core alone), the [Mech Hangar](mech_hangar.md) and the
   [Crystallizer](mech_core.md) chamber.
-- Below the multiblocks the list has **schematics**, marked in cyan: buildings saved with a
+- Below the multiblocks the list has **schematics**, marked in emerald: buildings saved with a
   **Structure Block**. Any data pack can add them: put the file in `data/<namespace>/structure/schematic/`. Its north side is
   its front, which turns towards you. Schematics up to 40 blocks a side are shown.
 - The [tech village](tech_village.md)'s buildings join the list once you **learn** their
@@ -31,17 +30,18 @@ single block.
 - While you hold it, the projection **follows the block you look at**: the structure **stands on**
   the face you aim at, the controller on the side towards you, facing you, and the rest stretches
   away from you.
-- **Sneak + right-click a block** to lock it there. Lock it on a controller you already placed and
-  the projection lines up with it.
-- **Sneak + right-click the air** to unlock it.
+- **Sneak + right-click a block** to lock it there, and **mini drones** fly out to hold the projection,
+  each over a group of blocks. Lock it on a controller you already placed and the projection lines up with it.
+- **Sneak + right-click the air** to unlock it, and the drones fly home.
 - **Right-click a [Drone Dock](drone_dock.md)** with a locked projection and a drone with a
   [Builder Module](modules.md) builds it for you.
 - In **creative** mode, right-clicking a block **clears the site and builds** the structure right
   away (where it is locked, or where it is projected), with plain casings; swap in the ports you
   need.
 
-Blocks still to place glow softly; **red** blocks are wrong, or in the way of a space that must
-stay empty. Correct blocks are not drawn. Above the hotbar the projector counts what is left, and
+While it follows your gaze, blocks still to place glow softly and **red** blocks are wrong, or in the way of a space
+that must stay empty. Locked, the drones project the blocks in a cone of light and mark what is in the way with an **amber X**.
+Correct blocks are not drawn. Small machines that assemble from Cyber Frames are not in the list: click one and its own drones show you where the frames go. Above the hotbar the projector counts what is left, and
 says when the structure is complete. When any CyberFarm multiblock forms, a ring of light rises
 through it from the bottom to the top.
 

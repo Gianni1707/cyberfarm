@@ -41,7 +41,9 @@ public class SwarmDockBlockEntity extends DroneDockBlockEntity {
     /** Full when four live drones are on it; drones that are gone free their place. */
     @Override
     public boolean hasLiveDrone(ServerLevel level) {
-        drones.removeIf(id -> !(level.getEntity(id) instanceof DroneEntity drone && drone.isAlive()));
+        if (drones.removeIf(id -> !(level.getEntity(id) instanceof DroneEntity drone && drone.isAlive()))) {
+            setChanged();
+        }
         return drones.size() >= MAX_DRONES;
     }
 

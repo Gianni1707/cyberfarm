@@ -1,0 +1,82 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/tank_corner_plate",
+    "atlas": "cyberfarm:block/models/tank_corner_plate",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        13,
+        0
+      ],
+      "to": [
+        3,
+        15,
+        3
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            3,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            3,
+            0,
+            6,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            6,
+            0,
+            9,
+            2
+          ],
+          "texture": "#atlas",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            9,
+            0,
+            12,
+            2
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            12,
+            0,
+            15,
+            2
+          ],
+          "texture": "#atlas",
+          "cullface": "west"
+        },
+        "east": {
+          "uv": [
+            0,
+            3,
+            3,
+            5
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

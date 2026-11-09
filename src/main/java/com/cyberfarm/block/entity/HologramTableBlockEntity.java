@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cyberfarm.block.HologramTableBlock;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
@@ -25,8 +26,8 @@ import net.minecraft.world.phys.Vec3;
  * land its renderer drew, so the relief is read again only every couple of seconds.
  */
 public class HologramTableBlockEntity extends BlockEntity {
-    /** How many blocks every way the map shows, one per right-click in turn. */
-    public static final int[] RADII = {16, 24, 32};
+    /** How many blocks every way the map shows, one per right-click in turn: a bigger table has the further ones too. */
+    public static final int[] RADII = {16, 24, 32, 48, 64};
 
     private int zoom = 1;
 
@@ -51,13 +52,27 @@ public class HologramTableBlockEntity extends BlockEntity {
         super(ModBlockEntities.HOLOGRAM_TABLE.get(), pos, state);
     }
 
+    /** How many blocks wide the merged table is: 1, 2 or 3. */
+    public int size() {
+        return HologramTableBlock.size(getBlockState().getValue(HologramTableBlock.CELL));
+    }
+
+    public boolean isMaster() {
+        return HologramTableBlock.isMaster(getBlockState().getValue(HologramTableBlock.CELL));
+    }
+
+    /** 3 ranges on its own, a further one per size. */
+    private int ranges() {
+        return RADII.length - 3 + size();
+    }
+
     public int radius() {
-        return RADII[zoom];
+        return RADII[Math.min(zoom, ranges() - 1)];
     }
 
     /** The next range in turn; returns the new radius. */
     public int cycleZoom() {
-        zoom = (zoom + 1) % RADII.length;
+        zoom = (Math.min(zoom, ranges() - 1) + 1) % ranges();
         setChanged();
         if (level != null) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);

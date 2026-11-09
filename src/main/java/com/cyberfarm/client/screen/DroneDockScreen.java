@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.cyberfarm.client.DockAreaView;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.menu.DroneDockMenu;
@@ -15,8 +17,11 @@ import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 
 /**
  * The dock at a glance: what the drone is doing and where it is, the cargo, the Filter and the
@@ -30,7 +35,14 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
     private static final int FILTER_X = DroneDockMenu.CARGO_X - 1;
     private static final int FILTER_WIDTH = 3 * 18;
     private static final int RETURN_X = 8;
-    private static final int RETURN_WIDTH = 60;
+    private static final int RETURN_WIDTH = 42;
+    private static final int SHOW_AREA_X = RETURN_X + RETURN_WIDTH + 2;
+    private static final int SHOW_AREA_WIDTH = 42;
+    /** The Dock Tank's bar, shown only while one stands against the dock: under the cargo, beside the inventory's title. */
+    private static final int TANK_X = DroneDockMenu.CARGO_X - 1;
+    private static final int TANK_Y = BUTTON_Y + BUTTON_HEIGHT + 6;
+    private static final int TANK_WIDTH = 71;
+    private static final int TANK_HEIGHT = 6;
 
     private static final int TAB_SIZE = 22;
     private static final int TAB_GAP = 2;
@@ -45,15 +57,13 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
     private static final int BLOCKS_PER_ROW = 5;
 
     private static final String[] STATUS_KEYS = {"none", "idle", "charging", "working", "returning"};
-    /** Transport and Taxi drones follow a route or a destination, never the work area. */
-    private static final int NO_AREA_MODULES = DroneTask.TRANSPORT.bit() | DroneTask.TAXI.bit() | DroneTask.BUILD.bit();
-
     /** The open side tab, or -1; kept between openings like other mods' side tabs. */
     private static int openTab = -1;
 
     public DroneDockScreen(DroneDockMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, DroneDockMenu.INVENTORY_Y + 82);
-        energyBarHeight = 70;
+        flatBackground("drone_dock");
+        energyBarHeight = 65;
     }
 
     // ---------------------------------------------------------------- input
@@ -75,6 +85,11 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             }
             if (isHovering(RETURN_X, BUTTON_Y, RETURN_WIDTH, BUTTON_HEIGHT, event.x(), event.y())) {
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, DroneDockMenu.BUTTON_PAUSE);
+                playClick();
+                return true;
+            }
+            if (isHovering(SHOW_AREA_X, BUTTON_Y, SHOW_AREA_WIDTH, BUTTON_HEIGHT, event.x(), event.y())) {
+                DockAreaView.toggle(menu.getDockPos());
                 playClick();
                 return true;
             }
@@ -147,6 +162,18 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         int status = menu.getDroneStatus();
         boolean docked = status == DroneEntity.STATUS_IDLE || status == DroneEntity.STATUS_CHARGING;
 
+        // The drone in the readout's corner, hovering while it is out, sitting on its pad while docked
+        if (status != DroneEntity.STATUS_NONE) {
+            int bob = docked ? 0 : (int) (Util.getMillis() / 300 % 2);
+            int dx = x + 71;
+            int dy = y + 19 + bob;
+            graphics.fill(dx + 1, dy + 1, dx + 19, dy + 2, STEEL_DARK);
+            graphics.fill(dx, dy, dx + 5, dy + 1, docked ? STEEL_LOW : STEEL_LIGHT);
+            graphics.fill(dx + 15, dy, dx + 20, dy + 1, docked ? STEEL_LOW : STEEL_LIGHT);
+            graphics.fill(dx + 6, dy + 2, dx + 14, dy + 6, 0xFF395853);
+            graphics.fill(dx + 7, dy + 3, dx + 13, dy + 4, workColor(status, docked));
+            graphics.fill(dx + 8, dy + 6, dx + 12, dy + 8, STEEL_TOP);
+        }
         graphics.text(font, Component.translatable("gui.cyberfarm.dock.work"), x + 8, y + 20, TEXT_DIM, false);
         graphics.text(font, workText(status, docked), x + 8, y + 30, workColor(status, docked), false);
         graphics.text(font, Component.translatable("gui.cyberfarm.dock.position"), x + 8, y + 46, TEXT_DIM, false);
@@ -157,7 +184,22 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         boolean paused = menu.isPaused();
         drawButton(graphics, x + RETURN_X, y + BUTTON_Y, RETURN_WIDTH, BUTTON_HEIGHT,
                 Component.translatable(paused ? "gui.cyberfarm.dock.resume" : "gui.cyberfarm.dock.return"),
-                paused ? ACCENT_DIM : PANEL_LIGHT, paused ? ACCENT : TEXT);
+                paused ? ACCENT_DIM : PANEL_LIGHT, TEXT);
+        boolean shown = DockAreaView.isOn(menu.getDockPos());
+        drawButton(graphics, x + SHOW_AREA_X, y + BUTTON_Y, SHOW_AREA_WIDTH, BUTTON_HEIGHT,
+                Component.translatable("gui.cyberfarm.dock.show_area"), shown ? ACCENT_DIM : PANEL_LIGHT, TEXT);
+
+        if (menu.hasDockTank()) {
+            int capacity = menu.getDockTankCapacity();
+            drawProgressBar(graphics, x + TANK_X, y + TANK_Y, TANK_WIDTH, TANK_HEIGHT, capacity > 0 ? (float) menu.getDockTankAmount() / capacity : 0.0F,
+                    0xFF000000 | ModelParts.liquidColour(minecraft.level, menu.getDockTankFluid()));
+            // Ticks, as on the other tanks: dark under the liquid, pale over the empty part
+            int level = capacity > 0 ? TANK_WIDTH * menu.getDockTankAmount() / capacity : 0;
+            for (int i = 1; i < 4; i++) {
+                int tick = TANK_WIDTH * i / 4;
+                graphics.fill(x + TANK_X + tick, y + TANK_Y + 1, x + TANK_X + tick + 1, y + TANK_Y + 4, tick < level ? 0x8C071314 : 0x99A5EAD4);
+            }
+        }
 
         // The Build tab goes away with the Builder drone
         if (openTab >= tabCount()) {
@@ -224,7 +266,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             graphics.fill(cx - 1, cy - 2, cx + 1, cy + 6, color);
             graphics.fill(cx - 2, cy + 5, cx + 2, cy + 6, color);
         } else if (tab == TAB_BUILD) {
-            // A block under the ghost of the next one, cyan while there is something to build
+            // A block under the ghost of the next one, emerald while there is something to build
             int color = !menu.hasBuild() ? TEXT_DIM : menu.getBuildRemaining() > 0 ? ACCENT : TEXT;
             graphics.fill(cx - 6, cy + 1, cx + 6, cy + 7, TEXT_DIM);
             graphics.fill(cx - 5, cy + 2, cx + 5, cy + 6, PANEL_LIGHT);
@@ -253,7 +295,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         int y = rect.getY();
         graphics.fill(x, y, x + rect.getWidth(), y + rect.getHeight(), OUTLINE);
         graphics.fill(x + 1, y + 1, x + rect.getWidth() - 1, y + rect.getHeight() - 1, PANEL);
-        graphics.fill(x + 1, y + 1, x + rect.getWidth() - 1, y + 2, PANEL_LIGHT);
+        graphics.fill(x + 1, y + 1, x + rect.getWidth() - 1, y + 2, PANEL_EDGE);
 
         int textX = x + 7;
         int textY = y + 6;
@@ -262,8 +304,8 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
             case TAB_BUILD -> "gui.cyberfarm.dock.tab.build";
             default -> "gui.cyberfarm.dock.tab.battery";
         });
-        graphics.text(font, title, textX, textY, ACCENT, false);
-        graphics.fill(textX - 1, textY + 9, x + rect.getWidth() - 6, textY + 10, ACCENT_DIM);
+        graphics.text(font, title, textX, textY, MINT, false);
+        graphics.fill(textX - 1, textY + 9, x + rect.getWidth() - 6, textY + 10, MINT_DARK);
         textY += LINE + 3;
 
         if (openTab == TAB_STATUS || openTab == TAB_BUILD) {
@@ -317,7 +359,7 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
                 lines.add(new Line(Component.literal(" ").append(Component.translatable("gui.cyberfarm.dock.module." + task.name().toLowerCase(Locale.ROOT))), TEXT));
             }
         }
-        if ((modules & ~NO_AREA_MODULES) != 0) {
+        if ((modules & ~DroneTask.NO_AREA_TASKS) != 0) {
             lines.add(new Line(Component.translatable("gui.cyberfarm.dock.area", menu.getAreaWidth(), menu.getAreaDepth()), TEXT_DIM));
         }
         if ((modules & DroneTask.TRANSPORT.bit()) != 0) {
@@ -415,6 +457,13 @@ public class DroneDockScreen extends MachineScreen<DroneDockMenu> {
         } else if (isHovering(RETURN_X, BUTTON_Y, RETURN_WIDTH, BUTTON_HEIGHT, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable(menu.isPaused()
                     ? "gui.cyberfarm.dock.resume.hint" : "gui.cyberfarm.dock.return.hint"), mouseX, mouseY);
+        } else if (menu.hasDockTank() && isHovering(TANK_X - 1, TANK_Y - 1, TANK_WIDTH + 2, TANK_HEIGHT + 2, mouseX, mouseY)) {
+            Fluid fluid = menu.getDockTankFluid();
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.tank",
+                    fluid == Fluids.EMPTY ? Component.translatable("gui.cyberfarm.tank.empty") : fluid.getFluidType().getDescription(),
+                    String.format("%,d", menu.getDockTankAmount()), String.format("%,d", menu.getDockTankCapacity())), mouseX, mouseY);
+        } else if (isHovering(SHOW_AREA_X, BUTTON_Y, SHOW_AREA_WIDTH, BUTTON_HEIGHT, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dock.show_area.hint"), mouseX, mouseY);
         } else if (inTab(TAB_STATUS, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dock.tab.status"), mouseX, mouseY);
         } else if (inTab(TAB_BATTERY, mouseX, mouseY)) {

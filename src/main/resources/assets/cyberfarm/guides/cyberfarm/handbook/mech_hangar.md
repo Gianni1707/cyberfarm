@@ -67,9 +67,9 @@ on the sides so the mech walks in and out:
   tops and two **arms**, two blocks long, reaching forward from the beam over the pad;
 - a 3x3 <ItemLink id="hangar_pad" /> between the rails, with the space over it left free.
 
-The [Multiblock Projector](multiblock_projector.md) shows it: sneak + right-click to pick *Mech
+Right-click the console while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The [Multiblock Projector](multiblock_projector.md) shows it too: sneak + right-click to pick *Mech
 Hangar*, then look where the console goes. When it is complete the frames give way to the rack
-itself: white rails with treads and a cyan light line, posts with blue bands braced to the rails,
+itself: rails with treads and a pale green light line, posts with mint bands braced to the rails,
 the beam and its arms, hydraulic struts, two **clamps** that come down onto a parked mech's
 shoulders and a **gantry arm** riding on the arms, which fits the modules.
 
@@ -80,9 +80,9 @@ middle of it, facing out of the hangar. Walk it back onto the pad and get out to
 straightens up on the stand by itself, gliding to the middle of the pad and turning to face out,
 and the clamps come down onto its shoulders. While it stands there, empty:
 
-- it is **charged** at up to **2,000 FE/t** from the console's own battery (1,000,000 FE), which
-  you fill with [Energy Conduits](energy_conduit.md) or any mod's cables;
-- it is **repaired**, 1 point of integrity every half second for 200 FE. A mech that **shut down**
+- it is **charged** at up to **4,000 FE/t** from the console's own battery (1,000,000 FE), which
+  you fill with [Energy Conduits](energy_conduit.md) or any mod's cables (up to 8,192 FE/t);
+- it is **repaired**, 1 point of integrity every half second for 400 FE. A mech that **shut down**
   comes back on once it is fully repaired.
 
 You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you
@@ -92,20 +92,20 @@ in just as it does outside.
 
 Right-click the console, or with an empty hand any part or the pad of the complete hangar, for its
 screen. On the left, a card with the parked mech's **battery** and **integrity**, the hangar's own
-battery, the status (charging, repairing, ready) and the **Fold** button. On the right, the mech's
+battery, the status (charging, repairing, restoring systems for a shut-down mech, ready) and the **Fold** button. On the right, the mech's
 outline with its four **module slots** at their mounts (see [Modules](mech_modules.md)): the jet
 behind the shoulder, the armour on the trunk, the blade and the drill by the arms.
 
 The slots show the modules the parked mech carries. Put a module in its slot to fit it, take it
 out to remove it, and the **gantry arm** does the work: the bridge rolls along the rack's arms,
-the gripper drops onto the mount (the back, a forearm or the chest) and the module locks in with a
-flash, or comes away held in the gripper; then the arm goes home. The module is on the mech once
-the gripper reaches it, and the modules always travel with the mech.
+the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a
+flash, or comes away held in the gripper; then the arm goes home. The module is on the mech (or off it) the
+moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech.
 With no mech on the pad, the slots are empty and take nothing.
 
-The **Fold** button packs the parked mech back up: it crouches, crosses its arms, draws its head and
-legs in and folds down into its frame, which drops on the pad with the battery's charge and the
-modules in it.
+The **Fold** button packs the parked mech back up: it crouches, folds its forearms across its belly, bows its head,
+draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the
+modules in it. It folds only at **full integrity**: a frame keeps no damage, so let the hangar finish the repairs first.
 
 <Row>
   <RecipeFor id="mech_hangar" />

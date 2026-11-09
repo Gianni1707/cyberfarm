@@ -27,15 +27,10 @@ public class CrystallizerMenu extends MachineMenu {
 
     public CrystallizerMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.CRYSTALLIZER.get(), containerId, data, access, ModBlocks.CRYSTALLIZER.get());
-        addMachineSlot(items, CrystallizerBlockEntity.ISOTOPE, 44, 26);
-        addMachineSlot(items, CrystallizerBlockEntity.AMETHYST, 44, 44);
-        addMachineSlot(items, CrystallizerBlockEntity.OUTPUT, 116, 35);
+        addMachineSlot(items, CrystallizerBlockEntity.ISOTOPE, 74, 26);
+        addMachineSlot(items, CrystallizerBlockEntity.AMETHYST, 74, 46);
+        addMachineSlot(items, CrystallizerBlockEntity.OUTPUT, 128, 35);
         addPlayerInventory(inventory, 84);
-    }
-
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
     }
 
     public int getAcidAmount() {
@@ -48,5 +43,10 @@ public class CrystallizerMenu extends MachineMenu {
 
     public boolean isFormed() {
         return extra(4) != 0;
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

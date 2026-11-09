@@ -49,4 +49,10 @@ public class TurbineMenu extends MachineMenu {
     public int getFePerMb() {
         return extra(6);
     }
+
+    /** It opens from any block of the structure, which can be far from the controller. */
+    @Override
+    protected double range() {
+        return STRUCTURE_RANGE;
+    }
 }

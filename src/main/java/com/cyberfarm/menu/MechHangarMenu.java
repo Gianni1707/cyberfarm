@@ -18,7 +18,6 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 public class MechHangarMenu extends MachineMenu {
     public static final int BUTTON_FOLD = 0;
-    private final ContainerLevelAccess access;
 
     /** Where the four module slots sit, by MechModule order: jet behind the shoulder, drill and blade by the arms, armour on the trunk. */
     public static final int[][] SLOTS = {{148, 24}, {148, 76}, {78, 76}, {113, 46}};
@@ -34,7 +33,6 @@ public class MechHangarMenu extends MachineMenu {
 
     public MechHangarMenu(int containerId, Inventory inventory, ItemStacksResourceHandler modules, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.MECH_HANGAR.get(), containerId, data, access, ModBlocks.MECH_HANGAR.get());
-        this.access = access;
         for (MechModule module : MechModule.values()) {
             int[] at = SLOTS[module.ordinal()];
             addMachineSlot(modules, module.ordinal(), at[0], at[1]);
@@ -75,5 +73,11 @@ public class MechHangarMenu extends MachineMenu {
 
     public boolean isMechDisabled() {
         return extra(5) != 0;
+    }
+
+    /** It opens from any block of the structure, which can be far from the controller. */
+    @Override
+    protected double range() {
+        return STRUCTURE_RANGE;
     }
 }

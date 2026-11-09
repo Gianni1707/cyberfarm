@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/gas_tank_socket_up",
+    "atlas": "cyberfarm:block/models/gas_tank_socket_up",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        4.5,
+        14.5,
+        4.5
+      ],
+      "to": [
+        11.5,
+        16.012,
+        11.5
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            7,
+            7
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            7,
+            0,
+            14,
+            7
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            7,
+            7,
+            9
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            7,
+            7,
+            14,
+            9
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            0,
+            9,
+            7,
+            11
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            7,
+            9,
+            14,
+            11
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

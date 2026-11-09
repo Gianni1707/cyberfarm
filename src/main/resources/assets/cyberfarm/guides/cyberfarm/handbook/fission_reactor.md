@@ -15,6 +15,7 @@ item_ids:
 A cooling tower in **three sizes**. Uranium **Fuel Rods** heat its core, **water** carries the heat
 away and leaves as **Steam** for [Steam Turbines](steam_turbine.md). The scene shows the Small tower;
 a [Multiblock Projector](multiblock_projector.md) shows any size right where you want to build it.
+Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. They start from the size you have built the most of (the Small one if none); each further click shows the next size, and after the Large one they come back.
 
 <GameScene zoom={3} interactive={true}>
   <Block id="cyberfarm:reactor_casing" x="0" y="0" z="0" />
@@ -132,8 +133,8 @@ narrow at the waist. Layer by layer from the bottom (ring width in blocks):
 | Size | Floor | Rings above it |
 | --- | --- | --- |
 | Small | 5x5 | 5, 5, 3, 3, 3, 5 |
-| Medium | 7x7 | 7, 7, 7, 7, 5, 5, 5, 5, 5, 7, 7 |
-| Large | 9x9 | 9, 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9 |
+| Medium | 7x7 | 7, 7, 7, 5, 5, 5, 5, 5, 7, 7 |
+| Large | 9x9 | 9, 9, 9, 9, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9 |
 
 Blocks outside a narrower ring do not matter; everything inside the rings must be empty.
 
@@ -143,11 +144,11 @@ Blocks outside a narrower ring do not matter; everything inside the rings must b
 - Swap any shell blocks for <ItemLink id="reactor_port" />s where you want to connect pipes, cables
   or hoppers. Two are enough: one for water in, one for steam out.
 - The inside must be **empty**.
-- A Large tower makes more steam than a basic [Gas Pipe](gas_pipe.md) carries (1,000 mB/t): use
-  **Advanced** pipes at its steam port.
+- A Large tower uses more water and makes more steam than basic [Liquid](liquid_pipe.md) and
+  [Gas Pipes](gas_pipe.md) carry (1,000 mB/t): use **Advanced** pipes at its water and steam ports.
 
 When the tower is complete it powers up with a deep chime and **turns into a real cooling tower**: the
-blocky casings disappear into one smooth, curved shell of white panels with glowing cyan bands,
+blocky casings disappear into one faceted, octagonal shell of enamel panels with glowing mint bands,
 wide at the base, narrow in the middle and flared at the rim. The controller becomes a **panel** on
 the surface and every port a glowing **hatch**, right where a pipe or cable plugged into the port
 enters the tower. You can **right-click any block of the tower** to open the reactor.
@@ -157,7 +158,7 @@ enters the tower. You can **right-click any block of the tower** to open the rea
 - **Left**: the water tank and the **coolant** tank (see below).
 - **Title**: the size of the tower.
 - **Middle**: 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar
-  per rod, cyan while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the
+  per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the
   **temperature** bar with the red alarm mark.
 - **Bottom**: the **power** controls, from *Off* up to the tower's maximum, in steps of 50%.
 - **Right**: the steam tank.

@@ -25,9 +25,9 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
         List<ItemStack> modules = stacks(ModItems.HARVESTER_MODULE.get(), ModItems.QUARRY_MODULE.get(), ModItems.TRANSPORT_MODULE.get(),
                 ModItems.PLANTER_MODULE.get(), ModItems.LOGGER_MODULE.get(), ModItems.TAXI_MODULE.get(),
                 ModItems.RANCHER_MODULE.get(), ModItems.FERTILIZER_MODULE.get(), ModItems.BUILDER_MODULE.get(),
-                ModItems.FISHER_MODULE.get(), ModItems.BREEDER_MODULE.get(), ModItems.GUARD_MODULE.get(), ModItems.BOMB_MODULE.get());
+                ModItems.FISHER_MODULE.get(), ModItems.BREEDER_MODULE.get(), ModItems.GUARD_MODULE.get(), ModItems.BOMB_MODULE.get(), ModItems.SPONGE_MODULE.get(), ModItems.TANK_MODULE.get());
         List<ItemStack> addons = stacks(ModItems.SPEED_ADDON.get(), ModItems.STACK_ADDON.get(), ModItems.BATTERY_ADDON.get(),
-                ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get(), ModItems.ANCHOR_ADDON.get());
+                ModItems.FORTUNE_ADDON.get(), ModItems.SILK_TOUCH_ADDON.get(), ModItems.ANCHOR_ADDON.get(), ModItems.EFFICIENCY_ADDON.get());
 
         List<AssemblyExample> examples = new ArrayList<>();
         for (DroneFrameItem frame : List.of(ModItems.MINI_FRAME.get(), ModItems.BASIC_FRAME.get(), ModItems.ADVANCED_FRAME.get(), ModItems.ELITE_FRAME.get())) {
@@ -44,7 +44,8 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
 
             List<Item> parts = new ArrayList<>();
             parts.add(frame);
-            parts.add(ModItems.HARVESTER_MODULE.get());
+            // A module the frame takes: a Mini Frame has no room for a Harvester
+            parts.add(fitting.getFirst().getItem());
             ItemStack drone = new ItemStack(ModItems.DRONE.get());
             drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
             drone.set(ModDataComponents.ENERGY.get(), 0);

@@ -5,18 +5,30 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-public class CoolantMixerBlock extends LitMachineBlock {
+import java.util.List;
+
+/**
+ * A small multiblock: with a Cyber Frame on its right, as the player sees its front, it assembles into a 2x1 bench that
+ * opens and shows both tanks (see tools/machinemodels.py; CoolantMixerRenderer draws what moves).
+ */
+public class CoolantMixerBlock extends SmallMultiblockBlock {
     public static final MapCodec<CoolantMixerBlock> CODEC = simpleCodec(CoolantMixerBlock::new);
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(0.5, 1, 0.5, 15.5, 16, 15.5));
 
     public CoolantMixerBlock(Properties properties) {
         super(properties);
@@ -25,6 +37,26 @@ public class CoolantMixerBlock extends LitMachineBlock {
     @Override
     protected MapCodec<CoolantMixerBlock> codec() {
         return CODEC;
+    }
+
+    /** The player faces its front, so their right is the machine's counter-clockwise. */
+    public static Direction frameSide(BlockState state) {
+        return state.getValue(FACING).getCounterClockWise();
+    }
+
+    @Override
+    public List<Direction> frameSides(BlockState state) {
+        return List.of(frameSide(state));
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.coolant_mixer.needs_frame";
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override
@@ -37,16 +69,17 @@ public class CoolantMixerBlock extends LitMachineBlock {
         return machineTicker(level, type, ModBlockEntities.COOLANT_MIXER.get());
     }
 
-    /** Frost drifting off the top and drops running down its sides while it mixes. */
+    /** Frost drifting off the coolant tank's cap, over the frame's cell, while it mixes. */
     @Override
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
         if (random.nextInt(6) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.35);
-            level.addParticle(ParticleTypes.SNOWFLAKE, at.x, at.y, at.z, 0.0, 0.01, 0.0);
-        }
-        if (random.nextInt(12) == 0) {
-            Vec3 at = onSide(state, level, pos, random);
-            level.addParticle(ParticleTypes.DRIPPING_WATER, at.x, at.y, at.z, 0.0, 0.0, 0.0);
+            Direction side = frameSide(state);
+            Direction back = state.getValue(FACING).getOpposite();
+            double across = (random.nextDouble() - 0.5) * 6.0 / 16.0;
+            double out = 17.5 / 16.0;
+            double x = pos.getX() + 0.5 + side.getStepX() * (out + across) + back.getStepX() / 16.0;
+            double z = pos.getZ() + 0.5 + side.getStepZ() * (out + across) + back.getStepZ() / 16.0;
+            level.addParticle(ParticleTypes.SNOWFLAKE, x, pos.getY() + 1.02, z, 0.0, 0.01, 0.0);
         }
     }
 }

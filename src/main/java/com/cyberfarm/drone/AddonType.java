@@ -2,8 +2,9 @@ package com.cyberfarm.drone;
 
 /**
  * Drone addons. Any number of each fits within the frame's addon limit, except for the ones with
- * their own maximum. Each addon also makes the drone use more power: a percentage on the flight
- * cost, or a percentage on the energy of every job (harvest, mined block).
+ * their own maximum. Each addon also changes the drone's power use: a percentage on the flight
+ * cost, or a percentage on the energy of every job (harvest, mined block). Speed, Battery and
+ * Efficiency also go into machines, with their own effects (see MachineBlockEntity).
  */
 public enum AddonType {
     /** +10% flight speed each. */
@@ -17,7 +18,9 @@ public enum AddonType {
     /** Silk Touch for Quarry and Harvester drops; cannot be combined with Fortune. */
     SILK_TOUCH(1, 0, 50),
     /** Its dock keeps the chunks the drone works in loaded, paying FE per chunk (see the config). */
-    ANCHOR(1, 0, 0);
+    ANCHOR(1, 0, 0),
+    /** -10% flight and job energy each; in a machine, -20% FE per operation (see MachineBlockEntity). */
+    EFFICIENCY(3, -10, -10);
 
     private final int maxPerDrone;
     private final int flightCostPercent;

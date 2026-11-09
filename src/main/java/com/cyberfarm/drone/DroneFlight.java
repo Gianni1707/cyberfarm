@@ -37,6 +37,7 @@ public final class DroneFlight {
     private final DoubleSupplier frameSpeed;
     private int stuckTicks;
     private double returnAltitude = Double.NaN;
+    private double crossingAltitude = Double.NaN;
     private int pathfindTicks;
 
     public DroneFlight(DroneEntity drone, DoubleSupplier frameSpeed) {
@@ -91,10 +92,7 @@ public final class DroneFlight {
         Vec3 desired = delta.scale(speed / distance);
         drone.setDeltaMovement(drone.getDeltaMovement().lerp(desired, 0.5));
         if (desired.horizontalDistanceSqr() > 1.0E-4) {
-            float yaw = (float) (Mth.atan2(desired.z, desired.x) * Mth.RAD_TO_DEG) - 90.0F;
-            drone.setYRot(Mth.approachDegrees(drone.getYRot(), yaw, 8.0F));
-            drone.yBodyRot = drone.getYRot();
-            drone.yHeadRot = drone.getYRot();
+            turnTowards((float) (Mth.atan2(desired.z, desired.x) * Mth.RAD_TO_DEG) - 90.0F);
         }
 
         if (drone.horizontalCollision || (drone.verticalCollision && Math.abs(delta.y) > 0.5)) {
@@ -108,12 +106,44 @@ public final class DroneFlight {
     }
 
     /**
-     * Brings the drone onto the pad at {@code home}: pathfinding up to a point above it, then a slow
-     * vertical descent with speed easing off near the pad. Returns true once it is parked.
-     * The vanilla flying move control always pushes at full speed, so it overshoots small
-     * targets; the last metres are steered by hand instead.
+     * Like {@link #flyTowards}, but when something stands on the straight line and the sky is open, it climbs over the terrain,
+     * crosses at that height and comes down on {@code target}, instead of pushing against it. Under a roof it steers as usual.
      */
-    public boolean flyHome(Vec3 home) {
+    public void flyOver(Vec3 target) {
+        if (Double.isNaN(crossingAltitude) && !canFlyStraightTo(target) && drone.level() instanceof ServerLevel level) {
+            double altitude = Math.max(drone.getY(), cruiseAltitude(level, drone.position(), target) - DroneEntity.PASSENGER_DROP);
+            if (canFlyStraightTo(new Vec3(drone.getX(), altitude, drone.getZ()))) {
+                crossingAltitude = altitude;
+            }
+        }
+        if (Double.isNaN(crossingAltitude) || canFlyStraightTo(target)) {
+            crossingAltitude = Double.NaN;
+            flyTowards(target);
+        } else if (isClimbing()) {
+            flyTowards(new Vec3(drone.getX(), crossingAltitude, drone.getZ()));
+        } else {
+            flyTowards(new Vec3(target.x, crossingAltitude, target.z));
+        }
+    }
+
+    /** Climbing to cross over something: it moves away from its target, which is not being stuck. */
+    public boolean isClimbing() {
+        return !Double.isNaN(crossingAltitude) && drone.getY() < crossingAltitude - 0.5 && !drone.verticalCollision;
+    }
+
+    private void turnTowards(float yaw) {
+        drone.setYRot(Mth.approachDegrees(drone.getYRot(), yaw, 8.0F));
+        drone.yBodyRot = drone.getYRot();
+        drone.yHeadRot = drone.getYRot();
+    }
+
+    /**
+     * Brings the drone onto the pad at {@code home}: pathfinding up to a point above it, then a slow
+     * vertical descent with speed easing off near the pad, turning to {@code parkedYaw} as it lands.
+     * Returns true once it is parked. The vanilla flying move control always pushes at full speed,
+     * so it overshoots small targets; the last metres are steered by hand instead.
+     */
+    public boolean flyHome(Vec3 home, float parkedYaw) {
         double horizontal = home.subtract(drone.position()).horizontalDistance();
         Vec3 approach = home.add(0.0, APPROACH_HEIGHT, 0.0);
         // Close to the dock but walled in (inside a structure a Builder is raising): climb out first
@@ -137,6 +167,7 @@ public final class DroneFlight {
         pathfindTicks = 0;
         drone.getNavigation().stop();
         holdMoveControl();
+        turnTowards(parkedYaw);
         // Line up above the pad first, then descend straight down
         Vec3 target = horizontal > 0.2 ? new Vec3(home.x, Math.max(drone.getY(), home.y + APPROACH_HEIGHT), home.z) : home;
         Vec3 delta = target.subtract(drone.position());

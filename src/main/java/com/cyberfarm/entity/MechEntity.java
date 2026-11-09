@@ -52,13 +52,13 @@ import org.jspecify.annotations.Nullable;
  * the boarding sequence, which every client sees through synced data.
  */
 public class MechEntity extends Mob {
-    public static final int CAPACITY = 500_000;
+    public static final int CAPACITY = 1_000_000;
     /** A freshly built mech comes with this much charge. */
-    public static final int FACTORY_CHARGE = 100_000;
+    public static final int FACTORY_CHARGE = 200_000;
     /** Battery drain per block moved, and the little the systems use while piloted. */
-    private static final int FE_PER_BLOCK = 100;
-    private static final int FE_IDLE = 1;
-    public static final int FE_PER_PUNCH = 50;
+    private static final int FE_PER_BLOCK = 200;
+    private static final int FE_IDLE = 2;
+    public static final int FE_PER_PUNCH = 100;
     private static final double JUMP_VELOCITY = 0.95;
     private static final float WALK_SPEED = 0.22F;
     /** Reach the pilot gains, in blocks: the mech's arms are long. */
@@ -134,7 +134,7 @@ public class MechEntity extends Mob {
     /** The tools the pilot has switched on (drill, blade), as a bit mask of {@link MechModule#bit()}. */
     private static final EntityDataAccessor<Integer> DATA_TOOLS = SynchedEntityData.defineId(MechEntity.class, EntityDataSerializers.INT);
     /** Extra drain while the jet keeps the mech in the air, and how much of the damage the armour module stops. */
-    private static final int FE_JET = 60;
+    private static final int FE_JET = 120;
     private static final float ARMOR_BLOCKS = 0.4F;
     /** Lift while the jump key is held in the air, and the fastest climb and glide. */
     private static final double JET_THRUST = 0.1;

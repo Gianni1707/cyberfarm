@@ -3,6 +3,7 @@ package com.cyberfarm.drone.job;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -21,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * not grow without end. The food is whatever the animal eats, modded animals and foods included.
  */
 public class BreedJob extends DroneJob {
-    public static final int ENERGY_COST = 15;
+    public static final int ENERGY_COST = 30;
     /** Animals of one kind in the work area, babies included, past which the drone stops breeding them. */
     public static final int MAX_HERD = 16;
     /** Food loaded from the dock per trip. */
@@ -88,6 +89,7 @@ public class BreedJob extends DroneJob {
             return Result.RETURN;
         }
         animal.setInLove(null);
+        Effects.spray(level, drone, Effects.SPRAY_FEED, animal.blockPosition());
         level.playSound(null, animal.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.NEUTRAL, 0.6F, 1.0F);
         level.sendParticles(ParticleTypes.HEART, animal.getX(), animal.getY() + animal.getBbHeight(), animal.getZ(), 3, 0.3, 0.2, 0.3, 0.0);
         drone.useJobEnergy(ENERGY_COST);

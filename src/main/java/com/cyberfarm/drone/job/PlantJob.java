@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * (where the Harvester drops them), loaded into the cargo before each trip. Never tills soil.
  */
 public class PlantJob extends DroneJob {
-    public static final int ENERGY_COST = 10;
+    public static final int ENERGY_COST = 20;
     /** Seeds loaded from the dock per trip. */
     private static final int SEEDS_PER_TRIP = 64;
 
@@ -80,7 +80,7 @@ public class PlantJob extends DroneJob {
         }
         Block crop = ((BlockItem) seed.getItem()).getBlock();
         level.setBlock(cropPos, crop.defaultBlockState(), Block.UPDATE_ALL);
-        Effects.beam(level, drone, cropPos);
+        Effects.spray(level, drone, Effects.SPRAY_SEEDS, cropPos);
         level.playSound(null, cropPos, SoundEvents.CROP_PLANTED, SoundSource.BLOCKS, 1.0F, 1.0F);
         drone.useJobEnergy(ENERGY_COST);
         return true;

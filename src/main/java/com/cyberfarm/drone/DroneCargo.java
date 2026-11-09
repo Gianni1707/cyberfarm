@@ -1,5 +1,6 @@
 package com.cyberfarm.drone;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -65,13 +66,15 @@ public class DroneCargo {
         return stack.copyWithCount(1);
     }
 
-    /** One item of the first stack, or EMPTY: what the Transport claw shows. */
-    public ItemStack firstItem() {
-        ItemStack shown = ItemStack.EMPTY;
-        for (int i = 0; i < items.size() && shown.isEmpty(); i++) {
-            shown = ItemUtil.getStack(items, i).copyWithCount(1);
+    /** What is in the hold, stack by stack: what the status panel lists, and the first hangs from the Transport claw. */
+    public List<ItemStack> contents() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.getResource(i).isEmpty()) {
+                stacks.add(ItemUtil.getStack(items, i));
+            }
         }
-        return shown;
+        return stacks;
     }
 
     /** Stores what fits of {@code stack}; returns the rest. */

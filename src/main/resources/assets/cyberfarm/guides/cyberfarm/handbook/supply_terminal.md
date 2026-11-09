@@ -20,7 +20,9 @@ materials, and paying for them.
 
 An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and
 becomes a **Drone Mechanist**: a villager in goggles and a white work coat. While he works it, the
-terminal shows his level and the village's contracts.
+terminal shows his level and the village's contracts. Its board shows them from afar too: a lit card
+per open contract filling up as you deliver, the event's in steel, blinking in a raid. A finished contract's
+card drops behind the board and a new one rises. The header is lit while he works it.
 
 **Right-click** him to talk: he has a plan for a [tech village](tech_village.md). His trades are
 behind the **Trade** button at the end of each talk.
@@ -40,7 +42,7 @@ Put the goods in the **Deliver** slot: by hand, with a hopper, or as the destina
 brings exactly what the contracts need and nothing more.
 
 Some contracts pay a **bonus** besides their emeralds, shown on the row: battery cells, circuits,
-addons, carbon fiber, even an Anchor Addon or an Elite Circuit from a master mechanist.
+addons, carbon fiber, even an Anchor Addon from an expert mechanist or an Elite Circuit from a master.
 
 ## Events
 

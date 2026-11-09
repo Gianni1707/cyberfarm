@@ -55,7 +55,13 @@ public class MobCapsuleItem extends Item {
         }
         if (player.level() instanceof ServerLevel level) {
             TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, level.registryAccess());
-            mob.save(output);
+            // A mob that rides is not saved at all, and one that is ridden would save its rider too
+            mob.stopRiding();
+            mob.ejectPassengers();
+            if (!mob.save(output)) {
+                player.sendOverlayMessage(Component.translatable("message.cyberfarm.capsule.refused"));
+                return InteractionResult.FAIL;
+            }
             capsule.set(ModDataComponents.CAPTURED_MOB.get(), output.buildResult());
             level.playSound(null, mob.blockPosition(), SoundEvents.BUNDLE_INSERT, SoundSource.PLAYERS, 1.0F, 0.8F);
             mob.discard();

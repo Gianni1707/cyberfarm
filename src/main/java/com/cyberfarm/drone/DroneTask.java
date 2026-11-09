@@ -9,10 +9,12 @@ import com.cyberfarm.drone.job.FertilizeJob;
 import com.cyberfarm.drone.job.FishJob;
 import com.cyberfarm.drone.job.GuardJob;
 import com.cyberfarm.drone.job.HarvestJob;
+import com.cyberfarm.drone.job.LiquidRouteJob;
 import com.cyberfarm.drone.job.LogJob;
 import com.cyberfarm.drone.job.MineJob;
 import com.cyberfarm.drone.job.PlantJob;
 import com.cyberfarm.drone.job.RancherJob;
+import com.cyberfarm.drone.job.SpongeJob;
 import com.cyberfarm.drone.job.TransportJob;
 import com.cyberfarm.entity.DroneEntity;
 
@@ -23,7 +25,11 @@ import org.jspecify.annotations.Nullable;
 public enum DroneTask {
     HARVEST(HarvestJob::find),
     QUARRY(MineJob::find),
-    TRANSPORT(TransportJob::find),
+    /** Items, or with a Tank Module on the same drone also liquids. */
+    TRANSPORT((drone, level, dock) -> {
+        DroneJob job = TransportJob.find(drone, level, dock);
+        return job != null ? job : LiquidRouteJob.find(drone, level, dock);
+    }),
     PLANT(PlantJob::find),
     LOG(LogJob::find),
     /** Taxi trips start when a player right-clicks the waiting drone, never on their own. */
@@ -34,7 +40,13 @@ public enum DroneTask {
     FISH(FishJob::find),
     BREED(BreedJob::find),
     GUARD(GuardJob::find),
-    BOMB(BombJob::find);
+    BOMB(BombJob::find),
+    SPONGE(SpongeJob::find),
+    /** Only holds liquid for the other modules on the drone: no job of its own. */
+    TANK((drone, level, dock) -> null);
+
+    /** Transport and Taxi drones follow a route or a destination, Builders a linked structure: the others work the dock's area. */
+    public static final int NO_AREA_TASKS = TRANSPORT.bit() | TAXI.bit() | BUILD.bit() | TANK.bit();
 
     @FunctionalInterface
     public interface JobFinder {

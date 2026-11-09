@@ -10,6 +10,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,11 +20,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
 public class CombustionGeneratorBlock extends MachineBlock {
     public static final MapCodec<CombustionGeneratorBlock> CODEC = simpleCodec(CombustionGeneratorBlock::new);
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
+
+    // Body on its base plate, the chimney reaching the top of the block
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(1, 0, 1, 15, 12.5, 15), Block.box(2.5, 12.5, 2.5, 13.5, 16, 13.5));
 
     public CombustionGeneratorBlock(Properties properties) {
         super(properties);
@@ -33,6 +40,16 @@ public class CombustionGeneratorBlock extends MachineBlock {
     @Override
     protected MapCodec<CombustionGeneratorBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override
@@ -70,8 +87,4 @@ public class CombustionGeneratorBlock extends MachineBlock {
         double fz = pos.getZ() + 0.5 + facing.getStepZ() * 0.52 + (facing.getAxis() == Direction.Axis.X ? offset : 0);
         level.addParticle(ParticleTypes.FLAME, fx, pos.getY() + 0.3, fz, 0.0, 0.0, 0.0);
     }
-
-    /** Nothing extra: it already smokes and flames from {@link #animateTick} while lit. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 }

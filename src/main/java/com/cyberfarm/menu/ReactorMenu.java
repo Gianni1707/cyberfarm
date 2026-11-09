@@ -134,4 +134,10 @@ public class ReactorMenu extends MachineMenu {
     public int getMaxBoost() {
         return extra(15);
     }
+
+    /** It opens from any block of the structure, which can be far from the controller. */
+    @Override
+    protected double range() {
+        return STRUCTURE_RANGE;
+    }
 }

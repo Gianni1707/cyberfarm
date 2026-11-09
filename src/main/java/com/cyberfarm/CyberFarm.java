@@ -2,14 +2,16 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.block.FluidTankBlock;
+import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.MachineStatusPayload;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
-import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.effect.EffectPayload;
 import com.cyberfarm.energy.ForwardingEnergyHandler;
 import com.cyberfarm.entity.DroneEntity;
@@ -40,6 +42,8 @@ import com.cyberfarm.village.MechanistDialoguePayload;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -73,6 +77,7 @@ public class CyberFarm {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
+        ModEntities.DATA_SERIALIZERS.register(modEventBus);
         ModDataComponents.COMPONENTS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
@@ -90,6 +95,7 @@ public class CyberFarm {
         modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
+        NeoForge.EVENT_BUS.addListener(FluidTankBlock::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
         NeoForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(MechEvents::onDismount);
@@ -121,8 +127,17 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
+        // A press's frame has its funnel on top: a hopper there feeds the press
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            BlockPos below = pos.below();
+            return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
+                    ? level.getCapability(Capabilities.Item.BLOCK, below, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
         // The extraction chamber takes acid in and gives methane out only through its ports
         event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
             MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);
@@ -137,21 +152,21 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> be.getTank());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.DOCK_TANK.get(), (be, side) -> be.tank(side));
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.pipes());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
         // The Resonance Core takes and gives power only through its pylons
         event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
             ResonanceCoreBlockEntity core = ResonanceCoreBlockEntity.linkedCore(level, pos);
             return core != null ? core.getEnergy() : null;
         }), ModBlocks.STABILIZER_PYLON.get());
-        // The Steam Engine gives its power out of the dynamo closing its row
-        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
-            SteamEngineBlockEntity engine = SteamEngineBlockEntity.ofDynamo(level, pos);
-            return engine != null ? engine.getEnergy() : null;
-        }), ModBlocks.STEAM_ENGINE_DYNAMO.get());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.STEAM_ENGINE.get(), (be, side) -> be.getTank());
+        // Neither from behind the boiler, where the row goes
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.STEAM_ENGINE.get(),
+                (be, side) -> side == be.getBlockState().getValue(MachineBlock.FACING).getOpposite() ? null : be.getEnergy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.STEAM_ENGINE.get(),
+                (be, side) -> side == be.getBlockState().getValue(MachineBlock.FACING).getOpposite() ? null : be.getTank());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.MECH_HANGAR.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());
@@ -159,13 +174,15 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TRANSMITTER_DISH.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.RECEIVER_DISH.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
@@ -185,6 +202,19 @@ public class CyberFarm {
             CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofChamberBlock(level, pos);
             return crystallizer != null ? crystallizer.portItems() : null;
         }, ModBlocks.CRYSTALLIZER_PORT.get());
+        // So do the formed chamber's floor edges and roof middle, without a port
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.portFluids() : null;
+        }, ModBlocks.CYBER_FRAME.get());
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.getEnergy() : null;
+        }, ModBlocks.CYBER_FRAME.get());
+        event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
+            CrystallizerBlockEntity crystallizer = CrystallizerBlockEntity.ofTap(level, pos, state, side);
+            return crystallizer != null ? crystallizer.portItems() : null;
+        }, ModBlocks.CYBER_FRAME.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
@@ -206,6 +236,7 @@ public class CyberFarm {
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
                 .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
+                .playToServer(com.cyberfarm.energy.DishRenamePayload.TYPE, com.cyberfarm.energy.DishRenamePayload.STREAM_CODEC, com.cyberfarm.energy.DishRenamePayload::handle)
                 .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)

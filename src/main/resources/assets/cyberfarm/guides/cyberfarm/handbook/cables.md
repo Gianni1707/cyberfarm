@@ -10,8 +10,9 @@ navigation:
 Cables carry power and fluids between your machines (to move items, use a drone with a
 [Transport Module](modules.md)). Every kind **connects by itself** to
 cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
-mod. Each kind comes in **three tiers**, told apart by the ring where two cables meet: grey, **gold** and
-**violet**.
+mod. Each kind comes in **three tiers**, told apart by the sleeve near each end: grey, **gold** and
+**violet**. All three are glass tubes whose sleeves are lit cyan for energy, blue for liquids and
+green for gases, so you can see when something goes through them.
 
 <ItemGrid>
   <ItemIcon id="energy_conduit" />
@@ -36,9 +37,9 @@ tiers can be mixed in one network: put a better pipe right where a big producer 
 
 As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:
 
-- **Basic** carries all the gas power and a Small Steam Turbine (800 FE/t).
-- **Advanced** carries a Large Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
-- **Elite** joins several turbines into one line.
+- **Basic** carries all the gas power and a Small Steam Turbine (2,000 FE/t).
+- **Advanced** carries a Medium Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
+- **Elite** carries a Large Steam Turbine (40,000 FE/t) and joins several turbines into one line.
 
 Cables **store nothing**: whatever comes in goes straight to the blocks on the other end. A
 network can be up to 1,024 cables long. Different kinds never connect to each other, so they can
@@ -48,14 +49,16 @@ run side by side.
 
 Generators and machines push what they make into the cables by themselves. Batteries, tanks and
 other storage do not: to take something **out** of them, **right-click the cable's arm** that
-touches the block. An orange collar appears and the cable **pulls** from that block every tick,
+touches the block. A lit band wraps that end and the cable **pulls** from that block every tick,
 up to its tier's rate. Right-click it again to stop.
 
 The network never sends anything back into a block it pulls from, so a pulling arm is a one-way
 exit. Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md), or a battery of another mod.
 
-**Upgrading**: 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds
-and a uranium ingot make 8 Elite ones.
+**Upgrading**: 8 cables around two gold ingots and an Advanced Circuit make 8 Advanced ones; 8 Advanced
+around two diamonds and an Elite Circuit make 8 Elite ones.
+
+Where a cable can't go, [Dish Transmission](dish_transmission.md) sends FE through the air.
 
 ## Pages
 

@@ -3,6 +3,7 @@ package com.cyberfarm.drone.job;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
@@ -32,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  * drone uses it on the plant as a player would.
  */
 public class FertilizeJob extends DroneJob {
-    public static final int ENERGY_COST = 10;
+    public static final int ENERGY_COST = 20;
     /** Fertilizer loaded from the dock per trip. */
     private static final int FERTILIZER_PER_TRIP = 64;
 
@@ -99,6 +100,7 @@ public class FertilizeJob extends DroneJob {
             drone.markUnreachable(plant);
             return Result.DONE;
         }
+        Effects.spray(level, drone, Effects.SPRAY_FERTILIZER, plant);
         drone.useJobEnergy(ENERGY_COST);
         return Result.DONE;
     }

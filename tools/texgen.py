@@ -16,21 +16,23 @@ import sys
 import zlib
 from pathlib import Path
 
+from item_icons import ICONS
+
 ROOT = Path(__file__).resolve().parent.parent
 TEXTURES = ROOT / "src/main/resources/assets/cyberfarm/textures"
 
 PALETTE = {
-    "K": "#0b0e11",  # deep outline
-    "k": "#14181d",  # outline
-    "s": "#101418",  # screen / recess
-    "D": "#22282e",  # shadow panel
-    "d": "#2c333b",  # dark panel
-    "m": "#4a5561",  # mid panel
-    "l": "#7d8a96",  # light panel
-    "w": "#c9d3dc",  # white edge / steel
-    "b": "#0e7c99",  # deep cyan
-    "c": "#2fe0ff",  # cyan glow
-    "C": "#b8f6ff",  # bright core
+    "K": "#050a0b",  # deep outline
+    "k": "#0b1515",  # outline
+    "s": "#081011",  # screen / recess
+    "D": "#1b2a29",  # shadow panel
+    "d": "#233433",  # dark panel
+    "m": "#405453",  # mid panel
+    "l": "#728583",  # light panel
+    "w": "#c9d4d2",  # white edge / steel
+    "b": "#055b57",  # light, off
+    "c": "#d1fee7",  # light glow (near-white)
+    "C": "#ffffff",  # bright core
     "o": "#ff8c1a",  # orange
     "O": "#ffd04d",  # amber
     "r": "#a8321f",  # red
@@ -126,10 +128,6 @@ class Canvas:
         png += chunk(b"IEND", b"")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_bytes(png)
-
-
-def recolor(rows, mapping):
-    return ["".join(mapping.get(ch, ch) for ch in row) for row in rows]
 
 
 def from_ascii(rows, size=16):
@@ -319,51 +317,52 @@ def cyber_frame_formed():
     return c
 
 
-def muffler():
-    """Padded sound-dampening panel with a covered speaker grille."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, "D", noise=3, seed=40)
-    for i in range(1, 15, 4):  # quilted padding seams
-        c.rect(i, 1, i, 14, "d")
-        c.rect(1, i, 14, i, "d")
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.3, "s")
-    for y in range(4, 12, 2):
-        for x in range(4, 12, 2):
-            if math.hypot(x + 0.5 - 7.5, y + 0.5 - 7.5) < 4.0:
-                c.set(x + 1, y + 1, "m")
-    c.rect(5, 7, 10, 8, "b")
-    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
-        c.set(x, y, "l")
-    return c
-
-
 # --------------------------------------------------------------------------- nuclear
 
-URANIUM = "#5fdc3a"
-URANIUM_DARK = "#2f7a22"
-CONCRETE = "#a7adb2"
+CONCRETE = "#4a6b65"
+
+
+def pixel_art(rows, tones):
+    """A transparent texture from 16 rows of 16 characters; each key of tones is a colour, '.' stays clear."""
+    assert len(rows) == 16 and all(len(r) == 16 for r in rows), rows
+    c = Canvas()
+    for y, row in enumerate(rows):
+        for x, ch in enumerate(row):
+            if ch != ".":
+                c.set(x, y, tones[ch])
+    return c
 
 
 def uranium_ore_overlay():
-    """Transparent overlay drawn over vanilla stone or deepslate: glowing uranium specks."""
-    c = Canvas()
-    for cx, cy in ((3, 3), (11, 4), (6, 9), (12, 11), (3, 13)):
-        c.rect(cx, cy, cx + 1, cy + 1, URANIUM_DARK)
-        c.set(cx, cy, URANIUM)
-        c.set(cx + 1, cy + 1, "G")
-    return c
+    """Over vanilla stone or deepslate: soft clumps with a muted rim, in a sickly yellow green."""
+    return pixel_art([
+        "..........112...",
+        ".11......12331..",
+        "1233......2342..",
+        ".2342.......3...",
+        "..23.....1......",
+        "......11223.....",
+        "....1223344.....",
+        ".....23455332...",
+        ".......2343.....",
+        "..............11",
+        "..112.......1233",
+        ".12332......2344",
+        "..23442..112..23",
+        "...2.3..12331...",
+        "..........234...",
+        "................",
+    ], {"1": "#6b7250", "2": "#728a3a", "3": "#8fae3e", "4": "#b6d254", "5": "#dcee8c"})
 
 
 def reactor_casing(formed):
-    """Cooling-tower concrete with seams; once formed, cyan status lines light up along the seams."""
+    """Enamel plating with seams; once formed, status lines light up along the seams."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, "#7d848a")
+    c.rect(0, 0, 15, 15, "#233e3b")
     c.rect(1, 1, 14, 14, CONCRETE, noise=6, seed=50)
     for y in (5, 10):
-        c.rect(1, y, 14, y, "#8c9298")
-    c.rect(1, 1, 14, 1, "#c3c8cc")
+        c.rect(1, y, 14, y, "#335550")
+    c.rect(1, 1, 14, 1, "#71908a")
     if formed:
         c.rect(3, 5, 12, 5, "b")
         c.rect(5, 5, 10, 5, "c")
@@ -374,11 +373,14 @@ def reactor_casing(formed):
 
 def reactor_port(formed):
     c = reactor_casing(formed)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
-    c.disc(7.5, 7.5, 3.0, "s")
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(4, 7, 11, 8, "m")
+    c.frame(0, 0, 15, 15, "#bdc6c5")
+    c.frame(1, 1, 14, 14, "#7c8989")
+    c.rect(2, 2, 13, 13, "#233e3b")
+    c.disc(7.5, 7.5, 5.6, "K")
+    c.disc(7.5, 7.5, 4.6, "c" if formed else "#5ec2b8")
+    c.disc(7.5, 7.5, 3.4, "s")
+    c.rect(7, 4, 8, 11, "#7c8989")
+    c.rect(4, 7, 11, 8, "#7c8989")
     return c
 
 
@@ -388,28 +390,28 @@ def reactor_controller(state):
     c.rect(2, 2, 13, 11, "K")
     c.rect(3, 3, 12, 10, "s")
     if state == "off":
-        c.set(7, 6, "r")
-        c.set(8, 6, "r")
+        c.set(7, 6, "b")
+        c.set(8, 6, "b")
     else:
-        # Radiation trefoil on the screen, green when burning
-        lit = URANIUM if state == "on" else "b"
+        # Radiation trefoil on the screen, emerald when burning
+        lit = "#00b894" if state == "on" else "b"
         c.disc(7.5, 6.5, 1.2, lit)
         for (x0, y0, x1, y1) in ((6, 3, 9, 4), (3, 7, 5, 9), (10, 7, 12, 9)):
             c.rect(x0, y0, x1, y1, lit)
-    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "b")
     return c
 
 
-TURBINE_WHITE = "#dfe5e9"
+TURBINE_WHITE = "#4a6b65"
 
 
 def turbine_casing(formed):
-    """White turbine plating with a cyan stripe; the stripe lights up once the hall is formed."""
+    """Enamel turbine plating with a mint stripe; the stripe lights up once the hall is formed."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, "#8f989f")
+    c.rect(0, 0, 15, 15, "#233e3b")
     c.rect(1, 1, 14, 14, TURBINE_WHITE, noise=4, seed=61)
-    c.rect(1, 1, 14, 1, "#f4f7f9")
-    c.rect(1, 7, 14, 8, "b" if formed else "#9aa4ab")
+    c.rect(1, 1, 14, 1, "#71908a")
+    c.rect(1, 7, 14, 8, "b" if formed else "#335550")
     if formed:
         c.rect(4, 7, 11, 8, "c")
     for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
@@ -419,11 +421,14 @@ def turbine_casing(formed):
 
 def turbine_port(formed):
     c = turbine_casing(formed)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
-    c.disc(7.5, 7.5, 3.0, "s")
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(4, 7, 11, 8, "m")
+    c.frame(0, 0, 15, 15, "#bdc6c5")
+    c.frame(1, 1, 14, 14, "#7c8989")
+    c.rect(2, 2, 13, 13, "#233e3b")
+    c.disc(7.5, 7.5, 5.6, "K")
+    c.disc(7.5, 7.5, 4.6, "c" if formed else "#5ec2b8")
+    c.disc(7.5, 7.5, 3.4, "s")
+    c.rect(7, 4, 8, 11, "#7c8989")
+    c.rect(4, 7, 11, 8, "#7c8989")
     return c
 
 
@@ -432,44 +437,23 @@ def turbine_controller(state):
     c = turbine_casing(state != "off")
     c.rect(2, 2, 13, 12, "K")
     c.rect(3, 3, 12, 11, "s")
-    blade = "c" if state == "on" else "b" if state == "formed" else "r"
+    blade = "c" if state == "on" else "b" if state == "formed" else "b"
     for i in range(-3, 4):
         c.set(round(7.5 + i), round(7 + i), blade)
         c.set(round(7.5 + i), round(7 - i), blade)
     c.disc(7.5, 7, 1.1, "w" if state != "off" else "m")
-    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
-    return c
-
-
-def multiblock_projector():
-    """A blueprint tablet: a grid with the outline of a cooling tower, so it reads as 'shows a structure'."""
-    c = Canvas()
-    c.rect(1, 1, 14, 14, "k")
-    c.rect(2, 2, 13, 13, (14, 52, 90, 255))
-    for i in range(2, 14, 3):
-        c.rect(i, 2, i, 13, (30, 80, 128, 255))
-        c.rect(2, i, 13, i, (30, 80, 128, 255))
-    for x0, x1, y in ((4, 11, 12), (5, 10, 11), (6, 9, 8), (6, 9, 7), (5, 10, 4), (4, 11, 3)):
-        c.set(x0, y, "C")
-        c.set(x1, y, "C")
-    c.rect(4, 12, 11, 12, "C")
-    c.rect(4, 3, 11, 3, "c")
-    for y in (5, 6, 9, 10):
-        c.set(5 if y in (5, 10) else 6, y, "c")
-        c.set(10 if y in (5, 10) else 9, y, "c")
-    c.rect(1, 14, 14, 14, "m")
-    c.set(12, 14, "c")
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "b")
     return c
 
 
 def blueprint_disc():
-    """A data disc in blueprint blue: a cyan rim, a lighter track, a silver hub, a glint."""
+    """A data disc in dark teal: a pale rim, a lighter track, a silver hub, a glint."""
     c = Canvas()
     c.disc(7.5, 7.5, 7.0, "k")
     c.disc(7.5, 7.5, 6.2, "C")
-    c.disc(7.5, 7.5, 5.4, (14, 52, 90, 255))
-    c.disc(7.5, 7.5, 4.4, (30, 80, 128, 255))
-    c.disc(7.5, 7.5, 3.4, (14, 52, 90, 255))
+    c.disc(7.5, 7.5, 5.4, "#233e3b")
+    c.disc(7.5, 7.5, 4.4, "#488d91")
+    c.disc(7.5, 7.5, 3.4, "#233e3b")
     c.disc(7.5, 7.5, 2.0, "m")
     c.disc(7.5, 7.5, 0.9, "k")
     for x, y in ((3, 6), (4, 4), (6, 3), (11, 10), (10, 11)):
@@ -477,28 +461,21 @@ def blueprint_disc():
     return c
 
 
-def water_pump_front(frame=None):
-    c = panel(52)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 11, 11, "#2a4f9a", noise=8, seed=52)
-    for x, y in rising(((5, 9), (8, 6), (10, 10), (6, 5)), frame, 4, 8):
-        c.set(x, y, "#7fb0ff")
-    c.rect(3, 13, 12, 13, "b")
-    return c
-
-
-def water_pump_top():
-    c = panel(53)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "#2a4f9a")
-    c.rect(4, 7, 11, 8, "m")
-    return c
-
-
 # Uranium shades for the item sprites: outline, dark, mid, light, glow; then rock greys
 URANIUM_SHADES = {"1": "#14200d", "2": "#26501a", "3": "#3c8a24", "4": "#62d13a", "5": "#c4ff9a",
                   "6": "#2b2c28", "7": "#454640", "8": "#62635b", "9": "#7f8077"}
 PALETTE.update(URANIUM_SHADES)
+
+# Drone icon shades, the drone model's own ramps (DRONE_BODY, DRONE_COPPER[2], DRONE_CREAM, DRONE_GUNMETAL, ...)
+DRONE_ICON_SHADES = {
+    "H": "#5b7771", "M": "#395853", "Z": "#132423",                    # dark teal body
+    "u": "#5ec2b8",                                                    # the one flat mint enamel
+    "t": "#eff5f0", "T": "#d3ddd9", "e": "#a6b5b2",                    # white ceramic tank
+    "n": "#5f6c6c", "q": "#414d4e", "Q": "#2d3839",                    # gunmetal motors
+    "p": "#303737", "P": "#131819",                                    # carbon blades
+    "I": "#b1bebc", "j": "#7c8989",                                    # steel mast
+}
+PALETTE.update(DRONE_ICON_SHADES)
 
 
 def turret_side():
@@ -531,16 +508,6 @@ def turret_ring():
     c.rect(0, 0, 15, 15, "l", noise=3, seed=83)
     c.rect(0, 0, 15, 0, "w")
     c.rect(0, 15, 15, 15, "m")
-    return c
-
-
-def coolant_mixer_front():
-    c = panel(54)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 7, 11, "#1fb8a8", noise=8, seed=54)
-    c.rect(8, 4, 11, 11, "#a8e8ff", noise=6, seed=55)
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(3, 13, 12, 13, "c")
     return c
 
 
@@ -584,34 +551,101 @@ def bucket(fluid, gas):
     return c
 
 
-def cooling_tower(glow):
-    """Skin of the formed reactor: white panels, seams, a grey footing and glowing cyan bands.
+# --------------------------------------------------------------------------- reactor and turbine skin
 
-    32 px wide (8 segments around the tower) and 64 high (the 7 blocks, top of the texture at the rim).
-    With glow, only the cyan pixels: the renderer draws them full-bright.
-    """
-    c = Canvas(32, 64)
-    c.rect(0, 0, 31, 63, "#e6ecf0", noise=5, seed=60)
-    for y in range(7, 64, 9):
-        c.rect(0, y, 31, y, "#c3ccd3")
-    c.rect(0, 0, 0, 63, "#c3ccd3")
-    c.rect(16, 0, 16, 63, "#d2d9de")
-    c.rect(0, 58, 31, 63, "#9aa4ac", noise=4, seed=61)
-    c.rect(0, 57, 31, 57, "#7d8a96")
-    # Cyan bands: one around the base, one under the rim, dashes in between
-    c.rect(0, 53, 31, 54, "c")
-    c.rect(0, 3, 31, 3, "c")
-    c.rect(0, 4, 31, 4, "b")
-    for x in (4, 20):
-        c.rect(x, 24, x + 7, 24, "c")
-        c.rect(x + 2, 24, x + 5, 24, "C")
-    for x in (8, 24):
-        c.set(x, 40, "C")
+def shell_plate(c, shade=0):
+    c.rect(0, 0, 15, 15, "#4a6b65", noise=0)
+    if shade:
+        c.rect(0, 0, 15, 15, "#4a6b65")
+    c.rect(0, 15, 15, 15, "#335550")
+    c.rect(15, 0, 15, 15, "#335550")
+    c.rect(0, 0, 14, 0, "#4a6b65")
+    for x in range(0, 15):
+        c.set(x, 0, "#4a6b65", 9)
+    for y in range(0, 15):
+        c.set(0, y, "#4a6b65", 6)
+
+
+def shell_rivet(c, x, y):
+    c.set(x, y, "#71908a")
+    c.set(x + 1, y + 1, "#233e3b")
+
+
+def shell_trimmed(src, painter):
+    c = src.copy()
+    painter(c)
+    return c
+
+
+# ============================================================ skin A: plates, rivets, light bands
+def shell_trim(c):
+    c.rect(0, 0, 0, 15, "#233e3b")
+    c.rect(1, 0, 2, 15, "#71908a")
+    c.rect(1, 0, 1, 15, "#7c8989")
+    c.rect(3, 0, 3, 15, "#335550")
+    c.set(1, 2, "#bdc6c5"); c.set(2, 2, "#bdc6c5")
+    c.set(1, 12, "#bdc6c5"); c.set(2, 12, "#bdc6c5")
+
+
+def shell_tiles():
+    t = {}
+    c = Canvas(); shell_plate(c)
+    c.frame(4, 4, 11, 11, "#335550")
+    c.rect(5, 5, 10, 10, "#4a6b65", noise=0)
+    for x in range(5, 11): c.set(x, 5, "#4a6b65", -8)
+    for x, y in ((2, 2), (12, 2), (2, 12), (12, 12)): shell_rivet(c, x, y)
+    t["body"] = c
+    c = Canvas(); shell_plate(c)
+    c.rect(1, 7, 14, 7, "#335550"); c.rect(1, 8, 14, 8, "#4a6b65", 8)  # weld line
+    for x, y in ((2, 3), (12, 3), (2, 11), (12, 11), (7, 3), (7, 11)): shell_rivet(c, x, y)
+    t["body2"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 0, 15, 0, "#7c8989"); c.rect(0, 1, 15, 1, "#4a6b65")
+    c.rect(0, 5, 15, 5, "#335550")
+    c.rect(0, 6, 15, 6, "#5ec2b8")
+    c.rect(0, 7, 15, 7, "c")
+    c.rect(0, 8, 15, 8, "#5ec2b8")
+    c.rect(0, 9, 15, 10, "#335550")
+    c.rect(0, 14, 15, 14, "#71908a"); c.rect(0, 15, 15, 15, "#335550")
+    for x in (3, 11): c.set(x, 3, "#bdc6c5"); c.set(x, 12, "#bdc6c5")
+    t["band"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 0, 15, 0, "#bdc6c5"); c.rect(0, 1, 15, 1, "#7c8989")
+    c.rect(0, 2, 15, 2, "#335550")
+    c.rect(2, 4, 4, 6, "#7c8989"); c.rect(11, 4, 13, 6, "#7c8989")  # studs
+    c.rect(2, 4, 4, 4, "#bdc6c5"); c.rect(11, 4, 13, 4, "#bdc6c5")
+    c.rect(5, 9, 10, 12, "#071314"); c.rect(5, 9, 10, 9, "#030909")
+    c.rect(0, 14, 15, 15, "#071314")
+    c.rect(0, 8, 15, 8, "#335550")
+    t["base"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#4a6b65")
+    c.rect(0, 0, 15, 0, "#bdc6c5"); c.rect(0, 1, 15, 1, "#bdc6c5"); c.rect(0, 2, 15, 2, "#7c8989")
+    c.rect(0, 3, 15, 3, "#233e3b")
+    c.rect(0, 4, 15, 4, "#5ec2b8"); c.rect(0, 5, 15, 5, "c")
+    c.rect(0, 6, 15, 6, "#233e3b")
+    c.rect(0, 7, 15, 7, "#4a6b65", 8)
+    for x, y in ((2, 9), (12, 9)): shell_rivet(c, x, y)
+    c.rect(0, 13, 15, 13, "#335550"); c.rect(0, 14, 15, 15, "#233e3b")
+    t["rim"] = c
+    for k in ("body", "band", "base", "rim"):
+        t[k + "_L"] = shell_trimmed(t[k], shell_trim)
+    t["body2_L"] = shell_trimmed(t["body2"], shell_trim)
+    return t
+
+
+def machine_shell(glow):
+    """The formed reactor's and turbine's skin: a strip of 16-pixel tiles (see ShellTiles.java) ending in a white one for flat colours.
+    With glow, only the lit pixels: the renderer draws them full-bright."""
+    t = shell_tiles()
+    names = ("body", "body2", "band", "base", "rim", "body_L", "body2_L", "band_L", "base_L", "rim_L")
+    c = Canvas(16 * (len(names) + 1), 16)
+    for i, name in enumerate(names):
+        for y in range(16):
+            for x in range(16):
+                c.pixels[y][16 * i + x] = t[name].pixels[y][x]
+                c.keys[y][16 * i + x] = t[name].keys[y][x]
+    c.rect(16 * len(names), 0, 16 * len(names) + 15, 15, (255, 255, 255, 255))
     return c.glow_mask() if glow else c
-
-
-HAZMAT = "#e8c21f"
-HAZMAT_DARK = "#a8860f"
 
 
 def vitrified_waste():
@@ -627,55 +661,7 @@ def vitrified_waste():
     return c
 
 
-def waste_reprocessor_front():
-    c = panel(71)
-    c.rect(3, 3, 12, 9, "K")
-    c.rect(4, 4, 11, 8, "#1d3322")
-    c.rect(5, 6, 10, 7, "4")
-    c.rect(6, 6, 9, 6, "5")
-    for x in range(3, 13):
-        c.set(x, 11, "y" if (x // 2) % 2 == 0 else "K")
-        c.set(x, 12, "K" if (x // 2) % 2 == 0 else "y")
-    return c
-
-
-def hazmat_item(piece):
-    """Inventory icons of the yellow Hazmat Suit."""
-    c = Canvas()
-    if piece == "helmet":
-        c.rect(3, 3, 12, 12, "k")
-        c.rect(4, 4, 11, 11, HAZMAT)
-        c.rect(4, 4, 11, 4, "#f4dc6a")
-        c.rect(5, 6, 10, 9, "K")
-        c.rect(6, 7, 9, 8, "b")
-        c.set(6, 7, "c")
-        c.rect(3, 12, 12, 12, HAZMAT_DARK)
-    elif piece == "suit":
-        c.rect(2, 2, 13, 14, "k")
-        c.rect(3, 3, 12, 13, HAZMAT)
-        c.rect(6, 2, 9, 4, "k")
-        c.rect(6, 3, 9, 3, None)
-        c.rect(1, 3, 2, 9, "k")
-        c.rect(13, 3, 14, 9, "k")
-        c.rect(7, 5, 8, 13, HAZMAT_DARK)
-        c.rect(3, 10, 12, 10, "K")
-        c.set(10, 6, "c")
-    elif piece == "pants":
-        c.rect(3, 2, 12, 14, "k")
-        c.rect(4, 3, 11, 13, HAZMAT)
-        c.rect(7, 7, 8, 14, None)
-        c.rect(7, 7, 8, 7, "k")
-        c.rect(6, 8, 6, 13, "k")
-        c.rect(9, 8, 9, 13, "k")
-        c.rect(4, 3, 11, 3, "K")
-        c.rect(4, 12, 6, 13, HAZMAT_DARK)
-        c.rect(9, 12, 11, 13, HAZMAT_DARK)
-    else:  # boots
-        for x0 in (2, 9):
-            c.rect(x0, 6, x0 + 5, 13, "k")
-            c.rect(x0 + 1, 7, x0 + 4, 12, HAZMAT)
-            c.rect(x0 + 1, 11, x0 + 4, 12, "K")
-    return c
+HAZMAT = "#e8c21f"
 
 
 HAZMAT_SHADE = "#c9a414"
@@ -762,22 +748,6 @@ def hazmat_layer(leggings):
     return c
 
 
-def geiger_counter():
-    c = Canvas()
-    c.rect(2, 4, 11, 14, "k")
-    c.rect(3, 5, 10, 13, HAZMAT)
-    c.rect(4, 6, 9, 9, "K")
-    c.rect(5, 7, 8, 8, "#c4ff9a")
-    c.set(7, 8, "r")
-    c.set(6, 7, "K")
-    c.rect(4, 11, 5, 12, "K")
-    c.rect(8, 11, 9, 12, "r")
-    c.rect(12, 6, 12, 10, "K")
-    c.rect(13, 2, 13, 7, "m")
-    c.rect(12, 1, 14, 2, "l")
-    return c
-
-
 def radiation_icon():
     """Mob effect icon (18x18): the radiation trefoil, three black blades on yellow."""
     c = Canvas(18, 18)
@@ -838,22 +808,6 @@ def uranium_ingot():
     ])
 
 
-def fuel_rod(depleted):
-    """Steel rod with a uranium window; a depleted rod is dark with a hazard band."""
-    c = Canvas()
-    for i in range(12):
-        x, y = 2 + i, 13 - i
-        c.rect(x, y - 1, x + 1, y, "k")
-        c.set(x, y - 1, "l" if not depleted else "m")
-    for i in range(3, 9):
-        x, y = 2 + i, 13 - i
-        c.set(x + 1, y, "#3a3f2a" if depleted else URANIUM)
-        c.set(x, y - 1, "y" if depleted and i in (4, 7) else ("#5c6146" if depleted else "G"))
-    c.rect(1, 13, 2, 14, "w")
-    c.rect(13, 1, 14, 2, "w")
-    return c
-
-
 def digester_front(frame=None):
     c = panel(22)
     c.rect(3, 2, 12, 12, "K")
@@ -876,111 +830,155 @@ def digester_top():
     return c
 
 
-def turbine_front():
-    """Gas Turbine front: a dark duct round the burner; the fan in it is drawn by MovingPartsRenderer."""
-    c = panel(24)
-    c.disc(7.5, 7.5, 6.2, "K")
-    c.disc(7.5, 7.5, 5.2, "s")
-    c.disc(7.5, 7.5, 5.2, "D", r_inner=4.6)
-    c.disc(7.5, 7.5, 1.6, "O")
-    return c
+# Pipes and cables, one family: glass tubes with a ring in the tier's colour and a light strip in the kind's colour, a framed glass cube at nodes.
+# Rows 6..9 stay a plain sleeve: the machines' pipe stubs use them.
+GLASS_PIPE_TIERS = {"": ((146, 160, 160, 255), (104, 117, 117, 255)), "advanced_": ((233, 200, 110, 255), (176, 142, 66, 255)),
+                    "elite_": ((157, 100, 225, 255), (104, 62, 160, 255))}
+PIPE_STEEL = (139, 152, 152, 255)
+PIPE_STEEL_LIGHT = (177, 190, 188, 255)
+PIPE_STEEL_DARK = (104, 117, 117, 255)
 
 
-def extractor_bottom(formed):
-    """The shower head: faces down into the chamber."""
-    c = panel(25)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 11, 11, "D")
-    for y in range(4, 12, 2):
-        for x in range(4, 12, 2):
-            c.set(x + (y // 2) % 2, y, "C" if formed else "b")
-    return c
-
-
-def extractor_top(formed):
-    c = panel(26)
-    c.disc(7.5, 7.5, 3.6, "K")
-    c.disc(7.5, 7.5, 2.6, "c" if formed else "b")
-    c.rect(7, 7, 8, 8, "C" if formed else "s")
-    return c
-
-
-def extractor_side(formed):
-    """Status strip: red while the chamber is incomplete, cyan once it is formed."""
-    if formed:
-        c = cyber_frame_formed()
-        c.rect(4, 7, 11, 8, "c")
-        c.rect(6, 7, 9, 8, "C")
-        return c
-    c = cyber_frame()
-    c.rect(5, 7, 10, 8, "r")
-    return c
-
-
-# Pipe tiers are told apart by the rims of the sleeve: plain, gold, violet
-# Cable sleeves: a light tube with the content as a coloured band down the middle. Arms use rows
-# 6..9 (a straight run joins them into one tube), the coupling box at junctions columns/rows 5..10.
-PIPE_CONTENT = {
-    # main colour, highlight
-    "energy": ((47, 224, 255, 255), (184, 246, 255, 255)),
-    "gas": ((255, 176, 40, 255), (255, 226, 140, 255)),
-    "liquid": ((52, 124, 230, 255), (150, 200, 255, 255)),
-}
-PIPE_RIMS = {"": ((125, 138, 150, 255), (74, 85, 97, 255)), "advanced_": ("O", "o"), "elite_": ("V", "v")}
-
-
-def clean_pipe(kind, tier):
-    main, light = PIPE_CONTENT[kind]
-    rim, rim_dark = PIPE_RIMS[tier]
+def pipe_atlas(tier):
+    """Atlas: dark steel 8,0 (6x6, framed), sleeve rows 6..9, plates rows 10..11 in the tier's colour."""
+    rim, rim_dark = GLASS_PIPE_TIERS[tier]
     c = Canvas()
-    c.rect(0, 0, 15, 15, (200, 210, 218, 255))
-    # The band wraps all four sides of a tube: the same edge top and bottom, so it meets itself at every corner
-    c.rect(0, 6, 15, 9, (150, 162, 172, 255))
-    c.rect(0, 7, 15, 8, main)
-    # A ring in the tier's colour where two pipes meet
-    for x in (0, 15):
-        c.rect(x, 6, x, 9, rim)
-    c.rect(5, 5, 10, 10, rim_dark)
-    c.rect(6, 6, 9, 9, (60, 68, 78, 255))
-    c.rect(7, 7, 8, 8, main)
-    c.set(7, 7, light)
+    c.rect(0, 0, 15, 15, PIPE_STEEL)
+    c.rect(8, 0, 13, 5, (44, 60, 62, 255))
+    c.frame(8, 0, 13, 5, (28, 38, 40, 255))
+    c.rect(9, 0, 12, 0, (72, 94, 96, 255))
+    # The sleeve of the machines' stubs: steel with a ring in the tier's colour where a pipe would meet
+    c.rect(0, 6, 15, 9, PIPE_STEEL)
+    c.rect(0, 6, 15, 6, PIPE_STEEL_LIGHT)
+    c.rect(0, 9, 15, 9, PIPE_STEEL_DARK)
+    c.rect(0, 6, 0, 9, rim)
+    c.rect(0, 10, 15, 10, rim)
+    c.rect(0, 11, 15, 11, rim_dark)
     return c
 
 
-def pipe_extract():
-    """The pulling collar where a pipe arm meets a block it pulls from: orange hazard ring."""
+def pipe_glass():
+    """Dark teal glass, with a light streak along the tube and darker long edges, rows 0..4."""
+    edge, streak, clear = (52, 82, 80, 150), (150, 210, 200, 90), (30, 58, 60, 60)
     c = Canvas()
-    c.rect(0, 0, 15, 15, "o", noise=4, seed=34)
-    c.frame(0, 0, 15, 15, "k")
-    for i in range(0, 16, 4):
-        c.rect(i, 0, i + 1, 15, "y")
+    for y, color in {0: edge, 1: streak, 2: clear, 3: clear, 4: edge}.items():
+        c.rect(0, y, 15, y, color)
     return c
 
 
-def tank_side(accent):
-    """Tank wall: a steel frame around a dark window (columns 4..10, rows 3..12) where the
-    tank's renderer draws the fluid at its level, with gauge marks beside it."""
-    c = panel(61 if accent == "y" else 62)
-    c.rect(3, 2, 11, 13, "K")
-    c.rect(4, 3, 10, 12, (24, 30, 36, 255))
-    # Opaque glint: one see-through pixel would put the whole block in the translucent layer,
-    # and the gas drawn in the window would then hide its wall and show the world behind it.
-    c.set(4, 3, (133, 136, 139, 255))
-    for y in range(3, 13, 3):
-        c.set(12, y, "m")
-    c.rect(3, 14, 11, 14, accent)
+def pipe_node_glass():
+    """A node's walls: the tube's dark teal glass in a dark steel frame, so where arms meet reads as a little framed box."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, (30, 58, 60, 60))
+    c.rect(4, 3, 6, 3, (150, 210, 200, 90))
+    c.rect(3, 4, 3, 5, (150, 210, 200, 90))
+    c.frame(0, 0, 15, 15, (44, 60, 62, 235))
+    c.frame(1, 1, 14, 14, (72, 94, 96, 215))
     return c
 
 
-def tank_top():
-    c = panel(64)
-    c.disc(7.5, 7.5, 4.5, "K")
-    c.disc(7.5, 7.5, 3.5, "m")
-    c.rect(6, 6, 9, 9, "l")
+# The kind's light: brightest first, as cyan energy, blue liquid, green gas
+PIPE_LIGHTS = {"energy": ((215, 255, 255, 255), (90, 240, 255, 255), (45, 185, 210, 255), (25, 115, 140, 255)),
+               "liquid": ((210, 235, 255, 255), (90, 170, 255, 255), (60, 120, 220, 255), (40, 80, 160, 255)),
+               "gas": ((225, 255, 230, 255), (120, 245, 160, 255), (80, 190, 120, 255), (50, 130, 90, 255))}
+
+
+def pipe_strip(kind):
+    """The cap's light strip, breathing one step at a time."""
+    ramp = PIPE_LIGHTS[kind]
+    frames = []
+    for level in (1, 0, 1, 2):
+        c = Canvas()
+        c.rect(0, 0, 15, 15, ramp[level])
+        frames.append(c)
+    return strip(frames, frametime=6, interpolate=True)
+
+
+def pipe_item_liquid():
+    """An item's liquid, rows 0..4: deep blue with a light surface line and two bubbles, bright against the dark glass."""
+    c = Canvas()
+    c.rect(0, 0, 15, 4, (38, 84, 196, 255))
+    c.rect(0, 0, 15, 0, (130, 190, 255, 255))
+    c.rect(0, 4, 15, 4, (26, 58, 150, 255))
+    for x, y in ((3, 2), (8, 3), (12, 2)):
+        c.set(x, y, (200, 230, 255, 255))
     return c
+
+
+def pipe_item_gas():
+    """An item's gas, rows 0..4: bright green puffs with clear gaps, so it reads as gas and not as a green bar."""
+    c = Canvas()
+    for y, row in enumerate(PIPE_CLOUD[:5]):
+        for x in range(16):
+            if row[x % 8] == '#':
+                c.set(x, y, (120, 245, 160, 255))
+            elif row[(x + 1) % 8] == '#' or row[(x - 1) % 8] == '#':
+                c.set(x, y, (60, 160, 100, 200))
+    return c
+
+
+def pipe_frames(pixel, frametime):
+    """Four 16x16 frames from pixel(column along the pipe, row across it, frame), None where clear."""
+    frames = []
+    for t in range(4):
+        c = Canvas()
+        for x in range(16):
+            for y in range(16):
+                color = pixel(x, y, t)
+                if color is not None:
+                    c.set(x, y, color)
+        frames.append(c)
+    return strip(frames, frametime=frametime)
+
+
+PIPE_CLOUD = ("..##...#", ".####.##", "..##..#.", "#...##..", "##.####.", ".#..##..")
+
+
+def pipe_gas_cloud(x, y, t):
+    """Soft puffs drifting along the pipe: a core and a fainter rim."""
+    def core(row, column):
+        return 0 <= row < 6 and PIPE_CLOUD[row][column % 8] == "#"
+    row, column = y - 5, x - 2 * t
+    if core(row, column):
+        return (230, 255, 235, 115)
+    if core(row - 1, column) or core(row + 1, column) or core(row, column - 1) or core(row, column + 1):
+        return (230, 255, 235, 45)
+    return None
+
+
+PIPE_SINE = (0, 1, 1, 0, 0, -1, -1, 0)
+
+
+def pipe_arc(phase):
+    """Energy: a thin cyan sine arc, one pixel either side of the middle, running along, and a spark every other frame.
+    Two phases for the two crossed sheets."""
+    bright = PIPE_LIGHTS["energy"][1]
+    def pixel(x, y, t):
+        if y == 8 + PIPE_SINE[(x - 2 * t + phase) % 8]:
+            return bright
+        if t % 2 == 0 and x == (5 * t + 3 * phase + 7) % 16 and y == 7 + (3 * t + phase) % 3:
+            return (235, 255, 255, 255)
+        return None
+    return pixel
 
 
 # --------------------------------------------------------------------------- animation
+
+def stabilizer_pylon_light():
+    """The edges of light up a Stabilizer Pylon: a brighter pulse climbs through the part a model shows (rows 4..12),
+    then starts again at the bottom. Glow colour only, as the edges are 1 px wide."""
+    dim, glow = "#6fa89a", "#d1fee7"
+    frames = []
+    for step in range(10):
+        c = Canvas()
+        c.rect(0, 0, 15, 15, dim)
+        y = 12 - step
+        if 2 <= y <= 13:
+            c.rect(0, max(0, y - 1), 15, min(15, y + 1), mix(dim, glow, 0.55))
+            c.rect(0, y, 15, y, glow)
+        frames.append(c)
+    return strip(frames, frametime=2, interpolate=True)
+
 
 def strip(frames, frametime=2, interpolate=False):
     """Stacks equal frames into one tall texture, marked animated so it is saved with a .mcmeta."""
@@ -1001,10 +999,637 @@ def mix(a, b, t):
 
 # A machine's front with the power off: its lights (cyan, green, the uranium readout) one step
 # dimmer and its fire out
-POWERED_OFF = {"C": "c", "c": "b", "b": "#0a4a5c", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
+POWERED_OFF = {"C": "c", "c": "b", "b": "#033a37", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
                "O": "l", "o": "m", "r": "d"}
 # ...and while it works: a band of light sweeping down its lights, one step brighter
-SWEEP = {"b": "c", "c": "C", "C": "#ecfeff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
+SWEEP = {"b": "c", "c": "C", "C": "#ffffff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
+FLAMES = ("r", "o", "O")
+# What glows in the dark on a working machine's front: its lights and any fire
+FRONT_GLOW = GLOW_KEYS | {"#ecfeff", "g", "G", "#e6ffe9", "4", "5", "#e8ffd0"} | set(FLAMES)
+
+
+def powered_off(front):
+    out = front.copy()
+    for y in range(front.height):
+        for x in range(front.width):
+            if front.keys[y][x] in POWERED_OFF:
+                out.set(x, y, POWERED_OFF[front.keys[y][x]])
+    return out
+
+
+def working(fronts):
+    """A working machine's front, looping: a band of light sweeps down its lights, fire flickers,
+    and the colour of any window (a fluid, a screen) ripples gently."""
+    count = len(fronts)
+    frames = []
+    for f, front in enumerate(fronts):
+        out = front.copy()
+        rng = random.Random(f * 977 + 13)
+        for y in range(front.height):
+            for x in range(front.width):
+                key, px = front.keys[y][x], front.pixels[y][x]
+                if px is None:
+                    continue
+                if key in SWEEP:
+                    behind = (f * front.height // count - y) % front.height
+                    if behind == 0 or (behind == 1 and key == "b"):
+                        out.set(x, y, SWEEP[key])
+                elif key in FLAMES:
+                    out.set(x, y, FLAMES[max(0, min(2, FLAMES.index(key) + rng.randint(-1, 1)))])
+                elif key is None or key.startswith("#"):
+                    shade = round(16 * math.sin(2 * math.pi * (y / 8 - f / count) + x * 0.7))
+                    out.pixels[y][x] = tuple(max(0, min(255, ch + shade)) for ch in px[:3]) + (px[3],)
+        frames.append(out)
+    return strip(frames)
+
+
+def lit_textures(name, draw, off=None):
+    """The three textures of a machine part that lights up while the machine works: off (dimmed
+    unless given), working (animated), and what of that glows in the dark. `draw` draws the part;
+    if it takes a frame number (0-15) it draws that frame of a motion of its own, such as bubbles."""
+    moving = bool(inspect.signature(draw).parameters)
+    on = working([draw(f) if moving else draw() for f in range(16)])
+    return {f"block/{name}": off or powered_off(draw()), f"block/{name}_on": on, f"block/{name}_glow": on.glow_mask(FRONT_GLOW)}
+
+
+def lit_front(name, draw, off=None):
+    return lit_textures(f"{name}_front", draw, off)
+
+
+def rising(points, frame, top, height):
+    """Bubble positions for a frame: each rises through a window `height` rows tall from row
+    `top`, once round per 16 frames; the still picture (frame None) keeps them where they are."""
+    if frame is None:
+        return points
+    return [(x, top + (y - top - frame * height // 16) % height) for x, y in points]
+
+
+def gas(base, light, seed, count=32):
+    """Swirling gas, looping in place and in time: three waves that tile across the texture and
+    a few motes of light drifting up."""
+    rng = random.Random(seed)
+    motes = [(rng.randrange(16), rng.randrange(16)) for _ in range(8)]
+    frames = []
+    for f in range(count):
+        t = f / count
+        c = Canvas()
+        for y in range(16):
+            for x in range(16):
+                v = (math.sin(2 * math.pi * (x / 16 + t)) + math.sin(2 * math.pi * (y / 16 + 2 * t + seed / 7))
+                     + 0.7 * math.sin(2 * math.pi * ((x + y) / 16 - t)))
+                level = max(0, min(3, int((v + 2.7) / 5.4 * 4)))
+                c.set(x, y, mix(base, light, level * 0.2))
+        for mx, my in motes:
+            c.set(mx, (my - f // 2) % 16, light)
+        frames.append(c)
+    return strip(frames, interpolate=True)
+
+
+def gas_texture(base, light, seed):
+    """Swirly gas fill used for both the still and the flowing texture."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, base, noise=10, seed=seed)
+    for i in range(16):
+        c.set((i * 5 + seed) % 16, (i * 3) % 16, light)
+        c.set((i * 7 + seed) % 16, (i * 11 + 4) % 16, light)
+    return c
+
+
+def dock_top():
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=9)
+    c.disc(7.5, 7.5, 6.6, "b", r_inner=5.6)
+    for x, y in ((7, 1), (8, 1), (7, 14), (8, 14), (1, 7), (1, 8), (14, 7), (14, 8)):
+        c.set(x, y, "c")
+    c.ascii(6, 5, ["c..c", "c..c", "cccc", "cccc", "c..c", "c..c"])
+    for x, y, dx, dy in ((2, 2, 1, 1), (13, 2, -1, 1), (2, 13, 1, -1), (13, 13, -1, -1)):
+        c.set(x, y, "y")
+        c.set(x + dx, y, "y")
+        c.set(x, y + dy, "y")
+    return c
+
+
+def hologram_table_top():
+    """Hologram Table plate: a dark top with a ring of cyan lenses round the emitter."""
+    c = panel(14)
+    c.disc(7.5, 7.5, 5.2, "k")
+    c.disc(7.5, 7.5, 4.4, "b", r_inner=3.4)
+    c.disc(7.5, 7.5, 2.2, "c")
+    c.disc(7.5, 7.5, 1.0, "C")
+    for x, y in ((7, 3), (8, 3), (7, 12), (8, 12), (3, 7), (3, 8), (12, 7), (12, 8)):
+        c.set(x, y, "C")
+    return c
+
+
+def hologram_table_side():
+    """Hologram Table side: only the bottom five rows show, the plate's rim with a lit strip."""
+    c = panel(15)
+    c.rect(0, 11, 15, 11, "k")
+    c.rect(1, 12, 14, 14, "m")
+    c.rect(2, 13, 13, 13, "c")
+    c.rect(0, 15, 15, 15, "k")
+    return c
+
+
+HOLOGRAM_BK, HOLOGRAM_ST = (11, 21, 21, 255), (64, 84, 83, 255)
+HOLOGRAM_CORE = (209, 254, 231, 255)
+# size -> the emitter's outer radius and its core's half width, in pixels of the whole table
+HOLOGRAM_EMITTER = {2: (7, 3), 3: (8, 4)}
+# (size, kind) -> the cell's corner in the table's pixels, the table's middle, whether its north and west sides are outer ones
+HOLOGRAM_CELLS = {(2, "corner"): ((0, 0), 16, True, True), (3, "corner"): ((0, 0), 24, True, True),
+                  (3, "edge"): ((16, 0), 24, True, False), (3, "centre"): ((16, 16), 24, False, False)}
+
+
+def hologram_metric(dx, dy):
+    """Distance on an octagon, the same under every quarter turn: rotated cells line up into one ring."""
+    return max(abs(dx), abs(dy), (abs(dx) + abs(dy)) * 0.72)
+
+
+def hologram_cell_top(size, kind):
+    """The plate of a merged Hologram Table's cell: its share of the outer border and of the emitter."""
+    (ox, oy), middle, north, west = HOLOGRAM_CELLS[(size, kind)]
+    rng = random.Random(11 + size * 3 + len(kind))
+    body = [(39, 56, 55, 255), (35, 52, 51, 255), (34, 51, 50, 255), (32, 49, 48, 255), (33, 50, 49, 255)]
+    outer, core = HOLOGRAM_EMITTER[size]
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            dx, dy = ox + x + 0.5 - middle, oy + y + 0.5 - middle
+            m = hologram_metric(dx, dy)
+            colour = body[rng.randrange(5)]
+            if north and y < 2 or west and x < 2:
+                colour = HOLOGRAM_BK if (north and y == 0) or (west and x == 0) else HOLOGRAM_ST
+            if m <= outer:
+                colour = (5, 91, 87, 255) if m > outer - 2 else HOLOGRAM_BK if m > core else (255, 255, 255, 255) if max(abs(dx), abs(dy)) <= 1 else HOLOGRAM_CORE
+            c.set(x, y, colour)
+    return c
+
+
+def hologram_cell_ring(size, kind):
+    """The pulse running out from the emitter: 16 frames x 5 ticks = 4 s, in step across all the cells."""
+    (ox, oy), middle, north, west = HOLOGRAM_CELLS[(size, kind)]
+    outer, _ = HOLOGRAM_EMITTER[size]
+    frames = []
+    for frame in range(16):
+        c = Canvas()
+        r0 = outer + 2 * frame
+        t = min(1.0, (r0 - outer) / 26)
+        colour = mix(HOLOGRAM_CORE, (94, 194, 184, 255), t)
+        for y in range(16):
+            for x in range(16):
+                if not (north and y < 2 or west and x < 2) and r0 < hologram_metric(ox + x + 0.5 - middle, oy + y + 0.5 - middle) <= r0 + 2:
+                    c.set(x, y, colour)
+        frames.append(c)
+    return strip(frames, frametime=5)
+
+
+def hologram_table_edge():
+    """A merged table's outer side, the same on every column so the glow line runs on unbroken from block to block."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, HOLOGRAM_BK)
+    c.rect(0, 12, 15, 12, HOLOGRAM_ST)
+    c.rect(0, 13, 15, 13, HOLOGRAM_CORE)
+    c.rect(0, 14, 15, 14, HOLOGRAM_ST)
+    return c
+
+
+def swarm_dock_top():
+    """Builder Swarm Dock pad: four small landing rings, one per Mini Drone, round a cyan cross. The
+    rings are dim: each lights up while a drone stands on it (see DockRenderer)."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "D", noise=3, seed=12)
+    # Lead-in marks from the middle of each edge
+    c.rect(7, 1, 8, 2, "b")
+    c.rect(7, 13, 8, 14, "b")
+    c.rect(1, 7, 2, 8, "b")
+    c.rect(13, 7, 14, 8, "b")
+    # One ring under each parking spot (0.15 from the middle, as DroneEntity.CORNER_OFFSET)
+    for cx, cy in ((5.1, 5.1), (9.9, 5.1), (5.1, 9.9), (9.9, 9.9)):
+        c.disc(cx, cy, 2.3, "b", r_inner=1.4)
+        c.set(round(cx), round(cy), "c")
+    return c
+
+
+def dock_side():
+    c = panel(10)
+    c.rect(0, 10, 15, 10, "k")
+    c.rect(0, 11, 15, 14, "d", noise=3, seed=10)
+    c.rect(0, 15, 15, 15, "k")
+    c.rect(1, 12, 14, 12, "b")
+    for x in (3, 7, 11):
+        c.rect(x, 12, x + 1, 12, "c")
+    return c
+
+
+def dock_beacon():
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "m", noise=3, seed=11)
+    c.rect(0, 0, 2, 0, "c")      # side faces: lit rim on top
+    c.rect(0, 1, 2, 2, "l")
+    c.rect(4, 0, 6, 2, "c")      # top face: lamp
+    c.set(5, 1, "C")
+    return c
+
+
+# --------------------------------------------------------------------------- energy storage
+
+
+def resonance_cell():
+    """Shell block of the Resonance Core: a steel frame around a dark crystal lattice."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, "k")
+    c.rect(1, 1, 14, 14, "s", noise=2, seed=76)
+    for i in range(2, 14):
+        c.set(i, i, "b")
+        c.set(15 - i, i, "b")
+    for i in (5, 6, 9, 10):
+        c.set(i, i, "c")
+        c.set(15 - i, i, "c")
+    c.set(7, 7, "C")
+    c.set(8, 8, "C")
+    c.frame(1, 1, 14, 14, "l")
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        c.set(x, y, "w")
+    return c
+
+
+def crystal_shell():
+    """Glass panel of the floating crystal. The renderer maps each rhombus face onto the diamond
+    inscribed in the texture: a bright frame along its edges, see-through blue glass inside."""
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            d = abs(x - 7.5) + abs(y - 7.5)
+            if d > 8.2:
+                continue
+            if d > 6.7:
+                c.set(x, y, "#e6f6ff")
+            elif d > 5.7:
+                c.set(x, y, (120, 200, 235, 230))
+            else:
+                c.set(x, y, (60, 150, 220, 70 + int(d * 6)))
+    return c
+
+
+def crystal_glow():
+    """The crystal's heart: white, brightest in the middle; the renderer tints it."""
+    c = Canvas()
+    for y in range(16):
+        for x in range(16):
+            v = max(0, 255 - int((abs(x - 7.5) + abs(y - 7.5)) * 14))
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
+def stabilizer_beam():
+    """Beam strip: bright along the middle (u = 0.5), fading to nothing at the edges, in colour
+    and in alpha, so it never shows a dark outline however it is blended."""
+    c = Canvas()
+    for x in range(16):
+        v = max(0, 255 - int(abs(x - 7.5) * 34))
+        for y in range(16):
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
+# --------------------------------------------------------------------------- items
+
+ITEM_ASCII = {
+    "item/drone_core": [
+        "................",
+        ".....kkkkkk.....",
+        "...kkmmmmmmkk...",
+        "..kmlllmmmmmdk..",
+        ".kmllddddddmmdk.",
+        ".kmldbbbbbbdmdk.",
+        "kmldbbccccbbdmdk",
+        "kmldbcCCCCcbdmdk",
+        "kmldbcCCCCcbdmdk",
+        "kmldbbccccbbdmdk",
+        ".kmdbbbbbbbbddk.",
+        ".kmdddddddddddk.",
+        "..kddddddddddk..",
+        "...kkddddddkk...",
+        ".....kkkkkk.....",
+        "................",
+    ],
+    "item/rotor": [
+        "................",
+        ".ww..........ww.",
+        ".wlk........klw.",
+        "..lmk......kml..",
+        "...kmk....kmk...",
+        "....kmkkkkmk....",
+        ".....kkbbkk.....",
+        ".....kbccbk.....",
+        ".....kbccbk.....",
+        ".....kkbbkk.....",
+        "....kmkkkkmk....",
+        "...kmk....kmk...",
+        "..lmk......kml..",
+        ".wlk........klw.",
+        ".ww..........ww.",
+        "................",
+    ],
+    "item/battery_cell": [
+        "................",
+        "......kkkk......",
+        "......kllk......",
+        "....kkkkkkkk....",
+        "....kmwmmmmk....",
+        "....kmbbbbmk....",
+        "....kmccccmk....",
+        "....kmbbbbmk....",
+        "....kmccccmk....",
+        "....kmbbbbmk....",
+        "....kmccccmk....",
+        "....kmbbbbmk....",
+        "....kmccccmk....",
+        "....kmmmmmmk....",
+        "....kkkkkkkk....",
+        "................",
+    ],
+    "item/harvester_module": [
+        "................",
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "....kkkkkkkk....",
+        "....kmllllmk....",
+        "....kmbccbmk....",
+        "....kmmmmmmk....",
+        "....kkkkkkkk....",
+        "..kkkkkkkkkkkk..",
+        "..kwwwwwwwwwwk..",
+        "..kllllllllllk..",
+        "..kwkkwkkwkkwk..",
+        "...k..k..k..k...",
+        "................",
+        "................",
+    ],
+    "item/quarry_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "....kkkkkkkk....",
+        "....kmbccbmk....",
+        "....kmmmmmmk....",
+        "....kkkkkkkk....",
+        "....kwlwlwlk....",
+        "....klwlwlwk....",
+        ".....kwlwlk.....",
+        ".....klwlwk.....",
+        "......kwlk......",
+        "......klwk......",
+        ".......kk.......",
+        "................",
+        "................",
+    ],
+    "item/transport_module": [
+        "................",
+        "......kkkk......",
+        "......kmmk......",
+        "...kkkkkkkkkk...",
+        "...kmmbccbmmk...",
+        "...kkkkkkkkkk...",
+        "...km......mk...",
+        "...km.kkkk.mk...",
+        "...km.kOOk.mk...",
+        "...kmkkOOkkmk...",
+        "...kl.kkkk.lk...",
+        "...kl......lk...",
+        "...kk......kk...",
+        "................",
+        "................",
+        "................",
+    ],
+    "item/taxi_module": [
+        "................",
+        "....kkkkkkkk....",
+        "....kmbccbmk....",
+        "....kkkkkkkk....",
+        ".......kk.......",
+        ".......mk.......",
+        ".......mk.......",
+        ".......mk.......",
+        ".......mk.......",
+        "......kllk......",
+        ".....kl..lk.....",
+        ".....kl...k.....",
+        ".....kl..kc.....",
+        "......kllk......",
+        ".......kk.......",
+        "................",
+    ],
+    "item/mob_capsule": [
+        "................",
+        "......kkkk......",
+        ".....kmllmk.....",
+        "....kmkkkkmk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kw....mk....",
+        "....kmkkkkmk....",
+        "....kbccccbk....",
+        ".....kbbbbk.....",
+        "......kkkk......",
+        "................",
+        "................",
+    ],
+    "item/mob_capsule_filled": [
+        "................",
+        "......kkkk......",
+        ".....kmllmk.....",
+        "....kmkkkkmk....",
+        "....kw.gg.mk....",
+        "....kwgGGgmk....",
+        "....kwgkkgmk....",
+        "....kwggggmk....",
+        "....kw.gg.mk....",
+        "....kwg..gmk....",
+        "....kmkkkkmk....",
+        "....kbccccbk....",
+        ".....kbbbbk.....",
+        "......kkkk......",
+        "................",
+        "................",
+    ],
+    # Drone seen from the front, wide and low: motors at the edges on thin arms, cyan visor, cream tank on the copper band
+    "item/drone": [
+        "................",
+        "................",
+        "................",
+        ".......kk.......",
+        "kkkk..kccK..kkkk",
+        "pPPpK.kIjK.kpPPp",
+        "knq...tttT...nqK",
+        "kqQMMMtTTeMMMqQK",
+        "kuu..HuuuuH..uuK",
+        ".KK.kcCCCCcK.KK.",
+        "....kHMMMMMK....",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
+        "................",
+        "................",
+    ],
+    # Mini Drone: the same drone drawn smaller (12x9 against 16x11)
+    "item/mini_drone": [
+        "................",
+        "................",
+        "................",
+        "................",
+        ".......kk.......",
+        "...kk.kccK.kk...",
+        "..kpPK.tT.kPpK..",
+        "..knq..Te..nqK..",
+        "..kuuMHuuHMuuK..",
+        "...KKKcCCcKKK...",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
+        "................",
+        "................",
+        "................",
+    ],
+}
+
+
+# Addon chips: a shared cartridge with a 6x6 icon in the window
+ADDON_CHIP = [
+    "................",
+    "................",
+    "..kkkkkkkkkkkk..",
+    "..kllllllllllk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..klssssssssmk..",
+    "..kmmmmmmmmmmk..",
+    "..kkkkkkkkkkkk..",
+    "...y.y.y.y.y....",
+    "................",
+]
+
+ADDON_ICONS = {
+    "item/speed_addon": [
+        "c..c..",
+        ".c..c.",
+        "..c..c",
+        "..c..c",
+        ".c..c.",
+        "c..c..",
+    ],
+    "item/stack_addon": [
+        "OOOOOO",
+        "......",
+        "OOOOOO",
+        "......",
+        "OOOOOO",
+        "......",
+    ],
+    "item/battery_addon": [
+        "..gg..",
+        ".gggg.",
+        ".gGGg.",
+        ".gggg.",
+        ".gGGg.",
+        ".gggg.",
+    ],
+    "item/fortune_addon": [
+        "..gg..",
+        ".gGGg.",
+        "gGGGGg",
+        "gggggg",
+        ".gggg.",
+        "..gg..",
+    ],
+    "item/silk_touch_addon": [
+        "....VV",
+        "...VVv",
+        "..VVv.",
+        ".VVv..",
+        ".Vv...",
+        "v.....",
+    ],
+    "item/anchor_addon": [
+        "..cc..",
+        ".cCCc.",
+        "..cc..",
+        "..cc..",
+        "c.cc.c",
+        ".cccc.",
+    ],
+}
+
+
+def addon_chip(icon):
+    c = from_ascii(ADDON_CHIP)
+    c.ascii(5, 5, icon)
+    return c
+
+
+# --------------------------------------------------------------------------- drone entity
+
+def box_faces(u, v, w, h, d):
+    """Texture regions (x0, y0, x1, y1 inclusive) of a model box, in Minecraft's box UV layout."""
+    faces = {
+        "top": (u + d, v, u + d + w - 1, v + d - 1),
+        "bottom": (u + d + w, v, u + d + 2 * w - 1, v + d - 1),
+        "right": (u, v + d, u + d - 1, v + d + h - 1),
+        "front": (u + d, v + d, u + d + w - 1, v + d + h - 1),
+        "left": (u + d + w, v + d, u + 2 * d + w - 1, v + d + h - 1),
+        "back": (u + 2 * d + w, v + d, u + 2 * d + 2 * w - 1, v + d + h - 1),
+    }
+    return {name: r for name, r in faces.items() if r[2] >= r[0] and r[3] >= r[1]}
+
+
+def paint_box(c, u, v, w, h, d, side, top=None, bottom=None, seed=0):
+    faces = box_faces(u, v, w, h, d)
+    for name, (x0, y0, x1, y1) in faces.items():
+        color = {"top": top or side, "bottom": bottom or side}.get(name, side)
+        c.rect(x0, y0, x1, y1, color, noise=3, seed=seed)
+    return faces
+
+
+def side_rows(c, faces, rows):
+    """Paints the side faces row by row (rows[0] is the top row)."""
+    for name in ("right", "front", "left", "back"):
+        if name in faces:
+            x0, y0, x1, y1 = faces[name]
+            for i, color in enumerate(rows):
+                if y0 + i <= y1:
+                    c.rect(x0, y0 + i, x1, y0 + i, color)
+
+
+DRONE_BODY = ("#5b7771", "#395853", "#233e3b", "#132423")      # same ramps as the machine models
+DRONE_COPPER = ("#5ec2b8",) * 4                                # the one flat mint enamel accent
+DRONE_CREAM = ("#eff5f0", "#d3ddd9", "#a6b5b2", "#6f7e7d")    # white ceramic tank
+DRONE_GUNMETAL = ("#5f6c6c", "#414d4e", "#2d3839", "#1b2325")
+DRONE_CARBON = ("#303737", "#131819")
+DRONE_STEEL = ("#e1eae9", "#b1bebc", "#7c8989", "#515e5e")
+
+
+def mix(a, b, t):
+    a, b = rgba(a), rgba(b)
+    return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (255,)
+
+
+# A machine's front with the power off: its lights (cyan, green, the uranium readout) one step
+# dimmer and its fire out
+POWERED_OFF = {"C": "c", "c": "b", "b": "#033a37", "G": "g", "g": "#1f5f37", "5": "4", "4": "3",
+               "O": "l", "o": "m", "r": "d"}
+# ...and while it works: a band of light sweeping down its lights, one step brighter
+SWEEP = {"b": "c", "c": "C", "C": "#ffffff", "g": "G", "G": "#e6ffe9", "4": "5", "5": "#e8ffd0"}
 FLAMES = ("r", "o", "O")
 # What glows in the dark on a working machine's front: its lights and any fire
 FRONT_GLOW = GLOW_KEYS | {"#ecfeff", "g", "G", "#e6ffe9", "4", "5", "#e8ffd0"} | set(FLAMES)
@@ -1175,71 +1800,6 @@ def dock_beacon():
 
 # --------------------------------------------------------------------------- energy storage
 
-def core_side():
-    """Pedestal side (6 px high on the block): dark plate with a cyan status strip."""
-    c = panel(70)
-    c.rect(0, 9, 15, 9, "k")
-    c.rect(0, 10, 15, 14, "D", noise=3, seed=71)
-    c.rect(0, 15, 15, 15, "k")
-    c.rect(2, 12, 13, 12, "b")
-    for x in (4, 8, 12):
-        c.set(x, 12, "c")
-    return c
-
-
-def core_front():
-    """Like the side, with the steel name plate of the R-ZPE cell."""
-    c = core_side()
-    c.rect(4, 10, 11, 14, "w")
-    c.frame(4, 10, 11, 14, "l")
-    c.rect(5, 12, 10, 12, "m")
-    c.set(2, 12, "g")
-    c.set(13, 12, "g")
-    return c
-
-
-def core_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, "D", noise=3, seed=72)
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        c.set(x, y, "l")
-    return c
-
-
-def core_ring():
-    """The emitter ring the crystal floats over: a glowing circle in a steel collar."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "m", noise=3, seed=73)
-    c.disc(7.5, 7.5, 7.0, "l", r_inner=6.0)
-    c.disc(7.5, 7.5, 5.6, "b")
-    c.disc(7.5, 7.5, 4.2, "c", r_inner=3.2)
-    c.disc(7.5, 7.5, 1.6, "C")
-    c.rect(0, 0, 15, 1, "c")   # side faces of the ring: lit rim
-    return c
-
-
-def pylon_side():
-    """Obelisk body: near-black panels split by a glowing violet strip."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 0, 14, 15, "D", noise=3, seed=74)
-    c.rect(1, 0, 2, 15, "d")
-    c.rect(7, 0, 8, 15, "v")
-    c.rect(7, 2, 8, 13, "V")
-    c.rect(4, 0, 4, 15, "k")
-    c.rect(11, 0, 11, 15, "k")
-    return c
-
-
-def pylon_top():
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=75)
-    c.disc(7.5, 7.5, 3.6, "v")
-    c.disc(7.5, 7.5, 2.0, "V")
-    return c
-
 
 def resonance_cell():
     """Shell block of the Resonance Core: a steel frame around a dark crystal lattice."""
@@ -1257,31 +1817,6 @@ def resonance_cell():
     c.frame(1, 1, 14, 14, "l")
     for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
         c.set(x, y, "w")
-    return c
-
-
-def pylon_emitter():
-    """The emitter ring at the top of a pylon (5 rows high on the model): steel rims around a
-    glowing violet lens band that runs all the way round, so the beam leaves it on any side."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(0, 0, 15, 0, "l")
-    c.rect(0, 1, 15, 3, "v")
-    c.rect(0, 2, 15, 2, "V")
-    for x in range(1, 16, 4):
-        c.set(x, 2, "w")
-    c.rect(0, 4, 15, 4, "l")
-    return c
-
-
-def pylon_port():
-    """Face of the socket where a cable meets a pylon: a cyan ring like the conduits' energy band."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "K")
-    c.rect(1, 1, 14, 14, "d", noise=3, seed=77)
-    c.disc(7.5, 7.5, 6.0, "b", r_inner=4.5)
-    c.disc(7.5, 7.5, 3.5, "s")
-    c.disc(7.5, 7.5, 1.5, "c")
     return c
 
 
@@ -1324,6 +1859,19 @@ def stabilizer_beam():
     return c
 
 
+def stabilizer_ring():
+    """A wave of the Resonance Core's drones, flying towards the crystal: a bright crest, the wake behind it
+    and a broken echo inside. Colour equals alpha, as in the beam, for blending by adding."""
+    c = Canvas(32, 32)
+    for y in range(32):
+        for x in range(32):
+            d = math.hypot(x - 15.5, y - 15.5)
+            angle = math.degrees(math.atan2(y - 15.5, x - 15.5)) % 360
+            v = 255 if 13 <= d < 15.2 else 115 if 15.2 <= d < 16 else 128 if 10.5 <= d < 13 else 56 if 8 <= d < 10.5 and angle % 45 < 28 else 0
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
 # --------------------------------------------------------------------------- items
 
 ITEM_ASCII = {
@@ -1343,24 +1891,6 @@ ITEM_ASCII = {
         "..kddddddddddk..",
         "...kkddddddkk...",
         ".....kkkkkk.....",
-        "................",
-    ],
-    "item/basic_frame": [
-        "................",
-        "................",
-        "..kkkk....kkkk..",
-        "..kllk....kllk..",
-        "..klmkkkkkkmlk..",
-        "..kkmmmmmmmmkk..",
-        "....km....mk....",
-        "....km.cc.mk....",
-        "....km.cc.mk....",
-        "....km....mk....",
-        "..kkmmmmmmmmkk..",
-        "..klmkkkkkkmlk..",
-        "..kllk....kllk..",
-        "..kkkk....kkkk..",
-        "................",
         "................",
     ],
     "item/rotor": [
@@ -1453,24 +1983,6 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
-    "item/planter_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "....kkkkkkkk....",
-        "....kwGGGGmk....",
-        "....kGgyggGk....",
-        "....kggggygk....",
-        "....kgyggggk....",
-        "....kgggyggk....",
-        "....kkkkkkkk....",
-        ".....kmmmmk.....",
-        "......kmmk......",
-        ".......kk.......",
-        ".......gg.......",
-        "......g..g......",
-        "................",
-    ],
     "item/taxi_module": [
         "................",
         "....kkkkkkkk....",
@@ -1525,77 +2037,42 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
+    # Drone seen from the front, wide and low: motors at the edges on thin arms, cyan visor, cream tank on the copper band
     "item/drone": [
         "................",
-        ".kkk........kkk.",
-        ".kwk........kwk.",
-        ".kkkk......kkkk.",
-        "...kmk....kmk...",
-        "....kmkkkkmk....",
-        ".....kmccmk.....",
-        ".....kcCCck.....",
-        ".....kcCCck.....",
-        ".....kmccmk.....",
-        "....kmkkkkmk....",
-        "...kmk....kmk...",
-        ".kkkk......kkkk.",
-        ".kwk........kwk.",
-        ".kkk........kkk.",
+        "................",
+        "................",
+        ".......kk.......",
+        "kkkk..kccK..kkkk",
+        "pPPpK.kIjK.kpPPp",
+        "knq...tttT...nqK",
+        "kqQMMMtTTeMMMqQK",
+        "kuu..HuuuuH..uuK",
+        ".KK.kcCCCCcK.KK.",
+        "....kHMMMMMK....",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
+        "................",
         "................",
     ],
-    # Mini Drone: the drone drawn smaller, with the Mini Frame's white arms
+    # Mini Drone: the same drone drawn smaller (12x9 against 16x11)
     "item/mini_drone": [
         "................",
         "................",
         "................",
-        "...kkk....kkk...",
-        "...kwk....kwk...",
-        "...kkkk..kkkk...",
-        ".....kwkkwk.....",
-        "......kCck......",
-        "......kcCk......",
-        ".....kwkkwk.....",
-        "...kkkk..kkkk...",
-        "...kwk....kwk...",
-        "...kkk....kkk...",
+        "................",
+        ".......kk.......",
+        "...kk.kccK.kk...",
+        "..kpPK.tT.kPpK..",
+        "..knq..Te..nqK..",
+        "..kuuMHuuHMuuK..",
+        "...KKKcCCcKKK...",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
         "................",
         "................",
-        "................",
-    ],
-    "item/survey_tool": [
-        "................",
-        ".....k..........",
-        ".....kc.........",
-        "......k.........",
-        "....kkkkkkkk....",
-        "....kssssssk....",
-        "....kscbbcsk....",
-        "....ksbccbsk....",
-        "....kscbbcsk....",
-        "....kssssssk....",
-        "....kmmmmmmk....",
-        "....kmcmmOmk....",
-        "....kkkkkkkk....",
-        "......kmmk......",
-        "......kmmk......",
-        "......kkkk......",
-    ],
-    "item/handbook": [
-        "................",
-        "..kkkkkkkkkkk...",
-        "..kbbbbbbbbbkw..",
-        "..kbccccccbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbCCbcbbkw..",
-        "..kbcbbbbcbbkw..",
-        "..kbccccccbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kbbbbbbbbbkw..",
-        "..kkkkkkkkkkkw..",
-        "...wwwwwwwwwww..",
         "................",
     ],
 }
@@ -1712,78 +2189,295 @@ def side_rows(c, faces, rows):
                     c.rect(x0, y0 + i, x1, y0 + i, color)
 
 
-def drone_texture():
-    c = Canvas(64, 64)
-    # Hull 8x3x8: light top band, glowing strip, dark base
-    hull = paint_box(c, 0, 0, 8, 3, 8, "m", top="m", bottom="d", seed=1)
-    side_rows(c, hull, ["l", "c", "d"])
-    x0, y0, x1, y1 = hull["top"]
-    c.frame(x0, y0, x1, y1, "d")
-    c.set(x0 + 1, y0 + 1, "l"); c.set(x1 - 1, y0 + 1, "l"); c.set(x0 + 1, y1 - 1, "l"); c.set(x1 - 1, y1 - 1, "l")
-    bx0, by0, bx1, by1 = hull["bottom"]
-    c.rect(bx0 + 3, by0 + 3, bx0 + 4, by0 + 4, "b")
-    # Core dome 5x2x5: glowing
-    dome = paint_box(c, 0, 11, 5, 2, 5, "b", top="c", seed=2)
-    side_rows(c, dome, ["c", "b"])
-    tx0, ty0, _, _ = dome["top"]
-    c.rect(tx0 + 1, ty0 + 1, tx0 + 3, ty0 + 3, "c")
-    c.set(tx0 + 2, ty0 + 2, "C")
-    # Front sensor 3x2x1
-    sensor = paint_box(c, 20, 11, 3, 2, 1, "k", seed=3)
-    fx0, fy0, fx1, fy1 = sensor["front"]
-    c.rect(fx0, fy0, fx1, fy1, "C")
-    # Arms 4x1x2 and motors 2x2x2
-    paint_box(c, 0, 18, 4, 1, 2, "d", top="m", seed=4)
-    motor = paint_box(c, 16, 18, 2, 2, 2, "D", top="m", bottom="k", seed=5)
-    side_rows(c, motor, ["l", "k"])
-    # Rotor blades (zero-height boxes): steel with cyan tips
-    for u, v, w, d in ((0, 24, 6, 1), (0, 26, 1, 6)):
-        for name, (x0, y0, x1, y1) in box_faces(u, v, w, 0, d).items():
-            c.rect(x0, y0, x1, y1, "w")
-            if w > d:
-                c.set(x0, y0, "b"); c.set(x1, y1, "b")
-            else:
-                c.set(x0, y0, "b"); c.set(x1, y1, "b")
-    # Landing skids 1x2x6
-    for u in (0, 14):
-        skid = paint_box(c, u, 32, 1, 2, 6, "d", top="m", bottom="k", seed=6)
-        side_rows(c, skid, ["m", "k"])
-    # Harvester head 4x2x4 with hazard stripes, and its blade 6x1x1
-    head = paint_box(c, 32, 0, 4, 2, 4, "m", bottom="k", seed=7)
-    for name in ("right", "front", "left", "back"):
+DRONE_BODY = ("#5b7771", "#395853", "#233e3b", "#132423")      # same ramps as the machine models
+DRONE_COPPER = ("#5ec2b8",) * 4                                # the one flat mint enamel accent
+DRONE_CREAM = ("#eff5f0", "#d3ddd9", "#a6b5b2", "#6f7e7d")    # white ceramic tank
+DRONE_STEEL = ("#e1eae9", "#b1bebc", "#7c8989", "#515e5e")
+
+
+def bevel_box(c, u, v, w, h, d, ramp):
+    """A model box painted like the machine models: lit top rows and edges, darker toward the bottom."""
+    hi, mid, lo, deep = ramp
+    faces = box_faces(u, v, w, h, d)
+    for name, (x0, y0, x1, y1) in faces.items():
+        if name == "top":
+            c.rect(x0, y0, x1, y1, mid)
+            c.rect(x0, y0, x1, y0, hi)
+            c.rect(x0, y0, x0, y1, hi)
+        elif name == "bottom":
+            c.rect(x0, y0, x1, y1, deep)
+        else:
+            c.rect(x0, y0, x1, y1, mid)
+            c.rect(x0, y0, x1, y0, hi)
+            if y1 > y0:
+                c.rect(x0, y1, x1, y1, lo)
+    return faces
+
+
+def mix(a, b, t):
+    """Blend two hex colours, t = 0 gives a, t = 1 gives b."""
+    ca, cb = rgba(a), rgba(b)
+    return tuple(round(ca[i] + (cb[i] - ca[i]) * t) for i in range(3)) + (255,)
+
+
+def shaded_box(c, u, v, w, h, d, ramp):
+    """Like bevel_box, with smooth gradients: sides fade from the lit top row to the dark bottom row,
+    the left column catches light and the right one falls into shade; the top fades away from its lit corner."""
+    hi, mid, lo, deep = ramp
+    faces = box_faces(u, v, w, h, d)
+    for name, (x0, y0, x1, y1) in faces.items():
+        if name == "bottom":
+            c.rect(x0, y0, x1, y1, deep)
+            continue
+        for y in range(y0, y1 + 1):
+            for x in range(x0, x1 + 1):
+                if name == "top":
+                    t = ((x - x0) / max(1, x1 - x0) + (y - y0) / max(1, y1 - y0)) / 2
+                    color = mix(hi, lo, 0.25 + 0.55 * t)
+                    if x == x0 or y == y0:
+                        color = mix(hi, mid, 0.2)
+                else:
+                    t = (y - y0) / max(1, y1 - y0)
+                    color = mix(mid, lo, t) if y > y0 or y1 == y0 else hi
+                    if y1 > y0 and y == y1:
+                        color = mix(lo, deep, 0.5)
+                    if x == x0 and x1 > x0:
+                        color = mix(color, hi, 0.25)
+                    elif x == x1 and x1 > x0:
+                        color = mix(color, deep, 0.3)
+                c.set(x, y, color)
+    return faces
+
+
+def drone_tools(c):
+    """The module tools, in the texture's right half. DroneModel.java holds the same coordinates."""
+    gun, steel, cream = DRONE_GUNMETAL, DRONE_STEEL, DRONE_CREAM
+    mint, dark, lamp = "#5ec2b8", "#132423", "#d1fee7"
+    flat = (mint,) * 4
+    around = ("right", "front", "left", "back")
+
+    # Harvester: a striped head and a notched rail with toothed blades sliding along it
+    head = shaded_box(c, 64, 0, 3, 2, 4, gun)
+    for name in around:
         x0, y0, x1, y1 = head[name]
         for x in range(x0, x1 + 1):
-            c.rect(x, y0, x, y1, "y" if (x - y0) % 2 == 0 else "k")
-    hx0, hy0, hx1, hy1 = head["bottom"]
-    c.rect(hx0 + 1, hy0 + 1, hx1 - 1, hy1 - 1, "c")
-    paint_box(c, 32, 6, 6, 1, 1, "w", top="l", seed=8)
+            c.rect(x, y0, x, y1, mint if (x - x0) % 2 == 0 else dark)
+    x0, y0, x1, y1 = head["bottom"]
+    c.rect(x0, y0, x1, y1, dark)
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, lamp)
+    x0, y0, x1, y1 = head["top"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, gun[2])
+    rail = shaded_box(c, 80, 0, 6, 1, 1, steel)
+    tooth = shaded_box(c, 94, 0, 2, 1, 1, steel)
+    for name in ("front", "back"):
+        x0, y0, x1, _ = rail[name]
+        for x in range(x0, x1 + 1, 2):
+            c.set(x, y0, dark)
+        _, y0, x1, _ = tooth[name]
+        c.set(x1, y0, mint)
+
+    # Transport: a housing with two lights, steel jaws with mint toes
+    housing = shaded_box(c, 100, 0, 3, 2, 2, gun)
+    x0, y0, x1, _ = housing["front"]
+    c.rect(x0, y0, x1, y0, mint)
+    c.set(x0, y0 + 1, lamp)
+    c.set(x1, y0 + 1, lamp)
+    jaw = shaded_box(c, 112, 0, 1, 2, 1, steel)
+    for name in around:
+        x0, _, _, y1 = jaw[name]
+        c.set(x0, y1, dark)
+    shaded_box(c, 116, 0, 1, 1, 1, flat)
+
+    # Logger: a disc with real teeth, a mint hub, a bracket to the hull
+    for x0, y0, x1, y1 in box_faces(64, 6, 0, 5, 5).values():
+        if x1 - x0 != 4 or y1 - y0 != 4:
+            continue
+        for j in range(5):
+            for i in range(5):
+                if i in (0, 4) and j in (0, 4):
+                    c.set(x0 + i, y0 + j, None)
+                elif i in (0, 4) or j in (0, 4):
+                    c.set(x0 + i, y0 + j, dark if (i + j) % 2 else steel[0])
+                else:
+                    c.set(x0 + i, y0 + j, steel[1] if (i + j) % 2 else steel[2])
+        c.set(x0 + 2, y0 + 2, mint)
+    shaded_box(c, 74, 6, 1, 1, 1, flat)
+    shaded_box(c, 78, 6, 2, 1, 1, gun)
+
+    # Taxi: a winch drum, a braided cable, a steel hook with a mint tip
+    drum = shaded_box(c, 84, 6, 3, 1, 2, gun)
+    x0, y0, x1, _ = drum["front"]
+    c.set(x0, y0, mint)
+    c.set(x1, y0, mint)
+    cable = shaded_box(c, 94, 6, 1, 10, 1, gun)
+    for name in around:
+        x0, y0, _, y1 = cable[name]
+        for y in range(y0 + 1, y1 + 1, 2):
+            c.set(x0, y, gun[2])
+    shaded_box(c, 98, 6, 3, 1, 1, steel)
+    tip = shaded_box(c, 106, 6, 1, 1, 1, steel)
+    x0, y0, _, _ = tip["top"]
+    c.set(x0, y0, mint)
+
+    # Rancher: long blades, bright towards the tip, a mint pivot bolt, a bracket to the hull
+    blade = shaded_box(c, 110, 6, 1, 1, 6, steel)
+    for name in ("right", "left"):
+        x0, y0, x1, _ = blade[name]
+        c.rect(x0, y0, x0 + 3, y0, steel[0])
+        c.rect(x0 + 4, y0, x1, y0, gun[1])
+    shaded_box(c, 124, 6, 1, 3, 1, flat)
+
+    # Bomb: a banded casing, a red detonator, an axle and an arming vane
+    case = shaded_box(c, 68, 17, 3, 3, 3, gun)
+    for name in around:
+        x0, y0, x1, _ = case[name]
+        c.rect(x0, y0 + 1, x1, y0 + 1, mint)
+    x0, y0, x1, y1 = case["top"]
+    c.rect(x0, y0, x1, y1, gun[1])
+    x0, y0, _, _ = case["front"]
+    c.set(x0 + 1, y0 + 2, dark)
+    shaded_box(c, 80, 17, 1, 1, 1, ("#ff2a1f",) * 4)
+    shaded_box(c, 84, 17, 1, 1, 1, steel)
+    for u, colour, w, h in ((88, steel[1], 3, 1), (96, steel[2], 1, 3)):
+        for x0, y0, x1, y1 in (v for n, v in box_faces(u, 17, w, h, 0).items() if n in ("front", "back")):
+            c.rect(x0, y0, x1, y1, colour)
+            c.set(x0, y0, mint)
+
+    # Small details: the Builder's level, the Breeder's feed trough with grain showing, the Fisher's float
+    level = shaded_box(c, 98, 17, 3, 1, 1, flat)
+    x0, y0, _, _ = level["front"]
+    c.set(x0 + 1, y0, lamp)
+    shaded_box(c, 76, 24, 1, 2, 1, gun)
+    rack = shaded_box(c, 64, 28, 5, 2, 3, steel)
+    hay, straw = "#c9a84a", "#e6cf7a"
+    for name in around:
+        x0, y0, x1, y1 = rack[name]
+        for x in range(x0, x1 + 1):
+            if (x - x0) % 2:
+                c.rect(x, y0, x, y1, straw if (x - x0) % 4 == 1 else hay)
+    for name, step in (("bottom", 2), ("top", 2)):
+        x0, y0, x1, y1 = rack[name]
+        for x in range(x0, x1 + 1):
+            c.rect(x, y0, x, y1, steel[2] if (x - x0) % step == 0 else straw if (x - x0) % 4 == 1 else hay)
+    # Planter and Fertilizer: the pump's stem, and its spray bar with three nozzles along the bottom
+    shaded_box(c, 106, 17, 1, 1, 1, gun)
+    bar = shaded_box(c, 84, 24, 3, 1, 1, steel)
+    x0, y0, x1, _ = bar["bottom"]
+    c.rect(x0, y0, x1, y0, dark)
+    for x in range(x0, x1 + 1, 2):
+        c.set(x, y0, mint)
+    for name in ("front", "back"):
+        x0, y0, x1, _ = bar[name]
+        c.set(x0, y0, mint)
+        c.set(x1, y0, mint)
+    # Sponge: the housing, the tube with a seam, the hood with a dark mouth; DroneRenderer draws its rings and lamp
+    shaded_box(c, 64, 40, 3, 1, 3, gun)
+    tube = shaded_box(c, 80, 40, 2, 6, 2, steel)
+    for name in around:
+        x0, y0, x1, _ = tube[name]
+        c.rect(x0, y0 + 2, x1, y0 + 2, steel[3])
+    hood = shaded_box(c, 88, 40, 5, 1, 5, steel)
+    x0, y0, x1, y1 = hood["bottom"]
+    c.rect(x0, y0, x1, y1, steel[2])
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, "#071314")
+    c.set(x0 + 2, y0 + 2, steel[3])
+    # Tank: the lid and floor with a mint stripe, posts, the clamp to the hull, the dark plate behind the window, the pump's handle and rod
+    tank_cap = shaded_box(c, 64, 46, 3, 1, 4, cream)
+    x0, y0, x1, y1 = tank_cap["top"]
+    c.rect(x0 + 1, y0, x0 + 1, y1, mint)
+    shaded_box(c, 80, 48, 1, 3, 1, gun)
+    shaded_box(c, 88, 48, 1, 1, 2, steel)
+    paint_box(c, 96, 48, 1, 3, 3, "#071314")
+    shaded_box(c, 104, 48, 1, 1, 3, steel)
+    shaded_box(c, 112, 48, 1, 3, 1, gun)
+    bob = shaded_box(c, 112, 17, 2, 2, 2, cream)
+    for name in around:
+        x0, y0, x1, _ = bob[name]
+        c.rect(x0, y0, x1, y0, mint)
+    x0, y0, x1, y1 = bob["top"]
+    c.rect(x0, y0, x1, y1, mint)
+
+
+def drone_texture():
+    c = Canvas(128, 64)
+    # Chassis 5x2x6: engraved top with bolts and a vent, side seams, a status light on the back
+    chassis = shaded_box(c, 0, 0, 5, 2, 6, DRONE_BODY)
+    x0, y0, x1, y1 = chassis["top"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, DRONE_BODY[3])
+    c.rect(x0 + 1, y1 - 1, x1 - 1, y1 - 1, mix(DRONE_BODY[0], DRONE_BODY[1], 0.5))
+    for x, y in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+        c.set(x, y, DRONE_STEEL[1])
+    for y in range(y0 + 3, y1 - 1, 2):
+        c.set(x0 + 2, y, DRONE_BODY[3])
+    for name in ("right", "left"):
+        x0, y0, x1, y1 = chassis[name]
+        c.set((x0 + x1) // 2, y0, DRONE_BODY[3])
+        c.set((x0 + x1) // 2 + 1, y0, DRONE_BODY[0])
+    x0, y0, x1, y1 = chassis["back"]
+    c.set((x0 + x1) // 2, y0, "c")
+    # Visor 4x1x1: glowing strip, brighter in the middle
+    for name, (x0, y0, x1, y1) in box_faces(54, 56, 4, 1, 1).items():
+        c.rect(x0, y0, x1, y1, "c")
+        if name == "front":
+            c.rect(x0 + 1, y0, x1 - 1, y1, "C")
+    # Low tank 3x2x3: cream with a cylinder-like sheen and a green level window, flat dark copper band 3x1x3
+    tank = shaded_box(c, 0, 11, 3, 2, 3, DRONE_CREAM)
+    for name in ("right", "front", "left", "back"):
+        x0, y0, x1, y1 = tank[name]
+        c.set(x0, y0, DRONE_CREAM[0])
+        c.set(x1, y1, DRONE_CREAM[3])
+    x0, y0, x1, y1 = tank["front"]
+    c.set(x0 + 1, y0, "#9be08a")
+    c.set(x0 + 1, y1, "#4fa85a")
+    x0, y0, x1, y1 = tank["top"]
+    c.set(x0 + 1, y0 + 1, DRONE_STEEL[1])                # filler cap
+    for x0, y0, x1, y1 in box_faces(28, 32, 3, 1, 3).values():
+        c.rect(x0, y0, x1, y1, DRONE_COPPER[2])
+    # Antenna: steel mast 1x2x1, glowing tip 1x1x1
+    shaded_box(c, 54, 40, 1, 2, 1, DRONE_STEEL)
+    for name, (x0, y0, x1, y1) in box_faces(44, 46, 1, 1, 1).items():
+        c.rect(x0, y0, x1, y1, "C" if name == "top" else "c")
+    # Arms 4x1x1: dark tube with a lit top edge and a copper joint at the hull end
+    arm = shaded_box(c, 0, 18, 4, 1, 1, DRONE_BODY)
+    for name in ("right", "front", "left", "back", "top", "bottom"):
+        if name in arm:
+            x0, y0, x1, y1 = arm[name]
+            c.set(x0, y0, DRONE_COPPER[2])
+    # Motors 2x2x2: gunmetal can with a flat dark copper ring round its base and a lighter hub on top
+    motor = shaded_box(c, 16, 18, 2, 2, 2, DRONE_GUNMETAL)
+    for name in ("right", "front", "left", "back"):
+        x0, y0, x1, y1 = motor[name]
+        c.rect(x0, y1, x1, y1, DRONE_COPPER[2])
+    x0, y0, _, _ = motor["top"]
+    c.set(x0, y0, DRONE_GUNMETAL[0])
+    nozzle = shaded_box(c, 44, 56, 1, 1, 1, DRONE_STEEL)
+    x0, y0, _, _ = nozzle["bottom"]
+    c.set(x0, y0, DRONE_BODY[3])
+    # Rotor blades (zero-height boxes): matte carbon, a touch lighter toward the tips
+    for u, v, w, d in ((0, 24, 6, 1), (0, 26, 1, 6)):
+        for name, (x0, y0, x1, y1) in box_faces(u, v, w, 0, d).items():
+            length = max(x1 - x0, y1 - y0)
+            for i in range(length + 1):
+                tone = mix(DRONE_CARBON[1], DRONE_CARBON[0], abs(i - length / 2) / (length / 2 or 1))
+                if x1 - x0 >= y1 - y0:
+                    c.rect(x0 + i, y0, x0 + i, y1, tone)
+                else:
+                    c.rect(x0, y0 + i, x1, y0 + i, tone)
+    # Landing gear: legs 1x2x1, skids 1x1x7 with a rubber-dark sole
+    shaded_box(c, 44, 49, 1, 2, 1, DRONE_BODY)
+    skid = shaded_box(c, 0, 32, 1, 1, 7, DRONE_BODY)
+    x0, y0, x1, y1 = skid["bottom"]
+    c.rect(x0, y0, x1, y1, "#15181d")
     # Quarry drill: base 2x1x2 and bit 1x2x1, steel with a cyan ring
     paint_box(c, 48, 0, 2, 1, 2, "m", top="l", bottom="b", seed=9)
     bit = paint_box(c, 56, 0, 1, 2, 1, "w", bottom="l", seed=10)
     side_rows(c, bit, ["w", "l"])
-    # Transport claw: body 4x1x2 and two amber prongs 1x2x1
-    claw = paint_box(c, 32, 10, 4, 1, 2, "d", top="m", bottom="k", seed=11)
-    side_rows(c, claw, ["b"])
-    prong = paint_box(c, 44, 10, 1, 2, 1, "y", bottom="k", seed=12)
-    side_rows(c, prong, ["k", "y"])
     # Planter seed tank 3x2x1: green glass with a light rim
     tank = paint_box(c, 0, 40, 3, 2, 1, "g", top="m", seed=13)
     side_rows(c, tank, ["G", "g"])
-    # Taxi cable 1x11x1 and hook (bar 3x1x1, tip 1x1x1): dark cable, steel hook with a cyan tip
-    paint_box(c, 8, 40, 1, 11, 1, "k", top="m", seed=14)
-    paint_box(c, 12, 40, 3, 1, 1, "l", top="w", bottom="m", seed=15)
-    paint_box(c, 20, 40, 1, 1, 1, "c", seed=16)
-    # Rancher shear blades 1x1x4: steel with a dark edge
-    blade = paint_box(c, 32, 40, 1, 1, 4, "w", top="l", bottom="k", seed=17)
-    side_rows(c, blade, ["w"])
     # Fertilizer canister 2x3x2: white with a green band and a dark cap
     can = paint_box(c, 44, 40, 2, 3, 2, "w", top="k", bottom="m", seed=18)
     side_rows(c, can, ["w", "g", "w"])
-    # Logger saw blade 0x5x5 (a flat disc): steel with dark teeth
-    for name, (x0, y0, x1, y1) in box_faces(48, 10, 0, 5, 5).items():
-        c.rect(x0, y0, x1, y1, "w")
-        c.frame(x0, y0, x1, y1, "k")
-        c.set((x0 + x1) // 2, (y0 + y1) // 2, "m")
     # Guard laser: steel mount 2x2x2, barrel 1x1x4 with a dark band, red lens 1x1x1
     paint_box(c, 0, 52, 2, 2, 2, "l", top="w", bottom="d", seed=19)
     barrel = paint_box(c, 8, 52, 1, 1, 4, "m", top="l", bottom="d", seed=20)
@@ -1791,91 +2485,12 @@ def drone_texture():
         x0, y0, x1, y1 = barrel[name]
         c.set(x0 + 1, y0, "k")
     paint_box(c, 20, 52, 1, 1, 1, "#ff2a1f", seed=21)
-    # Bomb charge 3x3x3: dark casing with a hazard band, red detonator 1x1x1
-    charge = paint_box(c, 28, 52, 3, 3, 3, "d", top="m", bottom="k", seed=22)
-    side_rows(c, charge, ["d", "y", "d"])
-    paint_box(c, 40, 52, 1, 1, 1, "#ff2a1f", seed=23)
+    drone_tools(c)
     return c
 
 
 # --------------------------------------------------------------------------- output
 ITEM_ASCII.update({
-    # Rancher Module: open shears over a tuft of wool
-    "item/rancher_module": [
-        "................",
-        "..kk........kk..",
-        ".kwwk......kwwk.",
-        ".kwlk......klwk.",
-        "..kwwk....kwwk..",
-        "...kwwk..kwwk...",
-        "....kwwkkwwk....",
-        ".....kwwwwk.....",
-        "......kcck......",
-        ".....kmkkmk.....",
-        "....kmk..kmk....",
-        "...kok....kok...",
-        "..kook....kook..",
-        "..kook....kook..",
-        "...kk......kk...",
-        "................",
-    ],
-    # Fertilizer Module: a white canister with a green band, dripping
-    "item/fertilizer_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        ".....kkkkkk.....",
-        "....kwwwwwlk....",
-        "....kwwwwwlk....",
-        "....kggggggk....",
-        "....kgGggggk....",
-        "....kggggggk....",
-        "....kwwwwwlk....",
-        "....kwwwwwlk....",
-        "....kkkkkkkk....",
-        "......kmmk......",
-        ".......kk.......",
-        ".......GG.......",
-        "........G.......",
-    ],
-    # Fisher Module: the drone's cap with a line down to a hook and a fish on it
-    "item/fisher_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "...kkkkkkkkkk...",
-        "...kmmbccbmmk...",
-        "...kkkkkkkkkk...",
-        ".......kk.......",
-        ".......kw.......",
-        ".......kw.......",
-        ".......kw.......",
-        "....kk.kw.......",
-        "...kbck.kw......",
-        "..kbcCCk.kw.....",
-        "...kbck..kwk....",
-        "....kk...kk.....",
-        "................",
-    ],
-    # Breeder Module: a feed canister with a heart on it
-    "item/breeder_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        ".....kkkkkk.....",
-        "....kwwwwwlk....",
-        "....kwrwwrlk....",
-        "....krrrrrrk....",
-        "....krrrrrrk....",
-        "....kwrrrrlk....",
-        "....kwwrrwlk....",
-        "....kwwwwwlk....",
-        "....kkkkkkkk....",
-        "......kyyk......",
-        ".......kk.......",
-        ".......yy.......",
-        "........y.......",
-    ],
     # Builder Module: the claw holds a block over the cyan ghost of where it goes
     "item/builder_module": [
         "................",
@@ -1916,84 +2531,37 @@ ITEM_ASCII.update({
         "................",
         "................",
     ],
-    # Bomb Module: the drone's cap with a striped charge under it and a lit fuse
-    "item/bomb_module": [
-        "................",
-        "......kkkk......",
-        "......kmmk......",
-        "...kkkkkkkkkk...",
-        "...kmmbccbmmk...",
-        "...kkkkkkkkkk...",
-        ".......kk.......",
-        ".....kkkkkk.....",
-        "....kddddddk....",
-        "....kyykyykk....",
-        "....kddddddk....",
-        "....kddddddk....",
-        ".....kkkkkk.....",
-        ".......rk.......",
-        "......Oo........",
-        ".......O........",
-    ],
 })
 for _name, _rows in list(ITEM_ASCII.items())[-7:]:
     assert len(_rows) == 16 and all(len(r) == 16 for r in _rows), _name
 
 
-def saw_icon():
-    """Logger Module icon: a circular saw blade with teeth and a glowing hub."""
-    c = Canvas()
-    c.disc(7.5, 7.5, 6.9, "k")
-    c.disc(7.5, 7.5, 6.0, "w")
-    c.disc(7.5, 7.5, 4.6, "l")
-    for i in range(12):
-        angle = math.tau * i / 12
-        c.set(round(7.5 + 7.2 * math.cos(angle)), round(7.5 + 7.2 * math.sin(angle)), "k")
-        c.set(round(7.5 + 5.4 * math.cos(angle)), round(7.5 + 5.4 * math.sin(angle)), "m")
-    c.disc(7.5, 7.5, 2.0, "k")
-    c.disc(7.5, 7.5, 1.2, "c")
-    return c
-
-
 # --------------------------------------------------------------------------- acid and steam engine
 
-SULFUR = "#e8d43a"
-SULFUR_DARK = "#9a8a16"
 ACID = "#9be04a"
 
 
 def sulfur_ore_overlay():
-    """Transparent overlay drawn over netherrack: clusters of yellow sulfur crystals."""
-    c = Canvas()
-    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
-        c.rect(cx, cy, cx + 1, cy + 1, SULFUR_DARK)
-        c.set(cx, cy, SULFUR)
-        c.set(cx + 1, cy, "#fff3a0")
-    return c
+    """Over netherrack: soft clumps with a muted rim, in a pale lemon that nether gold's orange can't be taken for."""
+    return pixel_art([
+        "................",
+        "...112.....11...",
+        "..12332...1233..",
+        "...2344....2342.",
+        "....23......23..",
+        "........1.......",
+        ".......12231....",
+        "..11..12334421..",
+        ".1233..234552...",
+        "..2343..2332....",
+        "...22..........1",
+        ".........1122.23",
+        "...11...123342..",
+        "..1233...23442..",
+        "...23.....22....",
+        "................",
+    ], {"1": "#7d5c28", "2": "#a88a2e", "3": "#cdb643", "4": "#e7d966", "5": "#f6eea0"})
 
-
-def sulfur_dust():
-    """A small heap of yellow powder."""
-    c = Canvas()
-    for y in range(7, 14):
-        half = (y - 6) + 1
-        c.rect(8 - half, y, 7 + half, y, SULFUR, noise=18, seed=y)
-    c.rect(2, 14, 13, 14, SULFUR_DARK)
-    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
-        c.set(x, y, "#fff3a0")
-    return c
-
-
-def acid_synthesizer_front():
-    """Two framed glass windows, water (columns 3..6) and acid (9..12): the renderer fills them to their tanks' levels."""
-    c = panel(60)
-    for x0 in (2, 8):
-        c.rect(x0, 2, x0 + 5, 12, "K")
-        c.rect(x0 + 1, 3, x0 + 4, 11, "#14222a")
-    c.rect(7, 4, 7, 10, "m")
-    c.set(7, 7, "O")
-    c.rect(3, 13, 12, 13, "c")
-    return c
 
 def containment_glass():
     """Framed, tinted window: steel frame, cyan corner lights, a see-through pane."""
@@ -2005,37 +2573,6 @@ def containment_glass():
         c.set(x, y, "c")
     for i in range(3, 7):
         c.set(i, 9 - i, (200, 240, 255, 110))
-    return c
-
-
-def steam_engine_front():
-    """The boiler's face: an induction coil glowing behind a grille, and a pressure gauge."""
-    c = panel(61)
-    c.rect(3, 3, 12, 10, "K")
-    for y in range(4, 10, 2):
-        c.rect(4, y, 11, y, "o")
-        c.rect(5, y, 10, y, "O")
-    c.disc(7.5, 12.5, 1.6, "w")
-    c.set(8, 12, "r")
-    return c
-
-
-def steam_engine_cylinder():
-    """A ribbed steel cylinder with a brass band."""
-    c = panel(62, base="m")
-    for x in range(3, 13, 2):
-        c.rect(x, 2, x, 13, "l")
-    c.rect(2, 7, 13, 8, "O")
-    return c
-
-
-def steam_engine_dynamo():
-    """Copper windings behind a grille, cyan output lights."""
-    c = panel(63)
-    c.rect(3, 3, 12, 12, "K")
-    for y in range(4, 12):
-        c.rect(4, y, 11, y, "#b86b2e" if y % 2 else "#e08a45")
-    c.rect(3, 13, 12, 13, "c")
     return c
 
 
@@ -2111,203 +2648,227 @@ def plain_white():
 
 # --------------------------------------------------------------------------- mech
 
-MECH_WHITE = "#e9edf0"
-MECH_SEAM = "#c3cad1"
-MECH_RED = "#1f8fd0"  # accent: the mod's blue
-MECH_RED_DARK = "#0e5f99"
-MECH_DARK = "#2b3036"
-MECH_BLACK = "#16191d"
+# Ramps (light, main, seam) in the mod's palette: armour shells on the hangar's body teal, darker joints, mint enamel,
+# steel on the crest, the toe caps and the rims, emerald only on the shoulder chevron
+MECH_TEAL = ("#5b7771", "#395853", "#233e3b")
+MECH_JOINT = ("#395853", "#233e3b", "#132423")
+MECH_DEEP = ("#233e3b", "#132423", "#071314")
+MECH_MINT = ("#a5ead4", "#5ec2b8", "#488d91")
+MECH_STEEL = ("#bdc6c5", "#b1bebc", "#7c8989")
+MECH_FACE = ("#132423", "#071314", "#030909")
+MECH_LIGHT = ("#d1fee7", "#d1fee7", "#d1fee7")
+MECH_EMERALD = "#00b894"
+MECH_RECESS = "#030909"
+
+# The boxes of MechModel, by name: (u, v, width, height, depth). Mirrored pairs share one entry.
+MECH_BOXES = {
+    "side_wall": (0, 0, 1, 22, 7), "back_wall": (16, 0, 14, 22, 3), "blade": (50, 0, 1, 14, 3), "pad": (16, 96, 6, 5, 11), "shin": (90, 0, 7, 8, 8),
+    "pad_skirt": (0, 29, 1, 6, 10), "boot": (22, 29, 7, 4, 11), "thigh": (58, 29, 5, 10, 5), "spine": (78, 29, 2, 14, 1),
+    "sh_plate": (84, 29, 5, 1, 12), "pack": (0, 45, 12, 10, 3), "helm": (30, 45, 8, 7, 6), "flange": (66, 96, 2, 4, 9), "forearm": (78, 45, 5, 8, 5),
+    "upper": (50, 96, 4, 10, 4), "chest": (110, 45, 7, 10, 2), "hip": (0, 58, 1, 6, 6), "th_plate": (14, 58, 1, 6, 6), "knee_blk": (28, 58, 5, 5, 6),
+    "cuff": (58, 58, 6, 4, 6), "floor": (82, 58, 12, 2, 7), "ear": (26, 70, 1, 4, 5),
+    "roof": (38, 70, 12, 1, 7), "drill_collar": (76, 70, 5, 3, 5), "drill_bit": (96, 70, 4, 4, 4), "fist": (112, 70, 4, 4, 4),
+    "ch_plate": (0, 79, 5, 7, 1), "thr": (12, 79, 3, 5, 3), "bell": (24, 79, 4, 3, 4), "nape": (40, 79, 6, 5, 2), "flange_tip": (0, 114, 2, 2, 5),
+    "kneepad": (68, 79, 4, 5, 2), "pec": (104, 96, 7, 6, 1), "drill_mid": (92, 79, 3, 3, 3), "nozzle": (104, 79, 3, 3, 3),
+    "wing_root": (0, 87, 8, 1, 4), "visor": (42, 87, 8, 4, 1), "toe": (60, 87, 5, 3, 2), "hilt": (74, 87, 2, 2, 3),
+    "pad_front": (84, 87, 4, 4, 1), "drill_tip": (94, 87, 2, 3, 2), "fin_tip": (102, 87, 1, 4, 1), "wing_mid": (106, 87, 8, 1, 3),
+    "fin_base": (0, 92, 2, 3, 1), "wing_tip": (6, 92, 6, 1, 2), "gem": (22, 92, 2, 2, 1), "bar": (28, 92, 8, 1, 1),
+    "yoke": (0, 96, 2, 12, 6), "door": (88, 96, 7, 8, 1), "door_abs": (14, 114, 5, 4, 1),
+}
 
 
-def _mech_box(c, u, v, w, h, d, color=MECH_WHITE, seam=MECH_SEAM, seed=0):
-    """A box of the mech: one colour with a seam around every face big enough to show one."""
-    faces = paint_box(c, u, v, w, h, d, color, seed=seed)
-    for x0, y0, x1, y1 in faces.values():
+def _mech_box(c, name, ramp, top=None, seed=0):
+    """A box of the mech: lit top row and left column, a dark underside, a seam round every face big enough to show one."""
+    light, main, seam = ramp
+    faces = paint_box(c, *MECH_BOXES[name], main, top=top, seed=seed)
+    for face, (x0, y0, x1, y1) in faces.items():
+        if face == "bottom":
+            c.rect(x0, y0, x1, y1, seam)
+            continue
         if x1 - x0 >= 3 and y1 - y0 >= 3:
             c.frame(x0, y0, x1, y1, seam)
+        c.rect(x0, y0, x1, y0, light)
+        c.rect(x0, y0, x0, y1, light)
     return faces
 
 
-def mech_frame_icon():
-    """The folded mech as an item: a small white and blue figure with a cyan visor."""
-    rows = [
-        "................",
-        ".......RR.......",
-        "......wCCw......",
-        "......wwww......",
-        "...RRwwccwwRR...",
-        "..RwwwwccwwwwR..",
-        "..ww.wwwwww.ww..",
-        "..ww.wRRRRw.ww..",
-        "..dd..wddw..dd..",
-        "......wwww......",
-        ".....ww..ww.....",
-        ".....ww..ww.....",
-        ".....ww..ww.....",
-        ".....RR..RR.....",
-        "....RRR..RRR....",
-        "................",
-    ]
-    mapping = {"w": MECH_WHITE, "R": MECH_RED, "d": MECH_DARK, "c": "c", "C": "C"}
-    c = Canvas()
-    for y, row in enumerate(rows):
-        for x, ch in enumerate(row):
-            if ch in mapping:
-                c.set(x, y, mapping[ch])
-    # A dark outline so it reads on any background
-    outline = []
-    for y in range(16):
-        for x in range(16):
-            if c.pixels[y][x] is None and any(0 <= x + dx < 16 and 0 <= y + dy < 16 and c.pixels[y + dy][x + dx] is not None
-                                              for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
-                outline.append((x, y))
-    for x, y in outline:
-        c.set(x, y, "K")
-    return c
-
-
 def mech_texture():
-    """The mech's skin, 128x128 in the box layout of MechModel: white armour, blue trim, dark joints and bay, cyan lights."""
+    """The mech's skin, 128x128 in the box layout of MechModel: teal armour, mint enamel, steel crest and rims, near-white lights."""
     c = Canvas(128, 128)
-    # The pilot's bay: white outside, dark inside with a few lights
-    back_wall = _mech_box(c, 0, 92, 16, 22, 3, seed=1)
+    # The pilot's bay: a dark shell, deep inside with lit rails
+    back_wall = _mech_box(c, "back_wall", MECH_JOINT, seed=1)
     x0, y0, x1, y1 = back_wall["front"]
-    c.rect(x0, y0, x1, y1, MECH_BLACK)
+    c.rect(x0, y0, x1, y1, MECH_FACE[1])
     for y in range(y0 + 3, y1 - 2, 4):
         c.set(x0 + 2, y, "c")
         c.set(x1 - 2, y, "c")
-    tx0, ty0, tx1, ty1 = back_wall["top"]
-    c.rect(tx0, ty0, tx1, ty1, MECH_RED)
-    c.rect(*back_wall["back"], MECH_DARK)
-    side_wall = _mech_box(c, 38, 92, 2, 22, 7, seed=2)
-    c.rect(*side_wall["left"], MECH_BLACK)
+    side_wall = _mech_box(c, "side_wall", MECH_TEAL, seed=2)
+    c.rect(*side_wall["left"], MECH_FACE[1])
     x0, y0, x1, y1 = side_wall["right"]
-    c.rect(x0, y0 + 9, x1, y0 + 10, MECH_RED)
-    floor = _mech_box(c, 56, 92, 12, 2, 7, seed=3)
-    c.rect(*floor["top"], MECH_DARK)
+    c.rect(x0, y0 + 10, x1, y0 + 11, MECH_JOINT[1])
+    x0, y0, x1, y1 = side_wall["front"]
+    c.rect(x0, y0 + 11, x1, y1, MECH_FACE[0])                           # dark waist flank under the chest
+    # The shoulder yoke the pads sit against: it also hides the pilot's arms
+    yoke = _mech_box(c, "yoke", MECH_TEAL, seed=60)
+    for face in ("front", "right", "back"):
+        x0, y0, x1, y1 = yoke[face]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[1])
+        c.rect(x0, y0 + 6, x1, y0 + 6, MECH_JOINT[2])
+    floor = _mech_box(c, "floor", MECH_JOINT, seed=3)
+    c.rect(*floor["top"], MECH_DEEP[1])
     x0, y0, x1, y1 = floor["front"]
-    c.rect(x0 + 3, y0, x1 - 3, y1, MECH_RED)
-    roof = _mech_box(c, 18, 74, 12, 1, 7, seed=4)
-    c.rect(*roof["bottom"], MECH_BLACK)
+    c.rect(x0 + 4, y0, x1 - 4, y1, MECH_STEEL[2])                        # step edge
+    roof = _mech_box(c, "roof", MECH_JOINT, seed=4)
+    c.rect(*roof["bottom"], MECH_FACE[1])
+    # Back unit: radiator slats under a mint line, a steel plate on top where the hangar's gripper lands
+    pack = _mech_box(c, "pack", MECH_TEAL, seed=5)
+    x0, y0, x1, y1 = pack["back"]
+    for y in range(y0 + 2, y1 - 1, 2):
+        c.rect(x0 + 2, y, x1 - 2, y, MECH_RECESS)
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, MECH_MINT[1])
+    x0, y0, x1, y1 = pack["top"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, MECH_STEEL[2])
     # Harness: a dark spine with lights, a shoulder bar
-    spine = paint_box(c, 92, 102, 2, 14, 1, MECH_DARK, seed=5)
-    x0, y0, x1, y1 = spine["front"]
+    x0, y0, x1, y1 = _mech_box(c, "spine", MECH_DEEP, seed=6)["front"]
     for y in range(y0 + 1, y1, 3):
         c.set(x0, y, "c")
-    paint_box(c, 98, 102, 8, 1, 1, MECH_DARK, seed=6)
-    # Petals: white outside with a blue edge and a light slit, dark inside
-    upper = _mech_box(c, 56, 102, 8, 11, 1, seed=7)
-    x0, y0, x1, y1 = upper["front"]
-    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, MECH_RED)
-    for i in range(5):
-        c.set(x0 + 1 + i, y0 + 4 + i, MECH_RED)
-    c.rect(x1 - 2, y0 + 3, x1 - 2, y1 - 3, "c")
-    c.rect(*upper["back"], MECH_DARK)
-    lower = _mech_box(c, 74, 102, 8, 9, 1, seed=8)
-    x0, y0, x1, y1 = lower["front"]
-    for i in range(4):
-        c.rect(x1 - 1 - i, y1 - 1 - 2 * i, x1 - 1, y1 - 2 * i, MECH_RED)
-    c.rect(*lower["back"], MECH_DARK)
-    # Head 8x8x8: dark face behind the visor plate with two lit eyes, a blue crest and chin, ear vents;
-    # the plate itself carries the visor slit
-    head = _mech_box(c, 92, 0, 8, 8, 8, seed=9)
-    x0, y0, x1, y1 = head["front"]
-    c.rect(x0, y0, x1, y1 - 2, MECH_BLACK)
-    c.rect(x0 + 1, y0 + 3, x0 + 2, y0 + 3, "c")
-    c.rect(x1 - 2, y0 + 3, x1 - 1, y0 + 3, "c")
-    c.rect(x0 + 2, y1 - 1, x1 - 2, y1, MECH_RED)
-    tx0, ty0, tx1, ty1 = head["top"]
-    c.rect(tx0 + 3, ty0, tx1 - 3, ty1, MECH_RED)
-    for side in ("right", "left"):
-        x0, y0, x1, y1 = head[side]
-        c.rect(x0 + 2, y0 + 3, x1 - 2, y0 + 5, MECH_DARK)
-        c.rect(x0 + 3, y0 + 4, x1 - 3, y0 + 4, "b")
-    visor = paint_box(c, 98, 106, 8, 5, 1, MECH_WHITE, seed=10)
-    x0, y0, x1, y1 = visor["front"]
-    c.rect(x0, y0 + 2, x1, y0 + 2, "C")
-    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 3, "c")
-    c.rect(x0 + 3, y0, x1 - 3, y0, MECH_RED)
-    c.rect(*visor["back"], MECH_DARK)
-    paint_box(c, 124, 0, 1, 5, 1, MECH_RED, seed=11)                      # V fins
-    # Back unit 12x10x4: dark, two glowing thruster slots
-    back = _mech_box(c, 34, 22, 12, 10, 4, MECH_DARK, MECH_BLACK, seed=12)
-    x0, y0, x1, y1 = back["back"]
-    c.rect(x0 + 2, y0 + 2, x0 + 3, y1 - 2, "c")
-    c.rect(x1 - 3, y0 + 2, x1 - 2, y1 - 2, "c")
-    # Shoulder pads 7x7x9: white with a blue lower edge
-    pad = _mech_box(c, 66, 22, 7, 7, 9, seed=13)
-    side_rows(c, pad, [MECH_WHITE] * 5 + [MECH_RED, MECH_RED_DARK])
-    # Arms: dark upper arm, white forearm with a blue cuff, dark hand
-    _mech_box(c, 84, 40, 4, 10, 4, MECH_DARK, MECH_BLACK, seed=14)
-    forearm = _mech_box(c, 98, 22, 5, 10, 5, seed=15)
-    side_rows(c, forearm, [MECH_WHITE] * 8 + [MECH_RED, MECH_RED])
-    paint_box(c, 100, 40, 4, 4, 4, MECH_DARK, seed=16)
-    # Legs: white thigh, white shin with a blue band and a light, blue knee pad, blue-capped foot
-    _mech_box(c, 60, 40, 6, 11, 6, seed=17)
-    shin = _mech_box(c, 0, 40, 7, 13, 7, seed=18)
-    side_rows(c, shin, [MECH_WHITE] * 10 + [MECH_RED, MECH_RED, MECH_RED_DARK])
-    x0, y0, x1, y1 = shin["front"]
-    c.rect(x0 + 3, y0 + 3, x0 + 3, y0 + 5, "c")
-    paint_box(c, 100, 48, 5, 4, 2, MECH_RED, seed=19)
-    foot = _mech_box(c, 28, 40, 6, 4, 10, seed=20)
-    tx0, ty0, tx1, ty1 = foot["top"]
-    c.rect(tx0, ty0, tx1, ty0 + 4, MECH_RED)
-    c.rect(*foot["front"], MECH_RED)
-    # Module parts. Jet: dark wing segments with a blue leading edge and cyan lines, glowing nozzles
-    for u, v, w, d in ((18, 82, 8, 4), (18, 87, 8, 3), (42, 82, 6, 2)):
-        wing = paint_box(c, u, v, w, 1, d, MECH_DARK, top=MECH_DARK, bottom=MECH_DARK, seed=40 + u)
-        x0, y0, x1, y1 = wing["top"]
-        c.rect(x0, y0, x1, y0, MECH_RED)
-        c.rect(x0 + 1, y0 + 1, x1, y0 + 1, "c")
-        x0, y0, x1, y1 = wing["bottom"]
-        c.rect(x0, y0, x1, y0, MECH_RED)
-    nozzle = paint_box(c, 0, 74, 3, 3, 3, MECH_DARK, top=MECH_DARK, bottom="c", seed=44)
-    side_rows(c, nozzle, [MECH_SEAM, MECH_DARK, "b"])
-    # Drill: a dark collar, steel bit with spiral grooves, a lit tip
-    collar = _mech_box(c, 0, 62, 6, 3, 6, MECH_DARK, MECH_BLACK, seed=45)
-    side_rows(c, collar, [MECH_RED, MECH_DARK, MECH_DARK])
-    for u, v, w, h in ((24, 62, 4, 4), (40, 62, 3, 3)):
-        bit = paint_box(c, u, v, w, h, w, "l", seed=46 + u)
-        for name in ("right", "front", "left", "back"):
-            x0, y0, x1, y1 = bit[name]
-            for i in range(y1 - y0 + 1):
-                c.set(x0 + (i % (x1 - x0 + 1)), y0 + i, "m")
-    paint_box(c, 40, 68, 2, 3, 2, "c", seed=48)
-    # Blade: a dark hilt, the blade itself all light
-    paint_box(c, 0, 80, 3, 2, 3, MECH_DARK, top=MECH_RED, seed=49)
-    blade = paint_box(c, 112, 67, 1, 14, 3, "c", seed=50)
-    for name in ("right", "left"):
-        x0, y0, x1, y1 = blade[name]
-        c.rect(x0 + 1, y0, x0 + 1, y1, "C")
-    # Armour: white plates with blue trim
-    shoulder = _mech_box(c, 56, 57, 9, 3, 11, seed=51)
-    side_rows(c, shoulder, [MECH_WHITE, MECH_RED, MECH_RED_DARK])
-    tx0, ty0, tx1, ty1 = shoulder["top"]
-    c.rect(tx0 + 3, ty0 + 1, tx1 - 3, ty1 - 1, MECH_RED)
-    chest = _mech_box(c, 96, 57, 14, 9, 1, seed=52)
+    _mech_box(c, "bar", MECH_DEEP, seed=7)
+    # Dorsal thrusters: steel tubes, mint bells, a full-bright exhaust
+    side_rows(c, _mech_box(c, "thr", MECH_STEEL, seed=8), [MECH_STEEL[0], MECH_STEEL[1], MECH_STEEL[2], MECH_STEEL[1], MECH_STEEL[2]])
+    bell = _mech_box(c, "bell", MECH_MINT, seed=9)
+    side_rows(c, bell, list(MECH_MINT))
+    x0, y0, x1, y1 = bell["bottom"]
+    c.rect(x0, y0, x1, y1, "c")
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, "C")
+    # Head: teal helm with a mint stripe, a deep face behind the visor, steel slats at the chin, lit ears
+    _mech_box(c, "nape", MECH_JOINT, seed=10)
+    helm = _mech_box(c, "helm", MECH_TEAL, seed=10)
+    x0, y0, x1, y1 = helm["front"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1, MECH_FACE[1])
+    for x in (x0 + 2, x0 + 3, x1 - 3, x1 - 2):
+        c.rect(x, y1 - 2, x, y1, MECH_STEEL[2] if x in (x0 + 3, x1 - 3) else MECH_STEEL[1])
+    x0, y0, x1, y1 = helm["top"]
+    c.rect(x0 + 3, y0, x1 - 3, y1, MECH_MINT[1])
+    c.rect(x0 + 3, y0, x1 - 3, y0, MECH_MINT[0])
+    ear = _mech_box(c, "ear", MECH_JOINT, seed=12)
+    for face in ("right", "left"):
+        x0, y0, x1, y1 = ear[face]
+        c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, "c")
+    # The visor plate: two slanted eyes, their outer ends higher (a frown), a lit gem and the steel V crest above
+    x0, y0, x1, y1 = _mech_box(c, "visor", MECH_FACE, seed=13)["front"]
+    c.rect(x0, y0, x1, y0, MECH_TEAL[1])
+    for dx, dy in ((0, 1), (1, 1), (1, 2), (2, 2), (3, 2)):
+        c.set(x0 + dx, y0 + dy, "c")
+        c.set(x1 - dx, y0 + dy, "c")
+    for rect in _mech_box(c, "gem", MECH_LIGHT, seed=14).values():
+        c.rect(*rect, "c")
+    _mech_box(c, "fin_base", MECH_STEEL, seed=15)
+    c.rect(*_mech_box(c, "fin_tip", MECH_STEEL, seed=16)["front"], MECH_STEEL[0])
+    # Chest plates: a mint prow with a steel rim, a light chevron on each that makes a V when they are shut
+    chest = _mech_box(c, "chest", ("#5ec2b8", "#488d91", "#496973"), seed=17)
+    for face in ("front", "top"):
+        x0, y0, x1, y1 = chest[face]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[0])
     x0, y0, x1, y1 = chest["front"]
+    c.rect(x0 + 1, y1 - 2, x1, y1 - 2, MECH_MINT[2])
+    c.rect(*chest["back"], MECH_DEEP[1])
+    x0, y0, x1, y1 = _mech_box(c, "pec", (MECH_MINT[1], MECH_MINT[1], MECH_MINT[2]), seed=18)["front"]
     for i in range(5):
-        c.set(x0 + 2 + i, y0 + 2 + i, MECH_RED)
-        c.set(x1 - 2 - i, y0 + 2 + i, MECH_RED)
-    c.rect(x0 + 6, y0 + 1, x1 - 6, y0 + 2, "c")
-    thigh = _mech_box(c, 96, 67, 7, 6, 1, seed=53)
-    x0, y0, x1, y1 = thigh["front"]
-    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 4, MECH_RED)
+        c.set(x0 + 2 + i, y0 + 1 + i, "c")
+    c.rect(x0, y0, x1, y0, MECH_STEEL[0])
+    # Abdomen doors, a mirrored pair: dark outer flanks, two ribs, steel inside
+    door = _mech_box(c, "door", MECH_JOINT, seed=20)
+    x0, y0, x1, y1 = door["front"]
+    c.rect(x0, y0, x0 + 1, y1, MECH_FACE[0])
+    c.rect(x0 + 2, y1 - 1, x1, y1 - 1, MECH_STEEL[2])
+    c.rect(*door["back"], MECH_STEEL[2])
+    x0, y0, x1, y1 = _mech_box(c, "door_abs", MECH_TEAL, seed=21)["front"]
+    c.rect(x0, y0 + 1, x1, y0 + 1, MECH_JOINT[2])
+    c.rect(x0, y0 + 2, x1, y0 + 2, MECH_TEAL[0])
+    # Arms: teal pad with a steel rim on its flat top and an emerald chevron on its steel front, mint skirt, flange and cuff
+    pad = _mech_box(c, "pad", MECH_TEAL, seed=23)
+    x0, y0, x1, y1 = pad["top"]
+    c.frame(x0, y0, x1, y1, MECH_STEEL[1])
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, MECH_TEAL[1], noise=3, seed=23)
+    side_rows(c, _mech_box(c, "pad_skirt", MECH_MINT, seed=24), [MECH_MINT[0], MECH_MINT[1], MECH_MINT[1], MECH_MINT[1], MECH_MINT[2], MECH_MINT[2]])
+    x0, y0, x1, y1 = _mech_box(c, "pad_front", MECH_STEEL, seed=25)["front"]
+    for dx, dy in ((0, 1), (1, 2), (2, 2), (3, 1)):
+        c.set(x0 + dx, y0 + dy, MECH_EMERALD)
+    side_rows(c, _mech_box(c, "upper", MECH_JOINT, seed=26), [MECH_JOINT[0]] + [MECH_JOINT[1]] * 6 + [MECH_STEEL[1], MECH_STEEL[2], MECH_JOINT[2]])
+    for name in ("flange", "flange_tip"):
+        x0, y0, x1, y1 = _mech_box(c, name, MECH_MINT, seed=27 if name == "flange" else 28)["front"]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[0])
+    _mech_box(c, "forearm", MECH_TEAL, seed=29)
+    side_rows(c, _mech_box(c, "cuff", MECH_MINT, seed=30), [MECH_STEEL[0], MECH_MINT[1], MECH_MINT[1], MECH_MINT[2]])
+    _mech_box(c, "fist", MECH_DEEP, seed=31)
+    # Legs: dark thigh with a pale band above the knee, teal hip armour, a flared teal shin with a mint band and a light, mint knee and boot, steel toe
+    side_rows(c, _mech_box(c, "thigh", MECH_JOINT, seed=32), [MECH_JOINT[0]] + [MECH_JOINT[1]] * 6 + [MECH_STEEL[2], MECH_JOINT[1], MECH_JOINT[2]])
+    _mech_box(c, "hip", MECH_TEAL, seed=33)
+    _mech_box(c, "knee_blk", MECH_JOINT, seed=34)
+    shin = _mech_box(c, "shin", MECH_TEAL, seed=35)
+    side_rows(c, shin, [MECH_STEEL[1]] + [MECH_TEAL[1]] * 4 + [MECH_MINT[1], MECH_MINT[2], MECH_TEAL[2]])
+    x0, y0, x1, y1 = shin["front"]
+    c.rect(x0 + 3, y0 + 1, x0 + 3, y0 + 3, "c")
+    x0, y0, x1, y1 = shin["back"]
+    for y in range(y0 + 1, y0 + 4):
+        c.rect(x0 + 2, y, x1 - 2, y, MECH_RECESS if y % 2 else MECH_DEEP[1])
+    _mech_box(c, "kneepad", MECH_MINT, seed=36)
+    boot = _mech_box(c, "boot", MECH_MINT, seed=37)
+    side_rows(c, boot, [MECH_MINT[0], MECH_MINT[1], MECH_MINT[2], MECH_DEEP[2]])
+    x0, y0, x1, y1 = boot["top"]
+    c.rect(x0 + 2, y0 + 2, x1 - 2, y0 + 4, MECH_TEAL[1])                 # ankle seat
+    _mech_box(c, "toe", MECH_STEEL, seed=38)
+    # Module parts. Jet: teal wing segments with a mint leading edge, steel edges and a light on both faces; steel nozzles with a lit exhaust
+    for name in ("wing_root", "wing_mid", "wing_tip"):
+        wing = _mech_box(c, name, MECH_TEAL, top=MECH_TEAL[1], seed=40)
+        for face in ("top", "bottom"):
+            x0, y0, x1, y1 = wing[face]
+            c.rect(x0, y0, x1, y1, MECH_TEAL[1])
+            c.rect(x0, y0, x1, y0, MECH_MINT[1])
+            c.rect(x0 + 1, y0 + 1, x1 - 1, min(y1, y0 + 2), "c")
+        for face in ("front", "back"):
+            c.rect(*wing[face], MECH_STEEL[0])
+    nozzle = _mech_box(c, "nozzle", MECH_STEEL, seed=44)
+    c.rect(*nozzle["bottom"], "c")
+    side_rows(c, nozzle, list(MECH_STEEL))
+    # Drill: a dark collar with a mint ring, a steel bit with spiral grooves
+    side_rows(c, _mech_box(c, "drill_collar", MECH_JOINT, seed=45), [MECH_MINT[1], MECH_JOINT[1], MECH_JOINT[2]])
+    for name in ("drill_bit", "drill_mid", "drill_tip"):
+        bit = _mech_box(c, name, MECH_STEEL, seed=46)
+        for face in ("right", "front", "left", "back"):
+            x0, y0, x1, y1 = bit[face]
+            for i in range(y1 - y0 + 1):
+                c.set(x0 + (i % (x1 - x0 + 1)), y0 + i, MECH_STEEL[2])
+    # Blade: a dark hilt, the blade itself all light
+    _mech_box(c, "hilt", MECH_DEEP, top=MECH_MINT[1], seed=49)
+    blade = _mech_box(c, "blade", MECH_LIGHT, seed=50)
+    for rect in blade.values():
+        c.rect(*rect, "c")
+    for face in ("right", "left"):
+        x0, y0, x1, y1 = blade[face]
+        c.rect(x0 + 1, y0, x0 + 1, y1, "C")
+    # Armour: steel plates
+    x0, y0, x1, y1 = _mech_box(c, "sh_plate", MECH_STEEL, seed=51)["top"]
+    c.rect(x0 + 2, y0 + 2, x1 - 2, y1 - 2, MECH_STEEL[2])
+    x0, y0, x1, y1 = _mech_box(c, "ch_plate", MECH_STEEL, seed=52)["front"]
+    c.rect(x0 + 1, y0 + 2, x1 - 1, y0 + 2, MECH_TEAL[2])
+    x0, y0, x1, y1 = _mech_box(c, "th_plate", MECH_STEEL, seed=53)["right"]
+    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 3, MECH_TEAL[2])
     return c
 
 # --------------------------------------------------------------------------- mech hangar
 
 def hangar_frame(formed):
-    """A hangar pillar: white plating, blue and white hazard stripes; formed, cyan lines light up."""
+    """A hangar pillar: enamel plating, mint stripes; formed, its lines light up."""
     c = Canvas()
     c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, MECH_WHITE, noise=3, seed=70)
-    c.frame(1, 1, 14, 14, MECH_SEAM)
+    c.rect(1, 1, 14, 14, "#395853", noise=3, seed=70)
+    c.frame(1, 1, 14, 14, "#233e3b")
     for y in range(2, 14):
         for x in range(2, 14):
             if y in (2, 3, 12, 13):
-                c.set(x, y, MECH_RED if (x + y) // 2 % 2 else MECH_WHITE)
-    c.rect(6, 5, 9, 10, MECH_DARK)
+                c.set(x, y, "#5ec2b8" if (x + y) // 2 % 2 else "#395853")
+    c.rect(6, 5, 9, 10, "#132423")
     if formed:
         c.rect(7, 5, 8, 10, "c")
         for x, y in ((2, 7), (13, 7), (2, 8), (13, 8)):
@@ -2318,26 +2879,26 @@ def hangar_frame(formed):
 
 
 def hangar_pad(formed):
-    """The charging pad's top, like the rack: a white plate with a blue rim and ring; formed, the ring glows."""
+    """The charging pad's top, like the rack: an enamel plate with a mint rim and ring; formed, the ring glows."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=71)
-    c.frame(0, 0, 15, 15, MECH_RED)
-    c.frame(1, 1, 14, 14, MECH_SEAM)
-    c.disc(7.5, 7.5, 5.8, "c" if formed else MECH_RED, r_inner=4.6)
-    c.disc(7.5, 7.5, 2.2, "C" if formed else MECH_SEAM)
+    c.rect(0, 0, 15, 15, "#395853", noise=3, seed=71)
+    c.frame(0, 0, 15, 15, "#5ec2b8")
+    c.frame(1, 1, 14, 14, "#233e3b")
+    c.disc(7.5, 7.5, 5.8, "c" if formed else "#5ec2b8", r_inner=4.6)
+    c.disc(7.5, 7.5, 2.2, "C" if formed else "#233e3b")
     for x, y in ((7, 2), (8, 2), (7, 13), (8, 13), (2, 7), (2, 8), (13, 7), (13, 8)):
-        c.set(x, y, "c" if formed else MECH_DARK)
+        c.set(x, y, "c" if formed else "#132423")
     return c
 
 
 def hangar_pad_side():
-    """The pad's sides, like the rails: white with a blue band and a light line."""
+    """The pad's sides, like the rails: enamel with a mint band and a light line."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, MECH_WHITE, noise=3, seed=74)
-    c.frame(0, 0, 15, 15, MECH_SEAM)
-    c.rect(0, 9, 15, 11, MECH_RED)
+    c.rect(0, 0, 15, 15, "#395853", noise=3, seed=74)
+    c.frame(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 9, 15, 11, "#5ec2b8")
     c.rect(2, 10, 13, 10, "c")
-    c.rect(0, 15, 15, 15, MECH_DARK)
+    c.rect(0, 15, 15, 15, "#132423")
     return c
 
 def mech_hangar_front(lit):
@@ -2354,26 +2915,6 @@ def mech_hangar_front(lit):
     c.rect(9, 8, 9, 9, outline)
     c.rect(3, 12, 5, 13, "g" if lit else "D")
     c.rect(10, 12, 12, 13, "c" if lit else "D")
-    return c
-
-
-def mech_module_icon(kind):
-    """A module: a white casing with a blue edge and the module's sign."""
-    c = Canvas()
-    c.rect(2, 3, 13, 13, "k")
-    c.rect(3, 4, 12, 12, MECH_WHITE, noise=4, seed=73)
-    c.rect(3, 12, 12, 12, MECH_RED)
-    c.rect(3, 4, 12, 4, MECH_SEAM)
-    sign = {
-        "jet": [(5, 9), (6, 8), (7, 7), (8, 7), (9, 8), (10, 9), (7, 9), (8, 9), (7, 10), (8, 10)],
-        "drill": [(7, 5), (8, 5), (6, 6), (9, 6), (7, 7), (8, 7), (6, 8), (9, 8), (7, 9), (8, 9), (7, 10), (8, 10)],
-        "blade": [(10, 5), (9, 6), (8, 7), (7, 8), (6, 9), (5, 10), (9, 5), (8, 6), (7, 7), (6, 8)],
-        "armor": [(5, 6), (6, 6), (9, 6), (10, 6), (5, 7), (10, 7), (5, 8), (10, 8), (6, 9), (9, 9), (7, 10), (8, 10), (7, 6), (8, 6)],
-    }[kind]
-    for x, y in sign:
-        c.set(x, y, "c")
-    c.set(2, 3, None)
-    c.set(13, 3, None)
     return c
 
 
@@ -2416,41 +2957,6 @@ def fusion_crystal():
     return c
 
 
-def mech_core():
-    """The heart of a mech: a white ring with a blue band holding a Fusion Crystal."""
-    c = Canvas()
-    c.disc(7.5, 7.5, 7.0, "k")
-    c.disc(7.5, 7.5, 6.2, MECH_WHITE)
-    c.disc(7.5, 7.5, 6.2, MECH_RED, r_inner=5.2)
-    c.disc(7.5, 7.5, 4.4, "k")
-    gem(c, 7.5, 7.5, 3.0, 4.2, ("#2a1250", "#6a34c0", "#b88cff", "#ffffff"))
-    for x, y in ((7, 1), (8, 1), (7, 14), (8, 14), (1, 7), (1, 8), (14, 7), (14, 8)):
-        c.set(x, y, MECH_SEAM)
-    return c
-
-
-def crystallizer_front():
-    """A violet screen with the crystal growing on it, over a progress strip."""
-    c = panel(64)
-    c.rect(3, 2, 12, 11, "K")
-    c.rect(4, 3, 11, 10, "#160c26")
-    gem(c, 7.5, 6.5, 2.4, 3.4, ("#6a34c0", "#6a34c0", "#b88cff", "#ffffff"))
-    c.rect(3, 13, 12, 13, "k")
-    c.rect(4, 13, 9, 13, "v")
-    return c
-
-
-def crystallizer_top():
-    """The emitter the crystal floats over: a violet ring around a lens."""
-    c = panel(65)
-    c.disc(7.5, 7.5, 6.0, "K")
-    c.disc(7.5, 7.5, 5.2, "v", r_inner=3.8)
-    c.disc(7.5, 7.5, 3.8, "s")
-    c.disc(7.5, 7.5, 2.0, "V")
-    c.disc(7.5, 7.5, 0.9, "#ffffff")
-    return c
-
-
 def crystallizer_port():
     """A Cyber Frame with a pipe socket ringed in violet."""
     return chamber_port("#8a4fd8", "#d6b8ff")
@@ -2473,14 +2979,26 @@ ALUMINUM = {"1": "#2c3238", "2": "#5e6872", "3": "#8e98a2", "4": "#c2cad2", "5":
 
 
 def bauxite_ore_overlay():
-    """Transparent overlay over stone or deepslate: rusty clumps of bauxite."""
-    c = Canvas()
-    for cx, cy in ((2, 3), (10, 2), (6, 8), (12, 10), (3, 12), (9, 13)):
-        c.rect(cx, cy, cx + 2, cy + 1, "#7a3418")
-        c.set(cx, cy, "#cf6f3a")
-        c.set(cx + 1, cy, "#a24a24")
-        c.set(cx + 2, cy + 1, "#4a1e0e")
-    return c
+    """Over stone or deepslate: clumps of two minerals side by side, rust beside pale ochre."""
+    return pixel_art([
+        "................",
+        "..aa.......11...",
+        ".abca.....1231..",
+        "..bb..11..2343..",
+        "..a..1231..22ab.",
+        "....12343...abca",
+        "....2343.....bb.",
+        "...aa22.........",
+        "..abca.....11...",
+        "...bb.....1231..",
+        "..........2343aa",
+        ".11........22abc",
+        "1231...aa.....bb",
+        "2343..abca..1...",
+        ".22....bb...23..",
+        "................",
+    ], {"1": "#6f5a4a", "2": "#8a4426", "3": "#b35f33", "4": "#d98a58",
+        "a": "#94805a", "b": "#c9a86a", "c": "#e8cf9a"})
 
 
 def raw_bauxite():
@@ -2489,18 +3007,6 @@ def raw_bauxite():
 
 def aluminum_ingot():
     return tinted(uranium_ingot(), ALUMINUM)
-
-
-def alumina():
-    """A small heap of white alumina powder."""
-    c = Canvas()
-    for y in range(7, 14):
-        half = (y - 6) + 1
-        c.rect(8 - half, y, 7 + half, y, "#e8ecf0", noise=10, seed=y + 40)
-    c.rect(2, 14, 13, 14, "#a8b0b8")
-    for x, y in ((6, 8), (9, 10), (5, 12), (11, 12)):
-        c.set(x, y, "#ffffff")
-    return c
 
 
 def carbon_fiber():
@@ -2513,53 +3019,6 @@ def carbon_fiber():
     c.frame(2, 2, 13, 13, "#0b0d10")
     for i in range(3, 9):
         c.set(i + 2, i - 1, "#6a7480")
-    return c
-
-
-def circuit(board, trace, chip_light):
-    """A circuit board: a coloured board with copper traces, gold pins and a chip whose light shows the tier."""
-    c = Canvas()
-    c.rect(1, 3, 14, 12, "k")
-    c.rect(2, 4, 13, 11, board, noise=6, seed=91)
-    for y in (5, 10):
-        c.rect(3, y, 12, y, trace)
-    for x in (3, 12):
-        c.rect(x, 5, x, 10, trace)
-    c.rect(5, 6, 10, 9, "K")
-    c.rect(6, 7, 9, 8, "#22262c")
-    c.set(7, 7, chip_light)
-    for x in (5, 7, 9, 10):
-        c.set(x, 5, "O")
-        c.set(x, 10, "O")
-    return c
-
-
-def electrolyzer_front(frame=None):
-    """An electrolysis cell: two electrodes in a bath, bubbles rising off them while it works."""
-    c = panel(66)
-    c.rect(3, 2, 12, 12, "K")
-    c.rect(4, 3, 11, 11, "#1a2c3a")
-    c.rect(4, 7, 11, 11, "#2a5a7a")
-    c.rect(5, 3, 5, 10, "l")
-    c.rect(10, 3, 10, 10, "#b07040")
-    for x, y in rising([(6, 10), (9, 9), (6, 7), (9, 11)], frame, 7, 5):
-        c.set(x, y, "#a8e0ff")
-    c.rect(3, 13, 12, 13, "c")
-    return c
-
-
-def pyrolysis_oven_front():
-    """A kiln door with a grate of glowing coals, a gauge and a methane feed pipe."""
-    c = panel(67)
-    c.rect(3, 3, 12, 11, "K")
-    c.rect(4, 4, 11, 10, "#1c1410")
-    for x in range(4, 12):
-        c.set(x, 9, "o" if x % 2 else "r")
-        c.set(x, 8, "O" if x % 3 == 0 else "o")
-    for x in range(4, 12, 2):
-        c.set(x, 6, "r")
-    c.rect(3, 12, 12, 12, "m")
-    c.set(13, 4, "c")
     return c
 
 
@@ -2576,19 +3035,6 @@ def fabricator_front():
     c.rect(3, 13, 12, 13, "c")
     c.set(4, 12, "g")
     c.set(6, 12, "G")
-    return c
-
-
-def supply_terminal_front():
-    """A notice screen: three contract lines with their progress, an emerald for the pay."""
-    c = panel(69)
-    c.rect(2, 2, 13, 12, "K")
-    c.rect(3, 3, 12, 11, "#10222a")
-    for y, filled in ((4, 7), (7, 4), (10, 9)):
-        c.rect(4, y, 4 + filled, y, "c")
-        c.rect(5 + filled, y, 9, y, "b")
-        c.set(11, y, "#3fdc6f")
-    c.rect(3, 13, 12, 13, "y")
     return c
 
 
@@ -2646,10 +3092,9 @@ def build_all():
         "entity/hologram": plain_white(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
-        **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},
+        **{f"block/{tier}energy_conduit": pipe_atlas(tier) for tier in GLASS_PIPE_TIERS},
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
-        "block/muffler": muffler(),
         "block/uranium_ore_overlay": uranium_ore_overlay(),
         "block/turbine_casing": turbine_casing(False),
         "block/turbine_casing_formed": turbine_casing(True),
@@ -2658,7 +3103,6 @@ def build_all():
         "block/turbine_controller": turbine_controller("off"),
         "block/turbine_controller_formed": turbine_controller("formed"),
         "block/turbine_controller_on": turbine_controller("on"),
-        "item/multiblock_projector": multiblock_projector(),
         "item/blueprint_disc": blueprint_disc(),
         "block/reactor_casing": reactor_casing(False),
         "block/reactor_casing_formed": reactor_casing(True),
@@ -2667,12 +3111,9 @@ def build_all():
         "block/reactor_controller": reactor_controller("off"),
         "block/reactor_controller_formed": reactor_controller("formed"),
         "block/reactor_controller_on": reactor_controller("on"),
-        **lit_front("water_pump", water_pump_front),
-        "block/water_pump_top": water_pump_top(),
         "block/laser_turret_side": turret_side(),
         "block/laser_turret_top": turret_top(),
         "block/laser_turret_ring": turret_ring(),
-        **lit_front("coolant_mixer", coolant_mixer_front),
         "block/coolant_still": gas_texture("#178f84", "#4fe0d0", 7),
         "block/coolant_flow": gas_texture("#178f84", "#4fe0d0", 8),
         "block/cryo_coolant_still": gas_texture("#8fd8f5", "#ffffff", 9),
@@ -2684,82 +3125,48 @@ def build_all():
         "item/steam_bucket": bucket("#aebfcb", gas=True),
         "item/coolant_bucket": bucket("#1fb8a8", gas=False),
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
-        "entity/cooling_tower": cooling_tower(False),
+        "entity/machine_shell": machine_shell(False),
         "block/vitrified_waste": vitrified_waste(),
-        **lit_front("waste_reprocessor", waste_reprocessor_front),
-        "item/hazmat_helmet": hazmat_item("helmet"),
-        "item/hazmat_suit": hazmat_item("suit"),
-        "item/hazmat_pants": hazmat_item("pants"),
-        "item/hazmat_boots": hazmat_item("boots"),
-        "item/geiger_counter": geiger_counter(),
         "entity/equipment/humanoid/hazmat": hazmat_layer(False),
         "entity/equipment/humanoid_leggings/hazmat": hazmat_layer(True),
         "mob_effect/radiation_sickness": radiation_icon(),
-        "entity/cooling_tower_glow": cooling_tower(True),
+        "entity/machine_shell_glow": machine_shell(True),
         "item/raw_uranium": raw_uranium(),
         "item/uranium_ingot": uranium_ingot(),
-        "item/fuel_rod": fuel_rod(False),
-        "item/depleted_fuel_rod": fuel_rod(True),
         **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
-        **lit_front("gas_turbine", turbine_front),
-        "block/gas_turbine_top": generator_top(),
-        "block/methane_extractor_bottom": extractor_bottom(False),
-        "block/methane_extractor_top": extractor_top(False),
-        "block/methane_extractor_side": extractor_side(False),
-        "block/methane_extractor_bottom_formed": extractor_bottom(True),
-        "block/methane_extractor_top_formed": extractor_top(True),
-        "block/methane_extractor_side_formed": extractor_side(True),
-        **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
-        **{f"block/{tier}liquid_pipe": clean_pipe("liquid", tier) for tier in PIPE_RIMS},
-        "block/pipe_extract": pipe_extract(),
-        "block/liquid_tank_side": tank_side("c"),
-        "block/gas_tank_side": tank_side("y"),
-        "block/tank_top": tank_top(),
+        **{f"block/{tier}{kind}": pipe_atlas(tier) for tier in GLASS_PIPE_TIERS for kind in ("gas_pipe", "liquid_pipe")},
+        **{f"block/pipe_strip_{kind}": pipe_strip(kind) for kind in PIPE_LIGHTS},
+        "block/pipe_gas_cloud": pipe_frames(pipe_gas_cloud, 3),
+        "block/pipe_item_liquid": pipe_item_liquid(),
+        "block/pipe_item_gas": pipe_item_gas(),
+        "block/energy_conduit_arc_a": pipe_frames(pipe_arc(0), 2),
+        "block/energy_conduit_arc_b": pipe_frames(pipe_arc(4), 2),
+        "block/pipe_glass": pipe_glass(),
+        "block/pipe_node_glass": pipe_node_glass(),
         "block/biogas_still": gas("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas("#6cc4dc", "#d4f4ff", 3),
         "block/methane_flow": gas("#6cc4dc", "#d4f4ff", 4),
-        "block/resonance_core_side": core_side(),
-        "block/resonance_core_front": core_front(),
-        "block/resonance_core_top": core_top(),
-        "block/resonance_core_ring": core_ring(),
-        "block/stabilizer_pylon_side": pylon_side(),
-        "block/stabilizer_pylon_top": pylon_top(),
-        "block/stabilizer_pylon_emitter": pylon_emitter(),
-        "block/stabilizer_pylon_port": pylon_port(),
+        "block/stabilizer_pylon_light": stabilizer_pylon_light(),
         "block/resonance_cell": resonance_cell(),
         "entity/resonance_crystal": crystal_shell(),
         "entity/resonance_glow": crystal_glow(),
         "entity/stabilizer_beam": stabilizer_beam(),
+        "entity/stabilizer_ring": stabilizer_ring(),
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
-        "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
-        **lit_front("acid_synthesizer", acid_synthesizer_front),
-        **lit_front("electrolyzer", electrolyzer_front),
-        **lit_front("pyrolysis_oven", pyrolysis_oven_front),
         **lit_front("fabricator", fabricator_front),
-        "block/supply_terminal_front": supply_terminal_front(),
         "entity/villager/profession/drone_mechanist": villager_drone_mechanist(),
         "entity/zombie_villager/profession/drone_mechanist": villager_drone_mechanist(),
         "block/bauxite_ore_overlay": bauxite_ore_overlay(),
         "item/raw_bauxite": raw_bauxite(),
-        "item/alumina": alumina(),
         "item/aluminum_ingot": aluminum_ingot(),
         "item/carbon_fiber": carbon_fiber(),
-        "item/basic_circuit": circuit("#2f8a4a", "#c87a3a", "g"),
-        "item/advanced_circuit": circuit("#1f4f9a", "#d8a040", "c"),
-        "item/elite_circuit": circuit("#5a2f9a", "#e8c050", "V"),
-        "block/crystallizer_front": crystallizer_front(),
-        "block/crystallizer_top": crystallizer_top(),
         "block/crystallizer_port": crystallizer_port(),
         "item/isotope_shard": isotope_shard(),
         "item/fusion_crystal": fusion_crystal(),
-        "item/mech_core": mech_core(),
         "block/containment_glass": containment_glass(),
-        "block/steam_engine_front": steam_engine_front(),
-        "block/steam_engine_cylinder": steam_engine_cylinder(),
-        "block/steam_engine_dynamo": steam_engine_dynamo(),
         "block/acid_inlet": chamber_port(ACID, "#e4ffb0"),
         "block/methane_outlet": chamber_port("c", "C"),
         "block/intake_gate": intake_gate(),
@@ -2770,18 +3177,16 @@ def build_all():
     }
     for name, rows in ITEM_ASCII.items():
         textures[name] = from_ascii(rows)
-    textures["item/logger_module"] = saw_icon()
     for name, icon in ADDON_ICONS.items():
         textures[name] = addon_chip(icon)
-    # Higher frame tiers reuse the basic frame with their own accent colors
-    # The Mini Frame is drawn white, like the mod's clean panels
-    for name, mapping in (("item/advanced_frame", {"l": "O", "c": "o"}), ("item/elite_frame", {"l": "V", "m": "v", "c": "C"}),
-                          ("item/mini_frame", {"l": "w", "m": "l", "c": "C"})):
-        textures[name] = from_ascii(recolor(ITEM_ASCII["item/basic_frame"], mapping))
     mech = mech_texture()
-    textures["entity/mech"] = mech
+    # The skin carries its lights switched off: the glow layer lights them, and MechRenderer leaves it out when the mech is shut down
+    textures["entity/mech"] = mech.copy()
+    for y, row in enumerate(mech.keys):
+        for x, key in enumerate(row):
+            if key in GLOW_KEYS:
+                textures["entity/mech"].set(x, y, "b")
     textures["entity/mech_glow"] = mech.glow_mask()
-    textures["item/mech_frame"] = mech_frame_icon()
     textures["block/hangar_frame"] = hangar_frame(False)
     textures["block/hangar_frame_formed"] = hangar_frame(True)
     textures["block/hangar_pad"] = hangar_pad(False)
@@ -2789,11 +3194,15 @@ def build_all():
     textures["block/hangar_pad_side"] = hangar_pad_side()
     textures["block/mech_hangar_front"] = mech_hangar_front(False)
     textures["block/mech_hangar_front_on"] = mech_hangar_front(True)
-    for kind in ("jet", "drill", "blade", "armor"):
-        textures[f"item/mech_{kind}_module"] = mech_module_icon(kind)
     drone = drone_texture()
     textures["entity/drone"] = drone
     textures["entity/drone_glow"] = drone.glow_mask()
+    for name, (rows, tones) in ICONS.items():
+        textures[name] = pixel_art(rows, tones)
+    textures["block/hologram_table_edge"] = hologram_table_edge()
+    for size, kind in HOLOGRAM_CELLS:
+        textures[f"block/hologram_top_{size}_{kind}"] = hologram_cell_top(size, kind)
+        textures[f"block/hologram_ring_{size}_{kind}"] = hologram_cell_ring(size, kind)
     return textures
 
 

@@ -2,9 +2,12 @@ package com.cyberfarm.entity;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.block.entity.DockTankBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
 import com.cyberfarm.drone.AddonType;
@@ -14,11 +17,15 @@ import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.TaxiJob;
+import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.registry.ModDataComponents;
+import com.cyberfarm.registry.ModEntities;
 import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -49,6 +56,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
@@ -67,6 +77,8 @@ public class DroneEntity extends PathfinderMob {
     public static final int STATUS_CHARGING = 2;
     public static final int STATUS_WORKING = 3;
     public static final int STATUS_RETURNING = 4;
+    private float stowPrevious;
+    private float stowNow;
 
     /** Height above the dock block where the drone parks: just over the 6px pad. */
     public static final double DOCK_HEIGHT = 0.4;
@@ -84,11 +96,19 @@ public class DroneEntity extends PathfinderMob {
     /** How far the raised arm's hand sits to the side of a player's centre. */
     private static final double HAND_SIDE = 0.34;
     private static final int SCAN_INTERVAL = 40;
+    /** What a Tank Module holds. */
+    public static final int TANK_MODULE_CAPACITY = 32_000;
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
-    /** One item of the first cargo stack, so clients can draw it hanging from the Transport claw. */
-    private static final EntityDataAccessor<ItemStack> DATA_CARRIED = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.ITEM_STACK);
+    /** What the hold has in it, for the status panel and the item hanging from the Transport claw. */
+    private static final EntityDataAccessor<List<ItemStack>> DATA_CARGO = SynchedEntityData.defineId(DroneEntity.class, ModEntities.ITEM_LIST.get());
+    /** The {@link DroneTask} ordinal + 1 of the job in progress, 0 for none. */
+    private static final EntityDataAccessor<Integer> DATA_JOB = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_BATTERY = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
+    /** The liquid a Sponge drone holds, by registry id, and how much of it. */
+    private static final EntityDataAccessor<Integer> DATA_LIQUID = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_LIQUID_AMOUNT = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     /** Game time the deploy sequence started, 0 when there is none: the clients animate from it. */
     private static final EntityDataAccessor<Long> DATA_STARTUP = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.LONG);
 
@@ -122,6 +142,12 @@ public class DroneEntity extends PathfinderMob {
     private final DroneFlight flight = new DroneFlight(this, () -> modules.speed());
     private final Set<BlockPos> unreachable = new HashSet<>();
     private final DroneCargo cargo = new DroneCargo();
+    /** The Tank Module's liquid, one at a time: what the Sponge Module sucked up or a Transport Module carries. */
+    private final GasTank liquid = new GasTank(TANK_MODULE_CAPACITY, resource -> true, () -> {});
+    private float hoodPrevious;
+    private float hoodNow;
+    private float tankWorkPrevious;
+    private float tankWorkNow;
     /** Where a drone being picked up lands, and who gets it; null when nobody is picking it up. */
     private @Nullable Vec3 landingSpot;
     private @Nullable UUID pickupBy;
@@ -156,7 +182,11 @@ public class DroneEntity extends PathfinderMob {
         super.defineSynchedData(builder);
         builder.define(DATA_STATUS, STATUS_IDLE);
         builder.define(DATA_TASKS, 0);
-        builder.define(DATA_CARRIED, ItemStack.EMPTY);
+        builder.define(DATA_CARGO, List.of());
+        builder.define(DATA_JOB, 0);
+        builder.define(DATA_BATTERY, 0);
+        builder.define(DATA_LIQUID, 0);
+        builder.define(DATA_LIQUID_AMOUNT, 0);
         builder.define(DATA_STARTUP, 0L);
         builder.define(DATA_SHUTDOWN, 0L);
     }
@@ -203,6 +233,37 @@ public class DroneEntity extends PathfinderMob {
     public float shutdownTicks(float partialTick) {
         long start = entityData.get(DATA_SHUTDOWN);
         return start == 0 ? -1.0F : Math.max(0.0F, level().getGameTime() - start + partialTick);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (level().isClientSide()) {
+            // An idle drone may be hovering in the air: only something right under its feet counts as parked
+            boolean parked = entityData.get(DATA_SHUTDOWN) != 0 || !level().noCollision(this, getBoundingBox().move(0.0, -0.25, 0.0));
+            stowPrevious = stowNow;
+            stowNow = Mth.approach(stowNow, parked ? 1.0F : 0.0F, 0.1F);
+            hoodPrevious = hoodNow;
+            hoodNow = Mth.approach(hoodNow, getJob() == DroneTask.SPONGE ? 1.0F : 0.0F, 0.08F);
+            tankWorkPrevious = tankWorkNow;
+            boolean pumping = getJob() == DroneTask.SPONGE || getJob() == DroneTask.TRANSPORT && getLiquidAmount() > 0;
+            tankWorkNow = Mth.approach(tankWorkNow, pumping ? 1.0F : 0.0F, 0.08F);
+        }
+    }
+
+    /** Client only: from 0 still to 1 at work, the Tank Module's pump. */
+    public float tankWork(float partialTick) {
+        return Mth.lerp(partialTick, tankWorkPrevious, tankWorkNow);
+    }
+
+    /** Client only: from 0 tucked in to 1 lowered, how far the Sponge Module's hood is out. */
+    public float hood(float partialTick) {
+        return Mth.lerp(partialTick, hoodPrevious, hoodNow);
+    }
+
+    /** Client only: from 0 in the air to 1 resting on something, how far what hangs under the skids has tucked up. */
+    public float stow(float partialTick) {
+        return Mth.lerp(partialTick, stowPrevious, stowNow);
     }
 
     /** How far the arms are open, from 0 (folded, deploying or picked up) to 1. */
@@ -275,6 +336,7 @@ public class DroneEntity extends PathfinderMob {
     private void finishPickup(ServerLevel level) {
         if (dockPos != null && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
             cargo.unloadInto(dock);
+            emptyLiquid(dock);
             dock.releaseDrone(getUUID());
         }
         cargo.dropAll(stack -> spawnAtLocation(level, stack));
@@ -353,16 +415,96 @@ public class DroneEntity extends PathfinderMob {
         return home.subtract(position()).horizontalDistance() < 1.0 && Math.abs(getY() - home.y) < TAXI_WAIT_HEIGHT + 0.5;
     }
 
-    /** Sent only when it changes: ItemStack has no equals, so a plain set would resend it every tick. */
-    private void syncCarriedItem() {
-        ItemStack shown = cargo.firstItem();
-        if (!ItemStack.matches(shown, entityData.get(DATA_CARRIED))) {
-            entityData.set(DATA_CARRIED, shown);
+    /** What the status panel shows. The cargo goes only when it changes: ItemStack has no equals, so a plain set would resend it every tick. */
+    private void syncShown() {
+        List<ItemStack> shown = cargo.contents();
+        if (!ItemStack.listMatches(shown, entityData.get(DATA_CARGO))) {
+            entityData.set(DATA_CARGO, shown);
+        }
+        entityData.set(DATA_JOB, jobTask != null ? jobTask.ordinal() + 1 : 0);
+        entityData.set(DATA_BATTERY, (int) ((long) energy * 100 / capacity()));
+        entityData.set(DATA_LIQUID, BuiltInRegistries.FLUID.getId(liquid.fluid()));
+        entityData.set(DATA_LIQUID_AMOUNT, liquid.amount());
+    }
+
+    public boolean hasTankModule() {
+        return (getTaskMask() & DroneTask.TANK.bit()) != 0;
+    }
+
+    /** How much more liquid fits. Without a Tank Module any amount does: it just goes, see {@link #holdLiquid}. */
+    public int liquidRoom() {
+        return hasTankModule() ? TANK_MODULE_CAPACITY - liquid.amount() : Integer.MAX_VALUE;
+    }
+
+    public GasTank liquidTank() {
+        return liquid;
+    }
+
+    /** Only the liquid it already holds, or any when it holds none. */
+    public boolean canHoldLiquid(Fluid fluid) {
+        return liquid.amount() == 0 || liquid.fluid().isSame(fluid);
+    }
+
+    /** Into the Tank Module; with none there is nowhere to keep it, so it is thrown away on the spot. */
+    public void holdLiquid(Fluid fluid, int amount) {
+        if (hasTankModule()) {
+            liquid.fill(fluid, amount);
         }
     }
 
+    /** Client side: the liquid held, {@code Fluids.EMPTY} with none. */
+    public Fluid getLiquidShown() {
+        return entityData.get(DATA_LIQUID_AMOUNT) > 0 ? BuiltInRegistries.FLUID.byId(entityData.get(DATA_LIQUID)) : Fluids.EMPTY;
+    }
+
+    public int getLiquidAmount() {
+        return entityData.get(DATA_LIQUID_AMOUNT);
+    }
+
+    /** Into the dock's Dock Tank if it has one, as far as it fits; the rest stays in the Tank Module. */
+    private void emptyLiquid(DroneDockBlockEntity dock) {
+        DockTankBlockEntity tank = dock.dockTank();
+        if (liquid.amount() > 0 && tank != null) {
+            liquid.drain(tank.fill(liquid.fluid(), liquid.amount()));
+        }
+    }
+
+    /** Client side: sitting at the dock with a full Tank Module it cannot empty. */
+    public boolean isWaitingForTank() {
+        return TANK_MODULE_CAPACITY - getLiquidAmount() < 1000 && (getStatus() == STATUS_IDLE || getStatus() == STATUS_CHARGING);
+    }
+
     public ItemStack getCarriedItem() {
-        return entityData.get(DATA_CARRIED);
+        List<ItemStack> shown = entityData.get(DATA_CARGO);
+        return shown.isEmpty() ? ItemStack.EMPTY : shown.getFirst();
+    }
+
+    public List<ItemStack> getCargoShown() {
+        return entityData.get(DATA_CARGO);
+    }
+
+    public int getBatteryPercent() {
+        return entityData.get(DATA_BATTERY);
+    }
+
+    /** The job in progress, or null. */
+    public @Nullable DroneTask getJob() {
+        int job = entityData.get(DATA_JOB);
+        return job > 0 && job <= DroneTask.values().length ? DroneTask.values()[job - 1] : null;
+    }
+
+    /** The name it was given (anvil or name tag), or what its first module makes it: "Harvester Drone". */
+    public Component label() {
+        if (hasCustomName()) {
+            return getCustomName();
+        }
+        int tasks = getTaskMask();
+        for (DroneTask task : DroneTask.values()) {
+            if ((tasks & task.bit()) != 0) {
+                return Component.translatable("gui.cyberfarm.drone.named", Component.translatable("gui.cyberfarm.dock.module." + task.name().toLowerCase(Locale.ROOT)));
+            }
+        }
+        return getName();
     }
 
     /** Whether an Anchor Addon is fitted: its dock keeps the chunks it works in loaded. */
@@ -412,6 +554,14 @@ public class DroneEntity extends PathfinderMob {
         flight.flyTowards(target);
     }
 
+    public void flyOver(Vec3 target) {
+        flight.flyOver(target);
+    }
+
+    public boolean isClimbing() {
+        return flight.isClimbing();
+    }
+
     /** Whether no block stands on the straight line from the drone to {@code target}. */
     public boolean canFlyStraightTo(Vec3 target) {
         return flight.canFlyStraightTo(target);
@@ -422,16 +572,33 @@ public class DroneEntity extends PathfinderMob {
     @Override
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
-        syncCarriedItem();
+        syncShown();
         if (landingSpot != null || entityData.get(DATA_SHUTDOWN) != 0) {
             tickPickup(level);
             return;
         }
-        if (dockPos == null || !level.isLoaded(dockPos)) {
+        if (dockPos == null) {
+            return;
+        }
+        if (!level.isLoaded(dockPos)) {
+            // A Taxi trip can outrun the dock's chunk: it goes on to the drop-off (the job never asks the dock anything),
+            // and there the drone waits for the dock to load again
+            if (job instanceof TaxiJob) {
+                useEnergy(modules.flightCost());
+                if (energy < capacity() / 10 || job.tick(this, level, null) != DroneJob.Result.CONTINUE) {
+                    startReturn(level);
+                }
+            }
             return;
         }
         if (!(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
             // The dock was removed: turn back into an item so nothing is lost.
+            dropAsItem(level);
+            return;
+        }
+        if (!dock.keeps(getUUID())) {
+            // While this drone was away in a chunk not loaded, the dock took others in its place: back as an item, on the dock
+            snapTo(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5, getYRot(), getXRot());
             dropAsItem(level);
             return;
         }
@@ -471,13 +638,23 @@ public class DroneEntity extends PathfinderMob {
         return corner < 0 ? pad : pad.add((corner & 1) == 0 ? -CORNER_OFFSET : CORNER_OFFSET, 0.0, (corner & 2) == 0 ? -CORNER_OFFSET : CORNER_OFFSET);
     }
 
+    /** Parked, a drone faces the way its dock's front does. */
+    public static float parkedYaw(BlockState dock) {
+        return dock.hasProperty(MachineBlock.FACING) ? dock.getValue(MachineBlock.FACING).toYRot() : 0.0F;
+    }
+
+    private boolean flyHome() {
+        return flight.flyHome(dockHover(), parkedYaw(level().getBlockState(dockPos)));
+    }
+
     private void tickDocked(ServerLevel level, DroneDockBlockEntity dock) {
         if (isWaitingForPassenger(dock)) {
             flyTowards(dockHover().add(0.0, TAXI_WAIT_HEIGHT, 0.0));
         } else {
-            flight.flyHome(dockHover());
+            flyHome();
         }
         cargo.unloadInto(dock);
+        emptyLiquid(dock);
 
         int charged = dock.charge(capacity() - energy);
         energy += charged;
@@ -544,7 +721,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void tickReturning() {
-        if (flight.flyHome(dockHover())) {
+        if (flyHome()) {
             unreachable.clear();
             scanCooldown = SCAN_INTERVAL;
             setStatus(STATUS_IDLE);
@@ -571,6 +748,7 @@ public class DroneEntity extends PathfinderMob {
         ItemStack stack = new ItemStack(ModItems.DRONE.get());
         stack.set(ModDataComponents.DRONE_MODULES.get(), modules);
         stack.set(ModDataComponents.ENERGY.get(), energy);
+        stack.set(DataComponents.CUSTOM_NAME, getCustomName());
         return stack;
     }
 
@@ -676,6 +854,7 @@ public class DroneEntity extends PathfinderMob {
         output.putInt("energy", energy);
         output.storeNullable("dock", BlockPos.CODEC, dockPos);
         cargo.save(output.child("cargo"));
+        liquid.serialize(output.child("liquid"));
     }
 
     @Override
@@ -685,6 +864,7 @@ public class DroneEntity extends PathfinderMob {
         energy = input.getIntOr("energy", 0);
         dockPos = input.read("dock", BlockPos.CODEC).orElse(null);
         cargo.load(input.childOrEmpty("cargo"));
+        liquid.deserialize(input.childOrEmpty("liquid"));
         entityData.set(DATA_TASKS, modules.taskMask());
         // Jobs are not saved: a reloaded drone flies home and starts over.
         setStatus(STATUS_RETURNING);

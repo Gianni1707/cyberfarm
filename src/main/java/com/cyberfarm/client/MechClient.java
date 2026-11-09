@@ -47,9 +47,9 @@ public final class MechClient {
             VanillaGuiLayers.CONTEXTUAL_INFO_BAR, VanillaGuiLayers.CONTEXTUAL_INFO_BAR_BACKGROUND);
     private static final int BOOT_TICKS = 40;
 
-    private static final int CYAN = 0xFF2FE0FF;
-    private static final int CYAN_DIM = 0x802FE0FF;
-    private static final int CYAN_FAINT = 0x302FE0FF;
+    private static final int MARK = 0xFF00B894;
+    private static final int MARK_DIM = 0x8000B894;
+    private static final int MARK_FAINT = 0x3000B894;
     private static final int WARN = 0xFFFF5040;
     private static final int TEXT = 0xFFD8F8FF;
     private static final String[] HEADINGS = {"S", "SW", "W", "NW", "N", "NE", "E", "SE"};
@@ -189,10 +189,10 @@ public final class MechClient {
         if (boot < 1.0F) {
             // Boot: a scan line sweeps down and the systems report in
             int scan = (int) (height * boot);
-            graphics.fill(0, scan, width, scan + 1, CYAN_DIM);
-            graphics.fill(0, scan - 6, width, scan, CYAN_FAINT);
+            graphics.fill(0, scan, width, scan + 1, MARK_DIM);
+            graphics.fill(0, scan - 6, width, scan, MARK_FAINT);
             Component online = Component.translatable("hud.cyberfarm.mech.boot");
-            graphics.text(font, online, (width - font.width(online)) / 2, height / 2 - 30, (time / 3) % 2 == 0 ? CYAN : CYAN_DIM, true);
+            graphics.text(font, online, (width - font.width(online)) / 2, height / 2 - 30, (time / 3) % 2 == 0 ? MARK : MARK_DIM, true);
             if (boot < 0.5F) {
                 return;
             }
@@ -206,7 +206,7 @@ public final class MechClient {
         float energy = (float) mech.getEnergy() / MechEntity.CAPACITY;
         float integrity = mech.getHealth() / mech.getMaxHealth();
         bar(graphics, font, left, bottom - 22, Component.translatable("hud.cyberfarm.mech.energy"), energy,
-                energy < 0.1F ? WARN : CYAN, String.format("%,d FE", mech.getEnergy()));
+                energy < 0.1F ? WARN : MARK, String.format("%,d FE", mech.getEnergy()));
         bar(graphics, font, left, bottom, Component.translatable("hud.cyberfarm.mech.integrity"), integrity,
                 integrity < 0.3F ? WARN : 0xFF6CFF8C, Math.round(integrity * 100) + "%");
         if (energy < 0.1F && (time / 10) % 2 == 0) {
@@ -251,9 +251,9 @@ public final class MechClient {
         for (int[] c : corners) {
             int x = c[0];
             int y = c[1];
-            graphics.fill(Math.min(x, x + c[2] * length), y, Math.max(x, x + c[2] * length) + 1, y + 1, CYAN);
-            graphics.fill(x, Math.min(y, y + c[3] * length), x + 1, Math.max(y, y + c[3] * length) + 1, CYAN);
-            graphics.fill(Math.min(x + c[2] * 3, x + c[2] * 12), y + c[3] * 3, Math.max(x + c[2] * 3, x + c[2] * 12) + 1, y + c[3] * 3 + 1, CYAN_DIM);
+            graphics.fill(Math.min(x, x + c[2] * length), y, Math.max(x, x + c[2] * length) + 1, y + 1, MARK);
+            graphics.fill(x, Math.min(y, y + c[3] * length), x + 1, Math.max(y, y + c[3] * length) + 1, MARK);
+            graphics.fill(Math.min(x + c[2] * 3, x + c[2] * 12), y + c[3] * 3, Math.max(x + c[2] * 3, x + c[2] * 12) + 1, y + c[3] * 3 + 1, MARK_DIM);
         }
     }
 
@@ -263,7 +263,7 @@ public final class MechClient {
         int y = 14;
         int half = 90;
         float heading = Mth.wrapDegrees(yaw);
-        graphics.fill(centre - half, y + 8, centre + half + 1, y + 9, CYAN_FAINT);
+        graphics.fill(centre - half, y + 8, centre + half + 1, y + 9, MARK_FAINT);
         for (int deg = -180; deg < 180; deg += 15) {
             float offset = Mth.wrapDegrees(deg - heading);
             if (Math.abs(offset) > 90) {
@@ -271,7 +271,7 @@ public final class MechClient {
             }
             int x = centre + Math.round(offset * half / 90.0F);
             boolean major = Math.floorMod(deg, 45) == 0;
-            graphics.fill(x, y + (major ? 3 : 5), x + 1, y + 8, major ? CYAN : CYAN_DIM);
+            graphics.fill(x, y + (major ? 3 : 5), x + 1, y + 8, major ? MARK : MARK_DIM);
             if (major) {
                 String name = HEADINGS[Math.floorMod(Math.round(deg / 45.0F), 8)];
                 graphics.text(font, name, x - font.width(name) / 2, y - 7, TEXT, true);
@@ -279,7 +279,7 @@ public final class MechClient {
         }
         graphics.fill(centre, y + 9, centre + 1, y + 13, 0xFFFFFFFF);
         String degrees = String.valueOf(Math.floorMod(Math.round(heading), 360));
-        graphics.text(font, degrees, centre - font.width(degrees) / 2, y + 14, CYAN, true);
+        graphics.text(font, degrees, centre - font.width(degrees) / 2, y + 14, MARK, true);
     }
 
     /** Four short arcs around the crosshair. */
@@ -291,7 +291,7 @@ public final class MechClient {
                 float a = base + s * 0.08F;
                 int x = cx + Math.round(Mth.cos(a) * r);
                 int y = cy + Math.round(Mth.sin(a) * r);
-                graphics.fill(x, y, x + 1, y + 1, CYAN_DIM);
+                graphics.fill(x, y, x + 1, y + 1, MARK_DIM);
             }
         }
     }
@@ -300,7 +300,7 @@ public final class MechClient {
         int width = 100;
         graphics.text(font, label, x, y, TEXT, true);
         graphics.text(font, value, x + width - font.width(value), y, color, true);
-        graphics.fill(x, y + 10, x + width, y + 14, CYAN_FAINT);
+        graphics.fill(x, y + 10, x + width, y + 14, MARK_FAINT);
         graphics.fill(x, y + 10, x + Math.round(width * Mth.clamp(fill, 0.0F, 1.0F)), y + 14, color);
         for (int i = 1; i < 10; i++) {
             graphics.fill(x + i * width / 10, y + 10, x + i * width / 10 + 1, y + 14, 0x60000000);
@@ -308,7 +308,7 @@ public final class MechClient {
     }
 
     private static void readout(GuiGraphicsExtractor graphics, Font font, int right, int y, Component label, String value) {
-        graphics.text(font, value, right - font.width(value), y, CYAN, true);
+        graphics.text(font, value, right - font.width(value), y, MARK, true);
         graphics.text(font, label, right - font.width(value) - 6 - font.width(label), y, TEXT, true);
     }
 }

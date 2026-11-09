@@ -15,6 +15,7 @@ item_ids:
 <BlockImage id="cyberfarm:energy_conduit" p:east="true" p:west="true" scale="4" float="left" />
 
 Conduits carry **FE** from generators to machines, so they no longer need to touch each other.
+You can tell them by the cyan lights on their sleeves, and while energy flows a **cyan arc** runs through their glass.
 
 <br clear="all" />
 
@@ -24,7 +25,7 @@ Conduits carry **FE** from generators to machines, so they no longer need to tou
   network, which **take turns** so none is left without power.
 - From each generator or battery pushing into it, up to **2,000 FE/t** enters the network
   through a basic conduit, **16,000** through an Advanced one and **128,000** through an Elite one.
-  A Large Steam Turbine needs Advanced conduits at its ports.
+  A Medium Steam Turbine needs Advanced conduits at its ports, a Large one Elite conduits.
 - All tiers join into one network.
 - Networks can be up to 1,024 conduits long.
 

@@ -19,9 +19,6 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
     private static final int HEIGHT = 56;
     private static final int VIEW_X0 = 8;
     private static final int VIEW_X1 = 130;
-    private static final int ORANGE = 0xFFFF8C1A;
-    private static final int SHELL = 0xFFE3E9ED;
-    private static final int STEEL = 0xFF8A96A2;
 
     /** Flywheel angle, turned every frame by the synced speed. */
     private float angle;
@@ -29,6 +26,7 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
 
     public SteamEngineScreen(SteamEngineMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 196);
+        flatBackground("steam_engine");
         energyBarY = TOP;
         energyBarHeight = HEIGHT;
     }
@@ -36,10 +34,9 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
         drawTank(graphics, x + TANK_X, y + TOP, HEIGHT, menu.getFuelAmount(), SteamEngineBlockEntity.TANK_CAPACITY, menu.getFuelFluid());
-        graphics.fill(x + VIEW_X0 - 1, y + TOP - 1, x + VIEW_X1 + 1, y + TOP + HEIGHT + 1, ACCENT_DIM);
-        graphics.fill(x + VIEW_X0, y + TOP, x + VIEW_X1, y + TOP + HEIGHT, 0xFF0B1216);
+        drawWell(graphics, x + VIEW_X0, y + TOP, VIEW_X1 - VIEW_X0, HEIGHT);
         for (int gx = VIEW_X0 + 10; gx < VIEW_X1; gx += 10) {
-            graphics.fill(x + gx, y + TOP, x + gx + 1, y + TOP + HEIGHT, 0xFF101C22);
+            graphics.fill(x + gx, y + TOP, x + gx + 1, y + TOP + HEIGHT, WELL);
         }
     }
 
@@ -72,33 +69,33 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
             int step = 14;
             int bx = x + VIEW_X0 + 6;
             // Boiler with its coils, brighter the faster it runs
-            graphics.fill(bx, floor - 30, bx + 14, floor, SHELL);
+            graphics.fill(bx, floor - 30, bx + 14, floor, STEEL_LIGHT);
             float pulse = 0.7F + 0.3F * Mth.sin(time * (0.1F + 0.3F * speed));
-            int coil = dim(ORANGE, 0.3F + 0.7F * Math.max(speed, 0.1F) * pulse);
+            int coil = dim(WARM, 0.3F + 0.7F * Math.max(speed, 0.1F) * pulse);
             for (int k = 0; k < 3; k++) {
                 graphics.fill(bx, floor - 24 + k * 8, bx + 14, floor - 21 + k * 8, coil);
             }
-            graphics.fill(bx + 3, floor - 34, bx + 11, floor - 30, STEEL);
+            graphics.fill(bx + 3, floor - 34, bx + 11, floor - 30, STEEL_DARK);
             // Steam line over the cylinders
             int cx0 = bx + 14 + 4;
-            graphics.fill(bx + 9, floor - 40, cx0 + (n - 1) * step + 10, floor - 38, STEEL);
-            graphics.fill(bx + 9, floor - 40, bx + 11, floor - 34, STEEL);
+            graphics.fill(bx + 9, floor - 40, cx0 + (n - 1) * step + 10, floor - 38, STEEL_DARK);
+            graphics.fill(bx + 9, floor - 40, bx + 11, floor - 34, STEEL_DARK);
             for (int i = 0; i < n; i++) {
                 int cx = cx0 + i * step;
                 float a = angle + (i + 1) * Mth.HALF_PI;
                 int head = (int) (5 * Mth.sin(a));
-                graphics.fill(cx, floor - 16, cx + 12, floor, SHELL);
-                graphics.fill(cx, floor - 10, cx + 12, floor - 8, 0xFF2A3138);
+                graphics.fill(cx, floor - 16, cx + 12, floor, STEEL_LIGHT);
+                graphics.fill(cx, floor - 10, cx + 12, floor - 8, PANEL_DARK);
                 // Glass sleeve with the lit piston head and its rod
-                graphics.fill(cx + 2, floor - 32, cx + 10, floor - 16, 0x40A8E4F0);
+                graphics.fill(cx + 2, floor - 32, cx + 10, floor - 16, 0x40D1FEE7);
                 graphics.fill(cx + 3, floor - 25 - head, cx + 9, floor - 23 - head, ACCENT);
-                graphics.fill(cx + 5, floor - 37, cx + 7, floor - 25 - head, STEEL);
-                graphics.fill(cx + 8, floor - 38, cx + 10, floor - 32, STEEL);
+                graphics.fill(cx + 5, floor - 37, cx + 7, floor - 25 - head, STEEL_DARK);
+                graphics.fill(cx + 8, floor - 38, cx + 10, floor - 32, STEEL_DARK);
             }
             // Dynamo with copper windings and the flywheel on its back
             int dx = cx0 + n * step;
-            graphics.fill(dx, floor - 18, dx + 14, floor, SHELL);
-            int copper = dim(0xFFE08A45, 0.5F + 0.5F * speed);
+            graphics.fill(dx, floor - 18, dx + 14, floor, STEEL_LIGHT);
+            int copper = dim(MINT_MID, 0.5F + 0.5F * speed);
             for (int k = 0; k < 3; k++) {
                 graphics.fill(dx + 2 + k * 4, floor - 18, dx + 4 + k * 4, floor, copper);
             }
@@ -107,13 +104,12 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
 
         // Cylinders in the window's corner; power and speed under it, then the speed bar
         if (n > 0) {
-            graphics.text(font, Component.translatable("gui.cyberfarm.engine.cylinders", n, SteamEngineBlockEntity.MAX_CYLINDERS),
+            graphics.text(font, Component.translatable("gui.cyberfarm.engine.cylinders", n, SteamEngineBlockEntity.CYLINDERS),
                     x + VIEW_X0 + 3, y + TOP + 2, ACCENT, true);
             graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", String.format("%,d", menu.getOutput())),
                     x + VIEW_X0, y + 78, ACCENT, false);
             Component speedText = Component.translatable("gui.cyberfarm.engine.speed", menu.getSpeedPercent());
             graphics.text(font, speedText, x + VIEW_X1 - font.width(speedText), y + 78, TEXT_DIM, false);
-            drawProgressBar(graphics, x + VIEW_X0, y + 89, VIEW_X1 - VIEW_X0, 4, speed, ORANGE);
         }
     }
 
@@ -123,17 +119,17 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
             float a = spin + Mth.TWO_PI * i / 48;
             int px = cx + Math.round(r * Mth.cos(a));
             int py = cy + Math.round(r * Mth.sin(a));
-            graphics.fill(px, py, px + 1, py + 1, i % 4 < 2 ? ACCENT : 0xFF3A444E);
+            graphics.fill(px, py, px + 1, py + 1, i % 4 < 2 ? ACCENT : PANEL_LIGHT);
         }
         for (int s = 0; s < 6; s++) {
             float a = spin + s * Mth.TWO_PI / 6;
             for (int d = 2; d < r - 1; d++) {
                 int px = cx + Math.round(d * Mth.cos(a));
                 int py = cy + Math.round(d * Mth.sin(a));
-                graphics.fill(px, py, px + 1, py + 1, STEEL);
+                graphics.fill(px, py, px + 1, py + 1, STEEL_DARK);
             }
         }
-        graphics.fill(cx - 1, cy - 1, cx + 2, cy + 2, SHELL);
+        graphics.fill(cx - 1, cy - 1, cx + 2, cy + 2, STEEL_LIGHT);
     }
 
     private static int dim(int color, float factor) {

@@ -13,7 +13,7 @@ item_ids:
 <ItemImage id="cyberfarm:resonance_core" scale="4" float="left" />
 
 A buildable battery: a polyhedral crystal floats over the pedestal, columns of **Stabilizer
-Pylons** on its sides hold it steady with their beams, and a shell of **Resonance Cells** around
+Pylons** on its sides send out drones that circle it and hold it steady with waves, and a shell of **Resonance Cells** around
 the crystal makes it bigger, tier by tier.
 
 <br clear="all" />
@@ -33,7 +33,7 @@ the crystal makes it bigger, tier by tier.
 2. Build a shell of [Resonance Cells](resonance_cell.md) around the space above it for tiers 2-4.
 3. Put up the columns of [Stabilizer Pylons](stabilizer_pylon.md) the tier asks for, on its sides.
 
-The [Multiblock Projector](multiblock_projector.md) shows every tier, pylons included: sneak +
+The [Multiblock Projector](multiblock_projector.md) shows tiers 2 to 4, pylons included: sneak +
 right-click to pick it, then click the pedestal.
 
 ## What each tier looks like

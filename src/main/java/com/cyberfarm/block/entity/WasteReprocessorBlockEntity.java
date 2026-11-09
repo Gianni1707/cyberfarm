@@ -13,10 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
@@ -24,13 +21,15 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * recovering an Uranium Ingot one time in three and, rarely, an Isotope Shard for the Crystallizer.
  * Waste inside it is shielded and does not contaminate.
  */
-public class WasteReprocessorBlockEntity extends MachineBlockEntity {
+public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 50;
+
     public static final int INPUT = 0;
     public static final int WASTE_OUTPUT = 1;
     public static final int URANIUM_OUTPUT = 2;
     public static final int ISOTOPE_OUTPUT = 3;
     public static final int PROCESS_TIME = 200;
-    public static final int ENERGY_PER_TICK = 40;
+    public static final int ENERGY_PER_TICK = 160;
     private static final int CAPACITY = 40_000;
     private static final int MAX_INPUT = 1_000;
     /** One treated rod in this many gives back an Uranium Ingot. */
@@ -38,39 +37,40 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
     /** One treated rod in this many gives an Isotope Shard. */
     public static final int ISOTOPE_CHANCE = 4;
 
-    private int progress;
-
     public WasteReprocessorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.WASTE_REPROCESSOR.get(), pos, state, 4, CAPACITY, MAX_INPUT, 0);
     }
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
                 && hasRoomFor(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get()) && hasRoomFor(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
-                progress = 0;
-                ItemStack input = getStack(INPUT);
-                setStack(INPUT, input.copyWithCount(input.getCount() - 1));
-                addOne(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get());
-                if (level.getRandom().nextInt(URANIUM_CHANCE) == 0) {
-                    addOne(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
-                }
-                if (level.getRandom().nextInt(ISOTOPE_CHANCE) == 0) {
-                    addOne(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());
-                }
-                level.playSound(null, pos, ModSounds.REPROCESSOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            take(INPUT, 1);
+            addOne(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get());
+            if (level.getRandom().nextInt(URANIUM_CHANCE) == 0) {
+                addOne(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get());
             }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+            if (level.getRandom().nextInt(ISOTOPE_CHANCE) == 0) {
+                addOne(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());
+            }
+            level.playSound(null, pos, ModSounds.REPROCESSOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
     }
 
@@ -80,11 +80,17 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
         return index == INPUT && resource.is(ModItems.DEPLETED_FUEL_ROD.get());
     }
 
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index != INPUT;
+    }
+
     @Override
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             default -> 0;
         };
     }
@@ -92,18 +98,6 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
     @Override
     protected int getExtraDataCount() {
         return 2;
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putInt("progress", progress);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        progress = input.getIntOr("progress", 0);
     }
 
     @Override

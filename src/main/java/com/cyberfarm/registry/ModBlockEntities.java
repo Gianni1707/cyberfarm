@@ -17,6 +17,7 @@ import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
+import com.cyberfarm.block.entity.DockTankBlockEntity;
 import com.cyberfarm.block.entity.HologramTableBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
@@ -30,6 +31,7 @@ import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
 import com.cyberfarm.block.entity.WasteReprocessorBlockEntity;
 import com.cyberfarm.block.entity.LaserTurretBlockEntity;
+import com.cyberfarm.block.entity.BiomassPressBlockEntity;
 import com.cyberfarm.block.entity.WaterPumpBlockEntity;
 
 import net.minecraft.core.registries.Registries;
@@ -82,8 +84,14 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AcidSynthesizerBlockEntity>> ACID_SYNTHESIZER = BLOCK_ENTITIES.register("acid_synthesizer",
             () -> new BlockEntityType<>(AcidSynthesizerBlockEntity::new, Set.of(ModBlocks.ACID_SYNTHESIZER.get())));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BiomassPressBlockEntity>> BIOMASS_PRESS = BLOCK_ENTITIES.register("biomass_press",
+            () -> new BlockEntityType<>(BiomassPressBlockEntity::new, Set.of(ModBlocks.BIOMASS_PRESS.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = BLOCK_ENTITIES.register("electrolyzer",
             () -> new BlockEntityType<>(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.cyberfarm.block.entity.TransmitterDishBlockEntity>> TRANSMITTER_DISH = BLOCK_ENTITIES.register("transmitter_dish",
+            () -> new BlockEntityType<>(com.cyberfarm.block.entity.TransmitterDishBlockEntity::new, Set.of(ModBlocks.TRANSMITTER_DISH.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.cyberfarm.block.entity.ReceiverDishBlockEntity>> RECEIVER_DISH = BLOCK_ENTITIES.register("receiver_dish",
+            () -> new BlockEntityType<>(com.cyberfarm.block.entity.ReceiverDishBlockEntity::new, Set.of(ModBlocks.RECEIVER_DISH.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PyrolysisOvenBlockEntity>> PYROLYSIS_OVEN = BLOCK_ENTITIES.register("pyrolysis_oven",
             () -> new BlockEntityType<>(PyrolysisOvenBlockEntity::new, Set.of(ModBlocks.PYROLYSIS_OVEN.get())));
@@ -120,6 +128,8 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SwarmDockBlockEntity>> SWARM_DOCK = BLOCK_ENTITIES.register("swarm_dock",
             () -> new BlockEntityType<>(SwarmDockBlockEntity::new, Set.of(ModBlocks.SWARM_DOCK.get())));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DockTankBlockEntity>> DOCK_TANK = BLOCK_ENTITIES.register("dock_tank",
+            () -> new BlockEntityType<>(DockTankBlockEntity::new, Set.of(ModBlocks.DOCK_TANK.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HologramTableBlockEntity>> HOLOGRAM_TABLE = BLOCK_ENTITIES.register("hologram_table",
             () -> new BlockEntityType<>(HologramTableBlockEntity::new, Set.of(ModBlocks.HOLOGRAM_TABLE.get())));
 }

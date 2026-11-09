@@ -9,6 +9,7 @@ import com.cyberfarm.block.SupplyTerminalBlock;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.SteamEngineBlock;
 import com.cyberfarm.block.SwarmDockBlock;
+import com.cyberfarm.block.DockTankBlock;
 import com.cyberfarm.block.HologramTableBlock;
 import com.cyberfarm.block.BioDigesterBlock;
 import com.cyberfarm.block.CombustionGeneratorBlock;
@@ -24,6 +25,8 @@ import com.cyberfarm.block.EnergyConduitBlock;
 import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
+import com.cyberfarm.block.HiddenFrameBlock;
+import com.cyberfarm.block.MachinePartBlock;
 import com.cyberfarm.block.LiquidPipeBlock;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
@@ -37,6 +40,7 @@ import com.cyberfarm.block.StabilizerPylonBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.LaserTurretBlock;
+import com.cyberfarm.block.BiomassPressBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -54,7 +58,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<CombustionGeneratorBlock> COMBUSTION_GENERATOR = BLOCKS.registerBlock("combustion_generator",
             CombustionGeneratorBlock::new,
-            p -> machine(p).lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
+            p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<DroneAssemblerBlock> DRONE_ASSEMBLER = BLOCKS.registerBlock("drone_assembler",
             DroneAssemblerBlock::new, p -> litMachine(p).noOcclusion());
@@ -63,6 +67,8 @@ public class ModBlocks {
             DroneDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
     public static final DeferredBlock<SwarmDockBlock> SWARM_DOCK = BLOCKS.registerBlock("swarm_dock",
             SwarmDockBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 7));
+    public static final DeferredBlock<DockTankBlock> DOCK_TANK = BLOCKS.registerBlock("dock_tank",
+            DockTankBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<HologramTableBlock> HOLOGRAM_TABLE = BLOCKS.registerBlock("hologram_table",
             HologramTableBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 9));
 
@@ -94,10 +100,10 @@ public class ModBlocks {
 
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
-            BioDigesterBlock::new, ModBlocks::litMachine);
+            BioDigesterBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<GasTurbineBlock> GAS_TURBINE = BLOCKS.registerBlock("gas_turbine",
-            GasTurbineBlock::new, ModBlocks::litMachine);
+            GasTurbineBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<MethaneExtractorBlock> METHANE_EXTRACTOR = BLOCKS.registerBlock("methane_extractor",
             MethaneExtractorBlock::new,
@@ -107,6 +113,10 @@ public class ModBlocks {
     // The chamber's blocks never hide their neighbours' faces: once formed they are drawn as one smooth tank
     public static final DeferredBlock<CyberFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
             CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<MachinePartBlock> MACHINE_PART = BLOCKS.registerBlock("machine_part",
+            MachinePartBlock::new, p -> machine(p).noOcclusion());
+    public static final DeferredBlock<HiddenFrameBlock> HIDDEN_FRAME = BLOCKS.registerBlock("hidden_frame",
+            HiddenFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CyberFrameBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
             CyberFrameBlock::new, ModBlocks::chamberPart);
     public static final DeferredBlock<CyberFrameBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
@@ -115,7 +125,7 @@ public class ModBlocks {
             IntakeGateBlock::new, ModBlocks::chamberPart);
 
     public static final DeferredBlock<MufflerBlock> MUFFLER = BLOCKS.registerBlock("muffler",
-            MufflerBlock::new, p -> p.mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL));
+            MufflerBlock::new, p -> p.mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL).noOcclusion());
 
     // Nuclear
     public static final DeferredBlock<Block> URANIUM_ORE = BLOCKS.registerSimpleBlock("uranium_ore",
@@ -129,14 +139,18 @@ public class ModBlocks {
     public static final DeferredBlock<Block> DEEPSLATE_BAUXITE_ORE = BLOCKS.registerSimpleBlock("deepslate_bauxite_ore",
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
     public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = BLOCKS.registerBlock("electrolyzer",
-            ElectrolyzerBlock::new, ModBlocks::litMachine);
+            ElectrolyzerBlock::new, p -> litMachine(p).noOcclusion());
+    public static final DeferredBlock<com.cyberfarm.block.TransmitterDishBlock> TRANSMITTER_DISH = BLOCKS.registerBlock("transmitter_dish",
+            com.cyberfarm.block.TransmitterDishBlock::new, p -> litMachine(p).noOcclusion());
+    public static final DeferredBlock<com.cyberfarm.block.ReceiverDishBlock> RECEIVER_DISH = BLOCKS.registerBlock("receiver_dish",
+            com.cyberfarm.block.ReceiverDishBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<PyrolysisOvenBlock> PYROLYSIS_OVEN = BLOCKS.registerBlock("pyrolysis_oven",
-            PyrolysisOvenBlock::new, ModBlocks::litMachine);
+            PyrolysisOvenBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",
-            FabricatorBlock::new, ModBlocks::litMachine);
+            FabricatorBlock::new, p -> litMachine(p).noOcclusion());
     // Supply contracts: the Drone Mechanist's job site in a village
     public static final DeferredBlock<SupplyTerminalBlock> SUPPLY_TERMINAL = BLOCKS.registerBlock("supply_terminal",
-            SupplyTerminalBlock::new, p -> machine(p).lightLevel(state -> 4));
+            SupplyTerminalBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
             ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));
@@ -151,7 +165,7 @@ public class ModBlocks {
     public static final DeferredBlock<ReactorPortBlock> TURBINE_PORT = BLOCKS.registerBlock("turbine_port",
             ReactorPortBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorPortBlock.FORMED) ? 6 : 0));
     public static final DeferredBlock<CoolantMixerBlock> COOLANT_MIXER = BLOCKS.registerBlock("coolant_mixer",
-            CoolantMixerBlock::new, ModBlocks::litMachine);
+            CoolantMixerBlock::new, p -> litMachine(p).noOcclusion());
 
     // Walls of the Methane Extractor's chamber: see-through, tinted, framed
     public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
@@ -163,15 +177,9 @@ public class ModBlocks {
     public static final DeferredBlock<Block> NETHER_SULFUR_ORE = BLOCKS.registerSimpleBlock("nether_sulfur_ore",
             p -> p.mapColor(MapColor.NETHER).strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE).requiresCorrectToolForDrops());
     public static final DeferredBlock<AcidSynthesizerBlock> ACID_SYNTHESIZER = BLOCKS.registerBlock("acid_synthesizer",
-            AcidSynthesizerBlock::new, ModBlocks::litMachine);
-    // Steam Engine: the boiler controls a row of cylinders closed by a dynamo
-    // A complete engine is drawn whole by the boiler's renderer: its blocks hide and never cull their neighbours
+            AcidSynthesizerBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<SteamEngineBlock> STEAM_ENGINE = BLOCKS.registerBlock("steam_engine",
             SteamEngineBlock::new, p -> machine(p).noOcclusion());
-    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_CYLINDER = BLOCKS.registerBlock("steam_engine_cylinder",
-            CyberFrameBlock::new, p -> machine(p).noOcclusion());
-    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
-            CyberFrameBlock::new, p -> machine(p).noOcclusion());
     // Crystallizer: grows the Fusion Crystal at the heart of a mech's core
     public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = BLOCKS.registerBlock("crystallizer",
             CrystallizerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
@@ -185,17 +193,19 @@ public class ModBlocks {
             CyberFrameBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 5 : 0));
     public static final DeferredBlock<CyberFrameBlock> HANGAR_PAD = BLOCKS.registerBlock("hangar_pad",
             CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
+    public static final DeferredBlock<BiomassPressBlock> BIOMASS_PRESS = BLOCKS.registerBlock("biomass_press",
+            BiomassPressBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
-            WaterPumpBlock::new, ModBlocks::litMachine);
+            WaterPumpBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<LaserTurretBlock> LASER_TURRET = BLOCKS.registerBlock("laser_turret",
             LaserTurretBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
-            p -> new FluidTankBlock(p, false), ModBlocks::machine);
+            p -> new FluidTankBlock(p, false), p -> machine(p).noOcclusion());
     public static final DeferredBlock<FluidTankBlock> GAS_TANK = BLOCKS.registerBlock("gas_tank",
-            p -> new FluidTankBlock(p, true), ModBlocks::machine);
+            p -> new FluidTankBlock(p, true), p -> machine(p).noOcclusion());
 
     public static final DeferredBlock<WasteReprocessorBlock> WASTE_REPROCESSOR = BLOCKS.registerBlock("waste_reprocessor",
-            WasteReprocessorBlock::new, ModBlocks::litMachine);
+            WasteReprocessorBlock::new, p -> litMachine(p).noOcclusion());
     /** Treated nuclear waste: inert glass, safe to store or build with. */
     public static final DeferredBlock<Block> VITRIFIED_WASTE = BLOCKS.registerSimpleBlock("vitrified_waste",
             p -> p.mapColor(MapColor.COLOR_GREEN).strength(3.0F, 9.0F).sound(SoundType.GLASS).requiresCorrectToolForDrops().lightLevel(state -> 2));

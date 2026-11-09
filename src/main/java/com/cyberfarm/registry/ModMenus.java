@@ -2,6 +2,7 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.AcidSynthesizerMenu;
+import com.cyberfarm.menu.BiomassPressMenu;
 import com.cyberfarm.menu.ElectrolyzerMenu;
 import com.cyberfarm.menu.FabricatorMenu;
 import com.cyberfarm.menu.PyrolysisOvenMenu;
@@ -56,8 +57,14 @@ public class ModMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineMenu>> STEAM_ENGINE = MENUS.register("steam_engine",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<BiomassPressMenu>> BIOMASS_PRESS = MENUS.register("biomass_press",
+            () -> IMenuTypeExtension.create((id, inventory, buf) -> new BiomassPressMenu(id, inventory)));
     public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerMenu>> ELECTROLYZER = MENUS.register("electrolyzer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.cyberfarm.menu.TransmitterDishMenu>> TRANSMITTER_DISH = MENUS.register("transmitter_dish",
+            () -> IMenuTypeExtension.create(com.cyberfarm.menu.TransmitterDishMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.cyberfarm.menu.ReceiverDishMenu>> RECEIVER_DISH = MENUS.register("receiver_dish",
+            () -> IMenuTypeExtension.create(com.cyberfarm.menu.ReceiverDishMenu::new));
 
     public static final DeferredHolder<MenuType<?>, MenuType<PyrolysisOvenMenu>> PYROLYSIS_OVEN = MENUS.register("pyrolysis_oven",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new PyrolysisOvenMenu(id, inventory)));
