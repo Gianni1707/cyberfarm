@@ -98,13 +98,13 @@ behind the shoulder, the armour on the trunk, the blade and the drill by the arm
 
 The slots show the modules the parked mech carries. Put a module in its slot to fit it, take it
 out to remove it, and the **gantry arm** does the work: the bridge rolls along the rack's arms,
-the gripper drops onto the mount (the back, a forearm or the chest) and the module locks in with a
+the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a
 flash, or comes away held in the gripper; then the arm goes home. The module is on the mech (or off it) the
 moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech.
 With no mech on the pad, the slots are empty and take nothing.
 
-The **Fold** button packs the parked mech back up: it crouches, crosses its arms, draws its head and
-legs in and folds down into its frame, which drops on the pad with the battery's charge and the
+The **Fold** button packs the parked mech back up: it crouches, folds its forearms across its belly, bows its head,
+draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the
 modules in it. It folds only at **full integrity**: a frame keeps no damage, so let the hangar finish the repairs first.
 
 <Row>
