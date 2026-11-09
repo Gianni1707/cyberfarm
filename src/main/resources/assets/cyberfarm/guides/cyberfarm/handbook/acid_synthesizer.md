@@ -2,7 +2,7 @@
 navigation:
   title: Sulfur and Acid
   parent: generators.md
-  position: 5
+  position: 6
   icon: cyberfarm:acid_synthesizer
 item_ids:
   - cyberfarm:acid_synthesizer
@@ -13,8 +13,8 @@ item_ids:
 
 # Sulfur and Acid
 
-The [Methane Extractor](methane_extractor.md) needs **Acid** to dissolve the mob in its chamber.
-Acid is made from **Sulfur** and water.
+The [Methane Extractor](methane_extractor.md) needs **Acid** to dissolve the mob in its chamber, and the
+[Fabricator](circuits.md) etches the Advanced and Elite Circuits with it. Acid is made from **Sulfur** and water.
 
 ## Sulfur
 
@@ -38,9 +38,10 @@ tanks and the tower rise out of its base. It doesn't work until then; breaking a
 
 Uses **40 FE/t**. Each batch takes 2 seconds: **1 Sulfur + 500 mB Water → 500 mB Acid**. It takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI. The gauges on
 its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round
-its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front and behind.
+its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front, behind or below.
 
-- Pipe water in (from a [Water Pump](water_pump.md)) and put sulfur in the slot, by hand or with a hopper.
+- Pipe water in (from a [Water Pump](water_pump.md), or from a [Liquid Tank](fluid_tanks.md) filled with
+  water buckets) and put sulfur in the slot, by hand or with a hopper.
 - The acid is pushed into adjacent pipes and tanks by itself: pipe it to an **Acid Inlet** of the
   [Methane Extractor](methane_extractor.md) chamber.
 - Right-click it with an empty bucket for an **Acid Bucket**.

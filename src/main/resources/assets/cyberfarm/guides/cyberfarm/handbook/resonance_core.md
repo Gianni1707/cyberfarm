@@ -33,7 +33,7 @@ the crystal makes it bigger, tier by tier.
 2. Build a shell of [Resonance Cells](resonance_cell.md) around the space above it for tiers 2-4.
 3. Put up the columns of [Stabilizer Pylons](stabilizer_pylon.md) the tier asks for, on its sides.
 
-The [Multiblock Projector](multiblock_projector.md) shows every tier, pylons included: sneak +
+The [Multiblock Projector](multiblock_projector.md) shows tiers 2 to 4, pylons included: sneak +
 right-click to pick it, then click the pedestal.
 
 ## What each tier looks like

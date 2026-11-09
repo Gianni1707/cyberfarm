@@ -42,7 +42,7 @@ Put the goods in the **Deliver** slot: by hand, with a hopper, or as the destina
 brings exactly what the contracts need and nothing more.
 
 Some contracts pay a **bonus** besides their emeralds, shown on the row: battery cells, circuits,
-addons, carbon fiber, even an Anchor Addon or an Elite Circuit from a master mechanist.
+addons, carbon fiber, even an Anchor Addon from an expert mechanist or an Elite Circuit from a master.
 
 ## Events
 

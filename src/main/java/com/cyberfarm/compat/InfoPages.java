@@ -55,6 +55,8 @@ public final class InfoPages {
                 page(ModItems.ALUMINA.get()),
                 page(ModItems.ALUMINUM_INGOT.get()),
                 page(ModItems.ELECTROLYZER.get()),
+                page(ModItems.TRANSMITTER_DISH.get()),
+                page(ModItems.RECEIVER_DISH.get()),
                 page(ModItems.PYROLYSIS_OVEN.get()),
                 page(ModItems.CARBON_FIBER.get()),
                 page(ModItems.FABRICATOR.get()),

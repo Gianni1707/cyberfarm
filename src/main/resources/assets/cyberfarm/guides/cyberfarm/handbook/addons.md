@@ -26,6 +26,7 @@ How many addons fit depends on the [frame](drone_frames.md):
 | Basic Drone Frame | 4 |
 | Advanced Drone Frame | 8 |
 | Elite Drone Frame | 16 |
+| Mini Drone Frame | 2 |
 
 <ItemGrid>
   <ItemIcon id="speed_addon" />

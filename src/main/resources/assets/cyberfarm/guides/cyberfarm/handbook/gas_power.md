@@ -4,6 +4,10 @@ navigation:
   parent: generators.md
   position: 2
   icon: cyberfarm:gas_turbine
+item_ids:
+  - cyberfarm:biogas_bucket
+  - cyberfarm:methane_bucket
+  - cyberfarm:steam_bucket
 ---
 
 # Gas Power

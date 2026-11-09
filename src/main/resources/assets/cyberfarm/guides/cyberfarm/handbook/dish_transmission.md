@@ -30,23 +30,25 @@ Dishes send **FE through the air**, where a conduit can't go. There is no beam: 
 
 ## Transmitter Dish
 
-- It is a small multiblock: place it with **three Cyber Frames**, to its right, behind it and in the
-  corner between, and the dish unfolds on its turret over a 2x2 base.
-- Feed it FE with [Energy Conduits](energy_conduit.md) on the dish block.
+- It is a small multiblock: place it with **three Cyber Frames**, on its right as you face it, behind it and in the
+  corner between, and the dish unfolds on its turret over a 2x2 base. Alone, a right click sends out drones that show where they go.
+- Feed it FE with [Energy Conduits](energy_conduit.md) on the dish block. It takes in as much FE per tick as its
+  module lets it send, and stores ten times that.
 - Each Transmitter Dish has **one network**. In its GUI you give it a **name** and a **colour**, which
   lights the indicator on both dishes.
 - A new network is **Private**: only you and the players on your team can see it. Switch it to
   **Public** and anyone can link a receiver.
-- It serves up to **4 receivers in turn**: it turns to one, sends, then moves to the next. The signal
-  passes through blocks, but the receiver's chunk must be loaded.
+- It serves up to **4 receivers in turn**: it turns to one (1 second), sends for 4 seconds, then moves to the next. The signal
+  passes through blocks, but the chunks of both dishes must be loaded.
 - A tenth of the FE is **lost on the way**.
 
 ## Receiver Dish
 
 - A small multiblock two blocks tall: put **a Cyber Frame on top** of it and its dish unfolds.
 - Its GUI lists the networks it can reach, with their colour, distance (or dimension) and
-  seats taken, for example "2/4". Click one to link; a full network is greyed out.
-- It gives the FE it receives to the blocks and conduits around it.
+  seats taken, for example "2/4". Click one to link; a full network is greyed out. **Disconnect** leaves it.
+  The GUI also shows the FE/t arriving.
+- It stores up to 2,000,000 FE and gives what it receives to the blocks and conduits around it.
 
 ## Range Modules
 

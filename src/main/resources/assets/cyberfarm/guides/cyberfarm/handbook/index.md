@@ -35,7 +35,7 @@ The three tiers and their materials: [aluminum](aluminum.md) from bauxite,
 
 ### [Generators](generators.md)
 Making FE: the [Combustion Generator](combustion_generator.md), then [Gas Power](gas_power.md)
-with the [Bio-Digester](bio_digester.md), the [Methane Extractor](methane_extractor.md) and the
+with the [Biomass Press](biomass_press.md), the [Bio-Digester](bio_digester.md), the [Methane Extractor](methane_extractor.md) and the
 [Gas Turbine](gas_turbine.md), [Sulfur and Acid](acid_synthesizer.md) and the
 [Steam Engine](steam_engine.md). The Generators page compares them all.
 
@@ -54,12 +54,14 @@ shell of [Resonance Cells](resonance_cell.md), held steady by columns of
 
 ### [Cables](cables.md)
 Moving power and fluids: the [Energy Conduit](energy_conduit.md), the [Gas Pipe](gas_pipe.md) and the
-[Liquid Pipe](liquid_pipe.md), plus [Liquid and Gas Tanks](fluid_tanks.md) to store fluids.
+[Liquid Pipe](liquid_pipe.md), plus [Liquid and Gas Tanks](fluid_tanks.md) to store fluids and
+[Dish Transmission](dish_transmission.md) to send power through the air.
 
 ### [Drones](drone_systems.md)
 Building and running drones: the [Drone Assembler](drone_assembler.md),
 [Drone Frames](drone_frames.md), [Function Modules](modules.md), [Addons](addons.md),
-the [Drone Dock](drone_dock.md) and [Using Drones](drones.md).
+the [Drone Dock](drone_dock.md) and [Using Drones](drones.md); then the
+[Hologram Table](hologram_table.md), [Supply Contracts](supply_terminal.md) and the [Tech Village](tech_village.md).
 
 ### [Mech](mech.md)
 A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump and punch, with

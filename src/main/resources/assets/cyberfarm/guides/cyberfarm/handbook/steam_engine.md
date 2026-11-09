@@ -2,7 +2,7 @@
 navigation:
   title: Steam Engine
   parent: generators.md
-  position: 7
+  position: 8
   icon: cyberfarm:steam_engine
 item_ids:
   - cyberfarm:steam_engine
@@ -38,7 +38,7 @@ The GUI shows a live side view of the engine, the power made and the speed.
 
 ## Fuel and power
 
-Pipe Biogas or Methane into the boiler. It burns **45 mB/t**:
+Pipe Biogas or Methane into the boiler, which holds 16,000 mB. It burns **45 mB/t**:
 
 | Fuel | FE per mB | Power |
 | --- | --- | --- |
@@ -48,7 +48,7 @@ Pipe Biogas or Methane into the boiler. It burns **45 mB/t**:
 On methane it makes as much as about eleven Combustion Generators; a [Fission Reactor](fission_reactor.md)
 still makes more.
 
-The engine needs about **5 seconds** to reach full speed and slows down when the fuel runs out.
+The engine needs about **5 seconds** to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out.
 It stops burning fuel when its buffer (200,000 FE) is full.
 
 Both the gas and the power go through the **boiler**: connect pipes, [Energy Conduits](energy_conduit.md) or

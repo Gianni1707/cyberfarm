@@ -26,7 +26,7 @@ A tank block stores **32,000 mB** (32 buckets) of a single fluid:
 a 2x2x2, a 3x3x3. Each block adds 32 buckets, and pipes and buckets see them as one. Tanks already holding different fluids don't join.
 
 Fill them with the matching [pipe](cables.md): a [Liquid Pipe](liquid_pipe.md) or a
-[Gas Pipe](gas_pipe.md), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. A Liquid Tank also takes and gives **buckets**: just right-click it with one.
+[Gas Pipe](gas_pipe.md), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. Both tanks also take and give **buckets** (gas buckets for the Gas Tank): just right-click it with one.
 
 Tanks are **passive**: they never push anything out. To empty one into a machine, right-click
 the arm of the pipe that touches it, so the pipe **pulls** from the tank (a lit band round its end shows

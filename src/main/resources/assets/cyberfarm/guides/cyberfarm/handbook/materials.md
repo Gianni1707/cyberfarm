@@ -12,9 +12,9 @@ always know what to build next:
 
 | Tier | Materials | Made with | Unlocks |
 | --- | --- | --- | --- |
-| **1** | [Aluminum](aluminum.md), [Basic Circuits](circuits.md) | Electrolyzer, a crafting table or the Fabricator | Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer |
-| **2** | [Carbon Fiber](carbon_fiber.md), Advanced Circuits | Pyrolysis Oven (methane), Fabricator (acid) | Advanced Frames, Steam Engine, Water Pump, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar |
-| **3** | Elite Circuits | Fabricator (acid, uranium) | Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer and the mech |
+| **1** | [Aluminum](aluminum.md), [Basic Circuits](circuits.md) | Electrolyzer, a crafting table or the Fabricator | Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer, Pyrolysis Oven, Water Pump |
+| **2** | [Carbon Fiber](carbon_fiber.md), Advanced Circuits | Pyrolysis Oven (methane), Fabricator (acid) | Advanced Frames, Steam Engine, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar, Laser Turret, the dishes |
+| **3** | Elite Circuits | Fabricator (acid, uranium) | Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer, Range Module III and the mech |
 
 1. **By hand**: mine **bauxite**, smelt it into alumina, and run a Combustion Generator and an
    Electrolyzer for your first aluminum. Craft your first Basic Circuits at a crafting table.

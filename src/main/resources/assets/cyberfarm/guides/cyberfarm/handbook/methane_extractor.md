@@ -2,7 +2,7 @@
 navigation:
   title: Methane Extractor
   parent: generators.md
-  position: 4
+  position: 5
   icon: cyberfarm:methane_extractor
 item_ids:
   - cyberfarm:methane_extractor
@@ -109,7 +109,7 @@ The methane (up to **8,000 mB**) is pushed out of every **Methane Outlet** into 
 
 The chamber holds one mob.
 
-| Mob | Methane | In a Gas Turbine |
+| Mob | Methane | In Gas Turbines |
 | --- | --- | --- |
 | Zombies (any kind) | 25 mB/t | 300 FE/t |
 | Other monsters | 12 mB/t | 144 FE/t |

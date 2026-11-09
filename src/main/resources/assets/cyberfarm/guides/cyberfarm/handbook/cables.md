@@ -55,8 +55,8 @@ up to its tier's rate. Right-click it again to stop.
 The network never sends anything back into a block it pulls from, so a pulling arm is a one-way
 exit. Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md), or a battery of another mod.
 
-**Upgrading**: 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds
-and a uranium ingot make 8 Elite ones.
+**Upgrading**: 8 cables around two gold ingots and an Advanced Circuit make 8 Advanced ones; 8 Advanced
+around two diamonds and an Elite Circuit make 8 Elite ones.
 
 Where a cable can't go, [Dish Transmission](dish_transmission.md) sends FE through the air.
 

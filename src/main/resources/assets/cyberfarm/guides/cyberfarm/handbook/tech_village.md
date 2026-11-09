@@ -13,7 +13,7 @@ item_ids:
 Somewhere in the grasslands and woods of the Overworld a lonely **Drone Mechanist** lives in his
 **Outpost**: a white cabin with a dark roof, a porch, a radio mast and solar panels, a vegetable
 garden at its side and a <ItemLink id="supply_terminal" /> on its back wall. Outposts are rare,
-a thousand blocks and more apart, in plains, meadows, savannas, forests, taigas and snowy plains.
+often a thousand blocks and more apart (never less than about 500), in plains, meadows, savannas, forests, taigas and snowy plains.
 The Mechanist keeps close to his terminal.
 
 ## Talking to the Mechanist

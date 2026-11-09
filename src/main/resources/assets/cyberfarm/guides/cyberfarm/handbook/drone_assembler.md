@@ -13,7 +13,8 @@ item_ids:
 <BlockImage id="cyberfarm:drone_assembler" scale="4" float="left" />
 
 The workshop where drones are built. It needs power: each assembly costs **4,000 FE**
-and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI.
+and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI,
+which change those numbers and its 20,000 FE buffer.
 
 <br clear="all" />
 
@@ -29,7 +30,9 @@ and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery [a
    assembler's print head, unfolding as it is made. When the welding head reaches the end of its rail it flashes into the output slot: take the finished
    <ItemLink id="drone" /> from there.
 
-A drone needs **at least one module**, and the same module cannot be installed twice.
+A drone needs **at least one module**, and the same module cannot be installed twice. The Builder
+and Bomb Modules fit only a [Mini Drone Frame](drone_frames.md), which takes no other module, and
+Fortune and Silk Touch Addons cannot go together.
 
 To **change a finished drone**, put it back in the output slot with the other slots empty and
 press **Disassemble**: its parts return to their slots. Disassembling is free; assembling again

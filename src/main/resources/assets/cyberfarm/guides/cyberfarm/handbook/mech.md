@@ -39,7 +39,7 @@ up and drops as its frame, keeping the battery's charge and its modules.
 | Control | What it does |
 | --- | --- |
 | W A S D | Walk; turn by looking around |
-| Space | Jump about four blocks high |
+| Space | Jump about five blocks high |
 | Left click (empty hand) | Punch: 10 extra damage, 100 FE |
 | Left click a block | Dig like an iron pickaxe, with the right drops |
 | Space in the air (Jet) | Climb; sneak to dive, neither to glide |
@@ -59,8 +59,8 @@ blade's hum.
 
 ## Battery and integrity
 
-The battery holds **1,000,000 FE**. Walking uses about **200 FE per block** and the systems a little
-more while you sit inside; with an empty battery the mech cannot move (you can still get out).
+The battery holds **1,000,000 FE**. Walking uses about **200 FE per block** and the systems **2 FE/t**
+while you sit inside; with an empty battery the mech cannot move (you can still get out).
 
 **Integrity** is the mech's health. It never blows up: when it would, it **shuts down**, slumps
 over and lets you out. A shut-down mech must be repaired before you can climb in again: park it in

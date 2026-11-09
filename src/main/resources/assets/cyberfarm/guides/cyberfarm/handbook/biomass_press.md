@@ -2,7 +2,7 @@
 navigation:
   title: Biomass Press
   parent: generators.md
-  position: 2
+  position: 3
   icon: cyberfarm:biomass_press
 item_ids:
   - cyberfarm:biomass_press

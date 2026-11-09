@@ -865,7 +865,7 @@ def recipes():
     shaped("liquid_tank", ["IGI", "GBG", "IGI"], {"I": iron, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("gas_tank", ["CGC", "GBG", "CGC"], {"C": copper, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("laser_turret", ["IAI", "RDR", "IBI"], {"I": iron, "A": "minecraft:amethyst_shard", "R": redstone, "D": advanced_circuit, "B": cell})
-    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": advanced_circuit})
+    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": circuit})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")
     shaped("hazmat_suit", ["W W", "WIW", "WWW"], {"W": wool, "I": lead_lining}, category="equipment")

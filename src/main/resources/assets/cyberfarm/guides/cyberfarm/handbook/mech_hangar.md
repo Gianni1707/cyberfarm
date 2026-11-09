@@ -81,7 +81,7 @@ straightens up on the stand by itself, gliding to the middle of the pad and turn
 and the clamps come down onto its shoulders. While it stands there, empty:
 
 - it is **charged** at up to **4,000 FE/t** from the console's own battery (1,000,000 FE), which
-  you fill with [Energy Conduits](energy_conduit.md) or any mod's cables;
+  you fill with [Energy Conduits](energy_conduit.md) or any mod's cables (up to 8,192 FE/t);
 - it is **repaired**, 1 point of integrity every half second for 400 FE. A mech that **shut down**
   comes back on once it is fully repaired.
 
@@ -92,7 +92,7 @@ in just as it does outside.
 
 Right-click the console, or with an empty hand any part or the pad of the complete hangar, for its
 screen. On the left, a card with the parked mech's **battery** and **integrity**, the hangar's own
-battery, the status (charging, repairing, ready) and the **Fold** button. On the right, the mech's
+battery, the status (charging, repairing, restoring systems for a shut-down mech, ready) and the **Fold** button. On the right, the mech's
 outline with its four **module slots** at their mounts (see [Modules](mech_modules.md)): the jet
 behind the shoulder, the armour on the trunk, the blade and the drill by the arms.
 

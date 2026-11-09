@@ -27,11 +27,11 @@ ore: just as in real life, it takes electrolysis and a steady flow of power.
 
 1. Mine **Bauxite Ore**: rusty clumps in stone and deepslate, almost as common as iron, from y -32
    to y 80 and most common around y 24. It drops **Raw Bauxite** (Fortune helps).
-2. Smelt or blast it into **Alumina**, a white powder.
+2. Smelt or blast it (or the ore itself) into **Alumina**, a white powder.
 3. Put the Alumina in an **Electrolyzer**, which takes a **Cyber Frame** on its left as you face it (right-click it alone and a drone shows where), and only works once assembled: **1 Aluminum Ingot every 5 seconds at 80 FE/t**. Two
    [Combustion Generators](combustion_generator.md) keep it running. The Electrolyzer takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI. While it works, the feeder punch behind its
    window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine.
-   Plug conduits into its sides, front or back: its top is full.
+   Plug conduits into its free side, front or back: its top is full.
 
 Aluminum Ingots are tagged `c:ingots/aluminum`, Alumina `c:dusts/alumina`, the ore
 `c:ores/bauxite` and `c:ores/aluminum`, Raw Bauxite `c:raw_materials/aluminum`: aluminum from other

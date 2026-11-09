@@ -56,7 +56,7 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
         if (fuel.isEmpty()) {
             return;
         }
-        // Half the furnace burn time: one coal = 800 ticks * 40 FE = 32,000 FE
+        // Half the furnace burn time: one coal = 800 ticks * 60 FE = 48,000 FE
         int duration = fuel.getBurnTime(null, level.fuelValues()) / 2;
         if (duration <= 0) {
             return;

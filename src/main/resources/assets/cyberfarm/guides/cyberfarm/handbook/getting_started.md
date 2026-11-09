@@ -68,7 +68,7 @@ By default the drone works a **9x9** area centred on the dock. Use the <ItemLink
 to choose a different area: click the dock, then two opposite corners. The tool reads what the drone
 does and tells you each step above the hotbar.
 
-**Look at a drone**, even from far away, to see a panel over it with what it is doing, its charge and
+**Look at a drone**, even from far away (up to 32 blocks), to see a panel over it with what it is doing, its charge and
 what it carries.
 
 ## 6. Collect the harvest

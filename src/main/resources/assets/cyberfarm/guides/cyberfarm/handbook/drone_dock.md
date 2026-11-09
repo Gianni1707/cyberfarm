@@ -43,15 +43,19 @@ Right-click the dock to open it:
 - The **9 cargo slots**, the **Filter** button (see below) and the dock's energy bar.
 - **Return / Resume**: **Return** calls the drone home and keeps it there, charging but taking
   no new jobs (a Taxi drone first finishes the trip it is on). **Resume** lets it work again.
+- **Area**: shows in the world what the dock is set up for (see **The Survey Tool** below).
+- With a **Dock Tank** beside the dock (see below), a bar for its liquid under the cargo.
 
-Two **side tabs** on the left open a panel next to the screen; click a tab again to close it.
+**Side tabs** on the left open a panel next to the screen; click a tab again to close it.
 The screen remembers which one you left open.
 
 - **Drone Status** (the "i" tab, coloured like the drone's state): its state, the modules it
-  carries, the work area (not for Transport and Taxi drones, which never use it) and, for
-  Transport and Taxi drones, whether a route or a destination is set.
+  carries, the work area (not for Transport, Taxi and Builder drones, which never use it),
+  whether a route, a taxi destination or a build is set, and the layer a Quarry has reached.
 - **Battery** (the battery tab, showing the charge): the charge level, the FE stored and whether
   the drone is charging or flying.
+- **Build** (only with a Builder drone or a linked build): the layer being built and the blocks it
+  still needs; the ones the dock has none of are marked in red.
 
 ## The Survey Tool
 
@@ -77,8 +81,8 @@ inwards; for a route or a landing spot, one hovers over each and lights that blo
 after you close the screen, and fly home when you click the button again or take the drone off the dock.
 
 Clicking the linked dock again only repeats what the tool is asking for. To set up another dock,
-**right-click it** (while the tool asks for a route, **sneak + right-click** it, as a plain click would
-use it as a container).
+**right-click it** (while the tool asks for a route or a landing spot, or for the second corner,
+**sneak + right-click** it, as a plain click would use it as a container, the landing block or the corner).
 
 ## Choosing the work area
 

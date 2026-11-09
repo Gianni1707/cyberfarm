@@ -2,7 +2,7 @@
 navigation:
   title: Bio-Digester
   parent: generators.md
-  position: 3
+  position: 4
   icon: cyberfarm:bio_digester
 item_ids:
   - cyberfarm:bio_digester

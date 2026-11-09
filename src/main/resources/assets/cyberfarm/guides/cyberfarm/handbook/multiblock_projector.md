@@ -2,7 +2,7 @@
 navigation:
   title: Multiblock Projector
   parent: index.md
-  position: 4
+  position: 5
   icon: cyberfarm:multiblock_projector
 item_ids:
   - cyberfarm:multiblock_projector
@@ -18,8 +18,8 @@ Shows a multiblock **in the world**: what to place and where, before you place a
 
 - **Right-click** to open the list of structures and see the blocks each one takes: the [Fission Reactor](fission_reactor.md) and the
   [Steam Turbine](steam_turbine.md) in all three sizes, the
-  [Methane Extractor](methane_extractor.md) chamber, the four tiers of the
-  [Resonance Core](resonance_core.md), the [Mech Hangar](mech_hangar.md) and the
+  [Methane Extractor](methane_extractor.md) chamber, tiers 2 to 4 of the
+  [Resonance Core](resonance_core.md) (tier 1 is the core alone), the [Mech Hangar](mech_hangar.md) and the
   [Crystallizer](mech_core.md) chamber.
 - Below the multiblocks the list has **schematics**, marked in emerald: buildings saved with a
   **Structure Block**. Any data pack can add them: put the file in `data/<namespace>/structure/schematic/`. Its north side is
