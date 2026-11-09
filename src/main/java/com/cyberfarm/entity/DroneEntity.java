@@ -577,11 +577,28 @@ public class DroneEntity extends PathfinderMob {
             tickPickup(level);
             return;
         }
-        if (dockPos == null || !level.isLoaded(dockPos)) {
+        if (dockPos == null) {
+            return;
+        }
+        if (!level.isLoaded(dockPos)) {
+            // A Taxi trip can outrun the dock's chunk: it goes on to the drop-off (the job never asks the dock anything),
+            // and there the drone waits for the dock to load again
+            if (job instanceof TaxiJob) {
+                useEnergy(modules.flightCost());
+                if (energy < capacity() / 10 || job.tick(this, level, null) != DroneJob.Result.CONTINUE) {
+                    startReturn(level);
+                }
+            }
             return;
         }
         if (!(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
             // The dock was removed: turn back into an item so nothing is lost.
+            dropAsItem(level);
+            return;
+        }
+        if (!dock.keeps(getUUID())) {
+            // While this drone was away in a chunk not loaded, the dock took others in its place: back as an item, on the dock
+            snapTo(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5, getYRot(), getXRot());
             dropAsItem(level);
             return;
         }

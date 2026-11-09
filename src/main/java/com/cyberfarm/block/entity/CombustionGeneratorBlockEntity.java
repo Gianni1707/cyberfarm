@@ -34,12 +34,14 @@ public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        if (burnTime > 0) {
+        // The fire holds while the buffer has no room for a whole tick of it, so no fuel burns for power nobody takes
+        boolean room = energy.getCapacity() - energy.getEnergy() >= GENERATION_PER_TICK;
+        if (burnTime > 0 && room) {
             burnTime--;
             energy.generate(GENERATION_PER_TICK);
             setChanged();
         }
-        if (burnTime <= 0 && !energy.isFull()) {
+        if (burnTime <= 0 && room) {
             consumeFuel(level);
         }
 

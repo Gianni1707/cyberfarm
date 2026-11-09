@@ -64,10 +64,11 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
         }
     }
 
+    /** Before the menu closes: the server takes a name only from a player who still has it open. */
     @Override
-    public void removed() {
+    public void onClose() {
         sendName();
-        super.removed();
+        super.onClose();
     }
 
     @Override
@@ -203,10 +204,11 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
 
     /** Which range ring a receiver sits on, from its "N blocks" label, or {@link #OTHER_DIMENSION}. */
     private static int ringOf(String label) {
-        if (!label.endsWith(" blocks")) {
+        String digits = label.replaceAll("[^0-9]", "");
+        if (!label.endsWith(" blocks") || digits.isEmpty()) {
             return OTHER_DIMENSION;
         }
-        int distance = Integer.parseInt(label.replaceAll("[^0-9]", ""));
+        int distance = Integer.parseInt(digits);
         for (int tier = 0; tier < RangeModuleItem.INFINITY; tier++) {
             if (distance <= RangeModuleItem.range(tier)) {
                 return tier;

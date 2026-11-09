@@ -51,6 +51,7 @@ the card flashes away and the next one starts.
 
 The Acid comes from an [Acid Synthesizer](acid_synthesizer.md); the uranium from
 [uranium ore](uranium.md). Feed the Fabricator with hoppers, pipes or a
-[Transport drone](modules.md) and keep your circuits stocked with the dock filter's **limit**.
+[Transport drone](modules.md) and keep your circuits stocked with the dock filter's **limit**. A hopper underneath takes out only the
+finished circuits, never the ingredients.
 
 <RecipeFor id="fabricator" />

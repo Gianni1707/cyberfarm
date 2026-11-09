@@ -49,7 +49,7 @@ On methane it makes as much as about eleven Combustion Generators; a [Fission Re
 still makes more.
 
 The engine needs about **5 seconds** to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out.
-It stops burning fuel when its buffer (200,000 FE) is full.
+With its buffer (200,000 FE) nearly full it burns only the gas for the power that still fits, and it stops when the buffer is full.
 
 Both the gas and the power go through the **boiler**: connect pipes, [Energy Conduits](energy_conduit.md) or
 machines to it, on any side but its back, where the row goes. A socket shows wherever one plugs in. The row

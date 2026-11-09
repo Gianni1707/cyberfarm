@@ -33,11 +33,6 @@ public class CrystallizerMenu extends MachineMenu {
         addPlayerInventory(inventory, 84);
     }
 
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
-    }
-
     public int getAcidAmount() {
         return extra(2);
     }

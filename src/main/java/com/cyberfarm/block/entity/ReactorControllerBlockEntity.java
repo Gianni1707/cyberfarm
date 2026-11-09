@@ -37,7 +37,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Fission Reactor controller: the brain of a cooling-tower multiblock in three sizes (see
@@ -306,46 +305,14 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     }
 
     /** What ports expose for items: Fuel Rods go in, Depleted Fuel Rods come out. */
-    private final ResourceHandler<ItemResource> automationItems = new ResourceHandler<>() {
-        @Override
-        public int size() {
-            return items.size();
-        }
-
-        @Override
-        public ItemResource getResource(int index) {
-            return items.getResource(index);
-        }
-
-        @Override
-        public long getAmountAsLong(int index) {
-            return items.getAmountAsLong(index);
-        }
-
-        @Override
-        public long getCapacityAsLong(int index, ItemResource resource) {
-            return items.getCapacityAsLong(index, resource);
-        }
-
-        @Override
-        public boolean isValid(int index, ItemResource resource) {
-            return items.isValid(index, resource);
-        }
-
-        @Override
-        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index < FUEL_SLOTS ? items.insert(index, resource, amount, transaction) : 0;
-        }
-
-        @Override
-        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index >= FUEL_SLOTS ? items.extract(index, resource, amount, transaction) : 0;
-        }
-    };
+    @Override
+    protected boolean isOutput(int index) {
+        return index >= FUEL_SLOTS;
+    }
 
     @Override
     public ResourceHandler<ItemResource> portItems() {
-        return automationItems;
+        return automationItems();
     }
 
     /** What ports expose for fluids: water and coolant go in, steam comes out. */

@@ -22,6 +22,9 @@ The home base of a drone. Each dock hosts **one drone** and:
 - remembers the drone's **work area**;
 - holds an **item filter** for the Quarry and Transport modules.
 
+A dock cannot see a drone that is far off in a part of the world that is not loaded, and lets you place another: when the
+first one comes home and finds no place left, it lands on the dock as an item.
+
 <br clear="all" />
 
 Power the dock with a <ItemLink id="combustion_generator" /> placed next to it, or with

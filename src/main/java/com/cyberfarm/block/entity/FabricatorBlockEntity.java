@@ -75,7 +75,6 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
 
     private final GasTank acid = new GasTank(TANK_CAPACITY, resource -> resource.is(ModFluids.ACID.get().getFluidType()), this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {acid});
-    private int progress;
     private int recipeTime = 1;
 
     /** Block events for FabricatorRenderer: a recipe started (its time in ticks as the parameter), a card is done. */
@@ -155,8 +154,7 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
                 progress = 0;
                 int[] slots = slotsFor(recipe);
                 for (int i = 0; i < slots.length; i++) {
-                    ItemStack stack = getStack(slots[i]);
-                    setStack(slots[i], stack.copyWithCount(stack.getCount() - recipe.inputs().get(i).count()));
+                    take(slots[i], recipe.inputs().get(i).count());
                 }
                 acid.drain(recipe.acid());
                 ItemStack out = getStack(OUTPUT);
@@ -204,6 +202,12 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
         return index < INPUTS && isIngredient(resource.toStack());
     }
 
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
+    }
+
     @Override
     protected int getExtraData(int id) {
         return switch (id) {
@@ -224,7 +228,6 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         acid.serialize(output.child("acid"));
-        output.putInt("progress", progress);
         output.putInt("recipe_time", recipeTime);
     }
 
@@ -232,7 +235,6 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         acid.deserialize(input.childOrEmpty("acid"));
-        progress = input.getIntOr("progress", 0);
         recipeTime = Math.max(1, input.getIntOr("recipe_time", 1));
     }
 

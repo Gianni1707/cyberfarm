@@ -36,7 +36,6 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     private static final int SYNC_INTERVAL = 5;
 
     private final GasTank tank = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
-    private int progress;
     /** What the clients last heard, for the sight glass. */
     private int syncedTank = -1;
 
@@ -68,18 +67,10 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
         boolean open = advanceStage(level, pos, state);
         ItemStack input = getStack(0);
         boolean canRun = open && input.is(ModItems.BIOMASS.get()) && tank.amount() + MB_PER_BIOMASS <= tank.capacity();
-        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
-            if (++progress >= workTime(PROCESS_TIME)) {
-                progress = 0;
-                input.shrink(1);
-                setStack(0, input);
-                tank.fill(ModFluids.BIOGAS.get(), MB_PER_BIOMASS);
-                level.playSound(null, pos, ModSounds.BIO_DIGESTER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            take(0, 1);
+            tank.fill(ModFluids.BIOGAS.get(), MB_PER_BIOMASS);
+            level.playSound(null, pos, ModSounds.BIO_DIGESTER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         tank.pushToNeighbors(level, pos, OUTPUT_PER_SIDE);
         if (level.getGameTime() % SYNC_INTERVAL == 0 && tank.amount() != syncedTank) {
@@ -118,14 +109,12 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         tank.serialize(output.child("tank"));
-        output.putInt("progress", progress);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         tank.deserialize(input.childOrEmpty("tank"));
-        progress = input.getIntOr("progress", 0);
     }
 
     @Override

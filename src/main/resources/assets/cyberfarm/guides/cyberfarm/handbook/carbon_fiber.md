@@ -22,7 +22,7 @@ The **Pyrolysis Oven** splits **Methane** into carbon and hydrogen (CH4 -> C + 2
 carbon onto **String**: **250 mB of Methane + 1 String -> 1 Carbon Fiber**, in 4 seconds at
 **120 FE/t**. The oven takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI. Pipe the methane in from a [Methane Extractor](methane_extractor.md) or a gas tank, on its
 front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber,
-drawing the fiber behind it; if the shuttle stops, so has the machine.
+drawing the fiber behind it; if the shuttle stops, so has the machine. A hopper underneath takes out only the Carbon Fiber, never the String.
 
 <br clear="all" />
 

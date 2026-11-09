@@ -21,9 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -50,6 +52,10 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected final ItemStacksResourceHandler items;
     /** Kept apart from {@link #items}, so pipes and hoppers never reach the addons. */
     protected final ItemStacksResourceHandler addons;
+    /** What hoppers and pipes see of {@link #items}: what a slot accepts goes in, only the output slots give anything out. */
+    private final ResourceHandler<ItemResource> automationItems;
+    /** Ticks into the current batch, for the machines that work in batches (see {@link #work}). */
+    protected int progress;
     private final int baseCapacity;
     private final int baseMaxInsert;
     private final int baseMaxExtract;
@@ -128,9 +134,72 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 setChanged();
             }
         };
+        this.automationItems = new ResourceHandler<>() {
+            @Override
+            public int size() {
+                return items.size();
+            }
+
+            @Override
+            public ItemResource getResource(int index) {
+                return items.getResource(index);
+            }
+
+            @Override
+            public long getAmountAsLong(int index) {
+                return items.getAmountAsLong(index);
+            }
+
+            @Override
+            public long getCapacityAsLong(int index, ItemResource resource) {
+                return items.getCapacityAsLong(index, resource);
+            }
+
+            @Override
+            public boolean isValid(int index, ItemResource resource) {
+                return items.isValid(index, resource);
+            }
+
+            @Override
+            public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+                return items.insert(index, resource, amount, transaction);
+            }
+
+            @Override
+            public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+                return isOutput(index) ? items.extract(index, resource, amount, transaction) : 0;
+            }
+        };
     }
 
     public abstract void serverTick(ServerLevel level, BlockPos pos, BlockState state);
+
+    public ResourceHandler<ItemResource> automationItems() {
+        return automationItems;
+    }
+
+    /** Whether automation may take items out of the slot: any slot, unless the machine keeps its inputs in. */
+    protected boolean isOutput(int index) {
+        return true;
+    }
+
+    /**
+     * One tick of a batch: uses FE while the machine can run, and tells when the batch is done. A machine that
+     * cannot run loses what it had done; one that only lacks FE waits.
+     */
+    protected boolean work(boolean canRun, int baseEnergy, int baseTicks) {
+        if (canRun && energy.consume(energyPerTick(baseEnergy))) {
+            setChanged();
+            if (++progress >= workTime(baseTicks)) {
+                progress = 0;
+                return true;
+            }
+        } else if (!canRun && progress != 0) {
+            progress = 0;
+            setChanged();
+        }
+        return false;
+    }
 
     /** Whether this machine has addon slots: the ones that use FE to work. */
     public boolean takesAddons() {
@@ -272,6 +341,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         setStack(slot, stack.isEmpty() ? new ItemStack(item) : stack.copyWithCount(stack.getCount() + 1));
     }
 
+    /** Takes {@code count} items out of the slot, which must hold that many. */
+    protected void take(int slot, int count) {
+        ItemStack stack = getStack(slot);
+        setStack(slot, stack.copyWithCount(stack.getCount() - count));
+    }
+
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
@@ -283,6 +358,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         energy.serialize(output.child("energy"));
         items.serialize(output.child("items"));
         addons.serialize(output.child("addons"));
+        output.putInt("progress", progress);
     }
 
     @Override
@@ -292,6 +368,7 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         addons.deserialize(input.childOrEmpty("addons"));
         applyAddons();
         energy.deserialize(input.childOrEmpty("energy"));
+        progress = input.getIntOr("progress", 0);
         // Deserializing straight into the handler would adopt the saved slot count, which breaks
         // the menu when a machine gained slots in an update. Load into a copy, keep what fits.
         ItemStacksResourceHandler saved = new ItemStacksResourceHandler(items.size());

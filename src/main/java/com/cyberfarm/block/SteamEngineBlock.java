@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -40,11 +39,6 @@ public class SteamEngineBlock extends SmallMultiblockBlock {
     @Override
     protected String frameMessage() {
         return "message.cyberfarm.steam_engine.needs_frames";
-    }
-
-    /** The pistons and flywheel show it works, and steam puffs from the boiler: no sparks. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
     }
 
     @Override

@@ -153,9 +153,9 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.DOCK_TANK.get(), (be, side) -> be.tank(side));
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.handler());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.pipes());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());
         // The Resonance Core takes and gives power only through its pylons
         event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
@@ -176,13 +176,13 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TRANSMITTER_DISH.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.RECEIVER_DISH.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());

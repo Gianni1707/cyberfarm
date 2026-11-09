@@ -21,11 +21,6 @@ public class BioDigesterMenu extends MachineMenu {
         addPlayerInventory(inventory, 84);
     }
 
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
-    }
-
     public int getTankAmount() {
         return extra(2);
     }

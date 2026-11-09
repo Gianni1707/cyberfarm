@@ -27,7 +27,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -60,7 +58,6 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     private static final int CHECK_INTERVAL = 20;
 
     private final GasTank acid = new GasTank(TANK_CAPACITY, resource -> resource.is(ModFluids.ACID.get().getFluidType()), this::setChanged);
-    private int progress;
     /** What the clients last heard, so the floating crystal grows and shows a finished one. */
     private int syncedProgress = -1;
     private boolean syncedDone;
@@ -77,50 +74,12 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     /** Pipes only put acid in: none of it can be pulled back out. */
     private final TankGroup automationFluids = TankGroup.of(new GasTank[] {acid});
 
-    /** What automation sees, here and through the ports: the isotope and amethyst go in, only the crystal comes out. */
-    private final ResourceHandler<ItemResource> automationItems = new ResourceHandler<>() {
-        @Override
-        public int size() {
-            return items.size();
-        }
-
-        @Override
-        public ItemResource getResource(int index) {
-            return items.getResource(index);
-        }
-
-        @Override
-        public long getAmountAsLong(int index) {
-            return items.getAmountAsLong(index);
-        }
-
-        @Override
-        public long getCapacityAsLong(int index, ItemResource resource) {
-            return items.getCapacityAsLong(index, resource);
-        }
-
-        @Override
-        public boolean isValid(int index, ItemResource resource) {
-            return items.isValid(index, resource);
-        }
-
-        @Override
-        public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index != OUTPUT ? items.insert(index, resource, amount, transaction) : 0;
-        }
-
-        @Override
-        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
-            return index == OUTPUT ? items.extract(index, resource, amount, transaction) : 0;
-        }
-    };
-
     public ResourceHandler<FluidResource> portFluids() {
         return automationFluids;
     }
 
     public ResourceHandler<ItemResource> portItems() {
-        return automationItems;
+        return automationItems();
     }
 
     /** The formed Crystallizer whose chamber {@code pos} is part of, or null: what a port passes everything on to. */
@@ -182,7 +141,8 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         if (--checkCooldown <= 0) {
             checkCooldown = CHECK_INTERVAL;
             formed = isComplete(level);
-            if (state.getValue(CrystallizerBlock.FORMED) != formed) {
+            boolean changed = state.getValue(CrystallizerBlock.FORMED) != formed;
+            if (changed) {
                 state = state.setValue(CrystallizerBlock.FORMED, formed);
                 level.setBlock(pos, state, Block.UPDATE_ALL);
                 level.playSound(null, pos, (formed ? ModSounds.EXTRACTOR_ACTIVATE : ModSounds.EXTRACTOR_DEACTIVATE).get(), SoundSource.BLOCKS, 1.0F, 1.2F);
@@ -190,30 +150,26 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
                     Effects.reveal(level, Blueprint.CRYSTALLIZER.ghosts(worldPosition, facing()).stream().map(Blueprint.Ghost::pos).toList());
                 }
             }
-            setPartsFormed(level, formed);
+            // An incomplete chamber leaves the blocks alone: they may be part of the chamber next door
+            if (formed || changed) {
+                setPartsFormed(level, formed);
+            }
         }
         boolean canRun = formed && getStack(ISOTOPE).is(ModItems.ISOTOPE_SHARD.get()) && getStack(AMETHYST).getCount() >= AMETHYST_PER_CRYSTAL
                 && getStack(AMETHYST).is(Items.AMETHYST_SHARD) && acid.amount() >= ACID_PER_CRYSTAL
                 && hasRoomFor(OUTPUT, ModItems.FUSION_CRYSTAL.get());
-        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
-            if (++progress >= workTime(PROCESS_TIME)) {
-                progress = 0;
-                acid.drain(ACID_PER_CRYSTAL);
-                ItemStack isotope = getStack(ISOTOPE);
-                setStack(ISOTOPE, isotope.copyWithCount(isotope.getCount() - 1));
-                ItemStack amethyst = getStack(AMETHYST);
-                setStack(AMETHYST, amethyst.copyWithCount(amethyst.getCount() - AMETHYST_PER_CRYSTAL));
-                addOne(OUTPUT, ModItems.FUSION_CRYSTAL.get());
-                BlockPos centre = centre();
-                level.playSound(null, centre.above(2), ModSounds.CRYSTALLIZER_DONE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.sendParticles(ParticleTypes.END_ROD, centre.getX() + 0.5, centre.getY() + 2.0, centre.getZ() + 0.5, 24, 0.3, 0.4, 0.3, 0.05);
-            } else if (progress % 40 == 1) {
-                level.playSound(null, centre().above(2), ModSounds.CRYSTALLIZER_WORK.get(), SoundSource.BLOCKS, 0.6F, 1.0F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        int before = progress;
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            acid.drain(ACID_PER_CRYSTAL);
+            take(ISOTOPE, 1);
+            take(AMETHYST, AMETHYST_PER_CRYSTAL);
+            addOne(OUTPUT, ModItems.FUSION_CRYSTAL.get());
+            BlockPos centre = centre();
+            level.playSound(null, centre.above(2), ModSounds.CRYSTALLIZER_DONE.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            level.sendParticles(ParticleTypes.END_ROD, centre.getX() + 0.5, centre.getY() + 2.0, centre.getZ() + 0.5, 24, 0.3, 0.4, 0.3, 0.05);
+        } else if (progress > before && progress % 40 == 1) {
+            // It worked this tick without finishing: the hum comes round every two seconds
+            level.playSound(null, centre().above(2), ModSounds.CRYSTALLIZER_WORK.get(), SoundSource.BLOCKS, 0.6F, 1.0F);
         }
         boolean done = !getStack(OUTPUT).isEmpty();
         boolean due = level.getGameTime() % SYNC_INTERVAL == 0;
@@ -292,6 +248,12 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         };
     }
 
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
+    }
+
     @Override
     protected int getExtraData(int id) {
         return switch (id) {
@@ -313,14 +275,12 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     protected void saveAdditional(ValueOutput out) {
         super.saveAdditional(out);
         acid.serialize(out.child("acid"));
-        out.putInt("progress", progress);
     }
 
     @Override
     protected void loadAdditional(ValueInput in) {
         super.loadAdditional(in);
         acid.deserialize(in.childOrEmpty("acid"));
-        progress = in.getIntOr("progress", 0);
         if (level != null) {
             syncedAt = level.getGameTime();
         }

@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -11,13 +12,8 @@ import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -188,7 +184,7 @@ public class ReceiverDishBlockEntity extends SmallMultiblockBlockEntity {
                 continue;
             }
             String where = network.transmitter.dimension() == server.dimension()
-                    ? String.format("%,d blocks", Math.round(Math.sqrt(network.transmitter.pos().distSqr(worldPosition))))
+                    ? String.format(Locale.ROOT, "%,d blocks", Math.round(Math.sqrt(network.transmitter.pos().distSqr(worldPosition))))
                     : network.transmitter.dimension().identifier().getPath().replace('_', ' ');
             list.add(new Choice(network.id, network.name, network.rgb(), where, network.receivers.size(), linked));
         }
@@ -256,16 +252,6 @@ public class ReceiverDishBlockEntity extends SmallMultiblockBlockEntity {
         transmitter = input.read("transmitter", GlobalPos.CODEC).orElse(null);
         colour = input.getIntOr("colour", -1);
         receiving = input.getBooleanOr("receiving", false);
-    }
-
-    @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveCustomOnly(registries);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override

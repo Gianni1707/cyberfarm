@@ -87,7 +87,8 @@ to bedrock. The dock GUI shows the layer it is working on.
   so your base is safe. Mark the area with the [Survey Tool](drone_dock.md).
 - Blocks drop as if mined with a **diamond pickaxe**. Add Fortune or Silk Touch with [addons](addons.md).
 - It skips **liquids**, **unbreakable blocks** and anything with an inventory or a machine
-  inside (chests, furnaces, CyberFarm machines).
+  inside (chests, furnaces, CyberFarm machines). What lies **under** one of those stays too, and so does
+  the ground under anything solid that rises above the top of the area (a tree, a hillside): mark the area high enough to take it in.
 - The column right under the Drone Dock is never dug, so the dock stays on a pillar.
 - In a deep pit it climbs out over the rim and drops straight down the shaft, so the dock can sit
   beside the pit. A layer is finished only when every block in it is dug: a block the drone could
@@ -172,6 +173,8 @@ it** to grab the hook: you hang below it with one hand while it carries you to t
 3. It climbs above the terrain, flies straight to the destination and puts you down gently.
 
 - Trips are **one way**: put a second dock with its own Taxi drone at the destination to fly back.
+- On a long trip the dock can fall out of the loaded world behind you: the drone still takes you all the way, then waits
+  where it left you and flies home once its dock is loaded again.
 - Before taking off the drone checks it has enough charge for the trip and the way back.
 - **Sneak** to let go mid-flight: you get **Slow Falling**, so you land safely.
 - Speed Addons make the trip faster.

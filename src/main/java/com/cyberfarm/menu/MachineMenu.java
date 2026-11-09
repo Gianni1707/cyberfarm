@@ -13,6 +13,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
@@ -22,13 +23,15 @@ import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
  */
 public abstract class MachineMenu extends AbstractContainerMenu {
     protected final ContainerData data;
-    private final ContainerLevelAccess access;
+    protected final ContainerLevelAccess access;
     private final Block block;
     private int machineSlotCount;
     /** The addon slots sit on a tab outside the right edge of the 176 px wide GUI. */
     public static final int ADDON_X = 182;
     public static final int ADDON_Y = 20;
     public static final int ADDON_PITCH = 24;
+    /** A {@link #range} that covers the largest reactor tower, turbine and hangar from any of their blocks. */
+    protected static final double STRUCTURE_RANGE = 24.0;
 
     protected MachineMenu(MenuType<?> type, int containerId, ContainerData data, ContainerLevelAccess access, Block block) {
         super(type, containerId);
@@ -73,9 +76,25 @@ public abstract class MachineMenu extends AbstractContainerMenu {
         return data.get(MachineBlockEntity.ENERGY_DATA_SLOTS + index);
     }
 
+    /** How far the current batch is, 0 to 1, for the machines whose first two extra data slots are the progress and its total. */
+    public float getProgress() {
+        int total = extra(1);
+        return total <= 0 ? 0.0F : (float) extra(0) / total;
+    }
+
+    /**
+     * How far from the block the menu stays open; 0 for the usual reach. A structure that opens from any of its
+     * blocks gives more, or its screen would close at once from the far side.
+     */
+    protected double range() {
+        return 0.0;
+    }
+
     @Override
     public boolean stillValid(Player player) {
-        return stillValid(access, player, block);
+        double range = range();
+        return range <= 0.0 ? stillValid(access, player, block)
+                : access.evaluate((level, pos) -> level.getBlockState(pos).is(block) && player.distanceToSqr(Vec3.atCenterOf(pos)) <= range * range, true);
     }
 
     /**

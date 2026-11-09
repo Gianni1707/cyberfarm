@@ -10,7 +10,6 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,11 +39,6 @@ public class CrystallizerBlock extends MachineBlock {
     @Override
     protected boolean hasPipePorts() {
         return true;
-    }
-
-    /** The renderer's arcs and motes show it works: no particles. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
     }
 
     @Override

@@ -97,14 +97,11 @@ public class MineJob extends DroneJob {
             int column = index % width;
             int x = row % 2 == 0 ? area.minX() + column : area.maxX() - column;
             pos.set(x, y, area.minZ() + row);
-            if (!canMine(level, dock, pos)) {
+            if (!canMine(level, dock, pos) || leftBehind(level, dock, area, pos)) {
                 continue;
             }
-            BlockPos above = pos.above();
-            if (canMine(level, dock, above)) {
+            if (pos.getY() < area.maxY() && canMine(level, dock, pos.above())) {
                 buried = true;
-            } else if (!level.getBlockState(above).getCollisionShape(level, above).isEmpty()) {
-                continue;
             } else if (drone.isUnreachable(pos)) {
                 waiting = true;
             } else {
@@ -112,6 +109,19 @@ public class MineJob extends DroneJob {
             }
         }
         return new Layer(null, waiting, buried);
+    }
+
+    /**
+     * Whether what covers {@code pos} is never dug: above the ground the drone will take away there is something solid
+     * that it will not, such as a chest, bedrock or ground over the top of the area. Counting such a block as buried
+     * would send the quarry back to the top for ever.
+     */
+    private static boolean leftBehind(ServerLevel level, DroneDockBlockEntity dock, BoundingBox area, BlockPos pos) {
+        BlockPos.MutableBlockPos above = new BlockPos.MutableBlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
+        while (above.getY() <= area.maxY() && canMine(level, dock, above)) {
+            above.setY(above.getY() + 1);
+        }
+        return !level.getBlockState(above).getCollisionShape(level, above).isEmpty();
     }
 
     private static boolean isLoadFull(DroneEntity drone) {

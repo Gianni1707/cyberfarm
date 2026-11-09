@@ -40,6 +40,9 @@ Water Pump and a Fission Reactor, and it keeps the flow going when production di
 
 Breaking a block **loses what that block held**; the rest stays in the other blocks, which join up again where they can.
 
+A tank built across a chunk border gives and takes nothing while only a part of it is loaded (far from every player, at the
+edge of what a drone's Anchor Addon keeps loaded): it works again as soon as the rest is back.
+
 <RecipeFor id="liquid_tank" />
 
 <RecipeFor id="gas_tank" />

@@ -6,7 +6,6 @@ import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -51,10 +50,6 @@ public class FabricatorBlock extends SmallMultiblockBlock {
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }
-
-    /** Nothing extra: FabricatorRenderer animates the print run. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

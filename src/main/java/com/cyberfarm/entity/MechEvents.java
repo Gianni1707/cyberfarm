@@ -61,7 +61,8 @@ public final class MechEvents {
         }
         Entity attacker = event.getSource().getDirectEntity();
         MechEntity mech = pilotedMech(attacker);
-        if (mech == null || !((Player) attacker).getMainHandItem().isEmpty() || event.getEntity() == mech) {
+        // The sweep's own hits come back through here: they are what they are, with no second cut and no second charge
+        if (mech == null || sweeping || !((Player) attacker).getMainHandItem().isEmpty() || event.getEntity() == mech) {
             return;
         }
         if (mech.isToolOn(MechModule.BLADE) && mech.consume(FE_PER_SLASH)) {

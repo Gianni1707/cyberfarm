@@ -44,7 +44,8 @@ public record AssemblyExample(DroneFrameItem frame, List<List<ItemStack>> module
 
             List<Item> parts = new ArrayList<>();
             parts.add(frame);
-            parts.add(ModItems.HARVESTER_MODULE.get());
+            // A module the frame takes: a Mini Frame has no room for a Harvester
+            parts.add(fitting.getFirst().getItem());
             ItemStack drone = new ItemStack(ModItems.DRONE.get());
             drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
             drone.set(ModDataComponents.ENERGY.get(), 0);
