@@ -32,6 +32,11 @@ public final class ConduitNetwork {
      */
     public record Endpoint(BlockPos pos, Direction side, boolean source) {}
 
+    /** What a walk from one pipe finds: the machine sides it reaches, and its pipes. */
+    public record Network(List<Endpoint> endpoints, Set<BlockPos> pipes) {
+        private static final Network EMPTY = new Network(List.of(), Set.of());
+    }
+
     public static int version() {
         return version;
     }
@@ -41,9 +46,9 @@ public final class ConduitNetwork {
     }
 
     /** Walks the pipes of the same block as {@code start} and lists the machine sides they touch. */
-    public static List<Endpoint> findEndpoints(Level level, BlockPos start) {
+    public static Network find(Level level, BlockPos start) {
         if (!(level.getBlockState(start).getBlock() instanceof NetworkPipeBlock pipe)) {
-            return List.of();
+            return Network.EMPTY;
         }
         List<Endpoint> endpoints = new ArrayList<>();
         Set<BlockPos> visited = new HashSet<>();
@@ -74,6 +79,6 @@ public final class ConduitNetwork {
                 }
             }
         }
-        return endpoints;
+        return new Network(endpoints, visited);
     }
 }

@@ -29,7 +29,7 @@ Fill them with the matching [pipe](cables.md): a [Liquid Pipe](liquid_pipe.md) o
 [Gas Pipe](gas_pipe.md), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. A Liquid Tank also takes and gives **buckets**: just right-click it with one.
 
 Tanks are **passive**: they never push anything out. To empty one into a machine, right-click
-the arm of the pipe that touches it, so the pipe **pulls** from the tank (an orange collar shows
+the arm of the pipe that touches it, so the pipe **pulls** from the tank (a lit band round its end shows
 it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you see into the tank,
 right through to the other side, and the fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount.
 

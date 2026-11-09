@@ -10,8 +10,9 @@ navigation:
 Cables carry power and fluids between your machines (to move items, use a drone with a
 [Transport Module](modules.md)). Every kind **connects by itself** to
 cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
-mod. Each kind comes in **three tiers**, told apart by the ring where two cables meet: grey, **gold** and
-**violet**.
+mod. Each kind comes in **three tiers**, told apart by the sleeve near each end: grey, **gold** and
+**violet**. All three are glass tubes whose sleeves are lit cyan for energy, blue for liquids and
+green for gases, so you can see when something goes through them.
 
 <ItemGrid>
   <ItemIcon id="energy_conduit" />
@@ -48,7 +49,7 @@ run side by side.
 
 Generators and machines push what they make into the cables by themselves. Batteries, tanks and
 other storage do not: to take something **out** of them, **right-click the cable's arm** that
-touches the block. An orange collar appears and the cable **pulls** from that block every tick,
+touches the block. A lit band wraps that end and the cable **pulls** from that block every tick,
 up to its tier's rate. Right-click it again to stop.
 
 The network never sends anything back into a block it pulls from, so a pulling arm is a one-way

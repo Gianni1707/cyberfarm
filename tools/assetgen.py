@@ -252,55 +252,133 @@ def energy_storage_models():
 PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe", "liquid_pipe") for tier in ("", "advanced_", "elite_")]
 
 
-def pipe_models(name):
-    """Core, arm and inventory models plus a multipart blockstate for a NetworkPipeBlock."""
-    texture = {"particle": tex(name), "conduit": tex(name)}
-    all_faces = lambda: {d: {"texture": "#conduit"} for d in ("north", "east", "south", "west", "up", "down")}
-    core = {"from": [5, 5, 5], "to": [11, 11, 11], "faces": all_faces()}
-    # Arm pointing north; the blockstate rotates it to every other side. The coloured band (rows 6..9,
-    # ring at column 0) goes round all four sides along the tube, so a pipe looks the same whichever
-    # way it runs: up and down get it turned a quarter, the ring at the block's edge.
-    arm = {"from": [6, 6, 0], "to": [10, 10, 5], "faces": {
-        "north": {"texture": "#conduit", "cullface": "north"},
-        "east": {"texture": "#conduit"}, "west": {"texture": "#conduit"},
-        "up": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 90},
-        "down": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 270},
-    }}
-    write(ASSETS / f"models/block/{name}_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
-    write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": [arm]})
-    # Middle of a straight run, joining the two arms into one tube (along north-south, rotated for the other axes).
-    # Columns 1..4 are plain tube, stretched over the 6 pixels: 5..10 belong to the coupling box.
-    body = [1, 6, 5, 10]
-    middle = {"from": [6, 6, 5], "to": [10, 10, 11], "faces": {
-        "east": {"texture": "#conduit", "uv": body}, "west": {"texture": "#conduit", "uv": body},
-        "up": {"texture": "#conduit", "uv": body, "rotation": 90}, "down": {"texture": "#conduit", "uv": body, "rotation": 270},
-    }}
-    write(ASSETS / f"models/block/{name}_middle.json", {"textures": texture, "elements": [middle]})
-    # Item: core with arms east and west
-    write(ASSETS / f"models/block/{name}_inventory.json", {
-        "parent": "minecraft:block/block", "textures": texture,
-        "elements": [core,
-                     {"from": [0, 6, 6], "to": [5, 10, 10], "faces": all_faces()},
-                     {"from": [11, 6, 6], "to": [16, 10, 10], "faces": all_faces()}],
-    })
-    rotations = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
-    # The coupling box only where the pipe is not a straight run: at junctions, bends and ends
-    sides = list(rotations)
-    opposite = {"north": "south", "east": "west", "up": "down"}
-    not_straight = [{a: "true", b: "false"} for a, b in opposite.items()] + [{a: "false", b: "true"} for a, b in opposite.items()]
-    not_straight += [{"north": "true", "east": "true"}, {"north": "true", "up": "true"}, {"east": "true", "up": "true"}]
-    not_straight.append({side: "false" for side in sides})
-    parts = [{"when": {"OR": not_straight}, "apply": {"model": f"{NS}:block/{name}_core"}}]
-    for axis, (a, b), rotation in (("z", ("north", "south"), {}), ("x", ("east", "west"), {"y": 90}), ("y", ("up", "down"), {"x": 90})):
-        straight = {side: "true" if side in (a, b) else "false" for side in sides}
-        parts.append({"when": straight, "apply": {"model": f"{NS}:block/{name}_middle", **rotation}})
-    for direction, rotation in rotations.items():
-        parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
-    # Pulling collar on the arms set to extract (shared by every pipe)
-    for direction, rotation in rotations.items():
-        parts.append({"when": {direction: "true", f"extract_{direction}": "true"}, "apply": {"model": f"{NS}:block/pipe_extract", **rotation}})
-    write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
+PIPE_ROTATIONS = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+# Any connections but exactly two opposite sides: a junction, a bend or an end
+NOT_STRAIGHT = {"OR": [{a: "true", b: "false"} for a, b in (("north", "south"), ("east", "west"), ("up", "down"))]
+                + [{a: "false", b: "true"} for a, b in (("north", "south"), ("east", "west"), ("up", "down"))]
+                + [{"north": "true", "east": "true"}, {"north": "true", "up": "true"}, {"east": "true", "up": "true"}]
+                + [{side: "false" for side in PIPE_ROTATIONS}]}
+# Faces in the pipe atlas: dark steel, the sleeve in the tier's colour
+NODE_FACE, RING_FACE = [8, 0, 14, 5], [0, 10, 5.4, 12]
+GLASS_HALF = 2.45
+LOW, HIGH = 8 - GLASS_HALF, 8 + GLASS_HALF
+# The glass runs to the block's edge, into the next pipe or the machine's collar, and an arm's to the node's glass
+TUBE_NODE = LOW
+
+
+def along_z(frm, to, texture, u, v, width, caps=None):
+    """A box running along z whose side faces read along the run, so it looks the same on every axis once the blockstate turns it."""
+    uv = [u, v, u + to[2] - frm[2], v + width]
+    faces = {"east": {"texture": texture, "uv": uv}, "west": {"texture": texture, "uv": uv},
+             "up": {"texture": texture, "uv": uv, "rotation": 90}, "down": {"texture": texture, "uv": uv, "rotation": 270}}
+    if caps:
+        faces |= {side: {"texture": texture, "uv": caps} for side in ("north", "south")}
+    return {"from": frm, "to": to, "faces": faces}
+
+
+def box(frm, to, uv, sides=("north", "east", "south", "west", "up", "down")):
+    return {"from": frm, "to": to, "faces": {side: {"texture": "#atlas", "uv": uv} for side in sides}}
+
+
+def lit(element):
+    return {**element, "shade": False, "light_emission": 15}
+
+
+# On each connected side, 1 px in: a plate in the tier's colour over and under the glass, and a light strip on all four sides, so it
+# shows from everywhere whichever way the pipe runs. None has a face against the glass, which would flicker with it
+PIPE_RING = [
+    box([5.5, 10.45, 1], [10.5, 10.7, 1.6], RING_FACE, ("north", "south", "east", "west", "up")),
+    box([5.5, 5.3, 1], [10.5, 5.55, 1.6], RING_FACE, ("north", "south", "east", "west", "down")),
+    lit({"from": [10.45, 6.2, 1], "to": [10.7, 9.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('east', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [5.3, 6.2, 1], "to": [5.55, 9.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('west', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [6.2, 10.7, 1], "to": [9.8, 10.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 3, 1]} for s in ("up", "north", "south", "east", "west")}}),
+    lit({"from": [6.2, 5.2, 1], "to": [9.8, 5.3, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 3, 1]} for s in ("down", "north", "south", "east", "west")}}),
+]
+# The item shows what its kind carries, bright on the dark glass as the energy's arc is: a blue liquid, green puffs of gas
+PIPE_ITEM_CONTENT = {"gas": along_z([5.7, 5.7, 0], [10.3, 10.3, 16], "#content", 0, 0, 4.6),
+                     # Half full, its surface a light line: at a glance a pipe with water in it, not a blue bar
+                     "liquid": {**along_z([5.7, 5.7, 0], [10.3, 8.4, 16], "#content", 0, 0, 2.7)}}
+PIPE_ITEM_CONTENT["liquid"]["faces"]["up"] = {"texture": "#content", "uv": [0, 0, 16, 1], "rotation": 90}
+
+# Where arms meet, a glass cube framed on each wall (pipe_glass_cap, only where no arm comes in). A lone pipe also has the light strips
+PIPE_LONE = [
+    lit({"from": [10.45, 6.2, 7.4], "to": [10.7, 9.8, 8], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('east', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [5.3, 6.2, 7.4], "to": [5.55, 9.8, 8], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('west', 'north', 'south', 'up', 'down')}}),
+]
+LONE = {side: "false" for side in PIPE_ROTATIONS}
+
+# A pipe pulling from the block on that side: a dark sleeve at the edge, wrapped all round by a band of the kind's light
+PIPE_EXTRACT = [box([5.1, 5.1, 0], [10.9, 10.9, 0.9], NODE_FACE, ("east", "west", "up", "down")),
+                lit({"from": [5, 5, 0.25], "to": [11, 11, 0.65],
+                     "faces": {side: {"texture": "#strip", "uv": [0, 0, 6, 1]} for side in ("east", "west", "up", "down")}})]
+
+
+def energy_arc(z0, z1):
+    """The item's arc: two crossed sheets in the glass, a sine arc running along each (out of phase), lit. In the world PipeFluidModel
+    draws the same while energy flows."""
+    uv = [z0, 6.5, z1, 9.5]
+    return [lit({"from": [8, 6.5, z0], "to": [8, 9.5, z1], "faces": {side: {"texture": "#arc_a", "uv": uv} for side in ("east", "west")}}),
+            lit({"from": [6.5, 8, z0], "to": [9.5, 8, z1], "faces": {"up": {"texture": "#arc_b", "uv": uv, "rotation": 90},
+                                                                      "down": {"texture": "#arc_b", "uv": uv, "rotation": 270}}})]
+
+
+PIPE_KINDS = {"energy_conduit": "energy", "gas_pipe": "gas", "liquid_pipe": "liquid"}
+
+
+def glass_tube(z0, z1):
+    return along_z([LOW, LOW, z0], [HIGH, HIGH, z1], "#glass", 0, 0, 2 * GLASS_HALF)
+
+
+def pipe_glass_models():
+    """The glass, the same for every pipe, as models of their own: glass sorts as translucent, the steel need not."""
+    translucent = {"render_type": "minecraft:translucent", "textures": {"particle": tex("pipe_glass"), "glass": tex("pipe_glass")}}
+    write(ASSETS / "models/block/pipe_glass_straight.json", {**translucent, "elements": [glass_tube(0, 16)]})
+    write(ASSETS / "models/block/pipe_glass_arm.json", {**translucent, "elements": [glass_tube(0, TUBE_NODE)]})
+    # The node's wall toward a side with no arm: toward an arm it must not show, or a wall would stand across what flows
+    # Clear glass in a grey frame, the whole texture on each wall
+    write(ASSETS / "models/block/pipe_glass_cap.json", {"render_type": "minecraft:translucent",
+        "textures": {"particle": tex("pipe_node_glass"), "glass": tex("pipe_node_glass")}, "elements": [
+        {"from": [LOW, LOW, LOW], "to": [HIGH, HIGH, LOW], "faces": {"north": {"texture": "#glass", "uv": [0, 0, 16, 16]}}}]})
+
+
+def flip_z(element):
+    """The same element seen from the other end of the block."""
+    return {**element, "from": [element["from"][0], element["from"][1], 16 - element["to"][2]],
+            "to": [element["to"][0], element["to"][1], 16 - element["from"][2]],
+            "faces": {{"north": "south", "south": "north"}.get(side, side): face for side, face in element["faces"].items()}}
+
+
+def pipe_models(name, kind):
+    """A NetworkPipeBlock's models and blockstate: sleeves from models of its tier, glass from shared ones. PipeFluidModel adds
+    what a pipe carries while something flows: a fluid, or an Energy Conduit's arc."""
+    texture = {"particle": tex(name), "atlas": tex(name), "strip": tex(f"pipe_strip_{PIPE_KINDS[kind]}")}
+    arcs = kind == "energy_conduit"
+    if arcs:
+        texture |= {"arc_a": tex("energy_conduit_arc_a"), "arc_b": tex("energy_conduit_arc_b")}
+    write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": PIPE_RING})
+    write(ASSETS / f"models/block/{name}_lone.json", {"textures": texture, "elements": PIPE_LONE})
+    write(ASSETS / f"models/block/{name}_extract.json", {"textures": texture, "elements": PIPE_EXTRACT})
+    # Item: a straight run with both rings. The glass is in the same model here, so the whole of it is translucent
+    inventory = {"parent": "minecraft:block/block", "render_type": "minecraft:translucent",
+                 "textures": {**texture, "glass": tex("pipe_glass"), **({} if arcs else {"content": tex(f"pipe_item_{PIPE_KINDS[kind]}")})},
+                 "elements": [*PIPE_RING, *map(flip_z, PIPE_RING), *(energy_arc(0, 16) if arcs else [PIPE_ITEM_CONTENT[PIPE_KINDS[kind]]]), glass_tube(0, 16),
+                              # A wide band in the tier's colour: the sleeves' plates are too thin to tell the tiers apart in a slot
+                              box([5.3, 5.3, 6.5], [10.7, 10.7, 9.5], RING_FACE, ("east", "west", "up", "down"))]}
+    write(ASSETS / f"models/block/{name}_inventory.json", inventory)
     write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_inventory"}})
+
+    def model(part):
+        return f"{NS}:block/{part}"
+    parts = [{"when": LONE, "apply": {"model": model(f"{name}_lone")}}]
+    for (a, b), rotation in ((("north", "south"), {}), (("east", "west"), {"y": 90}), (("up", "down"), {"x": 90})):
+        straight = {side: "true" if side in (a, b) else "false" for side in PIPE_ROTATIONS}
+        parts.append({"when": straight, "apply": {"model": model("pipe_glass_straight"), **rotation}})
+    for side, rotation in PIPE_ROTATIONS.items():
+        parts.append({"when": {side: "true"}, "apply": {"model": model(f"{name}_side"), **rotation}})
+        parts.append({"when": {"AND": [NOT_STRAIGHT, {side: "true"}]}, "apply": {"model": model("pipe_glass_arm"), **rotation}})
+        parts.append({"when": {"AND": [NOT_STRAIGHT, {side: "false"}]}, "apply": {"model": model("pipe_glass_cap"), **rotation}})
+        parts.append({"when": {side: "true", f"extract_{side}": "true"}, "apply": {"model": model(f"{name}_extract"), **rotation}})
+    write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
 
 
 def block_loot(name):
@@ -326,9 +404,8 @@ def blocks():
     facing_blockstate("swarm_dock")
 
     for pipe in PIPES:
-        pipe_models(pipe)
-    write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
-        "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
+        pipe_models(pipe, next(kind for kind in PIPE_KINDS if pipe.endswith(kind)))
+    pipe_glass_models()
 
     # The Bio-Digester's models and blockstate come from machinemodels.py, since it assembles from Cyber Frames
 

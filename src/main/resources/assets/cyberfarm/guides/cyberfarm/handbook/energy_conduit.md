@@ -15,6 +15,7 @@ item_ids:
 <BlockImage id="cyberfarm:energy_conduit" p:east="true" p:west="true" scale="4" float="left" />
 
 Conduits carry **FE** from generators to machines, so they no longer need to touch each other.
+You can tell them by the cyan lights on their sleeves, and while energy flows a **cyan arc** runs through their glass.
 
 <br clear="all" />
 

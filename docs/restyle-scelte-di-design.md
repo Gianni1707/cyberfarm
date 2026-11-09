@@ -288,6 +288,19 @@ Scelte dell'utente, tutte provate in gioco col setup `/function cyberfarm:test_s
 - **Rotte:** un clic sulla dock collegata ripete la richiesta, due la scelgono come partenza.
 - **Compenetrazioni:** ogni parte nuova del drone va controllata contro tutti i moduli, in ogni posa.
 
+## Tubi e cavi
+
+- **Primo giro, bocciato in gioco:** vetro in gabbia di longheroni per i liquidi (L2), tubo ad alette per i gas (G2), due sbarre luminose per l'energia (EB). Dopo averli visti: "per i tubi di energia vorrei una roba a tipo fibra in cui il segnale passa, per i liquidi voglio che prenda tutto il tubo, per i gas ci sta che sia compressato in un tubo dentro un tubo".
+- **Giri intermedi, non scelti:** tubo nel tubo per il gas (G-A, piaciuto ma non i nodi), fibre con impulso (E-A, E-B, E-C), cavo dal riferimento con fascette arancioni a strisce (E-R1, E-R2), poi un giro "più originale" (elica, soffietto, nuclei; asta Tesla, anelli di plasma, scala di Giacobbe).
+- **Scelta:** dal riferimento dell'utente, una famiglia sola con tappi scuri, luci del colore del tipo e un vetro che mostra il contenuto animato ("fai qualcosa del genere con anche animazioni simili"). I tre tipi hanno la stessa forma e si leggono dal colore e dal contenuto.
+- **Simboli tolti:** il concept aveva fulmine, onde e nuvola sui tappi e sui nodi; l'utente ha chiesto di toglierli.
+- **Dopo la prova in gioco:** "per l'energia il raggio rendilo più piccolo", il gas "mi piace", l'animazione dei liquidi "non mi piace proprio" (tolta), e "quando i tubi hanno finito di trasferire devono rimanere vuoti": il contenuto si vede solo durante il trasferimento.
+- **Attacco e nodo:** "andrebbe rivisto l'attacco e il nodo è troppo grosso": il tappo da 6,4 px era più largo del collare 6x6 delle macchine e ci si ammucchiava davanti. Fra il nodo piccolo con tappo sottile (A), il vetro senza nodo scuro (B) e le selle con tappo luminoso (C) l'utente ha scelto B "ma fai un frame intero", poi in gioco il telaio non l'ha convinto: "fammi un nodo diverso senza frame, solo vetro". Il nodo è un cubo di vetro e basta, "tipo black stained glass", scuro al centro e sfumato ai lati, e poi di nuovo col telaio sugli spigoli ("intendevo con outline il frame di prima"), che non ha convinto. Fra quattro nodi nuovi (tubi che si incontrano N-1, anello di luce N-2, bulbo a gradini N-3, cuore luminoso N-4) e tre bulbi rifiniti, l'utente ha scelto N-1 "ma alla curva e ai nodi mettici la cornice come nel blocco singolo": il nodo è un cubo di vetro con una cornice su ogni parete libera. Poi "un po' più scura verso stile mod" (vetro teal scuro, cornice d'acciaio scuro), le strisce di luce su tutti i lati sia in verticale sia in orizzontale, e icone che si distinguano: l'energia andava bene, liquidi e gas ora mostrano un contenuto acceso come il suo arco. I tappi scuri non ci sono più.
+- **Estrazione:** "l'output è ancora giallo, rendilo coerente con i tubi": niente più collare arancione a strisce, ma un manicotto scuro con una fascia di luce del colore del tipo.
+- **Tier:** sulla flangia dietro il tappo, nei colori di prima.
+- **Fluido vero, non dipinto:** la regola "fluidi veri" vale anche qui. Il tubo non contiene nulla, quindi mostra il fluido che sta passando e si svuota quando il flusso si ferma. Il modello nella mesh del chunk evita un renderer per frame, che su migliaia di tubi peserebbe. Le nuvolette del gas sono bianche, così valgono per ogni gas.
+- **Scartati anche:** manica corazzata a fascette, sagome diverse senza vetro, condotto quadrato con scatola di giunzione 8x8, collana di capsule.
+
 ## Scartati
 
 - **Piccoli multiblocchi nel proiettore:** non ci vanno, hanno già i loro droni.

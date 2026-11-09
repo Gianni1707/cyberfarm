@@ -122,6 +122,7 @@ public class CyberFarmClient {
         modEventBus.addListener(CyberFarmClient::registerScreens);
         modEventBus.addListener((RegisterConditionalItemModelPropertyEvent event) -> event.register(CyberFarm.id("mini_drone"), MiniDroneProperty.MAP_CODEC));
         modEventBus.addListener(CyberFarmClient::registerRenderers);
+        modEventBus.addListener(com.cyberfarm.client.model.PipeFluidModel::wrap);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(MechClient::registerKeys);

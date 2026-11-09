@@ -16,9 +16,9 @@ item_ids:
 
 Pipes carry **gas** (biogas, methane, Steam, gases of other mods) from the machines that make it
 to the machines and tanks that use or store it. **Liquids** such as water and coolant need a
-[Liquid Pipe](liquid_pipe.md). Lines are easy to tell apart: a coloured band down every cable shows
-what it carries, amber for gas, blue for liquids, pale green for power. Straight runs join into one
-smooth tube; a coupling box appears only where a line branches, bends or ends.
+[Liquid Pipe](liquid_pipe.md). Lines are easy to tell apart: a Gas Pipe has **green lights on its sleeves**,
+and while a gas flows you can see it, see-through with puffs drifting along;
+when the flow stops the pipe is empty again. Where a line branches, bends or ends the glass becomes a small framed cube.
 
 <br clear="all" />
 

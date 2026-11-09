@@ -830,44 +830,136 @@ def digester_top():
     return c
 
 
-# Pipe tiers are told apart by the rims of the sleeve: plain, gold, violet
-# Cable sleeves: a light tube with the content as a coloured band down the middle. Arms use rows
-# 6..9 (a straight run joins them into one tube), the coupling box at junctions columns/rows 5..10.
-PIPE_CONTENT = {
-    # main colour, highlight
-    "energy": ((209, 254, 231, 255), (255, 255, 255, 255)),
-    "gas": ((255, 176, 40, 255), (255, 226, 140, 255)),
-    "liquid": ((52, 124, 230, 255), (150, 200, 255, 255)),
-}
-PIPE_RIMS = {"": ((125, 138, 150, 255), (74, 85, 97, 255)), "advanced_": ("O", "o"), "elite_": ("V", "v")}
+# Pipes and cables, one family: glass tubes with a ring in the tier's colour and a light strip in the kind's colour, a framed glass cube at nodes.
+# Rows 6..9 stay a plain sleeve: the machines' pipe stubs use them.
+GLASS_PIPE_TIERS = {"": ((146, 160, 160, 255), (104, 117, 117, 255)), "advanced_": ((233, 200, 110, 255), (176, 142, 66, 255)),
+                    "elite_": ((157, 100, 225, 255), (104, 62, 160, 255))}
+PIPE_STEEL = (139, 152, 152, 255)
+PIPE_STEEL_LIGHT = (177, 190, 188, 255)
+PIPE_STEEL_DARK = (104, 117, 117, 255)
 
 
-def clean_pipe(kind, tier):
-    main, light = PIPE_CONTENT[kind]
-    rim, rim_dark = PIPE_RIMS[tier]
+def pipe_atlas(tier):
+    """Atlas: dark steel 8,0 (6x6, framed), sleeve rows 6..9, plates rows 10..11 in the tier's colour."""
+    rim, rim_dark = GLASS_PIPE_TIERS[tier]
     c = Canvas()
-    c.rect(0, 0, 15, 15, (200, 210, 218, 255))
-    # The band wraps all four sides of a tube: the same edge top and bottom, so it meets itself at every corner
-    c.rect(0, 6, 15, 9, (150, 162, 172, 255))
-    c.rect(0, 7, 15, 8, main)
-    # A ring in the tier's colour where two pipes meet
-    for x in (0, 15):
-        c.rect(x, 6, x, 9, rim)
-    c.rect(5, 5, 10, 10, rim_dark)
-    c.rect(6, 6, 9, 9, (60, 68, 78, 255))
-    c.rect(7, 7, 8, 8, main)
-    c.set(7, 7, light)
+    c.rect(0, 0, 15, 15, PIPE_STEEL)
+    c.rect(8, 0, 13, 5, (44, 60, 62, 255))
+    c.frame(8, 0, 13, 5, (28, 38, 40, 255))
+    c.rect(9, 0, 12, 0, (72, 94, 96, 255))
+    # The sleeve of the machines' stubs: steel with a ring in the tier's colour where a pipe would meet
+    c.rect(0, 6, 15, 9, PIPE_STEEL)
+    c.rect(0, 6, 15, 6, PIPE_STEEL_LIGHT)
+    c.rect(0, 9, 15, 9, PIPE_STEEL_DARK)
+    c.rect(0, 6, 0, 9, rim)
+    c.rect(0, 10, 15, 10, rim)
+    c.rect(0, 11, 15, 11, rim_dark)
     return c
 
 
-def pipe_extract():
-    """The pulling collar where a pipe arm meets a block it pulls from: orange hazard ring."""
+def pipe_glass():
+    """Dark teal glass, with a light streak along the tube and darker long edges, rows 0..4."""
+    edge, streak, clear = (52, 82, 80, 150), (150, 210, 200, 90), (30, 58, 60, 60)
     c = Canvas()
-    c.rect(0, 0, 15, 15, "o", noise=4, seed=34)
-    c.frame(0, 0, 15, 15, "k")
-    for i in range(0, 16, 4):
-        c.rect(i, 0, i + 1, 15, "y")
+    for y, color in {0: edge, 1: streak, 2: clear, 3: clear, 4: edge}.items():
+        c.rect(0, y, 15, y, color)
     return c
+
+
+def pipe_node_glass():
+    """A node's walls: the tube's dark teal glass in a dark steel frame, so where arms meet reads as a little framed box."""
+    c = Canvas()
+    c.rect(0, 0, 15, 15, (30, 58, 60, 60))
+    c.rect(4, 3, 6, 3, (150, 210, 200, 90))
+    c.rect(3, 4, 3, 5, (150, 210, 200, 90))
+    c.frame(0, 0, 15, 15, (44, 60, 62, 235))
+    c.frame(1, 1, 14, 14, (72, 94, 96, 215))
+    return c
+
+
+# The kind's light: brightest first, as cyan energy, blue liquid, green gas
+PIPE_LIGHTS = {"energy": ((215, 255, 255, 255), (90, 240, 255, 255), (45, 185, 210, 255), (25, 115, 140, 255)),
+               "liquid": ((210, 235, 255, 255), (90, 170, 255, 255), (60, 120, 220, 255), (40, 80, 160, 255)),
+               "gas": ((225, 255, 230, 255), (120, 245, 160, 255), (80, 190, 120, 255), (50, 130, 90, 255))}
+
+
+def pipe_strip(kind):
+    """The cap's light strip, breathing one step at a time."""
+    ramp = PIPE_LIGHTS[kind]
+    frames = []
+    for level in (1, 0, 1, 2):
+        c = Canvas()
+        c.rect(0, 0, 15, 15, ramp[level])
+        frames.append(c)
+    return strip(frames, frametime=6, interpolate=True)
+
+
+def pipe_item_liquid():
+    """An item's liquid, rows 0..4: deep blue with a light surface line and two bubbles, bright against the dark glass."""
+    c = Canvas()
+    c.rect(0, 0, 15, 4, (38, 84, 196, 255))
+    c.rect(0, 0, 15, 0, (130, 190, 255, 255))
+    c.rect(0, 4, 15, 4, (26, 58, 150, 255))
+    for x, y in ((3, 2), (8, 3), (12, 2)):
+        c.set(x, y, (200, 230, 255, 255))
+    return c
+
+
+def pipe_item_gas():
+    """An item's gas, rows 0..4: bright green puffs with clear gaps, so it reads as gas and not as a green bar."""
+    c = Canvas()
+    for y, row in enumerate(PIPE_CLOUD[:5]):
+        for x in range(16):
+            if row[x % 8] == '#':
+                c.set(x, y, (120, 245, 160, 255))
+            elif row[(x + 1) % 8] == '#' or row[(x - 1) % 8] == '#':
+                c.set(x, y, (60, 160, 100, 200))
+    return c
+
+
+def pipe_frames(pixel, frametime):
+    """Four 16x16 frames from pixel(column along the pipe, row across it, frame), None where clear."""
+    frames = []
+    for t in range(4):
+        c = Canvas()
+        for x in range(16):
+            for y in range(16):
+                color = pixel(x, y, t)
+                if color is not None:
+                    c.set(x, y, color)
+        frames.append(c)
+    return strip(frames, frametime=frametime)
+
+
+PIPE_CLOUD = ("..##...#", ".####.##", "..##..#.", "#...##..", "##.####.", ".#..##..")
+
+
+def pipe_gas_cloud(x, y, t):
+    """Soft puffs drifting along the pipe: a core and a fainter rim."""
+    def core(row, column):
+        return 0 <= row < 6 and PIPE_CLOUD[row][column % 8] == "#"
+    row, column = y - 5, x - 2 * t
+    if core(row, column):
+        return (230, 255, 235, 115)
+    if core(row - 1, column) or core(row + 1, column) or core(row, column - 1) or core(row, column + 1):
+        return (230, 255, 235, 45)
+    return None
+
+
+PIPE_SINE = (0, 1, 1, 0, 0, -1, -1, 0)
+
+
+def pipe_arc(phase):
+    """Energy: a thin cyan sine arc, one pixel either side of the middle, running along, and a spark every other frame.
+    Two phases for the two crossed sheets."""
+    bright = PIPE_LIGHTS["energy"][1]
+    def pixel(x, y, t):
+        if y == 8 + PIPE_SINE[(x - 2 * t + phase) % 8]:
+            return bright
+        if t % 2 == 0 and x == (5 * t + 3 * phase + 7) % 16 and y == 7 + (3 * t + phase) % 3:
+            return (235, 255, 255, 255)
+        return None
+    return pixel
 
 
 # --------------------------------------------------------------------------- animation
@@ -2925,7 +3017,7 @@ def build_all():
         "entity/hologram": plain_white(),
         "block/drone_dock_side": dock_side(),
         "block/drone_dock_beacon": dock_beacon(),
-        **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},
+        **{f"block/{tier}energy_conduit": pipe_atlas(tier) for tier in GLASS_PIPE_TIERS},
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
         "block/uranium_ore_overlay": uranium_ore_overlay(),
@@ -2968,9 +3060,15 @@ def build_all():
         "item/uranium_ingot": uranium_ingot(),
         **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
-        **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
-        **{f"block/{tier}liquid_pipe": clean_pipe("liquid", tier) for tier in PIPE_RIMS},
-        "block/pipe_extract": pipe_extract(),
+        **{f"block/{tier}{kind}": pipe_atlas(tier) for tier in GLASS_PIPE_TIERS for kind in ("gas_pipe", "liquid_pipe")},
+        **{f"block/pipe_strip_{kind}": pipe_strip(kind) for kind in PIPE_LIGHTS},
+        "block/pipe_gas_cloud": pipe_frames(pipe_gas_cloud, 3),
+        "block/pipe_item_liquid": pipe_item_liquid(),
+        "block/pipe_item_gas": pipe_item_gas(),
+        "block/energy_conduit_arc_a": pipe_frames(pipe_arc(0), 2),
+        "block/energy_conduit_arc_b": pipe_frames(pipe_arc(4), 2),
+        "block/pipe_glass": pipe_glass(),
+        "block/pipe_node_glass": pipe_node_glass(),
         "block/biogas_still": gas("#5fa83a", "#a6e07a", 1),
         "block/biogas_flow": gas("#5fa83a", "#a6e07a", 2),
         "block/methane_still": gas("#6cc4dc", "#d4f4ff", 3),
