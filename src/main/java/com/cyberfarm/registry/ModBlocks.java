@@ -140,6 +140,10 @@ public class ModBlocks {
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
     public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = BLOCKS.registerBlock("electrolyzer",
             ElectrolyzerBlock::new, p -> litMachine(p).noOcclusion());
+    public static final DeferredBlock<com.cyberfarm.block.TransmitterDishBlock> TRANSMITTER_DISH = BLOCKS.registerBlock("transmitter_dish",
+            com.cyberfarm.block.TransmitterDishBlock::new, p -> litMachine(p).noOcclusion());
+    public static final DeferredBlock<com.cyberfarm.block.ReceiverDishBlock> RECEIVER_DISH = BLOCKS.registerBlock("receiver_dish",
+            com.cyberfarm.block.ReceiverDishBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<PyrolysisOvenBlock> PYROLYSIS_OVEN = BLOCKS.registerBlock("pyrolysis_oven",
             PyrolysisOvenBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",

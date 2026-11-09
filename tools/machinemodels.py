@@ -1815,6 +1815,112 @@ def stabilizer_pylon():
     }
 
 
+# --------------------------------------------------------------------------- dish transmission (.claude/sketch/dishes, round 2)
+MATERIALS["steel_dark"] = plate("b", "c", "c", "1")   # the sketch's dark steel #7c8989: turntables, caps, the dish's back
+DISH_DARK = {"up": "lid", "south": "body", "east": "body"}
+DISH_TURNS = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
+
+
+def from_sketch(boxes, dx=0, mirror=False):
+    """Boxes as the dish sketches draw them, the front to the north (-z) as in the game, into this file's frame (front
+    to the south; build() mirrors it back). dx shifts along x; mirror turns x into 16 - x first."""
+    out = []
+    for (x0, y0, z0), (x1, y1, z1), *rest in boxes:
+        if mirror:
+            x0, x1 = 16 - x1, 16 - x0
+        out.append(((x0 + dx, y0, 16 - z1), (x1 + dx, y1, 16 - z0), *rest))
+    return out
+
+
+def stowed_dish(y):
+    """The little dish folded up to the sky, its back at {y}: (u, v, w) -> (8 + u, y + w, 8 - v)."""
+    ho = 4.6
+    dish = [((-ho, -ho, -1.2), (ho, ho, 0), "steel_dark"), ((-ho, -ho, 0), (ho, -ho + 1.8, 1.8), "trim"),
+            ((-ho, ho - 1.8, 0), (ho, ho, 1.8), "trim"), ((-ho, -ho + 1.8, 0), (-ho + 1.8, ho - 1.8, 1.8), "trim"),
+            ((ho - 1.8, -ho + 1.8, 0), (ho, ho - 1.8, 1.8), "trim"), ((-ho + 1.8, -ho + 1.8, 0), (ho - 1.8, ho - 1.8, .8), "copper"),
+            ((-1, -1, .8), (1, 1, 1.8 if y > 14 else 2.4), "steel_dark")]
+    return [((8 + u0, y + w0, 8 - v1), (8 + u1, y + w1, 8 - v0), m) for (u0, v0, w0), (u1, v1, w1), m in dish]
+
+
+def transmitter_dish_base():
+    """The Transmitter Dish's 2x2 base from the dish block's cell, the front-left one as the player sees it, the frames to
+    its west and behind: slab, two transformer cabinets at the back, the network lamp at the front, the neck the turret
+    turns on. TransmitterDishRenderer colours the lamp and draws the turret and the dish."""
+    b = [((1, 0, 1), (31, 3, 31), DISH_DARK), ((2, 3, 2), (30, 4.2, 30), "trim"), ((4, 4.2, 4), (28, 6, 28), "oven_top")]   # plain: lid's slats tile busily over 24 px
+    for x0 in (4, 20):
+        b += [((x0, 6, 19), (x0 + 8, 13, 28), DISH_DARK), ((x0 + .6, 13, 19.6), (x0 + 7.4, 13.7, 27.4), "steel_dark"),
+              ((x0 + 1, 8.5, 18.8), (x0 + 7, 10.5, 19), "copper")]
+    b += [((11, 6, 5), (21, 8.4, 8.5), "plinth"), ((13, 6.6, 4.8), (19, 7.8, 5), "light_off")]
+    b += [((10.5, 6, 10.5), (21.5, 8, 21.5), "steel_dark"), ((12, 8, 12), (20, 15.2, 20), DISH_DARK),
+          ((11.6, 10.4, 11.6), (20.4, 11.6, 20.4), "copper")]
+    return from_sketch(b, dx=-16)
+
+
+def transmitter_dish_loose():
+    """Alone: a low base with the little dish folded up to the sky, and mint stubs toward the cells its frames go in (the
+    sketch drew them east; mirrored, they point west and behind, where SmallMultiblockBlock wants them)."""
+    b = [((1, 0, 1), (15, 3, 15), DISH_DARK), ((2, 3, 2), (14, 4.2, 14), "trim"), ((3.5, 4.2, 3.5), (12.5, 6, 12.5), "lid"),
+         ((12.5, 4.2, 4), (14.5, 7, 12), "copper"), ((4, 4.2, 12.5), (12, 7, 14.5), "copper"),
+         ((6.5, 6, 6.5), (12.5, 7, 12.5), "steel_dark"), ((5.5, 7, 5.5), (10.5, 9, 10.5), DISH_DARK),
+         ((5.1, 7.6, 5.1), (10.9, 8.6, 10.9), "copper"),
+         ((6, 4.5, 2.4), (10, 6.4, 3.4), "plinth"), ((6.8, 5, 2.2), (9.2, 6, 2.4), "light_off")]
+    return from_sketch(b + stowed_dish(9), mirror=True)
+
+
+def receiver_dish_body(posts):
+    """The Receiver Dish's block: slab, a cabinet with mint corner posts up to {posts}, the network lamp on its front above
+    the conduit sockets (5..11)."""
+    return [((1, 0, 1), (15, 2.5, 15), DISH_DARK), ((1.5, 2.5, 1.5), (14.5, 3.5, 14.5), "trim"), ((2.5, 3.5, 2.5), (13.5, 13.4, 13.5), DISH_DARK),
+            *[((x, 4, z), (x + 1.2, posts, z + 1.2), "copper") for x in (2.1, 12.7) for z in (2.1, 12.7)],
+            ((5, 11.2, 2), (11, 13, 2.5), "plinth"), ((6, 11.5, 1.8), (10, 12.7, 2), "light_off")]
+
+
+def receiver_dish_base():
+    """Assembled, with its Cyber Frame hidden above: the cabinet capped, and the column the turret turns on rising into the
+    frame's cell. ReceiverDishRenderer colours the lamp and draws the turret (from 18.4 px) and the dish (axle 26.5 px)."""
+    return from_sketch([*receiver_dish_body(13.3), ((3, 13.4, 3), (13, 14.4, 13), "steel_dark"),
+                        ((5.5, 14.4, 5.5), (10.5, 18.6, 10.5), DISH_DARK), ((5.1, 15.8, 5.1), (10.9, 17, 10.9), "copper")])
+
+
+def receiver_dish_loose():
+    """Alone: the cabinet with the little dish folded up to the sky, sunk in its top, and the corner posts rising to the
+    top face, where its frame goes."""
+    return from_sketch([*receiver_dish_body(16), *stowed_dish(14.2)])
+
+
+def dish_port_parts(name, frame_sides=None):
+    """A socket wherever a conduit plugs into a side, except toward the frames (facing -> those sides). Underneath, the slab
+    meets it flush."""
+    parts = []
+    for facing, _ in DISH_TURNS:
+        for side, y in DISH_TURNS:
+            if frame_sides is None or side not in frame_sides[facing]:
+                parts.append({"when": {"facing": facing, side: "true"} if frame_sides else {side: "true"},
+                              "apply": {"model": f"cyberfarm:block/{name}_port", **({"y": y} if y else {})}})
+        if frame_sides is None:
+            break
+    return parts
+
+
+def dish_assets():
+    """Models and blockstates of the two dishes. Neither has a lit model: their lights are the renderers'."""
+    build("transmitter_dish", transmitter_dish_loose(), False)
+    build("transmitter_dish_base", transmitter_dish_base(), False)
+    build("transmitter_dish_port", low_port(), False)   # open base: a saddle on a post, like the other open machines
+    build("receiver_dish", receiver_dish_loose(), False)
+    build("receiver_dish_base", receiver_dish_base(), False)
+    build("receiver_dish_port", side_port(2.5), False)
+    for name in ("transmitter_dish", "receiver_dish"):
+        states = [{"when": {"facing": f, "stage": stage}, "apply": {"model": f"cyberfarm:block/{model}", **({"y": y} if y else {})}}
+                  for f, y in DISH_TURNS for stage, model in (("0", name), ("1|2|3", f"{name}_base"))]
+        # the transmitter's frames lie to its counter-clockwise side and behind it
+        frames = {"north": {"west", "south"}, "east": {"north", "west"}, "south": {"east", "north"}, "west": {"south", "east"}} \
+            if name == "transmitter_dish" else None
+        states += dish_port_parts(name, frames)
+        (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": states}, indent=2) + "\n")
+        (ASSETS / f"items/{name}.json").write_text(json.dumps({"model": {"type": "minecraft:model", "model": f"cyberfarm:block/{name}"}}, indent=2) + "\n")
+
+
 if __name__ == "__main__":
     for mat, tex in EMISSIVE.items():
         if mat in DRAWN_BY_TEXGEN:
@@ -1922,6 +2028,7 @@ if __name__ == "__main__":
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
     hidden_frame()
+    dish_assets()
     steam_engine_blockstate()
     tanks()
     machine_parts()

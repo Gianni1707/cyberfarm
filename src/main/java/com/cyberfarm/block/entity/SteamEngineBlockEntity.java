@@ -36,8 +36,8 @@ public class SteamEngineBlockEntity extends SmallMultiblockBlockEntity {
     public static final int CYLINDERS = 3;
     /** Fuel each cylinder burns per tick. */
     public static final int FUEL_PER_CYLINDER = 15;
-    public static final int BIOGAS_FE_PER_MB = 6;
-    public static final int METHANE_FE_PER_MB = 10;
+    public static final int BIOGAS_FE_PER_MB = 9;
+    public static final int METHANE_FE_PER_MB = 15;
     public static final int TANK_CAPACITY = 16_000;
     private static final int CAPACITY = 200_000;
     private static final int OUTPUT_PER_SIDE = 8_192;

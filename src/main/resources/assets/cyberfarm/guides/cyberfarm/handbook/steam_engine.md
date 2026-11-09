@@ -42,8 +42,8 @@ Pipe Biogas or Methane into the boiler. It burns **45 mB/t**:
 
 | Fuel | FE per mB | Power |
 | --- | --- | --- |
-| Biogas | 6 | 270 FE/t |
-| Methane | 10 | 450 FE/t |
+| Biogas | 9 | 405 FE/t |
+| Methane | 15 | 675 FE/t |
 
 On methane it makes as much as about eleven Combustion Generators; a [Fission Reactor](fission_reactor.md)
 still makes more.

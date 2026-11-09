@@ -42,14 +42,14 @@ The tooltip of a drone shows its **flight cost** in FE per tick. It is worked ou
 
 **flight cost = (frame + modules) x (1 + addon percentages)**, rounded up.
 
-- [Frame](drone_frames.md): 2, 3 or 4 FE/t by tier.
-- [Modules](modules.md): +1 FE/t each (+2 for the Quarry).
-- [Addons](addons.md): Speed +10%, Stack +5%, Battery +5% each.
+- [Frame](drone_frames.md): 4, 6 or 8 FE/t by tier.
+- [Modules](modules.md): +2 FE/t each (+4 for the Quarry, Logger, Taxi, Builder, Guard and Sponge).
+- [Addons](addons.md): Speed +10%, Stack +5%, Battery +5%, Efficiency -10% each.
 
-Example: a Basic frame with a Harvester and 2 Speed Addons uses (2 + 1) x 1.2 = 3.6, so **4 FE/t**.
+Example: a Basic frame with a Harvester and 2 Speed Addons uses (4 + 2) x 1.2 = 7.2, so **8 FE/t**.
 
-Jobs cost energy on top of flying (see each [module](modules.md)); Fortune adds +25% per level
-and Silk Touch +50% to that. [Battery Addons](addons.md) make longer trips possible.
+Jobs cost energy on top of flying (see each [module](modules.md)); Fortune adds +25% per level,
+Silk Touch +50% and each Efficiency Addon -10% to that. [Battery Addons](addons.md) make longer trips possible.
 
 Drones cannot be hurt by mobs or by players.
 

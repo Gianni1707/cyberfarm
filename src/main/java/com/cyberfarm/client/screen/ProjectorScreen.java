@@ -2,8 +2,8 @@ package com.cyberfarm.client.screen;
 
 import static com.cyberfarm.client.screen.MachineScreen.ACCENT;
 import static com.cyberfarm.client.screen.MachineScreen.ACCENT_DIM;
-import static com.cyberfarm.client.screen.MachineScreen.OUTLINE;
-import static com.cyberfarm.client.screen.MachineScreen.PANEL;
+import static com.cyberfarm.client.screen.MachineScreen.MINT;
+import static com.cyberfarm.client.screen.MachineScreen.MINT_DARK;
 import static com.cyberfarm.client.screen.MachineScreen.PANEL_DARK;
 import static com.cyberfarm.client.screen.MachineScreen.PANEL_LIGHT;
 import static com.cyberfarm.client.screen.MachineScreen.SLOT_BG;
@@ -158,12 +158,10 @@ public class ProjectorScreen extends Screen {
     private void drawPanel(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         int x = left;
         int y = top;
-        graphics.fill(x, y, x + WIDTH, y + PANEL_HEIGHT, OUTLINE);
-        graphics.fill(x + 1, y + 1, x + WIDTH - 1, y + PANEL_HEIGHT - 1, PANEL);
-        graphics.fill(x + 1, y + 1, x + WIDTH - 1, y + 2, PANEL_LIGHT);
-        graphics.fill(x + 1, y + PANEL_HEIGHT - 2, x + WIDTH - 1, y + PANEL_HEIGHT - 1, PANEL_DARK);
-        graphics.text(font, title, x + 8, y + 5, TEXT, false);
-        graphics.fill(x + 6, y + 15, x + WIDTH - 6, y + 16, ACCENT_DIM);
+        MachineScreen.drawPlate(graphics, x, y, WIDTH, PANEL_HEIGHT);
+        graphics.fill(x + 6, y + 4, x + WIDTH - 6, y + 15, PANEL_DARK);
+        graphics.fill(x + 6, y + 15, x + WIDTH - 6, y + 16, MINT_DARK);
+        graphics.text(font, title, x + 8, y + 5, MINT, false);
 
         // The "i" in the corner: hover it for how to use the projector
         int infoX = x + WIDTH - 6 - INFO_SIZE;
@@ -219,8 +217,7 @@ public class ProjectorScreen extends Screen {
         for (int i = 0; i < shown; i++) {
             int cellX = sideX + (i % CELLS_PER_ROW) * CELL + 1;
             int cellY = lineY + (i / CELLS_PER_ROW) * CELL + 1;
-            graphics.fill(cellX - 1, cellY - 1, cellX + 17, cellY + 17, SLOT_BORDER);
-            graphics.fill(cellX, cellY, cellX + 16, cellY + 16, SLOT_BG);
+            MachineScreen.drawSlot(graphics, cellX, cellY);
             ItemStack stack = new ItemStack(materials.get(i).getKey());
             int count = materials.get(i).getValue();
             graphics.item(stack, cellX, cellY);

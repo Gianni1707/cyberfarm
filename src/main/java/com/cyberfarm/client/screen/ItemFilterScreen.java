@@ -119,9 +119,7 @@ public class ItemFilterScreen extends MachineScreen<ItemFilterMenu> {
     }
 
     private void arrow(GuiGraphicsExtractor graphics, int x, int y, String symbol) {
-        graphics.fill(x, y, x + ARROW, y + ARROW, SLOT_BORDER);
-        graphics.fill(x + 1, y + 1, x + ARROW - 1, y + ARROW - 1, PANEL_LIGHT);
-        graphics.text(font, symbol, x + (ARROW - font.width(symbol)) / 2 + 1, y + 2, TEXT, false);
+        drawButton(graphics, x, y, ARROW, ARROW, Component.literal(symbol), PANEL_LIGHT, TEXT);
     }
 
     @Override

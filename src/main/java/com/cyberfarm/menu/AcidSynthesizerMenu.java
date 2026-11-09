@@ -24,7 +24,7 @@ public class AcidSynthesizerMenu extends MachineMenu {
 
     public AcidSynthesizerMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.ACID_SYNTHESIZER.get(), containerId, data, access, ModBlocks.ACID_SYNTHESIZER.get());
-        addMachineSlot(items, 0, 62, 35);
+        addMachineSlot(items, 0, 74, 35);
         addPlayerInventory(inventory, 84);
     }
 
@@ -47,5 +47,10 @@ public class AcidSynthesizerMenu extends MachineMenu {
 
     public int getOutputFluid() {
         return extra(5);
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

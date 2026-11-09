@@ -13,7 +13,7 @@ item_ids:
 <BlockImage id="cyberfarm:coolant_mixer" scale="4" float="left" />
 
 Makes the coolants that let a [Fission Reactor](fission_reactor.md) run at higher power. Uses
-**20 FE/t**; each batch takes 2 seconds and makes **500 mB**.
+**100 FE/t**; each batch takes 2 seconds and makes **500 mB**. It takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI.
 
 It is a small multiblock: **place a Cyber Frame on its right**, seen from its front, against the open flange.
 **Right-click** the machine and a mini drone flies out and projects the frame where it goes (hold sneak to place the frame against the machine itself). When the frame is

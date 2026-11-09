@@ -17,7 +17,7 @@ water source block**, with its intake hanging into the water, and give it power.
 
 <br clear="all" />
 
-- Pumps **500 mB/t** with **40 FE/t** and pushes it into adjacent [Liquid Pipes](liquid_pipe.md) and machines
+- Pumps **500 mB/t** with **80 FE/t** and pushes it into adjacent [Liquid Pipes](liquid_pipe.md) and machines
   (water is a liquid: a [Gas Pipe](gas_pipe.md) will not take it).
 - One pump feeds 500 heat per tick: enough for a Small tower and a Medium one up to 250%. A Large tower
   at full power (2,000 heat) needs 4 pumps.

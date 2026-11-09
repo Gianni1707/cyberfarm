@@ -31,8 +31,8 @@ public class GasTurbineBlockEntity extends SmallMultiblockBlockEntity {
     public static final int CAPACITY = 50_000;
     public static final int OUTPUT_PER_TICK = 400;
     public static final int BURN_PER_TICK = 20;
-    public static final int FE_PER_MB_BIOGAS = 3;
-    public static final int FE_PER_MB_METHANE = 8;
+    public static final int FE_PER_MB_BIOGAS = 5;
+    public static final int FE_PER_MB_METHANE = 12;
     private static final int OPEN_TICKS = 62;
     /** The gas in the sight glasses changes slowly: the clients hear of it this often. */
     private static final int SYNC_INTERVAL = 20;

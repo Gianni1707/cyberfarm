@@ -36,7 +36,7 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_TICK = 100;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
@@ -82,7 +82,12 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
@@ -92,8 +97,8 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
         boolean canRun = open && recipe != null && input.amount() >= BATCH
                 && output.capacity() - output.amount() >= BATCH
                 && (output.amount() == 0 || output.fluid() == recipe.output());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 input.drain(BATCH);
                 output.fill(recipe.output(), BATCH);
@@ -128,7 +133,7 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> input.amount();
             case 3 -> input.fluidCode();
             case 4 -> output.amount();

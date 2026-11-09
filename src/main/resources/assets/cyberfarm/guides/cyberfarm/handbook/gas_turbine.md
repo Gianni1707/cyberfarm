@@ -23,8 +23,8 @@ change waits for its frames, with its gas kept; move any pipe that sits where a 
 
 | Fuel | Energy | Output |
 | --- | --- | --- |
-| Biogas | 3 FE per mB | 60 FE/t |
-| Methane | 8 FE per mB | 160 FE/t |
+| Biogas | 5 FE per mB | 100 FE/t |
+| Methane | 12 FE per mB | 240 FE/t |
 
 - Holds **16,000 mB** of gas and **50,000 FE**. It only burns gas when its energy buffer has
   room, so no gas is wasted.

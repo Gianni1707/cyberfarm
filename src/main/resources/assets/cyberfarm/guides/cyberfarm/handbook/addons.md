@@ -11,6 +11,7 @@ item_ids:
   - cyberfarm:fortune_addon
   - cyberfarm:silk_touch_addon
   - cyberfarm:anchor_addon
+  - cyberfarm:efficiency_addon
 ---
 
 # Addons
@@ -33,6 +34,7 @@ How many addons fit depends on the [frame](drone_frames.md):
   <ItemIcon id="fortune_addon" />
   <ItemIcon id="silk_touch_addon" />
   <ItemIcon id="anchor_addon" />
+  <ItemIcon id="efficiency_addon" />
 </ItemGrid>
 
 | Addon | Effect | Limit | Power use |
@@ -43,6 +45,7 @@ How many addons fit depends on the [frame](drone_frames.md):
 | Fortune Addon | +1 Fortune level for Quarry and Harvester drops | max 3 | +25% energy per job |
 | Silk Touch Addon | Silk Touch for Quarry and Harvester drops | max 1 | +50% energy per job |
 | Anchor Addon | Its dock keeps the drone's chunks loaded | max 1 | 4 FE/t per chunk, from the dock |
+| Efficiency Addon | Saves power in flight and on every job | max 3 | -10% flight cost and -10% energy per job each |
 
 **Fortune and Silk Touch cannot be combined**, just like the enchantments.
 
@@ -65,6 +68,25 @@ when the battery runs dry, or the dock is paused, it lets the chunks go. It also
 Swarm Dock, for its anchored Mini Drones. Server owners can change the cost and the number of chunks,
 or switch anchoring off, in the `drones` section of the CyberFarm config.
 
+## In machines
+
+The Speed, Efficiency and Battery Addons also fit ten machines: the [Biomass Press](biomass_press.md),
+[Bio-Digester](bio_digester.md), [Acid Synthesizer](acid_synthesizer.md), [Coolant Mixer](coolant_mixer.md),
+[Electrolyzer](aluminum.md), [Pyrolysis Oven](carbon_fiber.md), [Fabricator](circuits.md),
+[Crystallizer](mech_core.md), [Waste Reprocessor](waste_reprocessor.md) and [Drone Assembler](drone_assembler.md).
+Each has **3 addon slots** on a tab on the right edge of its GUI. A slot holds a stack of one addon
+type, and pipes and hoppers never reach them. The Water Pump has no GUI and takes none.
+
+| Addon | In a machine | Limit |
+| --- | --- | --- |
+| Speed Addon | +50% speed and +80% FE/t each | max 4 |
+| Efficiency Addon | -20% FE per operation each | max 3 |
+| Battery Addon | +100% energy buffer each | max 4 |
+
+They stack: 4 Speed Addons make a machine **3 times as fast** for about 40% more FE per operation,
+and two Efficiency Addons more than win that back. A faster machine also takes proportionally
+more FE per tick from its cables.
+
 ## Recipes
 
 <Row>
@@ -72,7 +94,10 @@ or switch anchoring off, in the `drones` section of the CyberFarm config.
   <RecipeFor id="stack_addon" />
 </Row>
 
-<RecipeFor id="battery_addon" />
+<Row>
+  <RecipeFor id="battery_addon" />
+  <RecipeFor id="efficiency_addon" />
+</Row>
 
 <Row>
   <RecipeFor id="fortune_addon" />

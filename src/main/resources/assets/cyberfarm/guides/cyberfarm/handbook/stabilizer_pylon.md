@@ -28,7 +28,7 @@ and they are the **only way power goes in and out** of the core.
 
 Stack <ItemLink id="stabilizer_pylon" />s into **columns**: the bottom block gets a footing, the
 top one a **cradle** with a landing pad. When a column links up, its drone lifts off the cradle, flies to the
-crystal and circles it, holding it steady with a beam. Unstable, the drones falter, tilt and their beams turn violet.
+crystal and circles it, rising and falling, and sends it waves that hold it steady. Unstable, the drones falter, tilt and their waves turn violet.
 
 - Put the columns on the **same level** as the pedestal, **in line with it** on its sides
   (north, south, east, west), one column per side.
@@ -36,8 +36,8 @@ crystal and circles it, holding it steady with a beam. Unstable, the drones falt
   within the distance in the table, counted from the pedestal.
 - Nothing may stand between a column and the crystal at the crystal's height.
 
-With enough columns the core is **Online**: the crystal spins and shines white and its heart grows as
-it fills up. With too few it is **Unstable**: the crystal slows down and flickers violet and
+With enough columns the core is **Online**: the crystal spins, shines white and breathes, closing as the waves land,
+and its heart grows as it fills up. With too few it is **Unstable**: the crystal slows down and flickers violet, its breath lurches and
 **nothing goes in or out**. What it already stores is kept.
 
 ## Power in and out

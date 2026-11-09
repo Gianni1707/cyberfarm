@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 
-/** An addon chip: improves a drone (speed, carried stacks, fortune, silk touch). */
+/** An addon chip: improves a drone (speed, carried stacks, fortune, silk touch); Speed, Efficiency and Battery also go into machines. */
 public class DroneAddonItem extends Item {
     private final AddonType addonType;
 
@@ -29,10 +29,13 @@ public class DroneAddonItem extends Item {
         builder.accept(Component.translatable("tooltip.cyberfarm.addon").withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable(getDescriptionId() + ".desc").withStyle(ChatFormatting.GRAY));
         if (addonType.getFlightCostPercent() != 0) {
-            builder.accept(Component.translatable("tooltip.cyberfarm.cost.flight_percent", addonType.getFlightCostPercent()).withStyle(ChatFormatting.GOLD));
+            builder.accept(Component.translatable("tooltip.cyberfarm.cost.flight_percent", String.format("%+d", addonType.getFlightCostPercent())).withStyle(ChatFormatting.GOLD));
         }
         if (addonType.getJobCostPercent() != 0) {
-            builder.accept(Component.translatable("tooltip.cyberfarm.cost.job_percent", addonType.getJobCostPercent()).withStyle(ChatFormatting.GOLD));
+            builder.accept(Component.translatable("tooltip.cyberfarm.cost.job_percent", String.format("%+d", addonType.getJobCostPercent())).withStyle(ChatFormatting.GOLD));
+        }
+        if (addonType == AddonType.SPEED || addonType == AddonType.EFFICIENCY || addonType == AddonType.BATTERY) {
+            builder.accept(Component.translatable(getDescriptionId() + ".machine").withStyle(ChatFormatting.DARK_AQUA));
         }
         if (addonType.getMaxPerDrone() != Integer.MAX_VALUE) {
             builder.accept(Component.translatable("tooltip.cyberfarm.addon.max", addonType.getMaxPerDrone()).withStyle(ChatFormatting.DARK_GRAY));

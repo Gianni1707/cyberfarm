@@ -83,7 +83,7 @@ and a console on the plinth's front, under the radiation mark. Alone, the Crysta
 with a seed of the crystal in its basin.
 
 Put an Isotope Shard and **4 Amethyst Shards** in the Crystallizer and pipe **2,000 mB of Acid**
-into it: in **30 seconds** at **1,000 FE/t** (600,000 FE in all) it grows one Fusion Crystal.
+into it: in **30 seconds** at **4,000 FE/t** (2,400,000 FE in all) it grows one Fusion Crystal. The Crystallizer takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI.
 That much power wants a reactor or several Steam Engines behind it.
 
 ## Ports

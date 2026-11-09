@@ -13,7 +13,7 @@ item_ids:
 <ItemImage id="cyberfarm:resonance_core" scale="4" float="left" />
 
 A buildable battery: a polyhedral crystal floats over the pedestal, columns of **Stabilizer
-Pylons** on its sides send out drones that circle it and hold it steady, and a shell of **Resonance Cells** around
+Pylons** on its sides send out drones that circle it and hold it steady with waves, and a shell of **Resonance Cells** around
 the crystal makes it bigger, tier by tier.
 
 <br clear="all" />

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": "minecraft:gold_ingot",
+    "X": "minecraft:ender_pearl",
+    "R": "minecraft:redstone",
+    "M": "cyberfarm:range_module_i"
+  },
+  "pattern": [
+    "GXG",
+    "RMR"
+  ],
+  "result": {
+    "id": "cyberfarm:range_module_ii"
+  }
+}

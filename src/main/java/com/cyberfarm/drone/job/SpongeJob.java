@@ -29,7 +29,7 @@ import org.jspecify.annotations.Nullable;
  * does not keep the drone busy for ever.
  */
 public class SpongeJob extends DroneJob {
-    public static final int ENERGY_COST = 20;
+    public static final int ENERGY_COST = 40;
     private static final int RADIUS = 1;
     private static final int SUCK_TICKS = 24;
     /** How far under the area a pool is followed. */

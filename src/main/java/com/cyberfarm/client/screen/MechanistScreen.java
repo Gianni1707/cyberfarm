@@ -1,10 +1,7 @@
 package com.cyberfarm.client.screen;
 
 import static com.cyberfarm.client.screen.MachineScreen.ACCENT;
-import static com.cyberfarm.client.screen.MachineScreen.ACCENT_DIM;
 import static com.cyberfarm.client.screen.MachineScreen.OUTLINE;
-import static com.cyberfarm.client.screen.MachineScreen.PANEL;
-import static com.cyberfarm.client.screen.MachineScreen.PANEL_DARK;
 import static com.cyberfarm.client.screen.MachineScreen.PANEL_LIGHT;
 import static com.cyberfarm.client.screen.MachineScreen.TEXT;
 import static com.cyberfarm.client.screen.MachineScreen.TEXT_DIM;
@@ -168,10 +165,7 @@ public class MechanistScreen extends Screen {
         graphics.fill(left, top - 13, left + tabWidth, top + 1, OUTLINE);
         graphics.fill(left + 1, top - 12, left + tabWidth - 1, top + 1, PANEL_LIGHT);
         graphics.text(font, title, left + 6, top - 9, ACCENT, false);
-        graphics.fill(left, top, left + panelWidth, top + PANEL_HEIGHT, OUTLINE);
-        graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + PANEL_HEIGHT - 1, PANEL);
-        graphics.fill(left + 1, top + 1, left + panelWidth - 1, top + 2, ACCENT_DIM);
-        graphics.fill(left + 1, top + PANEL_HEIGHT - 2, left + panelWidth - 1, top + PANEL_HEIGHT - 1, PANEL_DARK);
+        MachineScreen.drawPlate(graphics, left, top, panelWidth, PANEL_HEIGHT);
         // The line, typed out so far
         String text = text();
         String shown = text.substring(0, Math.min(text.length(), typed()));

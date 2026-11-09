@@ -217,6 +217,8 @@ public class CyberFarmClient {
         event.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
         event.register(ModMenus.BIOMASS_PRESS.get(), BiomassPressScreen::new);
         event.register(ModMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
+        event.register(ModMenus.TRANSMITTER_DISH.get(), com.cyberfarm.client.screen.TransmitterDishScreen::new);
+        event.register(ModMenus.RECEIVER_DISH.get(), com.cyberfarm.client.screen.ReceiverDishScreen::new);
         event.register(ModMenus.PYROLYSIS_OVEN.get(), PyrolysisOvenScreen::new);
         event.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
         event.register(ModMenus.SUPPLY_TERMINAL.get(), SupplyTerminalScreen::new);
@@ -248,6 +250,8 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.WASTE_REPROCESSOR.get(), context -> new WasteReprocessorRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.COMBUSTION_GENERATOR.get(), context -> new CombustionGeneratorRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.ELECTROLYZER.get(), context -> new ElectrolyzerRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.TRANSMITTER_DISH.get(), context -> new com.cyberfarm.client.renderer.TransmitterDishRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.RECEIVER_DISH.get(), context -> new com.cyberfarm.client.renderer.ReceiverDishRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.PYROLYSIS_OVEN.get(), context -> new PyrolysisOvenRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.COOLANT_MIXER.get(), context -> new CoolantMixerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.BIO_DIGESTER.get(), context -> new BioDigesterRenderer());

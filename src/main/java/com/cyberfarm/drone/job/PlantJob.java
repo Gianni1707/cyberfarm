@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * (where the Harvester drops them), loaded into the cargo before each trip. Never tills soil.
  */
 public class PlantJob extends DroneJob {
-    public static final int ENERGY_COST = 10;
+    public static final int ENERGY_COST = 20;
     /** Seeds loaded from the dock per trip. */
     private static final int SEEDS_PER_TRIP = 64;
 

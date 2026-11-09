@@ -58,10 +58,10 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     private static final int CAPACITY = 1_000_000;
     private static final int MAX_INPUT = 8_192;
     /** FE a parked mech is charged with per tick. */
-    public static final int CHARGE_RATE = 2_000;
+    public static final int CHARGE_RATE = 4_000;
     /** Integrity restored every {@link #REPAIR_INTERVAL} ticks, and what it costs. */
     private static final float REPAIR_AMOUNT = 1.0F;
-    private static final int REPAIR_COST = 200;
+    private static final int REPAIR_COST = 400;
     private static final int REPAIR_INTERVAL = 10;
     private static final int CHECK_INTERVAL = 20;
     /** How fast a parked mech glides to its place on the stand: the share of the way per tick, and degrees per tick. */

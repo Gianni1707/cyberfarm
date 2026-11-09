@@ -30,10 +30,10 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
     private static final int VIEW_Y1 = 93;
     private static final int ACID_COLOR = 0xFF9BE04A;
     private static final int ACID_FILL = 0x709BE04A;
-    private static final int ORANGE = 0xFFFF8C1A;
 
     public MethaneExtractorScreen(MethaneExtractorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 210);
+        flatBackground("methane_extractor");
     }
 
     private @Nullable LivingEntity mob() {
@@ -52,15 +52,15 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
         // The window's frame: cut corners, glass edge, dark inside and two lit pillars
         graphics.fill(x + VIEW_X0 + 2, y + VIEW_Y0 - 1, x + VIEW_X1 - 2, y + VIEW_Y1 + 1, OUTLINE);
         graphics.fill(x + VIEW_X0 - 1, y + VIEW_Y0 + 2, x + VIEW_X1 + 1, y + VIEW_Y1 - 2, OUTLINE);
-        graphics.fill(x + VIEW_X0 + 1, y + VIEW_Y0, x + VIEW_X1 - 1, y + VIEW_Y1, ACCENT_DIM);
-        graphics.fill(x + VIEW_X0, y + VIEW_Y0 + 1, x + VIEW_X1, y + VIEW_Y1 - 1, ACCENT_DIM);
-        graphics.fill(x + VIEW_X0 + 1, y + VIEW_Y0 + 1, x + VIEW_X1 - 1, y + VIEW_Y1 - 1, 0xFF0B1216);
+        graphics.fill(x + VIEW_X0 + 1, y + VIEW_Y0, x + VIEW_X1 - 1, y + VIEW_Y1, STEEL_DARK);
+        graphics.fill(x + VIEW_X0, y + VIEW_Y0 + 1, x + VIEW_X1, y + VIEW_Y1 - 1, STEEL_DARK);
+        graphics.fill(x + VIEW_X0 + 1, y + VIEW_Y0 + 1, x + VIEW_X1 - 1, y + VIEW_Y1 - 1, SLOT_BG);
         for (int gx = VIEW_X0 + 12; gx < VIEW_X1 - 6; gx += 12) {
-            graphics.fill(x + gx, y + VIEW_Y0 + 1, x + gx + 1, y + VIEW_Y1 - 1, 0xFF101C22);
+            graphics.fill(x + gx, y + VIEW_Y0 + 1, x + gx + 1, y + VIEW_Y1 - 1, WELL);
         }
         for (int px : new int[] {VIEW_X0 + 4, VIEW_X1 - 8}) {
             graphics.fill(x + px, y + VIEW_Y0 + 1, x + px + 4, y + VIEW_Y1 - 1, PANEL_LIGHT);
-            graphics.fill(x + px + 1, y + VIEW_Y0 + 4, x + px + 3, y + VIEW_Y1 - 4, ORANGE);
+            graphics.fill(x + px + 1, y + VIEW_Y0 + 4, x + px + 3, y + VIEW_Y1 - 4, MINT_MID);
         }
     }
 

@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": "minecraft:diamond",
+    "X": "minecraft:ender_eye",
+    "E": "cyberfarm:elite_circuit",
+    "M": "cyberfarm:range_module_ii"
+  },
+  "pattern": [
+    "DXD",
+    "EME"
+  ],
+  "result": {
+    "id": "cyberfarm:range_module_iii"
+  }
+}

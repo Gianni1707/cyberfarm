@@ -111,9 +111,9 @@ The chamber holds one mob.
 
 | Mob | Methane | In a Gas Turbine |
 | --- | --- | --- |
-| Zombies (any kind) | 25 mB/t | 200 FE/t |
-| Other monsters | 12 mB/t | 96 FE/t |
-| Animals | 4 mB/t | 32 FE/t |
+| Zombies (any kind) | 25 mB/t | 300 FE/t |
+| Other monsters | 12 mB/t | 144 FE/t |
+| Animals | 4 mB/t | 48 FE/t |
 
 A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot
 of work (acid, mobs, the structure), so it pays back far more than a

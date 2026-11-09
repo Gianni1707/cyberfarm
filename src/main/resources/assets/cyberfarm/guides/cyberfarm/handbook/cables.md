@@ -37,9 +37,9 @@ tiers can be mixed in one network: put a better pipe right where a big producer 
 
 As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:
 
-- **Basic** carries all the gas power and a Small Steam Turbine (800 FE/t).
-- **Advanced** carries a Large Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
-- **Elite** joins several turbines into one line.
+- **Basic** carries all the gas power and a Small Steam Turbine (2,000 FE/t).
+- **Advanced** carries a Medium Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
+- **Elite** carries a Large Steam Turbine (40,000 FE/t) and joins several turbines into one line.
 
 Cables **store nothing**: whatever comes in goes straight to the blocks on the other end. A
 network can be up to 1,024 cables long. Different kinds never connect to each other, so they can
@@ -57,6 +57,8 @@ exit. Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md), or a battery 
 
 **Upgrading**: 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds
 and a uranium ingot make 8 Elite ones.
+
+Where a cable can't go, [Dish Transmission](dish_transmission.md) sends FE through the air.
 
 ## Pages
 

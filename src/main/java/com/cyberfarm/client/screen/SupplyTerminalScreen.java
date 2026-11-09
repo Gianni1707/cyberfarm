@@ -29,8 +29,8 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
     private static final int ROW_HEIGHT = 18;
     private static final int ROW_WIDTH = 136;
     private static final int PROSPERITY_Y = ROW_Y + SupplyTerminalBlockEntity.CONTRACTS * ROW_HEIGHT + 1;
-    private static final int MARKET = 0xFFE0B020;
-    private static final int DEFENSE = 0xFFD04030;
+    private static final int MARKET = WARM;
+    private static final int DEFENSE = DANGER;
     private static final ItemStack EMERALD = new ItemStack(Items.EMERALD);
     /** Tooltips wrap at this width so they never run off the screen. */
     private static final int TOOLTIP_WIDTH = 200;
@@ -38,6 +38,7 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
 
     public SupplyTerminalScreen(SupplyTerminalMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, SupplyTerminalMenu.INVENTORY_Y + 82);
+        flatBackground("supply_terminal");
     }
 
     private static String clock(int seconds) {
@@ -63,7 +64,7 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
             int delivered = menu.contractDelivered(i);
             graphics.item(item, left + 1, top);
             graphics.text(font, delivered + "/" + required, left + 20, top + 1, TEXT, false);
-            drawProgressBar(graphics, left + 20, top + 11, 48, 3, required > 0 ? (float) delivered / required : 0.0F, kind == Kind.NORMAL ? 0xFF3FBF6F : border);
+            drawProgressBar(graphics, left + 20, top + 11, 48, 3, required > 0 ? (float) delivered / required : 0.0F, kind == Kind.NORMAL ? ACCENT : border);
             ItemStack bonus = menu.contractBonus(i);
             if (!bonus.isEmpty()) {
                 graphics.item(bonus, left + 72, top);
@@ -90,10 +91,7 @@ public class SupplyTerminalScreen extends MachineScreen<SupplyTerminalMenu> {
         boolean on = VillageRange.isShown(menu.terminalPos());
         int left = x + ROW_X + ROW_WIDTH - RANGE_WIDTH;
         int top = y + PROSPERITY_Y - 2;
-        graphics.fill(left, top, left + RANGE_WIDTH, top + 11, SLOT_BORDER);
-        graphics.fill(left + 1, top + 1, left + RANGE_WIDTH - 1, top + 10, on ? ACCENT_DIM : PANEL_LIGHT);
-        Component range = Component.translatable("gui.cyberfarm.terminal.range");
-        graphics.text(font, range, left + (RANGE_WIDTH - font.width(range)) / 2, top + 2, on ? TEXT : ACCENT, false);
+        drawButton(graphics, left, top, RANGE_WIDTH, 11, Component.translatable("gui.cyberfarm.terminal.range"), on ? ACCENT_DIM : PANEL_LIGHT, TEXT);
     }
 
     private boolean overRange(double mouseX, double mouseY) {

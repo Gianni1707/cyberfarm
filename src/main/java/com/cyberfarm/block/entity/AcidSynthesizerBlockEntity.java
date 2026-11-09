@@ -35,7 +35,7 @@ public class AcidSynthesizerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_TICK = 40;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
@@ -65,15 +65,20 @@ public class AcidSynthesizerBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         boolean canRun = open && getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 input.drain(BATCH);
                 output.fill(ModFluids.ACID.get(), BATCH);
@@ -124,7 +129,7 @@ public class AcidSynthesizerBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> input.amount();
             case 3 -> input.fluidCode();
             case 4 -> output.amount();

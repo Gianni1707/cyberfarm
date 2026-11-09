@@ -109,7 +109,8 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 **Batteria e torri**
 - Resonance Core, Resonance Cell e Stabilizer Pylon nella palette, modelli da `machinemodels.py`; cella non formata a gabbia aperta.
 - Fusto dei piloni a croce con quattro spigoli di luce continui e un impulso animato; le prese sono quelle delle macchine.
-- Ogni colonna collegata manda un drone che orbita il cristallo con un raggio, al posto del raggio del pilone (`ResonanceCoreRenderer`).
+- Ogni colonna collegata manda un drone che orbita il cristallo salendo e scendendo, al posto del raggio del pilone (`ResonanceCoreRenderer`).
+- Il raggio del drone diventa un treno di 3 anelli che volano dal ventre al cristallo (`entity/stabilizer_ring`, generata da `texgen.py`). Il cristallo respira come pezzo unico e si chiude quando gli anelli arrivano. Costo: al massimo 24 quad di anelli con 4 droni, al posto dei 16 del raggio; il respiro non aggiunge quad.
 - `assetgen.py` riportava la bauxite ai valori di prima della 0.9.5: corretto, ora rigenera il JSON della release.
 
 **Proiettore**
@@ -123,13 +124,13 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 
 **Biomass Press e Biomass** (`bfcfaec`)
 - Nuovo oggetto `biomass`, nuova macchina con `BiomassPressBlock`, `BiomassPressBlockEntity`, `BiomassPressMenu`, `BiomassPressScreen`, `BiomassPressRenderer`; parti mobili `PRESS_TOWER`, `PRESS_HEAD`, `PRESS_MASH`.
-- Scarti organici (tutto ciò che accetta il compostatore e la carne marcia) → Biomass con la probabilità del compostatore, 2 s, senza corrente. La carne marcia ha l'80%.
+- Scarti organici (tutto ciò che accetta il compostatore e la carne marcia) → Biomass con la probabilità del compostatore, 2 s, 4 FE/t (Press e Digester vanno a corrente, chiesto dall'utente dopo la prima versione). La carne marcia ha l'80%.
 - L'ugello spinge la Biomass nel contenitore accanto. Dall'esterno entrano solo gli scarti ed esce solo la Biomass.
 - Una tramoggia sopra il frame nascosto alimenta la pressa: il frame le passa gli oggetti, solo per questa macchina (`CyberFarm`).
 - Il mucchio cresce con scarti e Biomass presenti, pieno a 64. Il contenuto arriva ai client ogni 5 tick se è cambiato. La piastra si ferma sul mucchio e lo schiaccia di 0,7 px.
 - Bio-Digester: accetta solo Biomass, 250 mB in 2 s. Stesso gas di prima in media, a parità di oggetti.
 - `BiomassItem`, derivata da `BoneMealItem`: fertilizzante a mano e col Fertilizer Module. Si consuma sempre, fa crescere una volta su tre.
-- Villaggio, `biogas_shed`: baule, tramoggia, pressa col frame sopra, ugello nel digester. JEI e REI, pagine info, guida (`biomass_press.md` nuova).
+- Villaggio, `biogas_shed`: baule, tramoggia, pressa col frame sopra, ugello nel digester; poiché Press e Digester ora vanno a corrente, un Combustion Generator con tramoggia e baule del combustibile e due cavi, da rifornire a mano. JEI e REI, pagine info, guida (`biomass_press.md` nuova).
 
 **Correzioni dalle segnalazioni dei giocatori** (`bfcfaec`)
 - **Shift+click:** un oggetto rifiutato non compare più per un istante nello slot; il client non anticipa più lo spostamento (`MachineMenu`).
@@ -148,7 +149,6 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 - **Tank Module:** lattina da 32 secchi sul fianco. Conserva il liquido della spugna e sposta liquidi fra tank col Transport.
 - **Dock Tank:** blocco accanto alla dock, solo per conservare; barra nella GUI della dock.
 - **Pinza del Transport:** oggetto piccolo stretto fra le ganasce.
-- **Setup di prova:** `/function cyberfarm:test_setup`, da `tools/testsetup.py`.
 
 ## Modifiche che cambiano il gioco
 
@@ -170,6 +170,9 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - **Tank:** ora si fondono e rispondono ai click in modo diverso (vedi sotto).
 - **Bio-Digester e scarti organici:** accetta solo Biomass. Le fattorie automatiche vanno rifatte inserendo una Biomass Press col suo Cyber Frame. Gli scarti già nello slot di un digester vecchio restano lì finché non si tolgono a mano.
 - **Biogas Shed del villaggio:** ha blocchi nuovi, quindi quello già costruito risulta non finito.
+- **Ribilanciamento dell'energia (9 novembre 2026):** i generatori producono di più (Combustion 60, Gas Turbine 100/240, Steam Engine 405/675, turbine 2.000/9.600/40.000 FE/t) e le macchine consumano di più (circa il doppio, Crystallizer 4.000 FE/t). Droni e mech consumano il doppio con batterie doppie. Macchine, droni e mech già esistenti prendono i nuovi valori da soli: la batteria massima di un drone si calcola dal telaio, quindi raddoppia anche per quelli già costruiti, che ripartono con la carica che avevano.
+- **Trasmissione a parabole:** due blocchi nuovi, Transmitter Dish (piccolo multiblocco 2x2 con tre Cyber Frame) e Receiver Dish (alto 2, con un Cyber Frame sopra), con reti private o pubbliche e quattro Range Module. Modelli e GUI come approvati (vedi le scelte di design).
+- **Addon nelle macchine:** 10 macchine hanno 3 slot addon su una linguetta a destra della GUI (Speed, Efficiency, Battery). Nuovo oggetto: Efficiency Addon.
 
 ## Commit, dal più vecchio
 
@@ -238,6 +241,35 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - La prima striscia sul contorno usciva di 0,1 px dal limite dei modelli (-16..32) e il forno e il Coolant Mixer diventavano cubi neri e viola.
   Ora la base cede quel tanto alla striscia.
 
+## GUI delle macchine
+
+Tutte le macchine con una GUI usano lo sfondo da `tools/guigen.py`; restano a targa smaltata solo le schermate che non sono di una macchina: Item Filter, Projector e Mechanist. Generator e Gas Turbine hanno il disegno di lato (ventola e fuoco, rotore); Steam Engine, Methane Extractor, Reactor, Hangar e Dock tengono le loro viste e il loro layout sul nuovo fondo; Supply Terminal, Resonance Core e Muffler hanno testi e righe su pannelli scuri. Le barre di velocità di turbina e Steam Engine sono sparite: il disegno gira alla velocità vera.
+
+Due stili. Le **nove macchine di processo** (Biomass Press, Bio-Digester, Pyrolysis Oven, Electrolyzer, Coolant Mixer, Acid Synthesizer, Fabricator, Waste Reprocessor, Crystallizer) hanno uno sfondo PNG in `textures/gui/`, generato da `tools/guigen.py`. Tutte le altre schermate tengono la "targa smaltata" qui sotto, a riempimenti.
+
+Macchine di processo:
+- **Fondo:** la texture vera del corpo macchina (`oven_body`), fascia del titolo e striscia di luce alla base.
+- **In primo piano al centro:** slot con cornice d'acciaio chiara, senza scritte. Da vuoti mostrano sbiadito l'oggetto che entra o esce (`drawGhost`); Fabricator senza, perché dipende dalla ricetta. Una freccia incisa dà la direzione e non si riempie.
+- **Di lato, colonna x 5..41:** il disegno del processo a colori pieni; l'avanzamento si legge da lì. Parti fisse nel PNG, parti mobili in Java: piastra e mucchio della Press, pastone e bolle del Digester, filo e fiamme del forno, alluminio, grani e arco dell'Electrolyzer, liquido e pale del Mixer, liquido e bolle dell'Acid Synthesizer, testina e tracciato del Fabricator, barra, disco e polvere del Waste Reprocessor, cristalli del Crystallizer.
+- **Tank:** con le tacche; corrente: vetro d'acciaio col fulmine sopra.
+- **Posizioni:** slot e tank spostati verso il centro, menu lato server aggiornati (`menu/*Menu.java`).
+- **Scritte tolte dal pannello:** "Organic Waste" e "Biomass" sono tooltip sullo slot vuoto, la ricetta dell'Acid Synthesizer è un tooltip sulla freccia.
+- Gli avvisi come "No power!" stanno su una targhetta.
+
+Targa smaltata:
+
+- **Piastra:** smalto teal con rivetti d'acciaio, fascia scura del titolo e riga menta. Il corpo è `#1B312F`.
+- **Slot:** quelli della macchina hanno la cornice d'acciaio; quelli dell'inventario sono discreti, con un solo gradino scuro in basso a destra.
+- **Tank:** spioncini d'acciaio. Il fluido sta a 1 px dalla cornice, così il bordo si vede anche su vapore e cryo; lo stesso vale per le barre. Le tacche diventano scure sotto il fluido.
+- **Movimento:** accensione all'apertura, scintilla sulla riga del titolo, onda di luce sul vetro, riflesso sull'energia, impulso sulle barre, luce sulle barre del nucleo del Reactor. Solo riempimenti.
+- **Helper nuovi:** `drawWell`, `drawLockedSlot`; `drawPlate` è usato anche da Mechanist e Projector.
+- **Reactor:** fascia scura sotto lo stato, per leggere rosso e ambra; "Waste" 1 px a sinistra.
+- **Drone Assembler:** il bottone vanilla è diventato un `drawButton`, 2 px più largo a sinistra perché "Disassemble" ci stia. Stesse azioni.
+- **Colori tolti:** arancio e verdi di Fabricator, Pyrolysis, Steam Engine, Hangar, Methane Extractor e Terminal. Restano i colori del processo: acido, biogas, viola del Crystallizer, verde del Waste Reprocessor.
+- Slot, aree di clic e menu lato server non cambiano.
+- **La guida non cambia:** non descrive l'aspetto delle schermate.
+- Il Mechanist tiene i bottoni vanilla delle risposte: non sono stati ridisegnati.
+
 ## Tubi e cavi
 
 - **Una famiglia sola:** Energy Conduit, Liquid Pipe e Gas Pipe hanno la stessa forma e si distinguono per il colore delle luci e per il contenuto. Il tubo di vetro da 4,9 px, teal scuro come il resto della mod, arriva fino al bordo del blocco, quindi entra nel collare delle macchine e nel tubo accanto. A 1 px da ogni lato collegato c'è un manicotto: due piastrine sopra e sotto il vetro nel colore del tier (acciaio, ottone chiaro, viola) e una striscia di luce su tutti e quattro i lati (ciano, blu, verde, che respira), così si vede da ogni lato in qualunque direzione corra il tubo. Dove la linea si piega, si dirama o finisce c'è un cubo dello stesso vetro con una cornice d'acciaio scuro su ogni parete (`pipe_node_glass`); le pareti stanno solo dove non arriva un braccio. Il tubo da solo ha anche le strisce di luce sui fianchi (`{nome}_lone`). Nessun tappo, telaio né simbolo.
@@ -266,4 +298,3 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - Prova su server dedicato.
 - Merge su `master`: i branch sono già su GitHub.
 - Porting sulle altre versioni di Minecraft.
-- Decidere se togliere il setup di prova (`data/cyberfarm/function/test_setup*`).

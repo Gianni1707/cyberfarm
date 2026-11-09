@@ -204,7 +204,7 @@ public class MineJob extends DroneJob {
         stop(drone, level);
         // A diamond pickaxe, so ores and obsidian drop; the dock filter decides what is kept, the rest is thrown away
         drone.cargo().collect(level, target, breakBlock(drone, level, target, state).stream().filter(dock.filter()::test).toList());
-        drone.useJobEnergy(20 + (int) (hardness * 10));
+        drone.useJobEnergy(40 + (int) (hardness * 20));
         return isLoadFull(drone) ? Result.RETURN : Result.DONE;
     }
 

@@ -80,9 +80,9 @@ middle of it, facing out of the hangar. Walk it back onto the pad and get out to
 straightens up on the stand by itself, gliding to the middle of the pad and turning to face out,
 and the clamps come down onto its shoulders. While it stands there, empty:
 
-- it is **charged** at up to **2,000 FE/t** from the console's own battery (1,000,000 FE), which
+- it is **charged** at up to **4,000 FE/t** from the console's own battery (1,000,000 FE), which
   you fill with [Energy Conduits](energy_conduit.md) or any mod's cables;
-- it is **repaired**, 1 point of integrity every half second for 200 FE. A mech that **shut down**
+- it is **repaired**, 1 point of integrity every half second for 400 FE. A mech that **shut down**
   comes back on once it is fully repaired.
 
 You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you

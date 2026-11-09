@@ -19,9 +19,8 @@ import net.minecraft.world.inventory.Slot;
  * armour on the trunk, the blade and the drill by the arms.
  */
 public class MechHangarScreen extends MachineScreen<MechHangarMenu> {
-    private static final int GREEN = 0xFF6CFF8C;
-    private static final int BAY = 0xFF0B1216;
-    private static final int GRID = 0xFF101C22;
+    private static final int GREEN = MINT_MID;
+    private static final int GRID = WELL;
     private static final int CARD_X0 = 6;
     private static final int CARD_X1 = 68;
     private static final int BAY_X0 = 72;
@@ -35,6 +34,7 @@ public class MechHangarScreen extends MachineScreen<MechHangarMenu> {
 
     public MechHangarScreen(MechHangarMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 210);
+        flatBackground("mech_hangar");
         // The hangar's battery is the third bar of the card; its tooltip spot is there too
         energyBarX = BAR_X;
         energyBarY = 70;
@@ -73,16 +73,15 @@ public class MechHangarScreen extends MachineScreen<MechHangarMenu> {
                 parked ? PANEL_LIGHT : PANEL, parked ? WARM : TEXT_DIM);
 
         // The bay: a dark grid, the mech's outline, the slots at its mounts with their callouts
-        graphics.fill(x + BAY_X0 - 1, y + TOP - 1, x + BAY_X1 + 1, y + BOTTOM + 1, ACCENT_DIM);
-        graphics.fill(x + BAY_X0, y + TOP, x + BAY_X1, y + BOTTOM, BAY);
+        drawWell(graphics, x + BAY_X0, y + TOP, BAY_X1 - BAY_X0, BOTTOM - TOP);
         for (int gx = BAY_X0 + 8; gx < BAY_X1; gx += 8) {
             graphics.fill(x + gx, y + TOP, x + gx + 1, y + BOTTOM, GRID);
         }
         for (int gy = TOP + 8; gy < BOTTOM; gy += 8) {
             graphics.fill(x + BAY_X0, y + gy, x + BAY_X1, y + gy + 1, GRID);
         }
-        int fill = parked ? 0xFF1B3A48 : 0xFF1A2026;
-        int edge = parked ? ACCENT_DIM : PANEL_LIGHT;
+        int fill = parked ? PANEL_LIGHT : PANEL_DARK;
+        int edge = parked ? MINT_DARK : PANEL_LIGHT;
         part(graphics, x + 116, y + 22, 10, 9, fill, edge);          // head
         part(graphics, x + 110, y + 33, 22, 31, fill, edge);         // trunk
         part(graphics, x + 101, y + 35, 7, 35, fill, edge);          // left arm

@@ -19,10 +19,10 @@ blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on i
 
 | Stat | Value |
 | --- | --- |
-| Generation | 40 FE/t while burning |
+| Generation | 60 FE/t while burning |
 | Buffer | 50,000 FE |
 | Output | up to 400 FE/t per side |
-| One coal | 32,000 FE |
+| One coal | 48,000 FE |
 
 The generator **pushes power automatically** into every adjacent block that accepts FE:
 CyberFarm machines, [Energy Conduits](energy_conduit.md), and machines and cables from other mods. It only burns fuel when its

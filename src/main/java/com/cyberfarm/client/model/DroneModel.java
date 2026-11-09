@@ -31,6 +31,7 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private static final int ARMS = 4;
 
     private final ModelPart body;
+    private final ModelPart antenna;
     private final ModelPart harvester;
     private final ModelPart drill;
     private final ModelPart claw;
@@ -81,6 +82,7 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     public DroneModel(ModelPart root) {
         super(root, RenderTypes::entityCutout);
         this.body = root.getChild("body");
+        this.antenna = root.getChild("antenna");
         this.harvester = body.getChild("harvester");
         this.drill = body.getChild("drill");
         this.claw = body.getChild("claw");
@@ -129,9 +131,13 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(0, 0).addBox(-2.5F, -1.0F, -3.0F, 5.0F, 2.0F, 6.0F)     // chassis
                         .texOffs(54, 56).addBox(-2.0F, -0.5F, -3.5F, 4.0F, 1.0F, 1.0F)   // visor
                         .texOffs(0, 11).addBox(-1.5F, -3.0F, -1.5F, 3.0F, 2.0F, 3.0F)    // low tank
-                        .texOffs(28, 32).addBox(-1.5F, -2.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.3F))  // copper band
-                        .texOffs(54, 40).addBox(-0.5F, -5.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.2F))  // antenna mast
-                        .texOffs(44, 46).addBox(-0.5F, -6.0F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.1F)),  // antenna light
+                        .texOffs(28, 32).addBox(-1.5F, -2.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(0.3F)),  // copper band
+                PartPose.offset(0.0F, 18.0F, 0.0F));
+        // A part of its own beside the body, which it follows: a render state can hide a child of the root by name,
+        // as the Hats addon does for a drone wearing one
+        root.addOrReplaceChild("antenna", CubeListBuilder.create()
+                        .texOffs(54, 40).addBox(-0.5F, -5.0F, -0.5F, 1.0F, 2.0F, 1.0F, new CubeDeformation(-0.2F))  // mast
+                        .texOffs(44, 46).addBox(-0.5F, -6.0F, -0.5F, 1.0F, 1.0F, 1.0F, new CubeDeformation(0.1F)),  // light
                 PartPose.offset(0.0F, 18.0F, 0.0F));
 
         for (int i = 0; i < ARMS; i++) {
@@ -378,6 +384,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                 : state.startup < 0 ? 1.0F : Mth.clamp((state.startup - DroneEntity.LIFT_START) / 10.0F, 0.0F, 1.0F);
         body.y += Mth.sin(state.ageInTicks * 0.15F) * 0.6F * lift;
         body.zRot = Mth.sin(state.ageInTicks * 0.09F) * 0.03F;
+        antenna.y = body.y;
+        antenna.zRot = body.zRot;
         // Parked, what hangs under the skids tucks up, so it stays out of the pad, and stops moving
         float out = 1.0F - state.stow;
         harvester.visible = state.has(DroneTask.HARVEST);

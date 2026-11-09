@@ -22,7 +22,7 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 /** Burns any furnace fuel into FE and pushes it into adjacent blocks. */
 public class CombustionGeneratorBlockEntity extends MachineBlockEntity {
     public static final int CAPACITY = 50_000;
-    public static final int GENERATION_PER_TICK = 40;
+    public static final int GENERATION_PER_TICK = 60;
     public static final int OUTPUT_PER_TICK = 400;
 
     private int burnTime;

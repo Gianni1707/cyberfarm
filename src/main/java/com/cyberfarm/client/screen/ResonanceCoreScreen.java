@@ -21,6 +21,7 @@ public class ResonanceCoreScreen extends MachineScreen<ResonanceCoreMenu> {
 
     public ResonanceCoreScreen(ResonanceCoreMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 134);
+        flatBackground("resonance_core");
         showInventory = false;
         energyBarHeight = 106;
     }

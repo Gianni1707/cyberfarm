@@ -30,12 +30,15 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Biomass Press: presses organic waste (anything a composter takes, plus rotten flesh) into Biomass, with
- * the chance a composter would take it, and pushes it out of its nozzle into the container there. Needs no power.
+ * the chance a composter would take it, and pushes it out of its nozzle into the container there.
  */
 public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
     public static final int PROCESS_TIME = 40;
+    public static final int ENERGY_PER_TICK = 8;
+    private static final int CAPACITY = 4_000;
+    private static final int MAX_INPUT = 100;
     private static final float ROTTEN_FLESH_CHANCE = 0.8F;
     /** Ticks between Biomass going out of the nozzle, a hopper's pace. */
     private static final int PUSH_INTERVAL = 8;
@@ -85,7 +88,7 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     };
 
     public BiomassPressBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.BIOMASS_PRESS.get(), pos, state, 2, 0, 0, 0);
+        super(ModBlockEntities.BIOMASS_PRESS.get(), pos, state, 2, CAPACITY, MAX_INPUT, 0);
     }
 
     /** The chance an item gives a Biomass, as in a composter; 0 if it is not organic. */
@@ -108,7 +111,7 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
     }
 
     @Override
@@ -117,12 +120,18 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         ItemStack input = getStack(INPUT);
         float chance = biomassChance(input);
-        if (open && chance > 0.0F && hasRoomFor(OUTPUT, ModItems.BIOMASS.get())) {
-            if (++progress >= PROCESS_TIME) {
+        boolean canRun = open && chance > 0.0F && hasRoomFor(OUTPUT, ModItems.BIOMASS.get());
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 setStack(INPUT, input.copyWithCount(input.getCount() - 1));
                 if (level.getRandom().nextFloat() < chance) {
@@ -131,7 +140,7 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
                 level.playSound(null, pos, ModSounds.BIOMASS_PRESS_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             setChanged();
-        } else if (progress != 0) {
+        } else if (!canRun && progress != 0) {
             progress = 0;
             setChanged();
         }
@@ -162,7 +171,7 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             default -> 0;
         };
     }

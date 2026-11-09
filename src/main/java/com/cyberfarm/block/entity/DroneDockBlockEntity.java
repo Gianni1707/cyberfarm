@@ -66,7 +66,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public static final int CARGO_SLOTS = 9;
     public static final int CAPACITY = 100_000;
     public static final int MAX_INPUT = 1_000;
-    public static final int CHARGE_RATE = 500;
+    public static final int CHARGE_RATE = 1_000;
     public static final int DEFAULT_RADIUS = 4;
     /** Ticks without news from the drone before the dock shows it as offline. */
     private static final int STATUS_TIMEOUT = 100;

@@ -37,21 +37,21 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 
 | Module | Flight cost | Per job |
 | --- | --- | --- |
-| Harvester Module | +1 FE/t | 40 FE per harvest |
-| Quarry Module | +2 FE/t | 20 FE + 10 FE per point of hardness, per block |
-| Transport Module | +1 FE/t | none |
-| Planter Module | +1 FE/t | 10 FE per seed |
-| Logger Module | +2 FE/t | 20 FE per log, 5 FE per leaf block |
-| Taxi Module | +2 FE/t | 50 FE per trip |
-| Rancher Module | +1 FE/t | 15 FE per shearing or milking |
-| Fertilizer Module | +1 FE/t | 10 FE per use |
-| Builder Module | +2 FE/t | 20 FE per block |
-| Fisher Module | +1 FE/t | 10 FE per catch |
-| Breeder Module | +1 FE/t | 15 FE per animal fed |
-| Guard Module | +2 FE/t | 150 FE per shot |
-| Bomb Module | +1 FE/t | the Mini Drone itself |
-| Sponge Module | +2 FE/t | 20 FE per 3x3 |
-| Tank Module | +1 FE/t | none |
+| Harvester Module | +2 FE/t | 80 FE per harvest |
+| Quarry Module | +4 FE/t | 40 FE + 20 FE per point of hardness, per block |
+| Transport Module | +2 FE/t | none |
+| Planter Module | +2 FE/t | 20 FE per seed |
+| Logger Module | +4 FE/t | 40 FE per log, 10 FE per leaf block |
+| Taxi Module | +4 FE/t | 100 FE per trip |
+| Rancher Module | +2 FE/t | 30 FE per shearing or milking |
+| Fertilizer Module | +2 FE/t | 20 FE per use |
+| Builder Module | +4 FE/t | 40 FE per block |
+| Fisher Module | +2 FE/t | 20 FE per catch |
+| Breeder Module | +2 FE/t | 30 FE per animal fed |
+| Guard Module | +4 FE/t | 300 FE per shot |
+| Bomb Module | +2 FE/t | the Mini Drone itself |
+| Sponge Module | +4 FE/t | 40 FE per 3x3 |
+| Tank Module | +2 FE/t | none |
 
 ## Harvester Module
 
@@ -93,7 +93,7 @@ to bedrock. The dock GUI shows the layer it is working on.
   beside the pit. A layer is finished only when every block in it is dug: a block the drone could
   not reach is tried again on the next trip, never skipped.
 - The [dock filter](drone_dock.md) decides which drops are **kept**; the others are thrown away.
-- Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian.
+- Harder blocks take longer and cost more power: about 50 FE for dirt, 70 FE for stone, 1,040 FE for obsidian.
 
 <RecipeFor id="quarry_module" />
 
@@ -298,7 +298,7 @@ on its shoulder, then goes after the next one.
   and what comes out of a cave. Without a surveyed area that is the default 9x9 square round the
   dock; mark a bigger one (up to 33x33) with the [Survey Tool](drone_dock.md).
 - It hovers **3 blocks over the mob's head**, out of reach of swords and claws, and fires once a
-  second: **6 damage a shot**, 150 FE (every CyberFarm laser costs 25 FE per point of damage). Nothing can hurt the drone, creepers included.
+  second: **6 damage a shot**, 300 FE (50 FE per point of damage, twice what the Laser Turret pays). Nothing can hurt the drone, creepers included.
 - It shoots **hostile mobs only**, just like the [Laser Turret](laser_turret.md): never players,
   animals, villagers, golems, named mobs, mobs riding something or neutral mobs that are not angry.
 - With nothing left to shoot it flies home to charge, and checks again every two seconds.

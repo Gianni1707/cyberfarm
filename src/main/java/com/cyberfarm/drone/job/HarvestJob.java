@@ -34,7 +34,7 @@ import org.jspecify.annotations.Nullable;
  * that takes a Planter Module, on the same drone or on another.
  */
 public class HarvestJob extends DroneJob {
-    public static final int ENERGY_COST = 40;
+    public static final int ENERGY_COST = 80;
 
     private final BlockPos target;
 

@@ -16,9 +16,9 @@ item_ids:
 
 It takes a **Cyber Frame** on top: right-click it alone and a drone shows where. Once complete, its plate grows up a block with the plaque on it. It doesn't work until then; breaking the frame folds it back.
 
-Makes nuclear waste safe. Each **Depleted Fuel Rod** takes 10 seconds and **40 FE/t** and becomes
+Makes nuclear waste safe. Each **Depleted Fuel Rod** takes 10 seconds and **160 FE/t** and becomes
 a block of **Vitrified Waste**; one time in three it also recovers an **Uranium Ingot**, and one
-time in four an **Isotope Shard**, the seed of the [Mech Core](mech_core.md)'s crystal.
+time in four an **Isotope Shard**, the seed of the [Mech Core](mech_core.md)'s crystal. It takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI.
 
 <br clear="all" />
 

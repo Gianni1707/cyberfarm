@@ -127,6 +127,8 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
@@ -172,6 +174,8 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.TRANSMITTER_DISH.get(), (be, side) -> be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.RECEIVER_DISH.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
@@ -232,6 +236,7 @@ public class CyberFarm {
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
                 .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
+                .playToServer(com.cyberfarm.energy.DishRenamePayload.TYPE, com.cyberfarm.energy.DishRenamePayload.STREAM_CODEC, com.cyberfarm.energy.DishRenamePayload::handle)
                 .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)

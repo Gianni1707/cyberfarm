@@ -17,7 +17,7 @@ item_ids:
 
 The home base of a drone. Each dock hosts **one drone** and:
 
-- **charges** it (up to 500 FE/t) from its own 100,000 FE buffer;
+- **charges** it (up to 1,000 FE/t) from its own 100,000 FE buffer;
 - **stores** the harvest in 9 slots;
 - remembers the drone's **work area**;
 - holds an **item filter** for the Quarry and Transport modules.

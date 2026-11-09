@@ -25,15 +25,20 @@ public class WasteReprocessorMenu extends MachineMenu {
 
     public WasteReprocessorMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.WASTE_REPROCESSOR.get(), containerId, data, access, ModBlocks.WASTE_REPROCESSOR.get());
-        addMachineSlot(items, WasteReprocessorBlockEntity.INPUT, 44, 35);
-        addMachineSlot(items, WasteReprocessorBlockEntity.WASTE_OUTPUT, 104, 26);
-        addMachineSlot(items, WasteReprocessorBlockEntity.URANIUM_OUTPUT, 104, 44);
-        addMachineSlot(items, WasteReprocessorBlockEntity.ISOTOPE_OUTPUT, 122, 44);
+        addMachineSlot(items, WasteReprocessorBlockEntity.INPUT, 52, 35);
+        addMachineSlot(items, WasteReprocessorBlockEntity.WASTE_OUTPUT, 106, 26);
+        addMachineSlot(items, WasteReprocessorBlockEntity.URANIUM_OUTPUT, 106, 46);
+        addMachineSlot(items, WasteReprocessorBlockEntity.ISOTOPE_OUTPUT, 128, 46);
         addPlayerInventory(inventory, 84);
     }
 
     public float getProgress() {
         int total = extra(1);
         return total <= 0 ? 0.0F : (float) extra(0) / total;
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

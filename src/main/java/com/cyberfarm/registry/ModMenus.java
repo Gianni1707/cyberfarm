@@ -61,6 +61,10 @@ public class ModMenus {
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new BiomassPressMenu(id, inventory)));
     public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerMenu>> ELECTROLYZER = MENUS.register("electrolyzer",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.cyberfarm.menu.TransmitterDishMenu>> TRANSMITTER_DISH = MENUS.register("transmitter_dish",
+            () -> IMenuTypeExtension.create(com.cyberfarm.menu.TransmitterDishMenu::new));
+    public static final DeferredHolder<MenuType<?>, MenuType<com.cyberfarm.menu.ReceiverDishMenu>> RECEIVER_DISH = MENUS.register("receiver_dish",
+            () -> IMenuTypeExtension.create(com.cyberfarm.menu.ReceiverDishMenu::new));
 
     public static final DeferredHolder<MenuType<?>, MenuType<PyrolysisOvenMenu>> PYROLYSIS_OVEN = MENUS.register("pyrolysis_oven",
             () -> IMenuTypeExtension.create((id, inventory, buf) -> new PyrolysisOvenMenu(id, inventory)));
