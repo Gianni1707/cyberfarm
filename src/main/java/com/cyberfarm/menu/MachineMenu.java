@@ -26,6 +26,10 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
     private final Block block;
     private int machineSlotCount;
+    /** The addon slots sit on a tab outside the right edge of the 176 px wide GUI. */
+    public static final int ADDON_X = 182;
+    public static final int ADDON_Y = 20;
+    public static final int ADDON_PITCH = 24;
 
     protected MachineMenu(MenuType<?> type, int containerId, ContainerData data, ContainerLevelAccess access, Block block) {
         super(type, containerId);
@@ -41,6 +45,14 @@ public abstract class MachineMenu extends AbstractContainerMenu {
     }
 
     protected void addPlayerInventory(Inventory inventory, int top) {
+        if (hasAddons()) {
+            // The machine's own addons on the server; on the client a placeholder that vanilla sync fills
+            ItemStacksResourceHandler addons = access.evaluate((level, pos) -> level.getBlockEntity(pos) instanceof MachineBlockEntity machine ? machine.getAddons() : null)
+                    .orElseGet(() -> new ItemStacksResourceHandler(MachineBlockEntity.ADDON_SLOTS));
+            for (int i = 0; i < MachineBlockEntity.ADDON_SLOTS; i++) {
+                addMachineSlot(addons, i, ADDON_X, ADDON_Y + i * ADDON_PITCH);
+            }
+        }
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 9; column++) {
                 addSlot(new Slot(inventory, column + row * 9 + 9, 8 + column * 18, top + row * 18));
@@ -49,6 +61,11 @@ public abstract class MachineMenu extends AbstractContainerMenu {
         for (int column = 0; column < 9; column++) {
             addSlot(new Slot(inventory, column, 8 + column * 18, top + 58));
         }
+    }
+
+    /** Whether the machine takes Speed, Efficiency and Battery addons; the same on server and client. */
+    public boolean hasAddons() {
+        return false;
     }
 
     public int getEnergy() {

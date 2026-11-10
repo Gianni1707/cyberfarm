@@ -14,15 +14,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Cyber Frame$() on its left as you face it (right-click it alone and a drone shows where), and only works once assembled: $(l)1 Aluminum Ingot every 5 seconds at 40 FE/t$(). One $(l:generators/combustion_generator)Combustion Generator$(/l) keeps it running. While it works, the feeder punch behind its window strikes four"
+      "text": "$(li)$(l)Cyber Frame$() on its left as you face it (right-click it alone and a drone shows where), and only works once assembled: $(l)1 Aluminum Ingot every 5 seconds at 80 FE/t$(). Two $(l:generators/combustion_generator)Combustion Generators$(/l) keep it running. The Electrolyzer takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its sides, front or back: its top is full.$(br)Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and"
+      "text": "$(li)on the tab beside its GUI. While it works, the feeder punch behind its window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its sides, front or back: its top is full.$(br)Aluminum Ingots are tagged forge:ingots/aluminum,"
     },
     {
       "type": "patchouli:text",
-      "text": "forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can process our ore."
+      "text": "Alumina forge:dusts/alumina, the ore forge:ores/bauxite and forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can process our ore."
     },
     {
       "type": "patchouli:text",

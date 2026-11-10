@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:drone_assembler",
-      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)2,000 FE$() and takes 5 seconds."
+      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)4,000 FE$() and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
     },
     {
       "type": "patchouli:text",
@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the build plate, under the assembler's print head, unfolding as it is made. When the bar is full it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
+      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the build plate, under the assembler's print head, unfolding as it is made. When the welding head reaches the end of its rail it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
     },
     {
       "type": "patchouli:text",
@@ -28,7 +28,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 2,000 FE.$(br2)Hover an empty slot to see what goes there."
+      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 4,000 FE.$(br2)Hover an empty slot to see what goes there."
     },
     {
       "type": "patchouli:text",

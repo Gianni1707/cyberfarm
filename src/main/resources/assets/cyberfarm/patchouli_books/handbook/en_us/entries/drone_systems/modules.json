@@ -14,20 +14,20 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Every module makes the drone use more power in flight, and some jobs cost energy too:$(br)$(li)$(l)Harvester Module$(): +1 FE/t, 40 FE per harvest$(br)$(li)$(l)Quarry Module$(): +2 FE/t, 20 FE + 10 FE per point of hardness, per block$(br)$(li)$(l)Transport Module$(): +1 FE/t, none",
+      "text": "Every module makes the drone use more power in flight, and some jobs cost energy too:$(br)$(li)$(l)Harvester Module$(): +2 FE/t, 80 FE per harvest$(br)$(li)$(l)Quarry Module$(): +4 FE/t, 40 FE + 20 FE per point of hardness, per block$(br)$(li)$(l)Transport Module$(): +2 FE/t, none",
       "title": "Power use"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Planter Module$(): +1 FE/t, 10 FE per seed$(br)$(li)$(l)Logger Module$(): +2 FE/t, 20 FE per log, 5 FE per leaf block$(br)$(li)$(l)Taxi Module$(): +2 FE/t, 50 FE per trip$(br)$(li)$(l)Rancher Module$(): +1 FE/t, 15 FE per shearing or milking$(br)$(li)$(l)Fertilizer Module$(): +1 FE/t, 10 FE per use"
+      "text": "$(li)$(l)Planter Module$(): +2 FE/t, 20 FE per seed$(br)$(li)$(l)Logger Module$(): +4 FE/t, 40 FE per log, 10 FE per leaf block$(br)$(li)$(l)Taxi Module$(): +4 FE/t, 100 FE per trip$(br)$(li)$(l)Rancher Module$(): +2 FE/t, 30 FE per shearing or milking$(br)$(li)$(l)Fertilizer Module$(): +2 FE/t, 20 FE per use"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Builder Module$(): +2 FE/t, 20 FE per block$(br)$(li)$(l)Fisher Module$(): +1 FE/t, 10 FE per catch$(br)$(li)$(l)Breeder Module$(): +1 FE/t, 15 FE per animal fed$(br)$(li)$(l)Guard Module$(): +2 FE/t, 150 FE per shot$(br)$(li)$(l)Bomb Module$(): +1 FE/t, the Mini Drone itself"
+      "text": "$(li)$(l)Builder Module$(): +4 FE/t, 40 FE per block$(br)$(li)$(l)Fisher Module$(): +2 FE/t, 20 FE per catch$(br)$(li)$(l)Breeder Module$(): +2 FE/t, 30 FE per animal fed$(br)$(li)$(l)Guard Module$(): +4 FE/t, 300 FE per shot$(br)$(li)$(l)Bomb Module$(): +2 FE/t, the Mini Drone itself"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sponge Module$(): +2 FE/t, 20 FE per 3x3$(br)$(li)$(l)Tank Module$(): +1 FE/t, none"
+      "text": "$(li)$(l)Sponge Module$(): +4 FE/t, 40 FE per 3x3$(br)$(li)$(l)Tank Module$(): +2 FE/t, none"
     },
     {
       "type": "patchouli:spotlight",
@@ -74,7 +74,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The $(l:drone_systems/drone_dock)dock filter$(/l) decides which drops are $(l)kept$(); the others are thrown away.$(br)$(li)Harder blocks take longer and cost more power: about 25 FE for dirt, 35 FE for stone, 520 FE for obsidian."
+      "text": "$(li)The $(l:drone_systems/drone_dock)dock filter$(/l) decides which drops are $(l)kept$(); the others are thrown away.$(br)$(li)Harder blocks take longer and cost more power: about 50 FE for dirt, 70 FE for stone, 1,040 FE for obsidian."
     },
     {
       "type": "patchouli:crafting",
@@ -298,7 +298,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It hovers $(l)3 blocks over the mob's head$(), out of reach of swords and claws, and fires once a second: $(l)6 damage a shot$(), 150 FE (every CyberFarm laser costs 25 FE per point of damage). Nothing can hurt the drone, creepers included."
+      "text": "$(li)It hovers $(l)3 blocks over the mob's head$(), out of reach of swords and claws, and fires once a second: $(l)6 damage a shot$(), 300 FE (50 FE per point of damage, twice what the Laser Turret pays). Nothing can hurt the drone, creepers included."
     },
     {
       "type": "patchouli:text",

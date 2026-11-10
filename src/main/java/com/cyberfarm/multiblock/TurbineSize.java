@@ -15,9 +15,9 @@ import net.minecraft.core.Direction;
  * out of every mB.
  */
 public enum TurbineSize implements Multiblock.Shape {
-    SMALL(1, 4, 200, 4, 100),
-    MEDIUM(2, 6, 600, 5, 140),
-    LARGE(3, 8, 1_600, 6, 200);
+    SMALL(1, 4, 200, 10, 100),
+    MEDIUM(2, 6, 600, 16, 140),
+    LARGE(3, 8, 1_600, 25, 200);
 
     private final int half;
     private final int length;

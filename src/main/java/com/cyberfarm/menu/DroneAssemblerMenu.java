@@ -109,4 +109,9 @@ public class DroneAssemblerMenu extends MachineMenu {
     public int getAddonCount() {
         return DroneAssemblerBlockEntity.countAddons(this::slotItem, null);
     }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
+    }
 }

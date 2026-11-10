@@ -1,0 +1,117 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_base"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_port"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/receiver_dish_port",
+        "y": 270
+      }
+    }
+  ]
+}

@@ -5,26 +5,29 @@ import com.cyberfarm.menu.GasTurbineMenu;
 
 import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
 import net.minecraft.world.entity.player.Inventory;
 
 public class GasTurbineScreen extends MachineScreen<GasTurbineMenu> {
-    private static final int TANK_X = 12;
+    private static final int TANK_X = 48;
     private static final int TANK_Y = 17;
     private static final int TANK_HEIGHT = 52;
 
     public GasTurbineScreen(GasTurbineMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 166);
+        flatBackground("gas_turbine");
     }
 
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
         drawTank(graphics, x + TANK_X, y + TANK_Y, TANK_HEIGHT, menu.getTankAmount(), GasTurbineBlockEntity.TANK_CAPACITY, menu.getTankFluid());
         boolean running = menu.getGenerating() > 0;
+        drawSpinner(graphics, x + 22, y + 39, 11, running ? Util.getMillis() / 70.0 : 0.0);
         graphics.text(font, Component.translatable(running ? "gui.cyberfarm.generator.burning" : "gui.cyberfarm.generator.idle"),
-                x + 38, y + 22, running ? WARM : TEXT_DIM, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", menu.getGenerating()), x + 38, y + 34, TEXT, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.biogas", GasTurbineBlockEntity.FE_PER_MB_BIOGAS), x + 38, y + 50, TEXT_DIM, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.methane", GasTurbineBlockEntity.FE_PER_MB_METHANE), x + 38, y + 60, TEXT_DIM, false);
+                x + 73, y + 22, running ? WARM : TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", menu.getGenerating()), x + 73, y + 34, TEXT, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.biogas", GasTurbineBlockEntity.FE_PER_MB_BIOGAS), x + 73, y + 46, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.methane", GasTurbineBlockEntity.FE_PER_MB_METHANE), x + 73, y + 56, TEXT_DIM, false);
     }
 
     @Override

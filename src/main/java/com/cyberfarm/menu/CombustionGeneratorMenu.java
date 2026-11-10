@@ -17,7 +17,7 @@ public class CombustionGeneratorMenu extends MachineMenu {
 
     public CombustionGeneratorMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.COMBUSTION_GENERATOR.get(), containerId, data, access, ModBlocks.COMBUSTION_GENERATOR.get());
-        addMachineSlot(items, 0, 80, 44);
+        addMachineSlot(items, 0, 74, 35);
         addPlayerInventory(inventory, 84);
     }
 

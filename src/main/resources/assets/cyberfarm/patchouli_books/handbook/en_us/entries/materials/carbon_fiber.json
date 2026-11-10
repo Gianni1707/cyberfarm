@@ -15,11 +15,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l)Pyrolysis Oven$() splits $(l)Methane$() into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon onto $(l)String$(): $(l)250 mB of Methane + 1 String -> 1 Carbon Fiber$(), in 4 seconds at $(l)60 FE/t$(). Pipe the methane in from a $(l:generators/methane_extractor)Methane Extractor$(/l) or a gas tank, on its front, back or free side: its top is full. While it works a"
+      "text": "The $(l)Pyrolysis Oven$() splits $(l)Methane$() into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon onto $(l)String$(): $(l)250 mB of Methane + 1 String -> 1 Carbon Fiber$(), in 4 seconds at $(l)120 FE/t$(). The oven takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. Pipe the methane in from a $(l:generators/methane_extractor)Methane$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "shuttle runs along the glowing slit, once per fiber, drawing the fiber behind it; if the shuttle stops, so has the machine.$(br2)So the gas tier is more than power: its methane is the raw material of every advanced frame."
+      "text": "$(l:generators/methane_extractor)Extractor$(/l) or a gas tank, on its front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber, drawing the fiber behind it; if the shuttle stops, so has the machine."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "So the gas tier is more than power: its methane is the raw material of every advanced frame."
     },
     {
       "type": "patchouli:crafting",

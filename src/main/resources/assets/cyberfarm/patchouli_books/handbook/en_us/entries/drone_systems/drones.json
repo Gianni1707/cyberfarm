@@ -32,16 +32,16 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The tooltip of a drone shows its $(l)flight cost$() in FE per tick. It is worked out like this:$(br2)$(l)flight cost = (frame + modules) x (1 + addon percentages)$(), rounded up.$(br)$(li)$(l:drone_systems/drone_frames)Frame$(/l): 2, 3 or 4 FE/t by tier.$(br)$(li)$(l:drone_systems/modules)Modules$(/l): +1 FE/t each (+2 for the Quarry).",
+      "text": "The tooltip of a drone shows its $(l)flight cost$() in FE per tick. It is worked out like this:$(br2)$(l)flight cost = (frame + modules) x (1 + addon percentages)$(), rounded up.$(br)$(li)$(l:drone_systems/drone_frames)Frame$(/l): 4, 6 or 8 FE/t by tier.",
       "title": "Power use"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:drone_systems/addons)Addons$(/l): Speed +10%, Stack +5%, Battery +5% each.$(br)Example: a Basic frame with a Harvester and 2 Speed Addons uses (2 + 1) x 1.2 = 3.6, so $(l)4 FE/t$()."
+      "text": "$(li)$(l:drone_systems/modules)Modules$(/l): +2 FE/t each (+4 for the Quarry, Logger, Taxi, Builder, Guard and Sponge).$(br)$(li)$(l:drone_systems/addons)Addons$(/l): Speed +10%, Stack +5%, Battery +5%, Efficiency -10% each.$(br)Example: a Basic frame with a Harvester and 2 Speed Addons uses (4 + 2) x 1.2 = 7.2, so $(l)8 FE/t$()."
     },
     {
       "type": "patchouli:text",
-      "text": "Jobs cost energy on top of flying (see each $(l:drone_systems/modules)module$(/l)); Fortune adds +25% per level and Silk Touch +50% to that. $(l:drone_systems/addons)Battery Addons$(/l) make longer trips possible.$(br2)Drones cannot be hurt by mobs or by players."
+      "text": "Jobs cost energy on top of flying (see each $(l:drone_systems/modules)module$(/l)); Fortune adds +25% per level, Silk Touch +50% and each Efficiency Addon -10% to that. $(l:drone_systems/addons)Battery Addons$(/l) make longer trips possible.$(br2)Drones cannot be hurt by mobs or by players."
     },
     {
       "type": "patchouli:text",

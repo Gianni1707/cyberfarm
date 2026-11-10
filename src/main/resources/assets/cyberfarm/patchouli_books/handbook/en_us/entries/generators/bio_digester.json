@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:bio_digester",
-      "text": "Digests $(l)Biomass$() into $(l)Biogas$(). It needs no power: just feed it from a $(l:generators/biomass_press)Biomass Press$(/l)."
+      "text": "Digests $(l)Biomass$() into $(l)Biogas$(). It runs on $(l)8 FE/t$(): feed it from a $(l:generators/biomass_press)Biomass Press$(/l) and connect an $(l:cables/energy_conduit)Energy Conduit$(/l) to the machine block. It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
     },
     {
       "type": "patchouli:text",

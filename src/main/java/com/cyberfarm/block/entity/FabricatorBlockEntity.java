@@ -43,7 +43,7 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
     public static final int INPUTS = 3;
     public static final int OUTPUT = 3;
     public static final int TANK_CAPACITY = 8_000;
-    public static final int ENERGY_PER_TICK = 40;
+    public static final int ENERGY_PER_TICK = 50;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 1_000;
 
@@ -136,17 +136,22 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         Recipe recipe = current();
         boolean canRun = open && recipe != null && hasRoomFor(OUTPUT, recipe.result().get())
                 && getStack(OUTPUT).getCount() + recipe.count() <= recipe.output().getMaxStackSize();
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            recipeTime = recipe.time();
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            recipeTime = workTime(recipe.time());
             if (++progress == 1) {
-                level.blockEvent(pos, state.getBlock(), EVENT_START, recipe.time());
+                level.blockEvent(pos, state.getBlock(), EVENT_START, recipeTime);
             }
-            if (progress >= recipe.time()) {
+            if (progress >= recipeTime) {
                 progress = 0;
                 int[] slots = slotsFor(recipe);
                 for (int i = 0; i < slots.length; i++) {

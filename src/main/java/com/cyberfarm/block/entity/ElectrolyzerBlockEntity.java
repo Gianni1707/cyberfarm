@@ -33,7 +33,7 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
     public static final int PROCESS_TIME = 100;
-    public static final int ENERGY_PER_TICK = 40;
+    public static final int ENERGY_PER_TICK = 80;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
 
@@ -49,7 +49,7 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
     }
 
     @Override
@@ -58,11 +58,16 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         boolean canRun = open && getStack(INPUT).is(ALUMINA) && hasRoomFor(OUTPUT, ModItems.ALUMINUM_INGOT.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 ItemStack input = getStack(INPUT);
                 setStack(INPUT, input.copyWithCount(input.getCount() - 1));
@@ -85,7 +90,7 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             default -> 0;
         };
     }

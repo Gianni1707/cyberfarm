@@ -11,11 +11,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Conduits $(l)connect by themselves$() to other conduits and to any block that uses FE, from CyberFarm or from any other mod.$(br)$(li)They $(l)store nothing$(): whatever a generator pushes in goes straight to the machines on the network, which $(l)take turns$() so none is left without power."
+      "text": "$(li)Conduits $(l)connect by themselves$() to other conduits and to any block that uses FE, from CyberFarm or from any other mod.$(br)$(li)They $(l)store nothing$(): whatever a generator pushes in goes straight to the machines on the network, which $(l)take turns$() so none is left without power.$(br)$(li)From each"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)From each generator or battery pushing into it, up to $(l)2,000 FE/t$() enters the network through a basic conduit, $(l)16,000$() through an Advanced one and $(l)128,000$() through an Elite one. A Large Steam Turbine needs Advanced conduits at its ports."
+      "text": "$(li)generator or battery pushing into it, up to $(l)2,000 FE/t$() enters the network through a basic conduit, $(l)16,000$() through an Advanced one and $(l)128,000$() through an Elite one. A Medium Steam Turbine needs Advanced conduits at its ports, a Large one Elite conduits."
     },
     {
       "type": "patchouli:text",

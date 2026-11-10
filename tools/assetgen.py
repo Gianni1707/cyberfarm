@@ -19,7 +19,7 @@ FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module", "sponge_module", "tank_module",
-    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
+    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon", "efficiency_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
@@ -27,6 +27,7 @@ FLAT_ITEMS = [
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
     "sulfur", "biomass", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
     "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
+    "range_module_i", "range_module_ii", "range_module_iii", "infinity_range_module",
 ]
 
 
@@ -437,7 +438,7 @@ def blocks():
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine",
              "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
-             "supply_terminal", "laser_turret"]
+             "supply_terminal", "laser_turret", "transmitter_dish", "receiver_dish"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             model = f"{name}_inventory" if name == "laser_turret" else name
@@ -748,6 +749,17 @@ def shaped(name, pattern, key, count=1, category="misc"):
     })
 
 
+def dish_recipes(aluminum, advanced_circuit, elite_circuit):
+    """The dishes (Tier 2, Advanced Circuit) and the Transmitter Dish's range modules, each built on the one before."""
+    copper, rod = "minecraft:copper_ingot", "minecraft:lightning_rod"
+    shaped("transmitter_dish", ["AXA", "ADA", "CCC"], {"A": aluminum, "X": rod, "D": advanced_circuit, "C": copper})
+    shaped("receiver_dish", ["AXA", "CDC"], {"A": aluminum, "X": rod, "D": advanced_circuit, "C": copper})
+    shaped("range_module_i", ["NXN", "RCR"], {"N": "minecraft:gold_nugget", "X": "minecraft:amethyst_shard", "R": "minecraft:redstone", "C": advanced_circuit})
+    shaped("range_module_ii", ["GXG", "RMR"], {"G": "minecraft:gold_ingot", "X": "minecraft:ender_pearl", "R": "minecraft:redstone", "M": f"{NS}:range_module_i"})
+    shaped("range_module_iii", ["DXD", "EME"], {"D": "minecraft:diamond", "X": "minecraft:ender_eye", "E": elite_circuit, "M": f"{NS}:range_module_ii"})
+    shaped("infinity_range_module", ["FXF", "EME"], {"F": f"{NS}:fusion_crystal", "X": "minecraft:echo_shard", "E": elite_circuit, "M": f"{NS}:range_module_iii"})
+
+
 def recipes():
     iron, copper, gold, redstone = "minecraft:iron_ingot", "minecraft:copper_ingot", "minecraft:gold_ingot", "minecraft:redstone"
     core, rotor, cell = f"{NS}:drone_core", f"{NS}:rotor", f"{NS}:battery_cell"
@@ -806,6 +818,8 @@ def recipes():
     addon("fortune_addon", "minecraft:emerald")
     addon("silk_touch_addon", "minecraft:diamond")
     addon("anchor_addon", "minecraft:ender_eye")
+    addon("efficiency_addon", "minecraft:comparator")
+    dish_recipes(aluminum, advanced_circuit, elite_circuit)
 
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": circuit, "C": copper, "T": "minecraft:crafting_table"})

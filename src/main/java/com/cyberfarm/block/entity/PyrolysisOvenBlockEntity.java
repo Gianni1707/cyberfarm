@@ -34,7 +34,7 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int METHANE_PER_FIBER = 250;
     public static final int PROCESS_TIME = 80;
-    public static final int ENERGY_PER_TICK = 60;
+    public static final int ENERGY_PER_TICK = 120;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 1_000;
 
@@ -52,7 +52,12 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
@@ -60,8 +65,8 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
         boolean open = advanceStage(level, pos, state);
         boolean canRun = open && getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
                 && hasRoomFor(OUTPUT, ModItems.CARBON_FIBER.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 methane.drain(METHANE_PER_FIBER);
                 ItemStack string = getStack(STRING);
@@ -90,7 +95,7 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> methane.amount();
             case 3 -> methane.fluidCode();
             default -> 0;

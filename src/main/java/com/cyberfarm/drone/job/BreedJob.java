@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * not grow without end. The food is whatever the animal eats, modded animals and foods included.
  */
 public class BreedJob extends DroneJob {
-    public static final int ENERGY_COST = 15;
+    public static final int ENERGY_COST = 30;
     /** Animals of one kind in the work area, babies included, past which the drone stops breeding them. */
     public static final int MAX_HERD = 16;
     /** Food loaded from the dock per trip. */

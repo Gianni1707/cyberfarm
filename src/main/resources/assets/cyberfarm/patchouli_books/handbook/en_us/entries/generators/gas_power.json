@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), about 6 mB/t, 3 FE per mB, 6 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 25 mB/t, 8 FE per mB, 10 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
+      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), about 6 mB/t, 5 FE per mB, 9 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 25 mB/t, 12 FE per mB, 15 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
     },
     {
       "type": "patchouli:text",
@@ -28,6 +28,10 @@
     {
       "type": "patchouli:text",
       "text": "Both gases are $(l)standard fluids$(): tanks, pipes and machines of other mods that handle fluids can store and move them too. They are tagged forge:gaseous, forge:biogas and forge:methane."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Biomass Press and the Bio-Digester draw 8 FE/t each, so the first power has to come from elsewhere, such as a $(l:generators/combustion_generator)Combustion Generator$(/l). At full speed a digester and one press cost 16 FE/t together, while their gas gives about 31 FE/t in a Gas Turbine, or about 56 in a Steam Engine."
     },
     {
       "type": "patchouli:text",

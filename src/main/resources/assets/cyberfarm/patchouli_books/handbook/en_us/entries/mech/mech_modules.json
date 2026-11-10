@@ -14,15 +14,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(item)Mech Jet Module$(): Back, Two wings unfold segment by segment, two nozzles light up, $(l)Flight$(): hold jump in the air to climb, sneak to dive, neither to glide. 60 FE/t in the air"
+      "text": "$(li)$(item)Mech Jet Module$(): Back, Two wings unfold segment by segment, two nozzles light up, $(l)Flight$(): hold jump in the air to climb, sneak to dive, neither to glide. 120 FE/t in the air"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(item)Mech Drill Module$(): Right arm, The $(l)R$() key slides a drill out under the hand; it turns while on, Digs twice as fast, $(l)3x3$(), and gets the drops of any tier. 20 FE per extra block"
+      "text": "$(li)$(item)Mech Drill Module$(): Right arm, The $(l)R$() key slides a drill out under the hand; it turns while on, Digs twice as fast, $(l)3x3$(), and gets the drops of any tier. 40 FE per extra block"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(item)Mech Blade Module$(): Left arm, The $(l)G$() key slides a glowing blade out of the forearm, $(l)18$() extra damage a blow and $(l)8$() to everything near the target. 80 FE a blow$(br)$(li)$(item)Mech Armor Module$(): Trunk, Plates close onto the shoulders, chest and thighs, The mech takes $(l)40%$() less damage"
+      "text": "$(li)$(item)Mech Blade Module$(): Left arm, The $(l)G$() key slides a glowing blade out of the forearm, $(l)18$() extra damage a blow and $(l)8$() to everything near the target. 160 FE a blow$(br)$(li)$(item)Mech Armor Module$(): Trunk, Plates close onto the shoulders, chest and thighs, The mech takes $(l)40%$() less damage"
     },
     {
       "type": "patchouli:text",

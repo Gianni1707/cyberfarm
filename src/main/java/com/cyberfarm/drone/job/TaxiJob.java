@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
  * The route climbs above the terrain first, flies straight, then descends onto the destination.
  */
 public class TaxiJob extends DroneJob {
-    public static final int TRIP_COST = 50;
+    public static final int TRIP_COST = 100;
     private static final int SLOW_FALL_TICKS = 200;
 
     private enum Phase { CLIMB, CRUISE, DESCEND }

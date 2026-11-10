@@ -26,11 +26,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:$(br)$(li)$(l)Basic$() carries all the gas power and a Small Steam Turbine (800 FE/t).$(br)$(li)$(l)Advanced$() carries a Large Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t)."
+      "text": "As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:$(br)$(li)$(l)Basic$() carries all the gas power and a Small Steam Turbine (2,000 FE/t).$(br)$(li)$(l)Advanced$() carries a Medium Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t)."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Elite$() joins several turbines into one line.$(br)Cables $(l)store nothing$(): whatever comes in goes straight to the blocks on the other end. A network can be up to 1,024 cables long. Different kinds never connect to each other, so they can run side by side."
+      "text": "$(li)$(l)Elite$() carries a Large Steam Turbine (40,000 FE/t) and joins several turbines into one line."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Cables $(l)store nothing$(): whatever comes in goes straight to the blocks on the other end. A network can be up to 1,024 cables long. Different kinds never connect to each other, so they can run side by side."
     },
     {
       "type": "patchouli:text",
@@ -43,7 +47,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Upgrading$(): 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds and a uranium ingot make 8 Elite ones."
+      "text": "$(l)Upgrading$(): 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds and a uranium ingot make 8 Elite ones.$(br2)Where a cable can't go, $(l:cables/dish_transmission)Dish Transmission$(/l) sends FE through the air."
     }
   ],
   "priority": true

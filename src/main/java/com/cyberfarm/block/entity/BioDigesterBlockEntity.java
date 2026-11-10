@@ -24,11 +24,14 @@ import com.cyberfarm.port.ItemResource;
 
 /**
  * Bio-Digester: digests Biomass, which the Biomass Press makes of organic waste, into Biogas,
- * then pushes it into adjacent pipes and tanks. Needs no power.
+ * then pushes it into adjacent pipes and tanks.
  */
 public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int PROCESS_TIME = 40;
+    public static final int ENERGY_PER_TICK = 8;
+    private static final int CAPACITY = 4_000;
+    private static final int MAX_INPUT = 100;
     public static final int MB_PER_BIOMASS = 250;
     private static final int OUTPUT_PER_SIDE = 200;
     private static final int OPEN_TICKS = 60;
@@ -40,7 +43,7 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     private int syncedTank = -1;
 
     public BioDigesterBlockEntity(BlockPos pos, BlockState state) {
-        super(ModBlockEntities.BIO_DIGESTER.get(), pos, state, 1, 0, 0, 0);
+        super(ModBlockEntities.BIO_DIGESTER.get(), pos, state, 1, CAPACITY, MAX_INPUT, 0);
     }
 
     public GasTank getTank() {
@@ -49,7 +52,7 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
     }
 
     @Override
@@ -58,11 +61,17 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         ItemStack input = getStack(0);
-        if (open && input.is(ModItems.BIOMASS.get()) && tank.amount() + MB_PER_BIOMASS <= tank.capacity()) {
-            if (++progress >= PROCESS_TIME) {
+        boolean canRun = open && input.is(ModItems.BIOMASS.get()) && tank.amount() + MB_PER_BIOMASS <= tank.capacity();
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 input.shrink(1);
                 setStack(0, input);
@@ -70,7 +79,7 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
                 level.playSound(null, pos, ModSounds.BIO_DIGESTER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
             setChanged();
-        } else if (progress != 0) {
+        } else if (!canRun && progress != 0) {
             progress = 0;
             setChanged();
         }
@@ -95,7 +104,7 @@ public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> tank.amount();
             case 3 -> tank.fluidCode();
             default -> 0;

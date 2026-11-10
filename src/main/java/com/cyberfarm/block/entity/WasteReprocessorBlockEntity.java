@@ -32,7 +32,7 @@ public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
     public static final int URANIUM_OUTPUT = 2;
     public static final int ISOTOPE_OUTPUT = 3;
     public static final int PROCESS_TIME = 200;
-    public static final int ENERGY_PER_TICK = 40;
+    public static final int ENERGY_PER_TICK = 160;
     private static final int CAPACITY = 40_000;
     private static final int MAX_INPUT = 1_000;
     /** One treated rod in this many gives back an Uranium Ingot. */
@@ -48,7 +48,7 @@ public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
     }
 
     @Override
@@ -57,12 +57,17 @@ public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         boolean canRun = open && Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
                 && hasRoomFor(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get()) && hasRoomFor(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 ItemStack input = getStack(INPUT);
                 setStack(INPUT, input.copyWithCount(input.getCount() - 1));
@@ -92,7 +97,7 @@ public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             default -> 0;
         };
     }

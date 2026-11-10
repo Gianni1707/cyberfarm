@@ -14,11 +14,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)8 damage a shot, one shot a second$(): a zombie lasts three shots.$(br)$(li)A shot costs $(l)200 FE$() from its 20,000 FE buffer: $(l)10 FE/t$() while it fights, none while nothing is in sight, so one $(l:generators/combustion_generator)Combustion Generator$(/l) keeps four turrets firing."
+      "text": "$(li)$(l)8 damage a shot, one shot a second$(): a zombie lasts three shots.$(br)$(li)A shot costs $(l)200 FE$() from its 20,000 FE buffer: $(l)10 FE/t$() while it fights, none while nothing is in sight, so one $(l:generators/combustion_generator)Combustion Generator$(/l) keeps six turrets firing."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Every CyberFarm laser costs $(l)25 FE per point of damage$(), the turret and the $(l:drone_systems/modules)Guard Module$(/l) alike.$(br)$(li)It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.$(br)$(li)It shoots $(l)hostile mobs only$(). Players, animals, villagers and golems are safe,"
+      "text": "$(li)The turret's laser costs $(l)25 FE per point of damage$(); the $(l:drone_systems/modules)Guard Module$(/l)'s, fired in flight, costs twice that.$(br)$(li)It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.$(br)$(li)It shoots $(l)hostile mobs only$(). Players, animals, villagers and golems are safe,"
     },
     {
       "type": "patchouli:text",

@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8$(br)$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()"
+      "text": "$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8$(br)$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()$(br)$(li)$(item)Efficiency Addon$()"
     },
     {
       "type": "patchouli:text",
@@ -22,11 +22,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Anchor Addon$(): Its dock keeps the drone's chunks loaded, max 1, 4 FE/t per chunk, from the dock$(br)$(l)Fortune and Silk Touch cannot be combined$(), just like the enchantments.$(br2)Without Stack Addons a Transport drone carries only $(l)16 items$() per trip."
+      "text": "$(li)$(l)Anchor Addon$(): Its dock keeps the drone's chunks loaded, max 1, 4 FE/t per chunk, from the dock$(br)$(li)$(l)Efficiency Addon$(): Saves power in flight and on every job, max 3, -10% flight cost and -10% energy per job each"
     },
     {
       "type": "patchouli:text",
-      "text": "The percentages add up: see how the total is worked out on the $(l:drone_systems/drones)Using Drones$(/l) page."
+      "text": "$(l)Fortune and Silk Touch cannot be combined$(), just like the enchantments.$(br2)Without Stack Addons a Transport drone carries only $(l)16 items$() per trip.$(br2)The percentages add up: see how the total is worked out on the $(l:drone_systems/drones)Using Drones$(/l) page."
     },
     {
       "type": "patchouli:text",
@@ -42,6 +42,19 @@
       "text": "number of chunks, or switch anchoring off, in the drones section of the CyberFarm config."
     },
     {
+      "type": "patchouli:text",
+      "text": "The Speed, Efficiency and Battery Addons also fit ten machines: the $(l:generators/biomass_press)Biomass Press$(/l), $(l:generators/bio_digester)Bio-Digester$(/l), $(l:generators/acid_synthesizer)Acid Synthesizer$(/l), $(l:nuclear/coolant_mixer)Coolant Mixer$(/l), $(l:materials/aluminum)Electrolyzer$(/l), $(l:materials/carbon_fiber)Pyrolysis Oven$(/l), $(l:materials/circuits)Fabricator$(/l), $(l:mech/mech_core)Crystallizer$(/l), $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l) and $(l:drone_systems/drone_assembler)Drone Assembler$(/l). Each has $(l)3 addon slots$() on a tab on the right edge of its GUI.",
+      "title": "In machines"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A slot holds a stack of one addon type, and pipes and hoppers never reach them. The Water Pump has no GUI and takes none.$(br)$(li)$(l)Speed Addon$(): +50% speed and +80% FE/t each, max 4$(br)$(li)$(l)Efficiency Addon$(): -20% FE per operation each, max 3"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Battery Addon$(): +100% energy buffer each, max 4$(br)They stack: 4 Speed Addons make a machine $(l)3 times as fast$() for about 40% more FE per operation, and two Efficiency Addons more than win that back. A faster machine also takes proportionally more FE per tick from its cables."
+    },
+    {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:speed_addon",
       "recipe2": "cyberfarm:stack_addon"
@@ -49,11 +62,12 @@
     {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:battery_addon",
-      "recipe2": "cyberfarm:fortune_addon"
+      "recipe2": "cyberfarm:efficiency_addon"
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "cyberfarm:silk_touch_addon"
+      "recipe": "cyberfarm:fortune_addon",
+      "recipe2": "cyberfarm:silk_touch_addon"
     },
     {
       "type": "patchouli:crafting",
@@ -61,11 +75,12 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:speed_addon": 9,
-    "cyberfarm:stack_addon": 9,
-    "cyberfarm:battery_addon": 10,
-    "cyberfarm:fortune_addon": 10,
-    "cyberfarm:silk_touch_addon": 11,
-    "cyberfarm:anchor_addon": 12
+    "cyberfarm:speed_addon": 12,
+    "cyberfarm:stack_addon": 12,
+    "cyberfarm:battery_addon": 13,
+    "cyberfarm:fortune_addon": 14,
+    "cyberfarm:silk_touch_addon": 14,
+    "cyberfarm:anchor_addon": 15,
+    "cyberfarm:efficiency_addon": 13
   }
 }

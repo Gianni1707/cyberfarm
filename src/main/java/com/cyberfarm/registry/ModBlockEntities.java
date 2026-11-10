@@ -95,6 +95,10 @@ public class ModBlockEntities {
             () -> PortTypes.blockEntity(BiomassPressBlockEntity::new, Set.of(ModBlocks.BIOMASS_PRESS.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<ElectrolyzerBlockEntity>> ELECTROLYZER = BLOCK_ENTITIES.register("electrolyzer",
             () -> PortTypes.blockEntity(ElectrolyzerBlockEntity::new, Set.of(ModBlocks.ELECTROLYZER.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.cyberfarm.block.entity.TransmitterDishBlockEntity>> TRANSMITTER_DISH = BLOCK_ENTITIES.register("transmitter_dish",
+            () -> PortTypes.blockEntity(com.cyberfarm.block.entity.TransmitterDishBlockEntity::new, Set.of(ModBlocks.TRANSMITTER_DISH.get())));
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.cyberfarm.block.entity.ReceiverDishBlockEntity>> RECEIVER_DISH = BLOCK_ENTITIES.register("receiver_dish",
+            () -> PortTypes.blockEntity(com.cyberfarm.block.entity.ReceiverDishBlockEntity::new, Set.of(ModBlocks.RECEIVER_DISH.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<PyrolysisOvenBlockEntity>> PYROLYSIS_OVEN = BLOCK_ENTITIES.register("pyrolysis_oven",
             () -> PortTypes.blockEntity(PyrolysisOvenBlockEntity::new, Set.of(ModBlocks.PYROLYSIS_OVEN.get())));

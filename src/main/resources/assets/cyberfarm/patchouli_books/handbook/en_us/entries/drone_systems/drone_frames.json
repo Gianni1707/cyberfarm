@@ -10,11 +10,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Basic Drone Frame$(): 1, 20,000 FE, 80% (2.4 blocks/s), 1, 4, 2 FE/t$(br)$(li)$(l)Advanced Drone Frame$(): 2, 60,000 FE, 130% (3.9 blocks/s), 2, 8, 3 FE/t$(br)$(li)$(l)Elite Drone Frame$(): 3, 150,000 FE, 160% (4.8 blocks/s), 3, 16, 4 FE/t"
+      "text": "$(li)$(l)Basic Drone Frame$(): 1, 40,000 FE, 80% (2.4 blocks/s), 1, 4, 4 FE/t$(br)$(li)$(l)Advanced Drone Frame$(): 2, 120,000 FE, 130% (3.9 blocks/s), 2, 8, 6 FE/t$(br)$(li)$(l)Elite Drone Frame$(): 3, 300,000 FE, 160% (4.8 blocks/s), 3, 16, 8 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Mini Drone Frame$(): 1, 10,000 FE, 100% (3 blocks/s), 1, 2, 1 FE/t"
+      "text": "$(li)$(l)Mini Drone Frame$(): 1, 20,000 FE, 100% (3 blocks/s), 1, 2, 2 FE/t"
     },
     {
       "type": "patchouli:text",

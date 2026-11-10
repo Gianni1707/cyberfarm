@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "that sits where a frame goes.$(br)$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
+      "text": "that sits where a frame goes.$(br)$(li)$(l)Biogas$(): 5 FE per mB, 100 FE/t$(br)$(li)$(l)Methane$(): 12 FE per mB, 240 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
     },
     {
       "type": "patchouli:text",

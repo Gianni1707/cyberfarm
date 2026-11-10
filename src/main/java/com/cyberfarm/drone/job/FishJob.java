@@ -30,7 +30,7 @@ import org.jspecify.annotations.Nullable;
  * flies home when it is full.
  */
 public class FishJob extends DroneJob {
-    public static final int ENERGY_COST = 10;
+    public static final int ENERGY_COST = 20;
     /** A catch takes this long at random, about as long as a fishing rod waits. */
     private static final int MIN_WAIT = 100;
     private static final int MAX_WAIT = 300;

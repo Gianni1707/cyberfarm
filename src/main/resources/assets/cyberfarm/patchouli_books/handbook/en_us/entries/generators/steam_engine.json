@@ -48,7 +48,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Pipe Biogas or Methane into the boiler. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 6, 270 FE/t$(br)$(li)$(l)Methane$(): 10, 450 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
+      "text": "Pipe Biogas or Methane into the boiler. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 9, 405 FE/t$(br)$(li)$(l)Methane$(): 15, 675 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
       "title": "Fuel and power"
     },
     {

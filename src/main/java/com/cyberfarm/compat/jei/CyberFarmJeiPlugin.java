@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.client.screen.DroneDockScreen;
+import com.cyberfarm.client.screen.MachineScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
@@ -45,6 +46,15 @@ public class CyberFarmJeiPlugin implements IModPlugin {
             @Override
             public List<Rect2i> getGuiExtraAreas(DroneDockScreen screen) {
                 return screen.sideAreas();
+            }
+        });
+        // The addon tab outside the right edge of the machines that take addons
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        Class<MachineScreen<?>> machineScreens = (Class) MachineScreen.class;
+        registration.addGuiContainerHandler(machineScreens, new IGuiContainerHandler<MachineScreen<?>>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(MachineScreen<?> screen) {
+                return screen.addonArea();
             }
         });
     }

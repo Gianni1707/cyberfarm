@@ -27,6 +27,7 @@ public class MufflerScreen extends MachineScreen<MufflerMenu> {
 
     public MufflerScreen(MufflerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, ROW_Y + Category.values().length * (ROW_HEIGHT + ROW_GAP) + 16);
+        flatBackground("muffler");
         showInventory = false;
     }
 
@@ -85,7 +86,7 @@ public class MufflerScreen extends MachineScreen<MufflerMenu> {
             graphics.fill(sx - 1, sy - 1, sx + SWITCH_WIDTH + 1, sy + SWITCH_HEIGHT + 1, SLOT_BORDER);
             graphics.fill(sx, sy, sx + SWITCH_WIDTH, sy + SWITCH_HEIGHT, on ? ACCENT_DIM : SLOT_BG);
             int knob = on ? sx + SWITCH_WIDTH - SWITCH_HEIGHT : sx;
-            graphics.fill(knob, sy, knob + SWITCH_HEIGHT, sy + SWITCH_HEIGHT, on ? ACCENT : PANEL_LIGHT);
+            graphics.fill(knob, sy, knob + SWITCH_HEIGHT, sy + SWITCH_HEIGHT, on ? ACCENT : STEEL_DARK);
         }
         Component range = Component.translatable("gui.cyberfarm.muffler.range", ClientConfig.MUFFLER_RANGE.get());
         graphics.text(font, range, x + (imageWidth - font.width(range)) / 2, y + imageHeight - 12, TEXT_DIM, false);

@@ -784,8 +784,8 @@ def glasshouse(s):
 
 def biogas_shed(s):
     """Tier II: the biogas shed east of the glasshouse. A Transport drone drops the harvest in the
-    chest, a hopper feeds the Bio-Digester and the biogas is piped to a Gas Tank and on, out of the
-    plot, to the Power Station's turbines."""
+    chest, a hopper feeds the Biomass Press, its nozzle the Bio-Digester, and the biogas is piped to a
+    Gas Tank and on, out of the plot, to the Power Station's turbines. A generator powers press and digester."""
     x0, x1, z0, z1 = 27, 33, 5, 12
     s.fill(x0, 0, z0, x1, 0, z1, state("smooth_stone"))
     walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=ACCENT)
@@ -812,6 +812,12 @@ def biogas_shed(s):
     s.set(32, 1, 10, GAS_PIPE)
     s.set(33, 1, 10, GAS_PIPE)
     s.set(34, 1, 10, GAS_PIPE)
+    # Press and digester run on power: their own generator, fed from a chest like the Power Station's
+    s.set(30, 1, 11, machine("combustion_generator"))
+    s.set(30, 2, 11, state("hopper", facing="down", enabled="true"))
+    s.set(30, 3, 11, state("chest", facing="north", type="single", waterlogged="false"))
+    s.set(30, 1, 10, CONDUIT)
+    s.set(29, 1, 10, CONDUIT)
     # Composters and spare sacks by the door
     s.set(28, 1, 6, state("composter", level="4"))
     s.set(28, 1, 11, state("hay_block", axis="y"))

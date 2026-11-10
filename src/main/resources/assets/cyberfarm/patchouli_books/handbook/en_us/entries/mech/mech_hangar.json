@@ -98,11 +98,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "onto its shoulders. While it stands there, empty:$(br)$(li)it is $(l)charged$() at up to $(l)2,000 FE/t$() from the console's own battery (1,000,000 FE), which you fill with $(l:cables/energy_conduit)Energy Conduits$(/l) or any mod's cables;"
+      "text": "onto its shoulders. While it stands there, empty:$(br)$(li)it is $(l)charged$() at up to $(l)4,000 FE/t$() from the console's own battery (1,000,000 FE), which you fill with $(l:cables/energy_conduit)Energy Conduits$(/l) or any mod's cables;"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)it is $(l)repaired$(), 1 point of integrity every half second for 200 FE. A mech that $(l)shut down$() comes back on once it is fully repaired.$(br)You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you in just as it does outside."
+      "text": "$(li)it is $(l)repaired$(), 1 point of integrity every half second for 400 FE. A mech that $(l)shut down$() comes back on once it is fully repaired.$(br)You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you in just as it does outside."
     },
     {
       "type": "patchouli:text",

@@ -24,7 +24,7 @@ public class CoolantMixerMenu extends MachineMenu {
 
     public CoolantMixerMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.COOLANT_MIXER.get(), containerId, data, access, ModBlocks.COOLANT_MIXER.get());
-        addMachineSlot(items, 0, 62, 35);
+        addMachineSlot(items, 0, 74, 35);
         addPlayerInventory(inventory, 84);
     }
 
@@ -47,5 +47,10 @@ public class CoolantMixerMenu extends MachineMenu {
 
     public int getOutputFluid() {
         return extra(5);
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

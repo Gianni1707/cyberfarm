@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Presses $(l)organic waste$() into $(l)Biomass$(), the solid mash a $(l:generators/bio_digester)Bio-Digester$(/l) turns into Biogas. It needs no power, but it needs a $(l:generators/methane_extractor)Cyber Frame Block$(/l) above it: with one there it assembles into a press two blocks tall, and only then works."
+      "text": "Presses $(l)organic waste$() into $(l)Biomass$(), the solid mash a $(l:generators/bio_digester)Bio-Digester$(/l) turns into Biogas. It runs on $(l)8 FE/t$() and needs a $(l:generators/methane_extractor)Cyber Frame Block$(/l) above it: with one there it assembles into a press two blocks tall, and only then works. It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
     },
     {
       "type": "patchouli:text",
@@ -18,7 +18,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Each item takes 2 seconds and gives a $(item)Biomass$() with the chance a composter would take it: a cake always gives one, a seed only sometimes, and rotten flesh 4 times out of 5."
+      "text": "$(li)$(l:cables/energy_conduit)Energy Conduits$(/l) connect to the machine block. Without power it waits and keeps its progress.$(br)$(li)Each item takes 2 seconds and gives a $(item)Biomass$() with the chance a composter would take it: a cake always gives one, a seed only sometimes, and rotten flesh 4 times out of 5."
     },
     {
       "type": "patchouli:text",

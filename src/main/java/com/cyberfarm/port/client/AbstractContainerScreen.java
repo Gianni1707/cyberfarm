@@ -71,4 +71,13 @@ public abstract class AbstractContainerScreen<T extends AbstractContainerMenu>
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         return super.mouseClicked(event.x(), event.y(), event.button());
     }
+
+    @Override
+    public boolean keyPressed(int key, int scancode, int modifiers) {
+        return keyPressed(new KeyEvent(key, scancode, modifiers));
+    }
+
+    public boolean keyPressed(KeyEvent event) {
+        return super.keyPressed(event.key(), event.scancode(), event.modifiers());
+    }
 }

@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:drone_dock",
-      "text": "The home base of a drone. Each dock hosts $(l)one drone$() and:$(br)$(li)$(l)charges$() it (up to 500 FE/t) from its own 100,000 FE buffer;$(br)$(li)$(l)stores$() the harvest in 9 slots;"
+      "text": "The home base of a drone. Each dock hosts $(l)one drone$() and:$(br)$(li)$(l)charges$() it (up to 1,000 FE/t) from its own 100,000 FE buffer;$(br)$(li)$(l)stores$() the harvest in 9 slots;"
     },
     {
       "type": "patchouli:text",

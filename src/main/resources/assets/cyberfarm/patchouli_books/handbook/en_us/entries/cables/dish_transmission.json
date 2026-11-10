@@ -1,0 +1,70 @@
+{
+  "name": "Dish Transmission",
+  "icon": "cyberfarm:transmitter_dish",
+  "category": "cyberfarm:cables",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Transmitter Dish$()$(br)$(li)$(item)Receiver Dish$()$(br)$(li)$(item)Range Module I$()$(br)$(li)$(item)Range Module II$()$(br)$(li)$(item)Range Module III$()$(br)$(li)$(item)Infinity Range Module$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Dishes send $(l)FE through the air$(), where a conduit can't go. There is no beam: you can tell a $(l)Transmitter Dish$() is working because it turns to a receiver and $(l)holds still$() while it sends, and a $(l)Receiver Dish$() is getting power because the rings of its dish $(l)light up$() from the rim to the centre."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It is a small multiblock: place it with $(l)three Cyber Frames$(), to its right, behind it and in the corner between, and the dish unfolds on its turret over a 2x2 base.$(br)$(li)Feed it FE with $(l:cables/energy_conduit)Energy Conduits$(/l) on the dish block.",
+      "title": "Transmitter Dish"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Each Transmitter Dish has $(l)one network$(). In its GUI you give it a $(l)name$() and a $(l)colour$(), which lights the indicator on both dishes.$(br)$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It serves up to $(l)4 receivers in turn$(): it turns to one, sends, then moves to the next. The signal passes through blocks, but the receiver's chunk must be loaded.$(br)$(li)A tenth of the FE is $(l)lost on the way$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A small multiblock two blocks tall: put $(l)a Cyber Frame on top$() of it and its dish unfolds.$(br)$(li)Its GUI lists the networks it can reach, with their colour, distance (or dimension) and seats taken, for example \"2/4\". Click one to link; a full network is greyed out.",
+      "title": "Receiver Dish"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It gives the FE it receives to the blocks and conduits around it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Transmitter Dish has one module slot. The module sets how far it reaches and how much FE per tick it sends in all, shared among its receivers.$(br)$(li)$(l)None$(): 32 blocks, 2,000$(br)$(li)$(l)Range Module I$(): 128 blocks, 8,000$(br)$(li)$(l)Range Module II$(): 512 blocks, 32,000",
+      "title": "Range Modules"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Range Module III$(): 2,048 blocks, 128,000$(br)$(li)$(l)Infinity Range Module$(): Unlimited, into other dimensions, Unlimited$(br)With a receiver in another dimension, both dishes point $(l)straight up at the sky$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:transmitter_dish",
+      "recipe2": "cyberfarm:receiver_dish"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:range_module_i",
+      "recipe2": "cyberfarm:range_module_ii"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:range_module_iii",
+      "recipe2": "cyberfarm:infinity_range_module"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:transmitter_dish": 9,
+    "cyberfarm:receiver_dish": 9,
+    "cyberfarm:range_module_i": 10,
+    "cyberfarm:range_module_ii": 10,
+    "cyberfarm:range_module_iii": 11,
+    "cyberfarm:infinity_range_module": 11
+  }
+}

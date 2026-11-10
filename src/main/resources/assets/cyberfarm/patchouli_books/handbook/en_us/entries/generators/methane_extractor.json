@@ -97,11 +97,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 25 mB/t, 200 FE/t"
+      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 25 mB/t, 300 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Other monsters$(): 12 mB/t, 96 FE/t$(br)$(li)$(l)Animals$(): 4 mB/t, 32 FE/t$(br)A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
+      "text": "$(li)$(l)Other monsters$(): 12 mB/t, 144 FE/t$(br)$(li)$(l)Animals$(): 4 mB/t, 48 FE/t$(br)A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
     },
     {
       "type": "patchouli:crafting",

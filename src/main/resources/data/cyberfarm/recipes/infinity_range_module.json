@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "F": {
+      "item": "cyberfarm:fusion_crystal"
+    },
+    "X": {
+      "item": "minecraft:echo_shard"
+    },
+    "E": {
+      "item": "cyberfarm:elite_circuit"
+    },
+    "M": {
+      "item": "cyberfarm:range_module_iii"
+    }
+  },
+  "pattern": [
+    "FXF",
+    "EME"
+  ],
+  "result": {
+    "item": "cyberfarm:infinity_range_module"
+  }
+}

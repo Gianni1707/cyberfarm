@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.jspecify.annotations.Nullable;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,6 +33,13 @@ public final class GuiGraphicsExtractor {
 
     public GuiGraphics vanilla() {
         return graphics;
+    }
+
+    /** 26.x blit(RenderPipelines.GUI_TEXTURED, ...): a whole texture file, blended over what is under it. */
+    public void blit(ResourceLocation texture, int x, int y, float u, float v, int width, int height, int textureWidth, int textureHeight) {
+        RenderSystem.enableBlend();
+        graphics.blit(texture, x, y, u, v, width, height, textureWidth, textureHeight);
+        RenderSystem.disableBlend();
     }
 
     public void fill(int x0, int y0, int x1, int y1, int color) {

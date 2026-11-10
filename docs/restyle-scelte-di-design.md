@@ -248,6 +248,10 @@ Bocciate: "sagoma grande", cartuccia scura, 32x32 ("troppo Faithful": pixel più
 
 Direzione "sentinelle in orbita", scelta fra tre (bocciate le stazioni di relè ferme e la corona che gira): un drone per colonna esce dalla culla in cima e orbita il cristallo, grande 1,5 volte i mini droni perché a 8 blocchi si veda. Il raggio parte dal drone, non più dal pilone.
 
+Onde e respiro: in gioco i droni sembravano "tenuti tramite un filo", quindi il raggio è diventato onde. Bocciate quattro combinazioni complete di scudo, onde e core; l'utente ha chiesto invece che "i droni emettono delle onde che stabilizzano il core" e che il core "respira" allargandosi e chiudendosi "ma senza dissezionarsi". Niente fessure né pannelli: il cristallo cambia solo scala, e con il guscio la dimensione di prima è il massimo. Tre anelli per drone arrivano mentre si chiude, un'onda corre lungo l'orbita per la salita e discesa, e tutto segue l'orbita, così da instabile va a strappi.
+
+Scudo: chiesto all'inizio per distinguere le sentinelle dagli altri droni, provato come bolla, piastre, aloni e gabbia, poi tolto dall'utente che ha cambiato idea. Senza scudo l'orbita resta com'era, solo un po' più alta per non scendere contro il cristallo.
+
 Fusto delle colonne: a croce con quattro spigoli di luce continui e un impulso che sale, perché la colonna si legga come una cosa sola. Bocciati la scatola scura con due fasce menta ripetute a ogni blocco; scartati il traliccio e il dissipatore ad alette, che ripetono un motivo per blocco.
 
 ## Biomass Press e Biomass
@@ -255,7 +259,7 @@ Fusto delle colonne: a croce con quattro spigoli di luce continui e un impulso c
 Parte da una segnalazione degli amici che hanno provato la mod: il Bio-Digester deve produrre qualcosa di fisico, perché la biomassa che diventa subito liquida non ha senso.
 
 - **Due macchine:** "la macchina a parte deve creare la biomass e poi nel digester diventerà liquida". Scarti → Biomass Press → Biomass, oggetto vero → Bio-Digester → Biogas. Il Digester resta com'era, modello compreso.
-- **Nessuna corrente:** come il Digester, la catena del gas di base non chiede energia.
+- **Corrente:** nate senza, poi l'utente ha chiesto che Press e Digester vadano a corrente. 4 FE/t ciascuna, così una Gas Turbine a biogas resta in attivo: la coppia costa 8 FE/t su circa 19. La prima energia viene da altro, per esempio dal Combustion Generator.
 - **Forma:** idea "B, pressa", scelta fra quattro. Nata a blocco singolo, l'utente ha poi detto che poteva essere a più blocchi: con un Cyber Frame sopra è alta 2, la piastra corre per tutta l'altezza e il movimento si legge da lontano.
 - **Il mucchio mostra il contenuto:** richiesta dell'utente in gioco. Sale con scarti e Biomass presenti e la piastra si ferma sopra, invece di attraversarlo.
 - **Ugello e tramoggia:** l'ugello è a destra guardando la macchina dal davanti e si scarica da solo, anche direttamente nel Digester. Una tramoggia sull'imbuto deve funzionare, perché è la prima cosa che un giocatore prova.
@@ -277,7 +281,7 @@ Parte da una segnalazione degli amici che hanno provato la mod: il Bio-Digester 
 
 ## Pannelli, droni e liquidi
 
-Scelte dell'utente, tutte provate in gioco col setup `/function cyberfarm:test_setup`.
+Scelte dell'utente, provate in gioco.
 
 - **Overlay:** sopra la macchina, non in alto al centro né accanto al mirino. Disegnato nel mondo non si leggeva: ora è sull'interfaccia, in un punto calcolato dalla macchina. Se c'è Jade, WTHIT o WAILA sparisce, senza plugin.
 - **Hologram Table:** idea A, stessa forma più grande. Scartati gradino con lente, piedistallo e paletti che salgono.
@@ -287,6 +291,28 @@ Scelte dell'utente, tutte provate in gioco col setup `/function cyberfarm:test_s
 - **Vista dell'area:** mini droni sugli angoli, idea dell'utente. Bocciate le particelle. Partono solo dal pulsante della GUI, non dal Survey Tool.
 - **Rotte:** un clic sulla dock collegata ripete la richiesta, due la scelgono come partenza.
 - **Compenetrazioni:** ogni parte nuova del drone va controllata contro tutti i moduli, in ogni posa.
+
+## GUI delle macchine
+
+Scelte dell'utente, sul Coolant Mixer e poi estese a tutte le schermate.
+
+- **Macchine di processo, composizione dell'utente:** "In e out visibili e in primo piano; processo e disegni non in background ma ai lati; niente nastri trasportatori; rimetti le tacche ai tank". Niente scritte IN/OUT: "al massimo qualcosa che raffiguri cosa va dentro e cosa esce", quindi l'oggetto sbiadito nello slot vuoto.
+- **Disegni del processo:** devono mostrare il lavoro che avanza, come la piastra della Press, invece di una barra colorata ("non si capisce"). Il riferimento era un banco da lavoro: GUI piatta che rievoca il macchinario.
+- **Fondo:** la texture vera del corpo macchina, approvata ("il background ci sta").
+- **PNG per le macchine di processo:** generati da `tools/guigen.py`; parti mobili, barre e testo restano in Java.
+- **Bocciati:** ottagono uguale per tutte con disegnino ("non si capisce che macchinari sono"); modello 3D della macchina dentro la GUI ("senza motivo"); targhette IN/OUT e cornici colorate; barra colorata; disegni sullo sfondo con nastro trasportatore ("perché il nastro?"); finestra spaccata, widget che diventano le parti, targa come corpo della macchina.
+- **Idea A, targa smaltata:** per le altre schermate, a riempimenti, troppo piene o di impostazioni. Scartati pannello strumenti, vano con vassoio e schema di processo a tubi.
+- **Inventario discreto:** la griglia d'acciaio chiara rubava l'occhio agli oggetti. Solo gli slot della macchina hanno la cornice chiara.
+- **Bordi sui fluidi chiari:** segnalato dall'utente sul vapore, "sul bianco i bordi non si vedono". Fra fluido e acciaio c'è sempre 1 px scuro.
+- **Tonalità:** "più scura", poi "non troppo scura". Il corpo sta a metà fra `#233E3B` e `#132423`: `#1B312F`, con `#2E4B47`, `#0D1C1C` e `#4A6762` a metà dei rispettivi gradini. Sono le uniche eccezioni alla palette, solo per le GUI.
+- **Rosso:** su `#1B312F` il contrasto è 4,2:1, quindi il testo rosso va su una fascia scura.
+
+## Addon nelle macchine
+
+Scelta dell'utente del 9 novembre 2026, insieme al ribilanciamento dell'energia: Speed, Battery e il nuovo Efficiency vanno anche nelle macchine.
+
+- **Efficiency Addon:** opzione A fra tre, freccia in giù su una barra nello stesso chip di Speed e Battery, in menta. Scartati i gradini che scendono (sembrano un grafico) e il fulmine piccolo (sembra "energia", non "meno energia"). Bozze in `.claude/sketch/addons/`.
+- **Linguetta a destra:** 3 slot su una targa 28x84 attaccata al bordo destro della GUI, uguale su ogni macchina, così nessun layout va rifatto. Negli slot vuoti c'è un chip sbiadito. Scartata la linguetta a sinistra, che finisce sotto JEI e il libro delle ricette. JEI e REI tengono libera la linguetta.
 
 ## Tubi e cavi
 
@@ -300,6 +326,66 @@ Scelte dell'utente, tutte provate in gioco col setup `/function cyberfarm:test_s
 - **Tier:** sulla flangia dietro il tappo, nei colori di prima.
 - **Fluido vero, non dipinto:** la regola "fluidi veri" vale anche qui. Il tubo non contiene nulla, quindi mostra il fluido che sta passando e si svuota quando il flusso si ferma. Il modello nella mesh del chunk evita un renderer per frame, che su migliaia di tubi peserebbe. Le nuvolette del gas sono bianche, così valgono per ogni gas.
 - **Scartati anche:** manica corazzata a fascette, sagome diverse senza vetro, condotto quadrato con scatola di giunzione 8x8, collana di capsule.
+
+## Trasmissione a parabole
+
+Design approvato dall'utente il 9 novembre 2026, al secondo giro di rifinitura, e implementato lo stesso giorno (da giudicare in gioco). Bozze e script sono in `.claude/sketch/dishes/` (`dishes.py`, `dishes_r2.py`, `build_r2.py`, `sheet_r2.png`, `preview_r2.html`).
+
+- **Transmitter Dish:**
+  - Base 2x2, collo di 9 px, piatto girevole e forcella che inclina la parabola sull'asse a 28 px. È alta circa 36 px.
+  - Parabola larga 16 px, ad **anelli ottagonali a gradini**, senza curve tonde: ogni anello è fatto di 4 barre e 4 spigoli a gradino e arretra verso il centro, così si legge concava.
+  - Davanti ha l'antenna a 4 bracci con la punta luminosa. La punta si accende solo mentre trasmette.
+  - Il blocco piazzato è un modello 3D vero, con la parabola ripiegata verso l'alto e i monconi del telaio.
+- **Prese per i cavi:** dopo la prima prova ("non si collega bene il cavo") le due parabole hanno le prese delle altre macchine dove arriva un cavo, sui lati e sotto.
+- **Receiver Dish:**
+  - **Anche la ricezione è sempre una parabola** (l'utente: "la ricezione deve essere fatta sempre da parabole"). È piccola, larga 12 px, sta su un blocco, ha la sua antenna al centro, nello stesso stile del trasmettitore.
+  - Ruota verso il suo trasmettitore.
+  - **Alto 2 blocchi:** il blocco principale con un Cyber Frame sopra, scelta dell'utente dopo la prima prova in gioco ("il receiver doveva essere a 2 con uno sopra"). Piazzato da solo mostra la parabola ripiegata; assemblato la apre.
+- **Segnale di ricezione, variante 1:**
+  - Il bordo interno di ogni gradino è una striscia luminosa.
+  - L'onda accende prima il bordo, poi l'anello 2, poi il centro, poi la punta dell'antenna, e infine fa una pausa.
+- **Nessun raggio:**
+  - Il trasmettitore gira verso ogni ricevitore in 24 tick e poi resta fermo 56 tick mentre trasmette.
+  - Con il ricevitore in un'altra dimensione, tutte e due le parabole puntano dritte al cielo.
+- **Spia del colore della rete:** su entrambe le basi, in un colore qualsiasi scelto dal giocatore.
+- **Icone dei moduli di portata:**
+  - Sono la testa a chip del Quarry Module con una piccola parabola a gradini.
+  - Range Module I, II e III accendono 1, 2 o 3 tacche menta su 3.
+  - L'Infinity Range Module ha l'infinito e la luce della testa in viola, presi dal Fusion Crystal. È un'eccezione voluta alla regola dello smeraldo: quel viola resta solo al Fusion Crystal e all'Infinity.
+- **Da verificare in gioco:**
+  - leggibilità con le texture vere;
+  - costo del renderer, circa 40 box per testa: va disegnata solo entro una certa distanza;
+  - inclinazione minima di -10 gradi, perché più in basso il bordo tocca il piatto girevole;
+  - posizione delle prese FE sui cabinet.
+
+| Bocciato o scartato | Motivo o giudizio |
+|---|---|
+| Prima bozza a pannello (rectenna) | "tozza" |
+| Parabole ad anelli quadrati | sembravano una lastra o uno schermo inclinato |
+| Ricevitore a pannello con griglia 3x3 di dipoli | sembrava un monitor; "la ricezione deve essere fatta sempre da parabole" |
+| Dipoli a croce sugli anelli (variante 2) | sembrano macchioline sparse |
+
+### GUI delle parabole
+
+Approvate dall'utente: **T1** per il trasmettitore, **R1** per il ricevitore. Sono nello stile "targa smaltata" delle schermate di impostazioni e usano i colori solo-GUI. Bozze in `.claude/sketch/dishes/gui/` (`guis_polish.py`, `sheet_gui_polish.png`).
+
+- **T1, quadrante (176x218):**
+  - **Quadrante:** a sinistra c'è la barra dell'energia, verticale. Gli anelli ottagonali del quadrante sono i livelli di portata (32/128/512/2K/oltre) e si accendono fino al modulo montato. Un ago parte dalla parabolina al centro e punta il ricevitore servito: è chiaro mentre gira, pieno quando trasmette. Un ricevitore in un'altra dimensione è una freccia viola in una tacca in cima alla cornice.
+  - **A destra:** lo slot del modulo, la portata scritta e una scala di 5 gradini. Sotto, i ricevitori "3/4", una riga ciascuno; quello servito ha il bordo acceso e un pallino.
+  - **Sotto:** il nome, 8 colori, l'interruttore Private (da confermare) e una riga con energia, FE/t e perdita (numeri da confermare). In fondo l'inventario discreto.
+- **R1, elenco largo (176x128, senza inventario):**
+  - **In alto:** una fascia con la rete collegata.
+  - **Righe:** ogni rete ha tacca colore, nome, distanza o dimensione e i posti come tacche e come "2/4". La rete collegata ha il bordo menta; quella piena è grigia, con FULL rosso su una fascia scura.
+  - **In basso:** la barra dell'energia, Disconnect e i FE/t ricevuti.
+  - **Senza reti in portata:** "No network in range" con un suggerimento, e Disconnect spento.
+- **Da sistemare nel codice:**
+  - nella lista di T1 il numero di riga deve stare staccato dalla distanza, perché "1 240" si leggeva "1240";
+  - la quarta riga e il "-10%" in basso hanno bisogno di 1-2 px di margine;
+  - le larghezze del testo vanno ricontrollate col font vero.
+- **Scartate:**
+  - T2, piastra della rete con le schede dei posti;
+  - R2, parabola grande con l'elenco stretto;
+  - la prima T1, troppo affollata, con la scritta SKY sopra gli anelli.
 
 ## Scartati
 

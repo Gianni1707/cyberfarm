@@ -61,7 +61,7 @@ public class ClearJob extends DroneJob {
         }
         stop(drone, level);
         breakBlock(drone, level, target, state).forEach(stack -> Block.popResource(level, target, stack));
-        drone.useJobEnergy(20 + (int) (hardness * 10));
+        drone.useJobEnergy(40 + (int) (hardness * 20));
         return Result.DONE;
     }
 

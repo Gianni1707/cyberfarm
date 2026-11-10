@@ -20,6 +20,10 @@ public final class ByteBufCodecs {
 
     private ByteBufCodecs() {}
 
+    public static StreamCodec<ByteBuf, String> stringUtf8(int maxLength) {
+        return StreamCodec.of(buf -> buf.readUtf(maxLength), (buf, v) -> buf.writeUtf(v, maxLength));
+    }
+
     public static <B, V> Function<StreamCodec<B, V>, StreamCodec<B, List<V>>> list() {
         return element -> StreamCodec.of(buf -> {
             int size = buf.readVarInt();

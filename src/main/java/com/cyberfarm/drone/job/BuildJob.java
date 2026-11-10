@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
  * smooth curve instead of stopping at every corner.
  */
 public class BuildJob extends DroneJob {
-    public static final int ENERGY_COST = 20;
+    public static final int ENERGY_COST = 40;
     /** Blocks of air between the top of the structure and the drone while it crosses over. */
     private static final double CLEARANCE = 2.0;
     /** Ticks a climb or a crossing may take before the drone gives the block up. */

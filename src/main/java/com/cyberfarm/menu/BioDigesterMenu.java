@@ -17,7 +17,7 @@ public class BioDigesterMenu extends MachineMenu {
 
     public BioDigesterMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.BIO_DIGESTER.get(), containerId, data, access, ModBlocks.BIO_DIGESTER.get());
-        addMachineSlot(items, 0, 44, 35);
+        addMachineSlot(items, 0, 58, 35);
         addPlayerInventory(inventory, 84);
     }
 
@@ -32,5 +32,10 @@ public class BioDigesterMenu extends MachineMenu {
 
     public int getTankFluid() {
         return extra(3);
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

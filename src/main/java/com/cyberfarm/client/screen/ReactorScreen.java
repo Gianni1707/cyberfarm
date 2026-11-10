@@ -29,12 +29,11 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
     private static final int BUTTON_SIZE = 11;
     private static final int MINUS_X = 50;
     private static final int PLUS_X = 135;
-    private static final int DANGER = 0xFFE5483B;
-    private static final int LOCKED = 0xC0101418;
     private static final String[] SIZE_NAMES = {"", "small", "medium", "large"};
 
     public ReactorScreen(ReactorMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 218);
+        flatBackground("reactor");
     }
 
     @Override
@@ -47,30 +46,31 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         // Fuel slots the tower does not burn
         int usable = menu.getSize() == 0 ? ReactorControllerBlockEntity.FUEL_SLOTS : menu.getUsableRods();
         for (int i = usable; i < ReactorControllerBlockEntity.FUEL_SLOTS; i++) {
-            int sx = x + ReactorMenu.FUEL_X + (i % 4) * 18;
-            int sy = y + ReactorMenu.FUEL_Y + (i / 4) * 18;
-            graphics.fill(sx, sy, sx + 16, sy + 16, LOCKED);
-            graphics.fill(sx + 4, sy + 7, sx + 12, sy + 9, PANEL_LIGHT);
+            drawLockedSlot(graphics, x + ReactorMenu.FUEL_X + (i % 4) * 18, y + ReactorMenu.FUEL_Y + (i / 4) * 18);
         }
 
         // Core: one bar per rod the tower burns, emerald while burning
         int cx = x + CORE_X;
         int cy = y + CORE_Y;
-        graphics.fill(cx - 1, cy - 1, cx + 22, cy + 35, SLOT_BORDER);
-        graphics.fill(cx, cy, cx + 21, cy + 34, SLOT_BG);
+        drawWell(graphics, cx, cy, 21, 34);
         boolean burning = menu.getHeatProduced() > 0;
         for (int i = 0; i < ReactorControllerBlockEntity.FUEL_SLOTS; i++) {
             int bx = cx + 1 + i * 2 + i / 2;
             int color = i >= usable ? SLOT_BORDER : burning && i < menu.getActiveRods() ? ACCENT : PANEL_LIGHT;
             graphics.fill(bx, cy + 3, bx + 2, cy + 31, color);
+            if (color == ACCENT) {
+                // A faint light running up the burning rods
+                int band = cy + 28 - (int) (25 * (System.currentTimeMillis() % 2000 / 2000.0F));
+                graphics.fill(bx, band, bx + 2, band + 3, 0x40D1FEE7);
+            }
         }
 
-        graphics.text(font, Component.translatable("gui.cyberfarm.reactor.waste"), x + ReactorMenu.WASTE_X + 74, y + ReactorMenu.WASTE_Y + 4, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.reactor.waste"), x + ReactorMenu.WASTE_X + 73, y + ReactorMenu.WASTE_Y + 4, TEXT_DIM, false);
 
         // Temperature: green, then amber past half, red past the alarm threshold
         int temperature = menu.getTemperature();
         boolean alarm = temperature >= ReactorControllerBlockEntity.ALARM_PERMILLE;
-        int barColor = alarm ? DANGER : temperature >= 500 ? WARM : 0xFF3FBF6F;
+        int barColor = alarm ? DANGER : temperature >= 500 ? WARM : ACCENT;
         drawProgressBar(graphics, x + TEMP_X, y + TEMP_Y, TEMP_WIDTH, 6, temperature / 1000.0F, barColor);
         int alarmX = x + TEMP_X + TEMP_WIDTH * ReactorControllerBlockEntity.ALARM_PERMILLE / 1000;
         graphics.fill(alarmX, y + TEMP_Y - 2, alarmX + 1, y + TEMP_Y + 8, DANGER);
@@ -94,6 +94,8 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
             status = Component.translatable("gui.cyberfarm.reactor.running", menu.getActiveRods());
             color = ACCENT;
         }
+        // Its own dark strip, so red and amber stay readable on the enamel
+        graphics.fill(x + TEMP_X - 1, y + 94, x + TEMP_X + TEMP_WIDTH + 1, y + 104, PANEL_DARK);
         graphics.text(font, status, x + TEMP_X, y + 95, color, false);
 
         // Power controls: [-] 250% [+], with the tower's maximum
@@ -118,6 +120,8 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
     private void drawButton(GuiGraphicsExtractor graphics, int bx, int by, String label) {
         graphics.fill(bx - 1, by - 1, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE + 1, SLOT_BORDER);
         graphics.fill(bx, by, bx + BUTTON_SIZE, by + BUTTON_SIZE, PANEL_LIGHT);
+        graphics.fill(bx, by, bx + BUTTON_SIZE, by + 1, STEEL_MID);
+        graphics.fill(bx, by, bx + 1, by + BUTTON_SIZE, STEEL_MID);
         graphics.text(font, Component.literal(label), bx + (BUTTON_SIZE - font.width(label)) / 2 + 1, by + 2, ACCENT, false);
     }
 

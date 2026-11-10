@@ -31,8 +31,8 @@ import org.jspecify.annotations.Nullable;
  * collected) from the top down, then replants a sapling at the base.
  */
 public class LogJob extends DroneJob {
-    public static final int LOG_COST = 20;
-    public static final int LEAF_COST = 5;
+    public static final int LOG_COST = 40;
+    public static final int LEAF_COST = 10;
     private static final int MAX_LOGS = 256;
     private static final int MAX_LEAVES = 512;
     /** Leaves further than this from the trunk belong to another tree. */

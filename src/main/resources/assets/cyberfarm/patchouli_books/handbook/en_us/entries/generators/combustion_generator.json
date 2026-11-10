@@ -10,11 +10,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.$(br)$(li)$(l)Generation$(): 40 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE"
+      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.$(br)$(li)$(l)Generation$(): 60 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)One coal$(): 32,000 FE$(br)The generator $(l)pushes power automatically$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods. It only burns fuel when its buffer is not full, so no fuel is wasted."
+      "text": "$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)One coal$(): 48,000 FE$(br)The generator $(l)pushes power automatically$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods. It only burns fuel when its buffer is not full, so no fuel is wasted."
     },
     {
       "type": "patchouli:text",

@@ -132,51 +132,63 @@ public class ModItems {
 
     // Drone frames: tier, FE capacity, speed %, module slots, addon limit, flight cost FE/t
     public static final DeferredItem<DroneFrameItem> BASIC_FRAME = ITEMS.registerItem("basic_frame",
-            p -> new DroneFrameItem(p, 1, 20_000, 80, 1, 4, 2));
+            p -> new DroneFrameItem(p, 1, 40_000, 80, 1, 4, 4));
     public static final DeferredItem<DroneFrameItem> ADVANCED_FRAME = ITEMS.registerItem("advanced_frame",
-            p -> new DroneFrameItem(p, 2, 60_000, 130, 2, 8, 3));
+            p -> new DroneFrameItem(p, 2, 120_000, 130, 2, 8, 6));
     public static final DeferredItem<DroneFrameItem> ELITE_FRAME = ITEMS.registerItem("elite_frame",
-            p -> new DroneFrameItem(p.rarity(Rarity.RARE), 3, 150_000, 160, 3, 16, 4));
+            p -> new DroneFrameItem(p.rarity(Rarity.RARE), 3, 300_000, 160, 3, 16, 8));
     /** Builds a Mini Drone: half size, small battery, one module; up to four share a Builder Swarm Dock. */
     public static final DeferredItem<DroneFrameItem> MINI_FRAME = ITEMS.registerItem("mini_frame",
-            p -> new DroneFrameItem(p, 1, 10_000, 100, 1, 2, 1));
+            p -> new DroneFrameItem(p, 1, 20_000, 100, 1, 2, 2));
 
     // Energy storage: the core, the cells of its shell and its pylons
     public static final DeferredItem<BlockItem> RESONANCE_CORE = ITEMS.registerSimpleBlockItem(ModBlocks.RESONANCE_CORE);
     public static final DeferredItem<BlockItem> RESONANCE_CELL = ITEMS.registerSimpleBlockItem(ModBlocks.RESONANCE_CELL);
     public static final DeferredItem<BlockItem> STABILIZER_PYLON = ITEMS.registerSimpleBlockItem(ModBlocks.STABILIZER_PYLON);
 
+    // Dish transmission: the two dishes and the transmitter's range modules (tier 1-3, 4 = Infinity)
+    public static final DeferredItem<BlockItem> TRANSMITTER_DISH = ITEMS.registerSimpleBlockItem(ModBlocks.TRANSMITTER_DISH);
+    public static final DeferredItem<BlockItem> RECEIVER_DISH = ITEMS.registerSimpleBlockItem(ModBlocks.RECEIVER_DISH);
+    public static final DeferredItem<com.cyberfarm.item.RangeModuleItem> RANGE_MODULE_I = ITEMS.registerItem("range_module_i",
+            p -> new com.cyberfarm.item.RangeModuleItem(p, 1));
+    public static final DeferredItem<com.cyberfarm.item.RangeModuleItem> RANGE_MODULE_II = ITEMS.registerItem("range_module_ii",
+            p -> new com.cyberfarm.item.RangeModuleItem(p, 2));
+    public static final DeferredItem<com.cyberfarm.item.RangeModuleItem> RANGE_MODULE_III = ITEMS.registerItem("range_module_iii",
+            p -> new com.cyberfarm.item.RangeModuleItem(p.rarity(Rarity.UNCOMMON), 3));
+    public static final DeferredItem<com.cyberfarm.item.RangeModuleItem> INFINITY_RANGE_MODULE = ITEMS.registerItem("infinity_range_module",
+            p -> new com.cyberfarm.item.RangeModuleItem(p.rarity(Rarity.EPIC), com.cyberfarm.item.RangeModuleItem.INFINITY));
+
     // Function modules: job, extra flight cost FE/t
     public static final DeferredItem<DroneModuleItem> HARVESTER_MODULE = ITEMS.registerItem("harvester_module",
-            p -> new DroneModuleItem(p, DroneTask.HARVEST, 1));
+            p -> new DroneModuleItem(p, DroneTask.HARVEST, 2));
     public static final DeferredItem<DroneModuleItem> QUARRY_MODULE = ITEMS.registerItem("quarry_module",
-            p -> new DroneModuleItem(p, DroneTask.QUARRY, 2));
+            p -> new DroneModuleItem(p, DroneTask.QUARRY, 4));
     public static final DeferredItem<DroneModuleItem> TRANSPORT_MODULE = ITEMS.registerItem("transport_module",
-            p -> new DroneModuleItem(p, DroneTask.TRANSPORT, 1));
+            p -> new DroneModuleItem(p, DroneTask.TRANSPORT, 2));
     public static final DeferredItem<DroneModuleItem> PLANTER_MODULE = ITEMS.registerItem("planter_module",
-            p -> new DroneModuleItem(p, DroneTask.PLANT, 1));
+            p -> new DroneModuleItem(p, DroneTask.PLANT, 2));
     public static final DeferredItem<DroneModuleItem> LOGGER_MODULE = ITEMS.registerItem("logger_module",
-            p -> new DroneModuleItem(p, DroneTask.LOG, 2));
+            p -> new DroneModuleItem(p, DroneTask.LOG, 4));
     public static final DeferredItem<DroneModuleItem> TAXI_MODULE = ITEMS.registerItem("taxi_module",
-            p -> new DroneModuleItem(p, DroneTask.TAXI, 2));
+            p -> new DroneModuleItem(p, DroneTask.TAXI, 4));
     public static final DeferredItem<DroneModuleItem> RANCHER_MODULE = ITEMS.registerItem("rancher_module",
-            p -> new DroneModuleItem(p, DroneTask.RANCH, 1));
+            p -> new DroneModuleItem(p, DroneTask.RANCH, 2));
     public static final DeferredItem<DroneModuleItem> FERTILIZER_MODULE = ITEMS.registerItem("fertilizer_module",
-            p -> new DroneModuleItem(p, DroneTask.FERTILIZE, 1));
+            p -> new DroneModuleItem(p, DroneTask.FERTILIZE, 2));
     public static final DeferredItem<DroneModuleItem> BUILDER_MODULE = ITEMS.registerItem("builder_module",
-            p -> new DroneModuleItem(p, DroneTask.BUILD, 2));
+            p -> new DroneModuleItem(p, DroneTask.BUILD, 4));
     public static final DeferredItem<DroneModuleItem> FISHER_MODULE = ITEMS.registerItem("fisher_module",
-            p -> new DroneModuleItem(p, DroneTask.FISH, 1));
+            p -> new DroneModuleItem(p, DroneTask.FISH, 2));
     public static final DeferredItem<DroneModuleItem> BREEDER_MODULE = ITEMS.registerItem("breeder_module",
-            p -> new DroneModuleItem(p, DroneTask.BREED, 1));
+            p -> new DroneModuleItem(p, DroneTask.BREED, 2));
     public static final DeferredItem<DroneModuleItem> GUARD_MODULE = ITEMS.registerItem("guard_module",
-            p -> new DroneModuleItem(p, DroneTask.GUARD, 2));
+            p -> new DroneModuleItem(p, DroneTask.GUARD, 4));
     public static final DeferredItem<DroneModuleItem> BOMB_MODULE = ITEMS.registerItem("bomb_module",
-            p -> new DroneModuleItem(p, DroneTask.BOMB, 1));
+            p -> new DroneModuleItem(p, DroneTask.BOMB, 2));
     public static final DeferredItem<DroneModuleItem> SPONGE_MODULE = ITEMS.registerItem("sponge_module",
-            p -> new DroneModuleItem(p, DroneTask.SPONGE, 2));
+            p -> new DroneModuleItem(p, DroneTask.SPONGE, 4));
     public static final DeferredItem<DroneModuleItem> TANK_MODULE = ITEMS.registerItem("tank_module",
-            p -> new DroneModuleItem(p, DroneTask.TANK, 1));
+            p -> new DroneModuleItem(p, DroneTask.TANK, 2));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",
@@ -191,6 +203,8 @@ public class ModItems {
             p -> new DroneAddonItem(p, AddonType.SILK_TOUCH));
     public static final DeferredItem<DroneAddonItem> ANCHOR_ADDON = ITEMS.registerItem("anchor_addon",
             p -> new DroneAddonItem(p, AddonType.ANCHOR));
+    public static final DeferredItem<DroneAddonItem> EFFICIENCY_ADDON = ITEMS.registerItem("efficiency_addon",
+            p -> new DroneAddonItem(p, AddonType.EFFICIENCY));
 
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);

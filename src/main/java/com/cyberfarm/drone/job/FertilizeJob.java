@@ -33,7 +33,7 @@ import org.jspecify.annotations.Nullable;
  * drone uses it on the plant as a player would.
  */
 public class FertilizeJob extends DroneJob {
-    public static final int ENERGY_COST = 10;
+    public static final int ENERGY_COST = 20;
     /** Fertilizer loaded from the dock per trip. */
     private static final int FERTILIZER_PER_TRIP = 64;
 

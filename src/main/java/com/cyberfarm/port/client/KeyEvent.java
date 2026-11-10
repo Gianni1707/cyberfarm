@@ -7,4 +7,8 @@ public record KeyEvent(int key, int scancode, int modifiers) {
     public boolean isConfirmation() {
         return key == GLFW.GLFW_KEY_ENTER || key == GLFW.GLFW_KEY_KP_ENTER;
     }
+
+    public boolean isEscape() {
+        return key == GLFW.GLFW_KEY_ESCAPE;
+    }
 }

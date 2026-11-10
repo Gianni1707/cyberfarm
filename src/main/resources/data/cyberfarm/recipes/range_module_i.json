@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "N": {
+      "item": "minecraft:gold_nugget"
+    },
+    "X": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "cyberfarm:advanced_circuit"
+    }
+  },
+  "pattern": [
+    "NXN",
+    "RCR"
+  ],
+  "result": {
+    "item": "cyberfarm:range_module_i"
+  }
+}

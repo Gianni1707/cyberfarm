@@ -59,7 +59,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     public static final int ACID_PER_CRYSTAL = 2_000;
     public static final int AMETHYST_PER_CRYSTAL = 4;
     public static final int PROCESS_TIME = 600;
-    public static final int ENERGY_PER_TICK = 1_000;
+    public static final int ENERGY_PER_TICK = 4_000;
     private static final int CAPACITY = 1_000_000;
     private static final int MAX_INPUT = 8_000;
     private static final int SYNC_INTERVAL = 20;
@@ -140,7 +140,12 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
@@ -161,8 +166,8 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         boolean canRun = formed && getStack(ISOTOPE).is(ModItems.ISOTOPE_SHARD.get()) && getStack(AMETHYST).getCount() >= AMETHYST_PER_CRYSTAL
                 && getStack(AMETHYST).is(Items.AMETHYST_SHARD) && acid.amount() >= ACID_PER_CRYSTAL
                 && hasRoomFor(OUTPUT, ModItems.FUSION_CRYSTAL.get());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            if (++progress >= workTime(PROCESS_TIME)) {
                 progress = 0;
                 acid.drain(ACID_PER_CRYSTAL);
                 ItemStack isotope = getStack(ISOTOPE);
@@ -193,7 +198,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
 
     /** Also on clients: how far the crystal has grown at {@code time}, 0 to 1, running on smoothly between updates. */
     public float growth(float time) {
-        return progress <= 0 ? 0.0F : Math.min(1.0F, (progress + Math.max(0.0F, time - syncedAt)) / PROCESS_TIME);
+        return progress <= 0 ? 0.0F : Math.min(1.0F, (progress + Math.max(0.0F, time - syncedAt)) / workTime(PROCESS_TIME));
     }
 
     /** Also on clients: how full the acid tank is, 0 to 1. */
@@ -262,7 +267,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> acid.amount();
             case 3 -> acid.fluidCode();
             case 4 -> formed ? 1 : 0;

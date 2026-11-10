@@ -1859,6 +1859,19 @@ def stabilizer_beam():
     return c
 
 
+def stabilizer_ring():
+    """A wave of the Resonance Core's drones, flying towards the crystal: a bright crest, the wake behind it
+    and a broken echo inside. Colour equals alpha, as in the beam, for blending by adding."""
+    c = Canvas(32, 32)
+    for y in range(32):
+        for x in range(32):
+            d = math.hypot(x - 15.5, y - 15.5)
+            angle = math.degrees(math.atan2(y - 15.5, x - 15.5)) % 360
+            v = 255 if 13 <= d < 15.2 else 115 if 15.2 <= d < 16 else 128 if 10.5 <= d < 13 else 56 if 8 <= d < 10.5 and angle % 45 < 28 else 0
+            c.set(x, y, (v, v, v, v))
+    return c
+
+
 # --------------------------------------------------------------------------- items
 
 ITEM_ASCII = {
@@ -3078,6 +3091,7 @@ def build_all():
         "entity/resonance_crystal": crystal_shell(),
         "entity/resonance_glow": crystal_glow(),
         "entity/stabilizer_beam": stabilizer_beam(),
+        "entity/stabilizer_ring": stabilizer_ring(),
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
         "item/acid_bucket": bucket(ACID, gas=False),
         **lit_front("fabricator", fabricator_front),

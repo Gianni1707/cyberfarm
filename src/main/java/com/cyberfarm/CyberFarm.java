@@ -137,6 +137,8 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SWARM_DOCK.get(), (be, side) -> be.getExternalItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
@@ -182,6 +184,8 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.ACID_SYNTHESIZER.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.TRANSMITTER_DISH.get(), (be, side) -> be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.RECEIVER_DISH.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.ELECTROLYZER.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getFluids());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.getEnergy());
@@ -242,6 +246,7 @@ public class CyberFarm {
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
                 .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
+                .playToServer(com.cyberfarm.energy.DishRenamePayload.TYPE, com.cyberfarm.energy.DishRenamePayload.STREAM_CODEC, com.cyberfarm.energy.DishRenamePayload::handle)
                 .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)

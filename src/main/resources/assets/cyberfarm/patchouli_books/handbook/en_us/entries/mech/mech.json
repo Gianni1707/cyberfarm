@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The $(item)Mech Frame$() is end-game: it is built around a $(l:mech/mech_core)Mech Core$(/l), whose crystal comes from reactor waste. Build a $(l:mech/mech_hangar)Mech Hangar$(/l) too: a frame only unfolds on a hangar's pad. Right-click the pad and the mech unfolds in the middle of it, facing out of the hangar. A new frame comes with $(l)100,000 FE$() in its",
+      "text": "The $(item)Mech Frame$() is end-game: it is built around a $(l:mech/mech_core)Mech Core$(/l), whose crystal comes from reactor waste. Build a $(l:mech/mech_hangar)Mech Hangar$(/l) too: a frame only unfolds on a hangar's pad. Right-click the pad and the mech unfolds in the middle of it, facing out of the hangar. A new frame comes with $(l)200,000 FE$() in its",
       "title": "Standing it up"
     },
     {
@@ -29,12 +29,16 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)W A S D$(): Walk; turn by looking around$(br)$(li)$(l)Space$(): Jump about four blocks high$(br)$(li)$(l)Left click (empty hand)$(): Punch: 10 extra damage, 50 FE$(br)$(li)$(l)Left click a block$(): Dig like an iron pickaxe, with the right drops$(br)$(li)$(l)Space in the air (Jet)$(): Climb; sneak to dive, neither to glide",
+      "text": "$(li)$(l)W A S D$(): Walk; turn by looking around$(br)$(li)$(l)Space$(): Jump about four blocks high$(br)$(li)$(l)Left click (empty hand)$(): Punch: 10 extra damage, 100 FE$(br)$(li)$(l)Left click a block$(): Dig like an iron pickaxe, with the right drops",
       "title": "Piloting"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)R / G (Drill / Blade)$(): Switch the drill or the blade on and off$(br)The pilot reaches $(l)2.5 blocks$() further from the cockpit, and the crosshair never lands on the mech itself. Inside, you are shielded: whatever would hurt you hurts the mech instead, and neither of you takes fall damage."
+      "text": "$(li)$(l)Space in the air (Jet)$(): Climb; sneak to dive, neither to glide$(br)$(li)$(l)R / G (Drill / Blade)$(): Switch the drill or the blade on and off"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The pilot reaches $(l)2.5 blocks$() further from the cockpit, and the crosshair never lands on the mech itself. Inside, you are shielded: whatever would hurt you hurts the mech instead, and neither of you takes fall damage."
     },
     {
       "type": "patchouli:text",
@@ -46,7 +50,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The battery holds $(l)500,000 FE$(). Walking uses about $(l)100 FE per block$() and the systems a little more while you sit inside; with an empty battery the mech cannot move (you can still get out).",
+      "text": "The battery holds $(l)1,000,000 FE$(). Walking uses about $(l)200 FE per block$() and the systems a little more while you sit inside; with an empty battery the mech cannot move (you can still get out).",
       "title": "Battery and integrity"
     },
     {
@@ -69,6 +73,6 @@
   ],
   "priority": true,
   "extra_recipe_mappings": {
-    "cyberfarm:mech_frame": 13
+    "cyberfarm:mech_frame": 14
   }
 }

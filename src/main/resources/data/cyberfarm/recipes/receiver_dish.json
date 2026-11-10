@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "X": {
+      "item": "minecraft:lightning_rod"
+    },
+    "D": {
+      "item": "cyberfarm:advanced_circuit"
+    },
+    "C": {
+      "item": "minecraft:copper_ingot"
+    }
+  },
+  "pattern": [
+    "AXA",
+    "CDC"
+  ],
+  "result": {
+    "item": "cyberfarm:receiver_dish"
+  }
+}

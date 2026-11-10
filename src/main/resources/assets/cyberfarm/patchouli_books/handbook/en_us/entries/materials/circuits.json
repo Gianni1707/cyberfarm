@@ -25,15 +25,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The Fabricator makes circuits from the ingredients in its $(l)three slots$(), at $(l)40 FE/t$(). Pipe $(l)Acid$() into it for the etched circuits: Liquid Pipes plug into any side, or into the top where they clamp onto its acid drum. Any order, any slot: it finds the recipe. While it works, the card slides out from under the drum in short steps, like"
+      "text": "The Fabricator makes circuits from the ingredients in its $(l)three slots$(), at $(l)50 FE/t$(), and takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. Pipe $(l)Acid$() into it for the etched circuits: Liquid Pipes plug into any side, or into the top where they clamp onto its acid drum. Any order, any slot: it finds the recipe. While"
     },
     {
       "type": "patchouli:text",
-      "text": "paper from a printer: the print head sweeps the drum's lip before each step, the rollers turn and the chip comes out between them; the light bar on the tray shows how far the circuit is. When it is done the card flashes away and the next one starts."
+      "text": "it works, the card slides out from under the drum in short steps, like paper from a printer: the print head sweeps the drum's lip before each step, the rollers turn and the chip comes out between them; the light bar on the tray shows how far the circuit is. When it is done the card flashes away and the next one"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)2 Basic Circuits$(): 1 Copper Ingot, 2 Redstone, 1 Gold Nugget, none, 3 s$(br)$(li)$(l)Advanced Circuit$(): 2 Basic Circuits, 1 Gold Ingot, 250 mB, 5 s$(br)$(li)$(l)Elite Circuit$(): 1 Advanced Circuit, 1 Diamond, 1 Uranium Ingot, 500 mB, 8 s"
+      "text": "starts.$(br)$(li)$(l)2 Basic Circuits$(): 1 Copper Ingot, 2 Redstone, 1 Gold Nugget, none, 3 s$(br)$(li)$(l)Advanced Circuit$(): 2 Basic Circuits, 1 Gold Ingot, 250 mB, 5 s$(br)$(li)$(l)Elite Circuit$(): 1 Advanced Circuit, 1 Diamond, 1 Uranium Ingot, 500 mB, 8 s"
     },
     {
       "type": "patchouli:text",
