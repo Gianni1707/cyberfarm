@@ -1,17 +1,40 @@
 # CyberFarm
 
-![A CyberFarm base at sunset: drones over the wheat, the cooling tower behind](docs/images/hero.png)
+![A Harvester drone flies home to its dock over a half-harvested wheat field](docs/images/hero.jpg)
 
 **CyberFarm** is a tech mod for **Minecraft 26.2, 26.1.2 and 1.20.1** (NeoForge, and Forge on 1.20.1)
 about modular drones that run your farms, the power plants that keep them flying and, at the end of it all, a mech you pilot yourself.
-It starts with a combustion generator and a first drone, and grows through biogas, methane and
-steam up to a nuclear reactor with its own cooling tower. Clean white-and-cyan sci-fi style, FE
-power, and machines you can watch at work.
+It starts with a combustion generator and a first drone, and grows through biomass, biogas, methane and
+steam up to a nuclear reactor with its own cooling tower. Everything is built in dark teal, mint and
+steel: every machine is a 3D model that assembles, opens up, lights and moves while it works, and
+every pipe and cable shows what flows through it. Power is FE.
 
 Everything is explained in game by the **Drone Engineer's Handbook**, given to every player on their
 first login, and the **CyberFarm advancement tab** (press **L**) shows where to go next.
 
 ## What's new
+
+**1.0: the restyle**
+- **A new look for everything**: a dark teal, mint and steel palette, a smaller farm drone whose tools
+  move as they work, and every machine redrawn as an animated 3D model.
+- **Machines that assemble**: the Biomass Press, Bio-Digester, Fabricator, Acid Synthesizer,
+  Electrolyzer, Pyrolysis Oven, Coolant Mixer, Gas Turbine, Steam Engine and Waste Reprocessor take
+  their **Cyber Frames** around them and open up when they are complete. Mini drones show what a
+  multiblock still lacks.
+- The **Biomass Press** turns organic waste into **Biomass**, the Bio-Digester's fuel and a fertilizer.
+- **Dish transmission**: a **Transmitter Dish** sends FE to up to four **Receiver Dishes**, on a private
+  or public network, as far as its **Range Module** reaches.
+- **Machine addons**: Speed, Efficiency and Battery slots on ten machines.
+- **Glass pipes and cables** that show what flows through them, and **modular tanks** that merge into
+  one big vessel.
+- **Status panels** over machines, tanks and drones; Hologram Tables that merge into 2x2 and 3x3; a
+  guided Survey Tool; the **Sponge** and **Tank** modules and the **Dock Tank**.
+- A **mech** rebuilt as a super-robot, redrawn icons and ores, new machine screens and an energy
+  rebalance: generators make more, machines use more.
+- **1.0.1**: drones cost far less to render, even forty of them in view.
+
+<details>
+<summary>Earlier versions</summary>
 
 **0.9.2: polish**
 - Builder docks **take each layer's blocks from the chests next to them** and put back what that
@@ -44,27 +67,26 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 **0.6.0: a mod you can watch**
 - The **Hologram Table**: a live 3D map of your base with every dock and drone on it.
 - **Look at any machine** to see what it is doing: working or idle, FE made and used, progress.
-- Machines **light up and animate** while they work, their lights glow at night, and the small ones
-  have moving parts: a turbine fan, a pump piston, a digester paddle.
+- Machines **light up and animate** while they work and their lights glow at night.
 - Builder drones **print** blocks into place, multiblocks **reveal** themselves with a ring of
-  light, and the new **open Drone Assembler** shows the drone taking shape inside it.
-- Drones hit their work with a beam of light, kick up dust flying low and crackle with energy on
-  their docks; machine screens are animated too.
+  light, and the **open Drone Assembler** shows the drone taking shape inside it.
 - The **CyberFarm advancement tab**.
 
 **0.5.0: drones that build**
 - **Builder** drones, **schematics** in the Multiblock Projector, the **Builder Swarm Dock** with
   four **Mini Drones**, and the **Fisher** and **Breeder** modules.
 
+</details>
+
 ## Drones
 
-![A Logger drone fells an oak and flies back to its dock](docs/images/drones-working.gif)
+![A Harvester drone clears a wheat field row by row and flies home, sped up](docs/images/harvest.gif)
 
 A drone is put together in the **Drone Assembler** from three kinds of parts:
 
 - a **frame** in three tiers (Basic, Advanced, Elite) that sets its battery, speed and room for
   modules and addons; or the half-size **Mini Frame**, four of which share a **Builder Swarm Dock**;
-- **function modules**, which decide its job:
+- **function modules**, which decide its job and hang their tool under it:
   **Harvester** (crops), **Quarry** (digs a whole area down to bedrock), **Transport** (from one
   storage to another, of any mod), **Planter**, **Logger** (fells whole trees and replants),
   **Rancher** (shears and milks), **Fertilizer**, **Fisher** (vanilla fishing loot, treasure
@@ -72,8 +94,6 @@ A drone is put together in the **Drone Assembler** from three kinds of parts:
   (hunts hostile mobs with a laser), **Bomb** (Mini Drones only), **Sponge** (sucks up any liquid
   from an area) and **Tank** (keeps that liquid, and carries it between tanks with a Transport Module);
 - **addons**: Speed, Stack, Battery, Fortune, Silk Touch and Anchor.
-
-![Frames, modules and addons](docs/images/drones.png)
 
 ![A drone taking shape in the Drone Assembler](docs/images/assembler.gif)
 
@@ -83,10 +103,16 @@ transport route or a taxi destination. The dock's **Area** button sends mini dro
 set, a **Dock Tank** against it stores liquids, and its item filter decides what it keeps. There is no
 programming: an area and a dock are all a drone needs.
 
+![Harvester and Planter drones on wheat, carrot and potato fields, each on its own dock](docs/images/fields.jpg)
+
+![A Logger drone fells a grove, sped up](docs/images/logger.gif)
+
 **Building with drones.** The **Multiblock Projector** shows any CyberFarm multiblock, or a
 schematic, as ghost blocks. Lock it in place, link it to a dock, and its Builder drones raise it
 layer by layer with the blocks you put in the dock or in chests beside it, clearing the site
 first. The tech village's buildings come with the mod, and any data pack can add more schematics.
+
+![Four Mini Drones raise the tech village's Watch Tower, eighty times faster](docs/images/builder.gif)
 
 **The tech village.** A rare outpost in the Overworld hides the **Drone Mechanist**, a villager
 who takes **supply contracts** at his **Supply Terminal** and offers to build a town with you. Fill
@@ -94,12 +120,10 @@ his contracts to raise the village through ten levels; each one hands you **Blue
 its seven buildings (Drone Workshop, Residence, Power Station, Hydroponic Farm, Market Hall, Outpost
 and Watch Tower), in three tiers each, and every building does real work.
 
-![Four Mini Drones build a drone workshop, sped up](docs/images/builder.gif)
-
 **Defending it.** **Laser Turrets** shoot the hostile mobs they see, a **Guard** drone hunts them
 over its work area and a Mini Drone with the **Bomb** module dives at them.
 
-![Laser Turrets, a Guard drone and a Bomb drone stop a night attack](docs/images/defense.gif)
+![A Bomb drone goes off over the horde at night, the base mirrored in the lake behind](docs/images/defense.jpg)
 
 **Watching your base.** The **Hologram Table** projects the land around it in relief, with your
 docks as pillars of light, your drones moving live with their trails, players as arrows and hostile
@@ -107,7 +131,16 @@ mobs as red dots. Right-click it to zoom between 16, 24 and 32 blocks. Tables si
 a 2x2 or 3x3 that reaches 48 or 64 blocks and writes each drone's name. Look at a machine, a tank or a
 drone for a panel over it with what it is doing.
 
-![The Hologram Table showing the city square around it](docs/images/hologram.png)
+![A 3x3 Hologram Table mapping the land around it](docs/images/hologram.jpg)
+
+## Machines
+
+![Steam Engines and Gas Turbines open up as their Cyber Frames go in](docs/images/machines-open.gif)
+
+Most machines are small multiblocks: place the machine, add the **Cyber Frames** it asks for around it,
+and it opens up into its working shape, with a light strip along its base that comes on while it works.
+Break a frame and it closes again. Ten of them take **Speed**, **Efficiency** and **Battery** addons in
+the slots beside their screen.
 
 ## Materials and progression
 
@@ -121,26 +154,41 @@ Bauxite is found in the Overworld; each tier needs the power and chemistry of th
 
 ## Power
 
+![A power plant: the Fission Reactor's cooling tower, the Steam Turbine and the yards around them](docs/images/power-plant.jpg)
+
 Power is **FE**, so CyberFarm machines work with the generators, cables and batteries of other mods.
 
 1. **Combustion Generator**: burns furnace fuel.
-2. **Gas**: the **Bio-Digester** turns compost into biogas, the **Methane Extractor** (a 3x3x4 acid
-   chamber you lead mobs into) collects methane, and the **Gas Turbine** burns both.
-3. **Steam Engine**: a boiler, one to four cylinders with their pistons pumping and a dynamo with a
-   spinning flywheel, built in a row.
+2. **Gas**: the **Biomass Press** turns organic waste into Biomass, the **Bio-Digester** turns
+   Biomass into biogas, the **Methane Extractor** (a 3x3x4 acid chamber you lead mobs into) collects
+   methane, and the **Gas Turbine** burns both.
+3. **Steam Engine**: a boiler that assembles with four Cyber Frames into a five-block engine, its
+   pistons pumping and its flywheel spinning.
 4. **Nuclear**: uranium, **Fuel Rods** and a **Fission Reactor** shaped like a real cooling tower in
    three sizes. Its heat boils water into steam for a multiblock **Steam Turbine** with a spinning
    rotor. Push it too hard and it melts down.
+
+![The Fission Reactor's cooling tower and the Steam Turbine at sunset](docs/images/reactor.jpg)
 
 The nuclear tier brings real risks and the tools to handle them: **Coolant** and **Cryo Coolant**,
 radioactive waste treated in the **Waste Reprocessor**, chunk radiation and Radiation Sickness, the
 **Hazmat Suit** and the **Geiger Counter**.
 
 **Storing it.** The **Resonance Core** is a buildable battery: a floating crystal held steady by
-the beams of **Stabilizer Pylons**, growing with a shell of **Resonance Cells** through four tiers,
-up to 2 billion FE.
+**Stabilizer Pylons**, growing with a shell of **Resonance Cells** through four tiers, up to 2 billion
+FE. Energy goes in and out through the pylons.
+
+![A Resonance Core's crystal between the lamps of a power yard](docs/images/resonance-core.jpg)
+
+**Sending it.** A **Transmitter Dish** turns to its **Receiver Dishes** and sends them FE, up to four
+of them, one after the other, losing a tenth on the way. Without a module it reaches 32 blocks at
+2,000 FE/t; the **Range Modules** I, II and III take it to 128, 512 and 2,048 blocks, and the
+**Infinity Range Module** anywhere, with no limit to the power. Networks are private or public, and a
+receiver picks one in its screen.
 
 ## The Mech
+
+![The mech parked in its hangar at night](docs/images/mech.jpg)
 
 The end game: a pilotable mech about three and a half blocks tall. You step into the bay in its
 trunk, the front closes around you like a flower, and you walk, jump and punch with it, with a
@@ -149,16 +197,17 @@ its four modules with a gantry arm: a **Jet** to fly, a **Drill** that digs 3x3,
 **Blade** and **Armor** plating. Its heart, the **Mech Core**, is built around a Fusion Crystal
 grown in the **Crystallizer** from reactor waste.
 
-![The mech's cockpit display as it powers up in its hangar](docs/images/mech-hud.png)
+![The cockpit display: energy, integrity and the modules ready](docs/images/mech-cockpit.jpg)
 
 ## Cables and tanks
 
-![Conduits and pipes in three tiers](docs/images/cables.png)
+![Combustion Generators pushing FE into a glass Energy Conduit](docs/images/generators.jpg)
 
 **Energy Conduits**, **Gas Pipes** and **Liquid Pipes**, each in three tiers, connect by themselves
-to blocks of any mod. Right-click a cable's arm to pull out of a battery, tank or machine. **Liquid
-Tanks** and **Gas Tanks** store 32 buckets and show the fluid inside through their windows, and a
-**Water Pump** gives an endless water supply.
+to blocks of any mod, and their glass shows what flows through them. Right-click a cable's arm to pull
+out of a battery, tank or machine. **Liquid Tanks** and **Gas Tanks** store 32 buckets each and merge
+with the tanks next to them into one big vessel, its fluid seen through the glass. A **Water Pump**
+standing on a water source gives an endless supply.
 
 ## Compatibility
 
