@@ -30,8 +30,6 @@ public class ElectrolyzerRenderer extends BlockEntityRenderer<ElectrolyzerBlockE
     private static final float HEAD_REST = 13.9F, HEAD_LOW = 10.8F, HEAD_H = 1.0F, ROD_TOP = 15.0F;
     /** The grain's underside at the spout and on the bath, and the stroke phases it falls between. */
     private static final float GRAIN_TOP = 13.45F, GRAIN_LAND = 10.8F, GRAIN_START = 0.55F, GRAIN_END = 0.8F;
-    /** The progress comes every 20 ticks: carried on for no longer, so a stalled machine stops the punch. */
-    private static final float CARRY = 25.0F;
     private static final int STEEL = 0xFFBDC6C5, ROD = 0xFFB1BEBC;
 
     public static class State extends BlockEntityRenderState {
@@ -57,10 +55,7 @@ public class ElectrolyzerRenderer extends BlockEntityRenderer<ElectrolyzerBlockE
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
-        float since = Math.min(level.getGameTime() + partialTick - entity.statusTime, CARRY);
-        float carried = entity.status.working() ? since / ElectrolyzerBlockEntity.PROCESS_TIME : 0.0F;
-        float progress = Mth.clamp(entity.status.progress() + carried, 0.0F, 1.0F);
-        state.stroke = Mth.frac(progress * STROKES);
+        state.stroke = Mth.frac(ModelParts.progress(entity, level.getGameTime() + partialTick, ElectrolyzerBlockEntity.PROCESS_TIME) * STROKES);
     }
 
     /** Down fast, a moment on the bath, back up, then at rest for the second half. */

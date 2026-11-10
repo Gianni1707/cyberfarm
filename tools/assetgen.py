@@ -513,7 +513,6 @@ def nuclear_blocks():
     lit_machine("coolant_mixer", "machine_top")
     lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
-    lit_machine("pyrolysis_oven", "machine_top")
     orientable("supply_terminal", "supply_terminal_front", "machine_top")
     facing_blockstate("supply_terminal")
     # A villager job site, for mods that look for them

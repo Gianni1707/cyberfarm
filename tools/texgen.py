@@ -3338,21 +3338,6 @@ def circuit(board, trace, chip_light):
     return c
 
 
-def pyrolysis_oven_front():
-    """A kiln door with a grate of glowing coals, a gauge and a methane feed pipe."""
-    c = panel(67)
-    c.rect(3, 3, 12, 11, "K")
-    c.rect(4, 4, 11, 10, "#1c1410")
-    for x in range(4, 12):
-        c.set(x, 9, "o" if x % 2 else "r")
-        c.set(x, 8, "O" if x % 3 == 0 else "o")
-    for x in range(4, 12, 2):
-        c.set(x, 6, "r")
-    c.rect(3, 12, 12, 12, "m")
-    c.set(13, 4, "c")
-    return c
-
-
 def fabricator_front():
     """A clean-room window over a circuit board with a printing head and status lights."""
     c = panel(68)
@@ -3523,7 +3508,6 @@ def build_all():
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
-        **lit_front("pyrolysis_oven", pyrolysis_oven_front),
         **lit_front("fabricator", fabricator_front),
         "block/supply_terminal_front": supply_terminal_front(),
         "entity/villager/profession/drone_mechanist": villager_drone_mechanist(),

@@ -29,6 +29,7 @@ import com.cyberfarm.client.renderer.LaserTurretRenderer;
 import com.cyberfarm.client.renderer.HologramRenderer;
 import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.SteamEngineRenderer;
+import com.cyberfarm.client.renderer.PyrolysisOvenRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.renderer.WaterPumpRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
@@ -241,6 +242,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
         blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
         blockEntity(event, ModBlockEntities.ELECTROLYZER.get(), context -> new ElectrolyzerRenderer());
+        blockEntity(event, ModBlockEntities.PYROLYSIS_OVEN.get(), context -> new PyrolysisOvenRenderer());
         blockEntity(event, ModBlockEntities.BIO_DIGESTER.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.PADDLE));
         blockEntity(event, ModBlockEntities.METHANE_EXTRACTOR.get(), context -> new MethaneChamberRenderer());
         blockEntity(event, ModBlockEntities.RESONANCE_CORE.get(), context -> new ResonanceCoreRenderer());
