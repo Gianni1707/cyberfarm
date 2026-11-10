@@ -212,6 +212,8 @@ def hangar(x, front):
                 block(x + w, 5, front - d, "hangar_frame")
     check(x, 0, front, "mech_hangar[formed=true]", "Mech Hangar")
     summon("cyberfarm:mech", x + 2.5, 1, front - 1.5, "{modules:15,energy:100000,Rotation:[0f,0f]}")
+    # A mech never dies, not even to /kill, so a rebuild must not summon a second one
+    commands[-1] = f"execute unless entity @e[type=cyberfarm:mech,x={X0},y={Y - 2},z={Z0},dx={WIDTH},dy={CLEAR + 2},dz={DEPTH}] run {commands[-1]}"
     shown.add("mech")
     text(x + 2.5, 0.1, front + 1.5, tr("projector.cyberfarm.mech_hangar"), 1.0)
 
