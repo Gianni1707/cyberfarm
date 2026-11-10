@@ -26,6 +26,7 @@ PALETTE = {  # ramps shift hue: highlights warm, shadows cool
     "m": "#b6f08a", "o": "#5fcf6a", "p": "#2f8a52", "j": "#d6f3f7",                      # liquid, glint
     "A": "#a5ead4", "B": "#5ec2b8", "C": "#488d91", "D": "#496973",                      # mint enamel accent
     "H": "#00b894",                                                                      # emerald marking
+    "P": "#b88cff", "Q": "#6a34c0", "R": "#e5d2ff",                                      # the Fusion Crystal's violet, on its own seed only
     "K": "#3a1a12", "M": "#6e2c18",                                                      # cold firebox
 }
 UNSHADED = set("gG")
@@ -286,7 +287,8 @@ def strainer():
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
              "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "bed": bed(), "card": card(), "tray_front": tray_front(), "chip_pins": chip_pins(),
              "chip_top": chip_top(), "drum": drum(), "slot": slot(), "rotor": rotor(), "liquid": liquid(),
-             "strainer": strainer(), "beam": plate("c", "1", "2", "3"), "copper": plate("A", "B", "C", "D")}
+             "strainer": strainer(), "beam": plate("c", "1", "2", "3"),
+             "crystal": plate("P", "P", "Q", "Q"), "crystal_tip": plate("R", "R", "P", "P"), "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
 PIPES = {"gas_pipe_up": "gas_pipe", "liquid_pipe_up": "liquid_pipe"}
@@ -597,6 +599,33 @@ def coolant_mixer_loose():
             ((1.2, 6.6, 3.6), (4.8, 7.1, 12.4), "trim")]
 
 
+def coolant_mixer_hood():
+    """The panels that close the bench before it opens, sunk inside it afterwards: front, back, end, each a right and a left."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    panels = [((3.1, 0.16, 12.3), (11.4, 4.95, 13.4)), ((20.6, 0.16, 12.3), (28.9, 4.95, 13.4)),
+              ((3.1, 0.16, 1.1), (11.4, 4.95, 2.3)), ((20.6, 0.16, 1.1), (28.9, 4.95, 2.3)),
+              ((1.1, 0.16, 3.1), (1.9, 4.95, 12.9)), ((30.1, 0.16, 3.1), (30.9, 4.95, 12.9))]
+    return [[((a[0] - 16, a[1], a[2]), (b[0] - 16, b[1], b[2]), dark)] for a, b in panels]
+
+
+def machine_parts():
+    """The models of the parts that move while a small multiblock opens, in MachinePartBlock's order: the same boxes as the
+    static model, so the same texture and light. Each is a state of the block machine_part, for each facing."""
+    turbine = gas_turbine_parts()[1]
+    mixer = coolant_mixer_parts()[1]
+    groups = [("turbine_duct", turbine[:7]), ("turbine_nozzle", turbine[7:11]),
+              ("turbine_door_left", turbine[11:12]), ("turbine_door_right", turbine[12:13]),
+              ("mixer_water_tank", mixer[:7]), ("mixer_coolant_tank", mixer[8:15]),
+              ("mixer_water_saddle", mixer[7:8]), ("mixer_coolant_saddle", mixer[15:16]), ("mixer_rail", mixer[16:18]),
+              *[(f"mixer_hood_{i}", panel) for i, panel in enumerate(coolant_mixer_hood())]]
+    variants = {}
+    for part, (name, parts) in enumerate(groups):
+        build(f"part_{name}", parts, False)
+        for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+            variants[f"facing={facing},part={part}"] = {"model": f"cyberfarm:block/part_{name}", **({"y": y} if y else {})}
+    (ASSETS / "blockstates/machine_part.json").write_text(json.dumps({"variants": variants}, indent=2) + "\n")
+
+
 def coolant_mixer_port():
     """low_port() on a post that starts above the foot band."""
     return [((6, 2.8, 15), (10, 5, 16), "body"), *low_port()[1:]]
@@ -634,7 +663,7 @@ def hidden_frame():
 
 def gas_turbine_parts():
     """A 1x3 engine, the machine block in the middle cell: (the body, the opened parts). Alone it is the body, a drum with a
-    round mouth at each end. GasTurbineRenderer draws the opened parts moving, and the rotor always."""
+    round mouth at each end and sockets where pipes go. GasTurbineRenderer draws the opened parts moving, and the rotor always."""
     dark = {"up": "lid", "south": "body", "east": "body"}
     mint_front = {"up": "trim", "south": "copper", "east": "trim"}
     mint_rear = {"up": "trim", "south": "trim", "north": "copper", "east": "trim"}
@@ -656,13 +685,21 @@ def gas_turbine_parts():
             *mouth(0.2, 1.3, 5.9, mint_rear), *mouth(0, 0.3, 3.4, "slot"),
             ((15, 2.2, 3), (15.12, 5.2, 13), "slot"),                  # the sight glasses, on the flanks
             ((0.88, 2.2, 3), (1, 5.2, 13), "slot"),
-            ((1.9, 3, 15), (4.9, 4.2, 15.2), "light")]
-    opened = [((2, 3.5, 24), (14, 4.5, 30), wall), ((2, 14.5, 24), (14, 15.5, 30), wall),   # the duct, in the front frame's cell
+            ((1.9, 3, 15), (4.9, 4.2, 15.2), "light"),
+            ((13, 5.6, 5.6), (15, 10.4, 10.4), "body"),                # sockets, where pipes really go: both flanks and the top
+            ((15, 5.6, 5.6), (15.2, 10.4, 10.4), "copper"),
+            ((15, 6.5, 6.5), (15.22, 9.5, 9.5), "slot"),
+            ((1, 5.6, 5.6), (3, 10.4, 10.4), "body"),
+            ((0.8, 5.6, 5.6), (1, 10.4, 10.4), "copper"),
+            ((0.78, 6.5, 6.5), (1, 9.5, 9.5), "slot"),
+            ((5.6, 15.2, 5.6), (10.4, 15.25, 10.4), "copper"),
+            ((6.5, 15.2, 6.5), (9.5, 15.27, 9.5), "slot")]
+    # Solid sleeves slide out of the drum with the duct and the nozzle, so the three cells read as one engine. A hair apart in size, as they overlap when closed
+    opened = [*mouth(15.8, 24, 6, dark),                               # the front sleeve, then the duct, in the front frame's cell
+              ((2, 3.5, 24), (14, 4.5, 30), wall), ((2, 14.5, 24), (14, 15.5, 30), wall),
               ((2, 4.5, 24), (3, 14.5, 30), wall), ((13, 4.5, 24), (14, 14.5, 30), wall),
               ((3, 4.5, 24), (13, 14.5, 24.2), "slot"),
-              ((6.5, 7.5, 16), (9.5, 11.5, 24), "beam"),               # its shaft
-              ((6.2, 7.7, -6.2), (9.8, 11.3, 1.2), "beam"),            # the nozzle, in the back frame's cell
-              *mouth(-9, -6, 5.2, nozzle), *mouth(-9.2, -8.9, 3.4, "slot"),
+              *mouth(-9, 0.2, 5.95, nozzle), *mouth(-9.2, -8.9, 3.4, "slot"),   # the back sleeve and nozzle, in the back frame's cell
               ((3.05, 4.55, 24.27), (3.35, 14.45, 29.2), "trim"),      # the doors, swung flat against the duct's walls
               ((12.65, 4.55, 24.27), (12.95, 14.45, 29.2), "trim")]
     return body, opened
@@ -727,6 +764,63 @@ def radiation_mark():
             row.append(rgba("H") if hits * 2 >= samples * samples else rgba("5"))
         img.append(row)
     save_png(ASSETS / "textures/block/radiation_mark.png", img)
+
+
+def crystallizer_controller():
+    """The Crystallizer's controller alone, and its item: a stepped pedestal with a seed of the crystal in a basin, the heart
+    of the machine in miniature. Once the chamber is complete it hides, and CrystallizerRenderer draws the whole machine."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(1, 1, 1, 15, 7, 15, 3, dark),
+            *octagon(0.6, 2.4, 0.6, 15.4, 3.1, 15.4, 3, "copper"),
+            *octagon(3, 7, 3, 13, 10, 13, 2.5, "beam"),
+            ((3.5, 10, 3.5), (12.5, 11.2, 5), cap),                    # the basin's rim
+            ((3.5, 10, 11), (12.5, 11.2, 12.5), cap),
+            ((3.5, 10, 5), (5, 11.2, 11), cap),
+            ((11, 10, 5), (12.5, 11.2, 11), cap),
+            ((5, 10, 5), (11, 10.3, 11), "slot"),
+            *octagon(6.5, 10.3, 6.5, 9.5, 12.1, 9.5, 0.9, "crystal"),  # the seed
+            ((7.35, 12.1, 7.35), (8.65, 13.3, 8.65), "crystal_tip"),
+            ((6, 1, 15), (10, 5, 15.2), "radiation_mark")]
+
+
+def crystallizer_blockstate():
+    """Its own model until the chamber is complete, then nothing: the renderer draws it all."""
+    parts = []
+    for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        parts.append({"when": {"facing": facing, "formed": "false"},
+                      "apply": {"model": "cyberfarm:block/crystallizer", **({"y": y} if y else {})}})
+        parts.append({"when": {facing: "true", "formed": "false"},
+                      "apply": {"model": "cyberfarm:block/crystallizer_port_socket", **({"y": y} if y else {})}})
+    parts.append({"when": {"formed": "true"}, "apply": {"model": "cyberfarm:block/crystallizer_hidden"}})
+    (ASSETS / "blockstates/crystallizer.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+
+
+def supply_terminal_parts():
+    """A notice board on a post: dim cards in its four places, the last set apart for events, under a lip the renderer's
+    lit cards drop behind when their contract is done. SupplyTerminalRenderer draws what's lit."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    board = {"up": "beam", "south": "body", "east": "body"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(4.6, 1, 10.6, 11.4, 2.2, 14.8, 0.8, dark),        # footing
+            *octagon(6.3, 2.2, 11.8, 9.7, 5.9, 14.2, 0.5, dark),       # post
+            ((5.6, 5.3, 11.4), (10.4, 5.9, 14.6), "trim"),             # collar under the board
+            *octagon(0.4, 5.9, 12, 15.6, 15.4, 15, 1, board),          # the board
+            ((0.4, 5.9, 15), (0.9, 14.4, 15.6), "plinth"),             # its side posts, header and steel top edge
+            ((15.1, 5.9, 15), (15.6, 14.4, 15.6), "plinth"),
+            ((0.4, 14.4, 15), (15.6, 15.15, 15.6), "body"),
+            ((0.4, 15.15, 15), (15.6, 15.4, 15.6), "trim"),
+            ((0.9, 5.9, 15.42), (15.1, 10, 15.6), "body"),             # the lip the cards drop behind
+            ((0.9, 9.75, 15.6), (15.1, 10, 15.66), "trim"),
+            ((11.1, 10.1, 15), (11.5, 14.3, 15.2), "beam"),            # divider before the event's place
+            ((1, 10, 15), (14.8, 14.4, 15.1), "slot"),                 # the window behind the cards
+            ((1.4, 14.65, 15.6), (14.6, 15, 15.64), "light_off"),      # the header's light, off
+            ((7.2, 2.4, 14.2), (8.8, 3, 14.3), "slot"),
+            ((1.2, 10, 15.1), (3.7, 13.8, 15.16), "light_off"),        # the dim cards
+            ((4.6, 10, 15.1), (7.1, 13.8, 15.16), "light_off"),
+            ((8, 10, 15.1), (10.5, 13.8, 15.16), "light_off"),
+            ((12.1, 13, 15.1), (14.6, 13.8, 15.16), "light_off")]
 
 
 def water_pump():
@@ -1068,7 +1162,8 @@ if __name__ == "__main__":
             ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False),
             ("gas_turbine_body", gas_turbine_parts()[0], True, False),
             ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False),
-            ("waste_reprocessor", waste_reprocessor_parts(), True, False)):
+            ("waste_reprocessor", waste_reprocessor_parts(), True, False),
+            ("supply_terminal", supply_terminal_parts(), False, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -1088,6 +1183,8 @@ if __name__ == "__main__":
     build("pyrolysis_oven_port", low_port(), False)
     build("coolant_mixer", coolant_mixer_loose(), False)
     build("coolant_mixer_port", coolant_mixer_port(), False)
+    build("crystallizer", crystallizer_controller(), False)
+    build("crystallizer_port_socket", side_port(3), False)
     build("waste_reprocessor_port", low_port(), False)
     build("waste_reprocessor_item", waste_reprocessor_item(), False)
     radiation_mark()
@@ -1105,7 +1202,9 @@ if __name__ == "__main__":
     blockstate("electrolyzer", True, set())
     blockstate("pyrolysis_oven", True, set())
     blockstate("waste_reprocessor", True, set())
+    crystallizer_blockstate()
     small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
     hidden_frame()
+    machine_parts()

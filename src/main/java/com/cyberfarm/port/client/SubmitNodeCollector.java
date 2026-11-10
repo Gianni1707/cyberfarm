@@ -8,6 +8,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraft.util.FormattedCharSequence;
 
 /**
@@ -42,6 +44,15 @@ public final class SubmitNodeCollector {
         model.setupAnim(state);
         model.renderToBuffer(poseStack, buffers.getBuffer(type), light, overlay,
                 (color >> 16 & 0xFF) / 255.0F, (color >> 8 & 0xFF) / 255.0F, (color & 0xFF) / 255.0F, (color >>> 24) / 255.0F);
+    }
+
+    /** A block model drawn where the pose is, lit from its own place, as 1.20.1 draws a block a piston moves. */
+    public void submitMovingBlock(PoseStack poseStack, MovingBlockRenderState state, int outline) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.level != null) {
+            ForgeHooksClient.renderPistonMovedBlocks(state.blockPos, state.blockState, poseStack, buffers, minecraft.level, false,
+                    OverlayTexture.NO_OVERLAY, minecraft.getBlockRenderer());
+        }
     }
 
     public void submitText(PoseStack poseStack, float x, float y, FormattedCharSequence text, boolean shadow, Font.DisplayMode mode,

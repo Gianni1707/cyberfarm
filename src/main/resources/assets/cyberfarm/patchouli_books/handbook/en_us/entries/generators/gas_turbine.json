@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe that sits where a frame goes."
+      "text": "sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out of the drum and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe that sits where a frame goes."
     },
     {
       "type": "patchouli:text",
@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect to the machine block only, on either side or on top, whichever you prefer."
+      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect at the three mint sockets of the machine block, on either side or on top, whichever you prefer."
     },
     {
       "type": "patchouli:text",

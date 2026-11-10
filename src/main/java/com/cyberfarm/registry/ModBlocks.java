@@ -1,5 +1,7 @@
 package com.cyberfarm.registry;
 
+import com.cyberfarm.block.FormedFrameBlock;
+
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.AcidSynthesizerBlock;
 import com.cyberfarm.block.ElectrolyzerBlock;
@@ -26,6 +28,7 @@ import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.GasPipeBlock;
 import com.cyberfarm.block.GasTurbineBlock;
 import com.cyberfarm.block.HiddenFrameBlock;
+import com.cyberfarm.block.MachinePartBlock;
 import com.cyberfarm.block.LiquidPipeBlock;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
@@ -107,8 +110,10 @@ public class ModBlocks {
 
     /** Structural sci-fi frame, used by multiblocks such as the Methane Extractor chamber. */
     // The chamber's blocks never hide their neighbours' faces: once formed they are drawn as one smooth tank
-    public static final DeferredBlock<CyberFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
-            CyberFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<FormedFrameBlock> CYBER_FRAME = BLOCKS.registerBlock("cyber_frame",
+            FormedFrameBlock::new, ModBlocks::chamberPart);
+    public static final DeferredBlock<MachinePartBlock> MACHINE_PART = BLOCKS.registerBlock("machine_part",
+            MachinePartBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<HiddenFrameBlock> HIDDEN_FRAME = BLOCKS.registerBlock("hidden_frame",
             HiddenFrameBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<CapabilityPortBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
@@ -140,7 +145,7 @@ public class ModBlocks {
             FabricatorBlock::new, p -> litMachine(p).noOcclusion());
     // Supply contracts: the Drone Mechanist's job site in a village
     public static final DeferredBlock<SupplyTerminalBlock> SUPPLY_TERMINAL = BLOCKS.registerBlock("supply_terminal",
-            SupplyTerminalBlock::new, p -> machine(p).lightLevel(state -> 4));
+            SupplyTerminalBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
 
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = BLOCKS.registerBlock("reactor_controller",
             ReactorControllerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(ReactorControllerBlock.LIT) ? 12 : 0));

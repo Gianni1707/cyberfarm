@@ -14,12 +14,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and becomes a $(l)Drone Mechanist$(): a villager in goggles and a white work coat. While he works it, the terminal shows his level and the village's contracts.",
+      "text": "An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and becomes a $(l)Drone Mechanist$(): a villager in goggles and a white work coat. While he works it, the terminal shows his level and the village's contracts. Its board shows them from afar too: a lit card per",
       "title": "The Drone Mechanist"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Right-click$() him to talk: he has a plan for a $(l:drone_systems/tech_village)tech village$(/l). His trades are behind the $(l)Trade$() button at the end of each talk."
+      "text": "open contract filling up as you deliver, the event's in steel, blinking in a raid. A finished contract's card drops behind the board and a new one rises. The header is lit while he works it.$(br2)$(l)Right-click$() him to talk: he has a plan for a $(l:drone_systems/tech_village)tech village$(/l). His trades are behind the $(l)Trade$() button at the end of each talk."
     },
     {
       "type": "patchouli:text",

@@ -516,15 +516,12 @@ def nuclear_blocks():
             "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
         facing_blockstate(tank)
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
-    orientable("supply_terminal", "supply_terminal_front", "machine_top")
     facing_blockstate("supply_terminal")
     # A villager job site, for mods that look for them
     write(RES / "data/c/tags/block/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
     write(RES / "data/c/tags/item/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
-    orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
-    write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
-    facing_blockstate("crystallizer", {"formed=false": "crystallizer", "formed=true": "crystallizer_hidden"})
+    write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("models/crystallizer")}})
     # Its ports hide too: the renderer draws a socket on the machine where each one is
     write(ASSETS / "models/block/crystallizer_port.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("crystallizer_port")}})
     write(ASSETS / "models/block/crystallizer_port_hidden.json", {"textures": {"particle": tex("crystallizer_port")}})

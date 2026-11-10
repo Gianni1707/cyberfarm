@@ -60,11 +60,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Any of the Cyber Frames, in the floor, the corners or the roof, can be a $(item)Crystallizer Port$() instead: the projector suggests one at the back of the floor."
+      "text": "Any of the Cyber Frames, in the floor, the corners or the roof, can be a $(item)Crystallizer Port$() instead: the projector suggests one at the back of the floor.$(br2)The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it: pick $(o)Crystallizer$(). Complete, the chamber turns into one machine: a stepped"
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it: pick $(o)Crystallizer$(). Complete, the chamber turns into one machine: a stepped octagonal plinth with the acid in a basin sunk in its top, four white pylons holding up a crown with an emitter in its hub, a violet energy field between them and a console on the plinth's front."
+      "text": "octagonal plinth with the acid in a basin sunk in its top, four pylons holding up a crown with an emitter in its hub, a violet energy field between them and a console on the plinth's front, under the radiation mark. Alone, the Crystallizer is a small pedestal with a seed of the crystal in its basin."
     },
     {
       "type": "patchouli:text",
@@ -72,16 +72,16 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Acid, power and items go in through the Crystallizer itself or through any $(l)Crystallizer Port$() of the chamber: Liquid Pipes, Energy Conduits (or any mod's cables), hoppers and item pipes all connect to them. The Isotope Shards and Amethyst Shards find their own slots, and automation",
+      "text": "Acid, power and items go in through the Crystallizer itself, through any $(l)Crystallizer Port$() of the chamber, or through the formed chamber's $(l)plinth, at the middle of each side, and the middle of its roof$(), from outside: Liquid Pipes, Energy Conduits (or any mod's cables),",
       "title": "Ports"
     },
     {
       "type": "patchouli:text",
-      "text": "can take only the $(l)Fusion Crystal$() out: never the ingredients, never the acid. Once the chamber is complete each port becomes a node of your pipes set on the machine: a coupling like the pipes' own, with a violet window, in the plinth, against a pylon or under the crown (a port in the floor also shows a violet socket on the"
+      "text": "hoppers and item pipes all connect to them. The Isotope Shards and Amethyst Shards find their own slots, and automation can take only the $(l)Fusion Crystal$() out: never the ingredients, never the acid. Once the chamber is complete each port becomes a node of your pipes set on the machine: a coupling like the pipes' own,"
     },
     {
       "type": "patchouli:text",
-      "text": "plinth). A pipe or cable you connect runs straight into it."
+      "text": "with a violet window, in the plinth, against a pylon or under the crown (a port in the floor also shows a violet socket on the plinth). A pipe or cable you connect runs straight into it."
     },
     {
       "type": "patchouli:text",

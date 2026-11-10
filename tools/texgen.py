@@ -3201,28 +3201,6 @@ def mech_core():
     return c
 
 
-def crystallizer_front():
-    """A violet screen with the crystal growing on it, over a progress strip."""
-    c = panel(64)
-    c.rect(3, 2, 12, 11, "K")
-    c.rect(4, 3, 11, 10, "#160c26")
-    gem(c, 7.5, 6.5, 2.4, 3.4, ("#6a34c0", "#6a34c0", "#b88cff", "#ffffff"))
-    c.rect(3, 13, 12, 13, "k")
-    c.rect(4, 13, 9, 13, "v")
-    return c
-
-
-def crystallizer_top():
-    """The emitter the crystal floats over: a violet ring around a lens."""
-    c = panel(65)
-    c.disc(7.5, 7.5, 6.0, "K")
-    c.disc(7.5, 7.5, 5.2, "v", r_inner=3.8)
-    c.disc(7.5, 7.5, 3.8, "s")
-    c.disc(7.5, 7.5, 2.0, "V")
-    c.disc(7.5, 7.5, 0.9, "#ffffff")
-    return c
-
-
 def crystallizer_port():
     """A Cyber Frame with a pipe socket ringed in violet."""
     return chamber_port("#8a4fd8", "#d6b8ff")
@@ -3319,19 +3297,6 @@ def fabricator_front():
     c.rect(3, 13, 12, 13, "c")
     c.set(4, 12, "g")
     c.set(6, 12, "G")
-    return c
-
-
-def supply_terminal_front():
-    """A notice screen: three contract lines with their progress, an emerald for the pay."""
-    c = panel(69)
-    c.rect(2, 2, 13, 12, "K")
-    c.rect(3, 3, 12, 11, "#10222a")
-    for y, filled in ((4, 7), (7, 4), (10, 9)):
-        c.rect(4, y, 4 + filled, y, "c")
-        c.rect(5 + filled, y, 9, y, "b")
-        c.set(11, y, "#3fdc6f")
-    c.rect(3, 13, 12, 13, "y")
     return c
 
 
@@ -3473,7 +3438,6 @@ def build_all():
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
         **lit_front("fabricator", fabricator_front),
-        "block/supply_terminal_front": supply_terminal_front(),
         "entity/villager/profession/drone_mechanist": villager_drone_mechanist(),
         "entity/zombie_villager/profession/drone_mechanist": villager_drone_mechanist(),
         "block/bauxite_ore_overlay": bauxite_ore_overlay(),
@@ -3484,8 +3448,6 @@ def build_all():
         "item/basic_circuit": circuit("#2f8a4a", "#c87a3a", "g"),
         "item/advanced_circuit": circuit("#1f4f9a", "#d8a040", "c"),
         "item/elite_circuit": circuit("#5a2f9a", "#e8c050", "V"),
-        "block/crystallizer_front": crystallizer_front(),
-        "block/crystallizer_top": crystallizer_top(),
         "block/crystallizer_port": crystallizer_port(),
         "item/isotope_shard": isotope_shard(),
         "item/fusion_crystal": fusion_crystal(),

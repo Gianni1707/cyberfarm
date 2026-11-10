@@ -7,20 +7,31 @@ import com.cyberfarm.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-/** Supply Terminal: the Drone Mechanist's job site, where the village posts its supply contracts. */
+/** Supply Terminal: the Drone Mechanist's job site, a board on a post where the village posts its supply contracts (see tools/machinemodels.py; SupplyTerminalRenderer draws its lit cards). */
 public class SupplyTerminalBlock extends MachineBlock {
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(0.4, 1, 0.4, 15.6, 15.4, 15.6));
 
     public SupplyTerminalBlock(Properties properties) {
         super(properties);
     }
 
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {

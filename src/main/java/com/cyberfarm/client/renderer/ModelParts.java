@@ -1,20 +1,27 @@
 package com.cyberfarm.client.renderer;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.block.MachinePartBlock;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.fluid.GasTank;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.cyberfarm.port.client.VertexConsumer;
 import com.mojang.math.Axis;
+import com.cyberfarm.registry.ModBlocks;
 
 import net.minecraft.client.renderer.RenderType;
 import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
+import com.cyberfarm.port.client.SubmitNodeCollector;
+import com.cyberfarm.port.client.MovingBlockRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import com.cyberfarm.port.client.FluidSprites;
 import net.minecraftforge.fluids.FluidStack;
@@ -42,6 +49,42 @@ final class ModelParts {
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - facing.toYRot()));
         poseStack.scale(PIXEL, PIXEL, PIXEL);
         poseStack.translate(-8.0F, 0.0F, -8.0F);
+    }
+
+    /** A part's model at the machine's place, for its light: what a piston draws as it pushes a block. */
+    static MovingBlockRenderState movingPart(Level level, BlockPos pos, int part, Direction facing) {
+        MovingBlockRenderState state = new MovingBlockRenderState();
+        state.randomSeedPos = pos;
+        state.blockPos = pos;
+        state.blockState = ModBlocks.MACHINE_PART.get().defaultBlockState().setValue(MachinePartBlock.FACING, facing).setValue(MachinePartBlock.PART, part);
+        state.biome = level.getBiome(pos);
+        if (level instanceof ClientLevel client) {
+            // 1.20.1 lights the part from the client level
+        }
+        state.lightEngine = level.getLightEngine();
+        return state;
+    }
+
+    /** Draws a part shifted by this many model pixels of the north-facing model. */
+    static void slid(PoseStack poseStack, SubmitNodeCollector collector, MovingBlockRenderState part, Direction facing, float dx, float dy, float dz) {
+        float a = (180.0F - facing.toYRot()) * Mth.DEG_TO_RAD;
+        poseStack.pushPose();
+        poseStack.translate((dx * Mth.cos(a) + dz * Mth.sin(a)) * PIXEL, dy * PIXEL, (dz * Mth.cos(a) - dx * Mth.sin(a)) * PIXEL);
+        collector.submitMovingBlock(poseStack, part, 0);
+        poseStack.popPose();
+    }
+
+    /** Draws a part turned round a vertical hinge, at this place on the north-facing model. */
+    static void swung(PoseStack poseStack, SubmitNodeCollector collector, MovingBlockRenderState part, Direction facing, float hingeX, float hingeZ, float angle) {
+        float a = (180.0F - facing.toYRot()) * Mth.DEG_TO_RAD;
+        float dx = hingeX - 8.0F, dz = hingeZ - 8.0F;
+        float x = (8.0F + dx * Mth.cos(a) + dz * Mth.sin(a)) * PIXEL, z = (8.0F + dz * Mth.cos(a) - dx * Mth.sin(a)) * PIXEL;
+        poseStack.pushPose();
+        poseStack.translate(x, 0.0F, z);
+        poseStack.mulPose(Axis.YP.rotation(angle));
+        poseStack.translate(-x, 0.0F, -z);
+        collector.submitMovingBlock(poseStack, part, 0);
+        poseStack.popPose();
     }
 
     /** Moves the machine's speed towards {@code target} (1 = full), {@code ramp} ticks for the whole range; returns how far it has run, in ticks at full speed. */

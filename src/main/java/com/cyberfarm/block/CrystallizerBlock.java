@@ -5,6 +5,7 @@ import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,6 +29,16 @@ public class CrystallizerBlock extends MachineBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FORMED);
+    }
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    /** The renderer's arcs and motes show it works: no particles. */
+    @Override
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
     }
 
 

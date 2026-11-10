@@ -1,34 +1,90 @@
 {
-  "variants": {
-    "facing=north,formed=false": {
-      "model": "cyberfarm:block/crystallizer"
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer"
+      }
     },
-    "facing=north,formed=true": {
-      "model": "cyberfarm:block/crystallizer_hidden"
+    {
+      "when": {
+        "north": "true",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer_port_socket"
+      }
     },
-    "facing=east,formed=false": {
-      "model": "cyberfarm:block/crystallizer",
-      "y": 90
+    {
+      "when": {
+        "facing": "east",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer",
+        "y": 90
+      }
     },
-    "facing=east,formed=true": {
-      "model": "cyberfarm:block/crystallizer_hidden",
-      "y": 90
+    {
+      "when": {
+        "east": "true",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer_port_socket",
+        "y": 90
+      }
     },
-    "facing=south,formed=false": {
-      "model": "cyberfarm:block/crystallizer",
-      "y": 180
+    {
+      "when": {
+        "facing": "south",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer",
+        "y": 180
+      }
     },
-    "facing=south,formed=true": {
-      "model": "cyberfarm:block/crystallizer_hidden",
-      "y": 180
+    {
+      "when": {
+        "south": "true",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer_port_socket",
+        "y": 180
+      }
     },
-    "facing=west,formed=false": {
-      "model": "cyberfarm:block/crystallizer",
-      "y": 270
+    {
+      "when": {
+        "facing": "west",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer",
+        "y": 270
+      }
     },
-    "facing=west,formed=true": {
-      "model": "cyberfarm:block/crystallizer_hidden",
-      "y": 270
+    {
+      "when": {
+        "west": "true",
+        "formed": "false"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer_port_socket",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "formed": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/crystallizer_hidden"
+      }
     }
-  }
+  ]
 }

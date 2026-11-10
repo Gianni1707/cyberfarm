@@ -1,0 +1,148 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_mixer_rail",
+    "atlas": "cyberfarm:block/models/part_mixer_rail",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        -4.5,
+        5.1,
+        11.1
+      ],
+      "to": [
+        4.5,
+        9.9,
+        13
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            11,
+            0,
+            15.5,
+            1
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            0,
+            2.5,
+            4.5,
+            3.5
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            4.5,
+            2.5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            4.5,
+            0,
+            9,
+            2.5
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            9,
+            0,
+            10,
+            2.5
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            10,
+            0,
+            11,
+            2.5
+          ],
+          "texture": "#atlas"
+        }
+      }
+    },
+    {
+      "from": [
+        -4,
+        7.6,
+        11.05
+      ],
+      "to": [
+        4,
+        8.4,
+        11.1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            4.5,
+            2.5,
+            8.5,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            8.5,
+            2.5,
+            12.5,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            3.5,
+            4,
+            4
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            4,
+            3.5,
+            8,
+            4
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            8,
+            3.5,
+            8.5,
+            4
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            8.5,
+            3.5,
+            9,
+            4
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}
