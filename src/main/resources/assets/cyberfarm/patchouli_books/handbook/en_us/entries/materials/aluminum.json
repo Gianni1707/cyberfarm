@@ -10,19 +10,19 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, almost as common as iron, from y -32 to y 80 and most common around y 24. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it into $(l)Alumina$(), a white powder."
+      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, almost as common as iron, from y -32 to y 80 and most common around y 24. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it into $(l)Alumina$(), a white powder.$(br)$(li)Put the Alumina in an $(l)Electrolyzer$(): $(l)1 Aluminum Ingot$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Put the Alumina in an $(l)Electrolyzer$(): $(l)1 Aluminum Ingot every 5 seconds at 40 FE/t$(). One $(l:generators/combustion_generator)Combustion Generator$(/l) keeps it running.$(br)Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and"
+      "text": "$(li)$(l)every 5 seconds at 40 FE/t$(). One $(l:generators/combustion_generator)Combustion Generator$(/l) keeps it running. While it works, the feeder punch behind its window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its sides, front or back: its top is full."
     },
     {
       "type": "patchouli:text",
-      "text": "forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can process our ore."
+      "text": "Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can"
     },
     {
       "type": "patchouli:text",
-      "text": "Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
+      "text": "process our ore.$(br2)Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
     },
     {
       "type": "patchouli:crafting",

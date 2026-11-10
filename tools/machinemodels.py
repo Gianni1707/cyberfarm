@@ -485,6 +485,33 @@ def acid_synthesizer():
     return parts
 
 
+def electrolyzer():
+    """A low base, a tall bath cell, a cathode column behind and a hopper. The boxes tagged "unlit" are the feeder punch
+    at rest, the pose ElectrolyzerRenderer starts each stroke from; that renderer draws them while it works."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),   # to the edge, under a port's post
+            *octagon(2, 1, 2, 14, 8, 14, 2, dark),                     # wide low base
+            *octagon(1.6, 2.5, 1.6, 14.4, 3.25, 14.4, 2, "copper"),    # foot band, below the port
+            ((2.4, 5.35, 14), (3.6, 7.15, 14.08), "plinth"), ((2.5, 5.5, 14.08), (3.5, 7, 14.2), "light"),
+            ((12.4, 5.35, 14), (13.6, 7.15, 14.08), "plinth"), ((12.5, 5.5, 14.08), (13.5, 7, 14.2), "light"),
+            *octagon(3.5, 8, 7, 12.5, 15, 13.4, 1.5, dark),            # tall bath cell, narrower than the base
+            *round_tank(2.5, 8, 2.5, 7.5, 15.2, 6.9, dark),            # cathode column, taller than the cell
+            *round_tank(2.2, 11, 2.2, 7.8, 11.75, 7.2, "copper"),
+            *round_tank(3, 15.2, 3, 7, 16, 6.4, {"up": "lid", "south": "trim", "east": "trim"}),
+            # the window, with open gaps for the punch (x 5.5..8.5) and the grain (x 9..10.6)
+            ((5.5, 10.2, 13.4), (10.6, 14.9, 13.8), "slot"),
+            ((5.5, 10.2, 13.8), (10.6, 10.7, 14.2), "light"),          # the bath
+            ((4.5, 9.2, 13.4), (11.5, 10.2, 14.5), dark),
+            ((4.5, 10.2, 13.4), (5.5, 15, 14.5), dark),
+            ((10.6, 10.2, 13.4), (11.5, 15, 14.5), dark),
+            ((8.5, 10.2, 13.4), (9, 15, 14.5), dark),
+            ((5.4, 15.05, 12.8), (8.6, 16, 14.8), dark),               # punch housing
+            ((8.7, 15, 7.5), (12.5, 16, 14.8), dark),                  # hopper
+            ((9, 14.6, 13.4), (10.6, 15, 14.5), dark),                 # spout over the grain's gap
+            ((5.8, 13.9, 14.26), (8.3, 14.9, 14.55), "trim", "unlit"),      # the punch's head and rod at rest
+            ((6.65, 14.9, 14.3), (7.85, 15, 14.5), "pipe", "unlit")]
+
+
 def water_pump():
     """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
     in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
@@ -814,7 +841,8 @@ if __name__ == "__main__":
             ("drone_assembler", drone_assembler(), True, False),
             ("fabricator", fabricator(), True, False),
             ("acid_synthesizer", acid_synthesizer(), True, False),
-            ("water_pump", water_pump(), True, False)):
+            ("water_pump", water_pump(), True, False),
+            ("electrolyzer", electrolyzer(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -830,6 +858,7 @@ if __name__ == "__main__":
     build("water_pump_port", low_port(), False)
     build("water_pump_port_up", water_pump_port_up(), False)
     build("water_pump_intake", water_pump_intake(), False)
+    build("electrolyzer_port", low_port(), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
@@ -838,3 +867,4 @@ if __name__ == "__main__":
     blockstate("fabricator", True, {"up"})
     blockstate("acid_synthesizer", True, set())
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
+    blockstate("electrolyzer", True, set())

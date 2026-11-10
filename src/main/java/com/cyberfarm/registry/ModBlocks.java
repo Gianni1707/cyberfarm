@@ -130,7 +130,7 @@ public class ModBlocks {
     public static final DeferredBlock<Block> DEEPSLATE_BAUXITE_ORE = BLOCKS.registerSimpleBlock("deepslate_bauxite_ore",
             p -> p.mapColor(MapColor.DEEPSLATE).strength(4.5F, 3.0F).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
     public static final DeferredBlock<ElectrolyzerBlock> ELECTROLYZER = BLOCKS.registerBlock("electrolyzer",
-            ElectrolyzerBlock::new, ModBlocks::litMachine);
+            ElectrolyzerBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<PyrolysisOvenBlock> PYROLYSIS_OVEN = BLOCKS.registerBlock("pyrolysis_oven",
             PyrolysisOvenBlock::new, ModBlocks::litMachine);
     public static final DeferredBlock<FabricatorBlock> FABRICATOR = BLOCKS.registerBlock("fabricator",
