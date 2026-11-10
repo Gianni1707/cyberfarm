@@ -6,7 +6,7 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A mid-game generator built in a row: an induction $(l)boiler$() burns Biogas or Methane into steam, $(l)1 to 4 cylinders$() turn it into motion and a $(l)dynamo$() at the end turns the flywheel into FE."
+      "text": "A mid-game generator built in a row: an induction $(l)boiler$() burns Biogas or Methane into steam, $(l)three cylinders$() turn it into motion and a $(l)dynamo$() at the end turns the flywheel into FE."
     },
     {
       "type": "patchouli:multiblock",
@@ -15,41 +15,41 @@
         "pattern": [
           [
             "A",
+            "B",
             "0",
             "B",
-            "C"
+            "B"
           ]
         ],
         "mapping": {
           "A": "cyberfarm:steam_engine[facing=north]",
-          "B": "cyberfarm:steam_engine_cylinder",
-          "C": "cyberfarm:steam_engine_dynamo",
-          "0": "cyberfarm:steam_engine_cylinder"
+          "B": "cyberfarm:cyber_frame",
+          "0": "cyberfarm:cyber_frame"
         }
       },
       "enable_visualize": false
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Place the $(l)Steam Engine$() (the boiler). Its front faces you.$(br)$(li)Behind it, in a straight line, place $(l)1 to 4 Steam Engine Cylinders$().$(br)$(li)Close the row with a $(l)Steam Engine Dynamo$().$(br)When the row is complete its blocks turn into $(l)one machine$(): a white",
+      "text": "$(li)Place the $(l)Steam Engine$() (the boiler). Its front faces you. Alone, a right click sends out mini drones that project the frames where they go.$(br)$(li)Behind it, in a straight line on solid ground, place $(l)4 Cyber Frames$().",
       "title": "Building it"
     },
     {
       "type": "patchouli:text",
-      "text": "induction boiler with glowing orange coils and steam puffing from its top, a cylinder for every block with its piston pumping in a glass sleeve, the steam line running over them, and the dynamo with copper windings and a spinning flywheel. The faster the engine runs, the brighter the coils and windings glow."
+      "text": "A drone over a cell projects the frame it wants. An amber X means a block is in the way; a steel outline means that frame already belongs to another machine. A second click calls the drones back.$(br2)The frames are taken in and the engine opens: rail plates run out from under the"
     },
     {
       "type": "patchouli:text",
-      "text": "The GUI shows a live side view of the engine, the cylinders found, the power made and the speed."
+      "text": "boiler one after another, and on them the three cylinders and the dynamo compose themselves. Then its pistons pump between steel posts, the steam line runs over them and the flywheel spins. The faster it runs, the brighter the boiler's coils glow. Breaking a frame folds it all back and gives the frames back."
     },
     {
       "type": "patchouli:text",
-      "text": "Pipe Biogas or Methane into the boiler. $(l)Each cylinder$() burns $(l)15 mB/t$():$(br)$(li)$(l)Biogas$(): 6, 90 FE/t, 360 FE/t$(br)$(li)$(l)Methane$(): 10, 150 FE/t, 600 FE/t",
+      "text": "The GUI shows a live side view of the engine, the power made and the speed."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Pipe Biogas or Methane into the boiler. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 6, 270 FE/t$(br)$(li)$(l)Methane$(): 10, 450 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
       "title": "Fuel and power"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "A full engine on methane burns 60 mB/t, the gas of two or three zombie chambers, and makes as much as fifteen Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more."
     },
     {
       "type": "patchouli:text",
@@ -57,21 +57,14 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The power comes out of the $(l)dynamo$(): connect $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it. Pipes and cables joining the boiler or the dynamo get a collar with a pale green ring."
+      "text": "Both the gas and the power go through the $(l)boiler$(): connect pipes, $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it, on any side but its back, where the row goes. A socket shows wherever one plugs in. The row itself takes none."
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "cyberfarm:steam_engine",
-      "recipe2": "cyberfarm:steam_engine_cylinder"
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:steam_engine_dynamo"
+      "recipe": "cyberfarm:steam_engine"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:steam_engine": 9,
-    "cyberfarm:steam_engine_cylinder": 9,
-    "cyberfarm:steam_engine_dynamo": 10
+    "cyberfarm:steam_engine": 9
   }
 }

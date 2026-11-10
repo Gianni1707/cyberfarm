@@ -141,7 +141,7 @@ public final class ProjectionRenderer {
         poseStack.popPose();
     }
 
-    private static void cube(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite sprite, float x, float y, float z, float size, int color) {
+    public static void cube(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite sprite, float x, float y, float z, float size, int color) {
         float x1 = x + size;
         float y1 = y + size;
         float z1 = z + size;

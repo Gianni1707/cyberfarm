@@ -7,15 +7,15 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:gas_turbine",
-      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br2)It is a small multiblock: $(l)place a Cyber Frame in front of it and one behind$(). $(l)Right-click$() the machine and sparks show the spots (hold"
+      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br2)It is a small multiblock: $(l)place a Cyber Frame in front of it and one behind$(). $(l)Right-click$() the machine and mini drones fly out and"
     },
     {
       "type": "patchouli:text",
-      "text": "sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out of the drum and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe that sits where a frame goes."
+      "text": "project the frames where they go (hold sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out of the drum and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
+      "text": "that sits where a frame goes.$(br)$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
     },
     {
       "type": "patchouli:text",

@@ -173,14 +173,8 @@ public class ModBlocks {
             p -> p.mapColor(MapColor.NETHER).strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE).requiresCorrectToolForDrops());
     public static final DeferredBlock<AcidSynthesizerBlock> ACID_SYNTHESIZER = BLOCKS.registerBlock("acid_synthesizer",
             AcidSynthesizerBlock::new, p -> litMachine(p).noOcclusion());
-    // Steam Engine: the boiler controls a row of cylinders closed by a dynamo
-    // A complete engine is drawn whole by the boiler's renderer: its blocks hide and never cull their neighbours
     public static final DeferredBlock<SteamEngineBlock> STEAM_ENGINE = BLOCKS.registerBlock("steam_engine",
             SteamEngineBlock::new, p -> machine(p).noOcclusion());
-    public static final DeferredBlock<CyberFrameBlock> STEAM_ENGINE_CYLINDER = BLOCKS.registerBlock("steam_engine_cylinder",
-            CyberFrameBlock::new, p -> machine(p).noOcclusion());
-    public static final DeferredBlock<CapabilityPortBlock> STEAM_ENGINE_DYNAMO = BLOCKS.registerBlock("steam_engine_dynamo",
-            CapabilityPortBlock::new, p -> machine(p).noOcclusion());
     // Crystallizer: grows the Fusion Crystal at the heart of a mech's core
     public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = BLOCKS.registerBlock("crystallizer",
             CrystallizerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));

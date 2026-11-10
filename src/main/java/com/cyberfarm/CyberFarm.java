@@ -3,13 +3,13 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.MethaneExtractorBlock;
+import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.MachineStatusPayload;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
-import com.cyberfarm.block.entity.SteamEngineBlockEntity;
 import com.cyberfarm.effect.EffectPayload;
 import com.cyberfarm.energy.ForwardingEnergyHandler;
 import com.cyberfarm.entity.DroneEntity;
@@ -156,12 +156,11 @@ public class CyberFarm {
             ResonanceCoreBlockEntity core = ResonanceCoreBlockEntity.linkedCore(level, pos);
             return core != null ? core.getEnergy() : null;
         }), ModBlocks.STABILIZER_PYLON.get());
-        // The Steam Engine gives its power out of the dynamo closing its row
-        Caps.registerBlock(Caps.ENERGY, (level, pos, state, be, side) -> new ForwardingEnergyHandler(() -> {
-            SteamEngineBlockEntity engine = SteamEngineBlockEntity.ofDynamo(level, pos);
-            return engine != null ? engine.getEnergy() : null;
-        }), ModBlocks.STEAM_ENGINE_DYNAMO.get());
-        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.STEAM_ENGINE.get(), (be, side) -> be.getTank());
+        // Neither from behind the boiler, where the row goes
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.STEAM_ENGINE.get(),
+                (be, side) -> side == be.getBlockState().getValue(MachineBlock.FACING).getOpposite() ? null : be.getEnergy());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.STEAM_ENGINE.get(),
+                (be, side) -> side == be.getBlockState().getValue(MachineBlock.FACING).getOpposite() ? null : be.getTank());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.MECH_HANGAR.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getItems());

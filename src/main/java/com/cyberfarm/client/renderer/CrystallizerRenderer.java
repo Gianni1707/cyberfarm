@@ -164,30 +164,10 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
             boolean tap = level.getBlockState(pos).is(ModBlocks.CYBER_FRAME.get())
                     && CrystallizerBlockEntity.isTap(pos.getX() - centre.getX(), pos.getY() - centre.getY(), pos.getZ() - centre.getZ());
             if (port || tap) {
-                // A pipe, cable, hopper or tank outside the chamber: anything with a block entity
-                boolean linked = false;
-                ResourceLocation[] links = new ResourceLocation[6];
-                for (Direction side : Direction.values()) {
-                    BlockPos next = pos.relative(side);
-                    boolean inside = Math.abs(next.getX() - centre.getX()) <= 1 && Math.abs(next.getZ() - centre.getZ()) <= 1
-                            && next.getY() >= centre.getY() && next.getY() <= centre.getY() + 3;
-                    BlockState neighbour = level.getBlockState(next);
-                    if (inside || level.getBlockEntity(next) == null) {
-                        continue;
-                    }
-                    if (neighbour.getBlock() instanceof NetworkPipeBlock) {
-                        if (neighbour.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()))) {
-                            links[side.get3DDataValue()] = BuiltInRegistries.BLOCK.getKey(neighbour.getBlock()).withPath(path -> "textures/block/" + path + ".png");
-                            linked = true;
-                        }
-                    } else {
-                        links[side.get3DDataValue()] = PLAIN;
-                        linked = true;
-                    }
-                }
+                ResourceLocation[] links = linksOf(level, pos, centre);
                 // A frame only shows a coupling where something plugs into it
-                if (port || linked) {
-                    ports.add(new Port(pos.getX() - centre.getX(), pos.getY() - centre.getY(), pos.getZ() - centre.getZ(), links));
+                if (port || links != null) {
+                    ports.add(new Port(pos.getX() - centre.getX(), pos.getY() - centre.getY(), pos.getZ() - centre.getZ(), links != null ? links : new ResourceLocation[6]));
                 }
             }
         }
@@ -336,6 +316,31 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
         poseStack.popPose();
     }
 
+    /** What is attached to each side of a 3x3x4 chamber's block from outside: a pipe, cable, hopper or tank, anything with a block entity. Null if nothing. */
+    static @Nullable ResourceLocation @Nullable [] linksOf(Level level, BlockPos pos, BlockPos centre) {
+        boolean linked = false;
+        ResourceLocation[] links = new ResourceLocation[6];
+        for (Direction side : Direction.values()) {
+            BlockPos next = pos.relative(side);
+            boolean inside = Math.abs(next.getX() - centre.getX()) <= 1 && Math.abs(next.getZ() - centre.getZ()) <= 1
+                    && next.getY() >= centre.getY() && next.getY() <= centre.getY() + 3;
+            BlockState neighbour = level.getBlockState(next);
+            if (inside || level.getBlockEntity(next) == null) {
+                continue;
+            }
+            if (neighbour.getBlock() instanceof NetworkPipeBlock) {
+                if (neighbour.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()))) {
+                    links[side.get3DDataValue()] = BuiltInRegistries.BLOCK.getKey(neighbour.getBlock()).withPath(path -> "textures/block/" + path + ".png");
+                    linked = true;
+                }
+            } else {
+                links[side.get3DDataValue()] = PLAIN;
+                linked = true;
+            }
+        }
+        return linked ? links : null;
+    }
+
     /**
      * What shows of a port, drawn like a node of the pipes: a coupling at its block's centre, dark
      * with a lit window on every side, set on the machine (in the plinth, against the pylon,
@@ -343,18 +348,27 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
      * floor also shows a lit socket on the plinth's facet, where the coupling is out of sight.
      */
     private static void socket(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light) {
-        int full = LightCoordsUtil.FULL_BRIGHT;
         if (port.dy() == 0) {
-            poseStack.pushPose();
-            // +x now points out towards the port's block
-            poseStack.mulPose(Axis.YP.rotation(-(float) Math.atan2(port.dz(), port.dx())));
-            float x = CONSOLE;
-            float y = 0.32F;
-            float s = 0.17F;
-            collector.submitCustomGeometry(poseStack, METAL, (pose, buffer) -> box(pose, buffer, x - 0.02F, y - s, -s, x + 0.04F, y + s, s, DARK, light));
-            collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> ringOut(pose, buffer, x + 0.041F, y, full));
-            poseStack.popPose();
+            plinthSocket(poseStack, collector, port, light);
         }
+        coupling(poseStack, collector, port, light, BAND);
+    }
+
+    static void plinthSocket(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light) {
+        int full = LightCoordsUtil.FULL_BRIGHT;
+        poseStack.pushPose();
+        // +x now points out towards the port's block
+        poseStack.mulPose(Axis.YP.rotation(-(float) Math.atan2(port.dz(), port.dx())));
+        float x = CONSOLE;
+        float y = 0.5F;   // the height of a pipe's arm, so the ring goes round it
+        float s = 0.17F;
+        collector.submitCustomGeometry(poseStack, METAL, (pose, buffer) -> box(pose, buffer, x - 0.02F, y - s, -s, x + 0.04F, y + s, s, DARK, light));
+        collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> ringOut(pose, buffer, x + 0.041F, y, full));
+        poseStack.popPose();
+    }
+
+    static void coupling(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light, int window) {
+        int full = LightCoordsUtil.FULL_BRIGHT;
         float cx = port.dx();
         float cy = port.dy() + 0.5F;
         float cz = port.dz();
@@ -370,9 +384,9 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
         collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {
             float w = 0.07F;
             float o = h + 0.002F;
-            box(pose, buffer, cx - w, cy - w, cz - o, cx + w, cy + w, cz + o, BAND, full);
-            box(pose, buffer, cx - o, cy - w, cz - w, cx + o, cy + w, cz + w, BAND, full);
-            box(pose, buffer, cx - w, cy - o, cz - w, cx + w, cy + o, cz + w, BAND, full);
+            box(pose, buffer, cx - w, cy - w, cz - o, cx + w, cy + w, cz + o, window, full);
+            box(pose, buffer, cx - o, cy - w, cz - w, cx + o, cy + w, cz + w, window, full);
+            box(pose, buffer, cx - w, cy - o, cz - w, cx + w, cy + o, cz + w, window, full);
         });
     }
 
@@ -380,7 +394,7 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
      * For every side of a port's block with something attached: an arm of that pipe from the
      * coupling out to the side, where the pipe's own arm takes over, as a pipe's block draws it.
      */
-    private static void links(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light) {
+    static void links(PoseStack poseStack, SubmitNodeCollector collector, Port port, int light) {
         Vec3 centre = new Vec3(port.dx(), port.dy() + 0.5, port.dz());
         for (Direction side : Direction.values()) {
             ResourceLocation texture = port.links()[side.get3DDataValue()];
@@ -487,16 +501,16 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
     }
 
     /** The corner of an octagon of circumradius {@code r}: corners sit between the flat faces, which face the four sides. */
-    private static float cornerX(float r, int i) {
+    static float cornerX(float r, int i) {
         return r * Mth.cos(Mth.PI / SIDES + Mth.TWO_PI * i / SIDES);
     }
 
-    private static float cornerZ(float r, int i) {
+    static float cornerZ(float r, int i) {
         return r * Mth.sin(Mth.PI / SIDES + Mth.TWO_PI * i / SIDES);
     }
 
     /** The sides of an octagonal prism, facing out or (for walls seen from within) in. */
-    private static void prism(PoseStack.Pose pose, VertexConsumer buffer, float r, float y0, float y1, boolean inward, int color, int light) {
+    static void prism(PoseStack.Pose pose, VertexConsumer buffer, float r, float y0, float y1, boolean inward, int color, int light) {
         for (int i = 0; i < SIDES; i++) {
             float x0 = cornerX(r, i), z0 = cornerZ(r, i), x1 = cornerX(r, i + 1), z1 = cornerZ(r, i + 1);
             float mid = Mth.TWO_PI * (i + 1) / SIDES;
@@ -517,7 +531,7 @@ public class CrystallizerRenderer extends BlockEntityRenderer<CrystallizerBlockE
     }
 
     /** A flat octagonal ring (a whole octagon when {@code inner} is 0) at height {@code y}, facing up or down. */
-    private static void cap(PoseStack.Pose pose, VertexConsumer buffer, float inner, float outer, float y, boolean up, int color, int light) {
+    static void cap(PoseStack.Pose pose, VertexConsumer buffer, float inner, float outer, float y, boolean up, int color, int light) {
         float ny = up ? 1 : -1;
         for (int i = 0; i < SIDES; i++) {
             float[][] quad = {

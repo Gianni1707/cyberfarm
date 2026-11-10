@@ -354,20 +354,6 @@ def blocks():
 
     lit_machine("bio_digester", "bio_digester_top")
 
-    # The extractor is the chamber's "shower head": its bottom face looks into the chamber
-    for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):
-        side = tex("methane_extractor_side" + suffix)
-        write(ASSETS / f"models/block/{model}.json", {
-            "parent": "minecraft:block/cube",
-            "textures": {"particle": side, "up": tex("methane_extractor_top" + suffix),
-                         "down": tex("methane_extractor_bottom" + suffix),
-                         "north": side, "east": side, "south": side, "west": side},
-        })
-    # A formed chamber is drawn whole by the extractor's renderer: its blocks show no faces
-    write(ASSETS / "models/block/methane_extractor_hidden.json", {"textures": {"particle": tex("methane_extractor_side_formed")}})
-    write(ASSETS / "blockstates/methane_extractor.json", {"variants": {
-        f"facing={f},formed={formed}": {"model": f"{NS}:block/methane_extractor{'_hidden' if formed == 'true' else ''}"}
-        for f in FACING_ROTATION for formed in ("false", "true")}})
 
     for model in ("cyber_frame", "cyber_frame_formed"):
         write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
@@ -395,7 +381,7 @@ def blocks():
              "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
-             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
+             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine",
              "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
              "supply_terminal", "laser_turret"]
     for name in names:
@@ -527,19 +513,6 @@ def nuclear_blocks():
     write(ASSETS / "models/block/crystallizer_port_hidden.json", {"textures": {"particle": tex("crystallizer_port")}})
     write(ASSETS / "blockstates/crystallizer_port.json", {"variants": {
         "formed=false": {"model": f"{NS}:block/crystallizer_port"}, "formed=true": {"model": f"{NS}:block/crystallizer_port_hidden"}}})
-    # A complete Steam Engine is drawn whole by the boiler's renderer: its blocks show no faces
-    orientable("steam_engine", "steam_engine_front", "machine_top")
-    write(ASSETS / "models/block/steam_engine_hidden.json", {"textures": {"particle": tex("steam_engine_front")}})
-    write(ASSETS / "blockstates/steam_engine.json", {"variants": {
-        f"facing={f},formed={formed}": {"model": f"{NS}:block/steam_engine" + ("_hidden" if formed == "true" else ""),
-                                        **({"y": rot} if rot and formed == "false" else {})}
-        for f, rot in FACING_ROTATION.items() for formed in ("false", "true")}})
-    for part in ("steam_engine_cylinder", "steam_engine_dynamo"):
-        write(ASSETS / f"models/block/{part}.json", {"parent": "minecraft:block/cube_column",
-            "textures": {"side": tex(part), "end": tex("machine_top")}})
-        write(ASSETS / f"models/block/{part}_hidden.json", {"textures": {"particle": tex(part)}})
-        write(ASSETS / f"blockstates/{part}.json", {"variants": {
-            "formed=false": {"model": f"{NS}:block/{part}"}, "formed=true": {"model": f"{NS}:block/{part}_hidden"}}})
     write(ASSETS / "models/block/containment_glass.json", {"parent": "minecraft:block/cube_all",
         "render_type": "minecraft:translucent", "textures": {"all": tex("containment_glass")}})
     # Mech Hangar: console, frame and pad light up once the hangar is complete
@@ -841,8 +814,6 @@ def recipes():
     # Steam Engine: boiler, cylinders and the dynamo closing the row
     shaped("steam_engine", ["ICI", "BFB", "IDI"],
            {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": advanced_circuit})
-    shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
-    shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
 
     # Mech: end game. Its core is a Fusion Crystal (reactor waste -> Isotope Shard -> Crystallizer) in two elite frames
     advanced, elite = f"{NS}:advanced_frame", f"{NS}:elite_frame"

@@ -13,6 +13,7 @@ import com.cyberfarm.client.model.MechModel;
 import com.cyberfarm.client.renderer.MechRenderer;
 import com.cyberfarm.client.renderer.MovingPartsRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
 import com.cyberfarm.client.renderer.AssemblerRenderer;
@@ -124,7 +125,7 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         MinecraftForge.EVENT_BUS.addListener(LevelRenderEvents.extract(ProjectionRenderer::extract, EffectRenderer::extract)
-                .submit(ProjectionRenderer::submit, EffectRenderer::submit)::onRender);
+                .submit(ProjectionRenderer::submit, FrameDroneRenderer::submit, EffectRenderer::submit)::onRender);
         MinecraftForge.EVENT_BUS.addListener(DroneDownwash::tick);
     }
 

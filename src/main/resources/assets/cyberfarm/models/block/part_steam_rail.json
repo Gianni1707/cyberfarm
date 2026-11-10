@@ -1,0 +1,233 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_steam_rail",
+    "atlas": "cyberfarm:block/models/part_steam_rail",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        0.5,
+        0,
+        0
+      ],
+      "to": [
+        15.5,
+        2.5,
+        16
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            7.5,
+            8
+          ],
+          "texture": "#atlas",
+          "cullface": "down"
+        },
+        "up": {
+          "uv": [
+            7.5,
+            0,
+            15,
+            8
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            8,
+            7.5,
+            9
+          ],
+          "texture": "#atlas",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            7.5,
+            8,
+            15,
+            9
+          ],
+          "texture": "#atlas",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            0,
+            9,
+            8,
+            10
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            8,
+            9,
+            16,
+            10
+          ],
+          "texture": "#atlas"
+        }
+      }
+    },
+    {
+      "from": [
+        0.4,
+        1.2,
+        0
+      ],
+      "to": [
+        0.5,
+        2,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "down": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            12
+          ],
+          "texture": "#light"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            12
+          ],
+          "texture": "#light"
+        },
+        "north": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            4.8
+          ],
+          "texture": "#light",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            4.8
+          ],
+          "texture": "#light",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            12,
+            4.8
+          ],
+          "texture": "#light"
+        },
+        "east": {
+          "uv": [
+            4,
+            4,
+            12,
+            4.8
+          ],
+          "texture": "#light"
+        }
+      },
+      "forge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
+    },
+    {
+      "from": [
+        15.5,
+        1.2,
+        0
+      ],
+      "to": [
+        15.6,
+        2,
+        16
+      ],
+      "shade": false,
+      "faces": {
+        "down": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            12
+          ],
+          "texture": "#light"
+        },
+        "up": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            12
+          ],
+          "texture": "#light"
+        },
+        "north": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            4.8
+          ],
+          "texture": "#light",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            4,
+            4,
+            4.1,
+            4.8
+          ],
+          "texture": "#light",
+          "cullface": "south"
+        },
+        "west": {
+          "uv": [
+            4,
+            4,
+            12,
+            4.8
+          ],
+          "texture": "#light"
+        },
+        "east": {
+          "uv": [
+            4,
+            4,
+            12,
+            4.8
+          ],
+          "texture": "#light"
+        }
+      },
+      "forge_data": {
+        "block_light": 15,
+        "sky_light": 15
+      }
+    }
+  ]
+}

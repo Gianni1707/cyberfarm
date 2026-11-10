@@ -847,37 +847,6 @@ def digester_top():
     return c
 
 
-def extractor_bottom(formed):
-    """The shower head: faces down into the chamber."""
-    c = panel(25)
-    c.rect(3, 3, 12, 12, "K")
-    c.rect(4, 4, 11, 11, "D")
-    for y in range(4, 12, 2):
-        for x in range(4, 12, 2):
-            c.set(x + (y // 2) % 2, y, "C" if formed else "b")
-    return c
-
-
-def extractor_top(formed):
-    c = panel(26)
-    c.disc(7.5, 7.5, 3.6, "K")
-    c.disc(7.5, 7.5, 2.6, "c" if formed else "b")
-    c.rect(7, 7, 8, 8, "C" if formed else "s")
-    return c
-
-
-def extractor_side(formed):
-    """Status strip: red while the chamber is incomplete, cyan once it is formed."""
-    if formed:
-        c = cyber_frame_formed()
-        c.rect(4, 7, 11, 8, "c")
-        c.rect(6, 7, 9, 8, "C")
-        return c
-    c = cyber_frame()
-    c.rect(5, 7, 10, 8, "r")
-    return c
-
-
 # Pipe tiers are told apart by the rims of the sleeve: plain, gold, violet
 # Cable sleeves: a light tube with the content as a coloured band down the middle. Arms use rows
 # 6..9 (a straight run joins them into one tube), the coupling box at junctions columns/rows 5..10.
@@ -2780,37 +2749,6 @@ def containment_glass():
     return c
 
 
-def steam_engine_front():
-    """The boiler's face: an induction coil glowing behind a grille, and a pressure gauge."""
-    c = panel(61)
-    c.rect(3, 3, 12, 10, "K")
-    for y in range(4, 10, 2):
-        c.rect(4, y, 11, y, "o")
-        c.rect(5, y, 10, y, "O")
-    c.disc(7.5, 12.5, 1.6, "w")
-    c.set(8, 12, "r")
-    return c
-
-
-def steam_engine_cylinder():
-    """A ribbed steel cylinder with a brass band."""
-    c = panel(62, base="m")
-    for x in range(3, 13, 2):
-        c.rect(x, 2, x, 13, "l")
-    c.rect(2, 7, 13, 8, "O")
-    return c
-
-
-def steam_engine_dynamo():
-    """Copper windings behind a grille, cyan output lights."""
-    c = panel(63)
-    c.rect(3, 3, 12, 12, "K")
-    for y in range(4, 12):
-        c.rect(4, y, 11, y, "#b86b2e" if y % 2 else "#e08a45")
-    c.rect(3, 13, 12, 13, "c")
-    return c
-
-
 # --------------------------------------------------------------------------- methane chamber
 
 def chamber_port(color, light):
@@ -3406,12 +3344,6 @@ def build_all():
         "item/depleted_fuel_rod": fuel_rod(True),
         **lit_front("bio_digester", digester_front),
         "block/bio_digester_top": digester_top(),
-        "block/methane_extractor_bottom": extractor_bottom(False),
-        "block/methane_extractor_top": extractor_top(False),
-        "block/methane_extractor_side": extractor_side(False),
-        "block/methane_extractor_bottom_formed": extractor_bottom(True),
-        "block/methane_extractor_top_formed": extractor_top(True),
-        "block/methane_extractor_side_formed": extractor_side(True),
         **{f"block/{tier}gas_pipe": clean_pipe("gas", tier) for tier in PIPE_RIMS},
         **{f"block/{tier}liquid_pipe": clean_pipe("liquid", tier) for tier in PIPE_RIMS},
         "block/pipe_extract": pipe_extract(),
@@ -3453,9 +3385,6 @@ def build_all():
         "item/fusion_crystal": fusion_crystal(),
         "item/mech_core": mech_core(),
         "block/containment_glass": containment_glass(),
-        "block/steam_engine_front": steam_engine_front(),
-        "block/steam_engine_cylinder": steam_engine_cylinder(),
-        "block/steam_engine_dynamo": steam_engine_dynamo(),
         "block/acid_inlet": chamber_port(ACID, "#e4ffb0"),
         "block/methane_outlet": chamber_port("c", "C"),
         "block/intake_gate": intake_gate(),

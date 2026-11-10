@@ -45,7 +45,7 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CapabilityPortBlockEntity>> CAPABILITY_PORT = BLOCK_ENTITIES.register("capability_port",
             () -> PortTypes.blockEntity(CapabilityPortBlockEntity::new, Set.of(ModBlocks.CYBER_FRAME.get(), ModBlocks.ACID_INLET.get(), ModBlocks.METHANE_OUTLET.get(),
-                    ModBlocks.STEAM_ENGINE_DYNAMO.get(), ModBlocks.CRYSTALLIZER_PORT.get(), ModBlocks.STABILIZER_PYLON.get())));
+                    ModBlocks.CRYSTALLIZER_PORT.get(), ModBlocks.STABILIZER_PYLON.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CombustionGeneratorBlockEntity>> COMBUSTION_GENERATOR = BLOCK_ENTITIES.register("combustion_generator",
             () -> PortTypes.blockEntity(CombustionGeneratorBlockEntity::new, Set.of(ModBlocks.COMBUSTION_GENERATOR.get())));

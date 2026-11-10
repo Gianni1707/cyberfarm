@@ -87,6 +87,18 @@ final class ModelParts {
         poseStack.popPose();
     }
 
+    /** Draws a part turned round the front-to-back axis at height {@code y}, raised by {@code lift}, this far behind the machine in model pixels. */
+    static void spun(PoseStack poseStack, SubmitNodeCollector collector, MovingBlockRenderState part, Direction facing, float behind, float y, float lift, float angle) {
+        Direction back = facing.getOpposite();
+        float x = 0.5F + back.getStepX() * behind * PIXEL, z = 0.5F + back.getStepZ() * behind * PIXEL;
+        poseStack.pushPose();
+        poseStack.translate(x, (y + lift) * PIXEL, z);
+        poseStack.mulPose(new org.joml.Quaternionf().rotationAxis(angle, back.getStepX(), 0.0F, back.getStepZ()));
+        poseStack.translate(-0.5F, -y * PIXEL, -0.5F);
+        collector.submitMovingBlock(poseStack, part, 0);
+        poseStack.popPose();
+    }
+
     /** Moves the machine's speed towards {@code target} (1 = full), {@code ramp} ticks for the whole range; returns how far it has run, in ticks at full speed. */
     static float advance(MachineBlockEntity entity, float time, float target, float ramp) {
         float elapsed = entity.motionTime == 0.0F ? 0.0F : Mth.clamp(time - entity.motionTime, 0.0F, 5.0F);

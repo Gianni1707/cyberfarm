@@ -107,7 +107,7 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
 
         // Cylinders in the window's corner; power and speed under it, then the speed bar
         if (n > 0) {
-            graphics.text(font, Component.translatable("gui.cyberfarm.engine.cylinders", n, SteamEngineBlockEntity.MAX_CYLINDERS),
+            graphics.text(font, Component.translatable("gui.cyberfarm.engine.cylinders", n, SteamEngineBlockEntity.CYLINDERS),
                     x + VIEW_X0 + 3, y + TOP + 2, ACCENT, true);
             graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", String.format("%,d", menu.getOutput())),
                     x + VIEW_X0, y + 78, ACCENT, false);

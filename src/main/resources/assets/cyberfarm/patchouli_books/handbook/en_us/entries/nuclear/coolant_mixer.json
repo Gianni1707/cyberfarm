@@ -11,11 +11,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "seen from its front, against the open flange. $(l)Right-click$() the machine and sparks show the spot (hold sneak to place the frame against the machine itself). When the frame is there the machine assembles and opens, and both tanks show their levels. It does not work until then, so a Mixer placed before this change waits for"
+      "text": "seen from its front, against the open flange. $(l)Right-click$() the machine and a mini drone flies out and projects the frame where it goes (hold sneak to place the frame against the machine itself). When the frame is there the machine assembles and opens, and both tanks show their levels. It does not work until then, so"
     },
     {
       "type": "patchouli:text",
-      "text": "its frame, with its contents kept.$(br)$(li)$(l)Water$(): Lapis Lazuli, $(l)Coolant$()$(br)$(li)$(l)Coolant$(): Blue Ice, $(l)Cryo Coolant$()"
+      "text": "a Mixer placed before this change waits for its frame, with its contents kept.$(br)$(li)$(l)Water$(): Lapis Lazuli, $(l)Coolant$()$(br)$(li)$(l)Coolant$(): Blue Ice, $(l)Cryo Coolant$()"
     },
     {
       "type": "patchouli:text",
