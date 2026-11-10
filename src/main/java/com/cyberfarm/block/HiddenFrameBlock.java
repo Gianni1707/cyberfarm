@@ -1,5 +1,10 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.block.entity.CapabilityPortBlockEntity;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jspecify.annotations.Nullable;
+
 import com.cyberfarm.port.PortBlock;
 import net.minecraft.world.InteractionHand;
 
@@ -26,7 +31,7 @@ import net.minecraft.world.phys.BlockHitResult;
  * covers its cell; a cell too far for that model shows its own {@link #PIECE}. Breaking it gives the frame back; the machine gives
  * back the others when it folds or goes (see SmallMultiblockBlockEntity).
  */
-public class HiddenFrameBlock extends PortBlock {
+public class HiddenFrameBlock extends PortBlock implements EntityBlock {
     /** Towards the machine, along any frames in between, which may turn on the way. */
     public static final EnumProperty<Direction> TO_MACHINE = DirectionalBlock.FACING;
     public static final int NOTHING = 0, STEAM_CYLINDER = 1, STEAM_DYNAMO = 2;
@@ -35,6 +40,15 @@ public class HiddenFrameBlock extends PortBlock {
     public HiddenFrameBlock(Properties properties) {
         super(properties);
         registerDefaultState(defaultBlockState().setValue(TO_MACHINE, Direction.NORTH).setValue(PIECE, NOTHING));
+    }
+
+    /**
+     * On Forge 1.20.1 only block entities expose capabilities: a frame over its machine (a Biomass Press's funnel) carries
+     * one, so a hopper on it reaches the machine below.
+     */
+    @Override
+    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return state.getValue(TO_MACHINE) == Direction.DOWN ? new CapabilityPortBlockEntity(pos, state) : null;
     }
 
     @Override

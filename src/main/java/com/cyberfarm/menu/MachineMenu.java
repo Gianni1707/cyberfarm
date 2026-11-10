@@ -9,6 +9,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -68,6 +69,18 @@ public abstract class MachineMenu extends AbstractContainerMenu {
         return stillValid(access, player, block);
     }
 
+    /**
+     * The client's machine slots are placeholders that take anything, so it would show an item going into a slot that
+     * refuses it until the server took it back: anything going into a machine slot waits for the server's word.
+     */
+    @Override
+    public void clicked(int slotId, int button, ClickType input, Player player) {
+        if (player.level().isClientSide() && slotId >= 0 && slotId < machineSlotCount && (input == ClickType.SWAP || !getCarried().isEmpty())) {
+            return;
+        }
+        super.clicked(slotId, button, input, player);
+    }
+
     @Override
     public ItemStack quickMoveStack(Player player, int index) {
         Slot slot = slots.get(index);
@@ -80,7 +93,8 @@ public abstract class MachineMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, machineSlotCount, slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
-        } else if (!moveItemStackTo(stack, 0, machineSlotCount, false)) {
+        } else if (player.level().isClientSide() || !moveItemStackTo(stack, 0, machineSlotCount, false)) {
+            // On the client, see clicked: only the server knows what goes in, and tells us
             return ItemStack.EMPTY;
         }
 

@@ -79,7 +79,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock.$(br)Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a Harvester or a Quarry and bring the harvest to your storage."
+      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock.$(br)Both must be within $(l)48 blocks of the dock$(), and their chunks loaded: an $(l:drone_systems/addons)Anchor Addon$(/l) keeps them so."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a Harvester or a Quarry and bring the harvest to your storage."
     },
     {
       "type": "patchouli:text",
@@ -137,7 +141,7 @@
   ],
   "extra_recipe_mappings": {
     "cyberfarm:drone_dock": 3,
-    "cyberfarm:survey_tool": 24,
-    "cyberfarm:swarm_dock": 25
+    "cyberfarm:survey_tool": 25,
+    "cyberfarm:swarm_dock": 26
   }
 }

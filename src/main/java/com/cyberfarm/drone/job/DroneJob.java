@@ -47,7 +47,15 @@ public abstract class DroneJob {
      * block is then skipped until the drone goes home.
      */
     protected Travel travelTo(DroneEntity drone, BlockPos pos) {
-        return travelTo(drone, pos, Vec3.atCenterOf(pos).add(0.0, 1.0, 0.0));
+        Vec3 hover = Vec3.atCenterOf(pos).add(0.0, 1.0, 0.0);
+        drone.flyOver(hover);
+        if (drone.isClimbing()) {
+            // Going up to cross over something takes it away from the block for now: judge it from the top
+            noProgressTicks = 0;
+            bestDistance = drone.position().distanceTo(hover);
+            return Travel.MOVING;
+        }
+        return progress(drone, pos, hover, ARRIVAL_DISTANCE);
     }
 
     /** Like {@link #travelTo(DroneEntity, BlockPos)}, hovering at {@code hover} instead of above the block. */
@@ -58,6 +66,10 @@ public abstract class DroneJob {
     /** Like {@link #travelTo(DroneEntity, BlockPos, Vec3)}, arrived as soon as it is within {@code reach} of {@code hover}. */
     protected Travel travelTo(DroneEntity drone, BlockPos pos, Vec3 hover, double reach) {
         drone.flyTowards(hover);
+        return progress(drone, pos, hover, reach);
+    }
+
+    private Travel progress(DroneEntity drone, BlockPos pos, Vec3 hover, double reach) {
         double distance = drone.position().distanceTo(hover);
         if (distance <= reach) {
             noProgressTicks = 0;

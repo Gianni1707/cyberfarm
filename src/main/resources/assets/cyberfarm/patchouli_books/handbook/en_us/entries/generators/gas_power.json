@@ -6,11 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The second step of CyberFarm power: $(l)gases$(). Organic waste becomes $(l)Biogas$(), mobs shut in an extraction chamber give off $(l)Methane$(), and a $(l)Gas Turbine$() burns both into FE.$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)"
+      "text": "The second step of CyberFarm power: $(l)gases$(). Organic waste, pressed into Biomass, becomes $(l)Biogas$(), mobs shut in an extraction chamber give off $(l)Methane$(), and a $(l)Gas Turbine$() burns both into FE.$(br)$(li)$(l:generators/biomass_press)Biomass Press$(/l)$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), about 6 mB/t, 3 FE per mB, 6 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 25 mB/t, 8 FE per mB, 10 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
+      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), about 6 mB/t, 3 FE per mB, 6 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 25 mB/t, 8 FE per mB, 10 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
     },
     {
       "type": "patchouli:text",

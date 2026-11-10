@@ -3,6 +3,7 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.FluidTankBlock;
+import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -61,6 +62,8 @@ import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import com.cyberfarm.port.net.PortNetwork;
 import com.cyberfarm.port.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
@@ -134,7 +137,14 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.ENERGY_CONDUIT.get(), (be, side) -> be.getEnergyHandler());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.GAS_PIPE.get(), (be, side) -> be.getFluidHandler());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
+        // A press's frame has its funnel on top: a hopper there feeds the press (the frame carries a block entity for it, see HiddenFrameBlock)
+        Caps.registerBlock(Caps.ITEM, (level, pos, state, be, side) -> {
+            BlockPos below = pos.below();
+            return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
+                    ? Caps.items(level, below, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
         // The extraction chamber takes acid in and gives methane out only through its ports
         Caps.registerBlock(Caps.FLUID, (level, pos, state, be, side) -> {
             MethaneExtractorBlockEntity extractor = MethaneExtractorBlockEntity.ofChamberBlock(level, pos);

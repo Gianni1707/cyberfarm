@@ -2,6 +2,7 @@ package com.cyberfarm.registry;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.AcidSynthesizerMenu;
+import com.cyberfarm.menu.BiomassPressMenu;
 import com.cyberfarm.menu.ElectrolyzerMenu;
 import com.cyberfarm.menu.FabricatorMenu;
 import com.cyberfarm.menu.PyrolysisOvenMenu;
@@ -56,6 +57,8 @@ public class ModMenus {
     public static final DeferredHolder<MenuType<?>, MenuType<SteamEngineMenu>> STEAM_ENGINE = MENUS.register("steam_engine",
             () -> IForgeMenuType.create((id, inventory, buf) -> new SteamEngineMenu(id, inventory)));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<BiomassPressMenu>> BIOMASS_PRESS = MENUS.register("biomass_press",
+            () -> IForgeMenuType.create((id, inventory, buf) -> new BiomassPressMenu(id, inventory)));
     public static final DeferredHolder<MenuType<?>, MenuType<ElectrolyzerMenu>> ELECTROLYZER = MENUS.register("electrolyzer",
             () -> IForgeMenuType.create((id, inventory, buf) -> new ElectrolyzerMenu(id, inventory)));
 

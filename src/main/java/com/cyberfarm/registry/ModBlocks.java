@@ -42,6 +42,7 @@ import com.cyberfarm.block.StabilizerPylonBlock;
 import com.cyberfarm.block.TurbineControllerBlock;
 import com.cyberfarm.block.WasteReprocessorBlock;
 import com.cyberfarm.block.LaserTurretBlock;
+import com.cyberfarm.block.BiomassPressBlock;
 import com.cyberfarm.block.WaterPumpBlock;
 
 import net.minecraft.world.level.block.Block;
@@ -188,6 +189,8 @@ public class ModBlocks {
             CyberFrameBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 5 : 0));
     public static final DeferredBlock<CyberFrameBlock> HANGAR_PAD = BLOCKS.registerBlock("hangar_pad",
             CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
+    public static final DeferredBlock<BiomassPressBlock> BIOMASS_PRESS = BLOCKS.registerBlock("biomass_press",
+            BiomassPressBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
             WaterPumpBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<LaserTurretBlock> LASER_TURRET = BLOCKS.registerBlock("laser_turret",

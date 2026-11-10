@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:bio_digester",
-      "text": "Turns $(l)organic waste$() into $(l)Biogas$(). It needs no power: just feed it."
+      "text": "Digests $(l)Biomass$() into $(l)Biogas$(). It needs no power: just feed it from a $(l:generators/biomass_press)Biomass Press$(/l)."
     },
     {
       "type": "patchouli:text",
@@ -15,11 +15,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Accepts $(l)anything a composter takes$() (seeds, crops, leaves, saplings, flowers...) and $(l)rotten flesh$().$(br)$(li)Each item takes 2 seconds. A sure-fire compost item (like a cake) gives $(l)250 mB$(), the others less, in proportion to their composting chance; rotten flesh gives $(l)200 mB$()."
+      "text": "$(li)Accepts only $(l:generators/biomass_press)Biomass$(/l).$(br)$(li)Each Biomass takes 2 seconds and gives $(l)250 mB$() of Biogas.$(br)$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l). Pipes connect to the machine block, on its free sides."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l). Pipes connect to the machine block, on its free sides.$(br)A Harvester drone and a hopper feeding the digester make a fully automatic biogas farm."
+      "text": "A Harvester drone, a hopper into a $(l:generators/biomass_press)Biomass Press$(/l) and the press's nozzle pointing at the digester make a fully automatic biogas farm."
     },
     {
       "type": "patchouli:crafting",

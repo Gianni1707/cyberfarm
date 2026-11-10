@@ -382,6 +382,36 @@
     ],
     "subtitle": "subtitles.cyberfarm.water_pump.work"
   },
+  "biomass_press.work": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 0.7,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:mob/slime/big1",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "pitch": 0.8,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.biomass_press.work"
+  },
   "gas_turbine.work": {
     "sounds": [
       {

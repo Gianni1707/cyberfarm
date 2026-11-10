@@ -5,22 +5,25 @@
     "I": {
       "item": "minecraft:iron_ingot"
     },
+    "P": {
+      "item": "minecraft:piston"
+    },
     "C": {
       "item": "minecraft:copper_ingot"
     },
-    "R": {
-      "item": "minecraft:redstone_block"
+    "X": {
+      "item": "minecraft:composter"
     },
-    "B": {
-      "item": "cyberfarm:battery_cell"
+    "U": {
+      "item": "cyberfarm:basic_circuit"
     }
   },
   "pattern": [
-    "ICI",
-    "CRC",
-    "IBI"
+    "IPI",
+    "CXC",
+    "IUI"
   ],
   "result": {
-    "item": "cyberfarm:steam_engine_dynamo"
+    "item": "cyberfarm:biomass_press"
   }
 }

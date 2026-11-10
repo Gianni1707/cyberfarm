@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:generators/combustion_generator)Combustion Generator$(/l)$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:generators/acid_synthesizer)Acid Synthesizer$(/l)$(br)$(li)$(l:generators/steam_engine)Steam Engine$(/l)$(br)$(li)$(l:nuclear/fission_reactor)Fission Reactor Controller$(/l)$(br)$(li)$(l:nuclear/steam_turbine)Steam Turbine Controller$(/l)"
+      "text": "$(li)$(l:generators/combustion_generator)Combustion Generator$(/l)$(br)$(li)$(l:generators/biomass_press)Biomass Press$(/l)$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:generators/acid_synthesizer)Acid Synthesizer$(/l)$(br)$(li)$(l:generators/steam_engine)Steam Engine$(/l)$(br)$(li)$(l:nuclear/fission_reactor)Fission Reactor Controller$(/l)$(br)$(li)$(l:nuclear/steam_turbine)Steam Turbine Controller$(/l)"
     },
     {
       "type": "patchouli:text",

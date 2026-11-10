@@ -24,6 +24,7 @@ import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.item.GeigerCounterItem;
 import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.item.MobCapsuleItem;
+import com.cyberfarm.item.BiomassItem;
 import com.cyberfarm.item.BlueprintDiscItem;
 import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.item.SurveyToolItem;
@@ -86,6 +87,7 @@ public class ModItems {
     public static final DeferredItem<HazmatSuitItem> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", p -> new HazmatSuitItem(p, ArmorItem.Type.BOOTS));
     public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
+    public static final DeferredItem<BlockItem> BIOMASS_PRESS = ITEMS.registerSimpleBlockItem(ModBlocks.BIOMASS_PRESS);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
     public static final DeferredItem<BlockItem> LASER_TURRET = ITEMS.registerSimpleBlockItem(ModBlocks.LASER_TURRET);
     public static final DeferredItem<BlockItem> LIQUID_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.LIQUID_TANK);
@@ -102,6 +104,8 @@ public class ModItems {
     // Sulfur from the Nether, for the Acid Synthesizer
     public static final DeferredItem<BlockItem> NETHER_SULFUR_ORE = ITEMS.registerSimpleBlockItem(ModBlocks.NETHER_SULFUR_ORE);
     public static final DeferredItem<Item> SULFUR = ITEMS.registerSimpleItem("sulfur");
+    // What the Biomass Press makes of organic waste, for the Bio-Digester or as a weak fertilizer
+    public static final DeferredItem<Item> BIOMASS = ITEMS.registerItem("biomass", BiomassItem::new);
     public static final DeferredItem<BlockItem> CONTAINMENT_GLASS = ITEMS.registerSimpleBlockItem(ModBlocks.CONTAINMENT_GLASS);
     public static final DeferredItem<BlockItem> ACID_SYNTHESIZER = ITEMS.registerSimpleBlockItem(ModBlocks.ACID_SYNTHESIZER);
     public static final DeferredItem<BlockItem> STEAM_ENGINE = ITEMS.registerSimpleBlockItem(ModBlocks.STEAM_ENGINE);

@@ -38,8 +38,10 @@ import com.cyberfarm.client.renderer.PyrolysisOvenRenderer;
 import com.cyberfarm.client.renderer.SupplyTerminalRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
 import com.cyberfarm.client.renderer.WasteReprocessorRenderer;
+import com.cyberfarm.client.renderer.BiomassPressRenderer;
 import com.cyberfarm.client.renderer.WaterPumpRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
+import com.cyberfarm.client.screen.BiomassPressScreen;
 import com.cyberfarm.client.screen.ElectrolyzerScreen;
 import com.cyberfarm.client.screen.FabricatorScreen;
 import com.cyberfarm.client.screen.PyrolysisOvenScreen;
@@ -223,6 +225,7 @@ public final class CyberFarmClient {
         MenuScreens.register(ModMenus.REACTOR.get(), ReactorScreen::new);
         MenuScreens.register(ModMenus.COOLANT_MIXER.get(), CoolantMixerScreen::new);
         MenuScreens.register(ModMenus.ACID_SYNTHESIZER.get(), AcidSynthesizerScreen::new);
+        MenuScreens.register(ModMenus.BIOMASS_PRESS.get(), BiomassPressScreen::new);
         MenuScreens.register(ModMenus.ELECTROLYZER.get(), ElectrolyzerScreen::new);
         MenuScreens.register(ModMenus.PYROLYSIS_OVEN.get(), PyrolysisOvenScreen::new);
         MenuScreens.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
@@ -247,6 +250,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new GasTurbineRenderer());
+        blockEntity(event, ModBlockEntities.BIOMASS_PRESS.get(), context -> new BiomassPressRenderer());
         blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
         blockEntity(event, ModBlockEntities.SUPPLY_TERMINAL.get(), context -> new SupplyTerminalRenderer());
         blockEntity(event, ModBlockEntities.MUFFLER.get(), context -> new MufflerRenderer());

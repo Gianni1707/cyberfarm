@@ -1,5 +1,9 @@
 package com.cyberfarm.drone.job;
 
+import net.minecraft.world.InteractionHand;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -7,17 +11,27 @@ import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.common.util.FakePlayerFactory;
 import org.jspecify.annotations.Nullable;
 
-/** Harvester Module: harvests a mature crop (or melon/pumpkin) and replants it. */
+/** Harvester Module: harvests a mature crop (or melon/pumpkin) and replants it, and picks ripe plants that aren't crops. */
 public class HarvestJob extends DroneJob {
     public static final int ENERGY_COST = 40;
 
@@ -41,7 +55,14 @@ public class HarvestJob extends DroneJob {
         if (state.getBlock() instanceof CropBlock crop) {
             return crop.isMaxAge(state);
         }
-        return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN);
+        return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN) || isRipePlant(state);
+    }
+
+    /** A plant that isn't a crop but ripens, at its last age: a berry bush, or a mod's bush or fruit. It is picked, never broken. */
+    private static boolean isRipePlant(BlockState state) {
+        return state.getBlock() instanceof BonemealableBlock
+                && state.getBlock().getStateDefinition().getProperty("age") instanceof IntegerProperty age
+                && state.getValue(age) == Collections.max(age.getPossibleValues());
     }
 
     @Override
@@ -61,27 +82,51 @@ public class HarvestJob extends DroneJob {
 
     private void harvest(DroneEntity drone, ServerLevel level) {
         BlockState state = level.getBlockState(target);
+        if (isRipePlant(state)) {
+            pick(drone, level, state);
+            return;
+        }
         // The tool carries the Fortune / Silk Touch addons into the crop's loot table.
         List<ItemStack> drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
-
-        // Replant with one of the seeds the crop dropped (wheat seeds, carrots, potatoes...).
-        BlockState replanted = null;
+        Effects.beam(level, drone, target);
+        level.destroyBlock(target, false, drone);
         if (state.getBlock() instanceof CropBlock crop) {
+            // A crop is never left gone: it grows back, on one of the seeds it dropped if it has any
             for (ItemStack drop : drops) {
                 if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == crop) {
                     drop.shrink(1);
-                    replanted = crop.getStateForAge(0);
                     break;
                 }
             }
-        }
-
-        Effects.beam(level, drone, target);
-        level.destroyBlock(target, false, drone);
-        if (replanted != null) {
-            level.setBlock(target, replanted, Block.UPDATE_ALL);
+            level.setBlock(target, crop.getStateForAge(0), Block.UPDATE_ALL);
         }
         drone.cargo().collect(level, target, drops);
+        drone.useJobEnergy(ENERGY_COST);
+    }
+
+    /** Picks a ripe plant as a player does, by right-clicking it, and gathers what it gave. One that gives nothing is left alone. */
+    private void pick(DroneEntity drone, ServerLevel level, BlockState state) {
+        FakePlayer player = FakePlayerFactory.getMinecraft(level);
+        player.setPos(Vec3.atCenterOf(target));
+        InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(target), Direction.UP, target, false));
+        if (!result.consumesAction() || level.getBlockState(target) == state) {
+            drone.markUnreachable(target);
+            return;
+        }
+        List<ItemStack> picked = new ArrayList<>();
+        for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, new AABB(target).inflate(1.5), item -> item.getAge() == 0)) {
+            picked.add(item.getItem());
+            item.discard();
+        }
+        // Some mods hand the harvest straight to the player
+        for (int slot = 0; slot < player.getInventory().getContainerSize(); slot++) {
+            ItemStack stack = player.getInventory().removeItemNoUpdate(slot);
+            if (!stack.isEmpty()) {
+                picked.add(stack);
+            }
+        }
+        Effects.beam(level, drone, target);
+        drone.cargo().collect(level, target, picked);
         drone.useJobEnergy(ENERGY_COST);
     }
 }

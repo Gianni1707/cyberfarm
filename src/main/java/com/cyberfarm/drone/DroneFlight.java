@@ -37,6 +37,7 @@ public final class DroneFlight {
     private final DoubleSupplier frameSpeed;
     private int stuckTicks;
     private double returnAltitude = Double.NaN;
+    private double crossingAltitude = Double.NaN;
     private int pathfindTicks;
 
     public DroneFlight(DroneEntity drone, DoubleSupplier frameSpeed) {
@@ -102,6 +103,32 @@ public final class DroneFlight {
         } else if (stuckTicks > 0) {
             stuckTicks--;
         }
+    }
+
+    /**
+     * Like {@link #flyTowards}, but when something stands on the straight line and the sky is open, it climbs over the terrain,
+     * crosses at that height and comes down on {@code target}, instead of pushing against it. Under a roof it steers as usual.
+     */
+    public void flyOver(Vec3 target) {
+        if (Double.isNaN(crossingAltitude) && !canFlyStraightTo(target) && drone.level() instanceof ServerLevel level) {
+            double altitude = Math.max(drone.getY(), cruiseAltitude(level, drone.position(), target) - DroneEntity.PASSENGER_DROP);
+            if (canFlyStraightTo(new Vec3(drone.getX(), altitude, drone.getZ()))) {
+                crossingAltitude = altitude;
+            }
+        }
+        if (Double.isNaN(crossingAltitude) || canFlyStraightTo(target)) {
+            crossingAltitude = Double.NaN;
+            flyTowards(target);
+        } else if (isClimbing()) {
+            flyTowards(new Vec3(drone.getX(), crossingAltitude, drone.getZ()));
+        } else {
+            flyTowards(new Vec3(target.x, crossingAltitude, target.z));
+        }
+    }
+
+    /** Climbing to cross over something: it moves away from its target, which is not being stuck. */
+    public boolean isClimbing() {
+        return !Double.isNaN(crossingAltitude) && drone.getY() < crossingAltitude - 0.5 && !drone.verticalCollision;
     }
 
     private void turnTowards(float yaw) {

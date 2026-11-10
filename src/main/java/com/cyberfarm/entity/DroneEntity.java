@@ -451,6 +451,14 @@ public class DroneEntity extends PathfinderMob {
         flight.flyTowards(target);
     }
 
+    public void flyOver(Vec3 target) {
+        flight.flyOver(target);
+    }
+
+    public boolean isClimbing() {
+        return flight.isClimbing();
+    }
+
     /** Whether no block stands on the straight line from the drone to {@code target}. */
     public boolean canFlyStraightTo(Vec3 target) {
         return flight.canFlyStraightTo(target);

@@ -28,12 +28,15 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:harvester_module",
-      "title": "Harvester Module",
-      "text": "The drone looks for $(l)fully grown crops$() in its work area, harvests them and $(l)replants$() using one of the dropped seeds. It also harvests $(l)melons and pumpkins$()."
+      "title": "Harvester Module"
     },
     {
       "type": "patchouli:text",
-      "text": "Works with wheat, carrots, potatoes, beetroot and any modded crop built like the vanilla ones. A $(l:drone_systems/addons)Fortune Addon$(/l) gives more crops and seeds."
+      "text": "The drone looks for $(l)fully grown crops$() in its work area, harvests them and $(l)replants$() them, using one of the dropped seeds if there is one. It also harvests $(l)melons and pumpkins$(), and $(l)picks$() ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Works with wheat, carrots, potatoes, beetroot and modded crops and bushes built like the vanilla ones. A $(l:drone_systems/addons)Fortune Addon$(/l) gives more crops and seeds."
     },
     {
       "type": "patchouli:crafting",
@@ -80,11 +83,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A load is $(l)16 items$(); each $(l:drone_systems/addons)Stack Addon$(/l) adds a full stack (64 items), up to 9 stacks. While loaded, the drone carries the item $(l)in its claw$(), so you can see what it is moving.$(br2)Set the route with the $(l:drone_systems/drone_dock)Survey Tool$(/l) in $(l)Route$() mode: click the source container, then the destination. Any inventory works,"
+      "text": "A load is $(l)16 items$(); each $(l:drone_systems/addons)Stack Addon$(/l) adds a full stack (64 items), up to 9 stacks. While loaded, the drone carries the item $(l)in its claw$(), so you can see what it is moving."
     },
     {
       "type": "patchouli:text",
-      "text": "including ones from other mods and $(l)other drones' docks$(): a Transport drone can collect what a Harvester or a Quarry brings home. Items that do not fit in the destination are brought back to the dock. The $(l:drone_systems/drone_dock)dock filter$(/l) decides $(l)which items$() are moved."
+      "text": "Both containers must be within $(l)48 blocks of the dock$(), in loaded chunks. If something stands in the way, the drone climbs over it; if it stays stuck for 5 seconds it gives that container up and goes home until its next trip.$(br2)Set the route with the $(l:drone_systems/drone_dock)Survey Tool$(/l) in $(l)Route$() mode: click the source"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "container, then the destination. Any inventory works, including ones from other mods and $(l)other drones' docks$(): a Transport drone can collect what a Harvester or a Quarry brings home. Items that do not fit in the destination are brought back to the dock. The $(l:drone_systems/drone_dock)dock filter$(/l) decides $(l)which items$() are moved."
     },
     {
       "type": "patchouli:crafting",
@@ -172,15 +179,15 @@
       "type": "patchouli:spotlight",
       "item": "cyberfarm:fertilizer_module",
       "title": "Fertilizer Module",
-      "text": "The drone $(l)grows the crops, stems and saplings$() of its work area with fertilizer from the dock, until they are fully grown. It works with $(l)any fertilizer$(): bone meal, or fertilizers from other mods (everything in"
+      "text": "The drone $(l)grows the crops, stems and saplings$() of its work area with fertilizer from the dock, until they are fully grown. It works with $(l)any fertilizer$(): bone meal, Biomass (weak: it grows the plant one time in"
     },
     {
       "type": "patchouli:text",
-      "text": "the forge:fertilizers tag). The white canister on its shoulder feeds a pump under the hull, which sprays each plant.$(br)$(li)Put the fertilizer in the dock: the drone takes up to 64 per trip.$(br)$(li)Grass and moss are left alone, so your lawn does not fill with flowers."
+      "text": "three), or fertilizers from other mods (everything in the forge:fertilizers tag). The white canister on its shoulder feeds a pump under the hull, which sprays each plant.$(br)$(li)Put the fertilizer in the dock: the drone takes up to 64 per trip."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A fertilizer that does not work on a plant is not wasted: the drone skips that plant.$(br)$(li)Pairs well with a Harvester and a Planter on the same field."
+      "text": "$(li)Grass and moss are left alone, so your lawn does not fill with flowers.$(br)$(li)A fertilizer that does not work on a plant is not wasted: the drone skips that plant.$(br)$(li)Pairs well with a Harvester and a Planter on the same field."
     },
     {
       "type": "patchouli:crafting",
@@ -322,17 +329,17 @@
   ],
   "extra_recipe_mappings": {
     "cyberfarm:harvester_module": 5,
-    "cyberfarm:quarry_module": 8,
-    "cyberfarm:transport_module": 15,
-    "cyberfarm:planter_module": 20,
-    "cyberfarm:logger_module": 24,
-    "cyberfarm:taxi_module": 29,
-    "cyberfarm:rancher_module": 35,
-    "cyberfarm:fertilizer_module": 38,
-    "cyberfarm:builder_module": 42,
-    "cyberfarm:fisher_module": 55,
-    "cyberfarm:breeder_module": 58,
-    "cyberfarm:guard_module": 62,
-    "cyberfarm:bomb_module": 68
+    "cyberfarm:quarry_module": 9,
+    "cyberfarm:transport_module": 16,
+    "cyberfarm:planter_module": 22,
+    "cyberfarm:logger_module": 26,
+    "cyberfarm:taxi_module": 31,
+    "cyberfarm:rancher_module": 37,
+    "cyberfarm:fertilizer_module": 40,
+    "cyberfarm:builder_module": 44,
+    "cyberfarm:fisher_module": 57,
+    "cyberfarm:breeder_module": 60,
+    "cyberfarm:guard_module": 64,
+    "cyberfarm:bomb_module": 70
   }
 }

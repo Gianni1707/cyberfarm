@@ -797,14 +797,16 @@ def biogas_shed(s):
         s.set(x, 0, 1, GRAVEL)
     for z in range(1, 9):
         s.set(26, 0, z, GRAVEL)
-    # The digester line: chest, hopper, digester, pipe, tank, pipe out through the wall.
-    # The digester assembles from a Cyber Frame above and one on its left, so the hopper feeds it from the front
+    # The digester line: chest, hopper, press, its nozzle into the digester, pipe, tank, pipe out through the wall.
+    # The press assembles from a Cyber Frame above, the digester from one above and one on its left
     s.ring(29, 8, 31, 10, 0, ACCENT)
     s.set(30, 1, 9, state("cyberfarm:bio_digester", facing="west", lit="false"))
     s.set(30, 2, 9, CYBER_FRAME)
     s.set(30, 1, 8, CYBER_FRAME)
-    s.set(29, 1, 9, state("hopper", facing="east", enabled="true"))
-    s.set(29, 2, 9, state("chest", facing="west", type="single", waterlogged="false"))
+    s.set(29, 1, 9, state("cyberfarm:biomass_press", facing="south", lit="false"))
+    s.set(29, 2, 9, CYBER_FRAME)
+    s.set(28, 1, 9, state("hopper", facing="east", enabled="true"))
+    s.set(28, 2, 9, state("chest", facing="west", type="single", waterlogged="false"))
     s.set(31, 1, 9, GAS_PIPE)
     s.set(32, 1, 9, state("cyberfarm:gas_tank", facing="west"))
     s.set(32, 1, 10, GAS_PIPE)
