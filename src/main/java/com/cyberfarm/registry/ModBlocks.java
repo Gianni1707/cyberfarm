@@ -55,7 +55,7 @@ public class ModBlocks {
 
     public static final DeferredBlock<CombustionGeneratorBlock> COMBUSTION_GENERATOR = BLOCKS.registerBlock("combustion_generator",
             CombustionGeneratorBlock::new,
-            p -> machine(p).lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
+            p -> machine(p).noOcclusion().lightLevel(state -> state.getValue(CombustionGeneratorBlock.LIT) ? 13 : 0));
 
     public static final DeferredBlock<DroneAssemblerBlock> DRONE_ASSEMBLER = BLOCKS.registerBlock("drone_assembler",
             DroneAssemblerBlock::new, p -> litMachine(p).noOcclusion());
@@ -95,7 +95,7 @@ public class ModBlocks {
 
 
     public static final DeferredBlock<BioDigesterBlock> BIO_DIGESTER = BLOCKS.registerBlock("bio_digester",
-            BioDigesterBlock::new, ModBlocks::litMachine);
+            BioDigesterBlock::new, p -> litMachine(p).noOcclusion());
 
     public static final DeferredBlock<GasTurbineBlock> GAS_TURBINE = BLOCKS.registerBlock("gas_turbine",
             GasTurbineBlock::new, ModBlocks::litMachine);

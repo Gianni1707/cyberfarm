@@ -39,6 +39,11 @@ public class DroneDockBlock extends MachineBlock {
 
 
     @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return SHAPE;
     }

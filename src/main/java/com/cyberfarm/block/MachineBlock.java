@@ -15,21 +15,26 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * A horizontal-facing machine that opens its menu on right-click and ticks on the server; on the
@@ -37,10 +42,37 @@ import org.jspecify.annotations.Nullable;
  */
 public abstract class MachineBlock extends PortEntityBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+    /** Sockets the model shows where a pipe or conduit is plugged in, for machines with {@link #hasPipePorts}. */
+    public static final Map<Direction, BooleanProperty> PORTS = PipeBlock.PROPERTY_BY_DIRECTION;
 
     protected MachineBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        BlockState state = stateDefinition.any().setValue(FACING, Direction.NORTH);
+        if (hasPipePorts()) {
+            for (BooleanProperty port : PORTS.values()) {
+                state = state.setValue(port, false);
+            }
+        }
+        registerDefaultState(state);
+    }
+
+    /** Called from the constructor, so it must not read fields. */
+    protected boolean hasPipePorts() {
+        return false;
+    }
+
+    /** A port is shown only where the pipe next door actually connects to this side. */
+    private static BlockState plug(BlockState state, Direction side, BlockState neighbor) {
+        boolean plugged = neighbor.getBlock() instanceof NetworkPipeBlock
+                && neighbor.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()));
+        return state.setValue(PORTS.get(side), plugged);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        BlockState updated = super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return hasPipePorts() && updated.is(this) ? plug(updated, direction, neighborState) : updated;
     }
 
     @Override
@@ -53,7 +85,13 @@ public abstract class MachineBlock extends PortEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        BlockState state = defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        if (hasPipePorts()) {
+            for (Direction side : Direction.values()) {
+                state = plug(state, side, context.getLevel().getBlockState(context.getClickedPos().relative(side)));
+            }
+        }
+        return state;
     }
 
     @Override
@@ -69,6 +107,9 @@ public abstract class MachineBlock extends PortEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+        if (hasPipePorts()) {
+            PORTS.values().forEach(builder::add);
+        }
     }
 
     protected static <T extends BlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
