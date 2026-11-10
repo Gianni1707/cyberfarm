@@ -4,9 +4,15 @@ import com.cyberfarm.CyberFarm;
 import com.cyberfarm.client.model.DroneModel;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.entity.DroneEntity;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -25,7 +31,8 @@ import net.minecraft.world.level.material.Fluids;
 public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, DroneModel> {
     private static final Identifier TEXTURE = CyberFarm.id("textures/entity/drone.png");
     /** Full-bright overlay for the lights, visible in the dark. */
-    private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/drone_glow.png"));
+    private static final Identifier GLOW_TEXTURE = CyberFarm.id("textures/entity/drone_glow.png");
+    private static final RenderType GLOW = RenderTypes.eyes(GLOW_TEXTURE);
     private static final int IDLE_LAMP = 0x2B3A3A;
     /** The load's middle, in pixels under the hull, level with the jaws' toes and clear of the claw's housing above. */
     private static final float CARRIED_Y = 4.4F;
@@ -34,7 +41,15 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
 
     public DroneRenderer(EntityRendererProvider.Context context) {
         super(context, new DroneModel(context.bakeLayer(DroneModel.LAYER)), 0.4F);
+        // The lights are a few faces: a copy of the model with only those, so the glow pass neither writes nor sorts the rest
+        DroneModel glowModel = new DroneModel(context.bakeLayer(DroneModel.LAYER));
+        keepLitFaces(glowModel.root(), GLOW_TEXTURE);
         addLayer(new EyesLayer<>(this) {
+            @Override
+            public void submit(PoseStack pose, SubmitNodeCollector collector, int light, DroneRenderState state, float yRot, float xRot) {
+                collector.order(1).submitModel(glowModel, state, pose, GLOW, light, OverlayTexture.NO_OVERLAY, state.outlineColor, null);
+            }
+
             @Override
             public RenderType renderType() {
                 return GLOW;
@@ -113,6 +128,50 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
                 pose.popPose();
             }
         });
+    }
+
+    /** Empties every face whose patch of the glow texture is all clear. Renderers are rebuilt on each resource reload, so a new texture is read again. */
+    private static void keepLitFaces(ModelPart root, Identifier texture) {
+        try (InputStream stream = Minecraft.getInstance().getResourceManager().open(texture); NativeImage image = NativeImage.read(stream)) {
+            int[] faces = new int[2];
+            root.visit(new PoseStack(), (pose, path, index, cube) -> {
+                for (int i = 0; i < cube.polygons.length; i++) {
+                    ModelPart.Polygon face = cube.polygons[i];
+                    faces[1]++;
+                    if (isLit(face, image)) {
+                        faces[0]++;
+                    } else {
+                        cube.polygons[i] = new ModelPart.Polygon(new ModelPart.Vertex[0], face.normal());
+                    }
+                }
+            });
+            CyberFarm.LOGGER.debug("Drone glow pass: {} of {} faces", faces[0], faces[1]);
+        } catch (IOException e) {
+            // Without the texture every face stays, as before
+            CyberFarm.LOGGER.warn("Could not read {}, drawing the whole drone in the glow pass", texture, e);
+        }
+    }
+
+    private static boolean isLit(ModelPart.Polygon face, NativeImage image) {
+        float minU = 1.0F, minV = 1.0F, maxU = 0.0F, maxV = 0.0F;
+        for (ModelPart.Vertex vertex : face.vertices()) {
+            minU = Math.min(minU, vertex.u());
+            maxU = Math.max(maxU, vertex.u());
+            minV = Math.min(minV, vertex.v());
+            maxV = Math.max(maxV, vertex.v());
+        }
+        int x0 = Mth.clamp(Mth.floor(minU * image.getWidth()), 0, image.getWidth() - 1);
+        int x1 = Mth.clamp(Mth.ceil(maxU * image.getWidth()), x0 + 1, image.getWidth());
+        int y0 = Mth.clamp(Mth.floor(minV * image.getHeight()), 0, image.getHeight() - 1);
+        int y1 = Mth.clamp(Mth.ceil(maxV * image.getHeight()), y0 + 1, image.getHeight());
+        for (int y = y0; y < y1; y++) {
+            for (int x = x0; x < x1; x++) {
+                if (image.getPixel(x, y) >>> 24 != 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
