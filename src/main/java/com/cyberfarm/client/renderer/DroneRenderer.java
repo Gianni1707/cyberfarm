@@ -8,11 +8,19 @@ import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.entity.DroneEntity;
 import com.cyberfarm.port.client.MobRenderer;
 import com.cyberfarm.port.client.RenderTypes;
+import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.vertex.PoseStack;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import com.mojang.math.Axis;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -26,11 +34,15 @@ import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, DroneModel> {
     private static final ResourceLocation TEXTURE = CyberFarm.id("textures/entity/drone.png");
     /** Full-bright overlay for the lights, visible in the dark. */
-    private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/drone_glow.png"));
+    private static final ResourceLocation GLOW_TEXTURE = CyberFarm.id("textures/entity/drone_glow.png");
+    private static final RenderType GLOW = RenderTypes.eyes(GLOW_TEXTURE);
+    /** At run time {@code ModelPart.Cube.polygons}, {@code Polygon.vertices}, {@code Vertex.u} and {@code Vertex.v}; Polygon and Vertex are not public here. */
+    private static final String CUBE_POLYGONS = "f_104341_", POLYGON_VERTICES = "f_104359_", VERTEX_U = "f_104372_", VERTEX_V = "f_104373_";
     private static final int IDLE_LAMP = 0x2B3A3A;
     /** The load's middle, in pixels under the hull, level with the jaws' toes and clear of the claw's housing above. */
     private static final float CARRIED_Y = 4.4F;
@@ -39,7 +51,17 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
 
     public DroneRenderer(EntityRendererProvider.Context context) {
         super(context, new DroneModel(context.bakeLayer(DroneModel.LAYER)), 0.4F);
+        // The lights are a few faces: a copy of the model with only those, so the glow pass skips the rest
+        DroneModel glowModel = new DroneModel(context.bakeLayer(DroneModel.LAYER));
+        keepLitFaces(glowModel.root(), GLOW_TEXTURE);
         addLayer(new EyesLayer<DroneEntity, EntityModel<DroneEntity>>(this) {
+            @Override
+            public void render(PoseStack pose, MultiBufferSource buffers, int light, DroneEntity drone, float limbSwing, float limbSwingAmount,
+                    float partialTick, float ageInTicks, float netHeadYaw, float headPitch) {
+                glowModel.setupAnim(state());
+                glowModel.renderToBuffer(pose, buffers.getBuffer(GLOW), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            }
+
             @Override
             public RenderType renderType() {
                 return GLOW;
@@ -127,6 +149,62 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
                 pose.popPose();
             }
         });
+    }
+
+    /** Drops every face whose patch of the glow texture is all clear. Renderers are rebuilt on each resource reload, so a new texture is read again. */
+    private static void keepLitFaces(ModelPart root, ResourceLocation texture) {
+        try (InputStream stream = Minecraft.getInstance().getResourceManager().open(texture); NativeImage image = NativeImage.read(stream)) {
+            int[] faces = new int[2];
+            root.visit(new PoseStack(), (pose, path, index, cube) -> {
+                Field field = ObfuscationReflectionHelper.findField(ModelPart.Cube.class, CUBE_POLYGONS);
+                Object[] all = (Object[]) get(field, cube);
+                Object[] lit = Arrays.stream(all).filter(face -> isLit(face, image)).toArray(length -> (Object[]) Array.newInstance(all.getClass().getComponentType(), length));
+                faces[0] += lit.length;
+                faces[1] += all.length;
+                try {
+                    field.set(cube, lit);
+                } catch (IllegalAccessException e) {
+                    throw new IllegalStateException(e);
+                }
+            });
+            CyberFarm.LOGGER.debug("Drone glow pass: {} of {} faces", faces[0], faces[1]);
+        } catch (IOException | RuntimeException e) {
+            // Without the texture, or the field, every face stays, as before
+            CyberFarm.LOGGER.warn("Could not trim the drone's glow pass, drawing the whole drone in it", e);
+        }
+    }
+
+    private static Object get(Field field, Object owner) {
+        try {
+            return field.get(owner);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    private static boolean isLit(Object face, NativeImage image) {
+        float minU = 1.0F, minV = 1.0F, maxU = 0.0F, maxV = 0.0F;
+        Field vertices = ObfuscationReflectionHelper.findField(face.getClass(), POLYGON_VERTICES);
+        for (Object vertex : (Object[]) get(vertices, face)) {
+            float u = (float) get(ObfuscationReflectionHelper.findField(vertex.getClass(), VERTEX_U), vertex);
+            float v = (float) get(ObfuscationReflectionHelper.findField(vertex.getClass(), VERTEX_V), vertex);
+            minU = Math.min(minU, u);
+            maxU = Math.max(maxU, u);
+            minV = Math.min(minV, v);
+            maxV = Math.max(maxV, v);
+        }
+        int x0 = Mth.clamp(Mth.floor(minU * image.getWidth()), 0, image.getWidth() - 1);
+        int x1 = Mth.clamp(Mth.ceil(maxU * image.getWidth()), x0 + 1, image.getWidth());
+        int y0 = Mth.clamp(Mth.floor(minV * image.getHeight()), 0, image.getHeight() - 1);
+        int y1 = Mth.clamp(Mth.ceil(maxV * image.getHeight()), y0 + 1, image.getHeight());
+        for (int y = y0; y < y1; y++) {
+            for (int x = x0; x < x1; x++) {
+                if (image.getPixelRGBA(x, y) >>> 24 != 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
