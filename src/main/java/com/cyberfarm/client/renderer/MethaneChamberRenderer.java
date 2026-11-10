@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,7 +59,7 @@ public class MethaneChamberRenderer extends BlockEntityRenderer<MethaneExtractor
     private static final int SHELL = 0xFFE3E9ED;
     private static final int DARK = 0xFF2A3138;
     private static final int GLASS_TINT = 0x50A8E4F0;
-    private static final int CYAN = 0xFF2FE0FF;
+    private static final int LAMP = 0xFFD1FEE7;
     private static final int ORANGE = 0xFFFF8C1A;
     private static final int ACID = 0xB09BE04A;
     private static final int ACID_GLOW = 0xFF9BE04A;
@@ -149,9 +148,9 @@ public class MethaneChamberRenderer extends BlockEntityRenderer<MethaneExtractor
         });
         collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {
             int full = LightCoordsUtil.FULL_BRIGHT;
-            side(pose, buffer, RADIUS + 0.004F, FLOOR - 0.28F, FLOOR - 0.18F, CYAN, full);
-            side(pose, buffer, RADIUS + 0.004F, CEILING + 0.16F, CEILING + 0.26F, CYAN, full);
-            ring(pose, buffer, 0.38F, 0.48F, 1.181F, 1, CYAN, full);
+            side(pose, buffer, RADIUS + 0.004F, FLOOR - 0.28F, FLOOR - 0.18F, LAMP, full);
+            side(pose, buffer, RADIUS + 0.004F, CEILING + 0.16F, CEILING + 0.26F, LAMP, full);
+            ring(pose, buffer, 0.38F, 0.48F, 1.181F, 1, LAMP, full);
             // The "shower head" over the mob
             ring(pose, buffer, 0.25F, 0.42F, CEILING - 0.004F, -1, ACID_GLOW, full);
             for (int i = 0; i < 4; i++) {
@@ -195,7 +194,7 @@ public class MethaneChamberRenderer extends BlockEntityRenderer<MethaneExtractor
         float sin = Math.abs(Mth.sin(part.angle()));
         float reach = Math.max(RADIUS + 0.08F, RADIUS / Math.max(cos, sin));
         // An inlet pulses brighter while acid flows in
-        int color = part.kind() != Kind.ACID_INLET ? CYAN
+        int color = part.kind() != Kind.ACID_INLET ? LAMP
                 : filling ? scale(0xFFE4FFB0, 0.75F + 0.25F * Mth.sin(time * 0.5F)) : ACID_GLOW;
         collector.submitCustomGeometry(poseStack, METAL, (pose, buffer) -> {
             box(pose, buffer, RADIUS - 0.02F, mid - 0.3F, -0.3F, RADIUS + 0.04F, mid + 0.3F, 0.3F, DARK, light);

@@ -22,14 +22,13 @@ import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 /**
- * Draws a formed Steam Turbine as one white and cyan cylinder lying along the hall: the controller
+ * Draws a formed Steam Turbine as one white and pale green cylinder lying along the hall: the controller
  * panel on the front cap, a rotor spinning with the turbine's speed behind the open back cap, and a
  * glowing hatch for every Turbine Port. Works in a local frame where x is to the controller's right,
  * y is up and z runs from the front cap to the back.

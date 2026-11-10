@@ -57,7 +57,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The power comes out of the $(l)dynamo$(): connect $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it. Pipes and cables joining the boiler or the dynamo get a collar with a cyan ring."
+      "text": "The power comes out of the $(l)dynamo$(): connect $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it. Pipes and cables joining the boiler or the dynamo get a collar with a pale green ring."
     },
     {
       "type": "patchouli:crafting",

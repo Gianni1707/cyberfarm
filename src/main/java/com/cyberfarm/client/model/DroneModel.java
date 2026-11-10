@@ -19,7 +19,7 @@ import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.util.Mth;
 
 /**
- * Crop quadcopter: dark chassis with a cyan visor under a low cream tank with a copper band, a slim
+ * Crop quadcopter: dark chassis with a glowing visor under a low white tank with a mint band, a slim
  * antenna with a glowing tip, four long diagonal arms with copper motors, spray nozzles and open
  * rotors, and landing gear. One tool per installed module: harvester head (centre, below), drill (front),
  * cargo claw (back), seed tank (top), saw (right side), taxi hook (hanging), laser gun (right
@@ -70,7 +70,7 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
 
-        // Crop drone: dark chassis with a cyan visor, a low cream tank with a copper band, a slim mast with a glowing tip
+        // Crop drone: dark chassis with a glowing visor, a low white tank with a mint band, a slim mast with a glowing tip
         PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create()
                         .texOffs(0, 0).addBox(-2.5F, -1.0F, -3.0F, 5.0F, 2.0F, 6.0F)     // chassis
                         .texOffs(54, 56).addBox(-2.0F, -0.5F, -3.5F, 4.0F, 1.0F, 1.0F)   // visor

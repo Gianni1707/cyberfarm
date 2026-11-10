@@ -58,7 +58,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)the $(l)Methane Outlet$() (cyan ring) only gives methane out. Pipe acid to the inlet with a $(l:cables/liquid_pipe)Liquid Pipe$(/l) and take methane from the outlet with a Gas Pipe.$(br)$(li)$(l)Intake Gate$(): any glass of the $(l)lower$() wall can be an $(item)Intake Gate$().$(br)When the structure is right the chamber powers up with a"
+      "text": "$(li)the $(l)Methane Outlet$() (pale green ring) only gives methane out. Pipe acid to the inlet with a $(l:cables/liquid_pipe)Liquid Pipe$(/l) and take methane from the outlet with a Gas Pipe.$(br)$(li)$(l)Intake Gate$(): any glass of the $(l)lower$() wall can be an $(item)Intake Gate$().$(br)When the structure is right the chamber powers up with a"
     },
     {
       "type": "patchouli:text",

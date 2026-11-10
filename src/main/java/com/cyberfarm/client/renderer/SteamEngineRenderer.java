@@ -22,7 +22,6 @@ import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -33,7 +32,7 @@ import net.minecraft.world.phys.Vec3;
  * Draws a complete Steam Engine as one machine, its blocks hidden: a white induction boiler with
  * glowing orange coils, a cylinder per block with its piston moving in a glass sleeve, the steam
  * line over them, and the dynamo with copper windings and its flywheel. All on a dark plinth with a
- * cyan light line. Works in a frame centred on the boiler where +x runs back along the row.
+ * light line. Works in a frame centred on the boiler where +x runs back along the row.
  */
 public class SteamEngineRenderer extends BlockEntityRenderer<SteamEngineBlockEntity, SteamEngineRenderer.State> {
     private static final RenderType METAL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/methane_chamber.png"));
@@ -46,7 +45,7 @@ public class SteamEngineRenderer extends BlockEntityRenderer<SteamEngineBlockEnt
     private static final int DARK = 0xFF2A3138;
     private static final int STEEL = 0xFF8A96A2;
     private static final int GLASS_TINT = 0x50A8E4F0;
-    private static final int CYAN = 0xFF2FE0FF;
+    private static final int LAMP = 0xFFD1FEE7;
     private static final int ORANGE = 0xFFFF8C1A;
     private static final int COPPER = 0xFFE08A45;
 
@@ -128,10 +127,10 @@ public class SteamEngineRenderer extends BlockEntityRenderer<SteamEngineBlockEnt
         collector.submitCustomGeometry(poseStack, GLOW, (pose, buffer) -> {
             int full = LightCoordsUtil.FULL_BRIGHT;
             for (Direction side : state.boilerSockets) {
-                collar(pose, buffer, 0, 0, 0, side, 0.46F, CYAN, 0.19F, full);
+                collar(pose, buffer, 0, 0, 0, side, 0.46F, LAMP, 0.19F, full);
             }
             for (Direction side : state.dynamoSockets) {
-                collar(pose, buffer, dynamoX, 0, dynamoZ, side, 0.46F, CYAN, 0.19F, full);
+                collar(pose, buffer, dynamoX, 0, dynamoZ, side, 0.46F, LAMP, 0.19F, full);
             }
         });
         // +x now points from the boiler back along the row
@@ -170,25 +169,25 @@ public class SteamEngineRenderer extends BlockEntityRenderer<SteamEngineBlockEnt
             float pulse = 0.7F + 0.3F * Mth.sin(state.time * (0.1F + 0.3F * state.speed));
             int coil = scale(ORANGE, 0.35F + 0.65F * Math.max(state.speed, 0.15F) * pulse);
             // Light line along both sides of the plinth
-            box(pose, buffer, -0.46F, -0.42F, -0.465F, dynamo + 0.46F, -0.38F, -0.46F, CYAN, full);
-            box(pose, buffer, -0.46F, -0.42F, 0.46F, dynamo + 0.46F, -0.38F, 0.465F, CYAN, full);
+            box(pose, buffer, -0.46F, -0.42F, -0.465F, dynamo + 0.46F, -0.38F, -0.46F, LAMP, full);
+            box(pose, buffer, -0.46F, -0.42F, 0.46F, dynamo + 0.46F, -0.38F, 0.465F, LAMP, full);
             // Induction coils round the boiler, brighter the faster it runs
             for (float y : new float[] {-0.18F, -0.02F, 0.14F}) {
                 vcyl(pose, buffer, 0, 0, 0.425F, y, y + 0.06F, coil, full);
             }
-            hdisc(pose, buffer, 0, 0, 0.421F, 0.18F, 0.24F, CYAN, full);
+            hdisc(pose, buffer, 0, 0, 0.421F, 0.18F, 0.24F, LAMP, full);
             for (int i = 1; i <= n; i++) {
                 // The piston head, lit up inside its glass sleeve
                 float head = pistonHead(angle + i * Mth.HALF_PI);
-                vcyl(pose, buffer, i, 0, 0.17F, head, head + 0.05F, CYAN, full);
-                vcyl(pose, buffer, i, 0, 0.305F, 0.0F, 0.04F, CYAN, full);
+                vcyl(pose, buffer, i, 0, 0.17F, head, head + 0.05F, LAMP, full);
+                vcyl(pose, buffer, i, 0, 0.305F, 0.0F, 0.04F, LAMP, full);
             }
             // Copper windings on the dynamo, and the flywheel's rim
             for (int k = 0; k < 3; k++) {
                 float x = dynamo - 0.3F + k * 0.22F;
                 hcyl(pose, buffer, x, x + 0.08F, 0.05F, 0, 0.405F, scale(COPPER, 0.5F + 0.5F * state.speed), full);
             }
-            xring(pose, buffer, dynamo + 0.6F, 0.9F * WHEEL_RADIUS, WHEEL_RADIUS, angle, CYAN, full);
+            xring(pose, buffer, dynamo + 0.6F, 0.9F * WHEEL_RADIUS, WHEEL_RADIUS, angle, LAMP, full);
         });
         poseStack.popPose();
     }

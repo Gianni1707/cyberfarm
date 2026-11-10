@@ -31,8 +31,8 @@ import com.cyberfarm.port.client.LevelRenderEvents.SubmitCustomGeometryEvent;
  */
 public final class EffectRenderer {
     private static final RenderType LIGHT = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
-    private static final int CYAN = 0x2FE0FF;
-    private static final int PALE = 0xB8F6FF;
+    private static final int LAMP = 0xD1FEE7;
+    private static final int PALE = 0xFFFFFF;
     private static final int LASER_RED = 0xFF2A1F;
     private static final int LASER_CORE = 0xFFD8D0;
     private static final float PRINT_TICKS = 12.0F;
@@ -140,7 +140,7 @@ public final class EffectRenderer {
         Vec3 to = Vec3.atCenterOf(target);
         float fade = 1.0F - t * t;
         DockRenderer.segment(pose, buffer, from, to, 0.012F, (int) (0xF0 * fade) << 24 | PALE);
-        DockRenderer.segment(pose, buffer, from, to, 0.035F, (int) (0x50 * fade) << 24 | CYAN);
+        DockRenderer.segment(pose, buffer, from, to, 0.035F, (int) (0x50 * fade) << 24 | LAMP);
     }
 
     /** A Laser Turret's beam leaves from the middle of its head. */
@@ -163,7 +163,7 @@ public final class EffectRenderer {
         float y0 = pos.getY() - grow;
         float z0 = pos.getZ() - grow;
         float size = 1.0F + 2 * grow;
-        box(pose, buffer, x0, y0, z0, x0 + size, y0 + size, z0 + size, (int) (0x70 * (1.0F - t)) << 24 | CYAN);
+        box(pose, buffer, x0, y0, z0, x0 + size, y0 + size, z0 + size, (int) (0x70 * (1.0F - t)) << 24 | LAMP);
         float y = pos.getY() + 1.02F - 1.04F * t;
         ring(pose, buffer, pos.getX() - 0.02F, pos.getZ() - 0.02F, pos.getX() + 1.02F, pos.getZ() + 1.02F, y, 0.04F,
                 (int) (0xE0 * (1.0F - t * 0.6F)) << 24 | PALE);
@@ -185,8 +185,8 @@ public final class EffectRenderer {
         float y = bottom + (top - bottom) * Math.min(1.0F, rise * 1.15F);
         float fade = t < 0.8F ? 1.0F : (1.0F - t) / 0.2F;
         ring(pose, buffer, x0, z0, x1, z1, y, 0.08F, (int) (0xF0 * fade) << 24 | PALE);
-        ring(pose, buffer, x0 - 0.1F, z0 - 0.1F, x1 + 0.1F, z1 + 0.1F, y - 0.06F, 0.2F, (int) (0x50 * fade) << 24 | CYAN);
-        int edge = (int) (0xB0 * fade) << 24 | CYAN;
+        ring(pose, buffer, x0 - 0.1F, z0 - 0.1F, x1 + 0.1F, z1 + 0.1F, y - 0.06F, 0.2F, (int) (0x50 * fade) << 24 | LAMP);
+        int edge = (int) (0xB0 * fade) << 24 | LAMP;
         float w = 0.05F;
         for (float[] corner : new float[][] {{x0, z0}, {x1 - w, z0}, {x0, z1 - w}, {x1 - w, z1 - w}}) {
             box(pose, buffer, corner[0], bottom, corner[1], corner[0] + w, y, corner[1] + w, edge);

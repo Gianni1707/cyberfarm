@@ -33,7 +33,7 @@ import net.minecraft.world.item.context.UseOnContext;
 
 /** An assembled drone. Right-click a Drone Dock to deploy it. */
 public class DroneItem extends Item {
-    private static final int BAR_COLOR = 0x2FE0FF;
+    private static final int BAR_COLOR = 0x00B894;
 
     public DroneItem(Properties properties) {
         super(properties.stacksTo(1));

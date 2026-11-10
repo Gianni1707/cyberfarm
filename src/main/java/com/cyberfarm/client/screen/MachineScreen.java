@@ -23,8 +23,8 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
     public static final int PANEL_DARK = 0xFF1A1F24;
     public static final int SLOT_BORDER = 0xFF0A0D10;
     public static final int SLOT_BG = 0xFF14181D;
-    public static final int ACCENT = 0xFF2FE0FF;
-    public static final int ACCENT_DIM = 0xFF0E7C99;
+    public static final int ACCENT = 0xFF00B894;
+    public static final int ACCENT_DIM = 0xFF055B57;
     public static final int WARM = 0xFFFFB347;
     public static final int TEXT = 0xFFC9D3DC;
     public static final int TEXT_DIM = 0xFF7D8A96;
@@ -57,7 +57,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + imageHeight - 1, PANEL);
         graphics.fill(x + 1, y + 1, x + imageWidth - 1, y + 2, PANEL_LIGHT);
         graphics.fill(x + 1, y + imageHeight - 2, x + imageWidth - 1, y + imageHeight - 1, PANEL_DARK);
-        // Cyan header line under the title, with a glint running along it, and a divider above the player inventory
+        // Emerald header line under the title, with a glint running along it, and a divider above the player inventory
         graphics.fill(x + 6, y + 15, x + imageWidth - 6, y + 16, ACCENT_DIM);
         glint(graphics, x + 6, y + 15, imageWidth - 12, (Util.getMillis() - openedAt) % GLINT_MS / (float) GLINT_MS);
         if (showInventory) {
@@ -70,7 +70,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
                 // The slot under the mouse lights up
                 graphics.fill(x + slot.x - 1, y + slot.y - 1, x + slot.x + 17, y + slot.y + 17, ACCENT);
                 graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, SLOT_BG);
-                graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, 0x302FE0FF);
+                graphics.fill(x + slot.x, y + slot.y, x + slot.x + 16, y + slot.y + 16, 0x3000B894);
             }
         }
         // Machines that use no power (Bio-Digester, Methane Extractor) have no energy bar
@@ -129,7 +129,7 @@ public abstract class MachineScreen<T extends MachineMenu> extends AbstractConta
         int capacity = menu.getEnergyCapacity();
         int filled = capacity <= 0 ? 0 : (int) ((long) height * Math.min(menu.getEnergy(), capacity) / capacity);
         if (filled > 0) {
-            // Cyan while there is plenty, amber when it runs low, red when nearly empty
+            // Emerald while there is plenty, amber when it runs low, red when nearly empty
             float charge = (float) filled / height;
             int core = charge > 0.5F ? ACCENT : charge > 0.2F ? WARM : DANGER;
             int edge = charge > 0.5F ? ACCENT_DIM : (core & 0x00FFFFFF) | 0x80000000;

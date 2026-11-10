@@ -85,11 +85,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to the rack itself: white rails with treads and a cyan light line, posts with blue bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's shoulders and"
+      "text": "sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to the rack itself: white rails with treads and a pale green light line, posts with blue bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's"
     },
     {
       "type": "patchouli:text",
-      "text": "a $(l)gantry arm$() riding on the arms, which fits the modules."
+      "text": "shoulders and a $(l)gantry arm$() riding on the arms, which fits the modules."
     },
     {
       "type": "patchouli:text",

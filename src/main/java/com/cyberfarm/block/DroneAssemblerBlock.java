@@ -20,14 +20,18 @@ import org.jspecify.annotations.Nullable;
 /** An open chamber: the drone being assembled shows inside it (see {@code AssemblerRenderer}). */
 public class DroneAssemblerBlock extends LitMachineBlock {
 
-    // The base, a pillar on each corner and the cap
-    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(0, 14, 0, 16, 16, 16),
-            Block.box(0, 4, 0, 2, 14, 2), Block.box(14, 4, 0, 16, 14, 2), Block.box(0, 4, 14, 2, 14, 16), Block.box(14, 4, 14, 16, 14, 16));
+    // The base, then the spine and the print head's arm (whichever way it faces)
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(0.25, 4, 0.25, 15.75, 16, 15.75));
 
     public DroneAssemblerBlock(Properties properties) {
         super(properties);
     }
 
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {

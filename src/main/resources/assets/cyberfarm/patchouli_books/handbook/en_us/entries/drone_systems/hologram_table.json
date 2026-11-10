@@ -24,7 +24,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Every $(l)Drone Dock$() and $(l)Builder Swarm Dock$() as a pillar of cyan light.$(br)$(li)Every $(l)drone$() as a dot that moves $(l)live$(), with a short glowing trail behind it and a thin line down to the ground to show how high it flies."
+      "text": "$(li)Every $(l)Drone Dock$() and $(l)Builder Swarm Dock$() as a pillar of emerald light.$(br)$(li)Every $(l)drone$() as a dot that moves $(l)live$(), with a short glowing trail behind it and a thin line down to the ground to show how high it flies."
     },
     {
       "type": "patchouli:text",
@@ -36,7 +36,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Cyan$(): working$(br)$(li)$(l)Amber$(): flying home$(br)$(li)$(l)Pale$(): resting or charging on its dock",
+      "text": "$(li)$(l)Emerald$(): working$(br)$(li)$(l)Amber$(): flying home$(br)$(li)$(l)Pale$(): resting or charging on its dock",
       "title": "Reading the drones"
     },
     {

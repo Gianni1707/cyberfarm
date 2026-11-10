@@ -41,7 +41,7 @@ import net.minecraft.world.phys.Vec3;
 
 /**
  * The Hologram Table's projection: the land around the table in relief, in its map colours shaded
- * like a vanilla map and touched with cyan, inside a frame of light with a scan line climbing through
+ * like a vanilla map and touched with emerald, inside a frame of light with a scan line climbing through
  * it; the Drone Docks as pillars of light; the drones as dots moving live with a fading trail,
  * coloured by what they do; players as white arrows, hostile mobs as red dots, N/E/S/W on its edges
  * and a floating line that counts it all up. It wakes when a player comes near: the beam reaches up
@@ -77,7 +77,7 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
     private static final int TRAIL_LENGTH = 10;
     private static final float TEXT_SCALE = 0.006F;
     private static final RenderType HOLOGRAM = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
-    private static final int CYAN = 0x2FE0FF;
+    private static final int MARK = 0x00B894;
     private static final int AMBER = 0xFFB347;
     private static final int PALE = 0xC9D3DC;
     private static final int RED = 0xFF4040;
@@ -195,7 +195,7 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
         Set<Integer> seen = new HashSet<>();
         for (DroneEntity drone : level.getEntitiesOfClass(DroneEntity.class, area)) {
             int colour = switch (drone.getStatus()) {
-                case DroneEntity.STATUS_WORKING -> CYAN;
+                case DroneEntity.STATUS_WORKING -> MARK;
                 case DroneEntity.STATUS_RETURNING -> AMBER;
                 default -> PALE;
             };
@@ -317,11 +317,11 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
         entity.mapLowest = lowest == Integer.MAX_VALUE ? centre.getY() : lowest;
     }
 
-    /** A map colour with a touch of the hologram's cyan, enough to look projected and still read as land. */
+    /** A map colour with a touch of the hologram's emerald, enough to look projected and still read as land. */
     private static int tint(int rgb) {
-        int r = (rgb >> 16 & 0xFF) * 9 / 10 + (CYAN >> 16 & 0xFF) / 10;
-        int g = (rgb >> 8 & 0xFF) * 9 / 10 + (CYAN >> 8 & 0xFF) / 10;
-        int b = (rgb & 0xFF) * 9 / 10 + (CYAN & 0xFF) / 10;
+        int r = (rgb >> 16 & 0xFF) * 9 / 10 + (MARK >> 16 & 0xFF) / 10;
+        int g = (rgb >> 8 & 0xFF) * 9 / 10 + (MARK >> 8 & 0xFF) / 10;
+        int b = (rgb & 0xFF) * 9 / 10 + (MARK & 0xFF) / 10;
         return r << 16 | g << 8 | b;
     }
 
@@ -339,7 +339,7 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
         Grid grid = state.grid;
         float[] shown = risenTops(state, power);
         collector.submitCustomGeometry(poseStack, HOLOGRAM, (pose, buffer) -> {
-            beam(pose, buffer, grid, (int) (0x30 * flicker * Math.min(1.0F, power * 3.0F)) << 24 | CYAN, Math.min(1.0F, power * 2.0F));
+            beam(pose, buffer, grid, (int) (0x30 * flicker * Math.min(1.0F, power * 3.0F)) << 24 | MARK, Math.min(1.0F, power * 2.0F));
             for (int dz = 0; dz < grid.cells(); dz++) {
                 for (int dx = 0; dx < grid.cells(); dx++) {
                     column(pose, buffer, state, shown, dx, dz, landAlpha);
@@ -349,12 +349,12 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
                 return;
             }
             int markAlpha = (int) (0xFF * overlay);
-            frame(pose, buffer, grid, FLOOR, 0.006F, (int) (0xB0 * overlay * flicker) << 24 | CYAN);
+            frame(pose, buffer, grid, FLOOR, 0.006F, (int) (0xB0 * overlay * flicker) << 24 | MARK);
             scanLine(pose, buffer, state, overlay);
-            compass(pose, buffer, grid, (int) (0xC0 * overlay) << 24 | CYAN);
+            compass(pose, buffer, grid, (int) (0xC0 * overlay) << 24 | MARK);
             for (Vec3 dock : state.docks) {
                 box(pose, buffer, (float) dock.x - 0.012F, (float) dock.y, (float) dock.z - 0.012F,
-                        (float) dock.x + 0.012F, (float) dock.y + 0.18F, (float) dock.z + 0.012F, (int) (0xE0 * overlay) << 24 | CYAN);
+                        (float) dock.x + 0.012F, (float) dock.y + 0.18F, (float) dock.z + 0.012F, (int) (0xE0 * overlay) << 24 | MARK);
             }
             for (Mark point : state.trails) {
                 float x = (float) point.at().x;
@@ -398,7 +398,7 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
         poseStack.scale(TEXT_SCALE, -TEXT_SCALE, TEXT_SCALE);
         int alpha = Math.max(0x10, (int) (0xFF * overlay)) << 24;
         collector.submitText(poseStack, -font.width(text) / 2.0F, 0.0F, text, false, Font.DisplayMode.NORMAL,
-                LightCoordsUtil.FULL_BRIGHT, alpha | CYAN, (int) (0x50 * overlay) << 24, 0);
+                LightCoordsUtil.FULL_BRIGHT, alpha | MARK, (int) (0x50 * overlay) << 24, 0);
         poseStack.popPose();
     }
 
@@ -471,7 +471,7 @@ public class HologramRenderer extends BlockEntityRenderer<HologramTableBlockEnti
         float progress = state.time % SCAN_TICKS / SCAN_TICKS;
         // Fades in at the bottom and out at the top
         float fade = Mth.sin(progress * Mth.PI) * overlay;
-        frame(pose, buffer, state.grid, scanHeight(state), 0.004F, (int) (0xC0 * fade) << 24 | CYAN);
+        frame(pose, buffer, state.grid, scanHeight(state), 0.004F, (int) (0xC0 * fade) << 24 | MARK);
     }
 
     /** N, E, S and W just outside the edges of the map, on its floor. */

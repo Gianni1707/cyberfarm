@@ -15,7 +15,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Below the multiblocks the list has $(l)schematics$(), marked in cyan: buildings saved with a $(l)Structure Block$(). Any data pack can add them: put the file in data/<namespace>/structure/schematic/. Its north side is its front, which turns towards you. Schematics up to 40 blocks a side are shown."
+      "text": "$(li)Below the multiblocks the list has $(l)schematics$(), marked in emerald: buildings saved with a $(l)Structure Block$(). Any data pack can add them: put the file in data/<namespace>/structure/schematic/. Its north side is its front, which turns towards you. Schematics up to 40 blocks a side are shown."
     },
     {
       "type": "patchouli:text",

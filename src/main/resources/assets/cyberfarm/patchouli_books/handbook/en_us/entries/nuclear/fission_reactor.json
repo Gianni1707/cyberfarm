@@ -95,7 +95,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "glowing cyan bands, wide at the base, narrow in the middle and flared at the rim. The controller becomes a $(l)panel$() on the surface and every port a glowing $(l)hatch$(), right where a pipe or cable plugged into the port enters the tower. You can $(l)right-click any block of the tower$() to open the reactor."
+      "text": "glowing pale green bands, wide at the base, narrow in the middle and flared at the rim. The controller becomes a $(l)panel$() on the surface and every port a glowing $(l)hatch$(), right where a pipe or cable plugged into the port enters the tower. You can $(l)right-click any block of the tower$() to open the reactor."
     },
     {
       "type": "patchouli:text",
@@ -104,7 +104,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Middle$(): 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar per rod, cyan while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the $(l)temperature$() bar with the red alarm mark."
+      "text": "$(li)$(l)Middle$(): 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the $(l)temperature$() bar with the red alarm mark."
     },
     {
       "type": "patchouli:text",

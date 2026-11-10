@@ -27,18 +27,18 @@ import net.minecraft.world.phys.Vec3;
 /**
  * While the Drone Assembler works, the drone it is making takes shape as a hologram on the pad in
  * its chamber: faint and folded at first, solid and unfolded as the assembly ends, its rotors
- * starting to turn in the last moments, with a scan ring running up and down it between the
- * pillars. When it is done the assembler flashes it into the output slot (see {@code Effects.print}).
+ * starting to turn in the last moments, with a scan ring running up and down it under the print
+ * head. When it is done the assembler flashes it into the output slot (see {@code Effects.print}).
  */
 public class AssemblerRenderer extends BlockEntityRenderer<DroneAssemblerBlockEntity, AssemblerRenderer.State> {
     private static final RenderType HOLOGRAM = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/drone.png"));
     private static final RenderType LIGHT = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/hologram.png"));
-    private static final int CYAN = 0x2FE0FF;
+    private static final int LAMP = 0xD1FEE7;
     /** The pad's top, where the drone stands, its size in the chamber and how far the scan ring runs. */
     private static final float PAD = 4.0F / 16.0F;
     private static final float SCALE = 0.5F;
     private static final float HEIGHT = 0.55F;
-    /** Inside the pillars. */
+    /** Inside the model's chamber: the spine, the arm and the ports stay outside this square. */
     private static final float INNER = 2.2F / 16.0F;
 
     public static class State extends BlockEntityRenderState {
@@ -99,12 +99,12 @@ public class AssemblerRenderer extends BlockEntityRenderer<DroneAssemblerBlockEn
         poseStack.scale(-SCALE, -SCALE, SCALE);
         poseStack.translate(0.0F, -1.501F, 0.0F);
         collector.submitModel(model, state.drone, poseStack, HOLOGRAM, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-                FastColor.ARGB32.color((int) (alpha * 255), (int) ((0.55F + 0.45F * p) * 255), (int) (0.95F * 255), 255), null);
+                FastColor.ARGB32.color((int) (alpha * 255), (int) ((0.6F + 0.4F * p) * 255), 255, (int) ((0.85F + 0.15F * p) * 255)), null);   // pale emerald, white when done
         poseStack.popPose();
         // The scan ring, up and down the drone once a second
         float sweep = Mth.sin(state.time * Mth.PI / 20.0F) * 0.5F + 0.5F;
         float y = PAD + 0.02F + sweep * HEIGHT;
-        int ring = (int) (0xC0 * flicker) << 24 | CYAN;
+        int ring = (int) (0xC0 * flicker) << 24 | LAMP;
         collector.submitCustomGeometry(poseStack, LIGHT, (pose, buffer) -> ring(pose, buffer, INNER, 1.0F - INNER, y, 0.03F, ring));
     }
 

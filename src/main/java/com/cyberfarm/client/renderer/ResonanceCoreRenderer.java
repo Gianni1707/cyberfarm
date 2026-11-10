@@ -25,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
  * The floating crystal of a Resonance Core: a slowly turning rhombic dodecahedron of glass panels
  * around a glowing heart that grows with the charge, plus a beam from the emitter on top of every
  * linked Stabilizer Pylon. A bigger shell makes a bigger crystal, filling the vanished cells.
- * Online it spins and shines cyan; unstable it slows, dims and flickers violet.
+ * Online it spins and shines white; unstable it slows, dims and flickers violet.
  */
 public class ResonanceCoreRenderer extends BlockEntityRenderer<ResonanceCoreBlockEntity, ResonanceCoreRenderer.State> {
     private static final RenderType SHELL = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/resonance_crystal.png"));
@@ -42,7 +42,7 @@ public class ResonanceCoreRenderer extends BlockEntityRenderer<ResonanceCoreBloc
 
     private static final int SHELL_ONLINE = 0xD0FFFFFF;
     private static final int SHELL_OFFLINE = 0xA08890A0;
-    private static final int HEART_ONLINE = 0xFFB8F6FF;
+    private static final int HEART_ONLINE = 0xFFFFFFFF;
     private static final int HEART_UNSTABLE = 0xFFB070FF;
     private static final int BEAM_ONLINE = 0xFF9FE8FF;
     private static final int BEAM_UNSTABLE = 0xFFB070FF;

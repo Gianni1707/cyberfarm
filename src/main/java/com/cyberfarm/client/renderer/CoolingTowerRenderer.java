@@ -21,14 +21,13 @@ import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 /**
  * Draws a formed Fission Reactor as one smooth cooling tower: a hyperboloid shell (wide base, narrow
- * waist, flared rim) of white panels with glowing cyan bands, over the now invisible shell blocks.
+ * waist, flared rim) of white panels with glowing bands, over the now invisible shell blocks.
  * Each Reactor Port shows as a glowing hatch and the controller as a panel, flush with the surface
  * where a pipe or cable coming along the block's axis meets it.
  */

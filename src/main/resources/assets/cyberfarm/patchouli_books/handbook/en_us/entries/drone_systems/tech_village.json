@@ -70,7 +70,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The village reaches $(l)64 blocks$() from the terminal every way. Press $(l)Range$() on the terminal to see its edge in the world: a line of cyan light along the ground, with posts at the corners. Press it again to hide it.",
+      "text": "The village reaches $(l)64 blocks$() from the terminal every way. Press $(l)Range$() on the terminal to see its edge in the world: a line of pale green light along the ground, with posts at the corners. Press it again to hide it.",
       "title": "The village's bounds"
     },
     {

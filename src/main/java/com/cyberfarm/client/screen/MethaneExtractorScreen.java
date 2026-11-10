@@ -169,7 +169,7 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
         }
     }
 
-    /** Flickering cyan lightning around the dissolving mob. */
+    /** Flickering white lightning around the dissolving mob. */
     private static void arcs(GuiGraphicsExtractor graphics, int centreX, int top, int bottom, int seed) {
         Random random = new Random(seed);
         for (int arc = 0; arc < 3; arc++) {
@@ -177,7 +177,7 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
             int ay = top + random.nextInt(Math.max(1, bottom - top - 12));
             for (int step = 0; step < 6; step++) {
                 int nx = Mth.clamp(ax + random.nextInt(7) - 3, centreX - 30, centreX + 30);
-                graphics.fill(Math.min(ax, nx), ay, Math.max(ax, nx) + 1, ay + 1, 0xFFB8F6FF);
+                graphics.fill(Math.min(ax, nx), ay, Math.max(ax, nx) + 1, ay + 1, 0xFFFFFFFF);
                 graphics.fill(nx, ay, nx + 1, ay + 3, ACCENT);
                 ax = nx;
                 ay += 3;

@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the pad inside the assembler's open chamber, unfolding as it is made. When the bar is full it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
+      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the build plate, under the assembler's print head, unfolding as it is made. When the bar is full it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
     },
     {
       "type": "patchouli:text",

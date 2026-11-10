@@ -60,7 +60,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Complete, the blocks disappear into one smooth $(l)white and cyan cylinder$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world."
+      "text": "Complete, the blocks disappear into one smooth $(l)white and pale green cylinder$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world."
     },
     {
       "type": "patchouli:text",

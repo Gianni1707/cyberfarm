@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.RenderType;
 import com.cyberfarm.port.client.RenderTypes;
 import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -37,7 +36,7 @@ public class LaserTurretRenderer extends BlockEntityRenderer<LaserTurretBlockEnt
     private static final int STEEL_DARK = 0xFF2C333B;
     private static final int LENS_ARMED = 0xFFFF2A1F;
     private static final int LENS_IDLE = 0xFF6A1A14;
-    private static final int SENSOR = 0xFF2FE0FF;
+    private static final int SENSOR = 0xFFD1FEE7;
 
     public static class State extends BlockEntityRenderState {
         float yaw;
