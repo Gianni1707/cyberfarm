@@ -500,6 +500,17 @@ URANIUM_SHADES = {"1": "#14200d", "2": "#26501a", "3": "#3c8a24", "4": "#62d13a"
                   "6": "#2b2c28", "7": "#454640", "8": "#62635b", "9": "#7f8077"}
 PALETTE.update(URANIUM_SHADES)
 
+# Drone icon shades, the drone model's own ramps (DRONE_BODY, DRONE_COPPER[2], DRONE_CREAM, DRONE_GUNMETAL, ...)
+DRONE_ICON_SHADES = {
+    "H": "#6c7a88", "M": "#4a5664", "Z": "#232a33",                    # dark body
+    "u": "#b65a26",                                                    # the one flat dark copper
+    "t": "#fbf5e4", "T": "#e6dab8", "e": "#c2b28c",                    # cream tank
+    "n": "#5a6370", "q": "#3d444d", "Q": "#2a2f36",                    # gunmetal motors
+    "p": "#3a3f47", "P": "#1d2026",                                    # carbon blades
+    "I": "#b4c0ca", "j": "#7c8894",                                    # steel mast
+}
+PALETTE.update(DRONE_ICON_SHADES)
+
 
 def turret_side():
     """Laser Turret pedestal side (6 px high on the block): dark plate, hazard band, red lamp."""
@@ -1525,39 +1536,40 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
+    # Drone seen from the front, wide and low: motors at the edges on thin arms, cyan visor, cream tank on the copper band
     "item/drone": [
         "................",
-        ".kkk........kkk.",
-        ".kwk........kwk.",
-        ".kkkk......kkkk.",
-        "...kmk....kmk...",
-        "....kmkkkkmk....",
-        ".....kmccmk.....",
-        ".....kcCCck.....",
-        ".....kcCCck.....",
-        ".....kmccmk.....",
-        "....kmkkkkmk....",
-        "...kmk....kmk...",
-        ".kkkk......kkkk.",
-        ".kwk........kwk.",
-        ".kkk........kkk.",
+        "................",
+        "................",
+        ".......kk.......",
+        "kkkk..kccK..kkkk",
+        "pPPpK.kIjK.kpPPp",
+        "knq...tttT...nqK",
+        "kqQMMMtTTeMMMqQK",
+        "kuu..HuuuuH..uuK",
+        ".KK.kcCCCCcK.KK.",
+        "....kHMMMMMK....",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
+        "................",
         "................",
     ],
-    # Mini Drone: the drone drawn smaller, with the Mini Frame's white arms
+    # Mini Drone: the same drone drawn smaller (12x9 against 16x11)
     "item/mini_drone": [
         "................",
         "................",
         "................",
-        "...kkk....kkk...",
-        "...kwk....kwk...",
-        "...kkkk..kkkk...",
-        ".....kwkkwk.....",
-        "......kCck......",
-        "......kcCk......",
-        ".....kwkkwk.....",
-        "...kkkk..kkkk...",
-        "...kwk....kwk...",
-        "...kkk....kkk...",
+        "................",
+        ".......kk.......",
+        "...kk.kccK.kk...",
+        "..kpPK.tT.kPpK..",
+        "..knq..Te..nqK..",
+        "..kuuMHuuHMuuK..",
+        "...KKKcCCcKKK...",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
         "................",
         "................",
         "................",
@@ -2251,39 +2263,40 @@ ITEM_ASCII = {
         "................",
         "................",
     ],
+    # Drone seen from the front, wide and low: motors at the edges on thin arms, cyan visor, cream tank on the copper band
     "item/drone": [
         "................",
-        ".kkk........kkk.",
-        ".kwk........kwk.",
-        ".kkkk......kkkk.",
-        "...kmk....kmk...",
-        "....kmkkkkmk....",
-        ".....kmccmk.....",
-        ".....kcCCck.....",
-        ".....kcCCck.....",
-        ".....kmccmk.....",
-        "....kmkkkkmk....",
-        "...kmk....kmk...",
-        ".kkkk......kkkk.",
-        ".kwk........kwk.",
-        ".kkk........kkk.",
+        "................",
+        "................",
+        ".......kk.......",
+        "kkkk..kccK..kkkk",
+        "pPPpK.kIjK.kpPPp",
+        "knq...tttT...nqK",
+        "kqQMMMtTTeMMMqQK",
+        "kuu..HuuuuH..uuK",
+        ".KK.kcCCCCcK.KK.",
+        "....kHMMMMMK....",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
+        "................",
         "................",
     ],
-    # Mini Drone: the drone drawn smaller, with the Mini Frame's white arms
+    # Mini Drone: the same drone drawn smaller (12x9 against 16x11)
     "item/mini_drone": [
         "................",
         "................",
         "................",
-        "...kkk....kkk...",
-        "...kwk....kwk...",
-        "...kkkk..kkkk...",
-        ".....kwkkwk.....",
-        "......kCck......",
-        "......kcCk......",
-        ".....kwkkwk.....",
-        "...kkkk..kkkk...",
-        "...kwk....kwk...",
-        "...kkk....kkk...",
+        "................",
+        ".......kk.......",
+        "...kk.kccK.kk...",
+        "..kpPK.tT.kPpK..",
+        "..knq..Te..nqK..",
+        "..kuuMHuuHMuuK..",
+        "...KKKcCCcKKK...",
+        "......M..M......",
+        "......Z..Z......",
+        "......K..K......",
         "................",
         "................",
         "................",
@@ -2520,7 +2533,7 @@ def drone_texture():
         c.rect(x0, y0, x1, y1, "c")
         if name == "front":
             c.rect(x0 + 1, y0, x1 - 1, y1, "C")
-    # Low tank 3x2x3: cream with a cylinder-like sheen and a green level window, copper band 3x1x3 with rivets
+    # Low tank 3x2x3: cream with a cylinder-like sheen and a green level window, flat dark copper band 3x1x3
     tank = shaded_box(c, 0, 11, 3, 2, 3, DRONE_CREAM)
     for name in ("right", "front", "left", "back"):
         x0, y0, x1, y1 = tank[name]
@@ -2531,10 +2544,8 @@ def drone_texture():
     c.set(x0 + 1, y1, "#4fa85a")
     x0, y0, x1, y1 = tank["top"]
     c.set(x0 + 1, y0 + 1, DRONE_STEEL[1])                # filler cap
-    band = shaded_box(c, 28, 32, 3, 1, 3, DRONE_COPPER)
-    for name in ("right", "front", "left", "back"):
-        x0, y0, x1, y1 = band[name]
-        c.set((x0 + x1) // 2, y0, DRONE_COPPER[0])
+    for x0, y0, x1, y1 in box_faces(28, 32, 3, 1, 3).values():
+        c.rect(x0, y0, x1, y1, DRONE_COPPER[2])
     # Antenna: steel mast 1x2x1, glowing tip 1x1x1
     shaded_box(c, 54, 40, 1, 2, 1, DRONE_STEEL)
     for name, (x0, y0, x1, y1) in box_faces(44, 46, 1, 1, 1).items():
@@ -2545,12 +2556,11 @@ def drone_texture():
         if name in arm:
             x0, y0, x1, y1 = arm[name]
             c.set(x0, y0, DRONE_COPPER[2])
-    # Motors 2x2x2: gunmetal can with a copper ring round its base and a lighter hub on top
+    # Motors 2x2x2: gunmetal can with a flat dark copper ring round its base and a lighter hub on top
     motor = shaded_box(c, 16, 18, 2, 2, 2, DRONE_GUNMETAL)
     for name in ("right", "front", "left", "back"):
         x0, y0, x1, y1 = motor[name]
-        c.rect(x0, y1, x1, y1, DRONE_COPPER[1])
-        c.set(x0, y1, DRONE_COPPER[0])
+        c.rect(x0, y1, x1, y1, DRONE_COPPER[2])
     x0, y0, _, _ = motor["top"]
     c.set(x0, y0, DRONE_GUNMETAL[0])
     nozzle = shaded_box(c, 44, 56, 1, 1, 1, DRONE_STEEL)

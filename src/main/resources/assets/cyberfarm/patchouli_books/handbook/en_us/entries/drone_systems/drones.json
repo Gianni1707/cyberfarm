@@ -6,11 +6,12 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:drone"
+      "item": "cyberfarm:drone",
+      "text": "An assembled drone shows its parts and battery in the tooltip. To put it to work, $(l)right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with it. It lands folded on the pad, facing the dock's front (the side that faced you when you placed it, the same"
     },
     {
       "type": "patchouli:text",
-      "text": "An assembled drone shows its parts and battery in the tooltip. To put it to work, $(l)right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with it. It lands folded on the pad, opens its arms, spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock)."
+      "text": "way it parks whenever it comes home), opens its arms, spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock)."
     },
     {
       "type": "patchouli:text",

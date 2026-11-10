@@ -1,19 +1,74 @@
 {
-  "variants": {
-    "facing=north": {
-      "model": "cyberfarm:block/swarm_dock"
+  "multipart": [
+    {
+      "when": {
+        "facing": "north"
+      },
+      "apply": {
+        "model": "cyberfarm:block/swarm_dock"
+      }
     },
-    "facing=east": {
-      "model": "cyberfarm:block/swarm_dock",
-      "y": 90
+    {
+      "when": {
+        "facing": "east"
+      },
+      "apply": {
+        "model": "cyberfarm:block/swarm_dock",
+        "y": 90
+      }
     },
-    "facing=south": {
-      "model": "cyberfarm:block/swarm_dock",
-      "y": 180
+    {
+      "when": {
+        "facing": "south"
+      },
+      "apply": {
+        "model": "cyberfarm:block/swarm_dock",
+        "y": 180
+      }
     },
-    "facing=west": {
-      "model": "cyberfarm:block/swarm_dock",
-      "y": 270
+    {
+      "when": {
+        "facing": "west"
+      },
+      "apply": {
+        "model": "cyberfarm:block/swarm_dock",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/drone_dock_port"
+      }
+    },
+    {
+      "when": {
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/drone_dock_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/drone_dock_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/drone_dock_port",
+        "y": 270
+      }
     }
-  }
+  ]
 }
