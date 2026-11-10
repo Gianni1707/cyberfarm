@@ -6,7 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A cooling tower in $(l)three sizes$(). Uranium $(l)Fuel Rods$() heat its core, $(l)water$() carries the heat away and leaves as $(l)Steam$() for $(l:nuclear/steam_turbine)Steam Turbines$(/l). The scene shows the Small tower; a $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows any size right where you want to build it."
+      "text": "A cooling tower in $(l)three sizes$(). Uranium $(l)Fuel Rods$() heat its core, $(l)water$() carries the heat away and leaves as $(l)Steam$() for $(l:nuclear/steam_turbine)Steam Turbines$(/l). The scene shows the Small tower; a $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows any size right where you want to build it. Right-click the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They show the size nearest to done."
     },
     {
       "type": "patchouli:multiblock",

@@ -58,15 +58,19 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)the $(l)Methane Outlet$() (pale green ring) only gives methane out. Pipe acid to the inlet with a $(l:cables/liquid_pipe)Liquid Pipe$(/l) and take methane from the outlet with a Gas Pipe.$(br)$(li)$(l)Intake Gate$(): any glass of the $(l)lower$() wall can be an $(item)Intake Gate$().$(br)When the structure is right the chamber powers up with a"
+      "text": "$(li)the $(l)Methane Outlet$() (pale green ring) only gives methane out. Pipe acid to the inlet with a $(l:cables/liquid_pipe)Liquid Pipe$(/l) and take methane from the outlet with a Gas Pipe.$(br)$(li)$(l)Intake Gate$(): any glass of the $(l)lower$() wall can be an $(item)Intake Gate$()."
     },
     {
       "type": "patchouli:text",
-      "text": "chime and becomes $(l)one machine$(), a sibling of the $(l:mech/mech_core)Crystallizer$(/l): a stepped octagonal plinth, four pylons and a crown with the extractor's head in its hub, and between them a stepped glass bell with the mob in plain view. Ports show as couplings where a pipe joins them, gates as roll-up doors between two pylons."
+      "text": "Right-click the extractor while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back.$(br2)When the structure is right the chamber powers up with a chime and becomes $(l)one machine$(), a"
     },
     {
       "type": "patchouli:text",
-      "text": "The acid pools in the bell's lowest step, and while a mob dissolves a spray ring strokes up and down around its head on four rods. A finished chamber opens the GUI from any of its blocks (sneak to place blocks against it instead)."
+      "text": "sibling of the $(l:mech/mech_core)Crystallizer$(/l): a stepped octagonal plinth, four pylons and a crown with the extractor's head in its hub, and between them a stepped glass bell with the mob in plain view. Ports show as couplings where a pipe joins them, gates as roll-up doors between two pylons. The acid pools in the bell's lowest step, and"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "while a mob dissolves a spray ring strokes up and down around its head on four rods. A finished chamber opens the GUI from any of its blocks (sneak to place blocks against it instead)."
     },
     {
       "type": "patchouli:text",
@@ -120,12 +124,12 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:methane_extractor": 14,
-    "cyberfarm:cyber_frame": 14,
-    "cyberfarm:mob_capsule": 15,
-    "cyberfarm:containment_glass": 15,
-    "cyberfarm:acid_inlet": 16,
-    "cyberfarm:methane_outlet": 16,
-    "cyberfarm:intake_gate": 17
+    "cyberfarm:methane_extractor": 15,
+    "cyberfarm:cyber_frame": 15,
+    "cyberfarm:mob_capsule": 16,
+    "cyberfarm:containment_glass": 16,
+    "cyberfarm:acid_inlet": 17,
+    "cyberfarm:methane_outlet": 17,
+    "cyberfarm:intake_gate": 18
   }
 }

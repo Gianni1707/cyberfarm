@@ -56,11 +56,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at their ports."
+      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at their ports.$(br)Complete, the blocks disappear into one smooth $(l)white and pale green cylinder$(): the"
     },
     {
       "type": "patchouli:text",
-      "text": "Complete, the blocks disappear into one smooth $(l)white and pale green cylinder$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world."
+      "text": "controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "block in the way. A second click calls them back. They show the size nearest to done."
     },
     {
       "type": "patchouli:text",
@@ -91,8 +95,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:turbine_controller": 12,
-    "cyberfarm:turbine_casing": 11,
-    "cyberfarm:turbine_port": 11
+    "cyberfarm:turbine_controller": 13,
+    "cyberfarm:turbine_casing": 12,
+    "cyberfarm:turbine_port": 12
   }
 }

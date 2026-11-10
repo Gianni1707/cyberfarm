@@ -81,15 +81,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)a $(l)post$() of Hangar Frames at the back end of each rail, 5 blocks up, a $(l)beam$() across their tops and two $(l)arms$(), two blocks long, reaching forward from the beam over the pad;$(br)$(li)a 3x3 $(item)Hangar Pad$() between the rails, with the space over it left free.$(br)The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it:"
+      "text": "$(li)a $(l)post$() of Hangar Frames at the back end of each rail, 5 blocks up, a $(l)beam$() across their tops and two $(l)arms$(), two blocks long, reaching forward from the beam over the pad;$(br)$(li)a 3x3 $(item)Hangar Pad$() between the rails, with the space over it left free.$(br)Right-click the console while it is"
     },
     {
       "type": "patchouli:text",
-      "text": "sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to the rack itself: white rails with treads and a pale green light line, posts with blue bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's"
+      "text": "unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it too: sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to"
     },
     {
       "type": "patchouli:text",
-      "text": "shoulders and a $(l)gantry arm$() riding on the arms, which fits the modules."
+      "text": "the rack itself: rails with treads and a pale green light line, posts with mint bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's shoulders and a $(l)gantry arm$() riding on the arms, which fits the modules."
     },
     {
       "type": "patchouli:text",

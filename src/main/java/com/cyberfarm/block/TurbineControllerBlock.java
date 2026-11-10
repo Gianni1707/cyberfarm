@@ -1,6 +1,10 @@
 package com.cyberfarm.block;
 
-
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
+import com.cyberfarm.multiblock.Blueprint;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import com.cyberfarm.block.entity.TurbineControllerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 
@@ -19,6 +23,18 @@ public class TurbineControllerBlock extends MultiblockControllerBlock {
         super(properties);
     }
 
+
+    /** Until it is complete, a click sends out the drones that show what it lacks, instead of opening the GUI. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (state.getValue(FORMED)) {
+            return super.useWithoutItem(state, level, pos, player, hitResult);
+        }
+        if (level.isClientSide()) {
+            FrameDroneRenderer.clickedStructure(level, pos, state, Blueprint.TURBINE_SMALL, Blueprint.TURBINE_MEDIUM, Blueprint.TURBINE_LARGE);
+        }
+        return InteractionResult.SUCCESS;
+    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
