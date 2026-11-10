@@ -7,7 +7,11 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:mech_frame",
-      "text": "A pilotable mech, about three and a half blocks tall: white armour with blue trim. Its trunk is a bay you stand in, back against a harness, looking out through the visor of its head. You climb in, and it walks, jumps and punches for you."
+      "text": "A pilotable mech, about three and a half blocks tall, in teal armour with mint enamel and steel trim: a broad chest that comes to a prow, big angular shoulders, a steel V crest on its brow and two thrusters on its back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Its trunk is a bay you stand in, back against a harness, looking out through the visor of its head. You climb in, and it walks, jumps and punches for you."
     },
     {
       "type": "patchouli:text",
@@ -20,12 +24,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click$() the mech: it crouches a little and the front of its trunk opens like a flower, four petals swinging out one after the other while the visor plate lifts. You walk up, turn round and back into the bay, up a step; the petals close around you and the mech straightens up.",
+      "text": "$(li)$(l)Right-click$() the mech: it crouches with its knees apart and its front opens. The two chest plates swing apart like a book, the two abdomen doors swing aside after them, and the visor plate lifts with the crest on it. You walk up between its knees, turn round and back into the",
       "title": "Getting in and out"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Press V$() (the $(o)Exit mech$() key in the controls) to get out: it crouches and opens with a hiss of steam, you come off the harness, step down out of the bay and walk off, and it closes up again. Sneaking does not get you out."
+      "text": "$(li)bay, up a step; the plates close around you and the mech straightens up.$(br)$(li)$(l)Press V$() (the $(o)Exit mech$() key in the controls) to get out: it crouches and opens with a hiss of steam, you come off the harness, step down out of the bay and walk off, and it closes up again. Sneaking does not get you out."
     },
     {
       "type": "patchouli:text",
@@ -55,7 +59,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Integrity$() is the mech's health. It never blows up: when it would, it $(l)shuts down$(), slumps over and lets you out. A shut-down mech must be repaired before you can climb in again: park it in a $(l:mech/mech_hangar)Mech Hangar$(/l), which also charges its battery and fits its $(l:mech/mech_modules)modules$(/l)."
+      "text": "$(l)Integrity$() is the mech's health. It never blows up: when it would, it $(l)shuts down$(). Its lights go out, it slumps over and lets you out. A shut-down mech must be repaired before you can climb in again: park it in a $(l:mech/mech_hangar)Mech Hangar$(/l), which also charges its battery and fits its $(l:mech/mech_modules)modules$(/l)."
     },
     {
       "type": "patchouli:text",
@@ -73,6 +77,6 @@
   ],
   "priority": true,
   "extra_recipe_mappings": {
-    "cyberfarm:mech_frame": 14
+    "cyberfarm:mech_frame": 15
   }
 }

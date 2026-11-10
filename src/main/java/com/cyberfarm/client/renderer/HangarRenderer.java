@@ -40,9 +40,13 @@ public class HangarRenderer extends BlockEntityRenderer<MechHangarBlockEntity, H
     private static final int BAND = 0xFF5EC2B8;
     private static final int LAMP = 0xFFD1FEE7;
     /** The arms' and clamps' place across the rack: over the parked mech's shoulders. */
-    private static final float[] SHOULDERS = {1.34F, 2.66F};
-    /** Where the gripper takes each module, by MechModule order (w, y, d): the back unit, beside each forearm, before the chest. */
-    private static final float[][] MOUNTS = {{2.0F, 3.8F, 2.8F}, {0.98F, 3.0F, 2.0F}, {3.02F, 3.0F, 2.0F}, {2.0F, 3.75F, 1.45F}};
+    private static final float[] SHOULDERS = {1.31F, 2.69F};
+    /**
+     * Where the gripper takes each module, by MechModule order (w, y, d): behind the thrusters, beside each cuff, before
+     * the chest's prow. Each is a carried module's half-width clear of the mech, and beside the cuffs the gripper's way
+     * down also clears the shoulder flanges. From MechModel: w = 2 - x / 16, y = 1 + (24 - y) / 16, d = 2 + z / 16.
+     */
+    private static final float[][] MOUNTS = {{2.0F, 3.75F, 2.97F}, {0.7F, 3.06F, 1.91F}, {3.3F, 3.06F, 1.91F}, {2.0F, 3.78F, 1.3F}};
     /** The gantry at rest: the bridge back by the beam, the trolley in the middle, the gripper drawn up. */
     private static final float HOME_W = 2.0F;
     private static final float HOME_D = 3.55F;
@@ -99,7 +103,9 @@ public class HangarRenderer extends BlockEntityRenderer<MechHangarBlockEntity, H
             return;
         }
         int light = state.light;
-        float clampY = Mth.lerp(smooth(state.clamp), 5.0F, 4.38F);
+        // Down, the claws' tips stop a plate's thickness above the shoulder pads (top at 4.34): on the armour, if it is fitted
+        // Raised, they hang above the tips of its crest (4.89), which pass close by them
+        float clampY = Mth.lerp(smooth(state.clamp), 5.1F, 4.66F);
         Gantry gantry = gantry(state);
         poseStack.pushPose();
         poseStack.translate(0.5F, 0.0F, 0.5F);
@@ -124,7 +130,7 @@ public class HangarRenderer extends BlockEntityRenderer<MechHangarBlockEntity, H
             for (int i = 0; i < 2; i++) {
                 float w = SHOULDERS[i];
                 float post = i == 0 ? 0.0F : 4.0F;
-                rack.beam(w, 5.55F, 4.0F, w, 5.55F, 1.3F, 0.24F, SHELL);
+                rack.beam(w, 5.55F, 4.0F, w, 5.55F, 1.1F, 0.24F, SHELL);
                 // Hydraulic strut: a dark cylinder from the post, a steel rod into the arm
                 float midW = Mth.lerp(0.55F, post, w);
                 rack.beam(post, 3.0F, 4.0F, midW, Mth.lerp(0.55F, 3.0F, 5.3F), Mth.lerp(0.55F, 4.0F, 2.6F), 0.12F, DARK);
@@ -140,9 +146,9 @@ public class HangarRenderer extends BlockEntityRenderer<MechHangarBlockEntity, H
             for (float w : SHOULDERS) {
                 rack.beam(w, 5.84F, d - 0.2F, w, 5.84F, d + 0.2F, 0.08F, DARK);
             }
-            rack.beam(0.8F, GANTRY_Y, d, 3.2F, GANTRY_Y, d, 0.1F, SHELL);
-            rack.beam(0.78F, GANTRY_Y, d, 0.82F, GANTRY_Y, d, 0.12F, BAND);
-            rack.beam(3.18F, GANTRY_Y, d, 3.22F, GANTRY_Y, d, 0.12F, BAND);
+            rack.beam(0.5F, GANTRY_Y, d, 3.5F, GANTRY_Y, d, 0.1F, SHELL);
+            rack.beam(0.48F, GANTRY_Y, d, 0.52F, GANTRY_Y, d, 0.12F, BAND);
+            rack.beam(3.48F, GANTRY_Y, d, 3.52F, GANTRY_Y, d, 0.12F, BAND);
             float w = gantry.w;
             float y = gantry.y;
             rack.beam(w, GANTRY_Y - 0.12F, d, w, GANTRY_Y + 0.14F, d, 0.17F, DARK);

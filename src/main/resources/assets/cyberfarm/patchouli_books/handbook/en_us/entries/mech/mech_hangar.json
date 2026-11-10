@@ -115,15 +115,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "fit it, take it out to remove it, and the $(l)gantry arm$() does the work: the bridge rolls along the rack's arms, the gripper drops onto the mount (the back, a forearm or the chest) and the module locks in with a flash, or comes away held in the gripper; then the arm goes home. The module is on the mech (or off it) the moment you"
+      "text": "fit it, take it out to remove it, and the $(l)gantry arm$() does the work: the bridge rolls along the rack's arms, the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a flash, or comes away held in the gripper; then the arm goes home. The module is"
     },
     {
       "type": "patchouli:text",
-      "text": "move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech. With no mech on the pad, the slots are empty and take nothing."
+      "text": "on the mech (or off it) the moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech. With no mech on the pad, the slots are empty and take nothing.$(br2)The $(l)Fold$() button packs the parked mech back up: it crouches, folds its"
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l)Fold$() button packs the parked mech back up: it crouches, crosses its arms, draws its head and legs in and folds down into its frame, which drops on the pad with the battery's charge and the modules in it. It folds only at $(l)full integrity$(): a frame keeps no damage, so let the hangar finish the repairs first."
+      "text": "forearms across its belly, bows its head, draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the modules in it. It folds only at $(l)full integrity$(): a frame keeps no damage, so let the hangar finish the repairs first."
     },
     {
       "type": "patchouli:crafting",

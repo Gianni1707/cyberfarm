@@ -2648,150 +2648,212 @@ def plain_white():
 
 # --------------------------------------------------------------------------- mech
 
-MECH_WHITE = "#e9edf0"
-MECH_SEAM = "#c3cad1"
-MECH_RED = "#1f8fd0"  # accent: the mod's blue
-MECH_RED_DARK = "#0e5f99"
-MECH_DARK = "#2b3036"
-MECH_BLACK = "#16191d"
+# Ramps (light, main, seam) in the mod's palette: armour shells on the hangar's body teal, darker joints, mint enamel,
+# steel on the crest, the toe caps and the rims, emerald only on the shoulder chevron
+MECH_TEAL = ("#5b7771", "#395853", "#233e3b")
+MECH_JOINT = ("#395853", "#233e3b", "#132423")
+MECH_DEEP = ("#233e3b", "#132423", "#071314")
+MECH_MINT = ("#a5ead4", "#5ec2b8", "#488d91")
+MECH_STEEL = ("#bdc6c5", "#b1bebc", "#7c8989")
+MECH_FACE = ("#132423", "#071314", "#030909")
+MECH_LIGHT = ("#d1fee7", "#d1fee7", "#d1fee7")
+MECH_EMERALD = "#00b894"
+MECH_RECESS = "#030909"
+
+# The boxes of MechModel, by name: (u, v, width, height, depth). Mirrored pairs share one entry.
+MECH_BOXES = {
+    "side_wall": (0, 0, 1, 22, 7), "back_wall": (16, 0, 14, 22, 3), "blade": (50, 0, 1, 14, 3), "pad": (16, 96, 6, 5, 11), "shin": (90, 0, 7, 8, 8),
+    "pad_skirt": (0, 29, 1, 6, 10), "boot": (22, 29, 7, 4, 11), "thigh": (58, 29, 5, 10, 5), "spine": (78, 29, 2, 14, 1),
+    "sh_plate": (84, 29, 5, 1, 12), "pack": (0, 45, 12, 10, 3), "helm": (30, 45, 8, 7, 6), "flange": (66, 96, 2, 4, 9), "forearm": (78, 45, 5, 8, 5),
+    "upper": (50, 96, 4, 10, 4), "chest": (110, 45, 7, 10, 2), "hip": (0, 58, 1, 6, 6), "th_plate": (14, 58, 1, 6, 6), "knee_blk": (28, 58, 5, 5, 6),
+    "cuff": (58, 58, 6, 4, 6), "floor": (82, 58, 12, 2, 7), "ear": (26, 70, 1, 4, 5),
+    "roof": (38, 70, 12, 1, 7), "drill_collar": (76, 70, 5, 3, 5), "drill_bit": (96, 70, 4, 4, 4), "fist": (112, 70, 4, 4, 4),
+    "ch_plate": (0, 79, 5, 7, 1), "thr": (12, 79, 3, 5, 3), "bell": (24, 79, 4, 3, 4), "nape": (40, 79, 6, 5, 2), "flange_tip": (0, 114, 2, 2, 5),
+    "kneepad": (68, 79, 4, 5, 2), "pec": (104, 96, 7, 6, 1), "drill_mid": (92, 79, 3, 3, 3), "nozzle": (104, 79, 3, 3, 3),
+    "wing_root": (0, 87, 8, 1, 4), "visor": (42, 87, 8, 4, 1), "toe": (60, 87, 5, 3, 2), "hilt": (74, 87, 2, 2, 3),
+    "pad_front": (84, 87, 4, 4, 1), "drill_tip": (94, 87, 2, 3, 2), "fin_tip": (102, 87, 1, 4, 1), "wing_mid": (106, 87, 8, 1, 3),
+    "fin_base": (0, 92, 2, 3, 1), "wing_tip": (6, 92, 6, 1, 2), "gem": (22, 92, 2, 2, 1), "bar": (28, 92, 8, 1, 1),
+    "yoke": (0, 96, 2, 12, 6), "door": (88, 96, 7, 8, 1), "door_abs": (14, 114, 5, 4, 1),
+}
 
 
-def _mech_box(c, u, v, w, h, d, color=MECH_WHITE, seam=MECH_SEAM, seed=0):
-    """A box of the mech: one colour with a seam around every face big enough to show one."""
-    faces = paint_box(c, u, v, w, h, d, color, seed=seed)
-    for x0, y0, x1, y1 in faces.values():
+def _mech_box(c, name, ramp, top=None, seed=0):
+    """A box of the mech: lit top row and left column, a dark underside, a seam round every face big enough to show one."""
+    light, main, seam = ramp
+    faces = paint_box(c, *MECH_BOXES[name], main, top=top, seed=seed)
+    for face, (x0, y0, x1, y1) in faces.items():
+        if face == "bottom":
+            c.rect(x0, y0, x1, y1, seam)
+            continue
         if x1 - x0 >= 3 and y1 - y0 >= 3:
             c.frame(x0, y0, x1, y1, seam)
+        c.rect(x0, y0, x1, y0, light)
+        c.rect(x0, y0, x0, y1, light)
     return faces
 
 
 def mech_texture():
-    """The mech's skin, 128x128 in the box layout of MechModel: white armour, blue trim, dark joints and bay, cyan lights."""
+    """The mech's skin, 128x128 in the box layout of MechModel: teal armour, mint enamel, steel crest and rims, near-white lights."""
     c = Canvas(128, 128)
-    # The pilot's bay: white outside, dark inside with a few lights
-    back_wall = _mech_box(c, 0, 92, 16, 22, 3, seed=1)
+    # The pilot's bay: a dark shell, deep inside with lit rails
+    back_wall = _mech_box(c, "back_wall", MECH_JOINT, seed=1)
     x0, y0, x1, y1 = back_wall["front"]
-    c.rect(x0, y0, x1, y1, MECH_BLACK)
+    c.rect(x0, y0, x1, y1, MECH_FACE[1])
     for y in range(y0 + 3, y1 - 2, 4):
         c.set(x0 + 2, y, "c")
         c.set(x1 - 2, y, "c")
-    tx0, ty0, tx1, ty1 = back_wall["top"]
-    c.rect(tx0, ty0, tx1, ty1, MECH_RED)
-    c.rect(*back_wall["back"], MECH_DARK)
-    side_wall = _mech_box(c, 38, 92, 2, 22, 7, seed=2)
-    c.rect(*side_wall["left"], MECH_BLACK)
+    side_wall = _mech_box(c, "side_wall", MECH_TEAL, seed=2)
+    c.rect(*side_wall["left"], MECH_FACE[1])
     x0, y0, x1, y1 = side_wall["right"]
-    c.rect(x0, y0 + 9, x1, y0 + 10, MECH_RED)
-    floor = _mech_box(c, 56, 92, 12, 2, 7, seed=3)
-    c.rect(*floor["top"], MECH_DARK)
+    c.rect(x0, y0 + 10, x1, y0 + 11, MECH_JOINT[1])
+    x0, y0, x1, y1 = side_wall["front"]
+    c.rect(x0, y0 + 11, x1, y1, MECH_FACE[0])                           # dark waist flank under the chest
+    # The shoulder yoke the pads sit against: it also hides the pilot's arms
+    yoke = _mech_box(c, "yoke", MECH_TEAL, seed=60)
+    for face in ("front", "right", "back"):
+        x0, y0, x1, y1 = yoke[face]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[1])
+        c.rect(x0, y0 + 6, x1, y0 + 6, MECH_JOINT[2])
+    floor = _mech_box(c, "floor", MECH_JOINT, seed=3)
+    c.rect(*floor["top"], MECH_DEEP[1])
     x0, y0, x1, y1 = floor["front"]
-    c.rect(x0 + 3, y0, x1 - 3, y1, MECH_RED)
-    roof = _mech_box(c, 18, 74, 12, 1, 7, seed=4)
-    c.rect(*roof["bottom"], MECH_BLACK)
+    c.rect(x0 + 4, y0, x1 - 4, y1, MECH_STEEL[2])                        # step edge
+    roof = _mech_box(c, "roof", MECH_JOINT, seed=4)
+    c.rect(*roof["bottom"], MECH_FACE[1])
+    # Back unit: radiator slats under a mint line, a steel plate on top where the hangar's gripper lands
+    pack = _mech_box(c, "pack", MECH_TEAL, seed=5)
+    x0, y0, x1, y1 = pack["back"]
+    for y in range(y0 + 2, y1 - 1, 2):
+        c.rect(x0 + 2, y, x1 - 2, y, MECH_RECESS)
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, MECH_MINT[1])
+    x0, y0, x1, y1 = pack["top"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, MECH_STEEL[2])
     # Harness: a dark spine with lights, a shoulder bar
-    spine = paint_box(c, 92, 102, 2, 14, 1, MECH_DARK, seed=5)
-    x0, y0, x1, y1 = spine["front"]
+    x0, y0, x1, y1 = _mech_box(c, "spine", MECH_DEEP, seed=6)["front"]
     for y in range(y0 + 1, y1, 3):
         c.set(x0, y, "c")
-    paint_box(c, 98, 102, 8, 1, 1, MECH_DARK, seed=6)
-    # Petals: white outside with a blue edge and a light slit, dark inside
-    upper = _mech_box(c, 56, 102, 8, 11, 1, seed=7)
-    x0, y0, x1, y1 = upper["front"]
-    c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, MECH_RED)
-    for i in range(5):
-        c.set(x0 + 1 + i, y0 + 4 + i, MECH_RED)
-    c.rect(x1 - 2, y0 + 3, x1 - 2, y1 - 3, "c")
-    c.rect(*upper["back"], MECH_DARK)
-    lower = _mech_box(c, 74, 102, 8, 9, 1, seed=8)
-    x0, y0, x1, y1 = lower["front"]
-    for i in range(4):
-        c.rect(x1 - 1 - i, y1 - 1 - 2 * i, x1 - 1, y1 - 2 * i, MECH_RED)
-    c.rect(*lower["back"], MECH_DARK)
-    # Head 8x8x8: dark face behind the visor plate with two lit eyes, a blue crest and chin, ear vents;
-    # the plate itself carries the visor slit
-    head = _mech_box(c, 92, 0, 8, 8, 8, seed=9)
-    x0, y0, x1, y1 = head["front"]
-    c.rect(x0, y0, x1, y1 - 2, MECH_BLACK)
-    c.rect(x0 + 1, y0 + 3, x0 + 2, y0 + 3, "c")
-    c.rect(x1 - 2, y0 + 3, x1 - 1, y0 + 3, "c")
-    c.rect(x0 + 2, y1 - 1, x1 - 2, y1, MECH_RED)
-    tx0, ty0, tx1, ty1 = head["top"]
-    c.rect(tx0 + 3, ty0, tx1 - 3, ty1, MECH_RED)
-    for side in ("right", "left"):
-        x0, y0, x1, y1 = head[side]
-        c.rect(x0 + 2, y0 + 3, x1 - 2, y0 + 5, MECH_DARK)
-        c.rect(x0 + 3, y0 + 4, x1 - 3, y0 + 4, "b")
-    visor = paint_box(c, 98, 106, 8, 5, 1, MECH_WHITE, seed=10)
-    x0, y0, x1, y1 = visor["front"]
-    c.rect(x0, y0 + 2, x1, y0 + 2, "C")
-    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 3, "c")
-    c.rect(x0 + 3, y0, x1 - 3, y0, MECH_RED)
-    c.rect(*visor["back"], MECH_DARK)
-    paint_box(c, 124, 0, 1, 5, 1, MECH_RED, seed=11)                      # V fins
-    # Back unit 12x10x4: dark, two glowing thruster slots
-    back = _mech_box(c, 34, 22, 12, 10, 4, MECH_DARK, MECH_BLACK, seed=12)
-    x0, y0, x1, y1 = back["back"]
-    c.rect(x0 + 2, y0 + 2, x0 + 3, y1 - 2, "c")
-    c.rect(x1 - 3, y0 + 2, x1 - 2, y1 - 2, "c")
-    # Shoulder pads 7x7x9: white with a blue lower edge
-    pad = _mech_box(c, 66, 22, 7, 7, 9, seed=13)
-    side_rows(c, pad, [MECH_WHITE] * 5 + [MECH_RED, MECH_RED_DARK])
-    # Arms: dark upper arm, white forearm with a blue cuff, dark hand
-    _mech_box(c, 84, 40, 4, 10, 4, MECH_DARK, MECH_BLACK, seed=14)
-    forearm = _mech_box(c, 98, 22, 5, 10, 5, seed=15)
-    side_rows(c, forearm, [MECH_WHITE] * 8 + [MECH_RED, MECH_RED])
-    paint_box(c, 100, 40, 4, 4, 4, MECH_DARK, seed=16)
-    # Legs: white thigh, white shin with a blue band and a light, blue knee pad, blue-capped foot
-    _mech_box(c, 60, 40, 6, 11, 6, seed=17)
-    shin = _mech_box(c, 0, 40, 7, 13, 7, seed=18)
-    side_rows(c, shin, [MECH_WHITE] * 10 + [MECH_RED, MECH_RED, MECH_RED_DARK])
-    x0, y0, x1, y1 = shin["front"]
-    c.rect(x0 + 3, y0 + 3, x0 + 3, y0 + 5, "c")
-    paint_box(c, 100, 48, 5, 4, 2, MECH_RED, seed=19)
-    foot = _mech_box(c, 28, 40, 6, 4, 10, seed=20)
-    tx0, ty0, tx1, ty1 = foot["top"]
-    c.rect(tx0, ty0, tx1, ty0 + 4, MECH_RED)
-    c.rect(*foot["front"], MECH_RED)
-    # Module parts. Jet: dark wing segments with a blue leading edge and cyan lines, glowing nozzles
-    for u, v, w, d in ((18, 82, 8, 4), (18, 87, 8, 3), (42, 82, 6, 2)):
-        wing = paint_box(c, u, v, w, 1, d, MECH_DARK, top=MECH_DARK, bottom=MECH_DARK, seed=40 + u)
-        x0, y0, x1, y1 = wing["top"]
-        c.rect(x0, y0, x1, y0, MECH_RED)
-        c.rect(x0 + 1, y0 + 1, x1, y0 + 1, "c")
-        x0, y0, x1, y1 = wing["bottom"]
-        c.rect(x0, y0, x1, y0, MECH_RED)
-    nozzle = paint_box(c, 0, 74, 3, 3, 3, MECH_DARK, top=MECH_DARK, bottom="c", seed=44)
-    side_rows(c, nozzle, [MECH_SEAM, MECH_DARK, "b"])
-    # Drill: a dark collar, steel bit with spiral grooves, a lit tip
-    collar = _mech_box(c, 0, 62, 6, 3, 6, MECH_DARK, MECH_BLACK, seed=45)
-    side_rows(c, collar, [MECH_RED, MECH_DARK, MECH_DARK])
-    for u, v, w, h in ((24, 62, 4, 4), (40, 62, 3, 3)):
-        bit = paint_box(c, u, v, w, h, w, "l", seed=46 + u)
-        for name in ("right", "front", "left", "back"):
-            x0, y0, x1, y1 = bit[name]
-            for i in range(y1 - y0 + 1):
-                c.set(x0 + (i % (x1 - x0 + 1)), y0 + i, "m")
-    paint_box(c, 40, 68, 2, 3, 2, "c", seed=48)
-    # Blade: a dark hilt, the blade itself all light
-    paint_box(c, 0, 80, 3, 2, 3, MECH_DARK, top=MECH_RED, seed=49)
-    blade = paint_box(c, 112, 67, 1, 14, 3, "c", seed=50)
-    for name in ("right", "left"):
-        x0, y0, x1, y1 = blade[name]
-        c.rect(x0 + 1, y0, x0 + 1, y1, "C")
-    # Armour: white plates with blue trim
-    shoulder = _mech_box(c, 56, 57, 9, 3, 11, seed=51)
-    side_rows(c, shoulder, [MECH_WHITE, MECH_RED, MECH_RED_DARK])
-    tx0, ty0, tx1, ty1 = shoulder["top"]
-    c.rect(tx0 + 3, ty0 + 1, tx1 - 3, ty1 - 1, MECH_RED)
-    chest = _mech_box(c, 96, 57, 14, 9, 1, seed=52)
+    _mech_box(c, "bar", MECH_DEEP, seed=7)
+    # Dorsal thrusters: steel tubes, mint bells, a full-bright exhaust
+    side_rows(c, _mech_box(c, "thr", MECH_STEEL, seed=8), [MECH_STEEL[0], MECH_STEEL[1], MECH_STEEL[2], MECH_STEEL[1], MECH_STEEL[2]])
+    bell = _mech_box(c, "bell", MECH_MINT, seed=9)
+    side_rows(c, bell, list(MECH_MINT))
+    x0, y0, x1, y1 = bell["bottom"]
+    c.rect(x0, y0, x1, y1, "c")
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, "C")
+    # Head: teal helm with a mint stripe, a deep face behind the visor, steel slats at the chin, lit ears
+    _mech_box(c, "nape", MECH_JOINT, seed=10)
+    helm = _mech_box(c, "helm", MECH_TEAL, seed=10)
+    x0, y0, x1, y1 = helm["front"]
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1, MECH_FACE[1])
+    for x in (x0 + 2, x0 + 3, x1 - 3, x1 - 2):
+        c.rect(x, y1 - 2, x, y1, MECH_STEEL[2] if x in (x0 + 3, x1 - 3) else MECH_STEEL[1])
+    x0, y0, x1, y1 = helm["top"]
+    c.rect(x0 + 3, y0, x1 - 3, y1, MECH_MINT[1])
+    c.rect(x0 + 3, y0, x1 - 3, y0, MECH_MINT[0])
+    ear = _mech_box(c, "ear", MECH_JOINT, seed=12)
+    for face in ("right", "left"):
+        x0, y0, x1, y1 = ear[face]
+        c.rect(x0 + 1, y0 + 1, x1 - 1, y0 + 1, "c")
+    # The visor plate: two slanted eyes, their outer ends higher (a frown), a lit gem and the steel V crest above
+    x0, y0, x1, y1 = _mech_box(c, "visor", MECH_FACE, seed=13)["front"]
+    c.rect(x0, y0, x1, y0, MECH_TEAL[1])
+    for dx, dy in ((0, 1), (1, 1), (1, 2), (2, 2), (3, 2)):
+        c.set(x0 + dx, y0 + dy, "c")
+        c.set(x1 - dx, y0 + dy, "c")
+    for rect in _mech_box(c, "gem", MECH_LIGHT, seed=14).values():
+        c.rect(*rect, "c")
+    _mech_box(c, "fin_base", MECH_STEEL, seed=15)
+    c.rect(*_mech_box(c, "fin_tip", MECH_STEEL, seed=16)["front"], MECH_STEEL[0])
+    # Chest plates: a mint prow with a steel rim, a light chevron on each that makes a V when they are shut
+    chest = _mech_box(c, "chest", ("#5ec2b8", "#488d91", "#496973"), seed=17)
+    for face in ("front", "top"):
+        x0, y0, x1, y1 = chest[face]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[0])
     x0, y0, x1, y1 = chest["front"]
+    c.rect(x0 + 1, y1 - 2, x1, y1 - 2, MECH_MINT[2])
+    c.rect(*chest["back"], MECH_DEEP[1])
+    x0, y0, x1, y1 = _mech_box(c, "pec", (MECH_MINT[1], MECH_MINT[1], MECH_MINT[2]), seed=18)["front"]
     for i in range(5):
-        c.set(x0 + 2 + i, y0 + 2 + i, MECH_RED)
-        c.set(x1 - 2 - i, y0 + 2 + i, MECH_RED)
-    c.rect(x0 + 6, y0 + 1, x1 - 6, y0 + 2, "c")
-    thigh = _mech_box(c, 96, 67, 7, 6, 1, seed=53)
-    x0, y0, x1, y1 = thigh["front"]
-    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 4, MECH_RED)
+        c.set(x0 + 2 + i, y0 + 1 + i, "c")
+    c.rect(x0, y0, x1, y0, MECH_STEEL[0])
+    # Abdomen doors, a mirrored pair: dark outer flanks, two ribs, steel inside
+    door = _mech_box(c, "door", MECH_JOINT, seed=20)
+    x0, y0, x1, y1 = door["front"]
+    c.rect(x0, y0, x0 + 1, y1, MECH_FACE[0])
+    c.rect(x0 + 2, y1 - 1, x1, y1 - 1, MECH_STEEL[2])
+    c.rect(*door["back"], MECH_STEEL[2])
+    x0, y0, x1, y1 = _mech_box(c, "door_abs", MECH_TEAL, seed=21)["front"]
+    c.rect(x0, y0 + 1, x1, y0 + 1, MECH_JOINT[2])
+    c.rect(x0, y0 + 2, x1, y0 + 2, MECH_TEAL[0])
+    # Arms: teal pad with a steel rim on its flat top and an emerald chevron on its steel front, mint skirt, flange and cuff
+    pad = _mech_box(c, "pad", MECH_TEAL, seed=23)
+    x0, y0, x1, y1 = pad["top"]
+    c.frame(x0, y0, x1, y1, MECH_STEEL[1])
+    c.rect(x0 + 1, y0 + 1, x1 - 1, y1 - 1, MECH_TEAL[1], noise=3, seed=23)
+    side_rows(c, _mech_box(c, "pad_skirt", MECH_MINT, seed=24), [MECH_MINT[0], MECH_MINT[1], MECH_MINT[1], MECH_MINT[1], MECH_MINT[2], MECH_MINT[2]])
+    x0, y0, x1, y1 = _mech_box(c, "pad_front", MECH_STEEL, seed=25)["front"]
+    for dx, dy in ((0, 1), (1, 2), (2, 2), (3, 1)):
+        c.set(x0 + dx, y0 + dy, MECH_EMERALD)
+    side_rows(c, _mech_box(c, "upper", MECH_JOINT, seed=26), [MECH_JOINT[0]] + [MECH_JOINT[1]] * 6 + [MECH_STEEL[1], MECH_STEEL[2], MECH_JOINT[2]])
+    for name in ("flange", "flange_tip"):
+        x0, y0, x1, y1 = _mech_box(c, name, MECH_MINT, seed=27 if name == "flange" else 28)["front"]
+        c.rect(x0, y0, x1, y0, MECH_STEEL[0])
+    _mech_box(c, "forearm", MECH_TEAL, seed=29)
+    side_rows(c, _mech_box(c, "cuff", MECH_MINT, seed=30), [MECH_STEEL[0], MECH_MINT[1], MECH_MINT[1], MECH_MINT[2]])
+    _mech_box(c, "fist", MECH_DEEP, seed=31)
+    # Legs: dark thigh with a pale band above the knee, teal hip armour, a flared teal shin with a mint band and a light, mint knee and boot, steel toe
+    side_rows(c, _mech_box(c, "thigh", MECH_JOINT, seed=32), [MECH_JOINT[0]] + [MECH_JOINT[1]] * 6 + [MECH_STEEL[2], MECH_JOINT[1], MECH_JOINT[2]])
+    _mech_box(c, "hip", MECH_TEAL, seed=33)
+    _mech_box(c, "knee_blk", MECH_JOINT, seed=34)
+    shin = _mech_box(c, "shin", MECH_TEAL, seed=35)
+    side_rows(c, shin, [MECH_STEEL[1]] + [MECH_TEAL[1]] * 4 + [MECH_MINT[1], MECH_MINT[2], MECH_TEAL[2]])
+    x0, y0, x1, y1 = shin["front"]
+    c.rect(x0 + 3, y0 + 1, x0 + 3, y0 + 3, "c")
+    x0, y0, x1, y1 = shin["back"]
+    for y in range(y0 + 1, y0 + 4):
+        c.rect(x0 + 2, y, x1 - 2, y, MECH_RECESS if y % 2 else MECH_DEEP[1])
+    _mech_box(c, "kneepad", MECH_MINT, seed=36)
+    boot = _mech_box(c, "boot", MECH_MINT, seed=37)
+    side_rows(c, boot, [MECH_MINT[0], MECH_MINT[1], MECH_MINT[2], MECH_DEEP[2]])
+    x0, y0, x1, y1 = boot["top"]
+    c.rect(x0 + 2, y0 + 2, x1 - 2, y0 + 4, MECH_TEAL[1])                 # ankle seat
+    _mech_box(c, "toe", MECH_STEEL, seed=38)
+    # Module parts. Jet: teal wing segments with a mint leading edge, steel edges and a light on both faces; steel nozzles with a lit exhaust
+    for name in ("wing_root", "wing_mid", "wing_tip"):
+        wing = _mech_box(c, name, MECH_TEAL, top=MECH_TEAL[1], seed=40)
+        for face in ("top", "bottom"):
+            x0, y0, x1, y1 = wing[face]
+            c.rect(x0, y0, x1, y1, MECH_TEAL[1])
+            c.rect(x0, y0, x1, y0, MECH_MINT[1])
+            c.rect(x0 + 1, y0 + 1, x1 - 1, min(y1, y0 + 2), "c")
+        for face in ("front", "back"):
+            c.rect(*wing[face], MECH_STEEL[0])
+    nozzle = _mech_box(c, "nozzle", MECH_STEEL, seed=44)
+    c.rect(*nozzle["bottom"], "c")
+    side_rows(c, nozzle, list(MECH_STEEL))
+    # Drill: a dark collar with a mint ring, a steel bit with spiral grooves
+    side_rows(c, _mech_box(c, "drill_collar", MECH_JOINT, seed=45), [MECH_MINT[1], MECH_JOINT[1], MECH_JOINT[2]])
+    for name in ("drill_bit", "drill_mid", "drill_tip"):
+        bit = _mech_box(c, name, MECH_STEEL, seed=46)
+        for face in ("right", "front", "left", "back"):
+            x0, y0, x1, y1 = bit[face]
+            for i in range(y1 - y0 + 1):
+                c.set(x0 + (i % (x1 - x0 + 1)), y0 + i, MECH_STEEL[2])
+    # Blade: a dark hilt, the blade itself all light
+    _mech_box(c, "hilt", MECH_DEEP, top=MECH_MINT[1], seed=49)
+    blade = _mech_box(c, "blade", MECH_LIGHT, seed=50)
+    for rect in blade.values():
+        c.rect(*rect, "c")
+    for face in ("right", "left"):
+        x0, y0, x1, y1 = blade[face]
+        c.rect(x0 + 1, y0, x0 + 1, y1, "C")
+    # Armour: steel plates
+    x0, y0, x1, y1 = _mech_box(c, "sh_plate", MECH_STEEL, seed=51)["top"]
+    c.rect(x0 + 2, y0 + 2, x1 - 2, y1 - 2, MECH_STEEL[2])
+    x0, y0, x1, y1 = _mech_box(c, "ch_plate", MECH_STEEL, seed=52)["front"]
+    c.rect(x0 + 1, y0 + 2, x1 - 1, y0 + 2, MECH_TEAL[2])
+    x0, y0, x1, y1 = _mech_box(c, "th_plate", MECH_STEEL, seed=53)["right"]
+    c.rect(x0 + 1, y0 + 3, x1 - 1, y0 + 3, MECH_TEAL[2])
     return c
 
 # --------------------------------------------------------------------------- mech hangar
@@ -3118,7 +3180,12 @@ def build_all():
     for name, icon in ADDON_ICONS.items():
         textures[name] = addon_chip(icon)
     mech = mech_texture()
-    textures["entity/mech"] = mech
+    # The skin carries its lights switched off: the glow layer lights them, and MechRenderer leaves it out when the mech is shut down
+    textures["entity/mech"] = mech.copy()
+    for y, row in enumerate(mech.keys):
+        for x, key in enumerate(row):
+            if key in GLOW_KEYS:
+                textures["entity/mech"].set(x, y, "b")
     textures["entity/mech_glow"] = mech.glow_mask()
     textures["block/hangar_frame"] = hangar_frame(False)
     textures["block/hangar_frame_formed"] = hangar_frame(True)
