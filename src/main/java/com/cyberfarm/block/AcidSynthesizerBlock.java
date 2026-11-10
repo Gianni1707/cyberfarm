@@ -7,23 +7,38 @@ import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
+/** A contact tower between two tanks (the model, see tools/machinemodels.py; AcidSynthesizerRenderer draws the rest). */
 public class AcidSynthesizerBlock extends LitMachineBlock {
-    private static final DustParticleOptions FUMES = PortParticles.dust(0x9BE04A, 0.8F);
+    private static final VoxelShape SHAPE = Block.box(0.5, 0, 0.5, 15.5, 15, 15.5);
 
     public AcidSynthesizerBlock(Properties properties) {
         super(properties);
     }
 
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
 
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -35,12 +50,13 @@ public class AcidSynthesizerBlock extends LitMachineBlock {
         return machineTicker(level, type, ModBlockEntities.ACID_SYNTHESIZER.get());
     }
 
-    /** Green fumes rising off the top while it works. */
+    /** White puffs from the chimney while it works, on the tower's axis, 2 px behind the middle of the block. */
     @Override
     protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(5) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.3);
-            level.addParticle(FUMES, at.x, at.y, at.z, 0.0, 0.03, 0.0);
+        if (random.nextInt(10) == 0) {
+            Direction front = state.getValue(FACING);
+            level.addParticle(PortParticles.WHITE_SMOKE, pos.getX() + 0.5 - front.getStepX() * 0.125, pos.getY() + 16.2 / 16.0,
+                    pos.getZ() + 0.5 - front.getStepZ() * 0.125, 0.0, 0.03, 0.0);
         }
     }
 }

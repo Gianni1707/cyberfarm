@@ -21,8 +21,11 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:acid_synthesizer",
-      "title": "Acid Synthesizer",
-      "text": "Uses $(l)20 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). The two windows in its front show its tanks filling up: water on the left, acid on the right, bubbling while it works."
+      "title": "Acid Synthesizer"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Uses $(l)20 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). The gauges on its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect on any side."
     },
     {
       "type": "patchouli:text",

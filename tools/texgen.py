@@ -2817,17 +2817,6 @@ def sulfur_dust():
     return c
 
 
-def acid_synthesizer_front():
-    """Two framed glass windows, water (columns 3..6) and acid (9..12): the renderer fills them to their tanks' levels."""
-    c = panel(60)
-    for x0 in (2, 8):
-        c.rect(x0, 2, x0 + 5, 12, "K")
-        c.rect(x0 + 1, 3, x0 + 4, 11, "#14222a")
-    c.rect(7, 4, 7, 10, "m")
-    c.set(7, 7, "O")
-    c.rect(3, 13, 12, 13, "c")
-    return c
-
 def containment_glass():
     """Framed, tinted window: steel frame, cyan corner lights, a see-through pane."""
     c = Canvas()
@@ -3568,7 +3557,6 @@ def build_all():
         "block/nether_sulfur_ore_overlay": sulfur_ore_overlay(),
         "item/sulfur": sulfur_dust(),
         "item/acid_bucket": bucket(ACID, gas=False),
-        **lit_front("acid_synthesizer", acid_synthesizer_front),
         **lit_front("electrolyzer", electrolyzer_front),
         **lit_front("pyrolysis_oven", pyrolysis_oven_front),
         **lit_front("fabricator", fabricator_front),
