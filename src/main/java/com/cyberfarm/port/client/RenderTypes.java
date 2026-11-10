@@ -3,12 +3,16 @@ package com.cyberfarm.port.client;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 
-/** The 26.x RenderTypes factory: on 1.20.1 the same render types are static methods of RenderType. */
+/**
+ * The 26.x RenderTypes factory on 1.20.1, matched by how 26.x draws them rather than by name: 26.x entity cutout draws
+ * both sides of a face (1.20.1's culls the back ones, which leaves the machines' custom shells open), and 26.x eyes blend
+ * by alpha (1.20.1's add their colour, which turns a faint light cone into solid white).
+ */
 public final class RenderTypes {
     private RenderTypes() {}
 
     public static RenderType entityCutout(ResourceLocation texture) {
-        return RenderType.entityCutout(texture);
+        return RenderType.entityCutoutNoCull(texture);
     }
 
     public static RenderType entityTranslucent(ResourceLocation texture) {
@@ -16,6 +20,6 @@ public final class RenderTypes {
     }
 
     public static RenderType eyes(ResourceLocation texture) {
-        return RenderType.eyes(texture);
+        return RenderType.entityTranslucentEmissive(texture);
     }
 }
