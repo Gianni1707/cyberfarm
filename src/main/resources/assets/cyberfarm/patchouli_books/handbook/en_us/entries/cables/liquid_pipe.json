@@ -6,11 +6,12 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:liquid_pipe"
+      "item": "cyberfarm:liquid_pipe",
+      "text": "Pipes for $(l)liquids$(): water, lava, Coolant, Cryo Coolant, Acid and the liquids of other mods. Use them to bring water from a $(l:basics/water_pump)Water Pump$(/l) to a $(l:nuclear/coolant_mixer)Coolant Mixer$(/l), an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l) or a $(l:nuclear/fission_reactor)Fission Reactor$(/l), and acid to the $(l:generators/methane_extractor)Methane$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "Pipes for $(l)liquids$(): water, lava, Coolant, Cryo Coolant, Acid and the liquids of other mods. Use them to bring water from a $(l:basics/water_pump)Water Pump$(/l) to a $(l:nuclear/coolant_mixer)Coolant Mixer$(/l), an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l) or a $(l:nuclear/fission_reactor)Fission Reactor$(/l), and acid to the $(l:generators/methane_extractor)Methane Extractor$(/l). Gases (biogas, methane, Steam) need a $(l:cables/gas_pipe)Gas Pipe$(/l). Their band is $(l)blue$()."
+      "text": "$(l:generators/methane_extractor)Extractor$(/l). Gases (biogas, methane, Steam) need a $(l:cables/gas_pipe)Gas Pipe$(/l). They are $(l)glass tubes with blue lights on their sleeves$(), and you can see what they carry: while a liquid flows it fills the tube in its own colour, and when the flow stops the pipe is empty again."
     },
     {
       "type": "patchouli:text",

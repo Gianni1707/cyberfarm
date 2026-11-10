@@ -113,6 +113,7 @@ public final class CyberFarmClient {
 
         modEventBus.addListener(CyberFarmClient::setup);
         modEventBus.addListener(CyberFarmClient::registerRenderers);
+        modEventBus.addListener(com.cyberfarm.client.model.PipeFluidModel::wrap);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(MechClient::registerKeys);

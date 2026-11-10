@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:energy_conduit",
-      "text": "Conduits carry $(l)FE$() from generators to machines, so they no longer need to touch each other."
+      "text": "Conduits carry $(l)FE$() from generators to machines, so they no longer need to touch each other. You can tell them by the cyan lights on their sleeves, and while energy flows a $(l)cyan arc$() runs through their glass."
     },
     {
       "type": "patchouli:text",

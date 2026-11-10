@@ -1,6 +1,6 @@
 {
   "name": "Cables",
-  "description": "Cables carry power and fluids between your machines (to move items, use a drone with a $(l:drone_systems/modules)Transport Module$(/l)). Every kind $(l)connects by itself$() to cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other mod. Each kind comes in $(l)three tiers$(), told apart by the ring where two cables meet: grey, $(l)gold$() and $(l)violet$().",
+  "description": "Cables carry power and fluids between your machines (to move items, use a drone with a $(l:drone_systems/modules)Transport Module$(/l)). Every kind $(l)connects by itself$() to cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other mod. Each kind comes in $(l)three tiers$(), told apart by the sleeve near each end: grey, $(l)gold$() and $(l)violet$(). All three are glass tubes whose sleeves are lit cyan for energy, blue for liquids and green for gases, so you can see when something goes through them.",
   "icon": "cyberfarm:energy_conduit",
   "sortnum": 5
 }

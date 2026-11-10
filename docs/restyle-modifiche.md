@@ -238,6 +238,18 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - La prima striscia sul contorno usciva di 0,1 px dal limite dei modelli (-16..32) e il forno e il Coolant Mixer diventavano cubi neri e viola.
   Ora la base cede quel tanto alla striscia.
 
+## Tubi e cavi
+
+- **Una famiglia sola:** Energy Conduit, Liquid Pipe e Gas Pipe hanno la stessa forma e si distinguono per il colore delle luci e per il contenuto. Il tubo di vetro da 4,9 px, teal scuro come il resto della mod, arriva fino al bordo del blocco, quindi entra nel collare delle macchine e nel tubo accanto. A 1 px da ogni lato collegato c'è un manicotto: due piastrine sopra e sotto il vetro nel colore del tier (acciaio, ottone chiaro, viola) e una striscia di luce su tutti e quattro i lati (ciano, blu, verde, che respira), così si vede da ogni lato in qualunque direzione corra il tubo. Dove la linea si piega, si dirama o finisce c'è un cubo dello stesso vetro con una cornice d'acciaio scuro su ogni parete (`pipe_node_glass`); le pareti stanno solo dove non arriva un braccio. Il tubo da solo ha anche le strisce di luce sui fianchi (`{nome}_lone`). Nessun tappo, telaio né simbolo.
+- **Solo mentre passa qualcosa:** il contenuto si vede finché c'è un trasferimento e il tubo torna vuoto 2 s dopo che si ferma. Il tubo che riceve il trasferimento lo mostra su tutta la rete e si programma un tick; il tick svuota la rete se nessun tubo ha trasferito da 40 tick, altrimenti si riprogramma. Lo stato non si salva: un mondo caricato parte con i tubi vuoti.
+- **Liquidi:** il fluido vero riempie il vetro, senza animazioni sopra (l'onda e le bolle non sono piaciute).
+- **Gas:** il gas vero (alpha 0xA0) e sopra delle nuvolette che scorrono lungo il tubo.
+- **Energia:** mentre passa energia, due piani incrociati nel vetro con un arco ciano sottile a sinusoide (1 px, ±1 px) che corre, sfasati, e una scintilla ogni due fotogrammi. Li disegna `PipeFluidModel`; l'icona dell'oggetto ha lo stesso arco fisso nel modello.
+- **Fluido vero:** `NetworkPipeBlockEntity` sa cosa passa (un fluido o l'energia) e lo manda al client. `client/model/PipeFluidModel.java` aggiunge alla mesh del chunk il fluido, le nuvolette del gas o l'arco, al massimo 48 quad. Nessun costo per frame: la mesh si ricostruisce solo quando un flusso parte, si ferma o cambia fluido, al massimo una volta ogni 2 s per rete. Il trasporto non cambia.
+- **Icone:** l'oggetto mostra il contenuto del tipo, acceso sul vetro scuro come l'arco dell'energia: un tubo pieno a metà di liquido blu, con la superficie chiara e due bolle (`pipe_item_liquid`), nuvolette verdi brillanti con spazi vuoti (`pipe_item_gas`). Al centro dell'icona una fascia larga nel colore del tier, perché le piastrine sono troppo sottili per distinguere i tier nello slot.
+- **Hitbox:** uguale per tutti, bracci fino al manicotto (5,4x5,4) e nodo 5x5 attorno al cubo di vetro. Il collare d'estrazione non è più arancione: è un manicotto scuro al bordo con una fascia di luce tutta attorno, nel colore del tipo (`{nome}_extract`).
+- **Texture:** `pipe_atlas()`, `pipe_glass()`, `pipe_strip()`, `pipe_frames()` (nuvole e arco, 4 fotogrammi ciascuna) in `texgen.py`. Modelli e blockstate da `pipe_models()` e `pipe_glass_models()` in `assetgen.py`, con il vetro in modelli condivisi `pipe_glass_straight`, `pipe_glass_arm` e `pipe_glass_cap`. Le righe 6..9 dell'atlante restano la manica dei monconi delle macchine. Via i vecchi modelli `_straight`/`_arm` e `*_glass_*`.
+
 ## Cosa manca
 
 **Restyle**

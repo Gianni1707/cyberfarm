@@ -44,11 +44,15 @@ public class GasPipeBlockEntity extends NetworkPipeBlockEntity {
             if (resource.isEmpty() || !carries(FluidResource.of(resource))) {
                 return 0;
             }
-            return distribute(Caps.FLUID, this, Math.min(resource.getAmount(), rate()), (receiver, left) -> {
+            int moved = distribute(Caps.FLUID, this, Math.min(resource.getAmount(), rate()), (receiver, left) -> {
                 FluidStack offer = resource.copy();
                 offer.setAmount(left);
                 return receiver.fill(offer, action);
             });
+            if (moved > 0 && action.execute()) {
+                flowed(resource.getFluid());
+            }
+            return moved;
         }
 
         @Override

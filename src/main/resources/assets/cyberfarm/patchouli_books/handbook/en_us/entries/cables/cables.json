@@ -10,11 +10,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "other mod. Each kind comes in $(l)three tiers$(), told apart by the ring where two cables meet: grey, $(l)gold$() and $(l)violet$().$(br)$(li)$(l:cables/energy_conduit)Energy Conduit$(/l)$(br)$(li)$(l:cables/energy_conduit)Advanced Energy Conduit$(/l)$(br)$(li)$(l:cables/energy_conduit)Elite Energy Conduit$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l:cables/gas_pipe)Advanced Gas Pipe$(/l)$(br)$(li)$(l:cables/gas_pipe)Elite Gas Pipe$(/l)$(br)$(li)$(l:cables/liquid_pipe)Liquid Pipe$(/l)$(br)$(li)$(l:cables/liquid_pipe)Advanced Liquid Pipe$(/l)"
+      "text": "other mod. Each kind comes in $(l)three tiers$(), told apart by the sleeve near each end: grey, $(l)gold$() and $(l)violet$(). All three are glass tubes whose sleeves are lit cyan for energy, blue for liquids and green for gases, so you can see when something goes through them.$(br)$(li)$(l:cables/energy_conduit)Energy Conduit$(/l)$(br)$(li)$(l:cables/energy_conduit)Advanced Energy Conduit$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/liquid_pipe)Elite Liquid Pipe$(/l)$(br)$(li)$(l:cables/energy_conduit)Energy Conduit$(/l): FE, 2,000 FE/t, 16,000 FE/t, 128,000 FE/t$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l): gases: biogas, methane, Steam, 1,000 mB/t, 4,000 mB/t, 16,000 mB/t$(br)$(li)$(l:cables/liquid_pipe)Liquid Pipe$(/l): liquids: water, lava, coolants, acid, 1,000 mB/t, 4,000 mB/t, 16,000 mB/t"
+      "text": "$(li)$(l:cables/energy_conduit)Elite Energy Conduit$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l:cables/gas_pipe)Advanced Gas Pipe$(/l)$(br)$(li)$(l:cables/gas_pipe)Elite Gas Pipe$(/l)$(br)$(li)$(l:cables/liquid_pipe)Liquid Pipe$(/l)$(br)$(li)$(l:cables/liquid_pipe)Advanced Liquid Pipe$(/l)$(br)$(li)$(l:cables/liquid_pipe)Elite Liquid Pipe$(/l)$(br)$(li)$(l:cables/energy_conduit)Energy Conduit$(/l): FE, 2,000 FE/t, 16,000 FE/t, 128,000 FE/t$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l): gases: biogas, methane, Steam, 1,000 mB/t, 4,000 mB/t, 16,000 mB/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:cables/liquid_pipe)Liquid Pipe$(/l): liquids: water, lava, coolants, acid, 1,000 mB/t, 4,000 mB/t, 16,000 mB/t"
     },
     {
       "type": "patchouli:text",
@@ -30,7 +34,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Generators and machines push what they make into the cables by themselves. Batteries, tanks and other storage do not: to take something $(l)out$() of them, $(l)right-click the cable's arm$() that touches the block. An orange collar appears and the cable $(l)pulls$() from that block every tick, up to its tier's rate.",
+      "text": "Generators and machines push what they make into the cables by themselves. Batteries, tanks and other storage do not: to take something $(l)out$() of them, $(l)right-click the cable's arm$() that touches the block. A lit band wraps that end and the cable $(l)pulls$() from that block every tick, up to its tier's rate.",
       "title": "Pulling out of a block"
     },
     {

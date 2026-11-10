@@ -7,6 +7,7 @@ import com.cyberfarm.port.PortEntityBlock;
 
 import java.util.Map;
 
+import com.cyberfarm.block.entity.NetworkPipeBlockEntity;
 import com.cyberfarm.energy.ConduitNetwork;
 
 import net.minecraft.core.BlockPos;
@@ -59,14 +60,16 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
         void pull(ServerLevel level, BlockPos pos, Direction side);
     }
 
-    private static final VoxelShape CORE = Block.box(5, 5, 5, 11, 11, 11);
+    /** The node's glass cube. */
+    private static final VoxelShape CORE = Block.box(5.5, 5.5, 5.5, 10.5, 10.5, 10.5);
+    /** Up to the tier sleeves, which every pipe and cable shares. */
     private static final Map<Direction, VoxelShape> ARMS = Map.of(
-            Direction.NORTH, Block.box(6, 6, 0, 10, 10, 5),
-            Direction.SOUTH, Block.box(6, 6, 11, 10, 10, 16),
-            Direction.WEST, Block.box(0, 6, 6, 5, 10, 10),
-            Direction.EAST, Block.box(11, 6, 6, 16, 10, 10),
-            Direction.DOWN, Block.box(6, 0, 6, 10, 5, 10),
-            Direction.UP, Block.box(6, 11, 6, 10, 16, 10));
+            Direction.NORTH, Block.box(5.3, 5.3, 0, 10.7, 10.7, 5),
+            Direction.SOUTH, Block.box(5.3, 5.3, 11, 10.7, 10.7, 16),
+            Direction.WEST, Block.box(0, 5.3, 5.3, 5, 10.7, 10.7),
+            Direction.EAST, Block.box(11, 5.3, 5.3, 16, 10.7, 10.7),
+            Direction.DOWN, Block.box(5.3, 0, 5.3, 10.7, 5, 10.7),
+            Direction.UP, Block.box(5.3, 11, 5.3, 10.7, 16, 10.7));
 
     private final int rate;
 
@@ -146,6 +149,14 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
             player.displayClientMessage(Component.translatable(extract ? "message.cyberfarm.pipe.extract" : "message.cyberfarm.pipe.normal"), true);
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Scheduled by a pipe that started showing a flow, to empty the glass once it stops. */
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe) {
+            pipe.checkFlow();
+        }
     }
 
     /** Only pipes with an arm set to extract tick. */

@@ -27,8 +27,12 @@ public class EnergyConduitBlockEntity extends NetworkPipeBlockEntity {
 
         @Override
         public int receiveEnergy(int amount, boolean simulate) {
-            return distribute(Caps.ENERGY, this, Math.min(amount, rate()),
+            int moved = distribute(Caps.ENERGY, this, Math.min(amount, rate()),
                     (receiver, left) -> receiver.receiveEnergy(left, simulate));
+            if (moved > 0 && !simulate) {
+                flowed(ENERGY);
+            }
+            return moved;
         }
 
         @Override

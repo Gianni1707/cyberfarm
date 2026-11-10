@@ -2,55 +2,15 @@
   "multipart": [
     {
       "when": {
-        "OR": [
-          {
-            "north": "true",
-            "south": "false"
-          },
-          {
-            "east": "true",
-            "west": "false"
-          },
-          {
-            "up": "true",
-            "down": "false"
-          },
-          {
-            "north": "false",
-            "south": "true"
-          },
-          {
-            "east": "false",
-            "west": "true"
-          },
-          {
-            "up": "false",
-            "down": "true"
-          },
-          {
-            "north": "true",
-            "east": "true"
-          },
-          {
-            "north": "true",
-            "up": "true"
-          },
-          {
-            "east": "true",
-            "up": "true"
-          },
-          {
-            "north": "false",
-            "east": "false",
-            "south": "false",
-            "west": "false",
-            "up": "false",
-            "down": "false"
-          }
-        ]
+        "north": "false",
+        "east": "false",
+        "south": "false",
+        "west": "false",
+        "up": "false",
+        "down": "false"
       },
       "apply": {
-        "model": "cyberfarm:block/advanced_gas_pipe_core"
+        "model": "cyberfarm:block/advanced_gas_pipe_lone"
       }
     },
     {
@@ -63,7 +23,7 @@
         "down": "false"
       },
       "apply": {
-        "model": "cyberfarm:block/advanced_gas_pipe_middle"
+        "model": "cyberfarm:block/pipe_glass_straight"
       }
     },
     {
@@ -76,7 +36,7 @@
         "down": "false"
       },
       "apply": {
-        "model": "cyberfarm:block/advanced_gas_pipe_middle",
+        "model": "cyberfarm:block/pipe_glass_straight",
         "y": 90
       }
     },
@@ -90,7 +50,7 @@
         "down": "true"
       },
       "apply": {
-        "model": "cyberfarm:block/advanced_gas_pipe_middle",
+        "model": "cyberfarm:block/pipe_glass_straight",
         "x": 90
       }
     },
@@ -104,10 +64,271 @@
     },
     {
       "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "north": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_arm"
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "north": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_cap"
+      }
+    },
+    {
+      "when": {
+        "north": "true",
+        "extract_north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/advanced_gas_pipe_extract"
+      }
+    },
+    {
+      "when": {
         "east": "true"
       },
       "apply": {
         "model": "cyberfarm:block/advanced_gas_pipe_side",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "east": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_arm",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "east": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_cap",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "east": "true",
+        "extract_east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/advanced_gas_pipe_extract",
         "y": 90
       }
     },
@@ -122,10 +343,274 @@
     },
     {
       "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "south": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_arm",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "south": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_cap",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "south": "true",
+        "extract_south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/advanced_gas_pipe_extract",
+        "y": 180
+      }
+    },
+    {
+      "when": {
         "west": "true"
       },
       "apply": {
         "model": "cyberfarm:block/advanced_gas_pipe_side",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "west": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_arm",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "west": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_cap",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "west": "true",
+        "extract_west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/advanced_gas_pipe_extract",
         "y": 270
       }
     },
@@ -140,6 +625,138 @@
     },
     {
       "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "up": "true"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_arm",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "up": "false"
+          }
+        ]
+      },
+      "apply": {
+        "model": "cyberfarm:block/pipe_glass_cap",
+        "x": 270
+      }
+    },
+    {
+      "when": {
+        "up": "true",
+        "extract_up": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/advanced_gas_pipe_extract",
+        "x": 270
+      }
+    },
+    {
+      "when": {
         "down": "true"
       },
       "apply": {
@@ -149,51 +766,124 @@
     },
     {
       "when": {
-        "north": "true",
-        "extract_north": "true"
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "down": "true"
+          }
+        ]
       },
       "apply": {
-        "model": "cyberfarm:block/pipe_extract"
+        "model": "cyberfarm:block/pipe_glass_arm",
+        "x": 90
       }
     },
     {
       "when": {
-        "east": "true",
-        "extract_east": "true"
+        "AND": [
+          {
+            "OR": [
+              {
+                "north": "true",
+                "south": "false"
+              },
+              {
+                "east": "true",
+                "west": "false"
+              },
+              {
+                "up": "true",
+                "down": "false"
+              },
+              {
+                "north": "false",
+                "south": "true"
+              },
+              {
+                "east": "false",
+                "west": "true"
+              },
+              {
+                "up": "false",
+                "down": "true"
+              },
+              {
+                "north": "true",
+                "east": "true"
+              },
+              {
+                "north": "true",
+                "up": "true"
+              },
+              {
+                "east": "true",
+                "up": "true"
+              },
+              {
+                "north": "false",
+                "east": "false",
+                "south": "false",
+                "west": "false",
+                "up": "false",
+                "down": "false"
+              }
+            ]
+          },
+          {
+            "down": "false"
+          }
+        ]
       },
       "apply": {
-        "model": "cyberfarm:block/pipe_extract",
-        "y": 90
-      }
-    },
-    {
-      "when": {
-        "south": "true",
-        "extract_south": "true"
-      },
-      "apply": {
-        "model": "cyberfarm:block/pipe_extract",
-        "y": 180
-      }
-    },
-    {
-      "when": {
-        "west": "true",
-        "extract_west": "true"
-      },
-      "apply": {
-        "model": "cyberfarm:block/pipe_extract",
-        "y": 270
-      }
-    },
-    {
-      "when": {
-        "up": "true",
-        "extract_up": "true"
-      },
-      "apply": {
-        "model": "cyberfarm:block/pipe_extract",
-        "x": 270
+        "model": "cyberfarm:block/pipe_glass_cap",
+        "x": 90
       }
     },
     {
@@ -202,7 +892,7 @@
         "extract_down": "true"
       },
       "apply": {
-        "model": "cyberfarm:block/pipe_extract",
+        "model": "cyberfarm:block/advanced_gas_pipe_extract",
         "x": 90
       }
     }
