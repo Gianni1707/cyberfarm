@@ -26,7 +26,9 @@ import com.cyberfarm.port.ItemResource;
  * Electrolyzer: turns Alumina (ours or any mod's, by the common tag) into Aluminum Ingots with a
  * steady flow of FE, the way aluminum is really made. The first machine a drone frame needs.
  */
-public class ElectrolyzerBlockEntity extends MachineBlockEntity {
+public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 60;
+
     public static final TagKey<Item> ALUMINA = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "dusts/alumina"));
     public static final int INPUT = 0;
     public static final int OUTPUT = 1;
@@ -51,8 +53,14 @@ public class ElectrolyzerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = getStack(INPUT).is(ALUMINA) && hasRoomFor(OUTPUT, ModItems.ALUMINUM_INGOT.get());
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && getStack(INPUT).is(ALUMINA) && hasRoomFor(OUTPUT, ModItems.ALUMINUM_INGOT.get());
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             if (++progress >= PROCESS_TIME) {
                 progress = 0;

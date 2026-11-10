@@ -1,0 +1,80 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_elec_bus",
+    "atlas": "cyberfarm:block/models/part_elec_bus",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        7.5,
+        15.1,
+        10.9
+      ],
+      "to": [
+        24.5,
+        15.8,
+        12.1
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            0,
+            0,
+            8.5,
+            0.5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            0,
+            0.5,
+            8.5,
+            1
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            1,
+            8.5,
+            1.5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            0,
+            1.5,
+            8.5,
+            2
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            8.5,
+            1.5,
+            9,
+            2
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            9,
+            1.5,
+            9.5,
+            2
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

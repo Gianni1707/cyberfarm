@@ -367,9 +367,8 @@ def blocks():
         write(ASSETS / f"blockstates/{part}.json", {"variants": variants})
 
     # Soft block, not a machine: no pickaxe needed
-    write(ASSETS / "models/block/muffler.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("muffler")}})
     facing_blockstate("muffler")
-    write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler"}})
+    write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler_item"}})
     block_loot("muffler")
 
     nuclear_blocks()

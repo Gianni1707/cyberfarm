@@ -124,7 +124,7 @@ public class ModBlocks {
             IntakeGateBlock::new, ModBlocks::chamberPart);
 
     public static final DeferredBlock<MufflerBlock> MUFFLER = BLOCKS.registerBlock("muffler",
-            MufflerBlock::new, p -> p.mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL));
+            MufflerBlock::new, p -> p.mapColor(MapColor.WOOL).strength(0.8F).sound(SoundType.WOOL).noOcclusion());
 
     // Nuclear
     public static final DeferredBlock<Block> URANIUM_ORE = BLOCKS.registerSimpleBlock("uranium_ore",

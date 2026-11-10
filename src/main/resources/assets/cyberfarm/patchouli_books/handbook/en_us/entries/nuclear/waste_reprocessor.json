@@ -6,7 +6,8 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:waste_reprocessor"
+      "item": "cyberfarm:waste_reprocessor",
+      "text": "It takes a $(l)Cyber Frame$() on top: right-click it alone and a drone shows where. Once complete, its plate grows up a block with the plaque on it. It doesn't work until then; breaking the frame folds it back."
     },
     {
       "type": "patchouli:text",

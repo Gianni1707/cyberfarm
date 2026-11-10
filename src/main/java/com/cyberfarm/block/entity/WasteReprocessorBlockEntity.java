@@ -24,7 +24,9 @@ import com.cyberfarm.port.ItemResource;
  * recovering an Uranium Ingot one time in three and, rarely, an Isotope Shard for the Crystallizer.
  * Waste inside it is shielded and does not contaminate.
  */
-public class WasteReprocessorBlockEntity extends MachineBlockEntity {
+public class WasteReprocessorBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 50;
+
     public static final int INPUT = 0;
     public static final int WASTE_OUTPUT = 1;
     public static final int URANIUM_OUTPUT = 2;
@@ -50,8 +52,14 @@ public class WasteReprocessorBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && Radiation.isWaste(getStack(INPUT)) && hasRoomFor(WASTE_OUTPUT, ModItems.VITRIFIED_WASTE.get())
                 && hasRoomFor(URANIUM_OUTPUT, ModItems.URANIUM_INGOT.get()) && hasRoomFor(ISOTOPE_OUTPUT, ModItems.ISOTOPE_SHARD.get());
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             if (++progress >= PROCESS_TIME) {

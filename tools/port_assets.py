@@ -144,10 +144,11 @@ def port_item_definitions(ns):
 
 
 def port_lang(path):
-    """Tags named in the texts are forge: ones on 1.20.1."""
+    """Tags named in the texts are forge: ones on 1.20.1, and 1.20.1 names a villager profession by its own key."""
     with open(path, encoding='utf-8') as f:
         text = f.read()
     fixed = re.sub(r'(?<!\w)c:(?=[a-z])', 'forge:', text)
+    fixed = re.sub(r'"entity\.(\w+)\.villager\.(\w+)"', r'"entity.minecraft.villager.\1.\2"', fixed)
     if fixed != text:
         with open(path, 'w', encoding='utf-8', newline='\n') as f:
             f.write(fixed)

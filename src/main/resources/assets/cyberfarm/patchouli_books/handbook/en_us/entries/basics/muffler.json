@@ -11,6 +11,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "A weight bobs on its coil as it works: the more kinds of sound you silence, the faster it goes, and it rests when it silences none."
+    },
+    {
+      "type": "patchouli:text",
       "text": "$(l)Right-click$() the Muffler and flip the switch of each kind of sound. A new Muffler silences everything.$(br)$(li)$(l)Machines$(): CyberFarm machines: generators, the Drone Assembler, the Methane Extractor",
       "title": "Choosing what it silences"
     },
@@ -46,6 +50,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:muffler": 7
+    "cyberfarm:muffler": 8
   }
 }

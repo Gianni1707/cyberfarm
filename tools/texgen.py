@@ -319,26 +319,6 @@ def cyber_frame_formed():
     return c
 
 
-def muffler():
-    """Padded sound-dampening panel with a covered speaker grille."""
-    c = Canvas()
-    c.rect(0, 0, 15, 15, "k")
-    c.rect(1, 1, 14, 14, "D", noise=3, seed=40)
-    for i in range(1, 15, 4):  # quilted padding seams
-        c.rect(i, 1, i, 14, "d")
-        c.rect(1, i, 14, i, "d")
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.3, "s")
-    for y in range(4, 12, 2):
-        for x in range(4, 12, 2):
-            if math.hypot(x + 0.5 - 7.5, y + 0.5 - 7.5) < 4.0:
-                c.set(x + 1, y + 1, "m")
-    c.rect(5, 7, 10, 8, "b")
-    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
-        c.set(x, y, "l")
-    return c
-
-
 # --------------------------------------------------------------------------- nuclear
 
 URANIUM = "#5fdc3a"
@@ -3345,7 +3325,6 @@ def build_all():
         **{f"block/{tier}energy_conduit": clean_pipe("energy", tier) for tier in PIPE_RIMS},
         "block/cyber_frame": cyber_frame(),
         "block/cyber_frame_formed": cyber_frame_formed(),
-        "block/muffler": muffler(),
         "block/uranium_ore_overlay": uranium_ore_overlay(),
         "block/turbine_casing": turbine_casing(False),
         "block/turbine_casing_formed": turbine_casing(True),

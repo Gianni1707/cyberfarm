@@ -2,8 +2,8 @@
   "parent": "minecraft:block/block",
   "render_type": "minecraft:cutout",
   "textures": {
-    "particle": "cyberfarm:block/models/electrolyzer",
-    "atlas": "cyberfarm:block/models/electrolyzer",
+    "particle": "cyberfarm:block/models/electrolyzer_body",
+    "atlas": "cyberfarm:block/models/electrolyzer_body",
     "fire": "cyberfarm:block/machine_fire",
     "light": "cyberfarm:block/machine_light"
   },

@@ -19,6 +19,7 @@ import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
 import com.cyberfarm.client.renderer.AssemblerRenderer;
 import com.cyberfarm.client.renderer.CombustionGeneratorRenderer;
 import com.cyberfarm.client.renderer.CoolantMixerRenderer;
+import com.cyberfarm.client.renderer.MufflerRenderer;
 import com.cyberfarm.client.renderer.CrystallizerRenderer;
 import com.cyberfarm.client.renderer.DockRenderer;
 import com.cyberfarm.client.renderer.ElectrolyzerRenderer;
@@ -248,6 +249,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new GasTurbineRenderer());
         blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
         blockEntity(event, ModBlockEntities.SUPPLY_TERMINAL.get(), context -> new SupplyTerminalRenderer());
+        blockEntity(event, ModBlockEntities.MUFFLER.get(), context -> new MufflerRenderer());
         blockEntity(event, ModBlockEntities.WASTE_REPROCESSOR.get(), context -> new WasteReprocessorRenderer());
         blockEntity(event, ModBlockEntities.COMBUSTION_GENERATOR.get(), context -> new CombustionGeneratorRenderer());
         blockEntity(event, ModBlockEntities.ELECTROLYZER.get(), context -> new ElectrolyzerRenderer());

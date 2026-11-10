@@ -3,7 +3,7 @@
 Elenco di tutto ciò che è cambiato finora. I motivi delle scelte sono in
 [restyle-scelte-di-design.md](restyle-scelte-di-design.md).
 
-Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit da `ce455a6` a `c69404f`. Il primo è già su GitHub, gli altri 16 non sono ancora pushati.
+Stato al 7 novembre 2026, branch `machine-models-prototype`: 19 commit da `ce455a6` in poi. Il primo è già su GitHub, gli altri 18 non sono pushati.
 
 ## Riepilogo per macchina
 
@@ -17,11 +17,12 @@ Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit da `ce455
 | Fabricator | Multiblocco lungo 2, con magazzino | Apertura, scheda dal magazzino al vassoio, rulli |
 | Acid Synthesizer | Multiblocco 3x1x2, torre tra due serbatoi alti | Apertura, collare e bolle, fluidi a livello reale |
 | Water Pump | Cavallo di pompaggio | Manovella, bilanciere, asta |
-| Electrolyzer | Vasca con punzone | Punzone, 4 colpi per lingotto |
+| Electrolyzer | Multiblocco 2x1, una sola macchina | Apertura, punzone, 4 colpi per lingotto |
 | Pyrolysis Oven | Multiblocco 2x1, una sola macchina | Apertura, navetta che tira la fibra |
 | Coolant Mixer | Multiblocco 2x1 con due serbatoi | Apertura, carrello |
 | Gas Turbine | Multiblocco 1x3 | Apertura, rotore |
-| Waste Reprocessor | Carosello sotto un simbolo radioattivo | Disco a 4 tasche |
+| Muffler | Base a gradini, peso su una bobina | Il peso rimbalza secondo i suoni silenziati |
+| Waste Reprocessor | Multiblocco alto 2, carosello sotto il caricatore | Apertura, disco a 4 tasche |
 | Crystallizer | Piedistallo; camera nella palette | Cristallo e campo viola |
 | Supply Terminal | Bacheca su un palo | Schede con i contratti veri |
 | Steam Engine | Multiblocco 1x5 con 3 cilindri | Apertura "a nastro", pistoni, volano |
@@ -67,7 +68,7 @@ Stato al 7 novembre 2026, branch `machine-models-prototype`: 17 commit da `ce455
 
 **Renderer**
 - Nuovi: `ModelParts`, `ShellTiles`, `FrameDroneRenderer`, `FabricatorRenderer`, `WaterPumpRenderer`, `ElectrolyzerRenderer`, `PyrolysisOvenRenderer`,
-  `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`, `BioDigesterRenderer`, `CombustionGeneratorRenderer`.
+  `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`, `BioDigesterRenderer`, `CombustionGeneratorRenderer`, `MufflerRenderer`.
 - Riscritti: `AcidSynthesizerRenderer`, `FluidTankRenderer`.
 - Tolto: `MovingPartsRenderer`, sostituito da `BioDigesterRenderer`.
 
@@ -94,6 +95,7 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - **Steam Engine:** i blocchi separati di cilindro e dinamo non esistono più. Gas ed energia passano dalla caldaia, con 4 Cyber Frame.
 - **Crystallizer:** a camera formata prende i tubi al centro dei bordi del pavimento e al centro del tetto, senza Crystallizer Port.
 - **Bio-Digester, Fabricator, Pyrolysis Oven:** non lavorano senza frame: 2 per il digester, 1 per gli altri due. Il digester perde il tubo in cima e la presa dal lato del tank, il Fabricator la presa dietro, il forno quella a sinistra.
+- **Electrolyzer, Waste Reprocessor:** non lavorano senza il loro Cyber Frame. L'Electrolyzer perde la presa a sinistra, il Reprocessor nessuna.
 - **Tank:** ora si fondono e rispondono ai click in modo diverso (vedi sotto).
 
 ## Commit, dal più vecchio
@@ -116,6 +118,8 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 | `b8ddb06` | Steam Engine e Methane Extractor rifatti; mini droni |
 | `ebc427b` | Droni grandi; Mech Hangar nella palette |
 | `b3b00c5` | Reattore e turbina a 8 lati; i droni scorrono le taglie |
+| `7f80a74` | Ventola del Combustion Generator; documenti aggiornati |
+| Ultimo | Muffler a molla; Electrolyzer 2x1; Waste Reprocessor alto 2; correzione delle texture per le facce lunghe |
 | `c69404f` | Tank modulari; Acid Synthesizer, Bio-Digester, Fabricator e forno più grandi; striscia di luce; suoni; documenti |
 
 ## Dettagli di `c69404f`
@@ -160,9 +164,7 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 ## Cosa manca
 
 **Restyle**
-- Muffler.
 - Console del Mech Hangar (da decidere).
-- Controllo della palette su Laser Turret, Resonance Core e Hologram Table.
 - Scintille di default rimaste su Assembler e dock, da verificare.
 - Mech Repair Bay.
 - Suono comune per le aperture dei multiblocchi, che ora sono silenziose (proposto, non chiesto).
