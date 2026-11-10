@@ -267,21 +267,29 @@ PIPES = {"gas_pipe_up": "gas_pipe"}   # vertical stubs drawn with the real pipe 
 
 
 # --------------------------------------------------------------------------- models, front facing +z (south)
+# Crossed boxes share their caps; each later box is pulled in by this much there, so one face wins where they
+# overlap instead of the two flickering (z-fighting) with their differently baked patches
+LAYER = 0.02
+
+
 def octagon(x0, y0, z0, x1, y1, z1, cut, mat):
-    return [((x0 + cut, y0, z0), (x1 - cut, y1, z1), mat), ((x0, y0, z0 + cut), (x1, y1, z1 - cut), mat)]
+    return [((x0 + cut, y0, z0), (x1 - cut, y1, z1), mat),
+            ((x0, y0 + LAYER, z0 + cut), (x1, y1 - LAYER, z1 - cut), mat)]
 
 
 def round_tank(x0, y0, z0, x1, y1, z1, mat):
     """Twelve-sided column from three crossed boxes, close to a cylinder at block scale."""
     w = (x1 - x0) / 6
-    return [((x0 + 2 * w, y0, z0), (x1 - 2 * w, y1, z1), mat), ((x0, y0, z0 + 2 * w), (x1, y1, z1 - 2 * w), mat),
-            ((x0 + w, y0, z0 + w), (x1 - w, y1, z1 - w), mat)]
+    return [((x0 + 2 * w, y0, z0), (x1 - 2 * w, y1, z1), mat),
+            ((x0, y0 + LAYER, z0 + 2 * w), (x1, y1 - LAYER, z1 - 2 * w), mat),
+            ((x0 + w, y0 + 2 * LAYER, z0 + w), (x1 - w, y1 - 2 * LAYER, z1 - w), mat)]
 
 
 def roller(x0, x1, cy, cz, r, mat):
     """Twelve-sided cylinder lying along x: round_tank()'s section turned on its side."""
-    return [((x0, cy - r / 3, cz - r), (x1, cy + r / 3, cz + r), mat), ((x0, cy - r, cz - r / 3), (x1, cy + r, cz + r / 3), mat),
-            ((x0, cy - 2 * r / 3, cz - 2 * r / 3), (x1, cy + 2 * r / 3, cz + 2 * r / 3), mat)]
+    return [((x0, cy - r / 3, cz - r), (x1, cy + r / 3, cz + r), mat),
+            ((x0 + LAYER, cy - r, cz - r / 3), (x1 - LAYER, cy + r, cz + r / 3), mat),
+            ((x0 + 2 * LAYER, cy - 2 * r / 3, cz - 2 * r / 3), (x1 - 2 * LAYER, cy + 2 * r / 3, cz + 2 * r / 3), mat)]
 
 
 def combustion_generator():
@@ -290,17 +298,17 @@ def combustion_generator():
         ((1, 0, 1), (15, 1, 15), "plinth"),
         *octagon(2, 1, 2, 14, 9, 13, 2, {"up": "lid", "south": "body", "east": "body"}),
         *octagon(1.6, 6.5, 1.6, 14.4, 7.5, 13.4, 2, "copper"),     # copper band round the body
-        ((14, 2, 5), (14.5, 6, 10), "grille"),                      # intake grille
-        ((4, 2, 12.5), (12, 8, 13.5), "copper"),                    # firebox door frame
+        ((14, 2, 5), (14.5, 6 - LAYER, 10 - LAYER), "grille"),      # intake grille, under the terminal's faces
+        ((4 + LAYER, 2, 12.5), (12 - LAYER, 8, 13.5), "copper"),    # firebox door frame, inside the body's sides
         ((5, 3, 13), (11, 6.25, 13.75), "fire"),
         ((6.5, 3, 13.75), (7.25, 6.25, 14.25), "pipe"),             # grille bars
         ((8.75, 3, 13.75), (9.5, 6.25, 14.25), "pipe"),
-        *octagon(4, 9, 4, 11, 10, 11, 1, cap),                      # dome
-        ((3, 9, 4), (6, 15, 7), "pipe"),                            # chimney
-        ((2.5, 12, 3.5), (6.5, 13, 7.5), "copper"),
-        ((2.5, 15, 3.5), (6.5, 16, 7.5), {"up": "plinth", "south": "trim", "east": "trim"}),
+        *octagon(4, 9, 4, 11, 10, 11, 0.5, cap),                    # dome, the top port's seat (5.5..10.5)
+        ((2.25, 9, 4 + LAYER), (4.75, 15, 7), "pipe"),              # chimney, its cap clear of a top port's
+        ((2, 12, 3.5), (5, 13, 7.5), "copper"),                     # collar (from x 5)
+        ((2, 15, 3.5), (5, 16, 7.5), {"up": "plinth", "south": "trim", "east": "trim"}),
         ((8, 10, 3), (12, 12.5, 7), {"up": "grille", "south": "copper", "east": "copper"}),   # fuel hopper
-        ((13.5, 3, 6), (15, 6, 10), "trim"),                        # FE terminal
+        ((13.5, 3, 6), (15, 6, 10), "lid"),                         # FE terminal, dark so its light stands out
         ((15, 4, 7), (15.5, 5, 9), "light"),
     ]
 
@@ -315,9 +323,9 @@ def bio_digester():
         *round_tank(1.6, 3, 1.6, 14.4, 3.75, 14.4, "copper"),      # copper bands
         *round_tank(1.6, 10, 1.6, 14.4, 10.75, 14.4, "copper"),
         ((5.5, 4.5, 13.5), (10.5, 9.5, 14.5), "copper"),           # porthole
-        ((4.5, 5.5, 13.5), (11.5, 8.5, 14.5), "copper"),
+        ((4.5, 5.5, 13.5), (11.5, 8.5, 14.5 - LAYER), "copper"),
         ((6.5, 5.5, 14), (9.5, 8.5, 14.75), "liquid"),              # sludge behind it
-        ((5.5, 6.5, 14), (10.5, 7.5, 14.75), "liquid"),
+        ((5.5, 6.5, 14), (10.5, 7.5, 14.75 - LAYER), "liquid"),
         ((7, 11.25, 13.75), (9, 12, 14.25), "light"),               # running light
         *round_tank(4, 13, 4, 12, 14.5, 12, lid),                   # domed top
         ((6, 14.5, 6), (10, 16, 10), "gas_pipe_up"),
@@ -399,8 +407,10 @@ def fabricator():
         *roller(3.5, 4.25, 12.75, 8, 2.75, "copper"),                            # its end bands
         *roller(11.75, 12.5, 12.75, 8, 2.75, "copper"),
         ((5.5, 11.98, 10.4), (10.5, 12.7, 10.55), "light_off"),                  # lip lamp: the renderer's print head
-        ((12.5, 12.6, 7.25), (12.65, 13.6, 8.75), "light"),                      # level gauges on the end bands
-        ((3.35, 12.6, 7.25), (3.5, 13.6, 8.75), "light"),
+        ((12.5, 12.35, 7), (12.6, 13.85, 9), "plinth"),                         # level gauges on the end bands, each
+        ((12.6, 12.6, 7.25), (12.75, 13.6, 8.75), "light"),                      # on a dark plate so it outshines the mint
+        ((3.4, 12.35, 7), (3.5, 13.85, 9), "plinth"),
+        ((3.25, 12.6, 7.25), (3.4, 13.6, 8.75), "light"),
     ]
 
 
