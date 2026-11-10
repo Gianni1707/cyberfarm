@@ -65,7 +65,7 @@ Ha sostituito il vecchio grigio-blu con rame e ciano, troppo simile a Oritech. N
 - La luce deve essere la cosa più chiara del modello: almeno 1,8:1 sull'accento vicino e 1,5:1 sull'acciaio.
 - Smeraldo e menta non devono toccarsi alla stessa luminosità.
 - Luci sotto i 3 px: solo il colore dell'alone.
-- Eccezioni volute: viola per cristallo e campo del Crystallizer, polvere verde sul Waste Reprocessor ("radioattivo").
+- Eccezioni volute: viola per cristallo e campo del Crystallizer, polvere verde sul Waste Reprocessor ("radioattivo"), verde e marrone della poltiglia nella Biomass Press.
 
 ## Principi delle macchine
 
@@ -108,6 +108,7 @@ Per le macchine avanzate che hanno bisogno di spazio, come 2x1 o 1x3.
 | Gas Turbine | 1x3, macchina al centro | 2, davanti e dietro | Sui due lati e sopra |
 | Steam Engine | 1x5 con 3 cilindri | 4 in fila dietro | Sui lati liberi, sopra e sotto |
 | Acid Synthesizer | 3x1x2, macchina in basso al centro | 5, uno per lato e tre sopra | Davanti e dietro |
+| Biomass Press | Alta 2, camera aperta davanti | 1 sopra | Nessun tubo: ugello a destra, tramoggia sull'imbuto o ai lati del blocco basso |
 | Bio-Digester | Tamburo alto 2 e tank accanto | 2, sopra e a sinistra | Davanti, dietro e a destra |
 | Fabricator | Lungo 2, con magazzino delle schede | 1 dietro | Davanti, sui lati e sopra |
 | Pyrolysis Oven | 2x1, un tubo e un tank lungo | 1 a sinistra | Davanti, dietro e a destra |
@@ -249,6 +250,31 @@ Direzione "sentinelle in orbita", scelta fra tre (bocciate le stazioni di relè 
 
 Fusto delle colonne: a croce con quattro spigoli di luce continui e un impulso che sale, perché la colonna si legga come una cosa sola. Bocciati la scatola scura con due fasce menta ripetute a ogni blocco; scartati il traliccio e il dissipatore ad alette, che ripetono un motivo per blocco.
 
+## Biomass Press e Biomass
+
+Parte da una segnalazione degli amici che hanno provato la mod: il Bio-Digester deve produrre qualcosa di fisico, perché la biomassa che diventa subito liquida non ha senso.
+
+- **Due macchine:** "la macchina a parte deve creare la biomass e poi nel digester diventerà liquida". Scarti → Biomass Press → Biomass, oggetto vero → Bio-Digester → Biogas. Il Digester resta com'era, modello compreso.
+- **Nessuna corrente:** come il Digester, la catena del gas di base non chiede energia.
+- **Forma:** idea "B, pressa", scelta fra quattro. Nata a blocco singolo, l'utente ha poi detto che poteva essere a più blocchi: con un Cyber Frame sopra è alta 2, la piastra corre per tutta l'altezza e il movimento si legge da lontano.
+- **Il mucchio mostra il contenuto:** richiesta dell'utente in gioco. Sale con scarti e Biomass presenti e la piastra si ferma sopra, invece di attraversarlo.
+- **Ugello e tramoggia:** l'ugello è a destra guardando la macchina dal davanti e si scarica da solo, anche direttamente nel Digester. Una tramoggia sull'imbuto deve funzionare, perché è la prima cosa che un giocatore prova.
+- **Fertilizzante debole:** proposta accettata dall'utente, "una su tre". La Biomass si consuma sempre e fa crescere la pianta una volta su tre.
+  Con il compostatore servono circa 11 grani per una farina d'ossa, con la pressa circa 1,5 per una Biomass. A piena forza il compostatore non servirebbe più. Così resta circa il doppio più conveniente e un campo non si mantiene da solo.
+
+| Bocciato o scartato | Motivo o giudizio |
+|---|---|
+| Biomass come stadio intermedio dentro il Digester, in uno slot visibile | "la biomassa che poi diventa subito liquida non ha senso" |
+| Trituratore a rulli (A) | I rulli si vedono solo dall'alto |
+| Macina con braccio (C) | L'idea più confusa |
+| Estrusore a vite 2x1 (D) | La bocca degli scarti si vede poco |
+
+## Correzioni dalle segnalazioni dei giocatori
+
+- **Limite di raggio del Transport:** 48 blocchi dal dock e chunk caricati restano, ma ora la guida li scrive. La segnalazione era sul limite non descritto.
+- **Timer del Supply Terminal:** via, perché era superfluo. Il tooltip degli eventi tiene il suo orologio.
+- **Harvester:** le piante che si raccolgono col clic non si spaccano. Le colture normali continuano a essere ripiantate, consumando un seme se ne è caduto uno.
+
 ## Scartati
 
 - **Piccoli multiblocchi nel proiettore:** non ci vanno, hanno già i loro droni.
@@ -272,6 +298,9 @@ Da non riproporre:
 
 ## Lasciati in sospeso
 
+- **Biomass nel dispenser:** non funziona, il dispenser riconosce solo la farina d'ossa vera. Da aggiungere se serve.
+- **Biomass col tag `c:fertilizers`:** non messo di proposito, così le altre mod non la trattano come un fertilizzante pieno.
+- **Icona della Biomass Press:** il mucchio lo disegna il renderer, quindi l'icona e la pressa da sola mostrano il fondo marrone. Se sembra spoglia, le si rimette un mucchietto.
 
 ## Strumenti
 

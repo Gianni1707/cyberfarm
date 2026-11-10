@@ -3,13 +3,14 @@
 Elenco di tutto ciò che è cambiato finora. I motivi delle scelte sono in
 [restyle-scelte-di-design.md](restyle-scelte-di-design.md).
 
-Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commit da `ce455a6`) e, per minerali, icone, attrezzi del drone, proiettore, villaggio, batteria e suoni, sul branch `restyle-icons-drones` che parte da lì. Tutto su GitHub, nulla ancora unito a `master`.
+Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commit da `ce455a6`) e, per minerali, icone, attrezzi del drone, proiettore, villaggio, batteria, suoni, Biomass Press e correzioni dalle segnalazioni dei giocatori, sul branch `restyle-icons-drones` che parte da lì. Tutto su GitHub, nulla ancora unito a `master`.
 
 ## Riepilogo per macchina
 
 | Macchina | Cosa è adesso | Parte animata |
 |---|---|---|
 | Combustion Generator | Modello 3D con ventola sul camino | Ventola a 6 palette, fuoco acceso, fumo e crepitio |
+| Biomass Press | Multiblocco alto 2, camera aperta, imbuto e ugello | Apertura, piastra su asta che schiaccia un mucchio alto secondo il contenuto |
 | Bio-Digester | Multiblocco: tamburo alto 2 e tank | Apertura, pala dietro l'oblò, gas nel vetro |
 | Drone Dock | Modello 3D | Luci sul pad, archi di ricarica |
 | Swarm Dock | Modello proprio, con 4 segni di atterraggio | Come il Dock |
@@ -60,7 +61,7 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 
 **Striscia di luce alla base** (`c69404f`)
 - `foot_light` in `tools/machinemodels.py`: una striscia su tutto il contorno della base, che si accende quando la macchina lavora.
-- Ce l'hanno: Combustion Generator, Bio-Digester, Drone Dock e Swarm Dock, Drone Assembler, Fabricator, Acid Synthesizer, Water Pump, Electrolyzer,
+- Ce l'hanno: Combustion Generator, Biomass Press, Bio-Digester, Drone Dock e Swarm Dock, Drone Assembler, Fabricator, Acid Synthesizer, Water Pump, Electrolyzer,
   Pyrolysis Oven, Coolant Mixer, Gas Turbine, Waste Reprocessor, Supply Terminal, Crystallizer da solo.
 - Lo Steam Engine ha la sua, più alta, che ora chiude il giro anche davanti e in fondo alla fila.
 - Non ce l'hanno: il Methane Extractor da solo (non ha base) e le strutture grandi.
@@ -68,7 +69,7 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 
 **Renderer**
 - Nuovi: `ModelParts`, `ShellTiles`, `FrameDroneRenderer`, `FabricatorRenderer`, `WaterPumpRenderer`, `ElectrolyzerRenderer`, `PyrolysisOvenRenderer`,
-  `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`, `BioDigesterRenderer`, `CombustionGeneratorRenderer`, `MufflerRenderer`.
+  `CoolantMixerRenderer`, `GasTurbineRenderer`, `WasteReprocessorRenderer`, `SupplyTerminalRenderer`, `BioDigesterRenderer`, `BiomassPressRenderer`, `CombustionGeneratorRenderer`, `MufflerRenderer`.
 - Riscritti: `AcidSynthesizerRenderer`, `FluidTankRenderer`.
 - Tolto: `MovingPartsRenderer`, sostituito da `BioDigesterRenderer`.
 
@@ -77,7 +78,8 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 
 | Macchina | Suono | Quando |
 |---|---|---|
-| Bio-Digester | Bolle | A ogni oggetto digerito |
+| Biomass Press | Pistone e slime, a volume basso | A ogni oggetto pressato |
+| Bio-Digester | Bolle | A ogni Biomass digerita |
 | Water Pump | Pistone | Ogni 30 tick mentre pompa |
 | Gas Turbine | Rombo di fiamma | Ogni 60 tick mentre brucia |
 | Resonance Core | Ronzio | Ogni 80 tick mentre è online |
@@ -119,6 +121,23 @@ Stato all'8 novembre 2026: il restyle è su `machine-models-prototype` (19 commi
 **Suono di apertura**
 - Suono di montaggio per tutti i piccoli multiblocchi, da `SmallMultiblockBlockEntity`: scatto allo sblocco, colpi meccanici durante l'apertura, colpo secco alla fine.
 
+**Biomass Press e Biomass** (`bfcfaec`)
+- Nuovo oggetto `biomass`, nuova macchina con `BiomassPressBlock`, `BiomassPressBlockEntity`, `BiomassPressMenu`, `BiomassPressScreen`, `BiomassPressRenderer`; parti mobili `PRESS_TOWER`, `PRESS_HEAD`, `PRESS_MASH`.
+- Scarti organici (tutto ciò che accetta il compostatore e la carne marcia) → Biomass con la probabilità del compostatore, 2 s, senza corrente. La carne marcia ha l'80%.
+- L'ugello spinge la Biomass nel contenitore accanto. Dall'esterno entrano solo gli scarti ed esce solo la Biomass.
+- Una tramoggia sopra il frame nascosto alimenta la pressa: il frame le passa gli oggetti, solo per questa macchina (`CyberFarm`).
+- Il mucchio cresce con scarti e Biomass presenti, pieno a 64. Il contenuto arriva ai client ogni 5 tick se è cambiato. La piastra si ferma sul mucchio e lo schiaccia di 0,7 px.
+- Bio-Digester: accetta solo Biomass, 250 mB in 2 s. Stesso gas di prima in media, a parità di oggetti.
+- `BiomassItem`, derivata da `BoneMealItem`: fertilizzante a mano e col Fertilizer Module. Si consuma sempre, fa crescere una volta su tre.
+- Villaggio, `biogas_shed`: baule, tramoggia, pressa col frame sopra, ugello nel digester. JEI e REI, pagine info, guida (`biomass_press.md` nuova).
+
+**Correzioni dalle segnalazioni dei giocatori** (`bfcfaec`)
+- **Shift+click:** un oggetto rifiutato non compare più per un istante nello slot; il client non anticipa più lo spostamento (`MachineMenu`).
+- **Transport e volo:** nei tragitti lunghi il drone sale prima a quota di attraversamento e poi va dritto (`DroneFlight.flyOver`). Il ritorno al dock veniva dall'abbandono dopo 5 s bloccato. Durante la salita quel conteggio non corre.
+- **Raggio:** il limite è di 48 blocchi dal dock, in chunk caricati. Non è cambiato: ora è scritto nella guida.
+- **Harvester:** le piante mature che hanno `age` al massimo e si raccolgono col clic vengono raccolte senza spaccarle (`HarvestJob.pick`, con un `FakePlayer`). Le `CropBlock` si ripiantano sempre.
+- **Supply Terminal:** tolto il timer in alto a destra.
+
 ## Modifiche che cambiano il gioco
 
 - **Edifici del villaggio già costruiti:** con i blocchi nuovi risultano non finiti, il livello del villaggio può fermarsi e i Builder collegati rompono i blocchi vecchi per rimetterli. Gli Outpost già generati restano com'erano.
@@ -135,6 +154,8 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - **Bio-Digester, Fabricator, Pyrolysis Oven:** non lavorano senza frame: 2 per il digester, 1 per gli altri due. Il digester perde il tubo in cima e la presa dal lato del tank, il Fabricator la presa dietro, il forno quella a sinistra.
 - **Electrolyzer, Waste Reprocessor:** non lavorano senza il loro Cyber Frame. L'Electrolyzer perde la presa a sinistra, il Reprocessor nessuna.
 - **Tank:** ora si fondono e rispondono ai click in modo diverso (vedi sotto).
+- **Bio-Digester e scarti organici:** accetta solo Biomass. Le fattorie automatiche vanno rifatte inserendo una Biomass Press col suo Cyber Frame. Gli scarti già nello slot di un digester vecchio restano lì finché non si tolgono a mano.
+- **Biogas Shed del villaggio:** ha blocchi nuovi, quindi quello già costruito risulta non finito.
 
 ## Commit, dal più vecchio
 
@@ -156,9 +177,11 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 | `b8ddb06` | Steam Engine e Methane Extractor rifatti; mini droni |
 | `ebc427b` | Droni grandi; Mech Hangar nella palette |
 | `b3b00c5` | Reattore e turbina a 8 lati; i droni scorrono le taglie |
-| `7f80a74` | Ventola del Combustion Generator; documenti aggiornati |
-| Ultimo | Muffler a molla; Electrolyzer 2x1; Waste Reprocessor alto 2; correzione delle texture per le facce lunghe |
 | `c69404f` | Tank modulari; Acid Synthesizer, Bio-Digester, Fabricator e forno più grandi; striscia di luce; suoni; documenti |
+| `7f80a74` | Ventola del Combustion Generator; documenti aggiornati |
+| `235fc20` | Muffler a molla; Electrolyzer 2x1; Waste Reprocessor alto 2; correzione delle texture per le facce lunghe |
+| `a97708b` | Minerali, icone, attrezzi del drone, proiettore a droni, villaggio, batteria e torri, suono di apertura (`restyle-icons-drones`) |
+| `bfcfaec` | Biomass Press, Digester solo Biomass, fertilizzante debole; correzioni dalle segnalazioni dei giocatori |
 
 ## Dettagli di `c69404f`
 
@@ -194,6 +217,8 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - Il Muffler non è stato provato coi suoni nuovi.
 - Dock e Supply Terminal non hanno un modello acceso: non è verificato se lì la striscia resta accesa o spenta.
 - Nel Bio-Digester le fasce d'acciaio del tamburo e la seconda luce compaiono solo a fine apertura.
+- L'Harvester non è provato con Pam's HarvestCraft, la mod della segnalazione: non è installata qui. Vale per le piante con `age` e `BonemealableBlock`; una pianta fatta diversamente non viene riconosciuta.
+- Il valore di sincronizzazione del timer del Terminal (`GLOBAL+1`) resta nella block entity, inutilizzato.
 
 **Errore da ricordare**
 - La prima striscia sul contorno usciva di 0,1 px dal limite dei modelli (-16..32) e il forno e il Coolant Mixer diventavano cubi neri e viola.
@@ -208,8 +233,10 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - Rotazione e specchiatura delle prese.
 - Linee dei generatori non più usate.
 - Uniformare l'altezza della striscia dello Steam Engine con le altre, se stona.
+- Biomass: dispenser e tag `c:fertilizers` (motivi in [restyle-scelte-di-design.md](restyle-scelte-di-design.md)).
+- Icona della pressa: mostra la camera senza mucchio.
 
 **Prima di pubblicare**
 - Prova su server dedicato.
-- Push e merge su `master`.
+- Merge su `master`: i branch sono già su GitHub.
 - Porting sulle altre versioni di Minecraft.
