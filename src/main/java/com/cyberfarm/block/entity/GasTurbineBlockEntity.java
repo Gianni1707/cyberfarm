@@ -12,6 +12,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
@@ -19,9 +20,10 @@ import com.cyberfarm.port.FluidResource;
 
 /**
  * Gas Turbine: burns Biogas or Methane (more than twice the energy) from its tank into FE and pushes
- * it into adjacent machines and conduits. Steam goes to the multiblock {@link TurbineControllerBlockEntity}.
+ * it into adjacent machines and conduits, once assembled with its Cyber Frames (see {@link com.cyberfarm.block.SmallMultiblockBlock}).
+ * Steam goes to the multiblock {@link TurbineControllerBlockEntity}.
  */
-public class GasTurbineBlockEntity extends MachineBlockEntity {
+public class GasTurbineBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 16_000;
 
     public static final int CAPACITY = 50_000;
@@ -29,9 +31,13 @@ public class GasTurbineBlockEntity extends MachineBlockEntity {
     public static final int BURN_PER_TICK = 20;
     public static final int FE_PER_MB_BIOGAS = 3;
     public static final int FE_PER_MB_METHANE = 8;
+    private static final int OPEN_TICKS = 62;
+    /** The gas in the sight glasses changes slowly: the clients hear of it this often. */
+    private static final int SYNC_INTERVAL = 20;
 
     private final GasTank tank = new GasTank(TANK_CAPACITY, GasTank::isFuelGas, this::setChanged);
     private int generating;
+    private int syncedAmount = -1;
 
     public GasTurbineBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.GAS_TURBINE.get(), pos, state, 0, CAPACITY, 0, OUTPUT_PER_TICK);
@@ -49,8 +55,14 @@ public class GasTurbineBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        int perTick = BURN_PER_TICK * energyPerMb(tank.getResource(0));
+        boolean open = advanceStage(level, pos, state);
+        int perTick = open ? BURN_PER_TICK * energyPerMb(tank.getResource(0)) : 0;
         // Only burn when the energy has somewhere to go, so no fuel is wasted
         if (perTick > 0 && tank.amount() >= BURN_PER_TICK && energy.getCapacity() - energy.getEnergy() >= perTick) {
             tank.drain(BURN_PER_TICK);
@@ -60,6 +72,10 @@ public class GasTurbineBlockEntity extends MachineBlockEntity {
             generating = 0;
         }
         EnergyUtil.pushToNeighbors(level, pos, energy, OUTPUT_PER_TICK);
+        if (level.getGameTime() % SYNC_INTERVAL == 0 && tank.amount() != syncedAmount) {
+            syncedAmount = tank.amount();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        }
     }
 
     @Override

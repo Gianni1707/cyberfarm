@@ -7,15 +7,27 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:gas_turbine",
-      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br)$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t"
+      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br2)It is a small multiblock: $(l)place a Cyber Frame in front of it and one behind$(). $(l)Right-click$() the machine and sparks show the spots (hold"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted.$(br)$(li)Like the $(l:generators/combustion_generator)Combustion Generator$(/l), it $(l)pushes power$() into adjacent machines and $(l:cables/energy_conduit)Energy Conduits$(/l), up to 400 FE/t per side."
+      "text": "sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe that sits where a frame goes."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes."
+      "text": "$(li)$(l)Biogas$(): 3 FE per mB, 60 FE/t$(br)$(li)$(l)Methane$(): 8 FE per mB, 160 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Like the $(l:generators/combustion_generator)Combustion Generator$(/l), it $(l)pushes power$() into adjacent machines and $(l:cables/energy_conduit)Energy Conduits$(/l), up to 400 FE/t per side."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect to the machine block only, on either side or on top, whichever you prefer."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The rotor turns as fast as it makes power, so methane spins it faster than biogas. The slits on its flanks show the gas left. Breaking a frame folds it back and stops it; put the frame back and it opens again."
     },
     {
       "type": "patchouli:crafting",
@@ -23,6 +35,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:gas_turbine": 3
+    "cyberfarm:gas_turbine": 6
   }
 }

@@ -21,6 +21,7 @@ import com.cyberfarm.client.renderer.CrystallizerRenderer;
 import com.cyberfarm.client.renderer.DockRenderer;
 import com.cyberfarm.client.renderer.ElectrolyzerRenderer;
 import com.cyberfarm.client.renderer.FabricatorRenderer;
+import com.cyberfarm.client.renderer.GasTurbineRenderer;
 import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
@@ -240,7 +241,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.FABRICATOR.get(), context -> new FabricatorRenderer());
         blockEntity(event, ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
-        blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
+        blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new GasTurbineRenderer());
         blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
         blockEntity(event, ModBlockEntities.ELECTROLYZER.get(), context -> new ElectrolyzerRenderer());
         blockEntity(event, ModBlockEntities.PYROLYSIS_OVEN.get(), context -> new PyrolysisOvenRenderer());

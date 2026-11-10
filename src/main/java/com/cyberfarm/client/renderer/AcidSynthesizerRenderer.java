@@ -144,7 +144,7 @@ public class AcidSynthesizerRenderer extends BlockEntityRenderer<AcidSynthesizer
     }
 
     private static void fluidVertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, TextureAtlasSprite sprite, int colour, int light) {
-        buffer.addVertex(pose, x, y, z).setColor(colour).setUv(sprite.getU(x), sprite.getV(16.0F - y))
+        buffer.addVertex(pose, x, y, z).setColor(colour).setUv(sprite.getU(16.0F * (x / 16.0F)), sprite.getV(16.0F * (1.0F - y / 16.0F)))
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0.0F, 0.0F, -1.0F);
     }
 

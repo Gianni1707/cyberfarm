@@ -601,25 +601,26 @@ def coolant_mixer_port():
     return [((6, 2.8, 15), (10, 5, 16), "body"), *low_port()[1:]]
 
 
-def coolant_mixer_blockstate():
-    """Its own small model until assembled; the body while it opens or folds, drawn over by the renderer; then the open bench.
-    A port wherever a pipe plugs in, but never on the frame's side."""
+def small_multiblock_blockstate(name, frame_sides, up=False):
+    """Its own small model until assembled; the body while it opens or folds, drawn over by the renderer; then the open
+    machine. A port wherever a pipe plugs in, but never on a side with a frame (frame_sides: facing -> those sides)."""
     parts = []
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
         turn = {"y": y} if y else {}
-        parts.append({"when": {"facing": facing, "stage": "0"}, "apply": {"model": "cyberfarm:block/coolant_mixer", **turn}})
+        parts.append({"when": {"facing": facing, "stage": "0"}, "apply": {"model": f"cyberfarm:block/{name}", **turn}})
         for lit, suffix in (("false", ""), ("true", "_on")):
             parts.append({"when": {"facing": facing, "stage": "1|3", "lit": lit},
-                          "apply": {"model": f"cyberfarm:block/coolant_mixer_body{suffix}", **turn}})
+                          "apply": {"model": f"cyberfarm:block/{name}_body{suffix}", **turn}})
             parts.append({"when": {"facing": facing, "stage": "2", "lit": lit},
-                          "apply": {"model": f"cyberfarm:block/coolant_mixer_open{suffix}", **turn}})
-    sides = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
-    for facing, frame_side in (("north", "west"), ("east", "north"), ("south", "east"), ("west", "south")):
-        for side, y in sides:
-            if side != frame_side:
+                          "apply": {"model": f"cyberfarm:block/{name}_open{suffix}", **turn}})
+    for facing, framed in frame_sides.items():
+        for side, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+            if side not in framed:
                 parts.append({"when": {"facing": facing, side: "true"},
-                              "apply": {"model": "cyberfarm:block/coolant_mixer_port", **({"y": y} if y else {})}})
-    (ASSETS / "blockstates/coolant_mixer.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+                              "apply": {"model": f"cyberfarm:block/{name}_port", **({"y": y} if y else {})}})
+    if up:
+        parts.append({"when": {"up": "true"}, "apply": {"model": f"cyberfarm:block/{name}_port_up"}})
+    (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
 def hidden_frame():
@@ -628,6 +629,47 @@ def hidden_frame():
         json.dumps({"textures": {"particle": "cyberfarm:block/cyber_frame"}, "elements": []}, indent=2) + "\n")
     (ASSETS / "blockstates/hidden_frame.json").write_text(
         json.dumps({"variants": {"": {"model": "cyberfarm:block/hidden_frame"}}}, indent=2) + "\n")
+
+
+def gas_turbine_parts():
+    """A 1x3 engine, the machine block in the middle cell: (the body, the opened parts). Alone it is the body, a drum with a
+    round mouth at each end. GasTurbineRenderer draws the opened parts moving, and the rotor always."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    mint_front = {"up": "trim", "south": "copper", "east": "trim"}
+    mint_rear = {"up": "trim", "south": "trim", "north": "copper", "east": "trim"}
+    wall = {"up": "lid", "south": "copper", "east": "body"}
+    nozzle = {"up": "lid", "south": "body", "north": "copper", "east": "body"}
+
+    def mouth(z0, z1, r, mat):
+        """An octagon along z, two crossed boxes."""
+        c = 0.29 * r
+        return [((8 - r + c, 9.5 - r, z0), (8 + r - c, 9.5 + r, z1), mat),
+                ((8 - r, 9.5 - r + c, z0 + LAYER), (8 + r, 9.5 + r - c, z1 - LAYER), mat)]
+
+    body = [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            ((1, 1, 1), (15, 7, 15), dark),
+            ((0.6, 1.2, 0.6), (15.4, 1.7, 15.4), "copper"),
+            *zdisc(8, 9.5, 1.2, 14.8, 5.6, dark),
+            ((4.2, 12, 4.5), (11.8, 15.2, 11.5), dark),                # the saddle the top port stands on
+            *mouth(14.7, 15.8, 5.9, mint_front), *mouth(15.7, 16, 3.4, "slot"),
+            *mouth(0.2, 1.3, 5.9, mint_rear), *mouth(0, 0.3, 3.4, "slot"),
+            ((15, 2.2, 3), (15.12, 5.2, 13), "slot"),                  # the sight glasses, on the flanks
+            ((0.88, 2.2, 3), (1, 5.2, 13), "slot"),
+            ((1.9, 3, 15), (4.9, 4.2, 15.2), "light")]
+    opened = [((2, 3.5, 24), (14, 4.5, 30), wall), ((2, 14.5, 24), (14, 15.5, 30), wall),   # the duct, in the front frame's cell
+              ((2, 4.5, 24), (3, 14.5, 30), wall), ((13, 4.5, 24), (14, 14.5, 30), wall),
+              ((3, 4.5, 24), (13, 14.5, 24.2), "slot"),
+              ((6.5, 7.5, 16), (9.5, 11.5, 24), "beam"),               # its shaft
+              ((6.2, 7.7, -6.2), (9.8, 11.3, 1.2), "beam"),            # the nozzle, in the back frame's cell
+              *mouth(-9, -6, 5.2, nozzle), *mouth(-9.2, -8.9, 3.4, "slot"),
+              ((3.05, 4.55, 24.27), (3.35, 14.45, 29.2), "trim"),      # the doors, swung flat against the duct's walls
+              ((12.65, 4.55, 24.27), (12.95, 14.45, 29.2), "trim")]
+    return body, opened
+
+
+def gas_turbine_loose():
+    """The starting block and the item: the body with its lamp off, as it doesn't work yet."""
+    return [(a, b, "light_off" if spec == "light" else spec) for a, b, spec in gas_turbine_parts()[0]]
 
 
 def water_pump():
@@ -964,7 +1006,9 @@ if __name__ == "__main__":
             ("electrolyzer", electrolyzer(), True, False),
             ("pyrolysis_oven", pyrolysis_oven(), True, False),
             ("coolant_mixer_body", coolant_mixer_parts()[0], True, False),
-            ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False)):
+            ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False),
+            ("gas_turbine_body", gas_turbine_parts()[0], True, False),
+            ("gas_turbine_open", sum(gas_turbine_parts(), []), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -984,6 +1028,9 @@ if __name__ == "__main__":
     build("pyrolysis_oven_port", low_port(), False)
     build("coolant_mixer", coolant_mixer_loose(), False)
     build("coolant_mixer_port", coolant_mixer_port(), False)
+    build("gas_turbine", gas_turbine_loose(), False)
+    build("gas_turbine_port", side_port(4.5), False)
+    build("gas_turbine_port_up", top_port(12), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
@@ -994,5 +1041,7 @@ if __name__ == "__main__":
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     blockstate("electrolyzer", True, set())
     blockstate("pyrolysis_oven", True, set())
-    coolant_mixer_blockstate()
+    small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
+    small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
+                                                "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
     hidden_frame()

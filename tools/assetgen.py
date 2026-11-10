@@ -353,7 +353,6 @@ def blocks():
         "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
 
     lit_machine("bio_digester", "bio_digester_top")
-    lit_machine("gas_turbine", "gas_turbine_top")
 
     # The extractor is the chamber's "shower head": its bottom face looks into the chamber
     for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):

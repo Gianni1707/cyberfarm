@@ -3,8 +3,8 @@ package com.cyberfarm.client.renderer;
 import com.cyberfarm.block.CoolantMixerBlock;
 import com.cyberfarm.block.LitMachineBlock;
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
-import com.cyberfarm.fluid.GasTank;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.cyberfarm.port.client.VertexConsumer;
 
@@ -18,13 +18,11 @@ import net.minecraft.client.renderer.RenderType;
 import com.cyberfarm.port.client.RenderTypes;
 import com.cyberfarm.port.client.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import com.cyberfarm.port.client.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fluids.FluidStack;
@@ -39,12 +37,10 @@ import org.jspecify.annotations.Nullable;
  * tables use the design frame, as that file does.
  */
 public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockEntity, CoolantMixerRenderer.State> {
-    private static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     private static final int LID = 0xFF395853, BODY = 0xFF233E3B, STEEL_TOP = 0xFFBDC6C5, STEEL = 0xFFB1BEBC;
     private static final int SLOT = 0xFF030909, BEAM = 0xFF5B7771, MINT = 0xFF5EC2B8, GLINT = 0x40FFFFFF;
     /** After a stage changes the renderer keeps drawing this long, a hair larger, while the chunk rebuilds under it. */
-    private static final float HOLD = CoolantMixerBlockEntity.REBUILD_TICKS, GROW = 0.02F;
-    private static final float T_OPEN = CoolantMixerBlockEntity.OPEN_TICKS;
+    private static final float GROW = 0.02F;
     private static final float SLIDE = 4.5F, SINK = 5.1F, RISE = 6.5F, PISTON = 2.7F, RAIL_LIFT = 5.0F, SETTLE = 0.05F;
     private static final float SWING = 2.5F, RAMP = 10.0F;
     private static final float GLASS_Y0 = 9.4F, GLASS_Y1 = 15.0F, GLASS_W = 5.0F, GLASS_Z = 3.9F, WATER_GLASS_X = 7.0F, COOLANT_GLASS_X = -12.0F;
@@ -107,54 +103,30 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
             ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         BlockEntityRenderState.extractBase(entity, state, breakProgress);
         Level level = entity.getLevel();
-        state.stage = entity.getBlockState().getValue(CoolantMixerBlock.STAGE);
-        if (level == null || state.stage == CoolantMixerBlock.LOOSE) {
-            state.stage = CoolantMixerBlock.LOOSE;
-            entity.shownStage = CoolantMixerBlock.LOOSE;
+        state.stage = level == null ? SmallMultiblockBlock.LOOSE : entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
+        if (level == null) {
             return;
         }
         float time = level.getGameTime() + partialTick;
-        if (state.stage != entity.shownStage) {
-            // Arriving at a machine that is already open, the chunk has its model: nothing to hold
-            entity.shownStageTime = entity.shownStage < 0 ? time - HOLD : time;
-            entity.shownStage = state.stage;
+        state.t = entity.shownOpening(state.stage, time);
+        if (state.stage == SmallMultiblockBlock.LOOSE) {
+            return;
         }
-        float since = time - entity.shownStageTime;
-        boolean holding = state.stage != CoolantMixerBlock.OPENING && since < HOLD;
-        state.tanks = state.stage != CoolantMixerBlock.OPEN || holding;
+        boolean holding = entity.shownHolding(state.stage, time);
+        state.tanks = state.stage != SmallMultiblockBlock.OPEN || holding;
         state.grow = holding ? GROW : 0.0F;
-        state.t = switch (state.stage) {
-            case CoolantMixerBlock.OPENING -> Math.min(since, T_OPEN);
-            case CoolantMixerBlock.CLOSING -> Math.max(T_OPEN - Math.max(since - HOLD, 0.0F), 0.0F);
-            default -> T_OPEN;
-        };
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
-        boolean working = state.stage == CoolantMixerBlock.OPEN && entity.getBlockState().getValue(LitMachineBlock.LIT);
+        boolean working = state.stage == SmallMultiblockBlock.OPEN && entity.getBlockState().getValue(LitMachineBlock.LIT);
         // A free phase, not the recipe's progress, which rewinds at the first status after a power cut
         float phase = ModelParts.advance(entity, time, working ? 1.0F : 0.0F, RAMP);
         state.carriage = SWING * Mth.sin(phase * Mth.TWO_PI / 20.0F);
-        state.inputSprite = sprite(entity.getInput());
-        state.outputSprite = sprite(entity.getOutput());
-        state.inputFill = fill(entity.getInput());
-        state.outputFill = fill(entity.getOutput());
-        state.inputColour = tint(entity.getInput());
-        state.outputColour = tint(entity.getOutput());
-    }
-
-    private static float fill(GasTank tank) {
-        return tank.capacity() > 0 ? Math.min(1.0F, (float) tank.amount() / tank.capacity()) : 0.0F;
-    }
-
-    private static @Nullable TextureAtlasSprite sprite(GasTank tank) {
-        return tank.amount() > 0 ? FluidSprites.still(tank.fluid()) : null;
-    }
-
-    private static int tint(GasTank tank) {
-        if (tank.amount() <= 0) {
-            return 0;
-        }
-        return FluidSprites.tint(tank.fluid(), tank.amount());
+        state.inputSprite = ModelParts.fluidSprite(entity.getInput());
+        state.outputSprite = ModelParts.fluidSprite(entity.getOutput());
+        state.inputFill = ModelParts.fluidFill(entity.getInput());
+        state.outputFill = ModelParts.fluidFill(entity.getOutput());
+        state.inputColour = ModelParts.fluidTint(entity.getInput());
+        state.outputColour = ModelParts.fluidTint(entity.getOutput());
     }
 
     private static float smooth(float t, float from, float to) {
@@ -170,7 +142,7 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
 
     @Override
     public void submit(State state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        if (state.stage == CoolantMixerBlock.LOOSE) {
+        if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;
         }
         float t = state.t;
@@ -189,7 +161,7 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
                 draw(pose, buffer, COOLANT_SADDLE, inward, Math.max(coolantRise, -PISTON), state.grow, light);
                 draw(pose, buffer, RAIL, 0.0F, railRise, state.grow, light);
             }
-            if (state.stage != CoolantMixerBlock.OPEN) {
+            if (state.stage != SmallMultiblockBlock.OPEN) {
                 for (int i = 0; i < HOOD.length; i++) {
                     if (t < SINK_T[i][1]) {
                         float sink = SINK * (1.0F - smooth(t, SINK_T[i][0], SINK_T[i][1]));
@@ -200,7 +172,7 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
             }
             draw(pose, buffer, CARRIAGE, state.carriage, railRise, 0.0F, light);
         });
-        collector.submitCustomGeometry(poseStack, FLUID, (pose, buffer) -> {
+        collector.submitCustomGeometry(poseStack, ModelParts.FLUID, (pose, buffer) -> {
             glass(pose, buffer, WATER_GLASS_X - inward, waterRise, state.inputFill, state.inputSprite, state.inputColour, light);
             glass(pose, buffer, COOLANT_GLASS_X + inward, coolantRise, state.outputFill, state.outputSprite, state.outputColour, light);
         });
@@ -220,15 +192,10 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
         }
         float top = fill * (GLASS_Y1 - GLASS_Y0);
         int colour = 0xE0 << 24 | tint & 0xFFFFFF;
-        int surface = 0xFF << 24 | lighter(tint);
+        int surface = 0xFF << 24 | ModelParts.lighter(tint);
         quad(pose, buffer, x, 0.0F, x + GLASS_W, top, dy, GLASS_Z - 0.08F, x, sprite, colour, light);
         quad(pose, buffer, x, top - 0.4F, x + GLASS_W, top, dy, GLASS_Z - 0.10F, x, sprite, surface, light);
         quad(pose, buffer, x + 0.5F, 0.0F, x + 0.9F, top, dy, GLASS_Z - 0.12F, x, sprite, GLINT, light);
-    }
-
-    private static int lighter(int rgb) {
-        int r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
-        return r + (255 - r) * 2 / 5 << 16 | g + (255 - g) * 2 / 5 << 8 | b + (255 - b) * 2 / 5;
     }
 
     /** A rectangle facing north, y from the bottom of the glass, textured from its corner at {@code u0}. */
@@ -241,7 +208,7 @@ public class CoolantMixerRenderer extends BlockEntityRenderer<CoolantMixerBlockE
     }
 
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float dy, float z, float u0, TextureAtlasSprite sprite, int colour, int light) {
-        buffer.addVertex(pose, x, GLASS_Y0 + y + dy, z).setColor(colour).setUv(sprite.getU((x - u0) / 16.0F), sprite.getV(1.0F - y / 16.0F))
+        buffer.addVertex(pose, x, GLASS_Y0 + y + dy, z).setColor(colour).setUv(sprite.getU(16.0F * ((x - u0) / 16.0F)), sprite.getV(16.0F * (1.0F - y / 16.0F)))
                 .setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0.0F, 0.0F, -1.0F);
     }
 
