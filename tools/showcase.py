@@ -2,6 +2,10 @@
 
     python showcase.py [world folder under run/saves; default: the last one played]
 
+This is the Minecraft 1.20.1 version: pack format 15, JSON text components, item NBT with Count, and the NBT the 1.20.1
+port's load code reads. It also runs from a dedicated server console: the area is force-loaded, and the tp and gamemode of
+@s simply fail there.
+
 Then in game: /reload the first time, and /function showcase:go, which also rebuilds it. It stands on a platform at
 x 3000, y 200, z 3000 of the overworld. The list of what must be there comes from the registries: this script stops if a block,
 item or entity is neither shown nor explained in EXPLAINED. In game, showcase:check says in chat what did not assemble.
@@ -38,6 +42,8 @@ SMALL_MACHINES = {  # Where the Cyber Frames go around each machine: (dx, dy, dz
     "pyrolysis_oven": [(-1, 0, 0)],
     "electrolyzer": [(-1, 0, 0)],
     "waste_reprocessor": [(0, 1, 0)],
+    "transmitter_dish": [(1, 0, 0), (0, 0, -1), (1, 0, -1)],
+    "receiver_dish": [(0, 1, 0)],
 }
 WALL = {
     "Raw materials": ["raw_uranium", "uranium_ingot", "raw_bauxite", "alumina", "aluminum_ingot", "sulfur", "biomass", "carbon_fiber"],
@@ -48,6 +54,7 @@ WALL = {
     "Drone frames": ["basic_frame", "advanced_frame", "elite_frame", "mini_frame"],
     "Drone modules": [f"{task}_module" for task in TASKS],
     "Drone addons": ["speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon", "efficiency_addon"],
+    "Range modules": ["range_module_i", "range_module_ii", "range_module_iii", "infinity_range_module"],
     "Mech": ["mech_frame", "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module"],
 }
 
@@ -78,8 +85,12 @@ def summon(entity, x, y, z, nbt):
     commands.append(f"summon {entity} {X0 + x} {Y + y} {Z0 + z} {nbt}")
 
 
+def tellraw(text, color):
+    return "tellraw @a " + json.dumps({"text": text, "color": color})
+
+
 def check(x, y, z, expected, what):
-    checks.append(f'execute unless block {X0 + x} {Y + y} {Z0 + z} cyberfarm:{expected} run tellraw @a {{text:"Showcase: {what} did not assemble",color:"red"}}')
+    checks.append(f'execute unless block {X0 + x} {Y + y} {Z0 + z} cyberfarm:{expected} run {tellraw(f"Showcase: {what} did not assemble", "red")}')
 
 
 # ------------------------------------------------------------------ labels
@@ -98,12 +109,8 @@ def item_name(name):
 
 
 def snbt(value):
-    """A text component as SNBT; only strings, dicts and lists of them."""
-    if isinstance(value, dict):
-        return "{" + ",".join(f"{key}:{snbt(item)}" for key, item in value.items()) + "}"
-    if isinstance(value, list):
-        return "[" + ",".join(snbt(item) for item in value) + "]"
-    return json.dumps(value)
+    """A text component as 1.20.1 wants it in NBT: its JSON, in a single-quoted string."""
+    return "'" + json.dumps(value).replace("\\", "\\\\").replace("'", "\\'") + "'"
 
 
 def text(x, y, z, component, scale=0.6, facing="vertical", width=130, background=0xB0101418 - 2**32):
@@ -281,7 +288,8 @@ def docked(frame, modules, mini=False, tank=False):
         parts = ",".join(f'"cyberfarm:{part}"' for part in [frame, *[f"{module}_module" for module in modules]])
         for i, uuid in enumerate(uuids):
             summon("cyberfarm:drone", cx + 0.5, 0.4, z + 0.5, f"{{UUID:{uuid},modules:[{parts}],energy:{FRAME_ENERGY[frame]},dock:[I;{X0 + cx},{Y},{Z0 + z}]}}")
-            checks.append(f'execute unless entity @e[type=cyberfarm:drone,x={X0 + cx}.5,y={Y},z={Z0 + z}.5,distance=..3] run tellraw @a {{text:"Showcase: the drone of {frame} {" ".join(modules)} left its dock",color:"red"}}')
+            checks.append(f'execute unless entity @e[type=cyberfarm:drone,x={X0 + cx}.5,y={Y},z={Z0 + z}.5,distance=..3] run '
+                          + tellraw(f"Showcase: the drone of {frame} {' '.join(modules)} left its dock", "red"))
         shown.add("drone")
         label = item_name(f"{modules[0]}_module") if frame == "basic_frame" else item_name(frame)
         text(cx + 0.5, 0.1, z + 1.4, label, 0.45)
@@ -291,7 +299,8 @@ def docked(frame, modules, mini=False, tank=False):
 def tank(kind, fluid):
     def draw(x):
         z = ROW_FRONT[0]
-        block(x + 1, 0, z, kind, nbt=f'{{tank:{{stacks:[{{id:"{fluid}",amount:24000}}]}}}}')
+        # GasTank reads a Forge FluidTank: FluidName and Amount
+        block(x + 1, 0, z, kind, nbt=f'{{tank:{{FluidName:"{fluid}",Amount:24000}}}}')
         path = fluid.split(":")[1]
         name = tr(f"fluid.cyberfarm.{path}") if fluid.startswith("cyberfarm") else {"text": path.capitalize()}
         text(x + 1.5, 0.1, z + 1.4, {**block_name(kind), "extra": [{"text": " "}, name]}, 0.45)
@@ -350,11 +359,12 @@ def wall():
         text(x - columns + 1.5, 4.05, z - 0.05, {"text": title, "color": "aqua", "bold": True}, 0.9, "north", 600, 0)
         for i, item in enumerate(items):
             fx, fy = x - (i // 2) * 2, 3 if i % 2 == 0 else 1
-            summon("minecraft:glow_item_frame", fx + 0.5, fy + 0.5, z - 0.5, f'{{Facing:2b,block_pos:[I;{X0 + fx},{Y + fy},{Z0 + z - 1}],Fixed:1b,Invulnerable:1b,Item:{{id:"cyberfarm:{item}",count:1}}}}')
+            summon("minecraft:glow_item_frame", fx + 0.5, fy + 0.5, z - 0.5, f'{{Facing:2b,TileX:{X0 + fx},TileY:{Y + fy},TileZ:{Z0 + z - 1},Fixed:1b,Invulnerable:1b,Item:{{id:"cyberfarm:{item}",Count:1b}}}}')
             text(fx + 0.5, fy - 0.32, z - 0.05, item_name(item), 0.32, "north", 110)
             shown.add(item)
         x -= columns * 2 + 2
-    summon("minecraft:armor_stand", WIDTH / 2, 0, z - 4.5, '{Rotation:[180f,0f],ShowArms:1b,Invulnerable:1b,equipment:{head:{id:"cyberfarm:hazmat_helmet",count:1},chest:{id:"cyberfarm:hazmat_suit",count:1},legs:{id:"cyberfarm:hazmat_pants",count:1},feet:{id:"cyberfarm:hazmat_boots",count:1}}}')
+    summon("minecraft:armor_stand", WIDTH / 2, 0, z - 4.5, '{Rotation:[180f,0f],ShowArms:1b,Invulnerable:1b,ArmorItems:[{id:"cyberfarm:hazmat_boots",Count:1b},{id:"cyberfarm:hazmat_pants",Count:1b},'
+                                                       '{id:"cyberfarm:hazmat_suit",Count:1b},{id:"cyberfarm:hazmat_helmet",Count:1b}]}')
 
 
 ROW_FRONT = [0]
@@ -443,8 +453,8 @@ def covered():
 
 def write(world):
     pack = ROOT / "run/saves" / world / "datapacks/cyberfarm_showcase"
-    (pack / "data/showcase/function").mkdir(parents=True, exist_ok=True)
-    (pack / "pack.mcmeta").write_text(json.dumps({"pack": {"description": "CyberFarm showcase", "min_format": 107, "max_format": 107}}), encoding="utf-8")
+    (pack / "data/showcase/functions").mkdir(parents=True, exist_ok=True)
+    (pack / "pack.mcmeta").write_text(json.dumps({"pack": {"description": "CyberFarm showcase", "pack_format": 15}}), encoding="utf-8")
     x0, z0, x1, z1 = X0, Z0, X0 + WIDTH - 1, Z0 + DEPTH - 1
     box = f"x={x0},y={Y - 2},z={z0},dx={WIDTH},dy={CLEAR + 2},dz={DEPTH}"
     functions = {
@@ -452,18 +462,18 @@ def write(world):
             f"execute in minecraft:overworld run forceload add {x0} {z0} {x1} {z1}",
             f"execute in minecraft:overworld run tp @s {X0 + WIDTH / 2} {Y} {z1 - 6.5} 180 5",
             "gamemode creative @s",
-            'tellraw @a {text:"Building the CyberFarm showcase...",color:"aqua"}',
+            tellraw("Building the CyberFarm showcase...", "aqua"),
             "schedule function showcase:clear 3s",
         ],
         # Drones keep their UUIDs from a build to the next, so the old ones must be gone a tick before
         "clear": [f"kill @e[type=!player,{box}]",
                   *[f"fill {x0} {Y} {z} {x1} {Y + CLEAR} {min(z + 7, z1)} minecraft:air" for z in range(z0, z1 + 1, 8)],
                   "schedule function showcase:build 1s"],
-        "build": [*commands, 'tellraw @a {text:"CyberFarm showcase ready: machines ahead, items on the wall behind you",color:"green"}', "schedule function showcase:check 20s"],
-        "check": [*checks, f'execute in minecraft:overworld run forceload remove {x0} {z0} {x1} {z1}', f'tellraw @a {{text:"Showcase checked: {len(checks)} checks, a line in red for each that failed",color:"aqua"}}'],
+        "build": [*commands, tellraw("CyberFarm showcase ready: machines ahead, items on the wall behind you", "green"), "schedule function showcase:check 20s"],
+        "check": [*checks, f'execute in minecraft:overworld run forceload remove {x0} {z0} {x1} {z1}', tellraw(f"Showcase checked: {len(checks)} checks, a line in red for each that failed", "aqua")],
     }
     for name, lines in functions.items():
-        (pack / f"data/showcase/function/{name}.mcfunction").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
+        (pack / f"data/showcase/functions/{name}.mcfunction").write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")
     print(f"{sum(len(lines) for lines in functions.values())} commands written to {pack}")
 
 
