@@ -1,0 +1,194 @@
+"""Bring resources written in the 26.x formats over to the 1.20.1 ones, in place.
+
+    python tools/port_assets.py [folder of the GuideME .md pages]
+
+The asset generators in tools/ are shared with the 26.x branches and write their formats; run this
+after them (or after carrying files over from a 26.x branch). Safe to run more than once:
+- data folders take their 1.20.1 names (recipe -> recipes, loot_table -> loot_tables, tags/item ->
+  tags/items, structure -> structures, c: tags -> forge: tags...);
+- recipes take the 1.20.1 ingredient and result objects;
+- block models' "light_emission" becomes Forge's "forge_data" block and sky light;
+- item model definitions (assets/<ns>/items/*.json) become item models in models/item;
+- structure files take the 1.20.1 data version and blocks;
+- a GuideME handbook (the folder given, or one left under assets/cyberfarm/guides) becomes the
+  Patchouli book through tools/patchouli_book.py.
+"""
+import gzip
+import json
+import os
+import shutil
+import subprocess
+import sys
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RES = os.path.join(ROOT, 'src', 'main', 'resources')
+DATA = os.path.join(RES, 'data')
+ASSETS = os.path.join(RES, 'assets')
+
+DATA_VERSION = 3465  # SharedConstants.WORLD_VERSION of Minecraft 1.20.1
+FOLDERS = {'recipe': 'recipes', 'loot_table': 'loot_tables', 'structure': 'structures', 'advancement': 'advancements'}
+TAG_FOLDERS = {'block': 'blocks', 'item': 'items', 'fluid': 'fluids', 'entity_type': 'entity_types', 'game_event': 'game_events'}
+# Blocks renamed after 1.20.1 -> their 1.20.1 names
+BLOCKS = {'minecraft:iron_chain': 'minecraft:chain', 'minecraft:short_grass': 'minecraft:grass'}
+
+
+def load(path):
+    with open(path, encoding='utf-8') as f:
+        return json.load(f)
+
+
+def save(path, data):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w', encoding='utf-8', newline='\n') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        f.write('\n')
+
+
+def move_tree(src, dst):
+    """Move every file of src into dst, replacing what is there, and remove src."""
+    for base, _, files in os.walk(src):
+        for name in files:
+            target = os.path.join(dst, os.path.relpath(os.path.join(base, name), src))
+            os.makedirs(os.path.dirname(target), exist_ok=True)
+            os.replace(os.path.join(base, name), target)
+    shutil.rmtree(src)
+
+
+def rename_folders():
+    for ns in os.listdir(DATA):
+        nsdir = os.path.join(DATA, ns)
+        for old, new in FOLDERS.items():
+            if os.path.isdir(os.path.join(nsdir, old)):
+                move_tree(os.path.join(nsdir, old), os.path.join(nsdir, new))
+        tags = os.path.join(nsdir, 'tags')
+        if os.path.isdir(tags):
+            for old, new in TAG_FOLDERS.items():
+                if os.path.isdir(os.path.join(tags, old)):
+                    move_tree(os.path.join(tags, old), os.path.join(tags, new))
+        if os.path.isdir(os.path.join(nsdir, 'neoforge')):
+            move_tree(os.path.join(nsdir, 'neoforge'), os.path.join(nsdir, 'forge'))
+    if os.path.isdir(os.path.join(DATA, 'c')):
+        move_tree(os.path.join(DATA, 'c'), os.path.join(DATA, 'forge'))
+
+
+def ingredient(value):
+    if isinstance(value, str):
+        return {'tag': forge_tag(value[1:])} if value.startswith('#') else {'item': value}
+    if isinstance(value, list):
+        return [ingredient(v) for v in value]
+    if isinstance(value, dict) and 'tag' in value:
+        return {**value, 'tag': forge_tag(value['tag'])}
+    return value
+
+
+def forge_tag(tag):
+    return 'forge:' + tag[2:] if tag.startswith('c:') else tag
+
+
+def port_recipe(path):
+    recipe = load(path)
+    before = json.dumps(recipe)
+    kind = recipe.get('type', '')
+    if 'key' in recipe:
+        recipe['key'] = {k: ingredient(v) for k, v in recipe['key'].items()}
+    if 'ingredients' in recipe:
+        recipe['ingredients'] = [ingredient(v) for v in recipe['ingredients']]
+    if 'ingredient' in recipe:
+        recipe['ingredient'] = ingredient(recipe['ingredient'])
+    result = recipe.get('result')
+    if isinstance(result, dict) and 'id' in result:
+        if kind in ('minecraft:smelting', 'minecraft:blasting', 'minecraft:smoking', 'minecraft:campfire_cooking'):
+            recipe['result'] = result['id']  # 1.20.1 cooking results are a bare item id
+        else:
+            recipe['result'] = {'item': result['id'], **({'count': result['count']} if 'count' in result else {})}
+    if json.dumps(recipe) != before:
+        save(path, recipe)
+
+
+def port_tag(path):
+    tag = load(path)
+    values = ['#' + forge_tag(v[1:]) if isinstance(v, str) and v.startswith('#') else v for v in tag.get('values', [])]
+    if values != tag.get('values', []):
+        tag['values'] = values
+        save(path, tag)
+
+
+def port_model(path):
+    model = load(path)
+    changed = False
+    for element in model.get('elements', []):
+        if 'light_emission' in element:
+            light = element.pop('light_emission')
+            element['forge_data'] = {'block_light': light, 'sky_light': light}
+            changed = True
+    if changed:
+        save(path, model)
+
+
+def port_item_definitions(ns):
+    items = os.path.join(ASSETS, ns, 'items')
+    if not os.path.isdir(items):
+        return
+    for name in sorted(os.listdir(items)):
+        definition = load(os.path.join(items, name))['model']
+        if definition.get('type') != 'minecraft:model':
+            sys.exit(f'{ns}:items/{name} is a {definition.get("type")}: give it an item model with overrides by hand')
+        target = os.path.join(ASSETS, ns, 'models', 'item', name)
+        if definition['model'] != f'{ns}:item/{name[:-5]}':
+            save(target, {'parent': definition['model']})
+        elif not os.path.exists(target):
+            sys.exit(f'{ns}:items/{name} points at a missing model')
+    shutil.rmtree(items)
+
+
+def port_structure(path):
+    with open(path, 'rb') as f:
+        raw = gzip.decompress(f.read())
+    fixed = raw
+    for old, new in BLOCKS.items():
+        o, n = old.encode(), new.encode()
+        fixed = fixed.replace(len(o).to_bytes(2, 'big') + o, len(n).to_bytes(2, 'big') + n)
+    key = b'\x03\x00\x0bDataVersion'
+    at = fixed.find(key)
+    if at >= 0:
+        at += len(key)
+        fixed = fixed[:at] + DATA_VERSION.to_bytes(4, 'big', signed=True) + fixed[at + 4:]
+    if fixed != raw:
+        with open(path, 'wb') as f:
+            f.write(gzip.compress(fixed, mtime=0))
+
+
+def port_handbook(pages):
+    subprocess.run([sys.executable, os.path.join(ROOT, 'tools', 'patchouli_book.py'), pages], check=True)
+
+
+def main():
+    rename_folders()
+    for base, _, files in os.walk(DATA):
+        for name in files:
+            path = os.path.join(base, name)
+            parts = os.path.relpath(path, DATA).replace(os.sep, '/').split('/')
+            if name.endswith('.json') and len(parts) > 2 and parts[1] == 'recipes':
+                port_recipe(path)
+            elif name.endswith('.json') and len(parts) > 2 and parts[1] == 'tags':
+                port_tag(path)
+            elif name.endswith('.nbt') and len(parts) > 2 and parts[1] == 'structures':
+                port_structure(path)
+    for ns in os.listdir(ASSETS):
+        port_item_definitions(ns)
+        models = os.path.join(ASSETS, ns, 'models')
+        for base, _, files in os.walk(models):
+            for name in files:
+                if name.endswith('.json'):
+                    port_model(os.path.join(base, name))
+    guides = os.path.join(ASSETS, 'cyberfarm', 'guides')
+    if len(sys.argv) > 1:
+        port_handbook(sys.argv[1])
+    elif os.path.isdir(guides):
+        port_handbook(os.path.join(guides, 'cyberfarm', 'handbook'))
+    if os.path.isdir(guides):
+        shutil.rmtree(guides)
+
+
+if __name__ == '__main__':
+    main()
