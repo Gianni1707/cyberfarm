@@ -1,9 +1,11 @@
 package com.cyberfarm.client.renderer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import com.cyberfarm.CyberFarm;
@@ -27,6 +29,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.core.BlockPos;
 import com.cyberfarm.port.client.LightCoordsUtil;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
@@ -39,7 +42,7 @@ import org.jspecify.annotations.Nullable;
  * The drones an unfinished multiblock sends out when its machine is clicked. A small one sends a mini drone for every Cyber Frame it
  * lacks; a big one sends bigger drones, each over a group of the blocks it lacks. Each lifts off the machine, glides over its place and
  * projects those blocks there, or marks what is in the way, and goes home once they are placed.
- * Client side only, seen by whoever clicked, and nothing to bump into.
+ * A pinned Multiblock Projector sends mini drones the same way, from the player. Client side only, seen by whoever clicked, and nothing to bump into.
  * <p>
  * shortcut: they fly through walls and hover under low ceilings just the same; a real path needs them to be entities, not worth it for a hint.
  * Each frame, per drone out: 26 boxes, and when projecting 8 translucent quads and 6 for each block; nothing while none is out.
@@ -69,7 +72,13 @@ public final class FrameDroneRenderer {
     private static final int SHELL = 0xFF395853, DARK = 0xFF233E3B, STEEL = 0xFF7C8989, STEEL_LIGHT = 0xFFBDC6C5, BAND = 0xFF5EC2B8, SCREEN = 0xFF071314;
     private static final int LAMP = 0xFFD1FEE7, LENS_OFF = 0xFF055B57, AMBER = 0xFFFFB347;
 
+    /** A pinned projection stops being kept up this long after its projector was last seen pinned there. */
+    private static final float PROJECTOR_GRACE = 5.0F;
+
     private enum Cell { DONE, FREE, BLOCKED, USED }
+
+    /** What a projector's drones are showing. */
+    private record Job(Structure structure, BlockPos controller, Direction facing) {}
 
     /** A block a drone asks for: what goes there (null: nothing) and whether what is there now is right. */
     private record Target(BlockPos pos, @Nullable BlockState show, Predicate<BlockState> ok) {}
@@ -85,12 +94,19 @@ public final class FrameDroneRenderer {
         final float coneBottom;
         final float glide;
         final float rise;
+        /** When it takes off, after the hint began. */
+        final float start;
         final float arrive;
         float leaveAt = -1.0F;
 
         Drone(BlockPos machine, List<Target> targets, int index) {
+            this(machine, targets, index, index * STAGGER);
+        }
+
+        Drone(BlockPos machine, List<Target> targets, int index, float start) {
             this.targets = targets;
             this.index = index;
+            this.start = start;
             int minX = Integer.MAX_VALUE, maxX = Integer.MIN_VALUE, minZ = Integer.MAX_VALUE, maxZ = Integer.MIN_VALUE, maxY = Integer.MIN_VALUE;
             for (Target target : targets) {
                 minX = Math.min(minX, target.pos().getX());
@@ -107,7 +123,7 @@ public final class FrameDroneRenderer {
             float dx = x - machine.getX() - 0.5F, dz = z - machine.getZ() - 0.5F;
             this.glide = Mth.sqrt(dx * dx + dz * dz) * 16.0F / SPEED;
             this.rise = Math.max(RISE, Math.abs(hover - 1.0F) * 16.0F / RISE_SPEED);
-            this.arrive = index * STAGGER + rise + glide;
+            this.arrive = start + rise + glide;
         }
 
         void leave(float t) {
@@ -132,6 +148,9 @@ public final class FrameDroneRenderer {
         /** Which of the structure's sizes it shows; called back, it only has to get home. */
         int sizeIndex;
         boolean closing;
+        /** A projector's: what it shows, and when it was last pinned there. */
+        @Nullable Job job;
+        float seen;
 
         Hint(Level level, BlockPos machine, float start, float size, double range) {
             this.level = level;
@@ -236,6 +255,47 @@ public final class FrameDroneRenderer {
         HINTS.add(hint);
     }
 
+    /**
+     * Called every frame while a projector is pinned, with the blocks its structure still lacks: mini drones leave the player, each
+     * for a group of them, and more follow for blocks that go missing later. They go home when it stops being pinned there.
+     */
+    public static void project(Level level, BlockPos player, Structure structure, BlockPos controller, Direction facing, List<Structure.Ghost> missing) {
+        float now = level.getGameTime();
+        Job job = new Job(structure, controller, facing);
+        Hint hint = null;
+        for (Hint other : HINTS) {
+            if (other.level == level && job.equals(other.job)) {
+                hint = other;
+            }
+        }
+        if (hint == null) {
+            if (missing.isEmpty()) {
+                return;
+            }
+            hint = new Hint(level, player, now, 1.0F, Double.MAX_VALUE);
+            hint.job = job;
+            HINTS.add(hint);
+        }
+        hint.seen = now;
+        Set<BlockPos> covered = new HashSet<>();
+        for (Drone drone : hint.drones) {
+            drone.targets.forEach(target -> covered.add(target.pos()));
+        }
+        List<Target> uncovered = new ArrayList<>();
+        for (Structure.Ghost ghost : missing) {
+            if (!covered.contains(ghost.pos())) {
+                uncovered.add(new Target(ghost.pos(), ghost.show(), ghost.ok()));
+            }
+        }
+        if (!uncovered.isEmpty()) {
+            float t = now - hint.start;
+            int order = 0;
+            for (List<Target> group : groups(uncovered)) {
+                hint.drones.add(new Drone(hint.machine, group, hint.drones.size(), t + order++ * STAGGER));
+            }
+        }
+    }
+
     private static List<List<Target>> groups(List<Target> targets) {
         for (int size = GROUP; ; size++) {
             Map<Long, List<Target>> groups = new LinkedHashMap<>();
@@ -290,7 +350,7 @@ public final class FrameDroneRenderer {
         poseStack.translate(-camera.x, -camera.y, -camera.z);
         for (Hint hint : HINTS) {
             float t = now - hint.start;
-            boolean over = over(level.getBlockState(hint.machine)) || t > MAX_TICKS
+            boolean over = hint.job != null ? now - hint.seen > PROJECTOR_GRACE : over(level.getBlockState(hint.machine)) || t > MAX_TICKS
                     || minecraft.player.distanceToSqr(Vec3.atCenterOf(hint.machine)) > hint.range * hint.range;
             for (Drone drone : hint.drones) {
                 List<Target> lacking = new ArrayList<>();
@@ -315,7 +375,7 @@ public final class FrameDroneRenderer {
 
     private static void draw(PoseStack poseStack, SubmitNodeCollector collector, Level level, Hint hint, Drone drone, List<Target> lacking, List<Cell> cells, float t, BlockModelShaper models) {
         BlockPos machine = hint.machine;
-        float start = drone.index * STAGGER;
+        float start = drone.start;
         float leave = drone.leaveAt;
         float out;     // from the machine's centre, 0, to over its blocks, 1
         float y;
@@ -400,7 +460,7 @@ public final class FrameDroneRenderer {
     }
 
     /** The mini drone at its feet's height: chassis, visor, band, antenna on its stem, a projector in three steps, then four arms with spinning blades. */
-    private static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light) {
+    static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light) {
         float k = SCALE;
         int full = LightCoordsUtil.FULL_BRIGHT;
         collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {

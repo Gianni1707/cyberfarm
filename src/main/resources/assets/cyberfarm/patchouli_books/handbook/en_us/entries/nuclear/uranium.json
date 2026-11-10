@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Uranium Ore$() is rare and found deep in the Overworld, from Y 16 down to the bottom of the world, more often the deeper you go. Its green specks glow faintly in the dark. You need at least an $(l)iron pickaxe$(); Fortune gives more Raw Uranium, Silk Touch the ore block itself."
+      "text": "$(l)Uranium Ore$() is rare and found deep in the Overworld, from Y 16 down to the bottom of the world, more often the deeper you go. Its yellow-green clumps glow faintly in the dark. You need at least an $(l)iron pickaxe$(); Fortune gives more Raw Uranium, Silk Touch the ore block itself."
     },
     {
       "type": "patchouli:text",

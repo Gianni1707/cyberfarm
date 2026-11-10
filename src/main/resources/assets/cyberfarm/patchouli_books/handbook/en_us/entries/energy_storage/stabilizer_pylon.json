@@ -7,15 +7,15 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:stabilizer_pylon",
-      "text": "Columns of pylons hold a $(l:energy_storage/resonance_core)Resonance Core$(/l)'s crystal steady with their beams, and they are the $(l)only way power goes in and out$() of the core.$(br)$(li)$(l)1$(): 1, 2, 3-8, 16,000 FE/t$(br)$(li)$(l)2$(): 2, 3, 4-10, 128,000 FE/t"
+      "text": "Columns of pylons hold a $(l:energy_storage/resonance_core)Resonance Core$(/l)'s crystal steady: each sends out a drone that circles it, and they are the $(l)only way power goes in and out$() of the core.$(br)$(li)$(l)1$(): 1, 2, 3-8, 16,000 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)3$(): 3, 4, 5-12, 512,000 FE/t$(br)$(li)$(l)4$(): 4, 5, 6-14, 2,000,000 FE/t"
+      "text": "$(li)$(l)2$(): 2, 3, 4-10, 128,000 FE/t$(br)$(li)$(l)3$(): 3, 4, 5-12, 512,000 FE/t$(br)$(li)$(l)4$(): 4, 5, 6-14, 2,000,000 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "Stack $(item)Stabilizer Pylon$()s into $(l)columns$(): the bottom block gets a footing, the top one the glowing $(l)emitter ring$(). The beam leaves through a pulsing lens on the side of the ring that faces the crystal, at the crystal's height.",
+      "text": "Stack $(item)Stabilizer Pylon$()s into $(l)columns$(): the bottom block gets a footing, the top one a $(l)cradle$() with a landing pad. When a column links up, its drone lifts off the cradle, flies to the crystal and circles it, holding it steady with a beam. Unstable, the drones falter, tilt and their beams turn violet.",
       "title": "Building the columns"
     },
     {

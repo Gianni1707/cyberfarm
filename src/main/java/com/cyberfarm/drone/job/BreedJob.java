@@ -3,6 +3,7 @@ package com.cyberfarm.drone.job;
 import java.util.List;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
+import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
 
 import net.minecraft.core.particles.ParticleTypes;
@@ -88,6 +89,7 @@ public class BreedJob extends DroneJob {
             return Result.RETURN;
         }
         animal.setInLove(null);
+        Effects.spray(level, drone, Effects.SPRAY_FEED, animal.blockPosition());
         level.playSound(null, animal.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.NEUTRAL, 0.6F, 1.0F);
         level.sendParticles(ParticleTypes.HEART, animal.getX(), animal.getY() + animal.getBbHeight(), animal.getZ(), 3, 0.3, 0.2, 0.3, 0.0);
         drone.useJobEnergy(ENERGY_COST);

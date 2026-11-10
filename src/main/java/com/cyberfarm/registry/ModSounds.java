@@ -14,6 +14,9 @@ import com.cyberfarm.port.DeferredRegister;
 public class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, CyberFarm.MODID);
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_UNLATCH = register("multiblock.unlatch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_ASSEMBLE = register("multiblock.assemble");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_LOCK = register("multiblock.lock");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_FLY = register("drone.fly");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_TAKEOFF = register("drone.takeoff");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_LAND = register("drone.land");

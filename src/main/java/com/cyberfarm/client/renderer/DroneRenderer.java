@@ -45,7 +45,7 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
                 }
                 pose.pushPose();
                 model().translateToClaw(pose);
-                pose.translate(0.0F, 5.0F / 16.0F, 0.0F);
+                pose.translate(0.0F, 6.0F / 16.0F, 0.0F);
                 // Model space is upside down
                 pose.mulPose(Axis.XP.rotationDegrees(180.0F));
                 Minecraft.getInstance().getItemRenderer().renderStatic(drone, carried, ItemDisplayContext.GROUND, false, pose, buffers,
@@ -71,6 +71,7 @@ public class DroneRenderer extends MobRenderer<DroneEntity, DroneRenderState, Dr
         state.taskMask = entity.getTaskMask();
         state.startup = entity.startupTicks(partialTicks);
         state.shutdown = entity.shutdownTicks(partialTicks);
+        state.stow = entity.stow(partialTicks);
         state.carried = state.has(DroneTask.TRANSPORT) || state.has(DroneTask.BUILD) ? entity.getCarriedItem() : ItemStack.EMPTY;
     }
 }

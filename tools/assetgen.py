@@ -206,57 +206,11 @@ def laser_turret_models():
 
 
 def energy_storage_models():
-    """Resonance Core pedestal (its crystal is drawn by the renderer) and the Stabilizer Pylon."""
-    sides = {d: {"texture": "#side", "cullface": d} for d in ("east", "south", "west")}
-    write(ASSETS / "models/block/resonance_core.json", {
-        "parent": "minecraft:block/block",
-        "textures": {"particle": tex("resonance_core_side"), "front": tex("resonance_core_front"), "side": tex("resonance_core_side"),
-                     "top": tex("resonance_core_top"), "bottom": tex("machine_bottom"), "ring": tex("resonance_core_ring")},
-        "elements": [
-            {"from": [0, 0, 0], "to": [16, 6, 16], "faces": {
-                "north": {"texture": "#front", "cullface": "north"}, **sides,
-                "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
-            {"from": [3, 6, 3], "to": [13, 8, 13], "faces": {
-                "up": {"uv": [3, 3, 13, 13], "texture": "#ring"},
-                **{d: {"uv": [3, 0, 13, 2], "texture": "#ring"} for d in ("north", "east", "south", "west")}}},
-        ],
-    })
+    """Blockstates of the Resonance Core and the Stabilizer Pylon; their models come from machinemodels.py."""
     facing_blockstate("resonance_core")
 
-    def box(start, end, side="#side", side_uv=None, glow=False):
-        element = {"from": start, "to": end, "faces": {
-            **{d: {"uv": side_uv or [start[0], 16 - end[1], end[0], 16 - start[1]], "texture": side} for d in ("north", "east", "south", "west")},
-            "up": {"uv": [start[0], start[2], end[0], end[2]], "texture": "#top"},
-            "down": {"uv": [start[0], start[2], end[0], end[2]], "texture": "#top"}}}
-        if glow:
-            element["light_emission"] = 15
-        return element
-
-    # A pylon column: footing at the bottom, shaft segments, and on top the glowing emitter ring and tip
-    footing = box([2, 0, 2], [14, 3, 14])
-    crown = [box([3, 6, 3], [13, 11, 13], "#emitter", [0, 0, 16, 5], glow=True), box([5, 11, 5], [11, 14, 11]),
-             box([6, 14, 6], [10, 16, 10], glow=True)]
-    parts = {
-        "single": [footing, box([4, 3, 4], [12, 6, 12])] + crown,
-        "bottom": [footing, box([4, 3, 4], [12, 16, 12])],
-        "middle": [box([4, 0, 4], [12, 16, 12])],
-        "top": [box([4, 0, 4], [12, 6, 12])] + crown,
-    }
-    for part, elements in parts.items():
-        write(ASSETS / f"models/block/stabilizer_pylon_{part}.json", {
-            "parent": "minecraft:block/block",
-            "textures": {"particle": tex("stabilizer_pylon_side"), "side": tex("stabilizer_pylon_side"),
-                         "top": tex("stabilizer_pylon_top"), "emitter": tex("stabilizer_pylon_emitter")},
-            "elements": elements,
-        })
-    # Socket toward a cable plugged into the side (modelled facing north, turned for the others)
-    write(ASSETS / "models/block/stabilizer_pylon_socket.json", {
-        "textures": {"particle": tex("stabilizer_pylon_side"), "side": tex("stabilizer_pylon_side"), "port": tex("stabilizer_pylon_port")},
-        "elements": [{"from": [5, 5, 0], "to": [11, 11, 4], "faces": {
-            "north": {"texture": "#port", "cullface": "north"},
-            **{d: {"uv": [5, 5, 9, 11], "texture": "#side"} for d in ("east", "west")},
-            **{d: {"uv": [5, 0, 11, 4], "texture": "#side"} for d in ("up", "down")}}}],
-    })
+    parts = ("single", "bottom", "middle", "top")
+    # The socket toward a conduit plugged into the side comes from machinemodels.py, modelled facing north
     multipart = [{"when": {"part": part}, "apply": {"model": f"{NS}:block/stabilizer_pylon_{part}"}} for part in parts]
     for side, rot in FACING_ROTATION.items():
         multipart.append({"when": {side: "true"}, "apply": {"model": f"{NS}:block/stabilizer_pylon_socket", **({"y": rot} if rot else {})}})
@@ -264,8 +218,7 @@ def energy_storage_models():
     # The item (and anything else asking for the plain model) shows a whole single pylon
     write(ASSETS / "models/block/stabilizer_pylon.json", {"parent": f"{NS}:block/stabilizer_pylon_single"})
 
-    # Shell cells vanish inside the crystal once the shell is complete
-    write(ASSETS / "models/block/resonance_cell.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("resonance_cell")}})
+    # Shell cells vanish inside the crystal once the shell is complete; the cage model comes from machinemodels.py
     write(ASSETS / "models/block/resonance_cell_hidden.json", {"textures": {"particle": tex("resonance_cell")}})
     write(ASSETS / "blockstates/resonance_cell.json", {"variants": {
         "formed=false": {"model": f"{NS}:block/resonance_cell"}, "formed=true": {"model": f"{NS}:block/resonance_cell_hidden"}}})
@@ -352,7 +305,7 @@ def blocks():
     write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
         "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
 
-    lit_machine("bio_digester", "bio_digester_top")
+    # The Bio-Digester's models and blockstate come from machinemodels.py, since it assembles from Cyber Frames
 
 
     for model in ("cyber_frame", "cyber_frame_formed"):
@@ -585,10 +538,10 @@ def bauxite_ores():
             {"state": {"Name": f"{NS}:deepslate_bauxite_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:deepslate_ore_replaceables"}},
         ]}})
     write(DATA / "worldgen/placed_feature/bauxite_ore.json", {"feature": f"{NS}:bauxite_ore", "placement": [
-        {"type": "minecraft:count", "count": 10},
+        {"type": "minecraft:count", "count": 12},
         {"type": "minecraft:in_square"},
         {"type": "minecraft:height_range", "height": {"type": "minecraft:trapezoid",
-                                                      "min_inclusive": {"absolute": -16}, "max_inclusive": {"absolute": 112}}},
+                                                      "min_inclusive": {"absolute": -32}, "max_inclusive": {"absolute": 80}}},
         {"type": "minecraft:biome"},
     ]})
     write(DATA / "neoforge/biome_modifier/bauxite_ore.json", {
@@ -859,6 +812,12 @@ def sounds():
         return [{"name": f"minecraft:{n}", **attrs} for n in names]
 
     events = {
+        # A small multiblock assembling: a clank as it unlatches, mechanical knocks while its parts move, a solid lock at the end
+        "multiblock.unlatch": files("tile/piston/out", pitch=0.7, volume=0.7),
+        "multiblock.assemble": files("block/iron_trapdoor/open", 4, volume=0.5) + files("block/iron_trapdoor/close", 4, volume=0.5)
+                               + files("block/smithing_table/smithing_table", 3, volume=0.45) + files("tile/piston/in", volume=0.4)
+                               + files("block/chain/step", 4, volume=0.6),
+        "multiblock.lock": files("random/anvil_land", pitch=1.6, volume=0.3) + files("block/iron_trapdoor/close", 4, pitch=0.7, volume=0.8),
         "drone.fly": [{"name": f"{NS}:drone_fly", "volume": 0.6}],  # synthesized by soundgen.py
         "drone.takeoff": files("block/beacon/power1", pitch=1.8, volume=0.4),
         "drone.land": files("block/iron_trapdoor/close", 4, pitch=1.5, volume=0.5),

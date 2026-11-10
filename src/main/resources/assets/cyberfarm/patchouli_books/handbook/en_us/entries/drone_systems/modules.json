@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A drone with more than one module $(l)takes turns$(): after each trip back to the dock it tries the next module first, so no job is forgotten. You can see the installed modules on the drone itself: each one adds its own tool under the hull."
+      "text": "A drone with more than one module $(l)takes turns$(): after each trip back to the dock it tries the next module first, so no job is forgotten. You can see the installed modules on the drone itself: each one adds its own tool on it, and those under the hull share the space from front to back."
     },
     {
       "type": "patchouli:text",
@@ -93,15 +93,16 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:planter_module",
-      "title": "Planter Module"
+      "title": "Planter Module",
+      "text": "The drone plants seeds on $(l)empty farmland$() in its work area. It loads up to a stack of seeds $(l)from its dock$() before each trip, so it works perfectly with a Harvester: harvested seeds go to the dock and the Planter puts"
     },
     {
       "type": "patchouli:text",
-      "text": "The drone plants seeds on $(l)empty farmland$() in its work area. It loads up to a stack of seeds $(l)from its dock$() before each trip, so it works perfectly with a Harvester: harvested seeds go to the dock and the Planter puts them back in the ground. You can also fill the dock with a hopper."
+      "text": "them back in the ground. You can also fill the dock with a hopper. Its tank feeds a pump under the hull, which sprays green on each block it sows.$(br)$(li)Plants anything that grows on farmland: wheat seeds, carrots, potatoes, beetroot seeds, melon and pumpkin seeds, and modded crops."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Plants anything that grows on farmland: wheat seeds, carrots, potatoes, beetroot seeds, melon and pumpkin seeds, and modded crops.$(br)$(li)It $(l)never tills soil$(): hoe the field once and it will keep it planted.$(br)$(li)Seeds it did not use go back to the dock."
+      "text": "$(li)It $(l)never tills soil$(): hoe the field once and it will keep it planted.$(br)$(li)Seeds it did not use go back to the dock."
     },
     {
       "type": "patchouli:crafting",
@@ -170,19 +171,16 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:fertilizer_module",
-      "title": "Fertilizer Module"
+      "title": "Fertilizer Module",
+      "text": "The drone $(l)grows the crops, stems and saplings$() of its work area with fertilizer from the dock, until they are fully grown. It works with $(l)any fertilizer$(): bone meal, or fertilizers from other mods (everything in"
     },
     {
       "type": "patchouli:text",
-      "text": "The drone $(l)grows the crops, stems and saplings$() of its work area with fertilizer from the dock, until they are fully grown. It works with $(l)any fertilizer$(): bone meal, or fertilizers from other mods (everything in the forge:fertilizers tag)."
+      "text": "the forge:fertilizers tag). The white canister on its shoulder feeds a pump under the hull, which sprays each plant.$(br)$(li)Put the fertilizer in the dock: the drone takes up to 64 per trip.$(br)$(li)Grass and moss are left alone, so your lawn does not fill with flowers."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Put the fertilizer in the dock: the drone takes up to 64 per trip.$(br)$(li)Grass and moss are left alone, so your lawn does not fill with flowers.$(br)$(li)A fertilizer that does not work on a plant is not wasted: the drone skips that plant."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)Pairs well with a Harvester and a Planter on the same field."
+      "text": "$(li)A fertilizer that does not work on a plant is not wasted: the drone skips that plant.$(br)$(li)Pairs well with a Harvester and a Planter on the same field."
     },
     {
       "type": "patchouli:crafting",
@@ -259,7 +257,7 @@
       "type": "patchouli:spotlight",
       "item": "cyberfarm:breeder_module",
       "title": "Breeder Module",
-      "text": "The drone $(l)feeds the animals$() of its work area so they breed, with their food from the dock."
+      "text": "The drone $(l)feeds the animals$() of its work area so they breed, with their food from the dock. A hay rack hangs under its hull, and feed falls from it on each animal it feeds."
     },
     {
       "type": "patchouli:text",
@@ -331,10 +329,10 @@
     "cyberfarm:taxi_module": 29,
     "cyberfarm:rancher_module": 35,
     "cyberfarm:fertilizer_module": 38,
-    "cyberfarm:builder_module": 43,
-    "cyberfarm:fisher_module": 56,
-    "cyberfarm:breeder_module": 59,
-    "cyberfarm:guard_module": 63,
-    "cyberfarm:bomb_module": 69
+    "cyberfarm:builder_module": 42,
+    "cyberfarm:fisher_module": 55,
+    "cyberfarm:breeder_module": 58,
+    "cyberfarm:guard_module": 62,
+    "cyberfarm:bomb_module": 68
   }
 }

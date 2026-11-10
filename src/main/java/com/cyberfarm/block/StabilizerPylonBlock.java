@@ -45,15 +45,15 @@ public class StabilizerPylonBlock extends PortBlock implements EntityBlock {
     public static final BooleanProperty EAST = BlockStateProperties.EAST;
     public static final BooleanProperty SOUTH = BlockStateProperties.SOUTH;
     public static final BooleanProperty WEST = BlockStateProperties.WEST;
-    /** Height of the emitter's centre in the top block, where the beam starts. */
-    public static final float EMITTER_Y = 8.5F / 16;
+    /** Height of the cradle's pad in the top block, where the column's drone rests. */
+    public static final float PAD_TOP = 14.6F / 16;
 
     private static final VoxelShape FOOTING = Block.box(2, 0, 2, 14, 3, 14);
-    private static final VoxelShape EMITTER = Shapes.or(Block.box(3, 6, 3, 13, 11, 13), Block.box(5, 11, 5, 11, 14, 11), Block.box(6, 14, 6, 10, 16, 10));
-    private static final VoxelShape SINGLE = Shapes.or(FOOTING, Block.box(4, 3, 4, 12, 6, 12), EMITTER);
+    private static final VoxelShape CRADLE = Shapes.or(Block.box(5, 9, 5, 11, 12, 11), Block.box(1.5, 12, 1.5, 14.5, 16, 14.5));
+    private static final VoxelShape SINGLE = Shapes.or(FOOTING, Block.box(4, 3, 4, 12, 9, 12), CRADLE);
     private static final VoxelShape BOTTOM = Shapes.or(FOOTING, Block.box(4, 3, 4, 12, 16, 12));
     private static final VoxelShape MIDDLE = Block.box(4, 0, 4, 12, 16, 12);
-    private static final VoxelShape TOP = Shapes.or(Block.box(4, 0, 4, 12, 6, 12), EMITTER);
+    private static final VoxelShape TOP = Shapes.or(Block.box(4, 0, 4, 12, 9, 12), CRADLE);
 
     public enum Part implements StringRepresentable {
         SINGLE, BOTTOM, MIDDLE, TOP;

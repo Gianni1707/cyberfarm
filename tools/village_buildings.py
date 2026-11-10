@@ -9,10 +9,10 @@ world), the Drone Workshop 29 x 17 x 19, the Power Station 25 x 13 x 19, the Hyd
 19 x 21 x 19.
 """
 import schemgen as sg
-from schemgen import Schematic, state, stairs, slab, WHITE, LIGHT, GREY, DARK, QUARTZ, FRAME, LAMP, CYAN, GLASS, PANE, BARS
+from schemgen import Schematic, state, stairs, slab, BODY, LIGHT, GREY, DARK, TRIM, FRAME, LAMP, ACCENT, GLASS, PANE, BARS
 
-SPRUCE = state("spruce_planks")
-LOG = state("stripped_spruce_log", axis="y")
+WOOD = state("warped_planks")
+LOG = state("stripped_warped_stem", axis="y")
 STONE = state("stone_bricks")
 MOSSY = state("mossy_stone_bricks")
 # Coarse dirt for paths: a survival player cannot get dirt path as an item, so a drone could not place it
@@ -25,15 +25,13 @@ CHAIN_X = state("iron_chain", axis="x", waterlogged="false")
 CHAIN_Y = state("iron_chain", axis="y", waterlogged="false")
 LEAVES = state("oak_leaves", distance="1", persistent="true", waterlogged="false")
 AZALEA = state("flowering_azalea_leaves", distance="1", persistent="true", waterlogged="false")
-YELLOW = state("yellow_concrete")
 BLACK = state("black_concrete")
-ORANGE = state("orange_concrete")
-LIME = state("lime_concrete")
 CONDUIT = state("cyberfarm:energy_conduit")
+CYBER_FRAME = state("cyberfarm:cyber_frame", formed="false")
 GAS_PIPE = state("cyberfarm:gas_pipe")
 ANDESITE = state("polished_andesite")
 DEEP = state("polished_deepslate")
-FENCE = state("spruce_fence")
+FENCE = state("warped_fence")
 POST = state("polished_deepslate_wall", up="true", north="none", south="none", east="none", west="none", waterlogged="false")
 WALLPOST = POST
 
@@ -48,7 +46,7 @@ sg.COLOURS["coarse_dirt"] = (110, 80, 55)
 _base_shape = sg._shape
 
 
-def walls(s, x0, z0, x1, z1, y0, y1, base=LIGHT, body=WHITE, band=None, band_block=CYAN, corner=FRAME):
+def walls(s, x0, z0, x1, z1, y0, y1, base=LIGHT, body=BODY, band=None, band_block=ACCENT, corner=FRAME):
     """Walls with a light base course, white body, an optional coloured band and frame corners."""
     for y in range(y0, y1 + 1):
         s.ring(x0, z0, x1, z1, y, base if y == y0 else band_block if y == band else body)
@@ -83,7 +81,7 @@ sg._shape = _shape
 
 
 def window(s, x, y, z, facing, width=1, height=2, sill=True):
-    """A window in a wall facing `facing`: panes, a quartz sill outside and a frame lintel over it."""
+    """A window in a wall facing `facing`: panes, a trim sill outside and a frame lintel over it."""
     dx, dz = {"north": (1, 0), "south": (1, 0), "east": (0, 1), "west": (0, 1)}[facing]
     out = {"north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0)}[facing]
     for i in range(width):
@@ -92,7 +90,7 @@ def window(s, x, y, z, facing, width=1, height=2, sill=True):
         if sill:
             ox, oz = x + dx * i + out[0], z + dz * i + out[1]
             if 0 <= ox < s.size[0] and 0 <= oz < s.size[2]:
-                s.set(ox, y - 1, oz, stairs("smooth_quartz_stairs", opposite(facing), "top"))
+                s.set(ox, y - 1, oz, stairs("warped_stairs", opposite(facing), "top"))
 
 
 def flower_box(s, x, y, z, facing, width, flower):
@@ -101,7 +99,7 @@ def flower_box(s, x, y, z, facing, width, flower):
     for i in range(width):
         ox, oz = x + dx * i + out[0], z + dz * i + out[1]
         if 0 <= ox < s.size[0] and 0 <= oz < s.size[2]:
-            s.set(ox, y, oz, state("spruce_trapdoor", facing=facing, half="top", open="false", powered="false", waterlogged="false"))
+            s.set(ox, y, oz, state("warped_trapdoor", facing=facing, half="top", open="false", powered="false", waterlogged="false"))
             s.set(ox, y + 1, oz, state(flower))
 
 
@@ -109,7 +107,7 @@ def opposite(facing):
     return {"north": "south", "south": "north", "east": "west", "west": "east"}[facing]
 
 
-def gable_roof(s, x0, x1, z0, z1, y, material="polished_deepslate", ridge="smooth_quartz_slab", gable=WHITE, trim=QUARTZ):
+def gable_roof(s, x0, x1, z0, z1, y, material="polished_deepslate", ridge="warped_slab", gable=BODY, trim=TRIM):
     """A pitched roof with its ridge along x, from z0 (front) to z1, overhanging x0..x1 by the given
     bounds; the gable ends filled with wall and a round window."""
     k = 0
@@ -144,7 +142,7 @@ def bed(s, x, y, z, colour="white_bed", facing="south"):
 
 def hydroponic_farm(s):
     """Level 2, the Hydroponic Farm: a long glasshouse with a pitched glass roof on frame ribs,
-    raised planter beds edged in quartz either side of a walkway, water channels with lily pads,
+    raised planter beds edged in trim either side of a walkway, water channels with lily pads,
     an irrigation pipe under the ridge, hanging lamps, tanks and composters at the back, a
     vestibule with a door and flower boxes."""
     x0, x1, z0, z1 = 1, 13, 2, 15
@@ -177,7 +175,7 @@ def hydroponic_farm(s):
     for x in (4, 10):
         lamp_post(s, x, 1, 0)
     s.fill(7, 0, 0, 7, 0, 1, PATH)
-    # Planter beds edged in quartz, a walkway down the middle, water channels
+    # Planter beds edged in trim, a walkway down the middle, water channels
     for bx0, bx1 in ((2, 5), (9, 12)):
         s.fill(bx0, 0, 4, bx1, 0, 13, state("farmland", moisture="7"))
         for z in range(4, 14):
@@ -188,7 +186,7 @@ def hydroponic_farm(s):
         s.fill(bx0 + 1, 0, 4, bx0 + 1, 0, 13, state("water", level="0"))
         s.set(bx0 + 1, 1, 6, state("lily_pad"))
         s.set(bx0 + 1, 1, 11, state("lily_pad"))
-        s.ring(bx0 - 1, 3, bx1 + 1, 14, 0, QUARTZ)
+        s.ring(bx0 - 1, 3, bx1 + 1, 14, 0, TRIM)
     s.fill(6, 0, 3, 8, 0, 14, state("polished_andesite"))
     # Irrigation pipe under the ridge, hanging lamps
     s.fill(7, 7, z0 + 1, 7, 7, z1 - 1, state("iron_chain", axis="z", waterlogged="false"))
@@ -213,9 +211,9 @@ def residence(s):
     s.set(x0, 4, z0, FRAME)
     for x in (7,):
         s.fill(x, 1, z1, x, 8, z1, FRAME)
-    s.fill(x0 + 1, 4, z0 + 1, x1 - 1, 4, z1 - 1, SPRUCE)
+    s.fill(x0 + 1, 4, z0 + 1, x1 - 1, 4, z1 - 1, WOOD)
     # Door, windows and flower boxes
-    s.door(7, 1, z0, "spruce_door", "north")
+    s.door(7, 1, z0, "warped_door", "north")
     s.fill(6, 1, z0, 6, 3, z0, FRAME)
     s.fill(8, 1, z0, 8, 3, z0, FRAME)
     for x in (3, 10):
@@ -228,8 +226,8 @@ def residence(s):
         window(s, x1, 2, z, "east", width=2)
         window(s, x0, 6, z, "west", width=2)
         window(s, x1, 6, z, "east", width=2)
-    # Balcony over the porch: quartz deck, railing, plants, a door out
-    s.fill(5, 4, 1, 9, 4, 3, QUARTZ)
+    # Balcony over the porch: trim deck, railing, plants, a door out
+    s.fill(5, 4, 1, 9, 4, 3, TRIM)
     for x in range(5, 10):
         s.set(x, 5, 1, BARS)
     for z in (2, 3):
@@ -242,7 +240,7 @@ def residence(s):
         s.fill(x, 1, 1, x, 3, 1, FENCE)
     # Roof: pitched along x, with a dormer on the front slope and a rack of solar panels
     gable_roof(s, x0 - 1, x1 + 1, z0 - 1, z1 + 1, 9)
-    s.fill(6, 10, z0 + 1, 8, 11, z0 + 1, WHITE)
+    s.fill(6, 10, z0 + 1, 8, 11, z0 + 1, BODY)
     s.set(7, 10, z0 + 1, PANE)
     s.fill(6, 12, z0, 8, 12, z0 + 1, slab("polished_deepslate_slab"))
     for x in range(9, 12):
@@ -251,8 +249,8 @@ def residence(s):
     s.fill(4, 10, 11, 4, 13, 11, STONE)
     # Front garden: path, flowers, a bench, a lamp, a hedge
     s.fill(7, 0, 0, 7, 0, 3, PATH)
-    s.set(3, 1, 2, stairs("spruce_stairs", "south"))
-    s.set(4, 1, 2, stairs("spruce_stairs", "south"))
+    s.set(3, 1, 2, stairs("warped_stairs", "south"))
+    s.set(4, 1, 2, stairs("warped_stairs", "south"))
     lamp_post(s, 11, 1, 1)
     for x in range(0, 15):
         if x not in (6, 7, 8):
@@ -263,16 +261,16 @@ def residence(s):
     s.set(x1 - 1, 1, z1 - 1, state("smoker", facing="north", lit="false"))
     s.set(x1 - 2, 1, z1 - 1, state("barrel", facing="up", open="false"))
     s.set(x1 - 3, 1, z1 - 1, state("crafting_table"))
-    s.fill(x0 + 2, 1, 7, x0 + 4, 1, 9, state("light_blue_carpet"))
-    s.set(x0 + 1, 1, 8, stairs("spruce_stairs", "east"))
-    s.set(x0 + 1, 1, 9, stairs("spruce_stairs", "east"))
+    s.fill(x0 + 2, 1, 7, x0 + 4, 1, 9, state("cyan_carpet"))
+    s.set(x0 + 1, 1, 8, stairs("warped_stairs", "east"))
+    s.set(x0 + 1, 1, 9, stairs("warped_stairs", "east"))
     for y in range(1, 5):
         s.set(x0 + 1, y, z1 - 1, state("ladder", facing="east", waterlogged="false"))
     s.remove(x0 + 1, 4, z1 - 1)
     s.set(x0 + 1, 4, z1 - 1, state("ladder", facing="east", waterlogged="false"))
     s.set(7, 3, 8, state("lantern", hanging="true", waterlogged="false"))
     # Upstairs: three bedrooms
-    bed(s, 4, 5, 9, "light_blue_bed", "south")
+    bed(s, 4, 5, 9, "cyan_bed", "south")
     bed(s, 7, 5, 9, "cyan_bed", "south")
     bed(s, 10, 5, 9, "white_bed", "south")
     for x in (5, 8, 11):
@@ -283,9 +281,9 @@ def residence(s):
 def market_hall(s):
     """Level 4, the Market Hall: an open hall on frame columns under a striped canopy, stalls with
     their own awnings and goods (hay, melons, pumpkins, fish barrels, chests), the village bell on a
-    quartz plinth over a little basin, lamp posts, benches and planters."""
+    trim plinth over a little basin, lamp posts, benches and planters."""
     x0, x1, z0, z1 = 1, 17, 1, 13
-    s.fill(x0, 0, z0, x1, 0, z1, QUARTZ)
+    s.fill(x0, 0, z0, x1, 0, z1, TRIM)
     s.ring(x0, z0, x1, z1, 0, LIGHT)
     for x in range(x0 + 2, x1 - 1, 2):
         for z in range(z0 + 2, z1 - 1, 2):
@@ -295,7 +293,7 @@ def market_hall(s):
         for z in (z0, 7, z1):
             if not (z == 7 and x in (6, 12)):
                 s.fill(x, 1, z, x, 4, z, FRAME)
-    # Striped canopy: a low pitched roof of white and cyan wool, a quartz rim
+    # Striped canopy: a low pitched roof of white and cyan wool, a trim rim
     for k in range(0, 4):
         y = 5 + k
         for x in range(x0 - 1 + k, x1 + 2 - k):
@@ -306,13 +304,13 @@ def market_hall(s):
             for x in range(x0 + 3, x1 - 2):
                 for z in range(z0 - 1, z1 + 2):
                     s.set(x, y, z, state("cyan_wool" if z % 2 else "white_wool"))
-    s.ring(x0 - 1, z0 - 1, x1 + 1, z1 + 1, 5, slab("smooth_quartz_slab", "top"))
+    s.ring(x0 - 1, z0 - 1, x1 + 1, z1 + 1, 5, slab("warped_slab", "top"))
     # Stalls along the sides: counters, awnings, goods
     stalls = [(3, 3, "hay_block"), (3, 11, "melon"), (15, 3, "pumpkin"), (15, 11, "barrel")]
     for sx, sz, goods in stalls:
         for dx in (-1, 0, 1):
-            s.set(sx + dx, 1, sz, slab("spruce_slab", "top"))
-            s.set(sx + dx, 3, sz + (-1 if sz < 7 else 1), state("orange_wool" if dx == 0 else "white_wool"))
+            s.set(sx + dx, 1, sz, slab("warped_slab", "top"))
+            s.set(sx + dx, 3, sz + (-1 if sz < 7 else 1), state("cyan_wool" if dx == 0 else "white_wool"))
         good = state(goods, axis="y") if goods == "hay_block" else state("barrel", facing="up", open="false") if goods == "barrel" else \
             state("carved_pumpkin", facing="north") if goods == "pumpkin" else state(goods)
         s.set(sx, 2, sz, good)
@@ -322,13 +320,13 @@ def market_hall(s):
     s.fill(8, 0, 6, 10, 0, 8, state("water", level="0"))
     s.set(8, 1, 6, state("lily_pad"))
     s.ring(7, 5, 11, 9, 0, STONE)
-    s.set(9, 0, 7, QUARTZ)
-    s.set(9, 1, 7, state("quartz_pillar", axis="y"))
+    s.set(9, 0, 7, TRIM)
+    s.set(9, 1, 7, state("warped_stem", axis="y"))
     s.set(9, 2, 7, state("bell", attachment="floor", facing="north", powered="false"))
     # Benches and planters, lamp posts at the entrances
     for z in (4, 10):
-        s.set(7, 1, z, stairs("spruce_stairs", "east"))
-        s.set(11, 1, z, stairs("spruce_stairs", "west"))
+        s.set(7, 1, z, stairs("warped_stairs", "east"))
+        s.set(11, 1, z, stairs("warped_stairs", "west"))
     for x, z in ((6, 4), (12, 10)):
         s.set(x, 1, z, AZALEA)
     for x, z in ((0, 0), (18, 0), (0, 14), (18, 14)):
@@ -353,16 +351,16 @@ def hangar(s):
             s.remove(x, y, z0)
     for y in range(1, 5):
         for x in (WX + 4, WX + 12):
-            s.set(x, y, z0, YELLOW if y % 2 else BLACK)
+            s.set(x, y, z0, ACCENT if y % 2 else BLACK)
     s.fill(WX + 4, 5, z0, WX + 12, 5, z0, FRAME)
     for x in range(WX + 5, WX + 12):
-        s.set(x, 0, z0, YELLOW if x % 2 else BLACK)
+        s.set(x, 0, z0, ACCENT if x % 2 else BLACK)
     # A side door on the east wall, where the wing joins later
     s.door(x1, 1, 11, "iron_door", "east")
     # Landing pad out front
     s.fill(WX + 4, 0, 0, WX + 12, 0, 4, LIGHT)
-    s.ring(WX + 5, 1, WX + 11, 4, 0, CYAN)
-    s.fill(WX + 6, 0, 2, WX + 10, 0, 3, WHITE)
+    s.ring(WX + 5, 1, WX + 11, 4, 0, ACCENT)
+    s.fill(WX + 6, 0, 2, WX + 10, 0, 3, BODY)
     for x in (WX + 4, WX + 12):
         s.set(x, 0, 0, LAMP)
     for x in (WX + 3, WX + 13):
@@ -372,15 +370,15 @@ def hangar(s):
     for x in range(x0, x1 + 1):
         for i, y, kind in profile:
             for z in (z0 - 1 + i, z1 + 1 - i):
-                s.set(x, y, z, LIGHT if kind == "block" else slab("smooth_quartz_slab"))
+                s.set(x, y, z, LIGHT if kind == "block" else slab("warped_slab"))
         s.fill(x, 8, z0 + 4, x, 8, z1 - 4, GLASS if (x - WX) % 4 else FRAME)
     # The ends of the barrel closed with wall under the curve
     for x in (x0, x1):
-        s.fill(x, 6, z0, x, 6, z1, WHITE)
-        s.fill(x, 7, z0 + 2, x, 7, z1 - 2, WHITE)
+        s.fill(x, 6, z0, x, 6, z1, BODY)
+        s.fill(x, 7, z0 + 2, x, 7, z1 - 2, BODY)
     # Inside: bays, crane, workbench wall, office
-    s.ring(WX + 3, 7, WX + 7, 11, 0, CYAN)
-    s.ring(WX + 9, 7, WX + 13, 11, 0, YELLOW)
+    s.ring(WX + 3, 7, WX + 7, 11, 0, ACCENT)
+    s.ring(WX + 9, 7, WX + 13, 11, 0, ACCENT)
     s.set(WX + 5, 1, 9, state("cyberfarm:drone_assembler", facing="north", lit="false"))
     s.set(WX + 11, 1, 9, state("cyberfarm:drone_dock", facing="north"))
     # Power comes in on the west side and runs under both bays to the east wall
@@ -390,14 +388,14 @@ def hangar(s):
     for dx, block in ((2, state("anvil", facing="north")), (3, state("grindstone", face="floor", facing="north")),
                       (4, state("smithing_table")), (6, state("crafting_table")), (7, state("barrel", facing="up", open="false"))):
         s.set(WX + dx, 1, z1 - 1, block)
-    s.fill(WX + 2, 3, z1 - 1, WX + 7, 3, z1 - 1, slab("smooth_quartz_slab", "top"))
+    s.fill(WX + 2, 3, z1 - 1, WX + 7, 3, z1 - 1, slab("warped_slab", "top"))
     for dx in (2, 4, 6):
         s.set(WX + dx, 4, z1 - 1, state("barrel", facing="north", open="false"))
     s.fill(WX + 12, 1, 10, WX + 14, 3, 10, PANE)
     s.remove(WX + 13, 1, 10)
     s.remove(WX + 13, 2, 10)
     s.set(WX + 14, 1, 12, state("lectern", facing="west", has_book="false", powered="false"))
-    s.set(WX + 12, 1, 12, slab("smooth_quartz_slab", "top"))
+    s.set(WX + 12, 1, 12, slab("warped_slab", "top"))
     s.set(WX + 12, 2, 12, state("potted_fern"))
     window(s, x0, 2, 11, "west", width=2, sill=False)
     s.set(x0, 3, 7, state("iron_trapdoor", facing="west", half="top", open="true", powered="false", waterlogged="false"))
@@ -409,7 +407,7 @@ def hangar(s):
 
 def wing(s):
     """Tier II: a charging and storage wing on the east side with a roll-up door, charging posts,
-    racks of crates, a flat roof with a railing; a second, yellow pad in front of it; a crane arm on
+    racks of crates, a flat roof with a railing; a second, teal pad in front of it; a crane arm on
     the hangar roof."""
     x0, x1, z0, z1 = WX + 16, WX + 23, 5, 13
     s.fill(x0, 0, z0, x1, 0, z1, state("polished_andesite"))
@@ -439,11 +437,11 @@ def wing(s):
     s.ring(x0, z0, x1, z1, 6, BARS)
     for x, z in ((x0 + 2, z0 + 2), (x1 - 2, z1 - 2)):
         s.set(x, 5, z, LAMP)
-    # Second pad, yellow, in front of the wing
+    # Second pad, teal, in front of the wing
     s.fill(WX + 16, 0, 0, WX + 23, 0, 4, LIGHT)
-    s.ring(WX + 17, 1, WX + 22, 4, 0, YELLOW)
-    s.set(WX + 19, 0, 2, WHITE)
-    s.set(WX + 20, 0, 2, WHITE)
+    s.ring(WX + 17, 1, WX + 22, 4, 0, ACCENT)
+    s.set(WX + 19, 0, 2, BODY)
+    s.set(WX + 20, 0, 2, BODY)
     lamp_post(s, WX + 23, 1, 0)
     # Crane arm on the hangar roof: a frame mast and boom with a hanging hook
     s.fill(WX + 3, 9, 9, WX + 3, 11, 9, FRAME)
@@ -454,19 +452,19 @@ def wing(s):
 
 def repair_hall(s):
     """Tier III: a mech repair hall on the west side, tall and wide enough for the mech to walk in
-    through an open portal: a Mech Repair Bay in the floor under a gantry crane, wired to the line,
+    through an open portal: a repair plinth in the floor under a gantry crane, wired to the line,
     a workbench and spare parts; solar arrays on the wing roof; fuel tanks at the back; the pads
     joined by a lit taxiway."""
     rx0, rx1, rz0, rz1 = 0, 5, 6, 13
     s.fill(rx0, 0, rz0, rx1, 0, rz1, state("polished_andesite"))
-    walls(s, rx0, rz0, rx1, rz1, 1, 6, band=6, band_block=CYAN)
+    walls(s, rx0, rz0, rx1, rz1, 1, 6, band=6, band_block=ACCENT)
     # Open portal, two wide and five high, for the mech; hazard stripes on its jambs
     for x in (2, 3):
         for y in range(1, 6):
             s.remove(x, y, rz0)
     for y in range(1, 6):
-        s.set(1, y, rz0, YELLOW if y % 2 else BLACK)
-        s.set(4, y, rz0, YELLOW if y % 2 else BLACK)
+        s.set(1, y, rz0, ACCENT if y % 2 else BLACK)
+        s.set(4, y, rz0, ACCENT if y % 2 else BLACK)
     window(s, rx0, 3, 10, "west", width=2)
     # Lean-to roof falling to the west, a skylight strip
     for x in range(rx0, rx1 + 1):
@@ -476,16 +474,16 @@ def repair_hall(s):
         # The front and back walls rise under the slope
         for z in (rz0, rz1):
             if y > 7:
-                s.fill(x, 7, z, x, y - 1, z, WHITE)
+                s.fill(x, 7, z, x, y - 1, z, BODY)
     # The high east side closed up to the roof
-    s.fill(rx1, 7, rz0, rx1, 8, rz1, WHITE)
+    s.fill(rx1, 7, rz0, rx1, 8, rz1, BODY)
     for z in range(rz0, rz1 + 1, 2):
         s.set(rx1, 9, z, GLASS)
     # The repair bay under a gantry crane
-    # shortcut: polished andesite holds the Mech Repair Bay's place until that block exists; then it goes here
+    # A plain plinth: the Mech Hangar does the repairing, so this needs no machine of its own
     s.set(2, 0, 10, ANDESITE)
     for x, z in ((1, 9), (3, 9), (1, 11), (3, 11), (2, 9), (2, 11), (1, 10), (3, 10)):
-        s.set(x, 0, z, YELLOW)
+        s.set(x, 0, z, ACCENT)
     for z in (8, 12):
         s.fill(1, 1, z, 1, 6, z, FRAME)
         s.fill(4, 1, z, 4, 6, z, FRAME)
@@ -510,9 +508,9 @@ def repair_hall(s):
         for y in range(1, 5):
             for dx in (0, 1):
                 for dz in (0, 1):
-                    s.set(tx + dx, y, 15 + dz, state("cyan_concrete") if y == 3 else state("quartz_pillar", axis="y"))
-        s.set(tx, 5, 15, slab("smooth_quartz_slab"))
-        s.set(tx + 1, 5, 16, slab("smooth_quartz_slab"))
+                    s.set(tx + dx, y, 15 + dz, state("cyan_concrete") if y == 3 else state("warped_stem", axis="y"))
+        s.set(tx, 5, 15, slab("warped_slab"))
+        s.set(tx + 1, 5, 16, slab("warped_slab"))
     s.fill(WX + 4, 3, 14, WX + 4, 3, 14, CHAIN_X)
     s.fill(WX + 5, 3, 14, WX + 7, 3, 14, CHAIN_X)
     # A lit taxiway between the pads and the tower door
@@ -541,7 +539,7 @@ def generator_hall(s):
     whole width of the hall, so the later wings plug into it, and out to the transformer."""
     x0, x1, z0, z1 = 8, 16, 6, 13
     s.fill(x0, 0, z0, x1, 0, z1, state("smooth_stone"))
-    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=ORANGE)
+    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=ACCENT)
     s.door(12, 1, z0, "iron_door", "north")
     s.fill(11, 1, z0, 11, 3, z0, FRAME)
     s.fill(13, 1, z0, 13, 3, z0, FRAME)
@@ -552,7 +550,7 @@ def generator_hall(s):
     gable_roof(s, x0, x1, z0 - 1, z1 + 1, 5)
     # The generators, fuel hoppers and chests
     for gx in (10, 14):
-        pad(s, gx - 1, 8, gx + 1, 10, CYAN)
+        pad(s, gx - 1, 8, gx + 1, 10, ACCENT)
         s.set(gx, 1, 9, machine("combustion_generator"))
         s.set(gx, 2, 9, state("hopper", facing="down", enabled="true"))
         s.set(gx, 3, 9, state("chest", facing="north", type="single", waterlogged="false"))
@@ -585,15 +583,18 @@ def gas_wing(s):
     the energy line; a vent and a second chimney."""
     x0, x1, z0, z1 = 0, 7, 6, 13
     s.fill(x0, 0, z0, x1, 0, z1, state("smooth_stone"))
-    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=YELLOW)
+    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=ACCENT)
     window(s, x0, 2, 11, "west", width=2)
     s.fill(x0, 5, z0, x1, 5, z1, LIGHT)
     s.fill(x0 + 1, 5, z0 + 1, x1 - 1, 5, z1 - 1, GREY)
-    s.ring(x0, z0, x1, z1, 6, slab("smooth_quartz_slab"))
+    s.ring(x0, z0, x1, z1, 6, slab("warped_slab"))
     s.set(2, 6, 8, state("iron_trapdoor", facing="north", half="bottom", open="false", powered="false", waterlogged="false"))
     for tx in (2, 5):
-        pad(s, tx - 1, 9, tx + 1, 11, YELLOW)
+        pad(s, tx - 1, 9, tx + 1, 11, ACCENT)
         s.set(tx, 1, 10, machine("gas_turbine"))
+        # A Gas Turbine assembles from a Cyber Frame in front and one behind
+        s.set(tx, 1, 9, CYBER_FRAME)
+        s.set(tx, 1, 11, CYBER_FRAME)
     chimney(s, 5, 12, 6, 11)
     # The energy line on from the hall, under the turbines
     s.fill(1, 0, 9, 7, 0, 9, CONDUIT)
@@ -605,15 +606,15 @@ def gas_wing(s):
             for dx in range(3):
                 for dz in range(3):
                     if (dx, dz) != (1, 1):
-                        s.set(tx + dx, y, 1 + dz, state("cyan_concrete") if y == 2 else WHITE)
+                        s.set(tx + dx, y, 1 + dz, state("cyan_concrete") if y == 2 else BODY)
         s.set(tx + 1, 1, 2, state("cyberfarm:gas_tank", facing="north"))
-        s.set(tx + 1, 4, 2, QUARTZ)
+        s.set(tx + 1, 4, 2, TRIM)
         for dx, dz in ((1, 0), (0, 1), (2, 1), (1, 2)):
-            s.set(tx + dx, 4, 1 + dz, slab("smooth_quartz_slab"))
+            s.set(tx + dx, 4, 1 + dz, slab("warped_slab"))
         s.fill(tx + 1, 1, 3, tx + 1, 1, 8, GAS_PIPE)
-    s.set(1, 1, 9, GAS_PIPE)
-    s.set(2, 1, 9, GAS_PIPE)
-    s.set(5, 1, 9, GAS_PIPE)
+    # Into each turbine's west side, as its front and back hold frames
+    s.fill(1, 1, 9, 1, 1, 10, GAS_PIPE)
+    s.fill(4, 1, 8, 4, 1, 10, GAS_PIPE)
     for x in range(0, 8):
         for z in range(0, 6):
             if (x, 0, z) not in s.blocks:
@@ -626,15 +627,15 @@ def steam_hall(s):
     line; clerestory windows and a cooling tower behind."""
     x0, x1, z0, z1 = 17, 24, 6, 13
     s.fill(x0, 0, z0, x1, 0, z1, state("smooth_stone"))
-    walls(s, x0, z0, x1, z1, 1, 6, base=STONE, band=6, band_block=ORANGE)
+    walls(s, x0, z0, x1, z1, 1, 6, base=STONE, band=6, band_block=ACCENT)
     for x in (19, 22):
         window(s, x, 4, z0, "north", width=1)
     window(s, x1, 2, 9, "east", width=2)
     gable_roof(s, x0, x1, z0 - 1, z1 + 1, 7)
     s.set(20, 1, 7, state("cyberfarm:steam_engine", facing="north"))
     for z in range(8, 12):
-        s.set(20, 1, z, state("cyberfarm:cyber_frame", formed="false"))
-    s.ring(19, 7, 21, 12, 0, CYAN)
+        s.set(20, 1, z, CYBER_FRAME)
+    s.ring(19, 7, 21, 12, 0, ACCENT)
     s.set(23, 1, 7, state("cyberfarm:gas_tank", facing="west"))
     s.fill(21, 1, 7, 22, 1, 7, GAS_PIPE)
     s.fill(20, 0, 7, 20, 0, 9, CONDUIT)
@@ -661,7 +662,7 @@ class Shifted(Schematic):
         self.base.remove(x + self.dx, y, z + self.dz)
 
 
-def dock(s, x, y, z, facing="north", pad=CYAN):
+def dock(s, x, y, z, facing="north", pad=ACCENT):
     s.ring(x - 1, z - 1, x + 1, z + 1, y - 1, pad)
     s.set(x, y, z, state("cyberfarm:drone_dock", facing=facing))
 
@@ -670,7 +671,7 @@ def flat_roof(s, x0, z0, x1, z1, y, rim=True):
     s.fill(x0, y, z0, x1, y, z1, LIGHT)
     s.fill(x0 + 1, y, z0 + 1, x1 - 1, y, z1 - 1, GREY)
     if rim:
-        s.ring(x0, z0, x1, z1, y + 1, slab("smooth_quartz_slab"))
+        s.ring(x0, z0, x1, z1, y + 1, slab("warped_slab"))
 
 
 def hip_roof(s, x0, z0, x1, z1, y, material="polished_deepslate"):
@@ -697,12 +698,12 @@ def supply_depot(s):
     behind it the Builder Swarm Dock, whose Mini Drones raise the next buildings."""
     x0, x1, z0, z1 = 14, 23, 3, 10
     s.fill(x0, 0, z0, x1, 0, z1, ANDESITE)
-    s.fill(x0, 0, z0, x1, 0, z0, YELLOW)
+    s.fill(x0, 0, z0, x1, 0, z0, ACCENT)
     for x in range(10, 15):
         s.set(x, 0, 1, GRAVEL)
     # Back and east walls, the front and west open on frame posts
     for y in range(1, 5):
-        block = CYAN if y == 4 else WHITE
+        block = ACCENT if y == 4 else BODY
         s.fill(x0, y, z1, x1, y, z1, block)
         s.fill(x1, y, z0, x1, y, z1, block)
     for x, z in ((x0, z0), (18, z0), (x1, z0), (x0, z1), (x1, z1), (x0, 6)):
@@ -729,8 +730,8 @@ def supply_depot(s):
     lamp_post(s, 23, 1, 1)
     # The Builder Swarm Dock on its pad behind the depot, wired from the depot line
     s.fill(12, 0, 14, 16, 0, 18, LIGHT)
-    s.ring(12, 14, 16, 18, 0, YELLOW)
-    s.ring(13, 15, 15, 17, 0, CYAN)
+    s.ring(12, 14, 16, 18, 0, ACCENT)
+    s.ring(13, 15, 15, 17, 0, ACCENT)
     s.set(14, 1, 16, state("cyberfarm:swarm_dock", facing="north"))
     s.fill(14, 0, 10, 14, 0, 13, CONDUIT)
     for x, z in ((12, 14), (16, 14), (12, 18), (16, 18)):
@@ -753,7 +754,7 @@ def command_post(s):
     s.set(6, 1, 16, state("cyberfarm:hologram_table"))
     s.ring(5, 15, 7, 17, 1, state("cyan_carpet"))
     for x in (4, 5, 7, 8):
-        s.set(x, 1, z1 - 1, slab("smooth_quartz_slab", "top"))
+        s.set(x, 1, z1 - 1, slab("warped_slab", "top"))
     s.set(4, 2, z1 - 1, state("potted_fern"))
     s.set(8, 2, z1 - 1, state("lantern", hanging="false", waterlogged="false"))
     s.set(x1 - 1, 1, z0 + 1, state("chest", facing="west", type="single", waterlogged="false"))
@@ -761,11 +762,11 @@ def command_post(s):
     # A tall antenna with a dish
     s.fill(9, 6, 18, 9, 12, 18, POST)
     s.set(9, 13, 18, state("end_rod", facing="up"))
-    s.set(8, 9, 18, QUARTZ)
-    s.set(8, 10, 18, slab("smooth_quartz_slab"))
+    s.set(8, 9, 18, TRIM)
+    s.set(8, 10, 18, slab("warped_slab"))
     s.set(9, 11, 17, state("redstone_lamp", lit="false"))
     # The bell by the door, a path round to the depot
-    s.set(1, 1, 18, state("quartz_pillar", axis="y"))
+    s.set(1, 1, 18, state("warped_stem", axis="y"))
     s.set(1, 2, 18, state("bell", attachment="floor", facing="west", powered="false"))
     for z in range(13, 20):
         s.set(1, 0, z, PATH)
@@ -787,7 +788,7 @@ def biogas_shed(s):
     plot, to the Power Station's turbines."""
     x0, x1, z0, z1 = 27, 33, 5, 12
     s.fill(x0, 0, z0, x1, 0, z1, state("smooth_stone"))
-    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=LIME)
+    walls(s, x0, z0, x1, z1, 1, 4, base=STONE, band=4, band_block=ACCENT)
     s.door(x0, 1, 8, "iron_door", "west")
     window(s, 29, 2, z1, "south", width=3)
     window(s, 29, 2, z0, "north", width=3)
@@ -796,11 +797,14 @@ def biogas_shed(s):
         s.set(x, 0, 1, GRAVEL)
     for z in range(1, 9):
         s.set(26, 0, z, GRAVEL)
-    # The digester line: chest, hopper, digester, pipe, tank, pipe out through the wall
-    s.ring(29, 8, 31, 10, 0, LIME)
+    # The digester line: chest, hopper, digester, pipe, tank, pipe out through the wall.
+    # The digester assembles from a Cyber Frame above and one on its left, so the hopper feeds it from the front
+    s.ring(29, 8, 31, 10, 0, ACCENT)
     s.set(30, 1, 9, state("cyberfarm:bio_digester", facing="west", lit="false"))
-    s.set(30, 2, 9, state("hopper", facing="down", enabled="true"))
-    s.set(30, 3, 9, state("chest", facing="west", type="single", waterlogged="false"))
+    s.set(30, 2, 9, CYBER_FRAME)
+    s.set(30, 1, 8, CYBER_FRAME)
+    s.set(29, 1, 9, state("hopper", facing="east", enabled="true"))
+    s.set(29, 2, 9, state("chest", facing="west", type="single", waterlogged="false"))
     s.set(31, 1, 9, GAS_PIPE)
     s.set(32, 1, 9, state("cyberfarm:gas_tank", facing="west"))
     s.set(32, 1, 10, GAS_PIPE)
@@ -824,8 +828,8 @@ def ranch(s):
             if x in (x0, x1) or z in (z0, z1):
                 s.set(x, 1, z, FENCE)
     s.fill(5, 1, z0 + 1, 5, 1, 9, FENCE)
-    s.door(3, 1, z0, "spruce_door", "north")
-    s.door(7, 1, z0, "spruce_door", "north")
+    s.door(3, 1, z0, "warped_door", "north")
+    s.door(7, 1, z0, "warped_door", "north")
     s.fill(3, 0, 0, 3, 0, 2, GRAVEL)
     s.fill(7, 0, 0, 7, 0, 2, GRAVEL)
     s.fill(4, 0, 1, 6, 0, 1, GRAVEL)
@@ -834,8 +838,8 @@ def ranch(s):
     # The half barn over the back of the pens
     for x in (x0, x1):
         for z in (10, z1):
-            s.fill(x, 1, z, x, 3, z, state("spruce_log", axis="y"))
-    gable_roof(s, x0, x1, 9, z1 + 1, 4, material="spruce", ridge="spruce_slab", gable=SPRUCE, trim=SPRUCE)
+            s.fill(x, 1, z, x, 3, z, state("warped_stem", axis="y"))
+    gable_roof(s, x0, x1, 9, z1 + 1, 4, material="warped", ridge="warped_slab", gable=WOOD, trim=WOOD)
     # Hay, a trough, the dock and its chest
     for x, y in ((1, 1), (2, 1), (1, 2)):
         s.set(x, y, 14, state("hay_block", axis="y"))
@@ -858,7 +862,7 @@ def lodge(s):
     x0, x1, z0, z1 = 27, 34, 4, 12
     s.fill(x0, 0, z0, x1, 0, z1, STONE)
     walls(s, x0, z0, x1, z1, 1, 4, band=4, band_block=GREY)
-    s.door(31, 1, z0, "spruce_door", "north")
+    s.door(31, 1, z0, "warped_door", "north")
     s.fill(30, 1, z0, 30, 3, z0, FRAME)
     s.fill(32, 1, z0, 32, 3, z0, FRAME)
     flower_box(s, 28, 1, z0, "north", 1, "potted_red_tulip")
@@ -871,14 +875,14 @@ def lodge(s):
     s.fill(31, 0, 0, 31, 0, 3, PATH)
     lamp_post(s, 33, 1, 2)
     # Beds at the back, the job sites at the front
-    bed(s, 28, 1, 10, "light_blue_bed", "south")
+    bed(s, 28, 1, 10, "cyan_bed", "south")
     bed(s, 30, 1, 10, "cyan_bed", "south")
     s.set(33, 1, 6, state("lectern", facing="west", has_book="false", powered="false"))
     s.set(33, 1, 8, state("cartography_table"))
     s.set(33, 1, 11, state("bookshelf"))
     s.set(33, 2, 11, state("bookshelf"))
     s.set(32, 1, 11, state("chest", facing="north", type="single", waterlogged="false"))
-    s.fill(28, 1, 6, 29, 1, 7, state("light_blue_carpet"))
+    s.fill(28, 1, 6, 29, 1, 7, state("cyan_carpet"))
     s.set(31, 4, 8, state("lantern", hanging="true", waterlogged="false"))
 
 
@@ -887,7 +891,7 @@ def clinic(s):
     cleric), a cauldron (a leatherworker) and a stonecutter (a mason); a roof garden on top."""
     x0, x1, z0, z1 = 1, 9, 4, 12
     s.fill(x0, 0, z0, x1, 0, z1, STONE)
-    walls(s, x0, z0, x1, z1, 1, 4, band=4, band_block=LIME)
+    walls(s, x0, z0, x1, z1, 1, 4, band=4, band_block=ACCENT)
     s.door(5, 1, z0, "iron_door", "north")
     s.fill(4, 1, z0, 4, 3, z0, FRAME)
     s.fill(6, 1, z0, 6, 3, z0, FRAME)
@@ -895,26 +899,26 @@ def clinic(s):
     window(s, 7, 2, z0, "north", width=2)
     window(s, x0, 2, 7, "west", width=3)
     s.fill(5, 0, 0, 5, 0, 3, PATH)
-    # Roof garden: flat roof, quartz railing, planters and a bench
+    # Roof garden: flat roof, trim railing, planters and a bench
     flat_roof(s, x0, z0, x1, z1, 5, rim=False)
     s.ring(x0, z0, x1, z1, 6, BARS)
     for x in (2, 3, 7, 8):
         s.set(x, 6, 11, AZALEA)
     for x in (3, 7):
         s.set(x, 6, 6, state("potted_red_tulip"))
-    s.set(5, 6, 10, stairs("spruce_stairs", "north"))
+    s.set(5, 6, 10, stairs("warped_stairs", "north"))
     # The clinic corner, the canteen table, the beds
     s.set(2, 1, 11, state("brewing_stand", has_bottle_0="false", has_bottle_1="false", has_bottle_2="false"))
     s.set(3, 1, 11, state("water_cauldron", level="3"))
     s.set(2, 1, 9, state("stonecutter", facing="east"))
-    s.fill(4, 1, 7, 6, 1, 7, slab("spruce_slab", "top"))
+    s.fill(4, 1, 7, 6, 1, 7, slab("warped_slab", "top"))
     for x in (4, 6):
-        s.set(x, 1, 6, stairs("spruce_stairs", "south"))
-        s.set(x, 1, 8, stairs("spruce_stairs", "north"))
+        s.set(x, 1, 6, stairs("warped_stairs", "south"))
+        s.set(x, 1, 8, stairs("warped_stairs", "north"))
     bed(s, 7, 1, 10, "white_bed", "south")
     bed(s, 8, 1, 10, "white_bed", "south")
     s.set(5, 4, 8, state("lantern", hanging="true", waterlogged="false"))
-    s.set(1, 1, 2, stairs("spruce_stairs", "south"))
+    s.set(1, 1, 2, stairs("warped_stairs", "south"))
     lamp_post(s, 8, 1, 2)
 
 
@@ -937,15 +941,15 @@ def warehouse(s):
     drone that moves the stock between the depot, the farm and the market."""
     x0, x1, z0, z1 = 12, 26, 16, 24
     s.fill(x0, 0, z0, x1, 0, z1, ANDESITE)
-    walls(s, x0, z0, x1, z1, 1, 5, band=5, band_block=ORANGE)
+    walls(s, x0, z0, x1, z1, 1, 5, band=5, band_block=ACCENT)
     for x in range(18, 21):
         for y in range(1, 4):
             s.remove(x, y, z0)
     for y in range(1, 4):
         for x in (17, 21):
-            s.set(x, y, z0, YELLOW if y % 2 else state("black_concrete"))
+            s.set(x, y, z0, ACCENT if y % 2 else state("black_concrete"))
     s.fill(17, 4, z0, 21, 4, z0, FRAME)
-    s.fill(18, 0, z0, 20, 0, z0, YELLOW)
+    s.fill(18, 0, z0, 20, 0, z0, ACCENT)
     for x in (15, 23):
         window(s, x, 3, z1, "south", width=2, height=1)
     for z in (19, 22):
@@ -970,28 +974,28 @@ def taxi_port(s):
     """Tier III: the taxi port west of the hall, a pad with a Drone Dock for a Taxi drone, a
     shelter with a bench, a windsock and pad lights."""
     s.fill(1, 0, 3, 7, 0, 9, LIGHT)
-    s.ring(1, 3, 7, 9, 0, YELLOW)
-    s.ring(2, 4, 6, 8, 0, CYAN)
-    s.fill(3, 0, 6, 5, 0, 6, WHITE)
-    s.fill(4, 0, 5, 4, 0, 7, WHITE)
+    s.ring(1, 3, 7, 9, 0, ACCENT)
+    s.ring(2, 4, 6, 8, 0, ACCENT)
+    s.fill(3, 0, 6, 5, 0, 6, BODY)
+    s.fill(4, 0, 5, 4, 0, 7, BODY)
     s.set(4, 1, 6, state("cyberfarm:drone_dock", facing="east"))
     s.fill(4, 0, 7, 4, 0, 10, CONDUIT)
     for x, z in ((1, 3), (7, 3), (1, 9), (7, 9)):
         s.set(x, 1, z, state("end_rod", facing="up"))
     # Windsock on a pole
     s.fill(0, 1, 1, 0, 5, 1, POST)
-    s.set(1, 5, 1, ORANGE)
+    s.set(1, 5, 1, ACCENT)
     s.set(2, 5, 1, state("white_wool"))
-    s.set(3, 5, 1, ORANGE)
-    # Shelter: a quartz canopy on posts over a bench, a lamp
+    s.set(3, 5, 1, ACCENT)
+    # Shelter: a trim canopy on posts over a bench, a lamp
     for x in (1, 6):
         s.fill(x, 1, 11, x, 3, 11, FRAME)
         s.fill(x, 1, 13, x, 3, 13, FRAME)
-    s.fill(1, 4, 11, 6, 4, 13, slab("smooth_quartz_slab"))
-    s.ring(1, 11, 6, 13, 4, CYAN)
+    s.fill(1, 4, 11, 6, 4, 13, slab("warped_slab"))
+    s.ring(1, 11, 6, 13, 4, ACCENT)
     s.fill(2, 1, 13, 5, 1, 13, PANE)
     for x in (3, 4):
-        s.set(x, 1, 12, stairs("spruce_stairs", "south"))
+        s.set(x, 1, 12, stairs("warped_stairs", "south"))
     s.set(2, 1, 12, state("potted_fern"))
     s.set(5, 1, 12, state("barrel", facing="up", open="false"))
     s.set(4, 3, 12, state("lantern", hanging="true", waterlogged="false"))
@@ -1004,7 +1008,7 @@ def watch_tower(s):
     x0, x1, z0, z1 = 7, 11, 7, 11
     s.fill(x0, 0, z0, x1, 0, z1, STONE)
     walls(s, x0, z0, x1, z1, 1, 10, base=MOSSY, body=STONE, band=6, band_block=state("chiseled_stone_bricks"), corner=DEEP)
-    s.door(9, 1, z0, "spruce_door", "north")
+    s.door(9, 1, z0, "warped_door", "north")
     s.set(9, 3, z0, state("chiseled_stone_bricks"))
     for y in (5, 8):
         s.set(9, y, z0, BARS)
@@ -1014,7 +1018,7 @@ def watch_tower(s):
     for y in range(1, 12):
         s.set(9, y, 10, state("ladder", facing="north", waterlogged="false"))
     # The lookout: a deck over the walls, a railing, log posts and a pyramid roof
-    s.fill(6, 11, 6, 12, 11, 12, SPRUCE)
+    s.fill(6, 11, 6, 12, 11, 12, WOOD)
     s.remove(9, 11, 10)
     s.set(9, 11, 10, state("ladder", facing="north", waterlogged="false"))
     for x in range(6, 13):
@@ -1022,7 +1026,7 @@ def watch_tower(s):
             if x in (6, 12) or z in (6, 12):
                 s.set(x, 12, z, FENCE)
     for x, z in ((6, 6), (12, 6), (6, 12), (12, 12)):
-        s.fill(x, 12, z, x, 14, z, state("spruce_log", axis="y"))
+        s.fill(x, 12, z, x, 14, z, state("warped_stem", axis="y"))
         s.set(x, 10, z, stairs("stone_brick_stairs", "south" if z == 6 else "north", "top"))
     top = hip_roof(s, 5, 5, 13, 13, 15)
     s.set(9, top, 9, state("lightning_rod", facing="up", powered="false", waterlogged="false"))
@@ -1054,8 +1058,8 @@ def palisade(s):
         s.fill(x, 1, z0, x, 4, z0, DEEP)
         s.set(x, 5, z0, state("lantern", hanging="false", waterlogged="false"))
     s.fill(8, 4, z0, 10, 4, z0, STONE)
-    s.door(8, 1, z0, "spruce_door", "north", hinge="left")
-    s.door(10, 1, z0, "spruce_door", "north", hinge="right")
+    s.door(8, 1, z0, "warped_door", "north", hinge="left")
+    s.door(10, 1, z0, "warped_door", "north", hinge="right")
     # Corner turrets with floodlights
     for x, z in ((x0, z0), (x1, z0), (x0, z1), (x1, z1)):
         s.fill(x, 1, z, x, 4, z, DEEP)
@@ -1071,7 +1075,7 @@ def gatehouse(s):
     for x in range(6, 13):
         for z in (1, 2, 3):
             if (x, z) not in ((7, 2), (11, 2), (7, 3)):
-                s.set(x, 5, z, SPRUCE)
+                s.set(x, 5, z, WOOD)
     for x in range(6, 13):
         for z in (1, 3):
             if not (z == 3 and x == 7):
@@ -1093,13 +1097,13 @@ def gatehouse(s):
 
 def cabin(s):
     """The Mechanist's cabin: white walls on a light base under a cyan band, a dark pitched roof with
-    a quartz ridge, a spruce porch with a bench, flower boxes, lamp posts on the path, a vent, a
+    a trim ridge, a wooden porch with a bench, flower boxes, lamp posts on the path, a vent, a
     radio mast, solar panels and a dish; a vegetable garden at the side; inside the Supply Terminal
     (his job site), a bed, a desk and shelves."""
     x0, x1, z0, z1 = 2, 10, 3, 10
     # Floor, porch and path
     s.fill(x0, 0, z0, x1, 0, z1, STONE)
-    s.fill(x0 + 1, 0, 1, x1 - 1, 0, 2, SPRUCE)
+    s.fill(x0 + 1, 0, 1, x1 - 1, 0, 2, WOOD)
     s.set(6, 0, 0, PATH)
     s.set(5, 0, 0, GRAVEL)
     s.set(7, 0, 0, GRAVEL)
@@ -1108,7 +1112,7 @@ def cabin(s):
     # Walls with frame posts, a door in a frame portal
     walls(s, x0, z0, x1, z1, 1, 4, band=4)
     s.fill(6, 1, z1, 6, 4, z1, FRAME)
-    s.door(6, 1, z0, "spruce_door", "north")
+    s.door(6, 1, z0, "warped_door", "north")
     s.set(6, 3, z0, FRAME)
     s.fill(5, 1, z0, 5, 3, z0, FRAME)
     s.fill(7, 1, z0, 7, 3, z0, FRAME)
@@ -1120,17 +1124,17 @@ def cabin(s):
     window(s, x0, 2, z0 + 2, "west", width=2)
     window(s, x1, 2, z0 + 2, "east", width=2)
     window(s, 5, 2, z1, "south", width=3)
-    # Porch: canopy on spruce posts, a hanging lantern, a bench and pots. The canopy is of bottom
+    # Porch: canopy on wooden posts, a hanging lantern, a bench and pots. The canopy is of bottom
     # slabs, so the posts and the lantern's chain meet it
     for x in range(x0 + 1, x1):
-        s.set(x, 4, 1, slab("spruce_slab"))
+        s.set(x, 4, 1, slab("warped_slab"))
     for x in (x0 + 1, x1 - 1):
         s.fill(x, 1, 1, x, 3, 1, FENCE)
     s.set(6, 3, 1, state("lantern", hanging="true", waterlogged="false"))
-    s.set(4, 1, 2, stairs("spruce_stairs", "south"))
+    s.set(4, 1, 2, stairs("warped_stairs", "south"))
     s.set(8, 1, 2, state("barrel", facing="up", open="false"))
     s.set(8, 2, 2, state("potted_fern"))
-    # Roof: pitched, dark, with a quartz ridge; round windows in the gables
+    # Roof: pitched, dark, with a trim ridge; round windows in the gables
     gable_roof(s, x0 - 1, x1 + 1, z0 - 1, z1 + 1, 5)
     for x in (x0, x1):
         s.set(x, 6, 6, PANE)
@@ -1138,7 +1142,7 @@ def cabin(s):
     # A vent stack through the back slope, a dish on the front one
     s.fill(9, 6, 9, 9, 9, 9, DARK)
     s.set(9, 10, 9, state("iron_trapdoor", facing="north", half="bottom", open="false", powered="false", waterlogged="false"))
-    s.set(4, 7, 4, QUARTZ)
+    s.set(4, 7, 4, TRIM)
     s.set(4, 8, 4, state("end_rod", facing="up"))
     # Radio mast at the back corner
     mx, mz = x1 + 1, z1 + 1
@@ -1165,8 +1169,8 @@ def cabin(s):
     # Inside: the terminal on the back wall, a bed, a desk, shelves, a rug, a lamp
     s.set(6, 1, z1 - 1, TERMINAL)
     bed(s, x0 + 1, 1, z0 + 2, "cyan_bed", "south")
-    s.set(x0 + 1, 1, z1 - 1, slab("smooth_quartz_slab", "top"))
-    s.set(x0 + 2, 1, z1 - 1, slab("smooth_quartz_slab", "top"))
+    s.set(x0 + 1, 1, z1 - 1, slab("warped_slab", "top"))
+    s.set(x0 + 2, 1, z1 - 1, slab("warped_slab", "top"))
     s.set(x0 + 1, 2, z1 - 1, state("potted_cactus"))
     s.set(x1 - 1, 1, z1 - 1, state("bookshelf"))
     s.set(x1 - 1, 2, z1 - 1, state("bookshelf"))

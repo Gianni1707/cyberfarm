@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 
 import io.netty.buffer.ByteBuf;
+import com.cyberfarm.registry.ModBlocks;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderGetter;
@@ -139,7 +141,10 @@ public record Schematic(ResourceLocation id, Vec3i size, List<Entry> blocks) imp
         for (Entry entry : blocks) {
             BlockState state = entry.state().rotate(rotation);
             Block block = state.getBlock();
-            ghosts.add(new Ghost(origin.offset(entry.pos().subtract(pivot).rotate(rotation)), state, here -> here.is(block)));
+            // A frame hides once its machine assembles: that still counts as placed, or a Builder would tear it down
+            boolean frame = block == ModBlocks.CYBER_FRAME.get();
+            ghosts.add(new Ghost(origin.offset(entry.pos().subtract(pivot).rotate(rotation)), state,
+                    here -> here.is(block) || frame && here.is(ModBlocks.HIDDEN_FRAME.get())));
         }
         return ghosts;
     }

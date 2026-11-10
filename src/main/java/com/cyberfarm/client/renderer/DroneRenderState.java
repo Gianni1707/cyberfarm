@@ -14,6 +14,8 @@ public class DroneRenderState extends LivingEntityRenderState {
     public float startup = -1.0F;
     /** Ticks since a picked-up drone touched down, -1 when it is not being picked up. */
     public float shutdown = -1.0F;
+    /** From 0 in flight to 1 parked: how far what hangs under the skids has tucked up. */
+    public float stow;
 
     public boolean has(DroneTask task) {
         return (taskMask & task.bit()) != 0;

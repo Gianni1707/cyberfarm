@@ -1,4 +1,113 @@
 {
+  "multiblock.unlatch": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 0.7,
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.unlatch"
+  },
+  "multiblock.assemble": {
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open3",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open4",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table1",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table2",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table3",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:tile/piston/in",
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/chain/step1",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step4",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.assemble"
+  },
+  "multiblock.lock": {
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 1.6,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "pitch": 0.7,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.lock"
+  },
   "drone.fly": {
     "sounds": [
       {

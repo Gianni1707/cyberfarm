@@ -39,6 +39,15 @@ import org.jspecify.annotations.Nullable;
  */
 public class ResonanceCoreBlockEntity extends MachineBlockEntity {
     public static final int MAX_TIER = 4;
+    /**
+     * Client only, for ResonanceCoreRenderer, which keeps nothing between frames: where the stabilising drones are in
+     * their orbit and how fast it turns, and when each side's drone took off (NaN: it was already up when the core loaded).
+     */
+    public float droneAngle;
+    public float droneSpeed;
+    public float droneTime = Float.NaN;
+    public final float[] droneLaunched = new float[4];
+    public final boolean[] droneLinked = new boolean[4];
     /** By tier: FE stored, and FE per tick each pylon lets in or out. */
     private static final int[] CAPACITY = {1_000_000, 32_000_000, 256_000_000, 2_000_000_000};
     private static final int[] TRANSFER = {16_000, 128_000, 512_000, 2_000_000};

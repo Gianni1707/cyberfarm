@@ -80,7 +80,7 @@ public class PlantJob extends DroneJob {
         }
         Block crop = ((BlockItem) seed.getItem()).getBlock();
         level.setBlock(cropPos, crop.defaultBlockState(), Block.UPDATE_ALL);
-        Effects.beam(level, drone, cropPos);
+        Effects.spray(level, drone, Effects.SPRAY_SEEDS, cropPos);
         level.playSound(null, cropPos, SoundEvents.CROP_PLANTED, SoundSource.BLOCKS, 1.0F, 1.0F);
         drone.useJobEnergy(ENERGY_COST);
         return true;
