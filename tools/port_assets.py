@@ -7,7 +7,8 @@ after them (or after carrying files over from a 26.x branch). Safe to run more t
 - data folders take their 1.20.1 names (recipe -> recipes, loot_table -> loot_tables, tags/item ->
   tags/items, structure -> structures, c: tags -> forge: tags...);
 - recipes take the 1.20.1 ingredient and result objects;
-- block models' "light_emission" becomes Forge's "forge_data" block and sky light;
+- block models' "light_emission" becomes Forge's "forge_data" block and sky light, and one with see-through
+  textures and no render_type gets cutout (or translucent), which 26.x picks by itself;
 - item model definitions (assets/<ns>/items/*.json) become item models in models/item;
 - structure files take the 1.20.1 data version and blocks;
 - texts naming c: tags name the forge: ones;
@@ -20,7 +21,9 @@ import os
 import re
 import shutil
 import subprocess
+import struct
 import sys
+import zlib
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RES = os.path.join(ROOT, 'src', 'main', 'resources')
@@ -115,13 +118,71 @@ def port_tag(path):
         save(path, tag)
 
 
-def port_model(path):
+def png_alpha(path):
+    """'none', 'clear' (every pixel 0 or 255 alpha) or 'partial', read with no image library."""
+    data = open(path, 'rb').read()
+    pos, chunks, idat = 8, {}, b''
+    while pos < len(data):
+        size, kind = struct.unpack('>I4s', data[pos:pos + 8])
+        body = data[pos + 8:pos + 8 + size]
+        if kind == b'IDAT':
+            idat += body
+        else:
+            chunks.setdefault(kind, body)
+        pos += 12 + size
+    width, height, depth, color = struct.unpack('>IIBB', chunks[b'IHDR'][:10])
+    if color == 3:  # palette: transparency only through tRNS
+        values = set(chunks.get(b'tRNS', b''))
+        return 'partial' if values - {0, 255} else 'clear' if 0 in values else 'none'
+    if color != 6 or depth != 8:
+        return 'clear' if b'tRNS' in chunks else 'none'
+    raw, stride = zlib.decompress(idat), width * 4
+    prev, i, seen = bytearray(stride), 0, set()
+    for _ in range(height):
+        kind, line = raw[i], bytearray(raw[i + 1:i + 1 + stride])
+        i += 1 + stride
+        for x in range(stride):
+            a = line[x - 4] if x >= 4 else 0
+            b = prev[x]
+            c = prev[x - 4] if x >= 4 else 0
+            if kind == 1:
+                line[x] = (line[x] + a) & 255
+            elif kind == 2:
+                line[x] = (line[x] + b) & 255
+            elif kind == 3:
+                line[x] = (line[x] + (a + b) // 2) & 255
+            elif kind == 4:
+                p = a + b - c
+                pa, pb, pc = abs(p - a), abs(p - b), abs(p - c)
+                line[x] = (line[x] + (a if pa <= pb and pa <= pc else b if pb <= pc else c)) & 255
+        seen.update(line[3::4])
+        prev = line
+    return 'partial' if seen - {0, 255} else 'clear' if 0 in seen else 'none'
+
+
+def render_type(model, ns):
+    """26.x draws a block model cutout or translucent by itself from its textures; 1.20.1 draws it solid unless told."""
+    kinds = set()
+    for texture in model.get('textures', {}).values():
+        if isinstance(texture, str) and ':' in texture and texture.split(':', 1)[0] == ns:
+            png = os.path.join(ASSETS, ns, 'textures', texture.split(':', 1)[1] + '.png')
+            if os.path.exists(png):
+                kinds.add(png_alpha(png))
+    return 'minecraft:translucent' if 'partial' in kinds else 'minecraft:cutout' if 'clear' in kinds else None
+
+
+def port_model(path, ns):
     model = load(path)
     changed = False
     for element in model.get('elements', []):
         if 'light_emission' in element:
             light = element.pop('light_emission')
             element['forge_data'] = {'block_light': light, 'sky_light': light}
+            changed = True
+    if 'render_type' not in model and os.sep + 'block' + os.sep in path:
+        kind = render_type(model, ns)
+        if kind:
+            model['render_type'] = kind
             changed = True
     if changed:
         save(path, model)
@@ -200,7 +261,7 @@ def main():
         for base, _, files in os.walk(models):
             for name in files:
                 if name.endswith('.json'):
-                    port_model(os.path.join(base, name))
+                    port_model(os.path.join(base, name), ns)
     guides = os.path.join(ASSETS, 'cyberfarm', 'guides')
     if len(sys.argv) > 1:
         port_handbook(sys.argv[1])

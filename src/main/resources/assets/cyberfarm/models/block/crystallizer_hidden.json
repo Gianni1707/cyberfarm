@@ -1,5 +1,6 @@
 {
   "textures": {
     "particle": "cyberfarm:block/models/crystallizer"
-  }
+  },
+  "render_type": "minecraft:cutout"
 }

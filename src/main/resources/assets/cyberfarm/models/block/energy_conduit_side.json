@@ -381,5 +381,6 @@
         "sky_light": 15
       }
     }
-  ]
+  ],
+  "render_type": "minecraft:cutout"
 }

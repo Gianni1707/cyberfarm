@@ -1,5 +1,6 @@
 {
   "textures": {
     "particle": "cyberfarm:block/containment_glass"
-  }
+  },
+  "render_type": "minecraft:translucent"
 }
