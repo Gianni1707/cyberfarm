@@ -38,6 +38,8 @@ SMALL_MACHINES = {  # Where the Cyber Frames go around each machine: (dx, dy, dz
     "pyrolysis_oven": [(-1, 0, 0)],
     "electrolyzer": [(-1, 0, 0)],
     "waste_reprocessor": [(0, 1, 0)],
+    "transmitter_dish": [(1, 0, 0), (0, 0, -1), (1, 0, -1)],
+    "receiver_dish": [(0, 1, 0)],
 }
 WALL = {
     "Raw materials": ["raw_uranium", "uranium_ingot", "raw_bauxite", "alumina", "aluminum_ingot", "sulfur", "biomass", "carbon_fiber"],
@@ -48,6 +50,7 @@ WALL = {
     "Drone frames": ["basic_frame", "advanced_frame", "elite_frame", "mini_frame"],
     "Drone modules": [f"{task}_module" for task in TASKS],
     "Drone addons": ["speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon", "efficiency_addon"],
+    "Range modules": ["range_module_i", "range_module_ii", "range_module_iii", "infinity_range_module"],
     "Mech": ["mech_frame", "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module"],
 }
 
@@ -205,6 +208,8 @@ def hangar(x, front):
                 block(x + w, 5, front - d, "hangar_frame")
     check(x, 0, front, "mech_hangar[formed=true]", "Mech Hangar")
     summon("cyberfarm:mech", x + 2.5, 1, front - 1.5, "{modules:15,energy:100000,Rotation:[0f,0f]}")
+    # A mech never dies, not even to /kill, so a rebuild must not summon a second one
+    commands[-1] = f"execute unless entity @e[type=cyberfarm:mech,x={X0},y={Y - 2},z={Z0},dx={WIDTH},dy={CLEAR + 2},dz={DEPTH}] run {commands[-1]}"
     shown.add("mech")
     text(x + 2.5, 0.1, front + 1.5, tr("projector.cyberfarm.mech_hangar"), 1.0)
 
@@ -444,7 +449,7 @@ def covered():
 def write(world):
     pack = ROOT / "run/saves" / world / "datapacks/cyberfarm_showcase"
     (pack / "data/showcase/function").mkdir(parents=True, exist_ok=True)
-    (pack / "pack.mcmeta").write_text(json.dumps({"pack": {"description": "CyberFarm showcase", "min_format": 107, "max_format": 107}}), encoding="utf-8")
+    (pack / "pack.mcmeta").write_text(json.dumps({"pack": {"description": "CyberFarm showcase", "min_format": 101, "max_format": 101}}), encoding="utf-8")
     x0, z0, x1, z1 = X0, Z0, X0 + WIDTH - 1, Z0 + DEPTH - 1
     box = f"x={x0},y={Y - 2},z={z0},dx={WIDTH},dy={CLEAR + 2},dz={DEPTH}"
     functions = {
