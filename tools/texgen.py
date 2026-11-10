@@ -343,7 +343,7 @@ def muffler():
 
 URANIUM = "#5fdc3a"
 URANIUM_DARK = "#2f7a22"
-CONCRETE = "#a7adb2"
+CONCRETE = "#4a6b65"
 
 
 def uranium_ore_overlay():
@@ -357,13 +357,13 @@ def uranium_ore_overlay():
 
 
 def reactor_casing(formed):
-    """Cooling-tower concrete with seams; once formed, cyan status lines light up along the seams."""
+    """Enamel plating with seams; once formed, status lines light up along the seams."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, "#7d848a")
+    c.rect(0, 0, 15, 15, "#233e3b")
     c.rect(1, 1, 14, 14, CONCRETE, noise=6, seed=50)
     for y in (5, 10):
-        c.rect(1, y, 14, y, "#8c9298")
-    c.rect(1, 1, 14, 1, "#c3c8cc")
+        c.rect(1, y, 14, y, "#335550")
+    c.rect(1, 1, 14, 1, "#71908a")
     if formed:
         c.rect(3, 5, 12, 5, "b")
         c.rect(5, 5, 10, 5, "c")
@@ -374,11 +374,14 @@ def reactor_casing(formed):
 
 def reactor_port(formed):
     c = reactor_casing(formed)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
-    c.disc(7.5, 7.5, 3.0, "s")
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(4, 7, 11, 8, "m")
+    c.frame(0, 0, 15, 15, "#bdc6c5")
+    c.frame(1, 1, 14, 14, "#7c8989")
+    c.rect(2, 2, 13, 13, "#233e3b")
+    c.disc(7.5, 7.5, 5.6, "K")
+    c.disc(7.5, 7.5, 4.6, "c" if formed else "#5ec2b8")
+    c.disc(7.5, 7.5, 3.4, "s")
+    c.rect(7, 4, 8, 11, "#7c8989")
+    c.rect(4, 7, 11, 8, "#7c8989")
     return c
 
 
@@ -388,28 +391,28 @@ def reactor_controller(state):
     c.rect(2, 2, 13, 11, "K")
     c.rect(3, 3, 12, 10, "s")
     if state == "off":
-        c.set(7, 6, "r")
-        c.set(8, 6, "r")
+        c.set(7, 6, "b")
+        c.set(8, 6, "b")
     else:
-        # Radiation trefoil on the screen, green when burning
-        lit = URANIUM if state == "on" else "b"
+        # Radiation trefoil on the screen, emerald when burning
+        lit = "#00b894" if state == "on" else "b"
         c.disc(7.5, 6.5, 1.2, lit)
         for (x0, y0, x1, y1) in ((6, 3, 9, 4), (3, 7, 5, 9), (10, 7, 12, 9)):
             c.rect(x0, y0, x1, y1, lit)
-    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "b")
     return c
 
 
-TURBINE_WHITE = "#dfe5e9"
+TURBINE_WHITE = "#4a6b65"
 
 
 def turbine_casing(formed):
-    """White turbine plating with a cyan stripe; the stripe lights up once the hall is formed."""
+    """Enamel turbine plating with a mint stripe; the stripe lights up once the hall is formed."""
     c = Canvas()
-    c.rect(0, 0, 15, 15, "#8f989f")
+    c.rect(0, 0, 15, 15, "#233e3b")
     c.rect(1, 1, 14, 14, TURBINE_WHITE, noise=4, seed=61)
-    c.rect(1, 1, 14, 1, "#f4f7f9")
-    c.rect(1, 7, 14, 8, "b" if formed else "#9aa4ab")
+    c.rect(1, 1, 14, 1, "#71908a")
+    c.rect(1, 7, 14, 8, "b" if formed else "#335550")
     if formed:
         c.rect(4, 7, 11, 8, "c")
     for x, y in ((2, 3), (13, 3), (2, 12), (13, 12)):
@@ -419,11 +422,14 @@ def turbine_casing(formed):
 
 def turbine_port(formed):
     c = turbine_casing(formed)
-    c.disc(7.5, 7.5, 5.2, "K")
-    c.disc(7.5, 7.5, 4.2, "c" if formed else "y")
-    c.disc(7.5, 7.5, 3.0, "s")
-    c.rect(7, 4, 8, 11, "m")
-    c.rect(4, 7, 11, 8, "m")
+    c.frame(0, 0, 15, 15, "#bdc6c5")
+    c.frame(1, 1, 14, 14, "#7c8989")
+    c.rect(2, 2, 13, 13, "#233e3b")
+    c.disc(7.5, 7.5, 5.6, "K")
+    c.disc(7.5, 7.5, 4.6, "c" if formed else "#5ec2b8")
+    c.disc(7.5, 7.5, 3.4, "s")
+    c.rect(7, 4, 8, 11, "#7c8989")
+    c.rect(4, 7, 11, 8, "#7c8989")
     return c
 
 
@@ -432,12 +438,12 @@ def turbine_controller(state):
     c = turbine_casing(state != "off")
     c.rect(2, 2, 13, 12, "K")
     c.rect(3, 3, 12, 11, "s")
-    blade = "c" if state == "on" else "b" if state == "formed" else "r"
+    blade = "c" if state == "on" else "b" if state == "formed" else "b"
     for i in range(-3, 4):
         c.set(round(7.5 + i), round(7 + i), blade)
         c.set(round(7.5 + i), round(7 - i), blade)
     c.disc(7.5, 7, 1.1, "w" if state != "off" else "m")
-    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "r")
+    c.rect(3, 13, 12, 13, "c" if state == "on" else "b" if state == "formed" else "b")
     return c
 
 
@@ -567,34 +573,101 @@ def bucket(fluid, gas):
     return c
 
 
-def cooling_tower(glow):
-    """Skin of the formed reactor: white panels, seams, a grey footing and glowing cyan bands.
+# --------------------------------------------------------------------------- reactor and turbine skin
 
-    32 px wide (8 segments around the tower) and 64 high (the 7 blocks, top of the texture at the rim).
-    With glow, only the cyan pixels: the renderer draws them full-bright.
-    """
-    c = Canvas(32, 64)
-    c.rect(0, 0, 31, 63, "#e6ecf0", noise=5, seed=60)
-    for y in range(7, 64, 9):
-        c.rect(0, y, 31, y, "#c3ccd3")
-    c.rect(0, 0, 0, 63, "#c3ccd3")
-    c.rect(16, 0, 16, 63, "#d2d9de")
-    c.rect(0, 58, 31, 63, "#9aa4ac", noise=4, seed=61)
-    c.rect(0, 57, 31, 57, "#7d8a96")
-    # Cyan bands: one around the base, one under the rim, dashes in between
-    c.rect(0, 53, 31, 54, "c")
-    c.rect(0, 3, 31, 3, "c")
-    c.rect(0, 4, 31, 4, "b")
-    for x in (4, 20):
-        c.rect(x, 24, x + 7, 24, "c")
-        c.rect(x + 2, 24, x + 5, 24, "C")
-    for x in (8, 24):
-        c.set(x, 40, "C")
+def shell_plate(c, shade=0):
+    c.rect(0, 0, 15, 15, "#4a6b65", noise=0)
+    if shade:
+        c.rect(0, 0, 15, 15, "#4a6b65")
+    c.rect(0, 15, 15, 15, "#335550")
+    c.rect(15, 0, 15, 15, "#335550")
+    c.rect(0, 0, 14, 0, "#4a6b65")
+    for x in range(0, 15):
+        c.set(x, 0, "#4a6b65", 9)
+    for y in range(0, 15):
+        c.set(0, y, "#4a6b65", 6)
+
+
+def shell_rivet(c, x, y):
+    c.set(x, y, "#71908a")
+    c.set(x + 1, y + 1, "#233e3b")
+
+
+def shell_trimmed(src, painter):
+    c = src.copy()
+    painter(c)
+    return c
+
+
+# ============================================================ skin A: plates, rivets, light bands
+def shell_trim(c):
+    c.rect(0, 0, 0, 15, "#233e3b")
+    c.rect(1, 0, 2, 15, "#71908a")
+    c.rect(1, 0, 1, 15, "#7c8989")
+    c.rect(3, 0, 3, 15, "#335550")
+    c.set(1, 2, "#bdc6c5"); c.set(2, 2, "#bdc6c5")
+    c.set(1, 12, "#bdc6c5"); c.set(2, 12, "#bdc6c5")
+
+
+def shell_tiles():
+    t = {}
+    c = Canvas(); shell_plate(c)
+    c.frame(4, 4, 11, 11, "#335550")
+    c.rect(5, 5, 10, 10, "#4a6b65", noise=0)
+    for x in range(5, 11): c.set(x, 5, "#4a6b65", -8)
+    for x, y in ((2, 2), (12, 2), (2, 12), (12, 12)): shell_rivet(c, x, y)
+    t["body"] = c
+    c = Canvas(); shell_plate(c)
+    c.rect(1, 7, 14, 7, "#335550"); c.rect(1, 8, 14, 8, "#4a6b65", 8)  # weld line
+    for x, y in ((2, 3), (12, 3), (2, 11), (12, 11), (7, 3), (7, 11)): shell_rivet(c, x, y)
+    t["body2"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 0, 15, 0, "#7c8989"); c.rect(0, 1, 15, 1, "#4a6b65")
+    c.rect(0, 5, 15, 5, "#335550")
+    c.rect(0, 6, 15, 6, "#5ec2b8")
+    c.rect(0, 7, 15, 7, "c")
+    c.rect(0, 8, 15, 8, "#5ec2b8")
+    c.rect(0, 9, 15, 10, "#335550")
+    c.rect(0, 14, 15, 14, "#71908a"); c.rect(0, 15, 15, 15, "#335550")
+    for x in (3, 11): c.set(x, 3, "#bdc6c5"); c.set(x, 12, "#bdc6c5")
+    t["band"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#233e3b")
+    c.rect(0, 0, 15, 0, "#bdc6c5"); c.rect(0, 1, 15, 1, "#7c8989")
+    c.rect(0, 2, 15, 2, "#335550")
+    c.rect(2, 4, 4, 6, "#7c8989"); c.rect(11, 4, 13, 6, "#7c8989")  # studs
+    c.rect(2, 4, 4, 4, "#bdc6c5"); c.rect(11, 4, 13, 4, "#bdc6c5")
+    c.rect(5, 9, 10, 12, "#071314"); c.rect(5, 9, 10, 9, "#030909")
+    c.rect(0, 14, 15, 15, "#071314")
+    c.rect(0, 8, 15, 8, "#335550")
+    t["base"] = c
+    c = Canvas(); c.rect(0, 0, 15, 15, "#4a6b65")
+    c.rect(0, 0, 15, 0, "#bdc6c5"); c.rect(0, 1, 15, 1, "#bdc6c5"); c.rect(0, 2, 15, 2, "#7c8989")
+    c.rect(0, 3, 15, 3, "#233e3b")
+    c.rect(0, 4, 15, 4, "#5ec2b8"); c.rect(0, 5, 15, 5, "c")
+    c.rect(0, 6, 15, 6, "#233e3b")
+    c.rect(0, 7, 15, 7, "#4a6b65", 8)
+    for x, y in ((2, 9), (12, 9)): shell_rivet(c, x, y)
+    c.rect(0, 13, 15, 13, "#335550"); c.rect(0, 14, 15, 15, "#233e3b")
+    t["rim"] = c
+    for k in ("body", "band", "base", "rim"):
+        t[k + "_L"] = shell_trimmed(t[k], shell_trim)
+    t["body2_L"] = shell_trimmed(t["body2"], shell_trim)
+    return t
+
+
+def machine_shell(glow):
+    """The formed reactor's and turbine's skin: a strip of 16-pixel tiles (see ShellTiles.java) ending in a white one for flat colours.
+    With glow, only the lit pixels: the renderer draws them full-bright."""
+    t = shell_tiles()
+    names = ("body", "body2", "band", "base", "rim", "body_L", "body2_L", "band_L", "base_L", "rim_L")
+    c = Canvas(16 * (len(names) + 1), 16)
+    for i, name in enumerate(names):
+        for y in range(16):
+            for x in range(16):
+                c.pixels[y][16 * i + x] = t[name].pixels[y][x]
+                c.keys[y][16 * i + x] = t[name].keys[y][x]
+    c.rect(16 * len(names), 0, 16 * len(names) + 15, 15, (255, 255, 255, 255))
     return c.glow_mask() if glow else c
-
-
-HAZMAT = "#e8c21f"
-HAZMAT_DARK = "#a8860f"
 
 
 def vitrified_waste():
@@ -3327,7 +3400,7 @@ def build_all():
         "item/steam_bucket": bucket("#aebfcb", gas=True),
         "item/coolant_bucket": bucket("#1fb8a8", gas=False),
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
-        "entity/cooling_tower": cooling_tower(False),
+        "entity/machine_shell": machine_shell(False),
         "block/vitrified_waste": vitrified_waste(),
         "item/hazmat_helmet": hazmat_item("helmet"),
         "item/hazmat_suit": hazmat_item("suit"),
@@ -3337,7 +3410,7 @@ def build_all():
         "entity/equipment/humanoid/hazmat": hazmat_layer(False),
         "entity/equipment/humanoid_leggings/hazmat": hazmat_layer(True),
         "mob_effect/radiation_sickness": radiation_icon(),
-        "entity/cooling_tower_glow": cooling_tower(True),
+        "entity/machine_shell_glow": machine_shell(True),
         "item/raw_uranium": raw_uranium(),
         "item/uranium_ingot": uranium_ingot(),
         "item/fuel_rod": fuel_rod(False),

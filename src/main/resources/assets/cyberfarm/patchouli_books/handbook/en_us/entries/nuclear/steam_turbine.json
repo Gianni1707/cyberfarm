@@ -56,15 +56,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at their ports.$(br)Complete, the blocks disappear into one smooth $(l)white and pale green cylinder$(): the"
+      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at their ports.$(br)Complete, the blocks disappear into one faceted $(l)enamel and mint octagonal hull$(): the controller"
     },
     {
       "type": "patchouli:text",
-      "text": "controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a"
+      "text": "becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the"
     },
     {
       "type": "patchouli:text",
-      "text": "block in the way. A second click calls them back. They show the size nearest to done."
+      "text": "way. A second click calls them back. They start from the size you have built the most of; click again for the next size."
     },
     {
       "type": "patchouli:text",

@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They show the size nearest to done."
+      "text": "controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They start from the size you have built the most of; click again for the next size."
     },
     {
       "type": "patchouli:multiblock",
@@ -95,11 +95,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A Large tower makes more steam than a basic $(l:cables/gas_pipe)Gas Pipe$(/l) carries (1,000 mB/t): use $(l)Advanced$() pipes at its steam port.$(br)When the tower is complete it powers up with a deep chime and $(l)turns into a real cooling tower$(): the blocky casings disappear into one smooth, curved shell of white panels with"
+      "text": "$(li)A Large tower makes more steam than a basic $(l:cables/gas_pipe)Gas Pipe$(/l) carries (1,000 mB/t): use $(l)Advanced$() pipes at its steam port.$(br)When the tower is complete it powers up with a deep chime and $(l)turns into a real cooling tower$(): the blocky casings disappear into one faceted, octagonal shell of enamel"
     },
     {
       "type": "patchouli:text",
-      "text": "glowing pale green bands, wide at the base, narrow in the middle and flared at the rim. The controller becomes a $(l)panel$() on the surface and every port a glowing $(l)hatch$(), right where a pipe or cable plugged into the port enters the tower. You can $(l)right-click any block of the tower$() to open the reactor."
+      "text": "panels with glowing mint bands, wide at the base, narrow in the middle and flared at the rim. The controller becomes a $(l)panel$() on the surface and every port a glowing $(l)hatch$(), right where a pipe or cable plugged into the port enters the tower. You can $(l)right-click any block of the tower$() to open the reactor."
     },
     {
       "type": "patchouli:text",

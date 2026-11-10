@@ -1,5 +1,7 @@
 package com.cyberfarm.client.renderer;
 
+import net.minecraft.util.Mth;
+
 import java.util.List;
 
 import com.cyberfarm.CyberFarm;
@@ -28,25 +30,28 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
 /**
- * Draws a formed Steam Turbine as one white and pale green cylinder lying along the hall: the controller
+ * Draws a formed Steam Turbine as one enamel and mint octagonal prism lying along the hall, its flat faces towards the four sides: the controller
  * panel on the front cap, a rotor spinning with the turbine's speed behind the open back cap, and a
  * glowing hatch for every Turbine Port. Works in a local frame where x is to the controller's right,
  * y is up and z runs from the front cap to the back.
  */
 public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockEntity, TurbineRenderer.State> {
-    private static final RenderType SHELL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/cooling_tower.png"));
-    private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/cooling_tower_glow.png"));
+    private static final RenderType SHELL = RenderTypes.entityCutout(CyberFarm.id("textures/entity/machine_shell.png"));
+    private static final RenderType GLOW = RenderTypes.eyes(CyberFarm.id("textures/entity/machine_shell_glow.png"));
     private static final RenderType HATCH = RenderTypes.entityCutout(CyberFarm.id("textures/block/turbine_port_formed.png"));
     private static final RenderType PANEL = RenderTypes.entityCutout(CyberFarm.id("textures/block/turbine_controller_formed.png"));
     private static final RenderType PANEL_ON = RenderTypes.entityCutout(CyberFarm.id("textures/block/turbine_controller_on.png"));
 
-    private static final int SEGMENTS = 32;
-    private static final int SEGMENTS_PER_TILE = 8;
+    private static final int SEGMENTS = 8;
+    /** The corners' radius over the flats', which stay where pipes meet them. */
+    private static final float CORNERS = 1.0F / (float) Math.cos(Math.PI / SEGMENTS);
     private static final int BLADES = 8;
-    private static final int CAP_COLOR = 0xFFE3E9ED;
-    private static final int BACK_COLOR = 0xFF20272E;
-    private static final int BLADE_COLOR = 0xFFC4D0D8;
-    private static final float OFFSET = 0.03F;
+    private static final int CAP_COLOR = 0xFF4A6B65;
+    private static final int BACK_COLOR = 0xFF233E3B;
+    private static final int BLADE_COLOR = 0xFF7C8989;
+    private static final int RIM_COLOR = 0xFF7C8989, RING_COLOR = 0xFF5EC2B8;
+    /** How far hatches and the panel stand out of the hull, and a hatch's half-width. */
+    private static final float PLATE_HEIGHT = 0.08F, HATCH_HALF = 0.4F;
 
     public static class State extends BlockEntityRenderState {
         boolean formed;
@@ -103,22 +108,23 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
         poseStack.mulPose(Axis.YP.rotationDegrees(-state.facing.getOpposite().toYRot()));
 
         collector.submitCustomGeometry(poseStack, SHELL, (pose, buffer) -> {
-            housing(pose, buffer, radius, front, end, size.length(), light);
+            housing(pose, buffer, radius * CORNERS, front, size.length(), light, false);
             for (int i = 0; i < SEGMENTS; i++) {
                 float a0 = angle(i);
                 float a1 = angle(i + 1);
-                disc(pose, buffer, a0, a1, 0.0F, radius, front, -1.0F, CAP_COLOR, light);
+                disc(pose, buffer, a0, a1, 0.0F, radius * CORNERS, front, -1.0F, CAP_COLOR, light);
                 // The back is open: a dark ring around a dark well, the rotor in front of it
-                disc(pose, buffer, a0, a1, radius * 0.85F, radius, end, 1.0F, CAP_COLOR, light);
-                disc(pose, buffer, a0, a1, 0.0F, radius * 0.85F, end - 0.4F, 1.0F, BACK_COLOR, light);
+                disc(pose, buffer, a0, a1, radius * CORNERS * 0.85F, radius * CORNERS, end, 1.0F, CAP_COLOR, light);
+                disc(pose, buffer, a0, a1, 0.0F, radius * CORNERS * 0.85F, end - 0.4F, 1.0F, BACK_COLOR, light);
             }
+            frontCap(pose, buffer, size.half(), radius, front, light);
             rotor(pose, buffer, radius * 0.8F, end - 0.2F, state.rotation, light);
         });
         collector.submitCustomGeometry(poseStack, GLOW,
                 // A hair outside the shell: drawn on the same surface, shader packs flicker between the two
-                (pose, buffer) -> housing(pose, buffer, radius + 0.006F, front, end, size.length(), LightCoordsUtil.FULL_BRIGHT));
+                (pose, buffer) -> housing(pose, buffer, radius * CORNERS + 0.006F, front, size.length(), LightCoordsUtil.FULL_BRIGHT, true));
         collector.submitCustomGeometry(poseStack, state.lit ? PANEL_ON : PANEL,
-                (pose, buffer) -> plate(pose, buffer, 0.0F, 0.0F, front - OFFSET, Direction.NORTH, 1.0F, light));
+                (pose, buffer) -> ShellTiles.raisedPlate(pose, buffer, 0.0F, 0.0F, front - 0.012F, 0.0F, 0.0F, -1.0F, 0.0F, 1.0F, 0.0F, 0.5F, PLATE_HEIGHT, light));
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (Vector3f port : state.ports) {
                 hatch(pose, buffer, port, size, radius, light);
@@ -128,26 +134,68 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
     }
 
     private static float angle(int segment) {
-        return (float) (Math.PI * 2 * segment / SEGMENTS);
+        return (float) (Math.PI * (2 * segment + 1) / SEGMENTS);
     }
 
-    /** The cylinder's skin, the texture running once along the hall. */
-    private static void housing(PoseStack.Pose pose, VertexConsumer buffer, float radius, float front, float end, int length, int light) {
+    /** The front cap's plates, one on every block, cut to the octagon, with a mint ring and a steel rim round them. */
+    private static void frontCap(PoseStack.Pose pose, VertexConsumer buffer, int half, float flat, float front, int light) {
+        float z = front - 0.006F;
+        for (int y = -half; y <= half; y++) {
+            for (int x = -half; x <= half; x++) {
+                capCorner(pose, buffer, x, y, -0.5F, -0.5F, flat, z, light);
+                capCorner(pose, buffer, x, y, 0.5F, -0.5F, flat, z, light);
+                capCorner(pose, buffer, x, y, 0.5F, 0.5F, flat, z, light);
+                capCorner(pose, buffer, x, y, -0.5F, 0.5F, flat, z, light);
+            }
+        }
+        float corner = flat * CORNERS;
+        for (int i = 0; i < SEGMENTS; i++) {
+            disc(pose, buffer, angle(i), angle(i + 1), corner * 0.94F, corner, front - 0.012F, -1.0F, RIM_COLOR, light);
+            disc(pose, buffer, angle(i), angle(i + 1), corner * 0.86F, corner * 0.89F, front - 0.012F, -1.0F, RING_COLOR, light);
+        }
+    }
+
+    /** A corner of a plate: its texture stays where it is, and a corner past the octagon's slanted side moves back onto it. */
+    private static void capCorner(PoseStack.Pose pose, VertexConsumer buffer, int cellX, int cellY, float dx, float dy, float flat, float z, int light) {
+        float x = cellX + dx;
+        float y = cellY + dy;
+        float over = (Math.abs(x) + Math.abs(y) - flat * (1.0F + (float) Math.tan(Math.PI / SEGMENTS))) / 2.0F;
+        if (over > 0.0F) {
+            x -= Math.signum(x) * over;
+            y -= Math.signum(y) * over;
+        }
+        vertex(pose, buffer, x, y, z, ShellTiles.plateU(cellX, cellY, x - cellX + 0.5F), cellY + 0.5F - y, 0xFFFFFFFF, light, 0.0F, 0.0F, -1.0F);
+    }
+
+    /** The hull's skin, a tile on every block; for the glow only the lit ones. */
+    private static void housing(PoseStack.Pose pose, VertexConsumer buffer, float radius, float front, int length, int light, boolean glowOnly) {
+        int columns = ShellTiles.columns(2.0F * radius * (float) Math.sin(Math.PI / SEGMENTS));
         for (int i = 0; i < SEGMENTS; i++) {
             float a0 = angle(i);
             float a1 = angle(i + 1);
-            float u0 = (float) (i % SEGMENTS_PER_TILE) / SEGMENTS_PER_TILE;
-            float u1 = u0 + 1.0F / SEGMENTS_PER_TILE;
             float c0 = (float) Math.cos(a0);
             float s0 = (float) Math.sin(a0);
             float c1 = (float) Math.cos(a1);
             float s1 = (float) Math.sin(a1);
             float nx = (c0 + c1) * 0.5F;
             float ny = (s0 + s1) * 0.5F;
-            vertex(pose, buffer, c0 * radius, s0 * radius, front, u0, 0.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
-            vertex(pose, buffer, c1 * radius, s1 * radius, front, u1, 0.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
-            vertex(pose, buffer, c1 * radius, s1 * radius, end, u1, 1.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
-            vertex(pose, buffer, c0 * radius, s0 * radius, end, u0, 1.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
+            for (int row = 0; row < length; row++) {
+                float z0 = front + row;
+                float z1 = z0 + 1.0F;
+                for (int column = 0; column < columns; column++) {
+                    if (glowOnly && !ShellTiles.glows(row, length, column, columns)) {
+                        continue;
+                    }
+                    float t0 = (float) column / columns, t1 = (column + 1.0F) / columns;
+                    float xa = (c0 + (c1 - c0) * t0) * radius, ya = (s0 + (s1 - s0) * t0) * radius;
+                    float xb = (c0 + (c1 - c0) * t1) * radius, yb = (s0 + (s1 - s0) * t1) * radius;
+                    float u0 = ShellTiles.u(row, length, column, columns, 0), u1 = ShellTiles.u(row, length, column, columns, 1);
+                    vertex(pose, buffer, xa, ya, z0, u0, 1.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
+                    vertex(pose, buffer, xb, yb, z0, u1, 1.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
+                    vertex(pose, buffer, xb, yb, z1, u1, 0.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
+                    vertex(pose, buffer, xa, ya, z1, u0, 0.0F, 0xFFFFFFFF, light, nx, ny, 0.0F);
+                }
+            }
         }
     }
 
@@ -158,10 +206,10 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
         float s0 = (float) Math.sin(a0);
         float c1 = (float) Math.cos(a1);
         float s1 = (float) Math.sin(a1);
-        vertex(pose, buffer, c0 * inner, s0 * inner, z, 0.0F, 0.5F, color, light, 0.0F, 0.0F, nz);
-        vertex(pose, buffer, c0 * outer, s0 * outer, z, 0.0F, 0.55F, color, light, 0.0F, 0.0F, nz);
-        vertex(pose, buffer, c1 * outer, s1 * outer, z, 0.05F, 0.55F, color, light, 0.0F, 0.0F, nz);
-        vertex(pose, buffer, c1 * inner, s1 * inner, z, 0.05F, 0.5F, color, light, 0.0F, 0.0F, nz);
+        vertex(pose, buffer, c0 * inner, s0 * inner, z, ShellTiles.WHITE_U, ShellTiles.WHITE_V, color, light, 0.0F, 0.0F, nz);
+        vertex(pose, buffer, c0 * outer, s0 * outer, z, ShellTiles.WHITE_U, ShellTiles.WHITE_V, color, light, 0.0F, 0.0F, nz);
+        vertex(pose, buffer, c1 * outer, s1 * outer, z, ShellTiles.WHITE_U, ShellTiles.WHITE_V, color, light, 0.0F, 0.0F, nz);
+        vertex(pose, buffer, c1 * inner, s1 * inner, z, ShellTiles.WHITE_U, ShellTiles.WHITE_V, color, light, 0.0F, 0.0F, nz);
     }
 
     /** Twisted blades around a hub, turned by {@code rotation} degrees. */
@@ -183,13 +231,13 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
     }
 
     private static void corner(PoseStack.Pose pose, VertexConsumer buffer, float angle, float radius, float z, int light) {
-        vertex(pose, buffer, (float) Math.cos(angle) * radius, (float) Math.sin(angle) * radius, z, 0.1F, 0.52F, BLADE_COLOR, light,
+        vertex(pose, buffer, (float) Math.cos(angle) * radius, (float) Math.sin(angle) * radius, z, ShellTiles.WHITE_U, ShellTiles.WHITE_V, BLADE_COLOR, light,
                 0.0F, 0.0F, 1.0F);
     }
 
     /**
-     * A port's hatch where a pipe plugged into it meets the turbine: on the cap for ports inside the
-     * cap's disc, otherwise on the cylinder, on the side the port sticks out to.
+     * A port's hatch where a pipe plugged into it meets the turbine: on the cap for ports inside the cap, otherwise a plate standing
+     * out of the facet the line from the axis through the port crosses, kept on that facet.
      */
     private static void hatch(PoseStack.Pose pose, VertexConsumer buffer, Vector3f port, TurbineSize size, float radius, int light) {
         float x = port.x();
@@ -198,29 +246,18 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
         boolean cap = z == 0 || z == size.length() - 1;
         if (cap && Math.sqrt(x * x + y * y) <= radius - 0.5F) {
             boolean atFront = z == 0;
-            plate(pose, buffer, x, y, atFront ? -0.5F - OFFSET : size.length() - 0.5F + OFFSET, atFront ? Direction.NORTH : Direction.SOUTH, 0.8F, light);
-        } else if (Math.abs(x) >= Math.abs(y)) {
-            float out = (float) Math.sqrt(Math.max(0.0F, radius * radius - y * y)) + OFFSET;
-            plate(pose, buffer, Math.signum(x) * out, y, z, x > 0 ? Direction.EAST : Direction.WEST, 0.8F, light);
-        } else {
-            float out = (float) Math.sqrt(Math.max(0.0F, radius * radius - x * x)) + OFFSET;
-            plate(pose, buffer, x, Math.signum(y) * out, z, y > 0 ? Direction.UP : Direction.DOWN, 0.8F, light);
+            float face = atFront ? -0.512F : size.length() - 0.5F;
+            ShellTiles.raisedPlate(pose, buffer, x, y, face, 0.0F, 0.0F, atFront ? -1.0F : 1.0F, 0.0F, 1.0F, 0.0F, HATCH_HALF, PLATE_HEIGHT, light);
+            return;
         }
-    }
-
-    /** A square plate of side {@code size} centred on (x, y, z), facing {@code side} of the local frame. */
-    private static void plate(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, Direction side, float size, int light) {
-        float h = size / 2;
-        // Two axes spanning the plate
-        Vector3f n = side.step();
-        Vector3f a = side.getAxis() == Direction.Axis.Y ? new Vector3f(1, 0, 0) : new Vector3f(0, 1, 0);
-        Vector3f b = new Vector3f(n).cross(a);
-        for (float[] c : new float[][] {{-1, -1, 1, 1}, {1, -1, 0, 1}, {1, 1, 0, 0}, {-1, 1, 1, 0}}) {
-            float px = x + (b.x() * c[0] + a.x() * c[1]) * h;
-            float py = y + (b.y() * c[0] + a.y() * c[1]) * h;
-            float pz = z + (b.z() * c[0] + a.z() * c[1]) * h;
-            vertex(pose, buffer, px, py, pz, c[2], c[3], 0xFFFFFFFF, light, n.x(), n.y(), n.z());
-        }
+        double step = Math.PI * 2 / SEGMENTS;
+        double facet = Math.round(Math.atan2(y, x) / step) * step;
+        float nx = (float) Math.cos(facet);
+        float ny = (float) Math.sin(facet);
+        float along = -x * ny + y * nx;
+        float room = Math.max(0.0F, radius * (float) Math.tan(Math.PI / SEGMENTS) - HATCH_HALF);
+        along = Mth.clamp(along, -room, room);
+        ShellTiles.raisedPlate(pose, buffer, nx * radius - ny * along, ny * radius + nx * along, z, nx, ny, 0.0F, 0.0F, 0.0F, 1.0F, HATCH_HALF, PLATE_HEIGHT, light);
     }
 
     private static void vertex(PoseStack.Pose pose, VertexConsumer buffer, float x, float y, float z, float u, float v,
