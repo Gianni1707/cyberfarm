@@ -37,7 +37,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The Acid comes from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l); the uranium from $(l:nuclear/uranium)uranium ore$(/l). Feed the Fabricator with hoppers, pipes or a $(l:drone_systems/modules)Transport drone$(/l) and keep your circuits stocked with the dock filter's $(l)limit$()."
+      "text": "The Acid comes from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l); the uranium from $(l:nuclear/uranium)uranium ore$(/l). Feed the Fabricator with hoppers, pipes or a $(l:drone_systems/modules)Transport drone$(/l) and keep your circuits stocked with the dock filter's $(l)limit$(). A hopper underneath takes out only the finished circuits, never the ingredients."
     },
     {
       "type": "patchouli:crafting",

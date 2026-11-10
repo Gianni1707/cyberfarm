@@ -88,7 +88,8 @@ public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements 
         int moved = 0;
         for (int i = 0; i < count && moved < amount; i++) {
             ConduitNetwork.Endpoint target = targets.get((start + i) % count);
-            if (target.source()) {
+            // Nor a block whose chunk went away since the network was walked: asking it would load the chunk again
+            if (target.source() || !level.isLoaded(target.pos())) {
                 continue;
             }
             H receiver = Caps.find(capability, level, target.pos(), target.side());

@@ -81,11 +81,6 @@ public class DroneAssemblerMenu extends MachineMenu {
         return true;
     }
 
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
-    }
-
     public boolean isAssembling() {
         return extra(2) != 0;
     }

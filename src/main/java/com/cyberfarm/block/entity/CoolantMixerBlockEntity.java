@@ -55,11 +55,12 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
         return null;
     }
 
+    /** While it pushes its own Coolant out: a pipe would hand it straight back to the input, which then takes no water. */
+    private boolean pushing;
     private final GasTank input = new GasTank(TANK_CAPACITY,
-            resource -> resource.is(Fluids.WATER.getFluidType()) || resource.is(ModFluids.COOLANT_TYPE.get()), this::setChanged);
+            resource -> !pushing && (resource.is(Fluids.WATER.getFluidType()) || resource.is(ModFluids.COOLANT_TYPE.get())), this::setChanged);
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {input}, output);
-    private int progress;
     /** What the clients last heard, so the fluid in the sight glasses stays up to date. */
     private int syncedInput = -1;
     private int syncedOutput = -1;
@@ -97,21 +98,15 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
         boolean canRun = open && recipe != null && input.amount() >= BATCH
                 && output.capacity() - output.amount() >= BATCH
                 && (output.amount() == 0 || output.fluid() == recipe.output());
-        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
-            if (++progress >= workTime(PROCESS_TIME)) {
-                progress = 0;
-                input.drain(BATCH);
-                output.fill(recipe.output(), BATCH);
-                ItemStack item = getStack(0);
-                setStack(0, item.copyWithCount(item.getCount() - 1));
-                level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            input.drain(BATCH);
+            output.fill(recipe.output(), BATCH);
+            take(0, 1);
+            level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
+        pushing = true;
         output.pushToNeighbors(level, pos, OUTPUT_PER_SIDE);
+        pushing = false;
         if (level.getGameTime() % SYNC_INTERVAL == 0 && (input.amount() != syncedInput || output.amount() != syncedOutput)) {
             syncedInput = input.amount();
             syncedOutput = output.amount();
@@ -152,7 +147,6 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
         super.saveAdditional(out);
         input.serialize(out.child("input"));
         output.serialize(out.child("output"));
-        out.putInt("progress", progress);
     }
 
     @Override
@@ -160,7 +154,6 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
         super.loadAdditional(in);
         input.deserialize(in.childOrEmpty("input"));
         output.deserialize(in.childOrEmpty("output"));
-        progress = in.getIntOr("progress", 0);
     }
 
     @Override

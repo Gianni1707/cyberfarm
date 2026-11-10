@@ -121,7 +121,8 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private static final int ANCHOR_INTERVAL = 10;
     /** The chunks this dock keeps loaded now, as ChunkPos longs (saved, so it can let go of them after a restart). */
     private final Set<Long> anchored = new HashSet<>();
-    private int anchorCooldown;
+    /** Not at once after loading: the drone may not be back in the world yet, and the dock would let go of its chunks. */
+    private int anchorCooldown = 100;
     private static final int PULL_INTERVAL = 20;
     private int pullCooldown;
     /** The blocks the current layer misses, for the dock screen; worked out once per tick for all the data slots that show them. */
@@ -404,6 +405,21 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public void setDrone(@Nullable UUID id) {
         droneId = id;
         changedForClients();
+    }
+
+    /**
+     * Whether {@code id} is one of this dock's drones. The dock cannot see a drone in a chunk that is not loaded, and
+     * may have let its place go: a drone it lost track of takes a free place again, and has none if they are all taken.
+     */
+    public boolean keeps(UUID id) {
+        if (droneIds().contains(id)) {
+            return true;
+        }
+        if (droneCount() >= maxDrones()) {
+            return false;
+        }
+        setDrone(id);
+        return true;
     }
 
     public void releaseDrone(UUID id) {

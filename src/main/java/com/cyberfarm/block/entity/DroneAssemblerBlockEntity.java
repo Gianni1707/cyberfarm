@@ -56,7 +56,6 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     public static final int ASSEMBLY_TIME = 100;
     public static final int ENERGY_PER_TICK = 40;
 
-    private int progress;
     private boolean assembling;
 
     public DroneAssemblerBlockEntity(BlockPos pos, BlockState state) {
@@ -325,14 +324,12 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("progress", progress);
         output.putBoolean("assembling", assembling);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        progress = input.getIntOr("progress", 0);
         assembling = input.getBooleanOr("assembling", false);
     }
 

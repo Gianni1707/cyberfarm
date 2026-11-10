@@ -18,15 +18,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. While it works, the feeder punch behind its window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its free side, front or back: its top is full.$(br)Aluminum Ingots are tagged"
+      "text": "$(li)and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. While it works, the feeder punch behind its window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its free side, front or back: its top is full. A hopper underneath takes"
     },
     {
       "type": "patchouli:text",
-      "text": "forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every recipe, and their crushers and furnaces can process our ore."
+      "text": "$(li)out only the ingots, never the Alumina still waiting.$(br)Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every"
     },
     {
       "type": "patchouli:text",
-      "text": "Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
+      "text": "recipe, and their crushers and furnaces can process our ore.$(br2)Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
     },
     {
       "type": "patchouli:crafting",

@@ -1,5 +1,9 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.port.SlotRulesItemHandler;
+
+import net.minecraftforge.items.IItemHandler;
+
 import com.cyberfarm.port.PortBlockEntity;
 
 import com.cyberfarm.block.LitMachineBlock;
@@ -51,6 +55,10 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
     protected final ItemStacksResourceHandler items;
     /** Kept apart from {@link #items}, so pipes and hoppers never reach the addons. */
     protected final ItemStacksResourceHandler addons;
+    /** What hoppers and pipes see of {@link #items}: what a slot accepts goes in, only the output slots give anything out. */
+    private final IItemHandler automationItems;
+    /** Ticks into the current batch, for the machines that work in batches (see {@link #work}). */
+    protected int progress;
     private final int baseCapacity;
     private final int baseMaxInsert;
     private final int baseMaxExtract;
@@ -129,9 +137,37 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
                 setChanged();
             }
         };
+        this.automationItems = new SlotRulesItemHandler(items, slot -> true, this::isOutput);
     }
 
     public abstract void serverTick(ServerLevel level, BlockPos pos, BlockState state);
+
+    public IItemHandler automationItems() {
+        return automationItems;
+    }
+
+    /** Whether automation may take items out of the slot: any slot, unless the machine keeps its inputs in. */
+    protected boolean isOutput(int index) {
+        return true;
+    }
+
+    /**
+     * One tick of a batch: uses FE while the machine can run, and tells when the batch is done. A machine that
+     * cannot run loses what it had done; one that only lacks FE waits.
+     */
+    protected boolean work(boolean canRun, int baseEnergy, int baseTicks) {
+        if (canRun && energy.consume(energyPerTick(baseEnergy))) {
+            setChanged();
+            if (++progress >= workTime(baseTicks)) {
+                progress = 0;
+                return true;
+            }
+        } else if (!canRun && progress != 0) {
+            progress = 0;
+            setChanged();
+        }
+        return false;
+    }
 
     /** Whether this machine has addon slots: the ones that use FE to work. */
     public boolean takesAddons() {
@@ -273,6 +309,12 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
         setStack(slot, stack.isEmpty() ? new ItemStack(item) : stack.copyWithCount(stack.getCount() + 1));
     }
 
+    /** Takes {@code count} items out of the slot, which must hold that many. */
+    protected void take(int slot, int count) {
+        ItemStack stack = getStack(slot);
+        setStack(slot, stack.copyWithCount(stack.getCount() - count));
+    }
+
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
@@ -284,6 +326,7 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
         energy.serialize(output.child("energy"));
         items.serialize(output.child("items"));
         addons.serialize(output.child("addons"));
+        output.putInt("progress", progress);
     }
 
     @Override
@@ -293,6 +336,7 @@ public abstract class MachineBlockEntity extends PortBlockEntity implements Menu
         addons.deserialize(input.childOrEmpty("addons"));
         applyAddons();
         energy.deserialize(input.childOrEmpty("energy"));
+        progress = input.getIntOr("progress", 0);
         // Deserializing straight into the handler would adopt the saved slot count, which breaks
         // the menu when a machine gained slots in an update. Load into a copy, keep what fits.
         ItemStacksResourceHandler saved = new ItemStacksResourceHandler(items.size());

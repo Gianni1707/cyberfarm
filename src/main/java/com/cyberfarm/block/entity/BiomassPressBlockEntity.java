@@ -47,12 +47,8 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     private static final int OPEN_TICKS = 50;
     private static final int SYNC_INTERVAL = 5;
 
-    private int progress;
     /** What the clients last heard, for the mash in the chamber. */
     private int syncedContents = -1;
-
-    /** What automation sees: waste goes in, only Biomass comes out. */
-    private final IItemHandler automationItems = new SlotRulesItemHandler(items, slot -> slot == INPUT, slot -> slot == OUTPUT);
 
     public BiomassPressBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.BIOMASS_PRESS.get(), pos, state, 2, CAPACITY, MAX_INPUT, 0);
@@ -69,10 +65,6 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     /** How much is inside, waste and Biomass, which the mash in the chamber shows. */
     public int contents() {
         return getStack(INPUT).getCount() + getStack(OUTPUT).getCount();
-    }
-
-    public IItemHandler automationItems() {
-        return automationItems;
     }
 
     @Override
@@ -96,25 +88,18 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
         ItemStack input = getStack(INPUT);
         float chance = biomassChance(input);
         boolean canRun = open && chance > 0.0F && hasRoomFor(OUTPUT, ModItems.BIOMASS.get());
-        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
-            if (++progress >= workTime(PROCESS_TIME)) {
-                progress = 0;
-                setStack(INPUT, input.copyWithCount(input.getCount() - 1));
-                if (level.getRandom().nextFloat() < chance) {
-                    addOne(OUTPUT, ModItems.BIOMASS.get());
-                }
-                level.playSound(null, pos, ModSounds.BIOMASS_PRESS_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            take(INPUT, 1);
+            if (level.getRandom().nextFloat() < chance) {
+                addOne(OUTPUT, ModItems.BIOMASS.get());
             }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+            level.playSound(null, pos, ModSounds.BIOMASS_PRESS_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
         if (level.getGameTime() % PUSH_INTERVAL == 0 && !getStack(OUTPUT).isEmpty()) {
             Direction nozzle = BiomassPressBlock.nozzle(state);
             IItemHandler target = Caps.items(level, pos.relative(nozzle), nozzle.getOpposite());
             if (target != null) {
-                ItemMoves.move(automationItems, target, resource -> true, 1, false);
+                ItemMoves.move(automationItems(), target, resource -> true, 1, false);
             }
         }
         if (level.getGameTime() % SYNC_INTERVAL == 0 && contents() != syncedContents) {
@@ -133,6 +118,12 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
         return index == INPUT && biomassChance(resource.toStack()) > 0.0F;
     }
 
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
+    }
+
     @Override
     protected int getExtraData(int id) {
         return switch (id) {
@@ -145,18 +136,6 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     @Override
     protected int getExtraDataCount() {
         return 2;
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putInt("progress", progress);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        progress = input.getIntOr("progress", 0);
     }
 
     @Override

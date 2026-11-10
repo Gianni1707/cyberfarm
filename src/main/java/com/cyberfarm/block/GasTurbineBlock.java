@@ -6,7 +6,6 @@ import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -57,10 +56,5 @@ public class GasTurbineBlock extends SmallMultiblockBlock {
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.GAS_TURBINE.get());
-    }
-
-    /** The rotor shows it works: no particles. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
     }
 }

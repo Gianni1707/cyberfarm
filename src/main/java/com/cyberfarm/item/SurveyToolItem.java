@@ -170,7 +170,9 @@ public class SurveyToolItem extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level world, Entity owner, int slot, boolean selected) {
         if (world instanceof ServerLevel level && owner instanceof Player player && (selected || player.getOffhandItem() == stack)
-                && level.getGameTime() - LAST_MESSAGE.getOrDefault(player, 0L) >= HINT_TICKS) {
+                && level.getGameTime() - LAST_MESSAGE.getOrDefault(player, 0L) >= HINT_TICKS
+                // Far from the dock no hint: looking it up would load its chunk every time
+                && (!ModDataComponents.LINKED_DOCK.has(stack) || level.isLoaded(ModDataComponents.LINKED_DOCK.get(stack)))) {
             message(player, nextStep(level, stack));
         }
     }

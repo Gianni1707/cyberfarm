@@ -157,7 +157,7 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         }
         ItemStack biomass = new ItemStack(ModItems.BIOMASS.get());
         byChance.forEach((chance, items) -> all.add(new MachineExample(Machine.BIOMASS_PRESS, List.of(items), List.of(), List.of(biomass), List.of(),
-                List.of(note("chance", biomass.getHoverName(), chance), note("time_energy", BiomassPressBlockEntity.PROCESS_TIME / 20, BiomassPressBlockEntity.ENERGY_PER_TICK)))));
+                List.of(note("chance_percent", biomass.getHoverName(), chance), note("time_energy", BiomassPressBlockEntity.PROCESS_TIME / 20, BiomassPressBlockEntity.ENERGY_PER_TICK)))));
         all.add(new MachineExample(Machine.BIO_DIGESTER, List.of(List.of(biomass)), List.of(), List.of(),
                 List.of(new FluidAmount(ModFluids.BIOGAS.get(), BioDigesterBlockEntity.MB_PER_BIOMASS)),
                 List.of(note("time_energy", BioDigesterBlockEntity.PROCESS_TIME / 20, BioDigesterBlockEntity.ENERGY_PER_TICK))));

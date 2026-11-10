@@ -84,8 +84,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         @Override
         protected void onContentsChanged(int index, ItemStack previousContents) {
             if (!loading && docked != null && level != null) {
-                // A run still going finishes now: the new one carries every change
-                applyFit();
+                // The mech has it at once: the slots are not saved, so a change still waiting for the arm when the
+                // world closed left the module both in the player's hands and on the mech, or in neither
+                docked.setModules(maskOf());
                 fitModule = index;
                 fitInstall = !getResource(index).isEmpty();
                 fitStart = level.getGameTime();
@@ -112,7 +113,7 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
     private int fitModule = -1;
     private long fitStart;
     private boolean fitInstall;
-    /** The slots changed but the arm has not reached the mech yet. */
+    /** The arm is on its way to the mount: its run is for show, the mech has the modules already. */
     private boolean fitPending;
 
     public MechHangarBlockEntity(BlockPos pos, BlockState state) {
@@ -131,14 +132,6 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             }
         }
         return mask;
-    }
-
-    /** The arm reaches the mount: the docked mech gets the slots' modules. */
-    private void applyFit() {
-        if (fitPending && docked != null) {
-            docked.setModules(maskOf());
-        }
-        fitPending = false;
     }
 
     /** Client side: which mount the arm is working on (-1 none), how far through its run (0 to 1), and whether it carries a module in. */
@@ -222,7 +215,8 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
 
     /** The console's Fold button: the parked mech folds back into its frame. */
     public void foldDocked() {
-        if (docked != null) {
+        // Only a whole mech: its frame keeps the charge and the modules, not the damage, so folding would repair it for free
+        if (docked != null && docked.getHealth() >= docked.getMaxHealth()) {
             docked.startFold();
         }
     }
@@ -270,14 +264,14 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             parked = mechs.isEmpty() ? null : mechs.get(0);
         }
         if (parked != docked) {
-            applyFit();
+            fitPending = false;
             docked = parked;
             mirror(parked);
         }
         if (fitModule >= 0) {
             long elapsed = level.getGameTime() - fitStart;
             if (fitPending && elapsed >= FIT_TIME / 2) {
-                applyFit();
+                fitPending = false;
                 level.playSound(null, padCentre().above(3), ModSounds.HANGAR_FIT.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             } else if (elapsed == FIT_TIME * 7 / 10) {
                 level.playSound(null, padCentre().above(5), ModSounds.HANGAR_ARM.get(), SoundSource.BLOCKS, 1.0F, 0.9F);
@@ -387,8 +381,7 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         if (level != null) {
             setPartsFormed(level, false);
         }
-        // The slots only mirror the mech: nothing of theirs is dropped, and a module on its way is fitted
-        applyFit();
+        // The slots only mirror the mech: nothing of theirs is dropped
         mirror(null);
     }
 

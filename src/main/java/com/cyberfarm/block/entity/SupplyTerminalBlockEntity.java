@@ -654,7 +654,10 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
 
     /** A filled contract: its pay, the mechanist's experience, the village's goodwill and its prosperity. */
     private void complete(ServerLevel level, Contract contract) {
-        pending.add(new ItemStack(Items.EMERALD, contract.emeralds));
+        // In stacks: one of more than 99 cannot be saved
+        for (int left = contract.emeralds; left > 0; left -= 64) {
+            pending.add(new ItemStack(Items.EMERALD, Math.min(left, 64)));
+        }
         if (!contract.bonus.isEmpty()) {
             pending.add(contract.bonus.copy());
         }

@@ -46,13 +46,17 @@
       "text": "Breaking a block $(l)loses what that block held$(); the rest stays in the other blocks, which join up again where they can."
     },
     {
+      "type": "patchouli:text",
+      "text": "A tank built across a chunk border gives and takes nothing while only a part of it is loaded (far from every player, at the edge of what a drone's Anchor Addon keeps loaded): it works again as soon as the rest is back."
+    },
+    {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:liquid_tank",
       "recipe2": "cyberfarm:gas_tank"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:liquid_tank": 10,
+    "cyberfarm:liquid_tank": 11,
     "cyberfarm:gas_tank": 1
   }
 }

@@ -312,11 +312,14 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     }
 
     /** What ports expose for items: Fuel Rods go in, Depleted Fuel Rods come out. */
-    private final IItemHandler automationItems = new SlotRulesItemHandler(items, slot -> slot < FUEL_SLOTS, slot -> slot >= FUEL_SLOTS);
+    @Override
+    protected boolean isOutput(int index) {
+        return index >= FUEL_SLOTS;
+    }
 
     @Override
     public IItemHandler portItems() {
-        return automationItems;
+        return automationItems();
     }
 
     /** What ports expose for fluids: water and coolant go in, steam comes out. */

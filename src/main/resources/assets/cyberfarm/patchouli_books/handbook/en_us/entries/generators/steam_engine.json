@@ -53,7 +53,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The engine needs about $(l)5 seconds$() to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out. It stops burning fuel when its buffer (200,000 FE) is full."
+      "text": "The engine needs about $(l)5 seconds$() to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out. With its buffer (200,000 FE) nearly full it burns only the gas for the power that still fits, and it stops when the buffer is full."
     },
     {
       "type": "patchouli:text",

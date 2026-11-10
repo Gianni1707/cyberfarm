@@ -16,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
@@ -36,8 +35,6 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int ENERGY_PER_TICK = 80;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
-
-    private int progress;
 
     public ElectrolyzerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.ELECTROLYZER.get(), pos, state, 2, CAPACITY, MAX_INPUT, 0);
@@ -66,24 +63,22 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         boolean canRun = open && getStack(INPUT).is(ALUMINA) && hasRoomFor(OUTPUT, ModItems.ALUMINUM_INGOT.get());
-        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
-            if (++progress >= workTime(PROCESS_TIME)) {
-                progress = 0;
-                ItemStack input = getStack(INPUT);
-                setStack(INPUT, input.copyWithCount(input.getCount() - 1));
-                addOne(OUTPUT, ModItems.ALUMINUM_INGOT.get());
-                level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 0.8F, 1.3F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            take(INPUT, 1);
+            addOne(OUTPUT, ModItems.ALUMINUM_INGOT.get());
+            level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 0.8F, 1.3F);
         }
     }
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
         return index == INPUT && isAlumina(resource);
+    }
+
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
     }
 
     @Override
@@ -98,18 +93,6 @@ public class ElectrolyzerBlockEntity extends SmallMultiblockBlockEntity {
     @Override
     protected int getExtraDataCount() {
         return 2;
-    }
-
-    @Override
-    protected void saveAdditional(ValueOutput output) {
-        super.saveAdditional(output);
-        output.putInt("progress", progress);
-    }
-
-    @Override
-    protected void loadAdditional(ValueInput input) {
-        super.loadAdditional(input);
-        progress = input.getIntOr("progress", 0);
     }
 
     @Override

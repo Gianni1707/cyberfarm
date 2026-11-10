@@ -59,6 +59,49 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
     private Fluid shownFluid = Fluids.EMPTY;
     private int shownAmount;
     private @Nullable Handler handler;
+    /**
+     * Goes up whenever a tank block comes or goes, with its chunk too: the handlers kept are then built again. One that
+     * went on holding the tank of a block since unloaded and loaded again would fill and drain a tank nobody saves.
+     */
+    private static volatile int generation;
+    private int handlerGeneration;
+    /** What pipes and buckets get: always the tank's handler of the moment, however often it is built again. */
+    private final IFluidHandler pipes = new IFluidHandler() {
+        @Override
+        public int getTanks() {
+            return handler().getTanks();
+        }
+
+        @Override
+        public FluidStack getFluidInTank(int tank) {
+            return handler().getFluidInTank(tank);
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return handler().getTankCapacity(tank);
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, FluidStack stack) {
+            return handler().isFluidValid(tank, stack);
+        }
+
+        @Override
+        public int fill(FluidStack resource, FluidAction action) {
+            return handler().fill(resource, action);
+        }
+
+        @Override
+        public FluidStack drain(FluidStack resource, FluidAction action) {
+            return handler().drain(resource, action);
+        }
+
+        @Override
+        public FluidStack drain(int maxDrain, FluidAction action) {
+            return handler().drain(maxDrain, action);
+        }
+    };
 
     public FluidTankBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FLUID_TANK.get(), pos, state, 0, 0, 0, 0);
@@ -101,12 +144,12 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
         return (boxMax.getX() - boxMin.getX() + 1) * (boxMax.getY() - boxMin.getY() + 1) * (boxMax.getZ() - boxMin.getZ() + 1);
     }
 
-    /** The tank's blocks, from the bottom up, so it fills like a tank. */
+    /** The tank's blocks that are loaded, from the bottom up, so it fills like a tank. */
     private List<FluidTankBlockEntity> cells() {
         List<FluidTankBlockEntity> cells = new ArrayList<>();
         if (level != null) {
             for (BlockPos at : BlockPos.betweenClosed(boxMin, boxMax)) {
-                if (level.getBlockEntity(at) instanceof FluidTankBlockEntity cell) {
+                if (level.isLoaded(at) && level.getBlockEntity(at) instanceof FluidTankBlockEntity cell) {
                     cells.add(cell);
                 }
             }
@@ -125,14 +168,50 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
     }
 
     /**
-     * What pipes and buckets deal with: all the tank's blocks as one. Kept, since every transfer asks what the tank holds.
-     * shortcut: a tank across a chunk border can keep missing the blocks that weren't loaded when this was built, until it next changes or reloads; rebuild on chunk load if it shows.
+     * What pipes and buckets deal with: all the tank's blocks as one. Kept, since every transfer asks what the tank holds,
+     * and shared by the tank's blocks. A tank with a part in a chunk that is not loaded gives and takes nothing until
+     * the rest is back: half a tank could take in a second fluid.
      */
     public Handler handler() {
-        if (handler == null) {
-            handler = new Handler(cells().stream().map(cell -> cell.tank).toArray(GasTank[]::new));
+        if (handler == null || handlerGeneration != generation) {
+            int now = generation;
+            List<FluidTankBlockEntity> cells = cells();
+            Handler built = new Handler(whole() ? cells.stream().map(cell -> cell.tank).toArray(GasTank[]::new) : new GasTank[0]);
+            for (FluidTankBlockEntity cell : cells) {
+                // Not a block still to be told of a new box
+                if (cell.boxMin.equals(boxMin) && cell.boxMax.equals(boxMax)) {
+                    cell.handler = built;
+                    cell.handlerGeneration = now;
+                }
+            }
+            handler = built;
+            handlerGeneration = now;
         }
         return handler;
+    }
+
+    /** Whether every chunk the tank stands in is loaded: its four corners tell, as a tank is no wider than a chunk. */
+    private boolean whole() {
+        return level != null && level.isLoaded(boxMin) && level.isLoaded(boxMax)
+                && level.isLoaded(new BlockPos(boxMin.getX(), boxMin.getY(), boxMax.getZ()))
+                && level.isLoaded(new BlockPos(boxMax.getX(), boxMin.getY(), boxMin.getZ()));
+    }
+
+    /** What other blocks are handed: it leads to the handler of the moment, however long a pipe keeps hold of it. */
+    public IFluidHandler pipes() {
+        return pipes;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        generation++;
+    }
+
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        generation++;
     }
 
     /** Client side, for the renderer: how full the whole tank is, 0 to 1, and with what, from the block running it. */
@@ -159,7 +238,8 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
     /** Only the block running the tank does anything: pipes and buckets do the moving. */
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        if (!pos.equals(boxMin)) {
+        // Nor while a part of the tank is not loaded: it would look empty, and free to join a tank of another fluid
+        if (!pos.equals(boxMin) || handler().getTanks() == 0) {
             return;
         }
         if (growSoon || level.getGameTime() % GROW_INTERVAL == 0) {

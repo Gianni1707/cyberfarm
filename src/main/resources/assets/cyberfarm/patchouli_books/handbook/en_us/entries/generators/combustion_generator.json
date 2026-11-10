@@ -14,7 +14,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)One coal$(): 48,000 FE$(br)The generator $(l)pushes power automatically$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods. It only burns fuel when its buffer is not full, so no fuel is wasted."
+      "text": "$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)One coal$(): 48,000 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The generator $(l)pushes power automatically$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods. Its fire holds while its buffer is full and goes on when there is room again, so no fuel is wasted."
     },
     {
       "type": "patchouli:text",
@@ -26,6 +30,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:combustion_generator": 4
+    "cyberfarm:combustion_generator": 5
   }
 }

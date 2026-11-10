@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import java.util.Locale;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -198,7 +199,7 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         if (network != null) {
             for (GlobalPos receiver : network.receivers) {
                 labels.add(receiver.dimension() == server.dimension()
-                        ? String.format("%,d blocks", Math.round(Math.sqrt(receiver.pos().distSqr(worldPosition))))
+                        ? String.format(Locale.ROOT, "%,d blocks", Math.round(Math.sqrt(receiver.pos().distSqr(worldPosition))))
                         : receiver.dimension().location().getPath().replace('_', ' '));
             }
         }

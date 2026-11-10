@@ -99,11 +99,11 @@ public class SteamEngineBlockEntity extends SmallMultiblockBlockEntity {
         running = open && tank.amount() >= burn && !energy.isFull();
         output = 0;
         if (running) {
-            int perMb = fePerMb(tank.fluid());
-            tank.drain(burn);
             speed = Math.min(1.0F, speed + SPIN_UP);
-            output = (int) (speed * burn * perMb);
-            energy.generate(output);
+            int power = (int) (speed * burn * fePerMb(tank.fluid()));
+            output = energy.generate(power);
+            // Nor for the part of it that found no room: with a buffer nearly full it throttles down to what is drawn
+            tank.drain(power > 0 ? (burn * output + power - 1) / power : burn);
             if (level.getGameTime() % 10 == 0) {
                 level.playSound(null, pos, ModSounds.STEAM_TURBINE_WORK.get(), SoundSource.BLOCKS, 0.4F + 0.4F * speed, 0.6F + 0.6F * speed);
             }

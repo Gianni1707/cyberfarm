@@ -146,7 +146,7 @@ public class MechHangarScreen extends MachineScreen<MechHangarMenu> {
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         if (menu.getStatus() != 0 && isHovering(BAR_X, FOLD_Y, BAR_WIDTH, FOLD_HEIGHT, mouseX, mouseY)) {
-            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.hangar.fold.tooltip"), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, Component.translatable(menu.getMechIntegrity() < 100 ? "gui.cyberfarm.hangar.fold.damaged" : "gui.cyberfarm.hangar.fold.tooltip"), mouseX, mouseY);
         }
         if (menu.getStatus() != 0 && isHovering(BAR_X, 32, BAR_WIDTH, 14, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.hangar.mech_tooltip",

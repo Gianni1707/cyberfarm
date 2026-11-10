@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l:generators/methane_extractor)Extractor$(/l) or a gas tank, on its front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber, drawing the fiber behind it; if the shuttle stops, so has the machine."
+      "text": "$(l:generators/methane_extractor)Extractor$(/l) or a gas tank, on its front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber, drawing the fiber behind it; if the shuttle stops, so has the machine. A hopper underneath takes out only the Carbon Fiber, never the String."
     },
     {
       "type": "patchouli:text",

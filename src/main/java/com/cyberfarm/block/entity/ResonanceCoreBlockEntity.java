@@ -315,7 +315,8 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
     }
 
     /**
-     * A core lined up with the pylon column, looked for along the four sides of its bottom block;
+     * A core lined up with the pylon column, looked for along the four sides of each of its blocks from the bottom up
+     * (the core counts the column from its own level, which need not be the column's bottom);
      * with {@code linked} only one that counts this column among its pylons.
      */
     private static @Nullable ResonanceCoreBlockEntity nearbyCore(Level level, BlockPos pylon, boolean linked) {
@@ -323,12 +324,14 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         while (level.getBlockState(base.below()).is(ModBlocks.STABILIZER_PYLON.get())) {
             base = base.below();
         }
-        for (Direction side : Direction.Plane.HORIZONTAL) {
-            for (int distance = 1; distance <= maxDistance(MAX_TIER); distance++) {
-                BlockPos pos = base.relative(side, distance);
-                if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ResonanceCoreBlockEntity core
-                        && (!linked || core.pylonDistance(side.getOpposite()) == distance)) {
-                    return core;
+        for (; level.getBlockState(base).is(ModBlocks.STABILIZER_PYLON.get()); base = base.above()) {
+            for (Direction side : Direction.Plane.HORIZONTAL) {
+                for (int distance = 1; distance <= maxDistance(MAX_TIER); distance++) {
+                    BlockPos pos = base.relative(side, distance);
+                    if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ResonanceCoreBlockEntity core
+                            && (!linked || core.pylonDistance(side.getOpposite()) == distance)) {
+                        return core;
+                    }
                 }
             }
         }

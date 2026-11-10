@@ -62,11 +62,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It $(l)only works with a surveyed area$(): the default area around the dock is never dug, so your base is safe. Mark the area with the $(l:drone_systems/drone_dock)Survey Tool$(/l).$(br)$(li)Blocks drop as if mined with a $(l)diamond pickaxe$(). Add Fortune or Silk Touch with $(l:drone_systems/addons)addons$(/l)."
+      "text": "$(li)It $(l)only works with a surveyed area$(): the default area around the dock is never dug, so your base is safe. Mark the area with the $(l:drone_systems/drone_dock)Survey Tool$(/l).$(br)$(li)Blocks drop as if mined with a $(l)diamond pickaxe$(). Add Fortune or Silk Touch with $(l:drone_systems/addons)addons$(/l).$(br)$(li)It skips $(l)liquids$(), $(l)unbreakable blocks$() and"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It skips $(l)liquids$(), $(l)unbreakable blocks$() and anything with an inventory or a machine inside (chests, furnaces, CyberFarm machines).$(br)$(li)The column right under the Drone Dock is never dug, so the dock stays on a pillar."
+      "text": "$(li)anything with an inventory or a machine inside (chests, furnaces, CyberFarm machines). What lies $(l)under$() one of those stays too, and so does the ground under anything solid that rises above the top of the area (a tree, a hillside): mark the area high enough to take it in."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The column right under the Drone Dock is never dug, so the dock stays on a pillar."
     },
     {
       "type": "patchouli:text",
@@ -159,11 +163,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Trips are $(l)one way$(): put a second dock with its own Taxi drone at the destination to fly back.$(br)$(li)Before taking off the drone checks it has enough charge for the trip and the way back.$(br)$(li)$(l)Sneak$() to let go mid-flight: you get $(l)Slow Falling$(), so you land safely."
+      "text": "$(li)Trips are $(l)one way$(): put a second dock with its own Taxi drone at the destination to fly back.$(br)$(li)On a long trip the dock can fall out of the loaded world behind you: the drone still takes you all the way, then waits where it left you and flies home once its dock is loaded again."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Speed Addons make the trip faster."
+      "text": "$(li)Before taking off the drone checks it has enough charge for the trip and the way back.$(br)$(li)$(l)Sneak$() to let go mid-flight: you get $(l)Slow Falling$(), so you land safely.$(br)$(li)Speed Addons make the trip faster."
     },
     {
       "type": "patchouli:crafting",
@@ -382,18 +386,18 @@
   "extra_recipe_mappings": {
     "cyberfarm:harvester_module": 6,
     "cyberfarm:quarry_module": 11,
-    "cyberfarm:transport_module": 18,
-    "cyberfarm:planter_module": 24,
-    "cyberfarm:logger_module": 28,
-    "cyberfarm:taxi_module": 33,
-    "cyberfarm:rancher_module": 39,
-    "cyberfarm:fertilizer_module": 42,
-    "cyberfarm:builder_module": 46,
-    "cyberfarm:fisher_module": 59,
-    "cyberfarm:breeder_module": 62,
-    "cyberfarm:guard_module": 66,
-    "cyberfarm:bomb_module": 72,
-    "cyberfarm:sponge_module": 77,
-    "cyberfarm:tank_module": 83
+    "cyberfarm:transport_module": 19,
+    "cyberfarm:planter_module": 25,
+    "cyberfarm:logger_module": 29,
+    "cyberfarm:taxi_module": 34,
+    "cyberfarm:rancher_module": 40,
+    "cyberfarm:fertilizer_module": 43,
+    "cyberfarm:builder_module": 47,
+    "cyberfarm:fisher_module": 60,
+    "cyberfarm:breeder_module": 63,
+    "cyberfarm:guard_module": 67,
+    "cyberfarm:bomb_module": 73,
+    "cyberfarm:sponge_module": 78,
+    "cyberfarm:tank_module": 84
   }
 }

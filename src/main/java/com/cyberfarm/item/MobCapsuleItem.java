@@ -58,7 +58,13 @@ public class MobCapsuleItem extends Item {
         }
         if (player.level() instanceof ServerLevel level) {
             CompoundTag saved = new CompoundTag();
-            mob.save(saved);
+            // A mob that rides is not saved at all, and one that is ridden would save its rider too
+            mob.stopRiding();
+            mob.ejectPassengers();
+            if (!mob.save(saved)) {
+                player.displayClientMessage(Component.translatable("message.cyberfarm.capsule.refused"), true);
+                return InteractionResult.FAIL;
+            }
             ModDataComponents.CAPTURED_MOB.set(capsule, saved);
             level.playSound(null, mob.blockPosition(), SoundEvents.BUNDLE_INSERT, SoundSource.PLAYERS, 1.0F, 0.8F);
             mob.discard();

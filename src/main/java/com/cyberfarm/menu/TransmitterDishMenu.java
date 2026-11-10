@@ -24,7 +24,6 @@ public class TransmitterDishMenu extends MachineMenu {
     public static final int BUTTON_PUBLIC = DishNetworks.COLOURS.length;
     public static final int MODULE_X = 97, MODULE_Y = 17;
 
-    private final ContainerLevelAccess access;
     private final List<String> receivers;
     private String name;
 
@@ -40,7 +39,6 @@ public class TransmitterDishMenu extends MachineMenu {
     public TransmitterDishMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access,
             String name, List<String> receivers) {
         super(ModMenus.TRANSMITTER_DISH.get(), containerId, data, access, ModBlocks.TRANSMITTER_DISH.get());
-        this.access = access;
         this.name = name;
         this.receivers = receivers;
         addMachineSlot(items, TransmitterDishBlockEntity.MODULE, MODULE_X, MODULE_Y);

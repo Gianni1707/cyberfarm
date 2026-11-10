@@ -31,8 +31,6 @@ public class DroneDockMenu extends MachineMenu {
     public static final int BUTTON_FILTER = 0;
     public static final int BUTTON_PAUSE = 1;
 
-    private final ContainerLevelAccess access;
-
     public DroneDockMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(DroneDockBlockEntity.CARGO_SLOTS),
                 new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + DroneDockBlockEntity.EXTRA_DATA), ContainerLevelAccess.NULL,
@@ -42,7 +40,6 @@ public class DroneDockMenu extends MachineMenu {
     /** {@code block} is the dock's own block, a Drone Dock or a Builder Swarm Dock, so the menu stays open on either. */
     public DroneDockMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access, Block block) {
         super(ModMenus.DRONE_DOCK.get(), containerId, data, access, block);
-        this.access = access;
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 addMachineSlot(items, row * 3 + col, CARGO_X + col * 18, CARGO_Y + row * 18);

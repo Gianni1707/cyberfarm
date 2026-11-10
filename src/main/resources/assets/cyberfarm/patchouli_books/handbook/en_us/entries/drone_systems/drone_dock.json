@@ -11,7 +11,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)remembers the drone's $(l)work area$();$(br)$(li)holds an $(l)item filter$() for the Quarry and Transport modules.$(br)Power the dock with a $(l:generators/combustion_generator)Combustion Generator$(/l) placed next to it, or with cables from any mod. The harvest can be pulled out with hoppers or item pipes from any side."
+      "text": "$(li)remembers the drone's $(l)work area$();$(br)$(li)holds an $(l)item filter$() for the Quarry and Transport modules."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A dock cannot see a drone that is far off in a part of the world that is not loaded, and lets you place another: when the first one comes home and finds no place left, it lands on the dock as an item."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Power the dock with a $(l:generators/combustion_generator)Combustion Generator$(/l) placed next to it, or with cables from any mod. The harvest can be pulled out with hoppers or item pipes from any side."
     },
     {
       "type": "patchouli:text",
@@ -173,9 +181,9 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:drone_dock": 3,
-    "cyberfarm:survey_tool": 33,
-    "cyberfarm:dock_tank": 27,
-    "cyberfarm:swarm_dock": 34
+    "cyberfarm:drone_dock": 5,
+    "cyberfarm:survey_tool": 35,
+    "cyberfarm:dock_tank": 29,
+    "cyberfarm:swarm_dock": 36
   }
 }

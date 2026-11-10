@@ -111,7 +111,8 @@ public abstract class SmallMultiblockBlockEntity extends MachineBlockEntity {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
-        if (level instanceof ServerLevel server) {
+        // A loose machine holds no frames: the hidden ones in its cells are a neighbour's
+        if (level instanceof ServerLevel server && getBlockState().getValue(SmallMultiblockBlock.STAGE) != SmallMultiblockBlock.LOOSE) {
             releaseFrames(server, pos, getBlockState());
         }
     }
