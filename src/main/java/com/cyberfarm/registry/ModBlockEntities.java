@@ -20,6 +20,7 @@ import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
 import com.cyberfarm.block.entity.DroneAssemblerBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.block.entity.SwarmDockBlockEntity;
+import com.cyberfarm.block.entity.DockTankBlockEntity;
 import com.cyberfarm.block.entity.HologramTableBlockEntity;
 import com.cyberfarm.block.entity.EnergyConduitBlockEntity;
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
@@ -130,6 +131,8 @@ public class ModBlockEntities {
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SwarmDockBlockEntity>> SWARM_DOCK = BLOCK_ENTITIES.register("swarm_dock",
             () -> PortTypes.blockEntity(SwarmDockBlockEntity::new, Set.of(ModBlocks.SWARM_DOCK.get())));
 
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<DockTankBlockEntity>> DOCK_TANK = BLOCK_ENTITIES.register("dock_tank",
+            () -> PortTypes.blockEntity(DockTankBlockEntity::new, Set.of(ModBlocks.DOCK_TANK.get())));
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HologramTableBlockEntity>> HOLOGRAM_TABLE = BLOCK_ENTITIES.register("hologram_table",
             () -> PortTypes.blockEntity(HologramTableBlockEntity::new, Set.of(ModBlocks.HOLOGRAM_TABLE.get())));
 }

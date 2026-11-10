@@ -44,6 +44,7 @@ public class ModItems {
     public static final DeferredItem<BlockItem> DRONE_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.DRONE_DOCK);
     public static final DeferredItem<BlockItem> SWARM_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.SWARM_DOCK);
     public static final DeferredItem<BlockItem> HOLOGRAM_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.HOLOGRAM_TABLE);
+    public static final DeferredItem<BlockItem> DOCK_TANK = ITEMS.registerSimpleBlockItem(ModBlocks.DOCK_TANK);
     public static final DeferredItem<BlockItem> ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ADVANCED_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ADVANCED_ENERGY_CONDUIT);
     public static final DeferredItem<BlockItem> ELITE_ENERGY_CONDUIT = ITEMS.registerSimpleBlockItem(ModBlocks.ELITE_ENERGY_CONDUIT);
@@ -172,6 +173,10 @@ public class ModItems {
             p -> new DroneModuleItem(p, DroneTask.GUARD, 2));
     public static final DeferredItem<DroneModuleItem> BOMB_MODULE = ITEMS.registerItem("bomb_module",
             p -> new DroneModuleItem(p, DroneTask.BOMB, 1));
+    public static final DeferredItem<DroneModuleItem> SPONGE_MODULE = ITEMS.registerItem("sponge_module",
+            p -> new DroneModuleItem(p, DroneTask.SPONGE, 2));
+    public static final DeferredItem<DroneModuleItem> TANK_MODULE = ITEMS.registerItem("tank_module",
+            p -> new DroneModuleItem(p, DroneTask.TANK, 1));
 
     // Addons
     public static final DeferredItem<DroneAddonItem> SPEED_ADDON = ITEMS.registerItem("speed_addon",

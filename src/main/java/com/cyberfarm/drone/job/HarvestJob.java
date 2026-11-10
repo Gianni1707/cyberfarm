@@ -15,12 +15,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -31,7 +31,10 @@ import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import org.jspecify.annotations.Nullable;
 
-/** Harvester Module: harvests a mature crop (or melon/pumpkin) and replants it, and picks ripe plants that aren't crops. */
+/**
+ * Harvester Module: harvests a mature crop (or melon/pumpkin) and picks ripe plants that aren't crops. It does not replant:
+ * that takes a Planter Module, on the same drone or on another.
+ */
 public class HarvestJob extends DroneJob {
     public static final int ENERGY_COST = 40;
 
@@ -58,9 +61,12 @@ public class HarvestJob extends DroneJob {
         return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN) || isRipePlant(state);
     }
 
-    /** A plant that isn't a crop but ripens, at its last age: a berry bush, or a mod's bush or fruit. It is picked, never broken. */
+    /**
+     * A plant that isn't a crop but ripens, at its last age: a berry bush, or a mod's bush or fruit. It is picked, never broken.
+     * Crops and stems age and take bone meal too, but a click does nothing to them: a crop is cut, and a stem's fruit is what ripens.
+     */
     private static boolean isRipePlant(BlockState state) {
-        return state.getBlock() instanceof BonemealableBlock
+        return state.getBlock() instanceof BonemealableBlock && !(state.getBlock() instanceof CropBlock) && !(state.getBlock() instanceof StemBlock)
                 && state.getBlock().getStateDefinition().getProperty("age") instanceof IntegerProperty age
                 && state.getValue(age) == Collections.max(age.getPossibleValues());
     }
@@ -90,16 +96,6 @@ public class HarvestJob extends DroneJob {
         List<ItemStack> drops = Block.getDrops(state, level, target, null, drone, drone.miningTool(level));
         Effects.beam(level, drone, target);
         level.destroyBlock(target, false, drone);
-        if (state.getBlock() instanceof CropBlock crop) {
-            // A crop is never left gone: it grows back, on one of the seeds it dropped if it has any
-            for (ItemStack drop : drops) {
-                if (drop.getItem() instanceof BlockItem blockItem && blockItem.getBlock() == crop) {
-                    drop.shrink(1);
-                    break;
-                }
-            }
-            level.setBlock(target, crop.getStateForAge(0), Block.UPDATE_ALL);
-        }
         drone.cargo().collect(level, target, drops);
         drone.useJobEnergy(ENERGY_COST);
     }

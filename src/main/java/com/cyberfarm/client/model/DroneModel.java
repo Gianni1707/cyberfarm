@@ -23,7 +23,7 @@ import net.minecraft.util.Mth;
  * antenna with a glowing tip, four long diagonal arms with copper motors, spray nozzles and open
  * rotors, and landing gear. One tool per installed module: harvester head (centre, below), drill (front),
  * cargo claw (back), seed tank (top), saw (right side), taxi hook (hanging), laser gun (right
- * shoulder) and bomb (centre, below). Parts hanging under the skids tuck up while the drone is
+ * shoulder), bomb (centre, below), suction hood (centre, below) and a canister on the left flank. Parts hanging under the skids tuck up while the drone is
  * parked. Texture layout: 128x64, the tools from texgen's drone_tools() in the right half.
  */
 public class DroneModel extends EntityModel<DroneRenderState> {
@@ -57,11 +57,19 @@ public class DroneModel extends EntityModel<DroneRenderState> {
     private final ModelPart bladeLeft;
     private final ModelPart bladeRight;
     private final ModelPart bombVane;
+    private final ModelPart sponge;
+    private final ModelPart spongeTube;
+    private final ModelPart spongeHood;
+    private final ModelPart tank;
+    private final ModelPart tankHandle;
+    private final ModelPart tankShaft;
     private final ModelPart[] arms = new ModelPart[ARMS];
     /** The tools under the hull, from front to back when they share it. */
     private final ModelPart[] underHull;
     /** How far each of those reaches forward and back from its middle, in pixels. */
-    private static final float[] UNDER_HULL_DEPTH = {1.0F, 2.0F, 3.0F, 2.5F, 0.5F, 1.5F, 1.0F, 1.0F};
+    private static final float[] UNDER_HULL_DEPTH = {1.0F, 2.0F, 3.0F, 2.5F, 0.5F, 1.5F, 1.0F, 1.0F, 2.5F};
+    /** How wide the load in the claw shows, half of it in pixels: the jaws' toes rest against it. */
+    public static final float CARRIED_HALF_WIDTH = 1.2F;
     /** How far the hook hangs below its swing pivot when the cable is paid out. */
     private static final float HOOK_REACH = 10.0F;
     private final ModelPart[] rotors = new ModelPart[ARMS];
@@ -99,7 +107,13 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         this.bladeLeft = shears.getChild("blade_left");
         this.bladeRight = shears.getChild("blade_right");
         this.bombVane = bomb.getChild("vane");
-        this.underHull = new ModelPart[] {drill, harvester, shears, bomb, pump, breederTrough, claw, hook};
+        this.sponge = body.getChild("sponge");
+        this.spongeTube = sponge.getChild("tube");
+        this.spongeHood = sponge.getChild("hood");
+        this.tank = body.getChild("tank");
+        this.tankHandle = tank.getChild("handle");
+        this.tankShaft = tankHandle.getChild("shaft");
+        this.underHull = new ModelPart[] {drill, harvester, shears, bomb, pump, breederTrough, claw, hook, sponge};
         for (int i = 0; i < ARMS; i++) {
             arms[i] = body.getChild("arm" + i);
             rotors[i] = arms[i].getChild("motor").getChild("rotor");
@@ -182,9 +196,9 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(98, 17).addBox(-1.5F, 1.0F, -2.0F, 3.0F, 1.0F, 1.0F),
                 PartPose.ZERO);
 
-        // Planter: green seed tank on top, behind the core and clear of its mint band
+        // Planter: green seed tank on top, behind the core, clear of its mint band and narrowed to clear the rear arms
         body.addOrReplaceChild("seed_tank", CubeListBuilder.create()
-                        .texOffs(0, 40).addBox(-1.5F, -3.0F, 1.85F, 3.0F, 2.0F, 1.0F),
+                        .texOffs(0, 40).addBox(-1.5F, -3.0F, 1.85F, 3.0F, 2.0F, 1.0F, new CubeDeformation(-0.3F, 0.0F, 0.0F)),
                 PartPose.ZERO);
         // Planter and Fertilizer: a pump under the hull, a stem and a spray bar with nozzles, between the skids
         body.addOrReplaceChild("pump", CubeListBuilder.create()
@@ -241,11 +255,11 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(44, 40).addBox(-3.85F, -4.0F, -1.0F, 2.0F, 3.0F, 2.0F),
                 PartPose.ZERO);
 
-        // Guard: a laser gun on the right shoulder, its barrel pointing ahead, a red lens at the tip
+        // Guard: a laser gun on the right shoulder, clear of the core's band and the front arm, its barrel pointing ahead, a red lens at the tip
         body.addOrReplaceChild("laser", CubeListBuilder.create()
-                        .texOffs(0, 52).addBox(1.5F, -3.0F, -1.5F, 2.0F, 2.0F, 2.0F)
-                        .texOffs(8, 52).addBox(2.0F, -2.5F, -5.5F, 1.0F, 1.0F, 4.0F)
-                        .texOffs(20, 52).addBox(2.0F, -2.5F, -6.5F, 1.0F, 1.0F, 1.0F),
+                        .texOffs(0, 52).addBox(1.85F, -3.0F, -1.0F, 2.0F, 2.0F, 2.0F)
+                        .texOffs(8, 52).addBox(2.35F, -2.5F, -5.0F, 1.0F, 1.0F, 4.0F)
+                        .texOffs(20, 52).addBox(2.35F, -2.5F, -6.0F, 1.0F, 1.0F, 1.0F),
                 PartPose.ZERO);
 
         // Bomb: a banded charge slung under the hull, a red detonator at the bottom, an arming vane on its nose
@@ -258,6 +272,37 @@ public class DroneModel extends EntityModel<DroneRenderState> {
                         .texOffs(88, 17).addBox(-1.5F, -0.5F, -0.01F, 3.0F, 1.0F, 0.0F)
                         .texOffs(96, 17).addBox(-0.5F, -1.5F, 0.0F, 1.0F, 3.0F, 0.0F),
                 PartPose.offset(0.0F, 2.5F, -2.5F));
+
+        // Sponge: a housing under the hull; a tube slides out of it and lowers a hood over the liquid. Its rings and
+        // gauge lamp take the colour of the liquid, so DroneRenderer draws those
+        PartDefinition spongePart = body.addOrReplaceChild("sponge", CubeListBuilder.create()
+                        .texOffs(64, 40).addBox(-1.5F, 1.0F, -1.5F, 3.0F, 1.0F, 3.0F, new CubeDeformation(-0.05F)),
+                PartPose.ZERO);
+        spongePart.addOrReplaceChild("tube", CubeListBuilder.create()
+                        .texOffs(80, 40).addBox(-1.0F, 0.0F, -1.0F, 2.0F, 6.0F, 2.0F),
+                PartPose.offset(0.0F, 2.0F, 0.0F));
+        spongePart.addOrReplaceChild("hood", CubeListBuilder.create()
+                        .texOffs(88, 40).addBox(-2.5F, 0.0F, -2.5F, 5.0F, 1.0F, 5.0F),
+                PartPose.offset(0.0F, 2.0F, 0.0F));
+
+        // Tank: a windowed can clamped to the left flank, clear of the Sprayer over it and of what hangs under it, with a pump
+        // handle on the lid. Its liquid changes colour, so DroneRenderer draws that. Fractional sizes: whole boxes, shrunk, so the UVs stay whole
+        PartDefinition tankPart = body.addOrReplaceChild("tank", CubeListBuilder.create()
+                        .texOffs(64, 46).addBox(-5.6F, -0.9F, -2.0F, 3.0F, 1.0F, 4.0F, new CubeDeformation(-0.2F, -0.3F, -0.2F))
+                        .texOffs(64, 46).addBox(-5.6F, 2.15F, -2.0F, 3.0F, 1.0F, 4.0F, new CubeDeformation(-0.2F, -0.3F, -0.2F))
+                        .texOffs(80, 48).addBox(-5.7F, -0.375F, -2.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.3F, -0.175F, -0.3F))
+                        .texOffs(80, 48).addBox(-5.7F, -0.375F, 1.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.3F, -0.175F, -0.3F))
+                        .texOffs(80, 48).addBox(-3.5F, -0.375F, -2.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.3F, -0.175F, -0.3F))
+                        .texOffs(80, 48).addBox(-3.5F, -0.375F, 1.1F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.3F, -0.175F, -0.3F))
+                        .texOffs(96, 48).addBox(-3.85F, -0.375F, -1.5F, 1.0F, 3.0F, 3.0F, new CubeDeformation(-0.35F, -0.175F, -0.1F))
+                        .texOffs(88, 48).addBox(-3.35F, 0.1F, -1.0F, 1.0F, 1.0F, 2.0F, new CubeDeformation(-0.15F, -0.1F, 0.0F)),
+                PartPose.ZERO);
+        PartDefinition handlePart = tankPart.addOrReplaceChild("handle", CubeListBuilder.create()
+                        .texOffs(104, 48).addBox(-5.35F, -0.2F, -1.5F, 1.0F, 1.0F, 3.0F, new CubeDeformation(-0.05F, -0.2F, -0.25F)),
+                PartPose.offset(0.0F, -1.3F, 0.0F));
+        handlePart.addOrReplaceChild("shaft", CubeListBuilder.create()
+                        .texOffs(112, 48).addBox(-5.3F, 0.0F, -0.5F, 1.0F, 3.0F, 1.0F, new CubeDeformation(-0.2F, 0.0F, -0.2F)),
+                PartPose.offset(0.0F, 0.6F, 0.0F));
 
         return LayerDefinition.create(mesh, 128, 64);
     }
@@ -301,6 +346,23 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         claw.translateAndRotate(pose);
     }
 
+    /** Moves the pose to the Sponge Module's housing, following the body and the room it has among the other tools. */
+    public void translateToSponge(PoseStack pose) {
+        body.translateAndRotate(pose);
+        sponge.translateAndRotate(pose);
+    }
+
+    /** Moves the pose to the Tank Module: it sits on the body, in no one's slot under the hull. */
+    public void translateToTank(PoseStack pose) {
+        body.translateAndRotate(pose);
+    }
+
+    /** How far the Sponge Module's tube is out, in pixels. */
+    public static float spongeReach(DroneRenderState state) {
+        float out = state.hood * (1.0F - state.stow);
+        return (6.0F + 0.5F * Mth.sin(state.ageInTicks * 0.3F)) * out;
+    }
+
     @Override
     public void setupAnim(DroneRenderState state) {
         super.setupAnim(state);
@@ -328,8 +390,8 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         claw.visible = state.has(DroneTask.TRANSPORT) || state.has(DroneTask.BUILD);
         claw.y -= 2.0F * state.stow;
         builderLevel.visible = state.has(DroneTask.BUILD);
-        // The jaws shut on a load, and work slowly while they wait for one
-        float gap = state.carried.isEmpty() ? (0.75F + 0.75F * Mth.sin(state.ageInTicks * 0.16F)) * out : 0.0F;
+        // The jaws grip a load from its two sides, and work slowly while they wait for one
+        float gap = (state.carried.isEmpty() ? 0.75F + 0.75F * Mth.sin(state.ageInTicks * 0.16F) : CARRIED_HALF_WIDTH) * out;
         jawLeft.x = -gap;
         jawRight.x = gap;
         // The Breeder keeps its food in the Planter's tank, the Fisher casts with the Taxi's hook
@@ -361,6 +423,19 @@ public class DroneModel extends EntityModel<DroneRenderState> {
         bomb.visible = state.has(DroneTask.BOMB);
         bomb.y -= 2.0F * state.stow;
         bombVane.zRot = out > 0.0F ? state.ageInTicks * 0.6F : 0.0F;
+        sponge.visible = state.has(DroneTask.SPONGE);
+        float tube = spongeReach(state);
+        spongeTube.yScale = Math.max(tube, 0.01F) / 6.0F;
+        spongeHood.y += tube;
+        // 5 wide lowered; narrows before it comes up between the skids, and parked stays just clear of them
+        float wide = 0.56F + 0.44F * Mth.clamp((state.hood * out - 0.2F) / 0.8F, 0.0F, 1.0F);
+        spongeHood.xScale = wide;
+        spongeHood.zScale = wide;
+        tank.visible = state.has(DroneTask.TANK);
+        // The pump strokes while it works, stops with the handle down when parked; the rod stays just clear of the lid
+        float stroke = state.tankWork * out * (0.5F + 0.5F * Mth.sin(state.ageInTicks * 0.4F));
+        tankHandle.y -= 2.7F * stroke;
+        tankShaft.yScale = (0.08F + 2.7F * stroke) / 3.0F;
         shareUnderHull();
     }
 

@@ -19,6 +19,15 @@
     },
     {
       "type": "patchouli:text",
+      "text": "Tables placed side by side $(l)merge by themselves$(), with no frames: $(l)4$() in a square make a $(l)2x2$() and $(l)9$() make a $(l)3x3$(). A merged table has one bigger projection, reaches further and writes the $(l)name of every drone$() over its dot. Break a table and the others split up again.$(br)$(li)$(l)1x1$(): 16, 24, 32, no",
+      "title": "Bigger tables"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)2x2$(): 16, 24, 32, 48, yes$(br)$(li)$(l)3x3$(): 16, 24, 32, 48, 64, yes$(br)A drone's name is the one you gave it (rename it in an anvil, or use a name tag), or else what its first module makes it, such as $(o)Harvester Drone$()."
+    },
+    {
+      "type": "patchouli:text",
       "text": "$(li)The $(l)land$() around the table, in relief: hills, water, trees and buildings in the colours of a map. As on a vanilla map, slopes rising to the south are lighter and slopes falling away are darker, so the shape of the land reads at a glance.",
       "title": "What it shows"
     },
@@ -54,6 +63,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:hologram_table": 10
+    "cyberfarm:hologram_table": 12
   }
 }

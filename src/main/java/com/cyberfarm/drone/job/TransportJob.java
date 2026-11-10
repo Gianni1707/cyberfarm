@@ -44,6 +44,10 @@ public class TransportJob extends DroneJob {
         }
         IItemHandler from = inventory(level, source);
         IItemHandler to = inventory(level, destination);
+        // A tank at either end has no items, only liquid for a Tank Module
+        if (from == null || to == null) {
+            return null;
+        }
         // Only fly if at least one item could actually go from the source to the destination.
         if (ItemMoves.move(from, to, resource -> dock.filter().test(resource.toStack()) && room(to, resource, dock) > 0, 1, true) == 0) {
             return null;

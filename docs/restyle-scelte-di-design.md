@@ -273,7 +273,20 @@ Parte da una segnalazione degli amici che hanno provato la mod: il Bio-Digester 
 
 - **Limite di raggio del Transport:** 48 blocchi dal dock e chunk caricati restano, ma ora la guida li scrive. La segnalazione era sul limite non descritto.
 - **Timer del Supply Terminal:** via, perché era superfluo. Il tooltip degli eventi tiene il suo orologio.
-- **Harvester:** le piante che si raccolgono col clic non si spaccano. Le colture normali continuano a essere ripiantate, consumando un seme se ne è caduto uno.
+- **Harvester:** le piante che si raccolgono col clic non si spaccano. Le colture normali non vengono più ripiantate: serve il Planter, sullo stesso drone (telaio più potente) o su un altro.
+
+## Pannelli, droni e liquidi
+
+Scelte dell'utente, tutte provate in gioco col setup `/function cyberfarm:test_setup`.
+
+- **Overlay:** sopra la macchina, non in alto al centro né accanto al mirino. Disegnato nel mondo non si leggeva: ora è sull'interfaccia, in un punto calcolato dalla macchina. Se c'è Jade, WTHIT o WAILA sparisce, senza plugin.
+- **Hologram Table:** idea A, stessa forma più grande. Scartati gradino con lente, piedistallo e paletti che salgono.
+- **Sponge Module:** idea A, cappa aspirante, per tutti i liquidi. Scartati soffietto, spugna vera e siringa. Da sola butta il liquido sul posto.
+- **Tank Module:** idea A, lattina sul fianco. Scartati pod di coda, fiasca sotto la pancia e pontoni. Solo col modulo il liquido torna alla dock. A modulo pieno il drone si blocca.
+- **Dock Tank:** idea A, fusto sulla sella, serve solo a conservare. Scartati silo alto, vasca con asta e cisterna con cappa.
+- **Vista dell'area:** mini droni sugli angoli, idea dell'utente. Bocciate le particelle. Partono solo dal pulsante della GUI, non dal Survey Tool.
+- **Rotte:** un clic sulla dock collegata ripete la richiesta, due la scelgono come partenza.
+- **Compenetrazioni:** ogni parte nuova del drone va controllata contro tutti i moduli, in ogni posa.
 
 ## Scartati
 

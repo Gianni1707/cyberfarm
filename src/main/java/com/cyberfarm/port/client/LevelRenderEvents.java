@@ -39,6 +39,7 @@ public final class LevelRenderEvents {
         if (event.getStage() != RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS || minecraft.level == null) {
             return;
         }
+        ScreenProjection.capture(event.getProjectionMatrix(), event.getPoseStack().last().pose(), event.getCamera().getPosition());
         ExtractLevelRenderStateEvent extract = new ExtractLevelRenderStateEvent(minecraft.level);
         for (Consumer<ExtractLevelRenderStateEvent> extractor : extractors) {
             extractor.accept(extract);

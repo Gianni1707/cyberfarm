@@ -20,6 +20,8 @@ import net.minecraft.world.inventory.SimpleContainerData;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import com.cyberfarm.port.ItemStacksResourceHandler;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.Nullable;
 
 public class DroneDockMenu extends MachineMenu {
@@ -107,6 +109,28 @@ public class DroneDockMenu extends MachineMenu {
 
     public BlockPos getDronePos() {
         return new BlockPos(combined(9), combined(11), combined(13));
+    }
+
+    public BlockPos getDockPos() {
+        return new BlockPos(combined(59), combined(61), combined(63));
+    }
+
+    /** Whether a Dock Tank stands against the dock. */
+    public boolean hasDockTank() {
+        return extra(65) != 0;
+    }
+
+    /** The liquid in the Dock Tank; {@code Fluids.EMPTY} with none. */
+    public Fluid getDockTankFluid() {
+        return extra(65) >= 2 ? BuiltInRegistries.FLUID.byId(extra(65) - 2) : Fluids.EMPTY;
+    }
+
+    public int getDockTankAmount() {
+        return combined(66);
+    }
+
+    public int getDockTankCapacity() {
+        return combined(68);
     }
 
     public int getDroneEnergy() {

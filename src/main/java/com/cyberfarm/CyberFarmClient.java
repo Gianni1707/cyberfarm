@@ -3,8 +3,9 @@ package com.cyberfarm;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneDownwash;
 import com.cyberfarm.client.DroneSoundInstance;
+import com.cyberfarm.client.DockAreaView;
 import com.cyberfarm.client.EffectRenderer;
-import com.cyberfarm.client.MachineOverlay;
+import com.cyberfarm.client.StatusPanel;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
@@ -29,6 +30,7 @@ import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
 import com.cyberfarm.client.renderer.DroneRenderer;
+import com.cyberfarm.client.renderer.DockTankRenderer;
 import com.cyberfarm.client.renderer.FluidTankRenderer;
 import com.cyberfarm.client.renderer.LaserTurretRenderer;
 import com.cyberfarm.client.renderer.HologramRenderer;
@@ -115,9 +117,10 @@ public final class CyberFarmClient {
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
         modEventBus.addListener(MechClient::registerKeys);
         modEventBus.addListener(MechClient::registerHud);
-        modEventBus.addListener(MachineOverlay::register);
+        modEventBus.addListener(StatusPanel::register);
         MinecraftForge.EVENT_BUS.addListener(MechClient::tick);
         MinecraftForge.EVENT_BUS.addListener(VillageRange::tick);
+        MinecraftForge.EVENT_BUS.addListener(DockAreaView::tick);
         MinecraftForge.EVENT_BUS.addListener(MechClient::hideVanillaHud);
         MinecraftForge.EVENT_BUS.addListener(MechClient::hideHand);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::hangFromDrone);
@@ -129,7 +132,7 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         MinecraftForge.EVENT_BUS.addListener(LevelRenderEvents.extract(ProjectionRenderer::extract, EffectRenderer::extract)
-                .submit(ProjectionRenderer::submit, FrameDroneRenderer::submit, EffectRenderer::submit)::onRender);
+                .submit(DockAreaView::submit, ProjectionRenderer::submit, FrameDroneRenderer::submit, EffectRenderer::submit)::onRender);
         MinecraftForge.EVENT_BUS.addListener(DroneDownwash::tick);
     }
 
@@ -243,6 +246,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.REACTOR_CONTROLLER.get(), context -> new CoolingTowerRenderer());
         blockEntity(event, ModBlockEntities.TURBINE_CONTROLLER.get(), context -> new TurbineRenderer());
         blockEntity(event, ModBlockEntities.FLUID_TANK.get(), context -> new FluidTankRenderer());
+        blockEntity(event, ModBlockEntities.DOCK_TANK.get(), context -> new DockTankRenderer());
         blockEntity(event, ModBlockEntities.LASER_TURRET.get(), context -> new LaserTurretRenderer());
         blockEntity(event, ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.getFont()));
         blockEntity(event, ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);

@@ -26,13 +26,21 @@
       "text": "$(li)$(l)Builder Module$(): +2 FE/t, 20 FE per block$(br)$(li)$(l)Fisher Module$(): +1 FE/t, 10 FE per catch$(br)$(li)$(l)Breeder Module$(): +1 FE/t, 15 FE per animal fed$(br)$(li)$(l)Guard Module$(): +2 FE/t, 150 FE per shot$(br)$(li)$(l)Bomb Module$(): +1 FE/t, the Mini Drone itself"
     },
     {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Sponge Module$(): +2 FE/t, 20 FE per 3x3$(br)$(li)$(l)Tank Module$(): +1 FE/t, none"
+    },
+    {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:harvester_module",
       "title": "Harvester Module"
     },
     {
       "type": "patchouli:text",
-      "text": "The drone looks for $(l)fully grown crops$() in its work area, harvests them and $(l)replants$() them, using one of the dropped seeds if there is one. It also harvests $(l)melons and pumpkins$(), and $(l)picks$() ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place."
+      "text": "The drone looks for $(l)fully grown crops$() in its work area and harvests them, bringing crops and seeds to the dock. It also harvests $(l)melons and pumpkins$(), and $(l)picks$() ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It $(l)does not replant$(): the field stays bare. For a farm that runs by itself add a $(l:drone_systems/modules)Planter Module$(/l), on a frame with room for both or on a second drone sharing the seeds."
     },
     {
       "type": "patchouli:text",
@@ -87,7 +95,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Both containers must be within $(l)48 blocks of the dock$(), in loaded chunks. If something stands in the way, the drone climbs over it; if it stays stuck for 5 seconds it gives that container up and goes home until its next trip.$(br2)Set the route with the $(l:drone_systems/drone_dock)Survey Tool$(/l) in $(l)Route$() mode: click the source"
+      "text": "Both containers must be within $(l)48 blocks of the dock$(), in loaded chunks. If something stands in the way, the drone climbs over it; if it stays stuck for 5 seconds it gives that container up and goes home until its next trip.$(br2)Set the route with the $(l:drone_systems/drone_dock)Survey Tool$(/l): click the dock, the source"
     },
     {
       "type": "patchouli:text",
@@ -147,15 +155,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)With the $(l:drone_systems/drone_dock)Survey Tool$(/l) linked to the dock and in $(l)Taxi$() mode, $(l)right-click the block$() you want to land on (up to 256 blocks from the dock, with two blocks of air above it).$(br)$(li)Right-click the waiting drone."
+      "text": "$(li)With the $(l:drone_systems/drone_dock)Survey Tool$(/l) linked to the dock, $(l)right-click the block$() you want to land on (up to 256 blocks from the dock, with two blocks of air above it).$(br)$(li)Right-click the waiting drone.$(br)$(li)It climbs above the terrain, flies straight to the destination and puts you down gently."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It climbs above the terrain, flies straight to the destination and puts you down gently.$(br)$(li)Trips are $(l)one way$(): put a second dock with its own Taxi drone at the destination to fly back.$(br)$(li)Before taking off the drone checks it has enough charge for the trip and the way back."
+      "text": "$(li)Trips are $(l)one way$(): put a second dock with its own Taxi drone at the destination to fly back.$(br)$(li)Before taking off the drone checks it has enough charge for the trip and the way back.$(br)$(li)$(l)Sneak$() to let go mid-flight: you get $(l)Slow Falling$(), so you land safely."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sneak$() to let go mid-flight: you get $(l)Slow Falling$(), so you land safely.$(br)$(li)Speed Addons make the trip faster."
+      "text": "$(li)Speed Addons make the trip faster."
     },
     {
       "type": "patchouli:crafting",
@@ -325,21 +333,67 @@
     {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:bomb_module"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:sponge_module",
+      "title": "Sponge Module",
+      "text": "The drone $(l)sucks up any liquid$() from its work area, water, lava or a modded one, lowering a hood over the surface. Its rings and gauge lamp take the colour of what it holds."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It $(l)only works with a surveyed area$(): the default area around the dock is never touched. Mark it with the $(l:drone_systems/drone_dock)Survey Tool$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It flies to the highest source in the area and takes the $(l)3x3$() around it, sources and currents alike, then the next, until the area is dry. A pool deeper than the area is followed down to its floor, up to 32 blocks under it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)On its own it $(l)throws the liquid away$() and carries on, without going home.$(br)$(li)To keep the liquid, put a $(l)Tank Module$() on the same drone: it then holds one kind of liquid at a time and brings it to the dock.$(br)$(li)Kelp and seagrass break and drop; waterlogged blocks just dry out."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Water running in from outside the area is left alone: it dries up once its source is gone, so to drain a river mark the stretch with its sources."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:sponge_module"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:tank_module",
+      "title": "Tank Module",
+      "text": "A windowed $(l)canister$() on the drone's flank, holding $(l)32 buckets$() of one liquid. You can read its colour and level from outside, and its pump works while it does. It has no job of its own: it works with the modules beside it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)With a Sponge Module$() the drone keeps what it sucks up, one kind at a time, and brings it to the dock. There it goes into a $(l:drone_systems/drone_dock)Dock Tank$(/l) if there is one; with none, or with that one full or holding another liquid, it stays on board. When the canister is full and nothing can empty it, $(l)the drone stops$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)on its dock$() until there is room.$(br)$(li)$(l)With a Transport Module$() a route between two tanks carries liquid from one to the other. Set it with the $(l:drone_systems/drone_dock)Survey Tool$(/l) as usual: click the source tank, then the destination. If the route also has items to move, the drone carries those first."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:tank_module"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:harvester_module": 5,
-    "cyberfarm:quarry_module": 9,
-    "cyberfarm:transport_module": 16,
-    "cyberfarm:planter_module": 22,
-    "cyberfarm:logger_module": 26,
-    "cyberfarm:taxi_module": 31,
-    "cyberfarm:rancher_module": 37,
-    "cyberfarm:fertilizer_module": 40,
-    "cyberfarm:builder_module": 44,
-    "cyberfarm:fisher_module": 57,
-    "cyberfarm:breeder_module": 60,
-    "cyberfarm:guard_module": 64,
-    "cyberfarm:bomb_module": 70
+    "cyberfarm:harvester_module": 6,
+    "cyberfarm:quarry_module": 11,
+    "cyberfarm:transport_module": 18,
+    "cyberfarm:planter_module": 24,
+    "cyberfarm:logger_module": 28,
+    "cyberfarm:taxi_module": 33,
+    "cyberfarm:rancher_module": 39,
+    "cyberfarm:fertilizer_module": 42,
+    "cyberfarm:builder_module": 46,
+    "cyberfarm:fisher_module": 59,
+    "cyberfarm:breeder_module": 62,
+    "cyberfarm:guard_module": 66,
+    "cyberfarm:bomb_module": 72,
+    "cyberfarm:sponge_module": 77,
+    "cyberfarm:tank_module": 83
   }
 }

@@ -1,7 +1,7 @@
 package com.cyberfarm.drone;
 
 import net.minecraftforge.items.ItemHandlerHelper;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -69,13 +69,15 @@ public class DroneCargo {
         return stack.copyWithCount(1);
     }
 
-    /** One item of the first stack, or EMPTY: what the Transport claw shows. */
-    public ItemStack firstItem() {
-        ItemStack shown = ItemStack.EMPTY;
-        for (int i = 0; i < items.size() && shown.isEmpty(); i++) {
-            shown = items.getStackInSlot(i).copyWithCount(1);
+    /** What is in the hold, stack by stack: what the status panel lists, and the first hangs from the Transport claw. */
+    public List<ItemStack> contents() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.getStackInSlot(i).isEmpty()) {
+                stacks.add(items.getStackInSlot(i).copy());
+            }
         }
-        return shown;
+        return stacks;
     }
 
     /** Stores what fits of {@code stack}; returns the rest. */

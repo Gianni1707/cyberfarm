@@ -44,24 +44,32 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The $(item)Survey Tool$() sets up a dock. It has $(l)four modes$(): hold it and $(l)sneak + scroll the mouse wheel$() to switch, or $(l)right-click the air$() to go to the next one. The current mode shows above the hotbar and in the tooltip, and a click only does what that mode says. The tool never opens the",
+      "text": "The $(item)Survey Tool$() sets up a dock. $(l)Right-click a dock$() to link it: the tool reads what the drone on that dock does and $(l)asks for what it needs$(), above the hotbar, for as long as you hold it. The tool never opens the blocks you click, so chests and machines stay closed while you set things up.",
       "title": "The Survey Tool"
     },
     {
       "type": "patchouli:text",
-      "text": "blocks you click, so chests and machines stay closed while you set things up.$(br)$(li)$(l)**Dock$()**: a Drone Dock: the tool now configures that dock. Sneak + right-click resets it.$(br)$(li)$(l)**Area$()**: two opposite corners: the dock's work area."
+      "text": "$(li)$(l)A module that works an area (Harvester, Quarry, Planter, Sponge...)$(): $(l)two opposite corners$(): the work area$(br)$(li)$(l)A$() Transport Module$(l)**:$() two containers**, source then destination: the route"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**Route$()**: two containers, source then destination: the transport route.$(br)$(li)$(l)**Taxi$()**: the block where taxi passengers land.$(br)The tool $(l)tells you each step$() above the hotbar: when you switch mode and after every click it says what to click next (\"Click the source container\", \"Click the opposite corner\"...)."
+      "text": "$(li)$(l)A$() Taxi Module$(l)**:$() the block** where passengers land$(br)$(li)$(l)A$() Builder Module$(o)*$()*: nothing: link the structure with the $(l:basics/multiblock_projector)Multiblock Projector$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "The first click, in any mode, picks the dock you want to set up; after that a click does what the mode says. Dock mode only picks the dock (use it to switch to another dock): to connect the dock to a chest, use $(l)Route$() mode."
+      "text": "With no drone on the dock it asks you to put one on first. A drone with several modules can need more than one thing: the tool moves on by itself once one is set, and $(l)sneak + mouse wheel$() or a $(l)right-click in the air$() switches between them.$(br2)To see what a dock is set up for, press the"
     },
     {
       "type": "patchouli:text",
-      "text": "Without any setup the drone works a $(l)9x9$() area centred on the dock. To change it:$(br)$(li)Switch the tool to $(l)Area$() mode and $(l)right-click the dock$().$(br)$(li)$(l)Right-click the first corner$() of your field.$(br)$(li)$(l)Right-click the opposite corner$(). The dock now uses that area.",
+      "text": "$(l)Area$() button in its screen: it sends out $(l)mini drones$(). Four take up the corners of the work area and light up its blocks, from the corners inwards; for a route or a landing spot, one hovers over each and lights that block. They stay out after you close the screen, and fly home when you click the button again or take the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "drone off the dock.$(br2)Clicking the linked dock again only repeats what the tool is asking for. To set up another dock, $(l)right-click it$() (while the tool asks for a route, $(l)sneak + right-click$() it, as a plain click would use it as a container)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Without any setup the drone works a $(l)9x9$() area centred on the dock. To change it:$(br)$(li)$(l)Right-click the dock$() with the tool.$(br)$(li)$(l)Right-click the first corner$() of your field.$(br)$(li)$(l)Right-click the opposite corner$(). The dock now uses that area.",
       "title": "Choosing the work area"
     },
     {
@@ -70,16 +78,20 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The drone works its area $(l)block by block from one corner to the other$(), row after row like a Quarry, so a field is harvested and replanted in order instead of here and there."
+      "text": "The drone works its area $(l)block by block from one corner to the other$(), row after row like a Quarry, so a field is worked in order instead of here and there."
     },
     {
       "type": "patchouli:text",
-      "text": "For drones with a $(l:drone_systems/modules)Transport Module$(/l):$(br)$(li)Switch the tool to $(l)Route$() mode and $(l)right-click the dock$().$(br)$(li)$(l)Right-click the source container$() (chest, barrel, any modded inventory, or $(l)another drone's dock$()).",
+      "text": "For drones with a $(l:drone_systems/modules)Transport Module$(/l):$(br)$(li)$(l)Right-click the dock$() with the tool.$(br)$(li)$(l)Right-click the source container$() (chest, barrel, any modded inventory, or $(l)another drone's dock$()).",
       "title": "Setting a transport route"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock.$(br)Both must be within $(l)48 blocks of the dock$(), and their chunks loaded: an $(l:drone_systems/addons)Anchor Addon$(/l) keeps them so."
+      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "To carry things $(l)out of the drone's own dock$(), click that dock $(l)twice in a row$() as the source: one click only repeats what the tool is asking for. Both must be within $(l)48 blocks of the dock$(), and their chunks loaded: an $(l:drone_systems/addons)Anchor Addon$(/l) keeps them so."
     },
     {
       "type": "patchouli:text",
@@ -87,8 +99,21 @@
     },
     {
       "type": "patchouli:text",
-      "text": "For drones with a $(l:drone_systems/modules)Taxi Module$(/l): with the tool linked to the dock, switch to $(l)Taxi$() mode and $(l)right-click the block$() where passengers should land. It can be up to 256 blocks away and needs two blocks of air above it.",
+      "text": "For drones with a $(l:drone_systems/modules)Taxi Module$(/l): with the tool linked to the dock, $(l)right-click the block$() where passengers should land. It can be up to 256 blocks away and needs two blocks of air above it.",
       "title": "Setting a taxi destination"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Place a $(item)Dock Tank$() against a side of the dock: a bar for it appears in the dock's screen, under the cargo. It only $(l)stores$(): it holds $(l)64 buckets$() of one liquid at a time, and drones with a $(l:drone_systems/modules)Tank Module$(/l) empty into it when they come home. A drone without that module brings it nothing.",
+      "title": "Dock Tank"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Watch the level and the float in its side windows, or right-click it to read what is in it. $(l)Pipes$() plug in behind it and on top, so you can drain it or use it as a plain tank."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:dock_tank"
     },
     {
       "type": "patchouli:text",
@@ -109,7 +134,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sneak + right-click in the air$() clears a corner or route source you set by mistake (switching mode clears it too).$(br)$(li)In $(l)Dock$() mode, $(l)sneak + right-click the dock$() resets it: default 9x9 area, no transport route, no taxi destination.",
+      "text": "$(li)$(l)Sneak + right-click in the air$() clears a corner or route source you set by mistake.$(br)$(li)$(l)Sneak + right-click the linked dock$() resets it: default 9x9 area, no transport route, no taxi destination.",
       "title": "Fixing mistakes"
     },
     {
@@ -141,7 +166,8 @@
   ],
   "extra_recipe_mappings": {
     "cyberfarm:drone_dock": 3,
-    "cyberfarm:survey_tool": 25,
-    "cyberfarm:swarm_dock": 26
+    "cyberfarm:survey_tool": 31,
+    "cyberfarm:dock_tank": 25,
+    "cyberfarm:swarm_dock": 32
   }
 }

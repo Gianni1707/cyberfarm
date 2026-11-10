@@ -84,6 +84,7 @@ public class CyberFarm {
         ModBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         ModMenus.MENUS.register(modEventBus);
         ModEntities.ENTITIES.register(modEventBus);
+        ModEntities.DATA_SERIALIZERS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
@@ -159,6 +160,7 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.DOCK_TANK.get(), (be, side) -> be.tank(side));
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.handler());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());

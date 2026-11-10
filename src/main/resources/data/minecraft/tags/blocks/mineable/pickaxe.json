@@ -13,6 +13,7 @@
     "cyberfarm:drone_assembler",
     "cyberfarm:drone_dock",
     "cyberfarm:swarm_dock",
+    "cyberfarm:dock_tank",
     "cyberfarm:hologram_table",
     "cyberfarm:biomass_press",
     "cyberfarm:bio_digester",

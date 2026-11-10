@@ -14,6 +14,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelAccessor;
@@ -64,10 +65,16 @@ public class HiddenFrameBlock extends PortBlock implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        BlockPos machine = machine(level, pos, state);
+        return level.getBlockState(machine).use(level, player, InteractionHand.MAIN_HAND, hitResult.withPosition(machine));
+    }
+
+    /** The machine this frame belongs to. */
+    public BlockPos machine(BlockGetter level, BlockPos pos, BlockState state) {
         BlockPos machine = pos.relative(state.getValue(TO_MACHINE));
         while (level.getBlockState(machine).is(this)) {
             machine = machine.relative(level.getBlockState(machine).getValue(TO_MACHINE));
         }
-        return level.getBlockState(machine).use(level, player, InteractionHand.MAIN_HAND, hitResult.withPosition(machine));
+        return machine;
     }
 }

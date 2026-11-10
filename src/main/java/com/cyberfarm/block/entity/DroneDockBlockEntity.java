@@ -31,10 +31,15 @@ import com.mojang.serialization.Codec;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.SimpleMenuProvider;
@@ -44,6 +49,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -71,8 +77,12 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     private static final int BUILD_LIST_DATA = 27;
     /** Then how many drones are on the dock and how many fit. */
     private static final int DRONES_DATA = BUILD_LIST_DATA + 3 * BUILD_LIST;
+    /** Then where the dock is, each coordinate in two halves, for the screen's Show Area switch. */
+    private static final int POS_DATA = DRONES_DATA + 2;
+    /** Then the Dock Tank beside it: 0 with no tank, 1 empty, else the liquid's id + 2; how much, and how much fits. */
+    private static final int TANK_DATA = POS_DATA + 6;
     /** Data slots after the energy ones; see {@link #getExtraData}. */
-    public static final int EXTRA_DATA = DRONES_DATA + 2;
+    public static final int EXTRA_DATA = TANK_DATA + 5;
 
     private @Nullable BoundingBox workArea;
     /** Next layer the Quarry Module digs; unset means the top of the work area. */
@@ -275,7 +285,25 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     public void setWorkArea(@Nullable BoundingBox area) {
         workArea = area;
         quarryLayer = null;
+        changedForClients();
+    }
+
+    /** Saves and tells the clients, whose Survey Tool and Show Area switch draw the area, the route and the destination. */
+    private void changedForClients() {
         setChanged();
+        if (level != null) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
+        }
+    }
+
+    @Override
+    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
+        return saveCustomOnly(registries);
+    }
+
+    @Override
+    public Packet<ClientGamePacketListener> getUpdatePacket() {
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     public boolean hasCustomArea() {
@@ -306,14 +334,14 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** Where a Taxi drone carries players; null clears it. */
     public void setTaxiDestination(@Nullable BlockPos destination) {
         taxiDestination = destination;
-        setChanged();
+        changedForClients();
     }
 
     /** Sets the Transport Module route; pass nulls to clear it. */
     public void setTransportRoute(@Nullable BlockPos source, @Nullable BlockPos destination) {
         transportSource = source;
         transportDestination = destination;
-        setChanged();
+        changedForClients();
     }
 
     public ItemFilter filter() {
@@ -375,7 +403,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     public void setDrone(@Nullable UUID id) {
         droneId = id;
-        setChanged();
+        changedForClients();
     }
 
     public void releaseDrone(UUID id) {
@@ -383,6 +411,23 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             setDrone(null);
             droneStatus = DroneEntity.STATUS_NONE;
         }
+    }
+
+    /** The Dock Tank standing against this dock on any side, if any. */
+    public @Nullable DockTankBlockEntity dockTank() {
+        if (level != null) {
+            for (Direction side : Direction.Plane.HORIZONTAL) {
+                if (level.getBlockEntity(worldPosition.relative(side)) instanceof DockTankBlockEntity tank) {
+                    return tank;
+                }
+            }
+        }
+        return null;
+    }
+
+    /** What the drones on this dock do, as a mask of {@code DroneTask.bit()}; 0 with none on it. */
+    public int droneTasks() {
+        return droneIds().isEmpty() ? 0 : droneModules;
     }
 
     /** The drones that live on this dock. */
@@ -405,9 +450,13 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         droneEnergy = energy;
         droneCapacity = capacity;
         droneTask = task;
+        boolean newModules = modules != droneModules;
         droneModules = modules;
         dronePos = pos;
         lastStatusTick = gameTime;
+        if (newModules) {
+            changedForClients();
+        }
     }
 
     public boolean isPaused() {
@@ -461,6 +510,20 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
 
     @Override
     protected int getExtraData(int id) {
+        if (id >= TANK_DATA) {
+            DockTankBlockEntity dockTank = dockTank();
+            return dockTank == null ? 0 : switch (id - TANK_DATA) {
+                case 0 -> dockTank.tank().amount() > 0 ? BuiltInRegistries.FLUID.getId(dockTank.tank().fluid()) + 2 : 1;
+                case 1 -> EnergyUtil.low(dockTank.tank().amount());
+                case 2 -> EnergyUtil.high(dockTank.tank().amount());
+                case 3 -> EnergyUtil.low(dockTank.tank().capacity());
+                default -> EnergyUtil.high(dockTank.tank().capacity());
+            };
+        }
+        if (id >= POS_DATA) {
+            int coordinate = worldPosition.get(Direction.Axis.values()[(id - POS_DATA) / 2]);
+            return (id - POS_DATA) % 2 == 0 ? EnergyUtil.low(coordinate) : EnergyUtil.high(coordinate);
+        }
         if (id >= DRONES_DATA) {
             return id == DRONES_DATA ? droneCount() : maxDrones();
         }
@@ -527,6 +590,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         output.storeNullable("transport_destination", BlockPos.CODEC, transportDestination);
         output.storeNullable("taxi_destination", BlockPos.CODEC, taxiDestination);
         output.storeNullable("drone", UUIDUtil.CODEC, droneId);
+        output.putInt("drone_modules", droneModules);
         output.putBoolean("paused", paused);
         output.store("anchored", Codec.LONG.listOf(), List.copyOf(anchored));
         if (buildPlan != null) {
@@ -546,6 +610,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         transportDestination = input.read("transport_destination", BlockPos.CODEC).orElse(null);
         taxiDestination = input.read("taxi_destination", BlockPos.CODEC).orElse(null);
         droneId = input.read("drone", UUIDUtil.CODEC).orElse(null);
+        droneModules = input.getIntOr("drone_modules", 0);
         paused = input.getBooleanOr("paused", false);
         anchored.clear();
         anchored.addAll(input.read("anchored", Codec.LONG.listOf()).orElse(List.of()));

@@ -1339,6 +1339,27 @@ def tanks():
         tank_blockstate(name)
 
 
+def dock_tank():
+    """A drum on two saddles, against a Drone Dock on its north side (these are north-facing coordinates: flipped below for build()).
+    A sleeve couples to the dock, touching its mint band and clear of its posts and light strip. A sight window on each flank:
+    DockTankRenderer draws the liquid and the float inside them. Every box only touches the others."""
+    body = {"up": "lid", "south": "body", "east": "body"}
+    parts = [
+        ((1, 0, 1), (15, 1, 15), "plinth"),
+        ((2, 1, 2.5), (14, 4, 4.5), "body"), ((2, 1, 11.5), (14, 4, 13.5), "body"),
+        ((3, 4, 1), (13, 13, 15), body), ((2, 5, 1), (3, 12, 15), body), ((13, 5, 1), (14, 12, 15), body),
+        ((4, 13, 1.6), (12, 13.4, 4.2), "trim"), ((4, 13, 5.0), (12, 13.4, 11.0), "trim"), ((4, 13, 11.8), (12, 13.4, 14.4), "trim"),
+        ((5, 1, -0.6), (11, 3.1, 2.5), "copper"), ((6, 3.1, -0.6), (10, 4.0, 1.0), "body"), ((7.2, 4.0, 0), (8.8, 4.4, 0.8), "light"),
+        ((14, 5.6, 5.8), (14.1, 11.6, 10.4), "slot"), ((1.9, 5.6, 5.8), (2, 11.6, 10.4), "slot"),
+    ]
+    for z0, z1 in ((4.2, 5.0), (11.0, 11.8)):
+        parts += [((1.6, 5, z0), (2, 12, z1), "copper"), ((14, 5, z0), (14.4, 12, z1), "copper"), ((3, 13, z0), (13, 13.4, z1), "copper")]
+    for x0, x1 in ((14, 14.7), (1.3, 2)):
+        parts += [((x0, 5.0, 5.2), (x1, 5.6, 11.0), "trim"), ((x0, 11.6, 5.2), (x1, 12.2, 11.0), "trim"),
+                  ((x0, 5.6, 10.4), (x1, 11.6, 11.0), "trim"), ((x0, 5.6, 5.2), (x1, 11.6, 5.8), "trim")]
+    return [((frm[0], frm[1], 16 - to[2]), (to[0], to[1], 16 - frm[2]), spec) for frm, to, spec in parts]
+
+
 def water_pump():
     """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
     in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
@@ -1813,6 +1834,7 @@ if __name__ == "__main__":
             ("acid_synthesizer_body", acid_synthesizer_parts()[0], True, False),
             ("acid_synthesizer_open", sum(acid_synthesizer_parts(), []), True, False),
             ("water_pump", water_pump(), True, False),
+            ("dock_tank", dock_tank(), False, False),
             ("biomass_press_body", biomass_press_body(), True, False),
             ("biomass_press_open", [*biomass_press_body(), *biomass_press_tower(), *biomass_press_head()], True, False),
             ("electrolyzer_body", electrolyzer(), True, False),
@@ -1846,6 +1868,8 @@ if __name__ == "__main__":
     build("fabricator_port_up", top_port(12.75), False)
     build("acid_synthesizer", acid_synthesizer_lone(), False)
     build("acid_synthesizer_port", side_port(2, y0=3.5), False)
+    build("dock_tank_port", side_port(1), False)
+    build("dock_tank_port_up", top_port(13.4), False)
     build("water_pump_port", low_port(), False)
     build("water_pump_port_up", water_pump_port_up(), False)
     build("water_pump_intake", water_pump_intake(), False)
@@ -1888,6 +1912,7 @@ if __name__ == "__main__":
     blockstate("drone_assembler", True, set())
     small_multiblock_blockstate("fabricator", {"north": {"south"}, "east": {"west"}, "south": {"north"}, "west": {"east"}}, up=True)
     small_multiblock_blockstate("acid_synthesizer", {"north": {"west", "east"}, "east": {"north", "south"}, "south": {"east", "west"}, "west": {"south", "north"}})
+    blockstate("dock_tank", False, {"up"})
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     small_multiblock_blockstate("electrolyzer", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     small_multiblock_blockstate("pyrolysis_oven", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})

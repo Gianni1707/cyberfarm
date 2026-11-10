@@ -81,6 +81,7 @@ public class DroneItem extends Item {
             return InteractionResult.FAIL;
         }
         drone.setup(getModules(stack), getEnergy(stack), pos);
+        drone.setCustomName(stack.hasCustomHoverName() ? stack.getHoverName() : null);
         drone.moveTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5,
                 DroneEntity.parkedYaw(level.getBlockState(pos)), 0.0F);
         drone.setYBodyRot(drone.getYRot());

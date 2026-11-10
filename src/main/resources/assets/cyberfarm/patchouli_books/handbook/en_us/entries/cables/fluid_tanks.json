@@ -31,7 +31,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount."
+      "text": "fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount.$(br2)$(l)Look at a tank$() to see a panel over it with what is inside and how full it is, one panel for a whole joined tank."
     },
     {
       "type": "patchouli:text",

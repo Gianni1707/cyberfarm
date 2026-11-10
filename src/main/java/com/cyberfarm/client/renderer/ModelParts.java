@@ -25,13 +25,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import com.cyberfarm.port.client.FluidSprites;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluids;
 import org.jspecify.annotations.Nullable;
 
 /**
  * What the machines' renderers share to draw parts that move inside a block model: the model's frame, plain
  * tinted boxes and the spin-up and wind-down.
  */
-final class ModelParts {
+public final class ModelParts {
     /** Solid parts: this texture's white texel, tinted by the vertex colours. */
     static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
     static final float WHITE_UV = 15.5F / 16.0F;
@@ -138,6 +139,21 @@ final class ModelParts {
             return 0;
         }
         return FluidSprites.tint(tank.fluid(), tank.amount());
+    }
+
+    /** A liquid's colour as one plain colour: its tint, or where it has none (lava and others that paint their colour in the texture) its map colour. With none, the Sponge Module's mint. */
+    public static int liquidColour(Level level, Fluid fluid) {
+        if (fluid == Fluids.EMPTY) {
+            return 0x5EC2B8;
+        }
+        int tint = FluidSprites.tint(fluid, 1000) & 0xFFFFFF;
+        return tint != 0xFFFFFF ? tint : fluid.defaultFluidState().createLegacyBlock().getMapColor(level, BlockPos.ZERO).col;
+    }
+
+    /** This much of the way from a colour to white. */
+    static int towardsWhite(int rgb, float amount) {
+        int r = rgb >> 16 & 255, g = rgb >> 8 & 255, b = rgb & 255;
+        return Math.round(r + (255 - r) * amount) << 16 | Math.round(g + (255 - g) * amount) << 8 | Math.round(b + (255 - b) * amount);
     }
 
     /** The colour of a fluid's surface line. */

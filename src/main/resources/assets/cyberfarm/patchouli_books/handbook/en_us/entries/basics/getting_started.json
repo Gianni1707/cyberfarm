@@ -29,12 +29,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Place a $(l:generators/combustion_generator)Combustion Generator$(/l) and feed it coal or any other furnace fuel. It pushes FE into every machine touching it, or into $(l:cables/energy_conduit)Energy Conduit$(/l)s that carry it further.$(br2)$(l)Look at any CyberFarm machine$() to see a small panel beside the crosshair: whether it is working, the FE it makes or",
+      "text": "Place a $(l:generators/combustion_generator)Combustion Generator$(/l) and feed it coal or any other furnace fuel. It pushes FE into every machine touching it, or into $(l:cables/energy_conduit)Energy Conduit$(/l)s that carry it further.$(br2)$(l)Look at any CyberFarm machine$() to see a small panel floating just over it: whether it is working, the FE it makes or",
       "title": "2. Make power"
     },
     {
       "type": "patchouli:text",
-      "text": "uses each tick, how full its energy buffer is and how far its batch has got. Working machines also show it: their front lights up and moves, their lights glow in the dark, and some give off smoke, frost or bubbles depending on the machine."
+      "text": "uses each tick, how full its energy buffer is and how far its batch has got. With Jade or WTHIT installed the panel stays away and that mod's own takes over. Working machines also show it: their front lights up and moves, their lights glow in the dark, and some give off smoke, frost or bubbles depending on the machine."
     },
     {
       "type": "patchouli:text",
@@ -57,7 +57,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "By default the drone works a $(l)9x9$() area centred on the dock. Use the $(l:drone_systems/drone_dock)Survey Tool$(/l) to choose a different area: $(l)sneak + scroll$() (or right-click the air) to its $(l)Area$() mode, click the dock, then two opposite corners. The tool tells you each step above the hotbar."
+      "text": "By default the drone works a $(l)9x9$() area centred on the dock. Use the $(l:drone_systems/drone_dock)Survey Tool$(/l) to choose a different area: click the dock, then two opposite corners. The tool reads what the drone does and tells you each step above the hotbar."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Look at a drone$(), even from far away, to see a panel over it with what it is doing, its charge and what it carries."
     },
     {
       "type": "patchouli:text",
