@@ -395,7 +395,14 @@ def combustion_generator():
         ((8, 10, 3), (12, 12.5, 7), {"up": "grille", "south": "copper", "east": "copper"}),   # fuel hopper
         ((13.5, 3, 6), (15, 6, 10), "lid"),                         # FE terminal, dark so its light stands out
         ((15, 4, 7), (15.5, 5, 9), "light"),
+        ((3.1, 16, 5.1), (3.9, 17.2, 5.9), "trim"),                 # the vent's spindle and cap; CombustionGeneratorRenderer spins its vanes
+        ((2.6, 17.2, 4.6), (4.4, 17.6, 6.4), {"up": "plinth", "south": "trim", "east": "trim"}),
     ]
+
+
+def combustion_generator_item():
+    """The generator with the vent's vanes at rest, as no renderer draws them on the item."""
+    return [*combustion_generator(), ((1.2, 16.4, 5.25), (5.8, 17.1, 5.75), "copper"), ((3.25, 16.4, 3.2), (3.75, 17.1, 7.8), "copper")]
 
 
 def bio_digester():
@@ -1396,7 +1403,7 @@ def num(v):
 
 
 FOOT_LIGHT = {f"{name}{suffix}" for name in ("bio_digester", "fabricator", "acid_synthesizer", "pyrolysis_oven", "coolant_mixer", "gas_turbine") for suffix in ("", "_body", "_open")} | {
-    "combustion_generator", "drone_dock", "swarm_dock", "drone_assembler", "water_pump", "electrolyzer", "waste_reprocessor", "waste_reprocessor_item",
+    "combustion_generator", "combustion_generator_item", "drone_dock", "swarm_dock", "drone_assembler", "water_pump", "electrolyzer", "waste_reprocessor", "waste_reprocessor_item",
     "supply_terminal", "methane_extractor", "crystallizer"}
 
 
@@ -1639,6 +1646,7 @@ if __name__ == "__main__":
     build("steam_engine_port_up", top_port(14.7), False)
     build("steam_engine_port_down", [((5, 0, 5), (11, 0.75, 11), "copper")], False)
     build("waste_reprocessor_item", waste_reprocessor_item(), False)
+    build("combustion_generator_item", combustion_generator_item(), False)
     radiation_mark()
     build("gas_turbine", gas_turbine_loose(), False)
     build("gas_turbine_port", side_port(4.5), False)

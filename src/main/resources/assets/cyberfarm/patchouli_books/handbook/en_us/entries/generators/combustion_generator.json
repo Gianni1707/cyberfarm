@@ -6,8 +6,11 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:combustion_generator",
-      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE.$(br)$(li)$(l)Generation$(): 40 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE"
+      "item": "cyberfarm:combustion_generator"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.$(br)$(li)$(l)Generation$(): 40 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE"
     },
     {
       "type": "patchouli:text",
@@ -23,6 +26,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:combustion_generator": 3
+    "cyberfarm:combustion_generator": 4
   }
 }

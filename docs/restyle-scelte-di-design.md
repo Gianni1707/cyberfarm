@@ -4,7 +4,7 @@ Questo documento serve a riprendere il restyle da un'altra chat o da un altro PC
 Raccoglie cosa è stato deciso, perché e cosa è stato bocciato. L'elenco di ciò che è già stato fatto è in
 [restyle-modifiche.md](restyle-modifiche.md).
 
-Stato al 7 novembre 2026, branch `machine-models-prototype`.
+Stato al 7 novembre 2026, branch `machine-models-prototype`, commit `c69404f`.
 
 ## Da leggere prima: cosa non è su git
 
@@ -34,6 +34,10 @@ Anche le regole salvate nella memoria di Claude restano su questo PC. Per lavora
 6. **Ogni modifica aggiorna la guida** (GuideME, `guides/cyberfarm/handbook/`) e `DESIGN.md` nello stesso lavoro.
 7. **Prestazioni:** la mod finisce nei modpack. Modello JSON statico dove basta; un renderer per frame è un'eccezione e se ne
    dichiara il costo.
+8. **Se l'utente dà l'immagine o la forma, si usa quella.** Quando indica esattamente cosa vuole non servono altri fogli di idee: va
+   applicato e fatto vedere in gioco.
+9. **Dopo ogni avvio si controlla il log** cercando `Failed to load model` e `Missing block model`. Un modello rotto si vede come cubo
+   nero e viola, e "Missing model" da solo non lo trova.
 
 ### Il giro di una proposta
 
@@ -71,8 +75,14 @@ Ha sostituito il vecchio grigio-blu con rame e ciano, troppo simile a Oritech. N
 - **Ogni presa visibile deve collegarsi davvero.** Un attacco che sembra collegabile e non lo è non va bene.
 - **Niente facce grandi e piatte senza dettaglio,** e niente forme troppo tonde per Minecraft.
 - **Tubi veri:** nei modelli si usano le texture reali dei tubi, mai inventate.
+- **Combustion Generator:** la parte mobile è una ventola a 6 palette sul camino. Scartati il bilanciere sullo sportello e le alette davanti al fuoco.
 - **Fluidi veri:** dove si vede un fluido, livello e colore vengono dal tank reale.
-- **Striscia di luce alla base:** attorno a tutta la base di ogni macchina, come sullo Steam Engine, sul perimetro intero anche sulle basi a più blocchi. Le macchine su più blocchi hanno una base unica.
+- **Stessa forma, solo più grande.** Quando una macchina piace, si ingrandisce senza ridisegnarla: "modificalo leggermente". È il metodo che ha funzionato meglio.
+- **Una macchina su più blocchi deve sembrare una sola:** base unica, nessuna fascia o pannello ripetuto a ogni blocco. Il forno diviso è stato bocciato:
+  "sembrano due macchinari uno di fianco all'altro".
+- **Striscia di luce alla base:** su tutto il contorno, non solo davanti, e continua anche sulle basi a più blocchi. Obbligatoria sui macchinari componibili; le strutture grandi
+  non la hanno, "ovviamente". È sottile (0,7 px); lo Steam Engine tiene la sua, più alta.
+- **Ogni macchina che lavora ha un suono,** da audio vanilla adattato e a volume basso. I blocchi passivi (tank, Muffler) restano muti, e i dock lasciano suonare il drone.
 - **Simbolo radioattivo** nella nostra palette, non giallo e nero: trifoglio smeraldo su piastra scura con cornice d'acciaio.
   Sta su Waste Reprocessor e Crystallizer, non sulle parti del reattore come regola generale.
 
@@ -90,6 +100,18 @@ Per le macchine avanzate che hanno bisogno di spazio, come 2x1 o 1x3.
   cambiano in texture alla fine.
 - Limite tecnico: un modello copre da -16 a 32, quindi 2 celle per asse da una cella qualunque, 3 solo col blocco macchina al centro.
 - L'idea dell'apertura viene da Oritech; design, palette e forme restano nostri.
+
+| Macchina | Forma | Cyber Frame | Tubi sul blocco macchina |
+|---|---|---|---|
+| Coolant Mixer | 2x1 | 1 a destra | Sui lati liberi |
+| Gas Turbine | 1x3, macchina al centro | 2, davanti e dietro | Sui due lati e sopra |
+| Steam Engine | 1x5 con 3 cilindri | 4 in fila dietro | Sui lati liberi, sopra e sotto |
+| Acid Synthesizer | 3x1x2, macchina in basso al centro | 5, uno per lato e tre sopra | Davanti e dietro |
+| Bio-Digester | Tamburo alto 2 e tank accanto | 2, sopra e a sinistra | Davanti, dietro e a destra |
+| Fabricator | Lungo 2, con magazzino delle schede | 1 dietro | Davanti, sui lati e sopra |
+| Pyrolysis Oven | 2x1, un tubo e un tank lungo | 1 a sinistra | Davanti, dietro e a destra |
+
+Destra e sinistra valgono guardando la macchina dal davanti. Scartati: Acid Synthesizer 3x1 basso e con silo; Bio-Digester col tank alto 2; Fabricator lungo 3; forno lungo 3.
 
 ## Droni al posto delle indicazioni
 
@@ -112,8 +134,6 @@ Il vecchio sistema per indicare i blocchi mancanti era troppo uguale a Oritech. 
 - **Mech Hangar: solo palette.** Forma e collisioni originali, console a cubo compresa.
 - **Metodo:** sulle strutture grandi "stessa forma, solo palette" è stato quello che ha funzionato meglio.
 - **Crystallizer:** resta multiblocco 3x3x4, da solo è un piedistallo modellato.
-- **Acid Synthesizer:** stesso design, solo più grande, 3x1x2 con 5 Cyber Frame e la macchina in basso al centro. Scartati il 3x1 basso e la versione col silo.
-- **Bio-Digester, Fabricator, Pyrolysis Oven:** ingranditi poco, variante A. Digester con tamburo alto 2 e tank basso; Fabricator lungo 2 con magazzino; forno 2x1. Il forno deve sembrare **una macchina sola**: un tubo, una fessura, un tank lungo, nessun pannello ripetuto ogni blocco.
 - **Methane Extractor:** sorella del Crystallizer, con campana di vetro a gradoni. La gabbia quadrata è stata bocciata.
 
 ## Tank modulari
@@ -209,6 +229,14 @@ Va lanciato da dentro `tools/`: rigenera modelli e blockstate delle macchine. Le
 in `tools/assetgen.py`.
 
 I segni dei tank sono PNG in `textures/block/`: `tank_waves`, `tank_cloud`, con le versioni `_x2`, e non sono generati dagli strumenti.
+
+Per rigenerare solo i suoni, sempre da dentro `tools/`:
+
+```bash
+python -c "import assetgen; assetgen.sounds()"
+```
+
+Un modello non può uscire da -16..32: il gioco lo scarta senza fermarsi. `foot_light` tiene conto di questo limite, e `checks.py` non lo controlla.
 
 Il codice condiviso è in `client/renderer/ModelParts.java` (macchine animate), `ShellTiles.java` (pelle di reattore e turbina),
 `FrameDroneRenderer.java` (droni), `SmallMultiblockBlock.java` (piccoli multiblocchi).

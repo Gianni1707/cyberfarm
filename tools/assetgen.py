@@ -401,6 +401,7 @@ def blocks():
         "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "conditions": [{"condition": "minecraft:survives_explosion"}],
                    "entries": [{"type": "minecraft:item", "name": f"{NS}:cyber_frame"}]}],
         "random_sequence": f"{NS}:blocks/hidden_frame"})
+    write(ASSETS / "items/combustion_generator.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/combustion_generator_item"}})
     write(ASSETS / "items/waste_reprocessor.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/waste_reprocessor_item"}})
     write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
     write(RES / "data/minecraft/tags/block/needs_stone_tool.json", {"values": [f"{NS}:{n}" for n in bauxite]})
