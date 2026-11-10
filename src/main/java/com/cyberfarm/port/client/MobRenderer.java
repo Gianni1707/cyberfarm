@@ -16,6 +16,7 @@ import net.minecraft.world.entity.Mob;
 public abstract class MobRenderer<E extends Mob, S extends LivingEntityRenderState, M extends EntityModel<S>>
         extends net.minecraft.client.renderer.entity.MobRenderer<E, net.minecraft.client.model.EntityModel<E>> {
     private final M portModel;
+    private final float baseShadowRadius;
     private @Nullable S state;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -23,6 +24,7 @@ public abstract class MobRenderer<E extends Mob, S extends LivingEntityRenderSta
         // The model is an EntityModel<Entity>, which poses any entity; 1.20.1 only wants it typed as E's
         super(context, (net.minecraft.client.model.EntityModel) model, shadowRadius);
         this.portModel = model;
+        this.baseShadowRadius = shadowRadius;
     }
 
     public abstract S createRenderState();
@@ -55,6 +57,8 @@ public abstract class MobRenderer<E extends Mob, S extends LivingEntityRenderSta
         extractRenderState(entity, current, partialTicks);
         current.lightCoords = light;
         portModel.state = current;
+        // 26.x shrinks the shadow with the mob's scale
+        shadowRadius = baseShadowRadius * current.scale;
         super.render(entity, yaw, partialTicks, poseStack, buffers, light);
     }
 

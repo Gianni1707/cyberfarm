@@ -104,6 +104,8 @@ public class DroneEntity extends PathfinderMob {
 
     private static final EntityDataAccessor<Integer> DATA_STATUS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> DATA_TASKS = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.INT);
+    /** Built on a Mini Drone Frame: half size. 26.x sends this as the scale attribute, which 1.20.1 does not have. */
+    private static final EntityDataAccessor<Boolean> DATA_MINI = SynchedEntityData.defineId(DroneEntity.class, EntityDataSerializers.BOOLEAN);
     /** What the hold has in it, for the status panel and the item hanging from the Transport claw. */
     private static final EntityDataAccessor<List<ItemStack>> DATA_CARGO = SynchedEntityData.defineId(DroneEntity.class, ModEntities.ITEM_LIST.get());
     /** The {@link DroneTask} ordinal + 1 of the job in progress, 0 for none. */
@@ -177,6 +179,7 @@ public class DroneEntity extends PathfinderMob {
         this.energy = Math.min(energy, modules.energyCapacity());
         this.dockPos = dockPos.immutable();
         this.entityData.set(DATA_TASKS, modules.taskMask());
+        this.entityData.set(DATA_MINI, modules.isMini());
         refreshDimensions();
     }
 
@@ -185,6 +188,7 @@ public class DroneEntity extends PathfinderMob {
         super.defineSynchedData();
         entityData.define(DATA_STATUS, STATUS_IDLE);
         entityData.define(DATA_TASKS, 0);
+        entityData.define(DATA_MINI, false);
         entityData.define(DATA_CARGO, List.of());
         entityData.define(DATA_JOB, 0);
         entityData.define(DATA_BATTERY, 0);
@@ -901,6 +905,8 @@ public class DroneEntity extends PathfinderMob {
         cargo.load(input.childOrEmpty("cargo"));
         liquid.deserialize(input.childOrEmpty("liquid"));
         entityData.set(DATA_TASKS, modules.taskMask());
+        entityData.set(DATA_MINI, modules.isMini());
+        refreshDimensions();
         // Jobs are not saved: a reloaded drone flies home and starts over.
         setStatus(STATUS_RETURNING);
     }
@@ -914,9 +920,17 @@ public class DroneEntity extends PathfinderMob {
         }
     }
 
-    // 26.x scales a Mini Drone with the scale attribute; 1.20.1 asks the entity
+    // 26.x scales a Mini Drone with the scale attribute; 1.20.1 asks the entity, whose hitbox and eye height follow it
     @Override
     public float getScale() {
-        return modules != null && modules.isMini() ? (float) MINI_SCALE : 1.0F;
+        return entityData.get(DATA_MINI) ? (float) MINI_SCALE : 1.0F;
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> key) {
+        super.onSyncedDataUpdated(key);
+        if (DATA_MINI.equals(key)) {
+            refreshDimensions();
+        }
     }
 }
