@@ -5,6 +5,7 @@ import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -18,8 +19,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-/** A retort tube on a low body (the model, see tools/machinemodels.py; PyrolysisOvenRenderer draws what moves). */
-public class PyrolysisOvenBlock extends LitMachineBlock {
+import java.util.List;
+
+/** A small multiblock: with a Cyber Frame on its left, as the player sees its front, a long retort tube on a low body (see tools/machinemodels.py; PyrolysisOvenRenderer draws what moves). */
+public class PyrolysisOvenBlock extends SmallMultiblockBlock {
 
     private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(1, 1, 1, 15, 16, 15));
 
@@ -29,8 +32,13 @@ public class PyrolysisOvenBlock extends LitMachineBlock {
 
 
     @Override
-    protected boolean hasPipePorts() {
-        return true;
+    public List<Direction> frameSides(BlockState state) {
+        return List.of(state.getValue(FACING).getClockWise());
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.pyrolysis_oven.needs_frame";
     }
 
     @Override

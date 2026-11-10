@@ -5,6 +5,8 @@ import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.menu.GasTurbineMenu;
 import com.cyberfarm.registry.ModBlockEntities;
 import com.cyberfarm.registry.ModFluids;
+import com.cyberfarm.registry.ModSounds;
+import net.minecraft.sounds.SoundSource;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -59,6 +61,9 @@ public class GasTurbineBlockEntity extends SmallMultiblockBlockEntity {
         return OPEN_TICKS;
     }
 
+    /** Its roar comes round this often while it burns. */
+    private static final int ROAR_TICKS = 60;
+
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
@@ -68,6 +73,9 @@ public class GasTurbineBlockEntity extends SmallMultiblockBlockEntity {
             tank.drain(BURN_PER_TICK);
             energy.generate(perTick);
             generating = perTick;
+            if (level.getGameTime() % ROAR_TICKS == 0) {
+                level.playSound(null, pos, ModSounds.GAS_TURBINE_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
         } else {
             generating = 0;
         }

@@ -2,6 +2,8 @@ package com.cyberfarm.block.entity;
 
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.registry.ModBlockEntities;
+import com.cyberfarm.registry.ModSounds;
+import net.minecraft.sounds.SoundSource;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -45,6 +47,9 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         return tank;
     }
 
+    /** A stroke heard this often while it pumps. */
+    private static final int STROKE_TICKS = 30;
+
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (--checkCooldown <= 0) {
@@ -55,6 +60,9 @@ public class WaterPumpBlockEntity extends MachineBlockEntity {
         if (waterBelow && tank.capacity() - tank.amount() >= RATE && energy.consume(ENERGY_PER_TICK)) {
             tank.fill(Fluids.WATER, RATE);
             runOn = RUN_ON;
+            if (level.getGameTime() % STROKE_TICKS == 0) {
+                level.playSound(null, pos, ModSounds.WATER_PUMP_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+            }
         } else if (runOn > 0) {
             runOn--;
         }

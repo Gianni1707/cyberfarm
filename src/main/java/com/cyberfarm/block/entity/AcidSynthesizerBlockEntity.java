@@ -8,11 +8,6 @@ import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -35,7 +30,7 @@ import com.cyberfarm.port.ItemResource;
  * Acid Synthesizer: Water + Sulfur (ours or any mod's, by the common tag) → Acid, with FE.
  * The Methane Extractor's chamber needs the Acid to dissolve its mob.
  */
-public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
+public class AcidSynthesizerBlockEntity extends SmallMultiblockBlockEntity {
     public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "dusts/sulfur"));
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
@@ -44,6 +39,7 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
+    private static final int OPEN_TICKS = 70;
 
     private final GasTank input = new GasTank(TANK_CAPACITY, resource -> resource.is(Fluids.WATER.getFluidType()), this::setChanged);
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
@@ -74,7 +70,8 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             if (++progress >= PROCESS_TIME) {
                 progress = 0;
@@ -114,13 +111,8 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveCustomOnly(registries);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override

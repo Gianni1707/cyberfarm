@@ -7,15 +7,19 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:bio_digester",
-      "text": "Turns $(l)organic waste$() into $(l)Biogas$(). It needs no power: just feed it.$(br)$(li)Accepts $(l)anything a composter takes$() (seeds, crops, leaves, saplings, flowers...) and $(l)rotten flesh$()."
+      "text": "Turns $(l)organic waste$() into $(l)Biogas$(). It needs no power: just feed it."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Each item takes 2 seconds. A sure-fire compost item (like a cake) gives $(l)250 mB$(), the others less, in proportion to their composting chance; rotten flesh gives $(l)200 mB$().$(br)$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l)."
+      "text": "It takes $(l)2 Cyber Frames$(), one above it and one on its left as you face it. Right-click it alone and drones show where they go. Once complete, the upper drum rises and a tank slides out beside it, its sight glass showing the gas. It doesn't work until then; breaking a frame folds it back."
     },
     {
       "type": "patchouli:text",
-      "text": "A Harvester drone and a hopper feeding the digester make a fully automatic biogas farm."
+      "text": "$(li)Accepts $(l)anything a composter takes$() (seeds, crops, leaves, saplings, flowers...) and $(l)rotten flesh$().$(br)$(li)Each item takes 2 seconds. A sure-fire compost item (like a cake) gives $(l)250 mB$(), the others less, in proportion to their composting chance; rotten flesh gives $(l)200 mB$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l). Pipes connect to the machine block, on its free sides.$(br)A Harvester drone and a hopper feeding the digester make a fully automatic biogas farm."
     },
     {
       "type": "patchouli:crafting",
@@ -23,6 +27,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:bio_digester": 3
+    "cyberfarm:bio_digester": 4
   }
 }

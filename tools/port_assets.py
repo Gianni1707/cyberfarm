@@ -10,12 +10,14 @@ after them (or after carrying files over from a 26.x branch). Safe to run more t
 - block models' "light_emission" becomes Forge's "forge_data" block and sky light;
 - item model definitions (assets/<ns>/items/*.json) become item models in models/item;
 - structure files take the 1.20.1 data version and blocks;
+- texts naming c: tags name the forge: ones;
 - a GuideME handbook (the folder given, or one left under assets/cyberfarm/guides) becomes the
   Patchouli book through tools/patchouli_book.py.
 """
 import gzip
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -141,6 +143,16 @@ def port_item_definitions(ns):
     shutil.rmtree(items)
 
 
+def port_lang(path):
+    """Tags named in the texts are forge: ones on 1.20.1."""
+    with open(path, encoding='utf-8') as f:
+        text = f.read()
+    fixed = re.sub(r'(?<!\w)c:(?=[a-z])', 'forge:', text)
+    if fixed != text:
+        with open(path, 'w', encoding='utf-8', newline='\n') as f:
+            f.write(fixed)
+
+
 def port_structure(path):
     with open(path, 'rb') as f:
         raw = gzip.decompress(f.read())
@@ -176,6 +188,10 @@ def main():
                 port_structure(path)
     for ns in os.listdir(ASSETS):
         port_item_definitions(ns)
+        lang = os.path.join(ASSETS, ns, 'lang')
+        if os.path.isdir(lang):
+            for name in os.listdir(lang):
+                port_lang(os.path.join(lang, name))
         models = os.path.join(ASSETS, ns, 'models')
         for base, _, files in os.walk(models):
             for name in files:

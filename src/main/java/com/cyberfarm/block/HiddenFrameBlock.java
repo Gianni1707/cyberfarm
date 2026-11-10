@@ -3,19 +3,17 @@ package com.cyberfarm.block;
 import com.cyberfarm.port.PortBlock;
 import net.minecraft.world.InteractionHand;
 
-import com.cyberfarm.port.PortBlock;
 import com.cyberfarm.registry.ModBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -29,8 +27,8 @@ import net.minecraft.world.phys.BlockHitResult;
  * back the others when it folds or goes (see SmallMultiblockBlockEntity).
  */
 public class HiddenFrameBlock extends PortBlock {
-    /** Towards the machine, along any frames in between. */
-    public static final EnumProperty<Direction> TO_MACHINE = HorizontalDirectionalBlock.FACING;
+    /** Towards the machine, along any frames in between, which may turn on the way. */
+    public static final EnumProperty<Direction> TO_MACHINE = DirectionalBlock.FACING;
     public static final int NOTHING = 0, STEAM_CYLINDER = 1, STEAM_DYNAMO = 2;
     public static final IntegerProperty PIECE = IntegerProperty.create("piece", NOTHING, STEAM_DYNAMO);
 
@@ -54,7 +52,7 @@ public class HiddenFrameBlock extends PortBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
         BlockPos machine = pos.relative(state.getValue(TO_MACHINE));
         while (level.getBlockState(machine).is(this)) {
-            machine = machine.relative(state.getValue(TO_MACHINE));
+            machine = machine.relative(level.getBlockState(machine).getValue(TO_MACHINE));
         }
         return level.getBlockState(machine).use(level, player, InteractionHand.MAIN_HAND, hitResult.withPosition(machine));
     }

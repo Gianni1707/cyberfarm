@@ -41,6 +41,24 @@
     "facing=west,piece=2": {
       "model": "cyberfarm:block/steam_engine_dynamo",
       "y": 270
+    },
+    "facing=up,piece=0": {
+      "model": "cyberfarm:block/hidden_frame"
+    },
+    "facing=up,piece=1": {
+      "model": "cyberfarm:block/hidden_frame"
+    },
+    "facing=up,piece=2": {
+      "model": "cyberfarm:block/hidden_frame"
+    },
+    "facing=down,piece=0": {
+      "model": "cyberfarm:block/hidden_frame"
+    },
+    "facing=down,piece=1": {
+      "model": "cyberfarm:block/hidden_frame"
+    },
+    "facing=down,piece=2": {
+      "model": "cyberfarm:block/hidden_frame"
     }
   }
 }

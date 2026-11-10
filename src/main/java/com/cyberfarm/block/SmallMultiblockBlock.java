@@ -22,8 +22,7 @@ import java.util.List;
 /**
  * A machine that assembles with Cyber Frames beside it into something bigger, and only then works: its frames hide
  * ({@link HiddenFrameBlock}) and it opens with an animation; breaking a frame folds it back. Alone, a click sends drones to show where the frames go.
- * <p>
- * shortcut: the frames go in straight arms from the machine block, enough for 2x1, 1x3 and 1x5; a 2x2 needs a frame off an arm.
+ * The frames go in straight arms from the machine block, unless the machine lists other cells too.
  */
 public abstract class SmallMultiblockBlock extends LitMachineBlock {
     public static final int LOOSE = 0, OPENING = 1, OPEN = 2, CLOSING = 3;
@@ -41,7 +40,7 @@ public abstract class SmallMultiblockBlock extends LitMachineBlock {
         return 1;
     }
 
-    public final List<BlockPos> frameCells(BlockState state, BlockPos pos) {
+    public List<BlockPos> frameCells(BlockState state, BlockPos pos) {
         List<BlockPos> cells = new ArrayList<>();
         for (Direction side : frameSides(state)) {
             for (int i = 1; i <= frameDepth(); i++) {

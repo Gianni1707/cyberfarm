@@ -21,15 +21,20 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:acid_synthesizer",
-      "title": "Acid Synthesizer"
+      "title": "Acid Synthesizer",
+      "text": "A machine that needs room: it takes $(l)5 Cyber Frames$(), one on each side and three on top, 3 blocks wide and 2 tall with the machine at the bottom of the middle. Right-click it alone and drones show where they go. Once"
     },
     {
       "type": "patchouli:text",
-      "text": "Uses $(l)20 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). The gauges on its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect on any side."
+      "text": "complete, the frames hide and the tanks and the tower rise out of its base. It doesn't work until then; breaking a frame folds it back.$(br2)Uses $(l)20 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). The gauges on its two tanks show how full they are: water on the left, acid"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l)) and put sulfur in the slot, by hand or with a hopper.$(br)$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber.$(br)$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
+      "text": "on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front and behind.$(br)$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l)) and put sulfur in the slot, by hand or with a hopper."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber.$(br)$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
     },
     {
       "type": "patchouli:crafting",

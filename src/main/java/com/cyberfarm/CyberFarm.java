@@ -2,6 +2,7 @@ package com.cyberfarm;
 
 import org.slf4j.Logger;
 
+import com.cyberfarm.block.FluidTankBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -97,6 +98,7 @@ public class CyberFarm {
         MinecraftForge.EVENT_BUS.addListener(Blueprints::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(MechanistTrades::onVillagerTrades);
         MinecraftForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
+        MinecraftForge.EVENT_BUS.addListener(FluidTankBlock::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(FluidBucketItem::fillFromBlock);
         MinecraftForge.EVENT_BUS.addListener(MechHangarBlockEntity::onRightClickBlock);
         MinecraftForge.EVENT_BUS.addListener(MechEvents::onDismount);
@@ -147,7 +149,7 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portFluids() : null);
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.TURBINE_CONTROLLER.get(), (be, side) -> be.isFormed() ? be.portEnergy() : null);
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getTank());
-        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FLUID_TANK.get(), (be, side) -> be.getTank());
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FLUID_TANK.get(), (be, side) -> side != null && be.joined(side) ? null : be.handler());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.COOLANT_MIXER.get(), (be, side) -> be.getFluids());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.WASTE_REPROCESSOR.get(), (be, side) -> be.getEnergy());

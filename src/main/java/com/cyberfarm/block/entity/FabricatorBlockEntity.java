@@ -36,7 +36,9 @@ import org.jspecify.annotations.Nullable;
  * redstone and gold (twice what a crafting table gives), Advanced Circuits etched with Acid,
  * Elite Circuits from uranium and diamond, etched with more acid.
  */
-public class FabricatorBlockEntity extends MachineBlockEntity {
+public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 60;
+
     public static final TagKey<Item> URANIUM = TagKey.create(Registries.ITEM, new ResourceLocation("forge", "ingots/uranium"));
     public static final int INPUTS = 3;
     public static final int OUTPUT = 3;
@@ -135,8 +137,9 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        boolean open = advanceStage(level, pos, state);
         Recipe recipe = current();
-        boolean canRun = recipe != null && hasRoomFor(OUTPUT, recipe.result().get())
+        boolean canRun = open && recipe != null && hasRoomFor(OUTPUT, recipe.result().get())
                 && getStack(OUTPUT).getCount() + recipe.count() <= recipe.output().getMaxStackSize();
         if (canRun && energy.consume(ENERGY_PER_TICK)) {
             recipeTime = recipe.time();
@@ -164,6 +167,11 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     }
 
     /** The server must answer true, or the event is not sent to the players around. */
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
     @Override
     public boolean triggerEvent(int id, int param) {
         if (id != EVENT_START && id != EVENT_DONE) {

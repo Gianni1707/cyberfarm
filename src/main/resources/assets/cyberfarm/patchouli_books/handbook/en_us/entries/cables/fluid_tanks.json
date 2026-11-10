@@ -11,19 +11,35 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:gas_tank",
-      "text": "Tanks store $(l)32,000 mB$() (32 buckets) of a single fluid:$(br)$(li)the $(l)Liquid Tank$() (pale green trim) takes liquids: water, lava, Coolant, Cryo Coolant, Acid, liquids of other mods;"
+      "text": "A tank block stores $(l)32,000 mB$() (32 buckets) of a single fluid:"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)the $(l)Gas Tank$() (amber trim) takes gases: biogas, methane, Steam, gases of other mods.$(br)Fill them with the matching $(l:cables/cables)pipe$(/l): a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l). A Liquid Tank also takes and gives $(l)buckets$().$(br2)Tanks are $(l)passive$(): they never push anything out. To empty one into a machine,"
+      "text": "$(li)the $(l)Liquid Tank$() (a steel line around the glass, waves on its lid) takes liquids: water, lava, Coolant, Cryo Coolant, Acid, liquids of other mods;$(br)$(li)the $(l)Gas Tank$() (a mint line around the glass, a cloud on its lid) takes gases: biogas, methane, Steam, gases of other mods."
     },
     {
       "type": "patchouli:text",
-      "text": "right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank (an orange collar shows it). The window on every side shows the fluid inside, with its own colour, up to its level (gases look hazy); right-click a tank with an empty hand to read the exact amount."
+      "text": "$(l)Tanks grow.$() Blocks of the same kind that fill a box, of any size up to 16 on a side, join into one tank: a column, a row, a 2x2x2, a 3x3x3. Each block adds 32 buckets, and pipes and buckets see them as one. Tanks already holding different fluids don't join."
     },
     {
       "type": "patchouli:text",
-      "text": "A tank is a handy buffer: put one between a Methane Extractor and the Gas Turbines, or between a Water Pump and a Fission Reactor, and it keeps the flow going when production dips.$(br2)Breaking a tank $(l)empties it$()."
+      "text": "Fill them with the matching $(l:cables/cables)pipe$(/l): a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. A Liquid Tank also takes and gives $(l)buckets$(): just right-click it with one.$(br2)Tanks are $(l)passive$(): they never push"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "anything out. To empty one into a machine, right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank (an orange collar shows it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you see into the tank, right through to the other side, and the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A tank is a handy buffer: put one between a Methane Extractor and the Gas Turbines, or between a Water Pump and a Fission Reactor, and it keeps the flow going when production dips."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Breaking a block $(l)loses what that block held$(); the rest stays in the other blocks, which join up again where they can."
     },
     {
       "type": "patchouli:crafting",
@@ -32,7 +48,7 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:liquid_tank": 5,
+    "cyberfarm:liquid_tank": 9,
     "cyberfarm:gas_tank": 1
   }
 }
