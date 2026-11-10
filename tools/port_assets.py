@@ -133,9 +133,12 @@ def port_item_definitions(ns):
         return
     for name in sorted(os.listdir(items)):
         definition = load(os.path.join(items, name))['model']
-        if definition.get('type') != 'minecraft:model':
-            sys.exit(f'{ns}:items/{name} is a {definition.get("type")}: give it an item model with overrides by hand')
         target = os.path.join(ASSETS, ns, 'models', 'item', name)
+        if definition.get('type') != 'minecraft:model':
+            # A condition or select: 1.20.1 does it with item properties, in an item model kept by hand (the drone, the mob capsule)
+            if not os.path.exists(target):
+                sys.exit(f'{ns}:items/{name} is a {definition.get("type")}: give it an item model with overrides by hand')
+            continue
         if definition['model'] != f'{ns}:item/{name[:-5]}':
             save(target, {'parent': definition['model']})
         elif not os.path.exists(target):
