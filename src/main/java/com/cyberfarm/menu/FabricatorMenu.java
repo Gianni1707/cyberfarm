@@ -25,15 +25,10 @@ public class FabricatorMenu extends MachineMenu {
     public FabricatorMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.FABRICATOR.get(), containerId, data, access, ModBlocks.FABRICATOR.get());
         for (int i = 0; i < FabricatorBlockEntity.INPUTS; i++) {
-            addMachineSlot(items, i, 44, 17 + i * 18);
+            addMachineSlot(items, i, 74, 17 + i * 18);
         }
-        addMachineSlot(items, FabricatorBlockEntity.OUTPUT, 124, 35);
+        addMachineSlot(items, FabricatorBlockEntity.OUTPUT, 128, 35);
         addPlayerInventory(inventory, 84);
-    }
-
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
     }
 
     public int getAcidAmount() {
@@ -42,5 +37,10 @@ public class FabricatorMenu extends MachineMenu {
 
     public int getAcidFluid() {
         return extra(3);
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

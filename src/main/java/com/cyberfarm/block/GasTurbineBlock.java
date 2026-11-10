@@ -5,18 +5,28 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.util.RandomSource;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
 
-public class GasTurbineBlock extends LitMachineBlock {
+import java.util.List;
+
+/**
+ * A small multiblock: with a Cyber Frame in front and one behind it assembles into a 1x3 engine, its duct and nozzle sliding
+ * out and the rotor blooming (see tools/machinemodels.py; GasTurbineRenderer draws what moves).
+ */
+public class GasTurbineBlock extends SmallMultiblockBlock {
     public static final MapCodec<GasTurbineBlock> CODEC = simpleCodec(GasTurbineBlock::new);
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 1, 16), Block.box(0.5, 1, 0.5, 15.5, 16, 15.5));
 
     public GasTurbineBlock(Properties properties) {
         super(properties);
@@ -28,6 +38,22 @@ public class GasTurbineBlock extends LitMachineBlock {
     }
 
     @Override
+    public List<Direction> frameSides(BlockState state) {
+        Direction front = state.getValue(FACING);
+        return List.of(front, front.getOpposite());
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.gas_turbine.needs_frames";
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
+    }
+
+    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new GasTurbineBlockEntity(pos, state);
     }
@@ -35,14 +61,5 @@ public class GasTurbineBlock extends LitMachineBlock {
     @Override
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.GAS_TURBINE.get());
-    }
-
-    /** Exhaust smoke out of the top while it burns gas. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(3) == 0) {
-            Vec3 at = onTop(state, level, pos, random, 0.15);
-            level.addParticle(ParticleTypes.SMOKE, at.x, at.y, at.z, 0.0, 0.05, 0.0);
-        }
     }
 }

@@ -27,6 +27,7 @@ public class MufflerScreen extends MachineScreen<MufflerMenu> {
 
     public MufflerScreen(MufflerMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, ROW_Y + Category.values().length * (ROW_HEIGHT + ROW_GAP) + 16);
+        flatBackground("muffler");
         showInventory = false;
     }
 
@@ -79,13 +80,13 @@ public class MufflerScreen extends MachineScreen<MufflerMenu> {
             graphics.item(icon(category), left + 6, top + 2);
             graphics.text(font, Component.translatable(category.translationKey()), left + 26, top + 6, on ? TEXT : TEXT_DIM, false);
 
-            // Switch: knob on the right and cyan track when on
+            // Switch: knob on the right and emerald track when on
             int sx = left + ROW_WIDTH - SWITCH_WIDTH - 6;
             int sy = top + (ROW_HEIGHT - SWITCH_HEIGHT) / 2;
             graphics.fill(sx - 1, sy - 1, sx + SWITCH_WIDTH + 1, sy + SWITCH_HEIGHT + 1, SLOT_BORDER);
             graphics.fill(sx, sy, sx + SWITCH_WIDTH, sy + SWITCH_HEIGHT, on ? ACCENT_DIM : SLOT_BG);
             int knob = on ? sx + SWITCH_WIDTH - SWITCH_HEIGHT : sx;
-            graphics.fill(knob, sy, knob + SWITCH_HEIGHT, sy + SWITCH_HEIGHT, on ? ACCENT : PANEL_LIGHT);
+            graphics.fill(knob, sy, knob + SWITCH_HEIGHT, sy + SWITCH_HEIGHT, on ? ACCENT : STEEL_DARK);
         }
         Component range = Component.translatable("gui.cyberfarm.muffler.range", ClientConfig.MUFFLER_RANGE.get());
         graphics.text(font, range, x + (imageWidth - font.width(range)) / 2, y + imageHeight - 12, TEXT_DIM, false);

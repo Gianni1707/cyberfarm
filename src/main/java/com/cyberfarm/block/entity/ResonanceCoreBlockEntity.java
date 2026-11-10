@@ -6,6 +6,8 @@ import com.cyberfarm.block.ResonanceCellBlock;
 import com.cyberfarm.effect.Effects;
 import com.cyberfarm.menu.ResonanceCoreMenu;
 import com.cyberfarm.registry.ModBlockEntities;
+import com.cyberfarm.registry.ModSounds;
+import net.minecraft.sounds.SoundSource;
 import com.cyberfarm.registry.ModBlocks;
 
 import net.minecraft.core.BlockPos;
@@ -37,6 +39,15 @@ import org.jspecify.annotations.Nullable;
  */
 public class ResonanceCoreBlockEntity extends MachineBlockEntity {
     public static final int MAX_TIER = 4;
+    /**
+     * Client only, for ResonanceCoreRenderer, which keeps nothing between frames: where the stabilising drones are in
+     * their orbit and how fast it turns, and when each side's drone took off (NaN: it was already up when the core loaded).
+     */
+    public float droneAngle;
+    public float droneSpeed;
+    public float droneTime = Float.NaN;
+    public final float[] droneLaunched = new float[4];
+    public final boolean[] droneLinked = new boolean[4];
     /** By tier: FE stored, and FE per tick each pylon lets in or out. */
     private static final int[] CAPACITY = {1_000_000, 32_000_000, 256_000_000, 2_000_000_000};
     private static final int[] TRANSFER = {16_000, 128_000, 512_000, 2_000_000};
@@ -100,6 +111,9 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         return radius + 1.5F;
     }
 
+    /** Its hum comes round this often while it is online. */
+    private static final int HUM_TICKS = 80;
+
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         if (level.getGameTime() % SCAN_INTERVAL == 0) {
@@ -124,6 +138,9 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         energy.setCapacity(capacity(tier));
         int transfer = status == STATUS_ONLINE ? transfer(tier) : 0;
         energy.setTransferLimits(transfer, transfer);
+        if (status == STATUS_ONLINE && level.getGameTime() % HUM_TICKS == 0) {
+            level.playSound(null, pos, ModSounds.RESONANCE_CORE_HUM.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
 
         if (level.getGameTime() % SYNC_INTERVAL == 0) {
             long synced = (long) packedPylons() << 32 | radius << 16 | status << 8 | fillPercent();
@@ -298,7 +315,8 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
     }
 
     /**
-     * A core lined up with the pylon column, looked for along the four sides of its bottom block;
+     * A core lined up with the pylon column, looked for along the four sides of each of its blocks from the bottom up
+     * (the core counts the column from its own level, which need not be the column's bottom);
      * with {@code linked} only one that counts this column among its pylons.
      */
     private static @Nullable ResonanceCoreBlockEntity nearbyCore(Level level, BlockPos pylon, boolean linked) {
@@ -306,12 +324,14 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
         while (level.getBlockState(base.below()).is(ModBlocks.STABILIZER_PYLON.get())) {
             base = base.below();
         }
-        for (Direction side : Direction.Plane.HORIZONTAL) {
-            for (int distance = 1; distance <= maxDistance(MAX_TIER); distance++) {
-                BlockPos pos = base.relative(side, distance);
-                if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ResonanceCoreBlockEntity core
-                        && (!linked || core.pylonDistance(side.getOpposite()) == distance)) {
-                    return core;
+        for (; level.getBlockState(base).is(ModBlocks.STABILIZER_PYLON.get()); base = base.above()) {
+            for (Direction side : Direction.Plane.HORIZONTAL) {
+                for (int distance = 1; distance <= maxDistance(MAX_TIER); distance++) {
+                    BlockPos pos = base.relative(side, distance);
+                    if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ResonanceCoreBlockEntity core
+                            && (!linked || core.pylonDistance(side.getOpposite()) == distance)) {
+                        return core;
+                    }
                 }
             }
         }

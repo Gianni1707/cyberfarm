@@ -1,8 +1,10 @@
 package com.cyberfarm.block.entity;
 
 import com.cyberfarm.block.LitMachineBlock;
+import com.cyberfarm.drone.AddonType;
 import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.energy.MachineEnergyHandler;
+import com.cyberfarm.item.DroneAddonItem;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -19,9 +21,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemUtil;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 /**
@@ -34,8 +38,30 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     private static final int STATUS_INTERVAL = 20;
     private static final int STATUS_RESEND = 100;
 
+    /** Addon slots of a machine that takes addons (see {@link #takesAddons}). */
+    public static final int ADDON_SLOTS = 3;
+    /** Per addon in a machine: Speed +50% speed and +80% FE/t, Efficiency -20% FE, Battery +100% buffer. */
+    private static final float SPEED_STEP = 0.5F;
+    private static final float SPEED_ENERGY_STEP = 0.8F;
+    private static final float EFFICIENCY_STEP = 0.2F;
+    private static final int MAX_SPEED = 4;
+    private static final int MAX_EFFICIENCY = 3;
+    private static final int MAX_BATTERY = 4;
+
     protected final MachineEnergyHandler energy;
     protected final ItemStacksResourceHandler items;
+    /** Kept apart from {@link #items}, so pipes and hoppers never reach the addons. */
+    protected final ItemStacksResourceHandler addons;
+    /** What hoppers and pipes see of {@link #items}: what a slot accepts goes in, only the output slots give anything out. */
+    private final ResourceHandler<ItemResource> automationItems;
+    /** Ticks into the current batch, for the machines that work in batches (see {@link #work}). */
+    protected int progress;
+    private final int baseCapacity;
+    private final int baseMaxInsert;
+    private final int baseMaxExtract;
+    private int speedAddons;
+    private int efficiencyAddons;
+    private int batteryAddons;
 
     /** Client side: what the server last said this machine is doing. */
     public MachineStatus status = MachineStatus.IDLE;
@@ -71,6 +97,27 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
     protected MachineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state, int slots, int capacity, int maxInsert, int maxExtract) {
         super(type, pos, state);
         this.energy = new MachineEnergyHandler(capacity, maxInsert, maxExtract, this::setChanged);
+        this.baseCapacity = capacity;
+        this.baseMaxInsert = maxInsert;
+        this.baseMaxExtract = maxExtract;
+        this.addons = new ItemStacksResourceHandler(ADDON_SLOTS) {
+            @Override
+            public boolean isValid(int index, ItemResource resource) {
+                return takesAddons() && addonType(resource) != null;
+            }
+
+            @Override
+            protected int getCapacity(int index, ItemResource resource) {
+                AddonType type = addonType(resource);
+                return type == null ? 0 : Math.max(0, Math.min(super.getCapacity(index, resource), maxAddons(type) - addonCount(type, index)));
+            }
+
+            @Override
+            protected void onContentsChanged(int index, ItemStack previousContents) {
+                applyAddons();
+                setChanged();
+            }
+        };
         this.items = new ItemStacksResourceHandler(slots) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
@@ -87,9 +134,137 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
                 setChanged();
             }
         };
+        this.automationItems = new ResourceHandler<>() {
+            @Override
+            public int size() {
+                return items.size();
+            }
+
+            @Override
+            public ItemResource getResource(int index) {
+                return items.getResource(index);
+            }
+
+            @Override
+            public long getAmountAsLong(int index) {
+                return items.getAmountAsLong(index);
+            }
+
+            @Override
+            public long getCapacityAsLong(int index, ItemResource resource) {
+                return items.getCapacityAsLong(index, resource);
+            }
+
+            @Override
+            public boolean isValid(int index, ItemResource resource) {
+                return items.isValid(index, resource);
+            }
+
+            @Override
+            public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+                return items.insert(index, resource, amount, transaction);
+            }
+
+            @Override
+            public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+                return isOutput(index) ? items.extract(index, resource, amount, transaction) : 0;
+            }
+        };
     }
 
     public abstract void serverTick(ServerLevel level, BlockPos pos, BlockState state);
+
+    public ResourceHandler<ItemResource> automationItems() {
+        return automationItems;
+    }
+
+    /** Whether automation may take items out of the slot: any slot, unless the machine keeps its inputs in. */
+    protected boolean isOutput(int index) {
+        return true;
+    }
+
+    /**
+     * One tick of a batch: uses FE while the machine can run, and tells when the batch is done. A machine that
+     * cannot run loses what it had done; one that only lacks FE waits.
+     */
+    protected boolean work(boolean canRun, int baseEnergy, int baseTicks) {
+        if (canRun && energy.consume(energyPerTick(baseEnergy))) {
+            setChanged();
+            if (++progress >= workTime(baseTicks)) {
+                progress = 0;
+                return true;
+            }
+        } else if (!canRun && progress != 0) {
+            progress = 0;
+            setChanged();
+        }
+        return false;
+    }
+
+    /** Whether this machine has addon slots: the ones that use FE to work. */
+    public boolean takesAddons() {
+        return false;
+    }
+
+    /** The machine addons: Speed, Efficiency and Battery; null for any other item. */
+    private static AddonType addonType(ItemResource resource) {
+        if (resource.getItem() instanceof DroneAddonItem addon) {
+            AddonType type = addon.getAddonType();
+            return type == AddonType.SPEED || type == AddonType.EFFICIENCY || type == AddonType.BATTERY ? type : null;
+        }
+        return null;
+    }
+
+    private static int maxAddons(AddonType type) {
+        return switch (type) {
+            case SPEED -> MAX_SPEED;
+            case EFFICIENCY -> MAX_EFFICIENCY;
+            default -> MAX_BATTERY;
+        };
+    }
+
+    /** How many addons of this type sit in the addon slots, leaving out slot {@code except} (-1 for none). */
+    private int addonCount(AddonType type, int except) {
+        int count = 0;
+        for (int i = 0; i < addons.size(); i++) {
+            if (i != except && addonType(addons.getResource(i)) == type) {
+                count += addons.getAmountAsInt(i);
+            }
+        }
+        return count;
+    }
+
+    /** Recounts the addons and resizes the buffer and transfer limits to them. */
+    private void applyAddons() {
+        speedAddons = addonCount(AddonType.SPEED, -1);
+        efficiencyAddons = addonCount(AddonType.EFFICIENCY, -1);
+        batteryAddons = addonCount(AddonType.BATTERY, -1);
+        energy.setCapacity(baseCapacity * (1 + batteryAddons));
+        energy.setTransferLimits((int) Math.ceil(baseMaxInsert * energyFactor()), baseMaxExtract);
+    }
+
+    private float energyFactor() {
+        return (1 + SPEED_ENERGY_STEP * speedAddons) * (1 - EFFICIENCY_STEP * efficiencyAddons);
+    }
+
+    /** A work time in ticks, shortened by the Speed addons. */
+    public int workTime(int baseTicks) {
+        return Math.max(1, Math.round(baseTicks / (1 + SPEED_STEP * speedAddons)));
+    }
+
+    /** A rate (e.g. mB per tick), raised by the Speed addons. */
+    public int workRate(int baseRate) {
+        return Math.round(baseRate * (1 + SPEED_STEP * speedAddons));
+    }
+
+    /** FE per tick while working: more with Speed addons, less with Efficiency addons. */
+    public int energyPerTick(int baseEnergy) {
+        return Math.max(1, Math.round(baseEnergy * energyFactor()));
+    }
+
+    public ItemStacksResourceHandler getAddons() {
+        return addons;
+    }
 
     /** For machines that work without making or using FE, such as a digester or a reactor. */
     protected boolean isWorking() {
@@ -166,6 +341,12 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         setStack(slot, stack.isEmpty() ? new ItemStack(item) : stack.copyWithCount(stack.getCount() + 1));
     }
 
+    /** Takes {@code count} items out of the slot, which must hold that many. */
+    protected void take(int slot, int count) {
+        ItemStack stack = getStack(slot);
+        setStack(slot, stack.copyWithCount(stack.getCount() - count));
+    }
+
     @Override
     public Component getDisplayName() {
         return getBlockState().getBlock().getName();
@@ -176,12 +357,18 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         super.saveAdditional(output);
         energy.serialize(output.child("energy"));
         items.serialize(output.child("items"));
+        addons.serialize(output.child("addons"));
+        output.putInt("progress", progress);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
+        // Addons first: a Battery Addon makes room for the energy saved above the base buffer
+        addons.deserialize(input.childOrEmpty("addons"));
+        applyAddons();
         energy.deserialize(input.childOrEmpty("energy"));
+        progress = input.getIntOr("progress", 0);
         // Deserializing straight into the handler would adopt the saved slot count, which breaks
         // the menu when a machine gained slots in an update. Load into a copy, keep what fits.
         ItemStacksResourceHandler saved = new ItemStacksResourceHandler(items.size());
@@ -198,6 +385,9 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         if (level != null) {
             for (int i = 0; i < items.size(); i++) {
                 Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), getStack(i));
+            }
+            for (int i = 0; i < addons.size(); i++) {
+                Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), ItemUtil.getStack(addons, i));
             }
         }
     }

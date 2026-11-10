@@ -1,4 +1,113 @@
 {
+  "multiblock.unlatch": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 0.7,
+        "volume": 0.7
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.unlatch"
+  },
+  "multiblock.assemble": {
+    "sounds": [
+      {
+        "name": "minecraft:block/iron_trapdoor/open1",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open2",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open3",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/open4",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "volume": 0.5
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table1",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table2",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:block/smithing_table/smithing_table3",
+        "volume": 0.45
+      },
+      {
+        "name": "minecraft:tile/piston/in",
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/chain/step1",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step2",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step3",
+        "volume": 0.6
+      },
+      {
+        "name": "minecraft:block/chain/step4",
+        "volume": 0.6
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.assemble"
+  },
+  "multiblock.lock": {
+    "sounds": [
+      {
+        "name": "minecraft:random/anvil_land",
+        "pitch": 1.6,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close1",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close2",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close3",
+        "pitch": 0.7,
+        "volume": 0.8
+      },
+      {
+        "name": "minecraft:block/iron_trapdoor/close4",
+        "pitch": 0.7,
+        "volume": 0.8
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.multiblock.lock"
+  },
   "drone.fly": {
     "sounds": [
       {
@@ -227,6 +336,101 @@
       }
     ],
     "subtitle": "subtitles.cyberfarm.coolant_mixer.work"
+  },
+  "bio_digester.work": {
+    "sounds": [
+      {
+        "name": "minecraft:block/bubble_column/upwards_ambient1",
+        "pitch": 0.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/bubble_column/upwards_ambient2",
+        "pitch": 0.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/bubble_column/upwards_ambient3",
+        "pitch": 0.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/bubble_column/upwards_ambient4",
+        "pitch": 0.6,
+        "volume": 0.4
+      },
+      {
+        "name": "minecraft:block/bubble_column/upwards_ambient5",
+        "pitch": 0.6,
+        "volume": 0.4
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.bio_digester.work"
+  },
+  "water_pump.work": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 0.6,
+        "volume": 0.25
+      },
+      {
+        "name": "minecraft:tile/piston/out",
+        "pitch": 0.6,
+        "volume": 0.25
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.water_pump.work"
+  },
+  "biomass_press.work": {
+    "sounds": [
+      {
+        "name": "minecraft:tile/piston/in",
+        "pitch": 0.7,
+        "volume": 0.35
+      },
+      {
+        "name": "minecraft:mob/slime/big1",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big2",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big3",
+        "pitch": 0.8,
+        "volume": 0.3
+      },
+      {
+        "name": "minecraft:mob/slime/big4",
+        "pitch": 0.8,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.biomass_press.work"
+  },
+  "gas_turbine.work": {
+    "sounds": [
+      {
+        "name": "minecraft:fire/fire",
+        "pitch": 1.6,
+        "volume": 0.3
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.gas_turbine.work"
+  },
+  "resonance_core.hum": {
+    "sounds": [
+      {
+        "name": "minecraft:block/beacon/ambient",
+        "pitch": 1.5,
+        "volume": 0.25
+      }
+    ],
+    "subtitle": "subtitles.cyberfarm.resonance_core.hum"
   },
   "waste_reprocessor.work": {
     "sounds": [

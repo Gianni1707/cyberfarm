@@ -4,14 +4,19 @@ navigation:
   parent: generators.md
   position: 2
   icon: cyberfarm:gas_turbine
+item_ids:
+  - cyberfarm:biogas_bucket
+  - cyberfarm:methane_bucket
+  - cyberfarm:steam_bucket
 ---
 
 # Gas Power
 
-The second step of CyberFarm power: **gases**. Organic waste becomes **Biogas**, mobs shut in an
+The second step of CyberFarm power: **gases**. Organic waste, pressed into Biomass, becomes **Biogas**, mobs shut in an
 extraction chamber give off **Methane**, and a **Gas Turbine** burns both into FE.
 
 <ItemGrid>
+  <ItemIcon id="biomass_press" />
   <ItemIcon id="bio_digester" />
   <ItemIcon id="methane_extractor" />
   <ItemIcon id="gas_turbine" />
@@ -20,8 +25,8 @@ extraction chamber give off **Methane**, and a **Gas Turbine** burns both into F
 
 | Gas | Made by | Gas Turbine | Steam Engine |
 | --- | --- | --- | --- |
-| Biogas | [Bio-Digester](bio_digester.md), about 6 mB/t | 3 FE per mB | 6 FE per mB |
-| Methane | [Methane Extractor](methane_extractor.md), up to 25 mB/t | 8 FE per mB | 10 FE per mB |
+| Biogas | [Bio-Digester](bio_digester.md), about 6 mB/t | 5 FE per mB | 9 FE per mB |
+| Methane | [Methane Extractor](methane_extractor.md), up to 25 mB/t | 12 FE per mB | 15 FE per mB |
 
 The Gas Turbine is small and cheap; the [Steam Engine](steam_engine.md) is a bigger build that gets
 more out of every mB.
@@ -44,6 +49,9 @@ Gases can be carried in buckets, held **upside down** since they are lighter tha
 
 Both gases are **standard fluids**: tanks, pipes and machines of other mods that handle fluids can
 store and move them too. They are tagged `c:gaseous`, `c:biogas` and `c:methane`.
+
+The Biomass Press and the Bio-Digester draw 8 FE/t each, so the first power has to come from elsewhere, such as a
+[Combustion Generator](combustion_generator.md). At full speed a digester and one press cost 16 FE/t together, while their gas gives about 31 FE/t in a Gas Turbine, or about 56 in a Steam Engine.
 
 A typical setup: a Bio-Digester and the Methane Outlet of an extraction chamber push their gas
 into [Gas Pipes](gas_pipe.md), which carry it to a [Gas Turbine](gas_turbine.md) or a

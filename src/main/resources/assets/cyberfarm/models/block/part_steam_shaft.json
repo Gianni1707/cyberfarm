@@ -1,0 +1,150 @@
+{
+  "parent": "minecraft:block/block",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "particle": "cyberfarm:block/models/part_steam_shaft",
+    "atlas": "cyberfarm:block/models/part_steam_shaft",
+    "fire": "cyberfarm:block/machine_fire",
+    "light": "cyberfarm:block/machine_light"
+  },
+  "elements": [
+    {
+      "from": [
+        6.8,
+        7.8,
+        10.8
+      ],
+      "to": [
+        9.2,
+        10.2,
+        11.7
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6,
+            5,
+            8,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            8,
+            5,
+            10,
+            6
+          ],
+          "texture": "#atlas"
+        },
+        "north": {
+          "uv": [
+            0,
+            3,
+            2,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "south": {
+          "uv": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            4,
+            3,
+            5,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            5,
+            3,
+            6,
+            5
+          ],
+          "texture": "#atlas"
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        13.4,
+        0
+      ],
+      "to": [
+        11,
+        16,
+        1.6
+      ],
+      "faces": {
+        "down": {
+          "uv": [
+            6,
+            3,
+            12,
+            5
+          ],
+          "texture": "#atlas"
+        },
+        "up": {
+          "uv": [
+            0,
+            5,
+            6,
+            7
+          ],
+          "texture": "#atlas",
+          "cullface": "up"
+        },
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            3
+          ],
+          "texture": "#atlas",
+          "cullface": "north"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            12,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "west": {
+          "uv": [
+            12,
+            0,
+            14,
+            3
+          ],
+          "texture": "#atlas"
+        },
+        "east": {
+          "uv": [
+            14,
+            0,
+            16,
+            3
+          ],
+          "texture": "#atlas"
+        }
+      }
+    }
+  ]
+}

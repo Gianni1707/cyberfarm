@@ -6,6 +6,8 @@ navigation:
   icon: cyberfarm:coolant_mixer
 item_ids:
   - cyberfarm:coolant_mixer
+  - cyberfarm:coolant_bucket
+  - cyberfarm:cryo_coolant_bucket
 ---
 
 # Coolant Mixer
@@ -13,7 +15,12 @@ item_ids:
 <BlockImage id="cyberfarm:coolant_mixer" scale="4" float="left" />
 
 Makes the coolants that let a [Fission Reactor](fission_reactor.md) run at higher power. Uses
-**20 FE/t**; each batch takes 2 seconds and makes **500 mB**.
+**100 FE/t**; each batch takes 2 seconds and makes **500 mB**. It takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI.
+
+It is a small multiblock: **place a Cyber Frame on its right**, seen from its front, against the open flange.
+**Right-click** the machine and a mini drone flies out and projects the frame where it goes (hold sneak to place the frame against the machine itself). When the frame is
+there the machine assembles and opens, and both tanks show their levels. It does not work until then, so a Mixer
+placed before this change waits for its frame, with its contents kept.
 
 <br clear="all" />
 
@@ -23,7 +30,10 @@ Makes the coolants that let a [Fission Reactor](fission_reactor.md) run at highe
 | Coolant | Blue Ice | **Cryo Coolant** |
 
 - Pipe the fluid in (water from a [Water Pump](water_pump.md), or Coolant to upgrade it), put the
-  items in the slot by hand or with a hopper.
+  items in the slot by hand or with a hopper. Pipes and hoppers connect to the machine's half of the bench only,
+  on its left side, front, back or top.
+- The left tank shows what goes in, the right one what comes out. Breaking the frame folds the bench back and
+  stops it; put a frame back and it opens again.
 - The result is pushed into adjacent pipes and tanks by itself: pipe it to a **Reactor Port**.
 
 ## Buckets and pools
@@ -45,7 +55,8 @@ Makes the coolants that let a [Fission Reactor](fission_reactor.md) run at highe
 ## Why better coolant
 
 The coolant fills the reactor's **primary loop** and decides how much heat can leave the core
-each tick: 200 with plain water, **500** with Coolant, **1,200** with Cryo Coolant. It is not used
+each tick: plain water moves the tower's base amount (150, 250 or 400 by size), Coolant **2.5 times** as much,
+Cryo Coolant **6 times** (up to **2,400** in a Large tower). It is not used
 up like the water, but wears out slowly: 1 mB for every 400 heat it moves.
 
 <RecipeFor id="coolant_mixer" />

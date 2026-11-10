@@ -1,0 +1,160 @@
+{
+  "multipart": [
+    {
+      "when": {
+        "facing": "north",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_base"
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_base",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_base",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "0"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "stage": "1|2|3"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_base",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port"
+      }
+    },
+    {
+      "when": {
+        "facing": "north",
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "east": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 90
+      }
+    },
+    {
+      "when": {
+        "facing": "east",
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "south": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 180
+      }
+    },
+    {
+      "when": {
+        "facing": "south",
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 270
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "north": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port"
+      }
+    },
+    {
+      "when": {
+        "facing": "west",
+        "west": "true"
+      },
+      "apply": {
+        "model": "cyberfarm:block/transmitter_dish_port",
+        "y": 270
+      }
+    }
+  ]
+}

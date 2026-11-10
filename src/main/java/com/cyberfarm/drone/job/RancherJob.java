@@ -27,7 +27,7 @@ import org.jspecify.annotations.Nullable;
  * rest go home in the cargo.
  */
 public class RancherJob extends DroneJob {
-    public static final int ENERGY_COST = 15;
+    public static final int ENERGY_COST = 30;
     /** Empty buckets loaded from the dock per trip. */
     private static final int BUCKETS_PER_TRIP = 16;
     /** How close above the animal the drone must be to work on it. */

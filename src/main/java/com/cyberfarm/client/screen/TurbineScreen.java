@@ -9,21 +9,25 @@ import net.minecraft.world.entity.player.Inventory;
 
 /** Left: steam tank. Middle: status, output, rotor speed bar and the hall's ratings. Right: energy. */
 public class TurbineScreen extends MachineScreen<TurbineMenu> {
-    private static final int TANK_X = 12;
+    private static final int TANK_X = 48;
     private static final int TANK_Y = 17;
     private static final int TANK_HEIGHT = 52;
-    private static final int TEXT_X = 34;
-    private static final int SPEED_Y = 44;
-    private static final int SPEED_WIDTH = 114;
+    private static final int TEXT_X = 73;
+    /** The rotor's angle in the drawing, turned every frame by the synced speed. */
+    private double spin;
     private static final String[] SIZE_NAMES = {"", "small", "medium", "large"};
 
     public TurbineScreen(TurbineMenu menu, Inventory inventory, Component title) {
         super(menu, inventory, title, 176, 166);
+        flatBackground("turbine");
     }
 
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
         drawTank(graphics, x + TANK_X, y + TANK_Y, TANK_HEIGHT, menu.getSteam(), TurbineControllerBlockEntity.TANK_CAPACITY, menu.getSteamFluid());
+        // The rotor, turning as fast as it really does
+        spin += menu.getSpeed() / 1000.0 * 0.5;
+        drawSpinner(graphics, x + 22, y + 39, 11, spin);
         if (menu.getSize() == 0) {
             graphics.text(font, Component.translatable("gui.cyberfarm.turbine.incomplete"), x + TEXT_X, y + 22, WARM, false);
             return;
@@ -34,11 +38,7 @@ public class TurbineScreen extends MachineScreen<TurbineMenu> {
         graphics.text(font, Component.translatable("gui.cyberfarm.fe_per_tick", menu.getGenerating()), x + TEXT_X, y + 31, TEXT, false);
 
         // Rotor speed bar
-        graphics.fill(x + TEXT_X - 1, y + SPEED_Y - 1, x + TEXT_X + SPEED_WIDTH + 1, y + SPEED_Y + 6, SLOT_BORDER);
-        graphics.fill(x + TEXT_X, y + SPEED_Y, x + TEXT_X + SPEED_WIDTH, y + SPEED_Y + 5, SLOT_BG);
-        graphics.fill(x + TEXT_X, y + SPEED_Y, x + TEXT_X + SPEED_WIDTH * menu.getSpeed() / 1000, y + SPEED_Y + 5, ACCENT);
-        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.rotor", menu.getSpeed() / 10), x + TEXT_X, y + 52, TEXT_DIM, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.rating", menu.getMaxSteam(), menu.getFePerMb()), x + TEXT_X, y + 62, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.turbine.rotor", menu.getSpeed() / 10), x + TEXT_X, y + 44, TEXT_DIM, false);
     }
 
     @Override
@@ -53,6 +53,9 @@ public class TurbineScreen extends MachineScreen<TurbineMenu> {
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
+        if (menu.getSize() > 0 && isHovering(70, 17, 82, 50, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.turbine.rating", menu.getMaxSteam(), menu.getFePerMb()), mouseX, mouseY);
+        }
         tankTooltip(graphics, mouseX, mouseY, TANK_X, TANK_Y, TANK_HEIGHT, menu.getSteam(), TurbineControllerBlockEntity.TANK_CAPACITY, menu.getSteamFluid());
     }
 }

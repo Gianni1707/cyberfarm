@@ -25,10 +25,10 @@ public final class MechEvents {
     /** The blade's sweep: what it does to everything else close to the target, and how close. */
     private static final float SWEEP_DAMAGE = 8.0F;
     private static final double SWEEP_RANGE = 2.5;
-    private static final int FE_PER_SLASH = 80;
+    private static final int FE_PER_SLASH = 160;
     /** With the drill: digging speed, and what every extra block of the 3x3 costs. */
     private static final float DRILL_SPEED = 12.0F;
-    private static final int FE_PER_DRILLED = 20;
+    private static final int FE_PER_DRILLED = 40;
     /** Set while the drill breaks the blocks around the one dug, so those do not dig 3x3 in turn. */
     private static boolean drilling;
     /** Digging speed from the cockpit, an iron pickaxe's (the rider's not-on-ground penalty comes before this). */
@@ -61,7 +61,8 @@ public final class MechEvents {
         }
         Entity attacker = event.getSource().getDirectEntity();
         MechEntity mech = pilotedMech(attacker);
-        if (mech == null || !((Player) attacker).getMainHandItem().isEmpty() || event.getEntity() == mech) {
+        // The sweep's own hits come back through here: they are what they are, with no second cut and no second charge
+        if (mech == null || sweeping || !((Player) attacker).getMainHandItem().isEmpty() || event.getEntity() == mech) {
             return;
         }
         if (mech.isToolOn(MechModule.BLADE) && mech.consume(FE_PER_SLASH)) {

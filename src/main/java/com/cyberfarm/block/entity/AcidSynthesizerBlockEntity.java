@@ -8,11 +8,6 @@ import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientGamePacketListener;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -23,7 +18,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -35,21 +29,21 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  * Acid Synthesizer: Water + Sulfur (ours or any mod's, by the common tag) → Acid, with FE.
  * The Methane Extractor's chamber needs the Acid to dissolve its mob.
  */
-public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
+public class AcidSynthesizerBlockEntity extends SmallMultiblockBlockEntity {
     public static final TagKey<Item> SULFUR = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "dusts/sulfur"));
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_TICK = 40;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
+    private static final int OPEN_TICKS = 70;
 
     private final GasTank input = new GasTank(TANK_CAPACITY, resource -> resource.is(Fluids.WATER.getFluidType()), this::setChanged);
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {input}, output);
-    private int progress;
-    /** What the clients last heard, so the fluid in the front windows stays up to date. */
+    /** What the clients last heard, so the fluid in the sight glasses stays up to date. */
     private int syncedInput = -1;
     private int syncedOutput = -1;
     private boolean syncedWorking;
@@ -69,25 +63,23 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
-        boolean canRun = getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
-                progress = 0;
-                input.drain(BATCH);
-                output.fill(ModFluids.ACID.get(), BATCH);
-                ItemStack item = getStack(0);
-                setStack(0, item.copyWithCount(item.getCount() - 1));
-                level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 0.8F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        boolean open = advanceStage(level, pos, state);
+        boolean canRun = open && getStack(0).is(SULFUR) && input.amount() >= BATCH && output.capacity() - output.amount() >= BATCH;
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            input.drain(BATCH);
+            output.fill(ModFluids.ACID.get(), BATCH);
+            take(0, 1);
+            level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 0.8F);
         }
         output.pushToNeighbors(level, pos, OUTPUT_PER_SIDE);
         boolean working = progress > 0;
@@ -114,13 +106,8 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     }
 
     @Override
-    public CompoundTag getUpdateTag(HolderLookup.Provider registries) {
-        return saveCustomOnly(registries);
-    }
-
-    @Override
-    public Packet<ClientGamePacketListener> getUpdatePacket() {
-        return ClientboundBlockEntityDataPacket.create(this);
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override
@@ -132,7 +119,7 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> input.amount();
             case 3 -> input.fluidCode();
             case 4 -> output.amount();
@@ -151,7 +138,6 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
         super.saveAdditional(out);
         input.serialize(out.child("input"));
         output.serialize(out.child("output"));
-        out.putInt("progress", progress);
     }
 
     @Override
@@ -159,7 +145,6 @@ public class AcidSynthesizerBlockEntity extends MachineBlockEntity {
         super.loadAdditional(in);
         input.deserialize(in.childOrEmpty("input"));
         output.deserialize(in.childOrEmpty("output"));
-        progress = in.getIntOr("progress", 0);
     }
 
     @Override

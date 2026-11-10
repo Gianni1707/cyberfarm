@@ -77,10 +77,6 @@ public class SupplyTerminalMenu extends MachineMenu {
         return extra(GLOBAL);
     }
 
-    public int nextContractSeconds() {
-        return extra(GLOBAL + 1);
-    }
-
     public int prosperity() {
         return extra(GLOBAL + 2);
     }

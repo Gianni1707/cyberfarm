@@ -28,8 +28,12 @@ public class EnergyConduitBlockEntity extends NetworkPipeBlockEntity {
 
         @Override
         public int insert(int amount, TransactionContext transaction) {
-            return distribute(Capabilities.Energy.BLOCK, this, Math.min(amount, rate()),
+            int moved = distribute(Capabilities.Energy.BLOCK, this, Math.min(amount, rate()),
                     (receiver, left) -> receiver.insert(left, transaction));
+            if (moved > 0) {
+                flowed(ENERGY);
+            }
+            return moved;
         }
 
         @Override

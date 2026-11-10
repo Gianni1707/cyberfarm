@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.menu.CoolantMixerMenu;
@@ -17,6 +18,7 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -28,15 +30,18 @@ import org.jspecify.annotations.Nullable;
 /**
  * Coolant Mixer: makes the Fission Reactor's better coolants with FE.
  * Water + Lapis Lazuli → Coolant; Coolant + Blue Ice → Cryo Coolant.
+ * It works once assembled with its Cyber Frame, see {@link SmallMultiblockBlock}.
  */
-public class CoolantMixerBlockEntity extends MachineBlockEntity {
+public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
     public static final int BATCH = 500;
     public static final int PROCESS_TIME = 40;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_TICK = 100;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 500;
     private static final int OUTPUT_PER_SIDE = 500;
+    private static final int OPEN_TICKS = 60;
+    private static final int SYNC_INTERVAL = 5;
 
     private record Recipe(Fluid input, Item item, Fluid output) {}
 
@@ -50,11 +55,15 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
         return null;
     }
 
+    /** While it pushes its own Coolant out: a pipe would hand it straight back to the input, which then takes no water. */
+    private boolean pushing;
     private final GasTank input = new GasTank(TANK_CAPACITY,
-            resource -> resource.is(Fluids.WATER.getFluidType()) || resource.is(ModFluids.COOLANT_TYPE.get()), this::setChanged);
+            resource -> !pushing && (resource.is(Fluids.WATER.getFluidType()) || resource.is(ModFluids.COOLANT_TYPE.get())), this::setChanged);
     private final GasTank output = new GasTank(TANK_CAPACITY, resource -> false, this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {input}, output);
-    private int progress;
+    /** What the clients last heard, so the fluid in the sight glasses stays up to date. */
+    private int syncedInput = -1;
+    private int syncedOutput = -1;
 
     public CoolantMixerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.COOLANT_MIXER.get(), pos, state, 1, CAPACITY, MAX_INPUT, 0);
@@ -64,32 +73,50 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
         return fluids;
     }
 
+    public GasTank getInput() {
+        return input;
+    }
+
+    public GasTank getOutput() {
+        return output;
+    }
+
     @Override
     protected float progress() {
-        return progress / (float) PROCESS_TIME;
+        return progress / (float) workTime(PROCESS_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        boolean open = advanceStage(level, pos, state);
         Recipe recipe = recipeFor(input.fluid(), getStack(0));
-        boolean canRun = recipe != null && input.amount() >= BATCH
+        boolean canRun = open && recipe != null && input.amount() >= BATCH
                 && output.capacity() - output.amount() >= BATCH
                 && (output.amount() == 0 || output.fluid() == recipe.output());
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            if (++progress >= PROCESS_TIME) {
-                progress = 0;
-                input.drain(BATCH);
-                output.fill(recipe.output(), BATCH);
-                ItemStack item = getStack(0);
-                setStack(0, item.copyWithCount(item.getCount() - 1));
-                level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
-            }
-            setChanged();
-        } else if (!canRun && progress != 0) {
-            progress = 0;
-            setChanged();
+        if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
+            input.drain(BATCH);
+            output.fill(recipe.output(), BATCH);
+            take(0, 1);
+            level.playSound(null, pos, ModSounds.COOLANT_MIXER_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
         }
+        pushing = true;
         output.pushToNeighbors(level, pos, OUTPUT_PER_SIDE);
+        pushing = false;
+        if (level.getGameTime() % SYNC_INTERVAL == 0 && (input.amount() != syncedInput || output.amount() != syncedOutput)) {
+            syncedInput = input.amount();
+            syncedOutput = output.amount();
+            level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        }
+    }
+
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
     }
 
     @Override
@@ -101,7 +128,7 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> PROCESS_TIME;
+            case 1 -> workTime(PROCESS_TIME);
             case 2 -> input.amount();
             case 3 -> input.fluidCode();
             case 4 -> output.amount();
@@ -120,7 +147,6 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
         super.saveAdditional(out);
         input.serialize(out.child("input"));
         output.serialize(out.child("output"));
-        out.putInt("progress", progress);
     }
 
     @Override
@@ -128,7 +154,6 @@ public class CoolantMixerBlockEntity extends MachineBlockEntity {
         super.loadAdditional(in);
         input.deserialize(in.childOrEmpty("input"));
         output.deserialize(in.childOrEmpty("output"));
-        progress = in.getIntOr("progress", 0);
     }
 
     @Override

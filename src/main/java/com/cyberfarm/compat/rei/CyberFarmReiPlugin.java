@@ -1,6 +1,7 @@
 package com.cyberfarm.compat.rei;
 
 import com.cyberfarm.client.screen.DroneDockScreen;
+import com.cyberfarm.client.screen.MachineScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
@@ -28,6 +29,9 @@ public class CyberFarmReiPlugin implements REIClientPlugin {
     @Override
     public void registerExclusionZones(ExclusionZones zones) {
         zones.register(DroneDockScreen.class, (DroneDockScreen screen) -> screen.sideAreas().stream()
+                .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
+                .toList());
+        zones.register(MachineScreen.class, (MachineScreen<?> screen) -> screen.addonArea().stream()
                 .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
                 .toList());
     }

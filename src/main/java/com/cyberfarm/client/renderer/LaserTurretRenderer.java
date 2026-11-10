@@ -37,7 +37,7 @@ public class LaserTurretRenderer implements BlockEntityRenderer<LaserTurretBlock
     private static final int STEEL_DARK = 0xFF2C333B;
     private static final int LENS_ARMED = 0xFFFF2A1F;
     private static final int LENS_IDLE = 0xFF6A1A14;
-    private static final int SENSOR = 0xFF2FE0FF;
+    private static final int SENSOR = 0xFFD1FEE7;
 
     public static class State extends BlockEntityRenderState {
         float yaw;

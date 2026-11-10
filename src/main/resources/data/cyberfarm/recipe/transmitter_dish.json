@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:ingots/aluminum",
+    "X": "minecraft:lightning_rod",
+    "D": "cyberfarm:advanced_circuit",
+    "C": "minecraft:copper_ingot"
+  },
+  "pattern": [
+    "AXA",
+    "ADA",
+    "CCC"
+  ],
+  "result": {
+    "id": "cyberfarm:transmitter_dish"
+  }
+}

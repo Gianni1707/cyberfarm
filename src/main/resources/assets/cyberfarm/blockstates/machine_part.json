@@ -1,0 +1,799 @@
+{
+  "variants": {
+    "facing=north,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct"
+    },
+    "facing=east,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 90
+    },
+    "facing=south,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 180
+    },
+    "facing=west,part=0": {
+      "model": "cyberfarm:block/part_turbine_duct",
+      "y": 270
+    },
+    "facing=north,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle"
+    },
+    "facing=east,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 90
+    },
+    "facing=south,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 180
+    },
+    "facing=west,part=1": {
+      "model": "cyberfarm:block/part_turbine_nozzle",
+      "y": 270
+    },
+    "facing=north,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left"
+    },
+    "facing=east,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 90
+    },
+    "facing=south,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 180
+    },
+    "facing=west,part=2": {
+      "model": "cyberfarm:block/part_turbine_door_left",
+      "y": 270
+    },
+    "facing=north,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right"
+    },
+    "facing=east,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 90
+    },
+    "facing=south,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 180
+    },
+    "facing=west,part=3": {
+      "model": "cyberfarm:block/part_turbine_door_right",
+      "y": 270
+    },
+    "facing=north,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank"
+    },
+    "facing=east,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 90
+    },
+    "facing=south,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 180
+    },
+    "facing=west,part=4": {
+      "model": "cyberfarm:block/part_mixer_water_tank",
+      "y": 270
+    },
+    "facing=north,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank"
+    },
+    "facing=east,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 90
+    },
+    "facing=south,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 180
+    },
+    "facing=west,part=5": {
+      "model": "cyberfarm:block/part_mixer_coolant_tank",
+      "y": 270
+    },
+    "facing=north,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle"
+    },
+    "facing=east,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 90
+    },
+    "facing=south,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 180
+    },
+    "facing=west,part=6": {
+      "model": "cyberfarm:block/part_mixer_water_saddle",
+      "y": 270
+    },
+    "facing=north,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle"
+    },
+    "facing=east,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 90
+    },
+    "facing=south,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 180
+    },
+    "facing=west,part=7": {
+      "model": "cyberfarm:block/part_mixer_coolant_saddle",
+      "y": 270
+    },
+    "facing=north,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail"
+    },
+    "facing=east,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 90
+    },
+    "facing=south,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 180
+    },
+    "facing=west,part=8": {
+      "model": "cyberfarm:block/part_mixer_rail",
+      "y": 270
+    },
+    "facing=north,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0"
+    },
+    "facing=east,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 90
+    },
+    "facing=south,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 180
+    },
+    "facing=west,part=9": {
+      "model": "cyberfarm:block/part_mixer_hood_0",
+      "y": 270
+    },
+    "facing=north,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1"
+    },
+    "facing=east,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 90
+    },
+    "facing=south,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 180
+    },
+    "facing=west,part=10": {
+      "model": "cyberfarm:block/part_mixer_hood_1",
+      "y": 270
+    },
+    "facing=north,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2"
+    },
+    "facing=east,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 90
+    },
+    "facing=south,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 180
+    },
+    "facing=west,part=11": {
+      "model": "cyberfarm:block/part_mixer_hood_2",
+      "y": 270
+    },
+    "facing=north,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3"
+    },
+    "facing=east,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 90
+    },
+    "facing=south,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 180
+    },
+    "facing=west,part=12": {
+      "model": "cyberfarm:block/part_mixer_hood_3",
+      "y": 270
+    },
+    "facing=north,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4"
+    },
+    "facing=east,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 90
+    },
+    "facing=south,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 180
+    },
+    "facing=west,part=13": {
+      "model": "cyberfarm:block/part_mixer_hood_4",
+      "y": 270
+    },
+    "facing=north,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5"
+    },
+    "facing=east,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 90
+    },
+    "facing=south,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 180
+    },
+    "facing=west,part=14": {
+      "model": "cyberfarm:block/part_mixer_hood_5",
+      "y": 270
+    },
+    "facing=north,part=15": {
+      "model": "cyberfarm:block/part_steam_piston"
+    },
+    "facing=east,part=15": {
+      "model": "cyberfarm:block/part_steam_piston",
+      "y": 90
+    },
+    "facing=south,part=15": {
+      "model": "cyberfarm:block/part_steam_piston",
+      "y": 180
+    },
+    "facing=west,part=15": {
+      "model": "cyberfarm:block/part_steam_piston",
+      "y": 270
+    },
+    "facing=north,part=16": {
+      "model": "cyberfarm:block/part_steam_wheel"
+    },
+    "facing=east,part=16": {
+      "model": "cyberfarm:block/part_steam_wheel",
+      "y": 90
+    },
+    "facing=south,part=16": {
+      "model": "cyberfarm:block/part_steam_wheel",
+      "y": 180
+    },
+    "facing=west,part=16": {
+      "model": "cyberfarm:block/part_steam_wheel",
+      "y": 270
+    },
+    "facing=north,part=17": {
+      "model": "cyberfarm:block/part_steam_rail"
+    },
+    "facing=east,part=17": {
+      "model": "cyberfarm:block/part_steam_rail",
+      "y": 90
+    },
+    "facing=south,part=17": {
+      "model": "cyberfarm:block/part_steam_rail",
+      "y": 180
+    },
+    "facing=west,part=17": {
+      "model": "cyberfarm:block/part_steam_rail",
+      "y": 270
+    },
+    "facing=north,part=18": {
+      "model": "cyberfarm:block/part_steam_base"
+    },
+    "facing=east,part=18": {
+      "model": "cyberfarm:block/part_steam_base",
+      "y": 90
+    },
+    "facing=south,part=18": {
+      "model": "cyberfarm:block/part_steam_base",
+      "y": 180
+    },
+    "facing=west,part=18": {
+      "model": "cyberfarm:block/part_steam_base",
+      "y": 270
+    },
+    "facing=north,part=19": {
+      "model": "cyberfarm:block/part_steam_posts"
+    },
+    "facing=east,part=19": {
+      "model": "cyberfarm:block/part_steam_posts",
+      "y": 90
+    },
+    "facing=south,part=19": {
+      "model": "cyberfarm:block/part_steam_posts",
+      "y": 180
+    },
+    "facing=west,part=19": {
+      "model": "cyberfarm:block/part_steam_posts",
+      "y": 270
+    },
+    "facing=north,part=20": {
+      "model": "cyberfarm:block/part_steam_lid"
+    },
+    "facing=east,part=20": {
+      "model": "cyberfarm:block/part_steam_lid",
+      "y": 90
+    },
+    "facing=south,part=20": {
+      "model": "cyberfarm:block/part_steam_lid",
+      "y": 180
+    },
+    "facing=west,part=20": {
+      "model": "cyberfarm:block/part_steam_lid",
+      "y": 270
+    },
+    "facing=north,part=21": {
+      "model": "cyberfarm:block/part_steam_line"
+    },
+    "facing=east,part=21": {
+      "model": "cyberfarm:block/part_steam_line",
+      "y": 90
+    },
+    "facing=south,part=21": {
+      "model": "cyberfarm:block/part_steam_line",
+      "y": 180
+    },
+    "facing=west,part=21": {
+      "model": "cyberfarm:block/part_steam_line",
+      "y": 270
+    },
+    "facing=north,part=22": {
+      "model": "cyberfarm:block/part_steam_dynamo_rail"
+    },
+    "facing=east,part=22": {
+      "model": "cyberfarm:block/part_steam_dynamo_rail",
+      "y": 90
+    },
+    "facing=south,part=22": {
+      "model": "cyberfarm:block/part_steam_dynamo_rail",
+      "y": 180
+    },
+    "facing=west,part=22": {
+      "model": "cyberfarm:block/part_steam_dynamo_rail",
+      "y": 270
+    },
+    "facing=north,part=23": {
+      "model": "cyberfarm:block/part_steam_drum"
+    },
+    "facing=east,part=23": {
+      "model": "cyberfarm:block/part_steam_drum",
+      "y": 90
+    },
+    "facing=south,part=23": {
+      "model": "cyberfarm:block/part_steam_drum",
+      "y": 180
+    },
+    "facing=west,part=23": {
+      "model": "cyberfarm:block/part_steam_drum",
+      "y": 270
+    },
+    "facing=north,part=24": {
+      "model": "cyberfarm:block/part_steam_rim"
+    },
+    "facing=east,part=24": {
+      "model": "cyberfarm:block/part_steam_rim",
+      "y": 90
+    },
+    "facing=south,part=24": {
+      "model": "cyberfarm:block/part_steam_rim",
+      "y": 180
+    },
+    "facing=west,part=24": {
+      "model": "cyberfarm:block/part_steam_rim",
+      "y": 270
+    },
+    "facing=north,part=25": {
+      "model": "cyberfarm:block/part_steam_shaft"
+    },
+    "facing=east,part=25": {
+      "model": "cyberfarm:block/part_steam_shaft",
+      "y": 90
+    },
+    "facing=south,part=25": {
+      "model": "cyberfarm:block/part_steam_shaft",
+      "y": 180
+    },
+    "facing=west,part=25": {
+      "model": "cyberfarm:block/part_steam_shaft",
+      "y": 270
+    },
+    "facing=north,part=26": {
+      "model": "cyberfarm:block/part_acid_water"
+    },
+    "facing=east,part=26": {
+      "model": "cyberfarm:block/part_acid_water",
+      "y": 90
+    },
+    "facing=south,part=26": {
+      "model": "cyberfarm:block/part_acid_water",
+      "y": 180
+    },
+    "facing=west,part=26": {
+      "model": "cyberfarm:block/part_acid_water",
+      "y": 270
+    },
+    "facing=north,part=27": {
+      "model": "cyberfarm:block/part_acid_acid"
+    },
+    "facing=east,part=27": {
+      "model": "cyberfarm:block/part_acid_acid",
+      "y": 90
+    },
+    "facing=south,part=27": {
+      "model": "cyberfarm:block/part_acid_acid",
+      "y": 180
+    },
+    "facing=west,part=27": {
+      "model": "cyberfarm:block/part_acid_acid",
+      "y": 270
+    },
+    "facing=north,part=28": {
+      "model": "cyberfarm:block/part_acid_tower"
+    },
+    "facing=east,part=28": {
+      "model": "cyberfarm:block/part_acid_tower",
+      "y": 90
+    },
+    "facing=south,part=28": {
+      "model": "cyberfarm:block/part_acid_tower",
+      "y": 180
+    },
+    "facing=west,part=28": {
+      "model": "cyberfarm:block/part_acid_tower",
+      "y": 270
+    },
+    "facing=north,part=29": {
+      "model": "cyberfarm:block/part_acid_top"
+    },
+    "facing=east,part=29": {
+      "model": "cyberfarm:block/part_acid_top",
+      "y": 90
+    },
+    "facing=south,part=29": {
+      "model": "cyberfarm:block/part_acid_top",
+      "y": 180
+    },
+    "facing=west,part=29": {
+      "model": "cyberfarm:block/part_acid_top",
+      "y": 270
+    },
+    "facing=north,part=30": {
+      "model": "cyberfarm:block/part_acid_chimney"
+    },
+    "facing=east,part=30": {
+      "model": "cyberfarm:block/part_acid_chimney",
+      "y": 90
+    },
+    "facing=south,part=30": {
+      "model": "cyberfarm:block/part_acid_chimney",
+      "y": 180
+    },
+    "facing=west,part=30": {
+      "model": "cyberfarm:block/part_acid_chimney",
+      "y": 270
+    },
+    "facing=north,part=31": {
+      "model": "cyberfarm:block/part_bio_top"
+    },
+    "facing=east,part=31": {
+      "model": "cyberfarm:block/part_bio_top",
+      "y": 90
+    },
+    "facing=south,part=31": {
+      "model": "cyberfarm:block/part_bio_top",
+      "y": 180
+    },
+    "facing=west,part=31": {
+      "model": "cyberfarm:block/part_bio_top",
+      "y": 270
+    },
+    "facing=north,part=32": {
+      "model": "cyberfarm:block/part_bio_ring_low"
+    },
+    "facing=east,part=32": {
+      "model": "cyberfarm:block/part_bio_ring_low",
+      "y": 90
+    },
+    "facing=south,part=32": {
+      "model": "cyberfarm:block/part_bio_ring_low",
+      "y": 180
+    },
+    "facing=west,part=32": {
+      "model": "cyberfarm:block/part_bio_ring_low",
+      "y": 270
+    },
+    "facing=north,part=33": {
+      "model": "cyberfarm:block/part_bio_ring_high"
+    },
+    "facing=east,part=33": {
+      "model": "cyberfarm:block/part_bio_ring_high",
+      "y": 90
+    },
+    "facing=south,part=33": {
+      "model": "cyberfarm:block/part_bio_ring_high",
+      "y": 180
+    },
+    "facing=west,part=33": {
+      "model": "cyberfarm:block/part_bio_ring_high",
+      "y": 270
+    },
+    "facing=north,part=34": {
+      "model": "cyberfarm:block/part_bio_tank"
+    },
+    "facing=east,part=34": {
+      "model": "cyberfarm:block/part_bio_tank",
+      "y": 90
+    },
+    "facing=south,part=34": {
+      "model": "cyberfarm:block/part_bio_tank",
+      "y": 180
+    },
+    "facing=west,part=34": {
+      "model": "cyberfarm:block/part_bio_tank",
+      "y": 270
+    },
+    "facing=north,part=35": {
+      "model": "cyberfarm:block/part_fab_base"
+    },
+    "facing=east,part=35": {
+      "model": "cyberfarm:block/part_fab_base",
+      "y": 90
+    },
+    "facing=south,part=35": {
+      "model": "cyberfarm:block/part_fab_base",
+      "y": 180
+    },
+    "facing=west,part=35": {
+      "model": "cyberfarm:block/part_fab_base",
+      "y": 270
+    },
+    "facing=north,part=36": {
+      "model": "cyberfarm:block/part_fab_bed"
+    },
+    "facing=east,part=36": {
+      "model": "cyberfarm:block/part_fab_bed",
+      "y": 90
+    },
+    "facing=south,part=36": {
+      "model": "cyberfarm:block/part_fab_bed",
+      "y": 180
+    },
+    "facing=west,part=36": {
+      "model": "cyberfarm:block/part_fab_bed",
+      "y": 270
+    },
+    "facing=north,part=37": {
+      "model": "cyberfarm:block/part_fab_idler_near"
+    },
+    "facing=east,part=37": {
+      "model": "cyberfarm:block/part_fab_idler_near",
+      "y": 90
+    },
+    "facing=south,part=37": {
+      "model": "cyberfarm:block/part_fab_idler_near",
+      "y": 180
+    },
+    "facing=west,part=37": {
+      "model": "cyberfarm:block/part_fab_idler_near",
+      "y": 270
+    },
+    "facing=north,part=38": {
+      "model": "cyberfarm:block/part_fab_idler_far"
+    },
+    "facing=east,part=38": {
+      "model": "cyberfarm:block/part_fab_idler_far",
+      "y": 90
+    },
+    "facing=south,part=38": {
+      "model": "cyberfarm:block/part_fab_idler_far",
+      "y": 180
+    },
+    "facing=west,part=38": {
+      "model": "cyberfarm:block/part_fab_idler_far",
+      "y": 270
+    },
+    "facing=north,part=39": {
+      "model": "cyberfarm:block/part_fab_magazine"
+    },
+    "facing=east,part=39": {
+      "model": "cyberfarm:block/part_fab_magazine",
+      "y": 90
+    },
+    "facing=south,part=39": {
+      "model": "cyberfarm:block/part_fab_magazine",
+      "y": 180
+    },
+    "facing=west,part=39": {
+      "model": "cyberfarm:block/part_fab_magazine",
+      "y": 270
+    },
+    "facing=north,part=40": {
+      "model": "cyberfarm:block/part_oven_base"
+    },
+    "facing=east,part=40": {
+      "model": "cyberfarm:block/part_oven_base",
+      "y": 90
+    },
+    "facing=south,part=40": {
+      "model": "cyberfarm:block/part_oven_base",
+      "y": 180
+    },
+    "facing=west,part=40": {
+      "model": "cyberfarm:block/part_oven_base",
+      "y": 270
+    },
+    "facing=north,part=41": {
+      "model": "cyberfarm:block/part_oven_tube"
+    },
+    "facing=east,part=41": {
+      "model": "cyberfarm:block/part_oven_tube",
+      "y": 90
+    },
+    "facing=south,part=41": {
+      "model": "cyberfarm:block/part_oven_tube",
+      "y": 180
+    },
+    "facing=west,part=41": {
+      "model": "cyberfarm:block/part_oven_tube",
+      "y": 270
+    },
+    "facing=north,part=42": {
+      "model": "cyberfarm:block/part_oven_tank"
+    },
+    "facing=east,part=42": {
+      "model": "cyberfarm:block/part_oven_tank",
+      "y": 90
+    },
+    "facing=south,part=42": {
+      "model": "cyberfarm:block/part_oven_tank",
+      "y": 180
+    },
+    "facing=west,part=42": {
+      "model": "cyberfarm:block/part_oven_tank",
+      "y": 270
+    },
+    "facing=north,part=43": {
+      "model": "cyberfarm:block/part_elec_base"
+    },
+    "facing=east,part=43": {
+      "model": "cyberfarm:block/part_elec_base",
+      "y": 90
+    },
+    "facing=south,part=43": {
+      "model": "cyberfarm:block/part_elec_base",
+      "y": 180
+    },
+    "facing=west,part=43": {
+      "model": "cyberfarm:block/part_elec_base",
+      "y": 270
+    },
+    "facing=north,part=44": {
+      "model": "cyberfarm:block/part_elec_bath"
+    },
+    "facing=east,part=44": {
+      "model": "cyberfarm:block/part_elec_bath",
+      "y": 90
+    },
+    "facing=south,part=44": {
+      "model": "cyberfarm:block/part_elec_bath",
+      "y": 180
+    },
+    "facing=west,part=44": {
+      "model": "cyberfarm:block/part_elec_bath",
+      "y": 270
+    },
+    "facing=north,part=45": {
+      "model": "cyberfarm:block/part_elec_anode"
+    },
+    "facing=east,part=45": {
+      "model": "cyberfarm:block/part_elec_anode",
+      "y": 90
+    },
+    "facing=south,part=45": {
+      "model": "cyberfarm:block/part_elec_anode",
+      "y": 180
+    },
+    "facing=west,part=45": {
+      "model": "cyberfarm:block/part_elec_anode",
+      "y": 270
+    },
+    "facing=north,part=46": {
+      "model": "cyberfarm:block/part_elec_bus"
+    },
+    "facing=east,part=46": {
+      "model": "cyberfarm:block/part_elec_bus",
+      "y": 90
+    },
+    "facing=south,part=46": {
+      "model": "cyberfarm:block/part_elec_bus",
+      "y": 180
+    },
+    "facing=west,part=46": {
+      "model": "cyberfarm:block/part_elec_bus",
+      "y": 270
+    },
+    "facing=north,part=47": {
+      "model": "cyberfarm:block/part_repro_top"
+    },
+    "facing=east,part=47": {
+      "model": "cyberfarm:block/part_repro_top",
+      "y": 90
+    },
+    "facing=south,part=47": {
+      "model": "cyberfarm:block/part_repro_top",
+      "y": 180
+    },
+    "facing=west,part=47": {
+      "model": "cyberfarm:block/part_repro_top",
+      "y": 270
+    },
+    "facing=north,part=48": {
+      "model": "cyberfarm:block/part_repro_disc"
+    },
+    "facing=east,part=48": {
+      "model": "cyberfarm:block/part_repro_disc",
+      "y": 90
+    },
+    "facing=south,part=48": {
+      "model": "cyberfarm:block/part_repro_disc",
+      "y": 180
+    },
+    "facing=west,part=48": {
+      "model": "cyberfarm:block/part_repro_disc",
+      "y": 270
+    },
+    "facing=north,part=49": {
+      "model": "cyberfarm:block/part_repro_magazine"
+    },
+    "facing=east,part=49": {
+      "model": "cyberfarm:block/part_repro_magazine",
+      "y": 90
+    },
+    "facing=south,part=49": {
+      "model": "cyberfarm:block/part_repro_magazine",
+      "y": 180
+    },
+    "facing=west,part=49": {
+      "model": "cyberfarm:block/part_repro_magazine",
+      "y": 270
+    },
+    "facing=north,part=50": {
+      "model": "cyberfarm:block/part_press_tower"
+    },
+    "facing=east,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 90
+    },
+    "facing=south,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 180
+    },
+    "facing=west,part=50": {
+      "model": "cyberfarm:block/part_press_tower",
+      "y": 270
+    },
+    "facing=north,part=51": {
+      "model": "cyberfarm:block/part_press_head"
+    },
+    "facing=east,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 90
+    },
+    "facing=south,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 180
+    },
+    "facing=west,part=51": {
+      "model": "cyberfarm:block/part_press_head",
+      "y": 270
+    },
+    "facing=north,part=52": {
+      "model": "cyberfarm:block/part_press_mash"
+    },
+    "facing=east,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 90
+    },
+    "facing=south,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 180
+    },
+    "facing=west,part=52": {
+      "model": "cyberfarm:block/part_press_mash",
+      "y": 270
+    }
+  }
+}

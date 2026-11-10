@@ -7,6 +7,7 @@ navigation:
 item_ids:
   - cyberfarm:drone_dock
   - cyberfarm:survey_tool
+  - cyberfarm:dock_tank
   - cyberfarm:swarm_dock
 ---
 
@@ -16,10 +17,13 @@ item_ids:
 
 The home base of a drone. Each dock hosts **one drone** and:
 
-- **charges** it (up to 500 FE/t) from its own 100,000 FE buffer;
+- **charges** it (up to 1,000 FE/t) from its own 100,000 FE buffer;
 - **stores** the harvest in 9 slots;
 - remembers the drone's **work area**;
 - holds an **item filter** for the Quarry and Transport modules.
+
+A dock cannot see a drone that is far off in a part of the world that is not loaded, and lets you place another: when the
+first one comes home and finds no place left, it lands on the dock as an item.
 
 <br clear="all" />
 
@@ -42,42 +46,52 @@ Right-click the dock to open it:
 - The **9 cargo slots**, the **Filter** button (see below) and the dock's energy bar.
 - **Return / Resume**: **Return** calls the drone home and keeps it there, charging but taking
   no new jobs (a Taxi drone first finishes the trip it is on). **Resume** lets it work again.
+- **Area**: shows in the world what the dock is set up for (see **The Survey Tool** below).
+- With a **Dock Tank** beside the dock (see below), a bar for its liquid under the cargo.
 
-Two **side tabs** on the left open a panel next to the screen; click a tab again to close it.
+**Side tabs** on the left open a panel next to the screen; click a tab again to close it.
 The screen remembers which one you left open.
 
 - **Drone Status** (the "i" tab, coloured like the drone's state): its state, the modules it
-  carries, the work area (not for Transport and Taxi drones, which never use it) and, for
-  Transport and Taxi drones, whether a route or a destination is set.
+  carries, the work area (not for Transport, Taxi and Builder drones, which never use it),
+  whether a route, a taxi destination or a build is set, and the layer a Quarry has reached.
 - **Battery** (the battery tab, showing the charge): the charge level, the FE stored and whether
   the drone is charging or flying.
+- **Build** (only with a Builder drone or a linked build): the layer being built and the blocks it
+  still needs; the ones the dock has none of are marked in red.
 
 ## The Survey Tool
 
-The <ItemLink id="survey_tool" /> sets up a dock. It has **four modes**: hold it and **sneak +
-scroll the mouse wheel** to switch, or **right-click the air** to go to the next one. The current
-mode shows above the hotbar and in the tooltip,
-and a click only does what that mode says. The tool never opens the blocks you click, so chests
-and machines stay closed while you set things up.
+The <ItemLink id="survey_tool" /> sets up a dock. **Right-click a dock** to link it: the tool reads
+what the drone on that dock does and **asks for what it needs**, above the hotbar, for as long as
+you hold it. The tool never opens the blocks you click, so chests and machines stay closed while
+you set things up.
 
-| Mode | Right-click |
+| The drone has | The tool asks for |
 | --- | --- |
-| **Dock** | a Drone Dock: the tool now configures that dock. Sneak + right-click resets it. |
-| **Area** | two opposite corners: the dock's work area. |
-| **Route** | two containers, source then destination: the transport route. |
-| **Taxi** | the block where taxi passengers land. |
+| A module that works an area (Harvester, Quarry, Planter, Sponge...) | **two opposite corners**: the work area |
+| A **Transport Module** | **two containers**, source then destination: the route |
+| A **Taxi Module** | **the block** where passengers land |
+| A **Builder Module** | nothing: link the structure with the [Multiblock Projector](multiblock_projector.md) |
 
-The tool **tells you each step** above the hotbar: when you switch mode and after every click it
-says what to click next ("Click the source container", "Click the opposite corner"...). The
-first click, in any mode, picks the dock you want to set up; after that a click does what the
-mode says. Dock mode only picks the dock (use it to switch to another dock): to connect the dock
-to a chest, use **Route** mode.
+With no drone on the dock it asks you to put one on first. A drone with several modules can need
+more than one thing: the tool moves on by itself once one is set, and **sneak + mouse wheel** or a
+**right-click in the air** switches between them.
+
+To see what a dock is set up for, press the **Area** button in its screen: it sends out **mini
+drones**. Four take up the corners of the work area and light up its blocks, from the corners
+inwards; for a route or a landing spot, one hovers over each and lights that block. They stay out
+after you close the screen, and fly home when you click the button again or take the drone off the dock.
+
+Clicking the linked dock again only repeats what the tool is asking for. To set up another dock,
+**right-click it** (while the tool asks for a route or a landing spot, or for the second corner,
+**sneak + right-click** it, as a plain click would use it as a container, the landing block or the corner).
 
 ## Choosing the work area
 
 Without any setup the drone works a **9x9** area centred on the dock. To change it:
 
-1. Switch the tool to **Area** mode and **right-click the dock**.
+1. **Right-click the dock** with the tool.
 2. **Right-click the first corner** of your field.
 3. **Right-click the opposite corner**. The dock now uses that area.
 
@@ -85,25 +99,40 @@ The area can be up to **33x33** blocks, the two corners can be at most **8 block
 height, and everything must stay within 48 blocks of the dock.
 
 The drone works its area **block by block from one corner to the other**, row after row like a
-Quarry, so a field is harvested and replanted in order instead of here and there.
+Quarry, so a field is worked in order instead of here and there.
 
 ## Setting a transport route
 
 For drones with a [Transport Module](modules.md):
 
-1. Switch the tool to **Route** mode and **right-click the dock**.
+1. **Right-click the dock** with the tool.
 2. **Right-click the source container** (chest, barrel, any modded inventory, or **another
    drone's dock**).
 3. **Right-click the destination container**. The route is saved on the dock.
+
+To carry things **out of the drone's own dock**, click that dock **twice in a row** as the source: one
+click only repeats what the tool is asking for. Both must be within **48 blocks of the dock**, and their chunks loaded: an [Anchor Addon](addons.md) keeps them so.
 
 Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a
 Harvester or a Quarry and bring the harvest to your storage.
 
 ## Setting a taxi destination
 
-For drones with a [Taxi Module](modules.md): with the tool linked to the dock, switch to **Taxi**
-mode and **right-click the block** where passengers should land. It can be up to 256 blocks away
-and needs two blocks of air above it.
+For drones with a [Taxi Module](modules.md): with the tool linked to the dock, **right-click the
+block** where passengers should land. It can be up to 256 blocks away and needs two blocks of air
+above it.
+
+## Dock Tank
+
+Place a <ItemLink id="dock_tank" /> against a side of the dock: a bar for it appears in the dock's
+screen, under the cargo. It only **stores**: it holds **64 buckets** of one liquid at a time, and drones
+with a [Tank Module](modules.md) empty into it when they come home. A drone without that module brings
+it nothing.
+
+Watch the level and the float in its side windows, or right-click it to read what is in it. **Pipes**
+plug in behind it and on top, so you can drain it or use it as a plain tank.
+
+<RecipeFor id="dock_tank" />
 
 ## Item filter
 
@@ -126,10 +155,9 @@ separately.
 
 ## Fixing mistakes
 
-- **Sneak + right-click in the air** clears a corner or route source you set by mistake
-  (switching mode clears it too).
-- In **Dock** mode, **sneak + right-click the dock** resets it: default 9x9 area, no transport
-  route, no taxi destination.
+- **Sneak + right-click in the air** clears a corner or route source you set by mistake.
+- **Sneak + right-click the linked dock** resets it: default 9x9 area, no transport route, no taxi
+  destination.
 
 <RecipeFor id="survey_tool" />
 

@@ -11,7 +11,9 @@ item_ids:
 
 <ItemImage id="cyberfarm:mech_frame" scale="3" float="left" />
 
-A pilotable mech, about three and a half blocks tall: white armour with blue trim. Its trunk is a
+A pilotable mech, about three and a half blocks tall, in teal armour with mint enamel and steel
+trim: a broad chest that comes to a prow, big angular shoulders, a steel V crest on its brow and
+two thrusters on its back. Its trunk is a
 bay you stand in, back against a harness, looking out through the visor of its head. You climb in, and it walks, jumps and punches for you.
 
 <br clear="all" />
@@ -21,16 +23,17 @@ bay you stand in, back against a harness, looking out through the visor of its h
 The <ItemLink id="mech_frame" /> is end-game: it is built around a [Mech Core](mech_core.md),
 whose crystal comes from reactor waste. Build a [Mech Hangar](mech_hangar.md) too: a frame only
 unfolds on a hangar's pad. Right-click the pad and the mech unfolds in the middle of it, facing out of the
-hangar. A new frame comes with **100,000 FE** in its battery.
+hangar. A new frame comes with **200,000 FE** in its battery.
 
 To pack it up again, park it on the pad and press **Fold** on the hangar's console: it folds itself
 up and drops as its frame, keeping the battery's charge and its modules.
 
 ## Getting in and out
 
-- **Right-click** the mech: it crouches a little and the front of its trunk opens like a flower,
-  four petals swinging out one after the other while the visor plate lifts. You walk up, turn round
-  and back into the bay, up a step; the petals close around you and the mech straightens up.
+- **Right-click** the mech: it crouches with its knees apart and its front opens. The two chest
+  plates swing apart like a book, the two abdomen doors swing aside after them, and the visor plate
+  lifts with the crest on it. You walk up between its knees, turn round and back into the bay, up a
+  step; the plates close around you and the mech straightens up.
 - **Press V** (the *Exit mech* key in the controls) to get out: it crouches and opens with a hiss of
   steam, you come off the harness, step down out of the bay and walk off, and it closes up again. Sneaking does not get you out.
 
@@ -39,8 +42,8 @@ up and drops as its frame, keeping the battery's charge and its modules.
 | Control | What it does |
 | --- | --- |
 | W A S D | Walk; turn by looking around |
-| Space | Jump about four blocks high |
-| Left click (empty hand) | Punch: 10 extra damage, 50 FE |
+| Space | Jump about five blocks high |
+| Left click (empty hand) | Punch: 10 extra damage, 100 FE |
 | Left click a block | Dig like an iron pickaxe, with the right drops |
 | Space in the air (Jet) | Climb; sneak to dive, neither to glide |
 | R / G (Drill / Blade) | Switch the drill or the blade on and off |
@@ -59,10 +62,10 @@ blade's hum.
 
 ## Battery and integrity
 
-The battery holds **500,000 FE**. Walking uses about **100 FE per block** and the systems a little
-more while you sit inside; with an empty battery the mech cannot move (you can still get out).
+The battery holds **1,000,000 FE**. Walking uses about **200 FE per block** and the systems **2 FE/t**
+while you sit inside; with an empty battery the mech cannot move (you can still get out).
 
-**Integrity** is the mech's health. It never blows up: when it would, it **shuts down**, slumps
+**Integrity** is the mech's health. It never blows up: when it would, it **shuts down**. Its lights go out, it slumps
 over and lets you out. A shut-down mech must be repaired before you can climb in again: park it in
 a [Mech Hangar](mech_hangar.md), which also charges its battery and fits its
 [modules](mech_modules.md).

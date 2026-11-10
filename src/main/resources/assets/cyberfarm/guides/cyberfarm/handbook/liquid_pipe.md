@@ -18,7 +18,9 @@ Pipes for **liquids**: water, lava, Coolant, Cryo Coolant, Acid and the liquids 
 them to bring water from a [Water Pump](water_pump.md) to a [Coolant Mixer](coolant_mixer.md), an
 [Acid Synthesizer](acid_synthesizer.md) or a [Fission Reactor](fission_reactor.md), and acid to the
 [Methane Extractor](methane_extractor.md). Gases (biogas, methane, Steam) need a
-[Gas Pipe](gas_pipe.md). Their band is **blue**.
+[Gas Pipe](gas_pipe.md). They are **glass tubes with blue lights on their sleeves**, and you can see what they
+carry: while a liquid flows it fills the tube in its own colour, and when the flow stops the pipe is
+empty again.
 
 <br clear="all" />
 

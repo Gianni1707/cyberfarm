@@ -2,7 +2,7 @@
 navigation:
   title: Methane Extractor
   parent: generators.md
-  position: 4
+  position: 5
   icon: cyberfarm:methane_extractor
 item_ids:
   - cyberfarm:methane_extractor
@@ -66,13 +66,17 @@ structure where a mob is shut in and dissolved in **Acid**, giving off **Methane
 - **Roof**: 8 Cyber Frame Blocks around the **Methane Extractor** in the middle.
 - **Ports**: any Cyber Frame can be an <ItemLink id="acid_inlet" /> or a <ItemLink id="methane_outlet" />
   instead. Fluids only go in and out of the chamber through them: the **Acid Inlet** (green ring)
-  only takes acid in, the **Methane Outlet** (cyan ring) only gives methane out. Pipe acid to the
+  only takes acid in, the **Methane Outlet** (pale green ring) only gives methane out. Pipe acid to the
   inlet with a [Liquid Pipe](liquid_pipe.md) and take methane from the outlet with a Gas Pipe.
 - **Intake Gate**: any glass of the **lower** wall can be an <ItemLink id="intake_gate" />.
 
-When the structure is right the chamber powers up with a chime and turns into **one smooth tank**:
-a glass cylinder between a white base and cap, its pillars lit in orange, the ports shown as hatches
-with pipe collars and the gates as roll-up doors. A finished chamber opens the GUI from any of its blocks (sneak to
+Right-click the extractor while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. 
+
+When the structure is right the chamber powers up with a chime and becomes **one machine**, a sibling of the
+[Crystallizer](mech_core.md): a stepped octagonal plinth, four pylons and a crown with the extractor's head in its hub, and between
+them a stepped glass bell with the mob in plain view. Ports show as couplings where a pipe joins them, gates as roll-up doors
+between two pylons. The acid pools in the bell's lowest step, and while a mob dissolves a spray ring strokes up and down
+around its head on four rods. A finished chamber opens the GUI from any of its blocks (sneak to
 place blocks against it instead).
 
 ## The GUI
@@ -105,11 +109,11 @@ The methane (up to **8,000 mB**) is pushed out of every **Methane Outlet** into 
 
 The chamber holds one mob.
 
-| Mob | Methane | In a Gas Turbine |
+| Mob | Methane | In Gas Turbines |
 | --- | --- | --- |
-| Zombies (any kind) | 25 mB/t | 200 FE/t |
-| Other monsters | 12 mB/t | 96 FE/t |
-| Animals | 4 mB/t | 32 FE/t |
+| Zombies (any kind) | 25 mB/t | 300 FE/t |
+| Other monsters | 12 mB/t | 144 FE/t |
+| Animals | 4 mB/t | 48 FE/t |
 
 A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot
 of work (acid, mobs, the structure), so it pays back far more than a

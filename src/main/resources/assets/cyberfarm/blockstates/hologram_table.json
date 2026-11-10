@@ -1,7 +1,59 @@
 {
   "variants": {
-    "": {
+    "cell=0": {
       "model": "cyberfarm:block/hologram_table"
+    },
+    "cell=1": {
+      "model": "cyberfarm:block/hologram_table_2_corner",
+      "y": 0
+    },
+    "cell=2": {
+      "model": "cyberfarm:block/hologram_table_2_corner",
+      "y": 90
+    },
+    "cell=3": {
+      "model": "cyberfarm:block/hologram_table_2_corner",
+      "y": 270
+    },
+    "cell=4": {
+      "model": "cyberfarm:block/hologram_table_2_corner",
+      "y": 180
+    },
+    "cell=5": {
+      "model": "cyberfarm:block/hologram_table_3_corner",
+      "y": 0
+    },
+    "cell=6": {
+      "model": "cyberfarm:block/hologram_table_3_edge",
+      "y": 0
+    },
+    "cell=7": {
+      "model": "cyberfarm:block/hologram_table_3_corner",
+      "y": 90
+    },
+    "cell=8": {
+      "model": "cyberfarm:block/hologram_table_3_edge",
+      "y": 270
+    },
+    "cell=9": {
+      "model": "cyberfarm:block/hologram_table_3_centre",
+      "y": 0
+    },
+    "cell=10": {
+      "model": "cyberfarm:block/hologram_table_3_edge",
+      "y": 90
+    },
+    "cell=11": {
+      "model": "cyberfarm:block/hologram_table_3_corner",
+      "y": 270
+    },
+    "cell=12": {
+      "model": "cyberfarm:block/hologram_table_3_edge",
+      "y": 180
+    },
+    "cell=13": {
+      "model": "cyberfarm:block/hologram_table_3_corner",
+      "y": 180
     }
   }
 }

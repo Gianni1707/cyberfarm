@@ -21,9 +21,8 @@ import org.jspecify.annotations.Nullable;
 public class DroneAssemblerBlock extends LitMachineBlock {
     public static final MapCodec<DroneAssemblerBlock> CODEC = simpleCodec(DroneAssemblerBlock::new);
 
-    // The base, a pillar on each corner and the cap
-    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(0, 14, 0, 16, 16, 16),
-            Block.box(0, 4, 0, 2, 14, 2), Block.box(14, 4, 0, 16, 14, 2), Block.box(0, 4, 14, 2, 14, 16), Block.box(14, 4, 14, 16, 14, 16));
+    // The base, then the spine and the print head's arm (whichever way it faces)
+    private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 4, 16), Block.box(0.25, 4, 0.25, 15.75, 16, 15.75));
 
     public DroneAssemblerBlock(Properties properties) {
         super(properties);
@@ -32,6 +31,11 @@ public class DroneAssemblerBlock extends LitMachineBlock {
     @Override
     protected MapCodec<DroneAssemblerBlock> codec() {
         return CODEC;
+    }
+
+    @Override
+    protected boolean hasPipePorts() {
+        return true;
     }
 
     @Override

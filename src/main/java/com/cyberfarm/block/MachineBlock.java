@@ -4,7 +4,6 @@ import com.cyberfarm.block.entity.MachineBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
@@ -12,21 +11,27 @@ import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Map;
 
 /**
  * A horizontal-facing machine that opens its menu on right-click and ticks on the server; on the
@@ -34,10 +39,37 @@ import org.jspecify.annotations.Nullable;
  */
 public abstract class MachineBlock extends BaseEntityBlock {
     public static final EnumProperty<Direction> FACING = HorizontalDirectionalBlock.FACING;
+    /** Sockets the model shows where a pipe or conduit is plugged in, for machines with {@link #hasPipePorts}. */
+    public static final Map<Direction, BooleanProperty> PORTS = PipeBlock.PROPERTY_BY_DIRECTION;
 
     protected MachineBlock(Properties properties) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
+        BlockState state = stateDefinition.any().setValue(FACING, Direction.NORTH);
+        if (hasPipePorts()) {
+            for (BooleanProperty port : PORTS.values()) {
+                state = state.setValue(port, false);
+            }
+        }
+        registerDefaultState(state);
+    }
+
+    /** Called from the constructor, so it must not read fields. */
+    protected boolean hasPipePorts() {
+        return false;
+    }
+
+    /** A port is shown only where the pipe next door actually connects to this side. */
+    private static BlockState plug(BlockState state, Direction side, BlockState neighbor) {
+        boolean plugged = neighbor.getBlock() instanceof NetworkPipeBlock
+                && neighbor.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()));
+        return state.setValue(PORTS.get(side), plugged);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos,
+            Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
+        BlockState updated = super.updateShape(state, level, ticks, pos, direction, neighborPos, neighborState, random);
+        return hasPipePorts() && updated.is(this) ? plug(updated, direction, neighborState) : updated;
     }
 
     @Override
@@ -50,7 +82,13 @@ public abstract class MachineBlock extends BaseEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        BlockState state = defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        if (hasPipePorts()) {
+            for (Direction side : Direction.values()) {
+                state = plug(state, side, context.getLevel().getBlockState(context.getClickedPos().relative(side)));
+            }
+        }
+        return state;
     }
 
     @Override
@@ -66,6 +104,9 @@ public abstract class MachineBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
+        if (hasPipePorts()) {
+            PORTS.values().forEach(builder::add);
+        }
     }
 
     protected static <T extends BlockEntity, E extends MachineBlockEntity> @Nullable BlockEntityTicker<T> machineTicker(
@@ -82,25 +123,8 @@ public abstract class MachineBlock extends BaseEntityBlock {
                 });
     }
 
-    /**
-     * Called every client tick while the machine works: by default a spark now and then off one of
-     * its sides. Machines with a look of their own override it.
-     */
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (random.nextInt(10) == 0) {
-            Vec3 at = onSide(state, level, pos, random);
-            level.addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, 0.0, 0.0, 0.0);
-        }
-    }
-
-    /** A random point just outside one of the machine's four sides, between its foot and its top. */
-    protected static Vec3 onSide(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        Direction side = Direction.Plane.HORIZONTAL.getRandomDirection(random);
-        double along = random.nextDouble() * 0.8 - 0.4;
-        double x = pos.getX() + 0.5 + side.getStepX() * 0.52 + (side.getAxis() == Direction.Axis.Z ? along : 0.0);
-        double z = pos.getZ() + 0.5 + side.getStepZ() * 0.52 + (side.getAxis() == Direction.Axis.X ? along : 0.0);
-        return new Vec3(x, pos.getY() + 0.05 + random.nextDouble() * (top(state, level, pos) - 0.1), z);
-    }
+    /** Called every client tick while the machine works. Nothing by default: a machine shows its work its own way. */
+    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 
     /** A random point on the machine's top, within {@code spread} of its middle. */
     protected static Vec3 onTop(BlockState state, Level level, BlockPos pos, RandomSource random, double spread) {

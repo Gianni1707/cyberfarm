@@ -5,32 +5,40 @@ import com.cyberfarm.registry.ModBlockEntities;
 import com.mojang.serialization.MapCodec;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import org.jspecify.annotations.Nullable;
 
-/** The Steam Engine's boiler: the controller of the row; its cylinders and dynamo go behind it. */
-public class SteamEngineBlock extends MachineBlock {
-    public static final MapCodec<SteamEngineBlock> CODEC = simpleCodec(SteamEngineBlock::new);
+import java.util.List;
 
-    /** The row behind is complete: the block hides and the renderer draws the whole engine. */
-    public static final BooleanProperty FORMED = MethaneExtractorBlock.FORMED;
+/**
+ * The Steam Engine's boiler, a small multiblock: with four Cyber Frames in a row behind it, three cylinders and a dynamo unroll
+ * into them (see tools/machinemodels.py; SteamEngineRenderer draws what moves).
+ */
+public class SteamEngineBlock extends SmallMultiblockBlock {
+    public static final MapCodec<SteamEngineBlock> CODEC = simpleCodec(SteamEngineBlock::new);
 
     public SteamEngineBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FORMED, false));
     }
 
     @Override
-    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder);
-        builder.add(FORMED);
+    public List<Direction> frameSides(BlockState state) {
+        return List.of(state.getValue(FACING).getOpposite());
+    }
+
+    @Override
+    public int frameDepth() {
+        return SteamEngineBlockEntity.CYLINDERS + 1;
+    }
+
+    @Override
+    protected String frameMessage() {
+        return "message.cyberfarm.steam_engine.needs_frames";
     }
 
     @Override

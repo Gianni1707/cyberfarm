@@ -1,0 +1,113 @@
+{
+  "textures": {
+    "particle": "cyberfarm:block/advanced_energy_conduit",
+    "atlas": "cyberfarm:block/advanced_energy_conduit",
+    "strip": "cyberfarm:block/pipe_strip_energy",
+    "arc_a": "cyberfarm:block/energy_conduit_arc_a",
+    "arc_b": "cyberfarm:block/energy_conduit_arc_b"
+  },
+  "elements": [
+    {
+      "from": [
+        5.1,
+        5.1,
+        0
+      ],
+      "to": [
+        10.9,
+        10.9,
+        0.9
+      ],
+      "faces": {
+        "east": {
+          "texture": "#atlas",
+          "uv": [
+            8,
+            0,
+            14,
+            5
+          ]
+        },
+        "west": {
+          "texture": "#atlas",
+          "uv": [
+            8,
+            0,
+            14,
+            5
+          ]
+        },
+        "up": {
+          "texture": "#atlas",
+          "uv": [
+            8,
+            0,
+            14,
+            5
+          ]
+        },
+        "down": {
+          "texture": "#atlas",
+          "uv": [
+            8,
+            0,
+            14,
+            5
+          ]
+        }
+      }
+    },
+    {
+      "from": [
+        5,
+        5,
+        0.25
+      ],
+      "to": [
+        11,
+        11,
+        0.65
+      ],
+      "faces": {
+        "east": {
+          "texture": "#strip",
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ]
+        },
+        "west": {
+          "texture": "#strip",
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ]
+        },
+        "up": {
+          "texture": "#strip",
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ]
+        },
+        "down": {
+          "texture": "#strip",
+          "uv": [
+            0,
+            0,
+            6,
+            1
+          ]
+        }
+      },
+      "shade": false,
+      "light_emission": 15
+    }
+  ]
+}

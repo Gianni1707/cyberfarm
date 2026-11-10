@@ -13,6 +13,7 @@ import com.cyberfarm.registry.ModEntities;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -28,7 +29,7 @@ import net.minecraft.world.item.context.UseOnContext;
 
 /** An assembled drone. Right-click a Drone Dock to deploy it. */
 public class DroneItem extends Item {
-    private static final int BAR_COLOR = 0x2FE0FF;
+    private static final int BAR_COLOR = 0x00B894;
 
     public DroneItem(Properties properties) {
         super(properties.stacksTo(1));
@@ -76,7 +77,11 @@ public class DroneItem extends Item {
             return InteractionResult.FAIL;
         }
         drone.setup(getModules(stack), getEnergy(stack), pos);
-        drone.snapTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5, 0.0F, 0.0F);
+        drone.setCustomName(stack.get(DataComponents.CUSTOM_NAME));
+        drone.snapTo(pos.getX() + 0.5, pos.getY() + DroneEntity.DOCK_HEIGHT, pos.getZ() + 0.5,
+                DroneEntity.parkedYaw(level.getBlockState(pos)), 0.0F);
+        drone.setYBodyRot(drone.getYRot());
+        drone.setYHeadRot(drone.getYRot());
         level.addFreshEntity(drone);
         drone.beginStartup();
         dock.setDrone(drone.getUUID());

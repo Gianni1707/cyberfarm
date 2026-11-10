@@ -36,12 +36,14 @@ import org.jspecify.annotations.Nullable;
  * redstone and gold (twice what a crafting table gives), Advanced Circuits etched with Acid,
  * Elite Circuits from uranium and diamond, etched with more acid.
  */
-public class FabricatorBlockEntity extends MachineBlockEntity {
+public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
+    private static final int OPEN_TICKS = 60;
+
     public static final TagKey<Item> URANIUM = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "ingots/uranium"));
     public static final int INPUTS = 3;
     public static final int OUTPUT = 3;
     public static final int TANK_CAPACITY = 8_000;
-    public static final int ENERGY_PER_TICK = 40;
+    public static final int ENERGY_PER_TICK = 50;
     private static final int CAPACITY = 20_000;
     private static final int MAX_INPUT = 1_000;
 
@@ -73,8 +75,20 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
 
     private final GasTank acid = new GasTank(TANK_CAPACITY, resource -> resource.is(ModFluids.ACID.get().getFluidType()), this::setChanged);
     private final TankGroup fluids = TankGroup.of(new GasTank[] {acid});
-    private int progress;
     private int recipeTime = 1;
+
+    /** Block events for FabricatorRenderer: a recipe started (its time in ticks as the parameter), a card is done. */
+    private static final int EVENT_START = 1;
+    private static final int EVENT_DONE = 2;
+    /**
+     * Client side, for FabricatorRenderer: the time of the recipe it last heard start (0 = none yet: the status
+     * carries the progress but not how long the recipe takes), when that was, when the last card was done, and how
+     * many cards it has seen done (so the rollers keep their angle from card to card).
+     */
+    public int shownTime;
+    public long startTime;
+    public long doneTime;
+    public int cards;
 
     public FabricatorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.FABRICATOR.get(), pos, state, INPUTS + 1, CAPACITY, MAX_INPUT, 0);
@@ -121,29 +135,61 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     }
 
     @Override
+    public boolean takesAddons() {
+        return true;
+    }
+
+    @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        boolean open = advanceStage(level, pos, state);
         Recipe recipe = current();
-        boolean canRun = recipe != null && hasRoomFor(OUTPUT, recipe.result().get())
+        boolean canRun = open && recipe != null && hasRoomFor(OUTPUT, recipe.result().get())
                 && getStack(OUTPUT).getCount() + recipe.count() <= recipe.output().getMaxStackSize();
-        if (canRun && energy.consume(ENERGY_PER_TICK)) {
-            recipeTime = recipe.time();
-            if (++progress >= recipe.time()) {
+        if (canRun && energy.consume(energyPerTick(ENERGY_PER_TICK))) {
+            recipeTime = workTime(recipe.time());
+            if (++progress == 1) {
+                level.blockEvent(pos, state.getBlock(), EVENT_START, recipeTime);
+            }
+            if (progress >= recipeTime) {
                 progress = 0;
                 int[] slots = slotsFor(recipe);
                 for (int i = 0; i < slots.length; i++) {
-                    ItemStack stack = getStack(slots[i]);
-                    setStack(slots[i], stack.copyWithCount(stack.getCount() - recipe.inputs().get(i).count()));
+                    take(slots[i], recipe.inputs().get(i).count());
                 }
                 acid.drain(recipe.acid());
                 ItemStack out = getStack(OUTPUT);
                 setStack(OUTPUT, out.isEmpty() ? recipe.output() : out.copyWithCount(out.getCount() + recipe.count()));
                 level.playSound(null, pos, ModSounds.ASSEMBLER_WORK.get(), SoundSource.BLOCKS, 0.6F, 1.4F);
+                level.blockEvent(pos, state.getBlock(), EVENT_DONE, 0);
             }
             setChanged();
         } else if (!canRun && progress != 0) {
             progress = 0;
             setChanged();
         }
+    }
+
+    /** The server must answer true, or the event is not sent to the players around. */
+    @Override
+    public int openTicks() {
+        return OPEN_TICKS;
+    }
+
+    @Override
+    public boolean triggerEvent(int id, int param) {
+        if (id != EVENT_START && id != EVENT_DONE) {
+            return super.triggerEvent(id, param);
+        }
+        if (level != null && level.isClientSide()) {
+            if (id == EVENT_START) {
+                shownTime = param;
+                startTime = level.getGameTime();
+            } else {
+                doneTime = level.getGameTime();
+                cards++;
+            }
+        }
+        return true;
     }
 
     /** Whether {@code stack} is an ingredient of any recipe. */
@@ -154,6 +200,12 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
         return index < INPUTS && isIngredient(resource.toStack());
+    }
+
+    /** Automation takes out only what the machine made. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == OUTPUT;
     }
 
     @Override
@@ -176,7 +228,6 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         acid.serialize(output.child("acid"));
-        output.putInt("progress", progress);
         output.putInt("recipe_time", recipeTime);
     }
 
@@ -184,7 +235,6 @@ public class FabricatorBlockEntity extends MachineBlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         acid.deserialize(input.childOrEmpty("acid"));
-        progress = input.getIntOr("progress", 0);
         recipeTime = Math.max(1, input.getIntOr("recipe_time", 1));
     }
 

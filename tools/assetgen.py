@@ -18,15 +18,16 @@ FACING_ROTATION = {"north": 0, "east": 90, "south": 180, "west": 270}
 FLAT_ITEMS = [
     "drone_core", "rotor", "battery_cell",
     "basic_frame", "advanced_frame", "elite_frame", "mini_frame",
-    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module",
-    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon",
+    "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module", "sponge_module", "tank_module",
+    "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon", "efficiency_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
     "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
-    "sulfur", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
+    "sulfur", "biomass", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
     "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
+    "range_module_i", "range_module_ii", "range_module_iii", "infinity_range_module",
 ]
 
 
@@ -175,7 +176,32 @@ def dock_model():
             *posts,
         ],
     })
-    write(ASSETS / "blockstates/hologram_table.json", {"variants": {"": {"model": f"{NS}:block/hologram_table"}}})
+    # Merged tables: one model per kind of cell, turned by the blockstate. The inner sides are left out, so the
+    # deck reads as one, and the outer ones use one uniform texture, so the glow line runs on unbroken
+    edge_face = lambda side: {"texture": "#edge", "uv": [0, 11, 16, 16], "cullface": side}
+    for size, kind, outer in ((2, "corner", ("north", "west")), (3, "corner", ("north", "west")), (3, "edge", ("north",)), (3, "centre", ())):
+        elements = [
+            {"from": [0, 0, 0], "to": [16, 5, 16],
+             "faces": {**{side: edge_face(side) for side in outer}, "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
+            # The pulse: an overlay that glows
+            {"from": [0, 5.02, 0], "to": [16, 5.03, 16], "light_emission": 15, "faces": {"up": {"texture": "#ring"}}},
+        ]
+        if kind == "corner":
+            elements.append(posts[0])
+        write(ASSETS / f"models/block/hologram_table_{size}_{kind}.json", {
+            "parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+            "textures": {"particle": tex("hologram_table_edge"), "edge": tex("hologram_table_edge"), "top": tex(f"hologram_top_{size}_{kind}"),
+                         "ring": tex(f"hologram_ring_{size}_{kind}"), "bottom": tex("machine_bottom"), "beacon": tex("drone_dock_beacon")},
+            "elements": elements,
+        })
+    # cell: 0 alone, 1-4 a 2x2, 5-13 a 3x3, row by row from the north-west; as in HologramTableBlock
+    cells = {"cell=0": {"model": f"{NS}:block/hologram_table"}}
+    for cell, turn in zip(range(1, 5), (0, 90, 270, 180)):
+        cells[f"cell={cell}"] = {"model": f"{NS}:block/hologram_table_2_corner", "y": turn}
+    for cell, (kind, turn) in zip(range(5, 14), (("corner", 0), ("edge", 0), ("corner", 90), ("edge", 270), ("centre", 0), ("edge", 90),
+                                                 ("corner", 270), ("edge", 180), ("corner", 180))):
+        cells[f"cell={cell}"] = {"model": f"{NS}:block/hologram_table_3_{kind}", "y": turn}
+    write(ASSETS / "blockstates/hologram_table.json", {"variants": cells})
     # The Builder Swarm Dock: the same pad with four landing rings on top
     write(ASSETS / "models/block/swarm_dock.json", {"parent": f"{NS}:block/drone_dock", "textures": {"top": tex("swarm_dock_top")}})
 
@@ -206,57 +232,11 @@ def laser_turret_models():
 
 
 def energy_storage_models():
-    """Resonance Core pedestal (its crystal is drawn by the renderer) and the Stabilizer Pylon."""
-    sides = {d: {"texture": "#side", "cullface": d} for d in ("east", "south", "west")}
-    write(ASSETS / "models/block/resonance_core.json", {
-        "parent": "minecraft:block/block",
-        "textures": {"particle": tex("resonance_core_side"), "front": tex("resonance_core_front"), "side": tex("resonance_core_side"),
-                     "top": tex("resonance_core_top"), "bottom": tex("machine_bottom"), "ring": tex("resonance_core_ring")},
-        "elements": [
-            {"from": [0, 0, 0], "to": [16, 6, 16], "faces": {
-                "north": {"texture": "#front", "cullface": "north"}, **sides,
-                "up": {"texture": "#top"}, "down": {"texture": "#bottom", "cullface": "down"}}},
-            {"from": [3, 6, 3], "to": [13, 8, 13], "faces": {
-                "up": {"uv": [3, 3, 13, 13], "texture": "#ring"},
-                **{d: {"uv": [3, 0, 13, 2], "texture": "#ring"} for d in ("north", "east", "south", "west")}}},
-        ],
-    })
+    """Blockstates of the Resonance Core and the Stabilizer Pylon; their models come from machinemodels.py."""
     facing_blockstate("resonance_core")
 
-    def box(start, end, side="#side", side_uv=None, glow=False):
-        element = {"from": start, "to": end, "faces": {
-            **{d: {"uv": side_uv or [start[0], 16 - end[1], end[0], 16 - start[1]], "texture": side} for d in ("north", "east", "south", "west")},
-            "up": {"uv": [start[0], start[2], end[0], end[2]], "texture": "#top"},
-            "down": {"uv": [start[0], start[2], end[0], end[2]], "texture": "#top"}}}
-        if glow:
-            element["light_emission"] = 15
-        return element
-
-    # A pylon column: footing at the bottom, shaft segments, and on top the glowing emitter ring and tip
-    footing = box([2, 0, 2], [14, 3, 14])
-    crown = [box([3, 6, 3], [13, 11, 13], "#emitter", [0, 0, 16, 5], glow=True), box([5, 11, 5], [11, 14, 11]),
-             box([6, 14, 6], [10, 16, 10], glow=True)]
-    parts = {
-        "single": [footing, box([4, 3, 4], [12, 6, 12])] + crown,
-        "bottom": [footing, box([4, 3, 4], [12, 16, 12])],
-        "middle": [box([4, 0, 4], [12, 16, 12])],
-        "top": [box([4, 0, 4], [12, 6, 12])] + crown,
-    }
-    for part, elements in parts.items():
-        write(ASSETS / f"models/block/stabilizer_pylon_{part}.json", {
-            "parent": "minecraft:block/block",
-            "textures": {"particle": tex("stabilizer_pylon_side"), "side": tex("stabilizer_pylon_side"),
-                         "top": tex("stabilizer_pylon_top"), "emitter": tex("stabilizer_pylon_emitter")},
-            "elements": elements,
-        })
-    # Socket toward a cable plugged into the side (modelled facing north, turned for the others)
-    write(ASSETS / "models/block/stabilizer_pylon_socket.json", {
-        "textures": {"particle": tex("stabilizer_pylon_side"), "side": tex("stabilizer_pylon_side"), "port": tex("stabilizer_pylon_port")},
-        "elements": [{"from": [5, 5, 0], "to": [11, 11, 4], "faces": {
-            "north": {"texture": "#port", "cullface": "north"},
-            **{d: {"uv": [5, 5, 9, 11], "texture": "#side"} for d in ("east", "west")},
-            **{d: {"uv": [5, 0, 11, 4], "texture": "#side"} for d in ("up", "down")}}}],
-    })
+    parts = ("single", "bottom", "middle", "top")
+    # The socket toward a conduit plugged into the side comes from machinemodels.py, modelled facing north
     multipart = [{"when": {"part": part}, "apply": {"model": f"{NS}:block/stabilizer_pylon_{part}"}} for part in parts]
     for side, rot in FACING_ROTATION.items():
         multipart.append({"when": {side: "true"}, "apply": {"model": f"{NS}:block/stabilizer_pylon_socket", **({"y": rot} if rot else {})}})
@@ -264,8 +244,7 @@ def energy_storage_models():
     # The item (and anything else asking for the plain model) shows a whole single pylon
     write(ASSETS / "models/block/stabilizer_pylon.json", {"parent": f"{NS}:block/stabilizer_pylon_single"})
 
-    # Shell cells vanish inside the crystal once the shell is complete
-    write(ASSETS / "models/block/resonance_cell.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("resonance_cell")}})
+    # Shell cells vanish inside the crystal once the shell is complete; the cage model comes from machinemodels.py
     write(ASSETS / "models/block/resonance_cell_hidden.json", {"textures": {"particle": tex("resonance_cell")}})
     write(ASSETS / "blockstates/resonance_cell.json", {"variants": {
         "formed=false": {"model": f"{NS}:block/resonance_cell"}, "formed=true": {"model": f"{NS}:block/resonance_cell_hidden"}}})
@@ -274,55 +253,133 @@ def energy_storage_models():
 PIPES = [f"{tier}{kind}" for kind in ("energy_conduit", "gas_pipe", "liquid_pipe") for tier in ("", "advanced_", "elite_")]
 
 
-def pipe_models(name):
-    """Core, arm and inventory models plus a multipart blockstate for a NetworkPipeBlock."""
-    texture = {"particle": tex(name), "conduit": tex(name)}
-    all_faces = lambda: {d: {"texture": "#conduit"} for d in ("north", "east", "south", "west", "up", "down")}
-    core = {"from": [5, 5, 5], "to": [11, 11, 11], "faces": all_faces()}
-    # Arm pointing north; the blockstate rotates it to every other side. The coloured band (rows 6..9,
-    # ring at column 0) goes round all four sides along the tube, so a pipe looks the same whichever
-    # way it runs: up and down get it turned a quarter, the ring at the block's edge.
-    arm = {"from": [6, 6, 0], "to": [10, 10, 5], "faces": {
-        "north": {"texture": "#conduit", "cullface": "north"},
-        "east": {"texture": "#conduit"}, "west": {"texture": "#conduit"},
-        "up": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 90},
-        "down": {"texture": "#conduit", "uv": [0, 6, 5, 10], "rotation": 270},
-    }}
-    write(ASSETS / f"models/block/{name}_core.json", {"parent": "minecraft:block/block", "textures": texture, "elements": [core]})
-    write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": [arm]})
-    # Middle of a straight run, joining the two arms into one tube (along north-south, rotated for the other axes).
-    # Columns 1..4 are plain tube, stretched over the 6 pixels: 5..10 belong to the coupling box.
-    body = [1, 6, 5, 10]
-    middle = {"from": [6, 6, 5], "to": [10, 10, 11], "faces": {
-        "east": {"texture": "#conduit", "uv": body}, "west": {"texture": "#conduit", "uv": body},
-        "up": {"texture": "#conduit", "uv": body, "rotation": 90}, "down": {"texture": "#conduit", "uv": body, "rotation": 270},
-    }}
-    write(ASSETS / f"models/block/{name}_middle.json", {"textures": texture, "elements": [middle]})
-    # Item: core with arms east and west
-    write(ASSETS / f"models/block/{name}_inventory.json", {
-        "parent": "minecraft:block/block", "textures": texture,
-        "elements": [core,
-                     {"from": [0, 6, 6], "to": [5, 10, 10], "faces": all_faces()},
-                     {"from": [11, 6, 6], "to": [16, 10, 10], "faces": all_faces()}],
-    })
-    rotations = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
-    # The coupling box only where the pipe is not a straight run: at junctions, bends and ends
-    sides = list(rotations)
-    opposite = {"north": "south", "east": "west", "up": "down"}
-    not_straight = [{a: "true", b: "false"} for a, b in opposite.items()] + [{a: "false", b: "true"} for a, b in opposite.items()]
-    not_straight += [{"north": "true", "east": "true"}, {"north": "true", "up": "true"}, {"east": "true", "up": "true"}]
-    not_straight.append({side: "false" for side in sides})
-    parts = [{"when": {"OR": not_straight}, "apply": {"model": f"{NS}:block/{name}_core"}}]
-    for axis, (a, b), rotation in (("z", ("north", "south"), {}), ("x", ("east", "west"), {"y": 90}), ("y", ("up", "down"), {"x": 90})):
-        straight = {side: "true" if side in (a, b) else "false" for side in sides}
-        parts.append({"when": straight, "apply": {"model": f"{NS}:block/{name}_middle", **rotation}})
-    for direction, rotation in rotations.items():
-        parts.append({"when": {direction: "true"}, "apply": {"model": f"{NS}:block/{name}_side", **rotation}})
-    # Pulling collar on the arms set to extract (shared by every pipe)
-    for direction, rotation in rotations.items():
-        parts.append({"when": {direction: "true", f"extract_{direction}": "true"}, "apply": {"model": f"{NS}:block/pipe_extract", **rotation}})
-    write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
+PIPE_ROTATIONS = {"north": {}, "east": {"y": 90}, "south": {"y": 180}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+# Any connections but exactly two opposite sides: a junction, a bend or an end
+NOT_STRAIGHT = {"OR": [{a: "true", b: "false"} for a, b in (("north", "south"), ("east", "west"), ("up", "down"))]
+                + [{a: "false", b: "true"} for a, b in (("north", "south"), ("east", "west"), ("up", "down"))]
+                + [{"north": "true", "east": "true"}, {"north": "true", "up": "true"}, {"east": "true", "up": "true"}]
+                + [{side: "false" for side in PIPE_ROTATIONS}]}
+# Faces in the pipe atlas: dark steel, the sleeve in the tier's colour
+NODE_FACE, RING_FACE = [8, 0, 14, 5], [0, 10, 5.4, 12]
+GLASS_HALF = 2.45
+LOW, HIGH = 8 - GLASS_HALF, 8 + GLASS_HALF
+# The glass runs to the block's edge, into the next pipe or the machine's collar, and an arm's to the node's glass
+TUBE_NODE = LOW
+
+
+def along_z(frm, to, texture, u, v, width, caps=None):
+    """A box running along z whose side faces read along the run, so it looks the same on every axis once the blockstate turns it."""
+    uv = [u, v, u + to[2] - frm[2], v + width]
+    faces = {"east": {"texture": texture, "uv": uv}, "west": {"texture": texture, "uv": uv},
+             "up": {"texture": texture, "uv": uv, "rotation": 90}, "down": {"texture": texture, "uv": uv, "rotation": 270}}
+    if caps:
+        faces |= {side: {"texture": texture, "uv": caps} for side in ("north", "south")}
+    return {"from": frm, "to": to, "faces": faces}
+
+
+def box(frm, to, uv, sides=("north", "east", "south", "west", "up", "down")):
+    return {"from": frm, "to": to, "faces": {side: {"texture": "#atlas", "uv": uv} for side in sides}}
+
+
+def lit(element):
+    return {**element, "shade": False, "light_emission": 15}
+
+
+# On each connected side, 1 px in: a plate in the tier's colour over and under the glass, and a light strip on all four sides, so it
+# shows from everywhere whichever way the pipe runs. None has a face against the glass, which would flicker with it
+PIPE_RING = [
+    box([5.5, 10.45, 1], [10.5, 10.7, 1.6], RING_FACE, ("north", "south", "east", "west", "up")),
+    box([5.5, 5.3, 1], [10.5, 5.55, 1.6], RING_FACE, ("north", "south", "east", "west", "down")),
+    lit({"from": [10.45, 6.2, 1], "to": [10.7, 9.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('east', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [5.3, 6.2, 1], "to": [5.55, 9.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('west', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [6.2, 10.7, 1], "to": [9.8, 10.8, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 3, 1]} for s in ("up", "north", "south", "east", "west")}}),
+    lit({"from": [6.2, 5.2, 1], "to": [9.8, 5.3, 1.6], "faces": {s: {"texture": "#strip", "uv": [0, 0, 3, 1]} for s in ("down", "north", "south", "east", "west")}}),
+]
+# The item shows what its kind carries, bright on the dark glass as the energy's arc is: a blue liquid, green puffs of gas
+PIPE_ITEM_CONTENT = {"gas": along_z([5.7, 5.7, 0], [10.3, 10.3, 16], "#content", 0, 0, 4.6),
+                     # Half full, its surface a light line: at a glance a pipe with water in it, not a blue bar
+                     "liquid": {**along_z([5.7, 5.7, 0], [10.3, 8.4, 16], "#content", 0, 0, 2.7)}}
+PIPE_ITEM_CONTENT["liquid"]["faces"]["up"] = {"texture": "#content", "uv": [0, 0, 16, 1], "rotation": 90}
+
+# Where arms meet, a glass cube framed on each wall (pipe_glass_cap, only where no arm comes in). A lone pipe also has the light strips
+PIPE_LONE = [
+    lit({"from": [10.45, 6.2, 7.4], "to": [10.7, 9.8, 8], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('east', 'north', 'south', 'up', 'down')}}),
+    lit({"from": [5.3, 6.2, 7.4], "to": [5.55, 9.8, 8], "faces": {s: {"texture": "#strip", "uv": [0, 0, 1, 3]} for s in ('west', 'north', 'south', 'up', 'down')}}),
+]
+LONE = {side: "false" for side in PIPE_ROTATIONS}
+
+# A pipe pulling from the block on that side: a dark sleeve at the edge, wrapped all round by a band of the kind's light
+PIPE_EXTRACT = [box([5.1, 5.1, 0], [10.9, 10.9, 0.9], NODE_FACE, ("east", "west", "up", "down")),
+                lit({"from": [5, 5, 0.25], "to": [11, 11, 0.65],
+                     "faces": {side: {"texture": "#strip", "uv": [0, 0, 6, 1]} for side in ("east", "west", "up", "down")}})]
+
+
+def energy_arc(z0, z1):
+    """The item's arc: two crossed sheets in the glass, a sine arc running along each (out of phase), lit. In the world PipeFluidModel
+    draws the same while energy flows."""
+    uv = [z0, 6.5, z1, 9.5]
+    return [lit({"from": [8, 6.5, z0], "to": [8, 9.5, z1], "faces": {side: {"texture": "#arc_a", "uv": uv} for side in ("east", "west")}}),
+            lit({"from": [6.5, 8, z0], "to": [9.5, 8, z1], "faces": {"up": {"texture": "#arc_b", "uv": uv, "rotation": 90},
+                                                                      "down": {"texture": "#arc_b", "uv": uv, "rotation": 270}}})]
+
+
+PIPE_KINDS = {"energy_conduit": "energy", "gas_pipe": "gas", "liquid_pipe": "liquid"}
+
+
+def glass_tube(z0, z1):
+    return along_z([LOW, LOW, z0], [HIGH, HIGH, z1], "#glass", 0, 0, 2 * GLASS_HALF)
+
+
+def pipe_glass_models():
+    """The glass, the same for every pipe, as models of their own: glass sorts as translucent, the steel need not."""
+    translucent = {"render_type": "minecraft:translucent", "textures": {"particle": tex("pipe_glass"), "glass": tex("pipe_glass")}}
+    write(ASSETS / "models/block/pipe_glass_straight.json", {**translucent, "elements": [glass_tube(0, 16)]})
+    write(ASSETS / "models/block/pipe_glass_arm.json", {**translucent, "elements": [glass_tube(0, TUBE_NODE)]})
+    # The node's wall toward a side with no arm: toward an arm it must not show, or a wall would stand across what flows
+    # Clear glass in a grey frame, the whole texture on each wall
+    write(ASSETS / "models/block/pipe_glass_cap.json", {"render_type": "minecraft:translucent",
+        "textures": {"particle": tex("pipe_node_glass"), "glass": tex("pipe_node_glass")}, "elements": [
+        {"from": [LOW, LOW, LOW], "to": [HIGH, HIGH, LOW], "faces": {"north": {"texture": "#glass", "uv": [0, 0, 16, 16]}}}]})
+
+
+def flip_z(element):
+    """The same element seen from the other end of the block."""
+    return {**element, "from": [element["from"][0], element["from"][1], 16 - element["to"][2]],
+            "to": [element["to"][0], element["to"][1], 16 - element["from"][2]],
+            "faces": {{"north": "south", "south": "north"}.get(side, side): face for side, face in element["faces"].items()}}
+
+
+def pipe_models(name, kind):
+    """A NetworkPipeBlock's models and blockstate: sleeves from models of its tier, glass from shared ones. PipeFluidModel adds
+    what a pipe carries while something flows: a fluid, or an Energy Conduit's arc."""
+    texture = {"particle": tex(name), "atlas": tex(name), "strip": tex(f"pipe_strip_{PIPE_KINDS[kind]}")}
+    arcs = kind == "energy_conduit"
+    if arcs:
+        texture |= {"arc_a": tex("energy_conduit_arc_a"), "arc_b": tex("energy_conduit_arc_b")}
+    write(ASSETS / f"models/block/{name}_side.json", {"textures": texture, "elements": PIPE_RING})
+    write(ASSETS / f"models/block/{name}_lone.json", {"textures": texture, "elements": PIPE_LONE})
+    write(ASSETS / f"models/block/{name}_extract.json", {"textures": texture, "elements": PIPE_EXTRACT})
+    # Item: a straight run with both rings. The glass is in the same model here, so the whole of it is translucent
+    inventory = {"parent": "minecraft:block/block", "render_type": "minecraft:translucent",
+                 "textures": {**texture, "glass": tex("pipe_glass"), **({} if arcs else {"content": tex(f"pipe_item_{PIPE_KINDS[kind]}")})},
+                 "elements": [*PIPE_RING, *map(flip_z, PIPE_RING), *(energy_arc(0, 16) if arcs else [PIPE_ITEM_CONTENT[PIPE_KINDS[kind]]]), glass_tube(0, 16),
+                              # A wide band in the tier's colour: the sleeves' plates are too thin to tell the tiers apart in a slot
+                              box([5.3, 5.3, 6.5], [10.7, 10.7, 9.5], RING_FACE, ("east", "west", "up", "down"))]}
+    write(ASSETS / f"models/block/{name}_inventory.json", inventory)
     write(ASSETS / f"items/{name}.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/{name}_inventory"}})
+
+    def model(part):
+        return f"{NS}:block/{part}"
+    parts = [{"when": LONE, "apply": {"model": model(f"{name}_lone")}}]
+    for (a, b), rotation in ((("north", "south"), {}), (("east", "west"), {"y": 90}), (("up", "down"), {"x": 90})):
+        straight = {side: "true" if side in (a, b) else "false" for side in PIPE_ROTATIONS}
+        parts.append({"when": straight, "apply": {"model": model("pipe_glass_straight"), **rotation}})
+    for side, rotation in PIPE_ROTATIONS.items():
+        parts.append({"when": {side: "true"}, "apply": {"model": model(f"{name}_side"), **rotation}})
+        parts.append({"when": {"AND": [NOT_STRAIGHT, {side: "true"}]}, "apply": {"model": model("pipe_glass_arm"), **rotation}})
+        parts.append({"when": {"AND": [NOT_STRAIGHT, {side: "false"}]}, "apply": {"model": model("pipe_glass_cap"), **rotation}})
+        parts.append({"when": {side: "true", f"extract_{side}": "true"}, "apply": {"model": model(f"{name}_extract"), **rotation}})
+    write(ASSETS / f"blockstates/{name}.json", {"multipart": parts})
 
 
 def block_loot(name):
@@ -348,27 +405,11 @@ def blocks():
     facing_blockstate("swarm_dock")
 
     for pipe in PIPES:
-        pipe_models(pipe)
-    write(ASSETS / "models/block/pipe_extract.json", {"textures": {"particle": tex("pipe_extract"), "collar": tex("pipe_extract")},
-        "elements": [{"from": [5, 5, 0], "to": [11, 11, 2], "faces": {d: {"texture": "#collar"} for d in ("north", "east", "south", "west", "up", "down")}}]})
+        pipe_models(pipe, next(kind for kind in PIPE_KINDS if pipe.endswith(kind)))
+    pipe_glass_models()
 
-    lit_machine("bio_digester", "bio_digester_top")
-    lit_machine("gas_turbine", "gas_turbine_top")
+    # The Bio-Digester's models and blockstate come from machinemodels.py, since it assembles from Cyber Frames
 
-    # The extractor is the chamber's "shower head": its bottom face looks into the chamber
-    for model, suffix in (("methane_extractor", ""), ("methane_extractor_formed", "_formed")):
-        side = tex("methane_extractor_side" + suffix)
-        write(ASSETS / f"models/block/{model}.json", {
-            "parent": "minecraft:block/cube",
-            "textures": {"particle": side, "up": tex("methane_extractor_top" + suffix),
-                         "down": tex("methane_extractor_bottom" + suffix),
-                         "north": side, "east": side, "south": side, "west": side},
-        })
-    # A formed chamber is drawn whole by the extractor's renderer: its blocks show no faces
-    write(ASSETS / "models/block/methane_extractor_hidden.json", {"textures": {"particle": tex("methane_extractor_side_formed")}})
-    write(ASSETS / "blockstates/methane_extractor.json", {"variants": {
-        f"facing={f},formed={formed}": {"model": f"{NS}:block/methane_extractor{'_hidden' if formed == 'true' else ''}"}
-        for f in FACING_ROTATION for formed in ("false", "true")}})
 
     for model in ("cyber_frame", "cyber_frame_formed"):
         write(ASSETS / f"models/block/{model}.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex(model)}})
@@ -382,9 +423,8 @@ def blocks():
         write(ASSETS / f"blockstates/{part}.json", {"variants": variants})
 
     # Soft block, not a machine: no pickaxe needed
-    write(ASSETS / "models/block/muffler.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("muffler")}})
     facing_blockstate("muffler")
-    write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler"}})
+    write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler_item"}})
     block_loot("muffler")
 
     nuclear_blocks()
@@ -392,13 +432,13 @@ def blocks():
     energy_storage_models()
     laser_turret_models()
 
-    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "hologram_table",
-             "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
+    names = PIPES + ["combustion_generator", "drone_assembler", "drone_dock", "swarm_dock", "dock_tank", "hologram_table",
+             "biomass_press", "bio_digester", "gas_turbine", "methane_extractor", "cyber_frame",
              "reactor_controller", "reactor_casing", "reactor_port", "turbine_controller", "turbine_casing", "turbine_port", "water_pump", "coolant_mixer",
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
-             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine", "steam_engine_cylinder", "steam_engine_dynamo",
+             "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine",
              "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
-             "supply_terminal", "laser_turret"]
+             "supply_terminal", "laser_turret", "transmitter_dish", "receiver_dish"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             model = f"{name}_inventory" if name == "laser_turret" else name
@@ -410,7 +450,14 @@ def blocks():
     write(RES / "data/c/tags/fluid/methane.json", {"values": [f"{NS}:methane"]})
     ores = ["uranium_ore", "deepslate_uranium_ore"]
     bauxite = ["bauxite_ore", "deepslate_bauxite_ore"]
-    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + bauxite + ["nether_sulfur_ore"]]})
+    write(RES / "data/minecraft/tags/block/mineable/pickaxe.json", {"values": [f"{NS}:{n}" for n in names + ores + bauxite + ["nether_sulfur_ore", "hidden_frame"]]})
+    write(DATA / "loot_table/blocks/hidden_frame.json", {
+        "type": "minecraft:block",
+        "pools": [{"rolls": 1.0, "bonus_rolls": 0.0, "conditions": [{"condition": "minecraft:survives_explosion"}],
+                   "entries": [{"type": "minecraft:item", "name": f"{NS}:cyber_frame"}]}],
+        "random_sequence": f"{NS}:blocks/hidden_frame"})
+    write(ASSETS / "items/combustion_generator.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/combustion_generator_item"}})
+    write(ASSETS / "items/waste_reprocessor.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/waste_reprocessor_item"}})
     write(RES / "data/minecraft/tags/block/needs_iron_tool.json", {"values": [f"{NS}:{n}" for n in ores]})
     write(RES / "data/minecraft/tags/block/needs_stone_tool.json", {"values": [f"{NS}:{n}" for n in bauxite]})
     write(RES / "data/c/tags/fluid/steam.json", {"values": [f"{NS}:steam"]})
@@ -506,45 +553,18 @@ def nuclear_blocks():
                     model = "turbine_controller" if formed == "false" else "turbine_controller_hidden"
                     variants[f"facing={facing},formed={formed},lit={lit},size={size}"] = {"model": f"{NS}:block/{model}", **({"y": rot} if rot else {})}
     write(ASSETS / "blockstates/turbine_controller.json", {"variants": variants})
-    lit_machine("water_pump", "water_pump_top")
-    for tank in ("liquid_tank", "gas_tank"):
-        write(ASSETS / f"models/block/{tank}.json", {"parent": "minecraft:block/cube_column",
-            "textures": {"side": tex(f"{tank}_side"), "end": tex("tank_top")}})
-        facing_blockstate(tank)
-    lit_machine("coolant_mixer", "machine_top")
-    lit_machine("waste_reprocessor", "machine_top")
     write(ASSETS / "models/block/vitrified_waste.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("vitrified_waste")}})
-    lit_machine("acid_synthesizer", "machine_top")
-    lit_machine("electrolyzer", "machine_top")
-    lit_machine("pyrolysis_oven", "machine_top")
-    lit_machine("fabricator", "machine_top")
-    orientable("supply_terminal", "supply_terminal_front", "machine_top")
     facing_blockstate("supply_terminal")
     # A villager job site, for mods that look for them
     write(RES / "data/c/tags/block/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
     write(RES / "data/c/tags/item/villager_job_sites.json", {"replace": False, "values": [f"{NS}:supply_terminal"]})
-    orientable("crystallizer", "crystallizer_front", "crystallizer_top")
     # A complete chamber is drawn whole by the Crystallizer's renderer, the controller with it
-    write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("crystallizer_front")}})
-    facing_blockstate("crystallizer", {"formed=false": "crystallizer", "formed=true": "crystallizer_hidden"})
+    write(ASSETS / "models/block/crystallizer_hidden.json", {"textures": {"particle": tex("models/crystallizer")}})
     # Its ports hide too: the renderer draws a socket on the machine where each one is
     write(ASSETS / "models/block/crystallizer_port.json", {"parent": "minecraft:block/cube_all", "textures": {"all": tex("crystallizer_port")}})
     write(ASSETS / "models/block/crystallizer_port_hidden.json", {"textures": {"particle": tex("crystallizer_port")}})
     write(ASSETS / "blockstates/crystallizer_port.json", {"variants": {
         "formed=false": {"model": f"{NS}:block/crystallizer_port"}, "formed=true": {"model": f"{NS}:block/crystallizer_port_hidden"}}})
-    # A complete Steam Engine is drawn whole by the boiler's renderer: its blocks show no faces
-    orientable("steam_engine", "steam_engine_front", "machine_top")
-    write(ASSETS / "models/block/steam_engine_hidden.json", {"textures": {"particle": tex("steam_engine_front")}})
-    write(ASSETS / "blockstates/steam_engine.json", {"variants": {
-        f"facing={f},formed={formed}": {"model": f"{NS}:block/steam_engine" + ("_hidden" if formed == "true" else ""),
-                                        **({"y": rot} if rot and formed == "false" else {})}
-        for f, rot in FACING_ROTATION.items() for formed in ("false", "true")}})
-    for part in ("steam_engine_cylinder", "steam_engine_dynamo"):
-        write(ASSETS / f"models/block/{part}.json", {"parent": "minecraft:block/cube_column",
-            "textures": {"side": tex(part), "end": tex("machine_top")}})
-        write(ASSETS / f"models/block/{part}_hidden.json", {"textures": {"particle": tex(part)}})
-        write(ASSETS / f"blockstates/{part}.json", {"variants": {
-            "formed=false": {"model": f"{NS}:block/{part}"}, "formed=true": {"model": f"{NS}:block/{part}_hidden"}}})
     write(ASSETS / "models/block/containment_glass.json", {"parent": "minecraft:block/cube_all",
         "render_type": "minecraft:translucent", "textures": {"all": tex("containment_glass")}})
     # Mech Hangar: console, frame and pad light up once the hangar is complete
@@ -621,10 +641,10 @@ def bauxite_ores():
             {"state": {"Name": f"{NS}:deepslate_bauxite_ore"}, "target": {"predicate_type": "minecraft:tag_match", "tag": "minecraft:deepslate_ore_replaceables"}},
         ]}})
     write(DATA / "worldgen/placed_feature/bauxite_ore.json", {"feature": f"{NS}:bauxite_ore", "placement": [
-        {"type": "minecraft:count", "count": 10},
+        {"type": "minecraft:count", "count": 12},
         {"type": "minecraft:in_square"},
         {"type": "minecraft:height_range", "height": {"type": "minecraft:trapezoid",
-                                                      "min_inclusive": {"absolute": -16}, "max_inclusive": {"absolute": 112}}},
+                                                      "min_inclusive": {"absolute": -32}, "max_inclusive": {"absolute": 80}}},
         {"type": "minecraft:biome"},
     ]})
     write(DATA / "neoforge/biome_modifier/bauxite_ore.json", {
@@ -729,6 +749,17 @@ def shaped(name, pattern, key, count=1, category="misc"):
     })
 
 
+def dish_recipes(aluminum, advanced_circuit, elite_circuit):
+    """The dishes (Tier 2, Advanced Circuit) and the Transmitter Dish's range modules, each built on the one before."""
+    copper, rod = "minecraft:copper_ingot", "minecraft:lightning_rod"
+    shaped("transmitter_dish", ["AXA", "ADA", "CCC"], {"A": aluminum, "X": rod, "D": advanced_circuit, "C": copper})
+    shaped("receiver_dish", ["AXA", "CDC"], {"A": aluminum, "X": rod, "D": advanced_circuit, "C": copper})
+    shaped("range_module_i", ["NXN", "RCR"], {"N": "minecraft:gold_nugget", "X": "minecraft:amethyst_shard", "R": "minecraft:redstone", "C": advanced_circuit})
+    shaped("range_module_ii", ["GXG", "RMR"], {"G": "minecraft:gold_ingot", "X": "minecraft:ender_pearl", "R": "minecraft:redstone", "M": f"{NS}:range_module_i"})
+    shaped("range_module_iii", ["DXD", "EME"], {"D": "minecraft:diamond", "X": "minecraft:ender_eye", "E": elite_circuit, "M": f"{NS}:range_module_ii"})
+    shaped("infinity_range_module", ["FXF", "EME"], {"F": f"{NS}:fusion_crystal", "X": "minecraft:echo_shard", "E": elite_circuit, "M": f"{NS}:range_module_iii"})
+
+
 def recipes():
     iron, copper, gold, redstone = "minecraft:iron_ingot", "minecraft:copper_ingot", "minecraft:gold_ingot", "minecraft:redstone"
     core, rotor, cell = f"{NS}:drone_core", f"{NS}:rotor", f"{NS}:battery_cell"
@@ -773,6 +804,9 @@ def recipes():
     # Defence: an amethyst lens focuses the laser
     shaped("guard_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:amethyst_shard", "C": copper, "D": circuit})
     shaped("bomb_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:tnt", "C": copper, "D": circuit})
+    # A bucket, not a sponge: real sponges come only from ocean monuments
+    shaped("sponge_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:bucket", "C": copper, "D": circuit})
+    shaped("tank_module", ["IXI", "CDC"], {"I": iron, "X": "minecraft:cauldron", "C": copper, "D": circuit})
 
     # Addons share a chip base (gold nuggets, redstone, copper) with one themed ingredient
     def addon(name, special):
@@ -784,11 +818,14 @@ def recipes():
     addon("fortune_addon", "minecraft:emerald")
     addon("silk_touch_addon", "minecraft:diamond")
     addon("anchor_addon", "minecraft:ender_eye")
+    addon("efficiency_addon", "minecraft:comparator")
+    dish_recipes(aluminum, advanced_circuit, elite_circuit)
 
     shaped("combustion_generator", ["III", "IRI", "CFC"], {"I": iron, "R": redstone, "C": copper, "F": "minecraft:furnace"})
     shaped("drone_assembler", ["IDI", "CTC", "III"], {"I": iron, "D": circuit, "C": copper, "T": "minecraft:crafting_table"})
     shaped("drone_dock", ["CDC", "III"], {"C": copper, "D": circuit, "I": iron})
     shaped("swarm_dock", ["CFC", "FDF", "CFC"], {"C": copper, "F": f"{NS}:cyber_frame", "D": f"{NS}:drone_dock"})
+    shaped("dock_tank", ["IGI", "GBG", "IDI"], {"I": iron, "G": "minecraft:glass_pane", "B": "minecraft:bucket", "D": circuit})
     shaped("hologram_table", ["GGG", "IDI", " I "], {"G": "minecraft:light_blue_stained_glass_pane", "I": iron, "D": circuit})
     shaped("energy_conduit", ["CCC", "RRR", "CCC"], {"C": copper, "R": redstone}, count=8)
     shaped("gas_pipe", ["CCC", "GGG", "CCC"], {"C": copper, "G": "minecraft:glass"}, count=8)
@@ -798,6 +835,7 @@ def recipes():
         shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": advanced_circuit}, count=8)
         shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": elite_circuit}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
+    shaped("biomass_press", ["IPI", "CXC", "IUI"], {"I": iron, "P": "minecraft:piston", "C": copper, "X": "minecraft:composter", "U": circuit})
     shaped("bio_digester", ["IUI", "GXG", "ICI"], {"I": iron, "U": circuit, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})
     shaped("gas_turbine", ["ICI", "RFR", "IDI"], {"I": iron, "C": copper, "R": redstone, "F": "minecraft:furnace", "D": circuit})
     shaped("acid_inlet", ["F", "B"], {"F": f"{NS}:cyber_frame", "B": "minecraft:bucket"})
@@ -827,7 +865,7 @@ def recipes():
     shaped("liquid_tank", ["IGI", "GBG", "IGI"], {"I": iron, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("gas_tank", ["CGC", "GBG", "CGC"], {"C": copper, "G": "minecraft:glass", "B": "minecraft:bucket"})
     shaped("laser_turret", ["IAI", "RDR", "IBI"], {"I": iron, "A": "minecraft:amethyst_shard", "R": redstone, "D": advanced_circuit, "B": cell})
-    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": advanced_circuit})
+    shaped("water_pump", ["IBI", "CPC", "IDI"], {"I": iron, "B": "minecraft:bucket", "C": copper, "P": "minecraft:piston", "D": circuit})
     wool, lead_lining = "minecraft:yellow_wool", iron
     shaped("hazmat_helmet", ["WWW", "WGW"], {"W": wool, "G": "minecraft:glass_pane"}, category="equipment")
     shaped("hazmat_suit", ["W W", "WIW", "WWW"], {"W": wool, "I": lead_lining}, category="equipment")
@@ -846,8 +884,6 @@ def recipes():
     # Steam Engine: boiler, cylinders and the dynamo closing the row
     shaped("steam_engine", ["ICI", "BFB", "IDI"],
            {"I": iron, "C": copper, "B": "minecraft:blast_furnace", "F": f"{NS}:cyber_frame", "D": advanced_circuit})
-    shaped("steam_engine_cylinder", ["IPI", "I I", "ICI"], {"I": iron, "P": "minecraft:piston", "C": copper}, count=2)
-    shaped("steam_engine_dynamo", ["ICI", "CRC", "IBI"], {"I": iron, "C": copper, "R": "minecraft:redstone_block", "B": cell})
 
     # Mech: end game. Its core is a Fusion Crystal (reactor waste -> Isotope Shard -> Crystallizer) in two elite frames
     advanced, elite = f"{NS}:advanced_frame", f"{NS}:elite_frame"
@@ -897,6 +933,12 @@ def sounds():
         return [{"name": f"minecraft:{n}", **attrs} for n in names]
 
     events = {
+        # A small multiblock assembling: a clank as it unlatches, mechanical knocks while its parts move, a solid lock at the end
+        "multiblock.unlatch": files("tile/piston/out", pitch=0.7, volume=0.7),
+        "multiblock.assemble": files("block/iron_trapdoor/open", 4, volume=0.5) + files("block/iron_trapdoor/close", 4, volume=0.5)
+                               + files("block/smithing_table/smithing_table", 3, volume=0.45) + files("tile/piston/in", volume=0.4)
+                               + files("block/chain/step", 4, volume=0.6),
+        "multiblock.lock": files("random/anvil_land", pitch=1.6, volume=0.3) + files("block/iron_trapdoor/close", 4, pitch=0.7, volume=0.8),
         "drone.fly": [{"name": f"{NS}:drone_fly", "volume": 0.6}],  # synthesized by soundgen.py
         "drone.takeoff": files("block/beacon/power1", pitch=1.8, volume=0.4),
         "drone.land": files("block/iron_trapdoor/close", 4, pitch=1.5, volume=0.5),
@@ -912,6 +954,11 @@ def sounds():
         "reactor.hum": files("block/beacon/ambient", pitch=0.5, volume=0.9),
         "reactor.alarm": files("note/pling", pitch=1.6, volume=1.0) + files("note/bell", pitch=1.4, volume=0.8),
         "coolant_mixer.work": files("block/brewing_stand/brew", 2, pitch=1.3, volume=0.4),
+        "bio_digester.work": files("block/bubble_column/upwards_ambient", 5, pitch=0.6, volume=0.4),
+        "water_pump.work": files("tile/piston/in", pitch=0.6, volume=0.25) + files("tile/piston/out", pitch=0.6, volume=0.25),
+        "biomass_press.work": files("tile/piston/in", pitch=0.7, volume=0.35) + files("mob/slime/big", 4, pitch=0.8, volume=0.3),
+        "gas_turbine.work": files("fire/fire", pitch=1.6, volume=0.3),
+        "resonance_core.hum": files("block/beacon/ambient", pitch=1.5, volume=0.25),
         "waste_reprocessor.work": files("block/beacon/power1", pitch=0.7, volume=0.5),
         "geiger.click": files("random/click", pitch=2.0, volume=0.3),
         "steam_turbine.work": files("random/fizz", pitch=0.5, volume=0.25),

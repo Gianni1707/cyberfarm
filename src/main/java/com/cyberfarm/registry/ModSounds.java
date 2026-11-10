@@ -14,6 +14,9 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public class ModSounds {
     public static final DeferredRegister<SoundEvent> SOUNDS = DeferredRegister.create(Registries.SOUND_EVENT, CyberFarm.MODID);
 
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_UNLATCH = register("multiblock.unlatch");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_ASSEMBLE = register("multiblock.assemble");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MULTIBLOCK_LOCK = register("multiblock.lock");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_FLY = register("drone.fly");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_TAKEOFF = register("drone.takeoff");
     public static final DeferredHolder<SoundEvent, SoundEvent> DRONE_LAND = register("drone.land");
@@ -28,6 +31,11 @@ public class ModSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> COOLANT_MIXER_WORK = register("coolant_mixer.work");
     public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_TURBINE_WORK = register("steam_turbine.work");
     public static final DeferredHolder<SoundEvent, SoundEvent> REPROCESSOR_WORK = register("waste_reprocessor.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIO_DIGESTER_WORK = register("bio_digester.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> WATER_PUMP_WORK = register("water_pump.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> BIOMASS_PRESS_WORK = register("biomass_press.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> GAS_TURBINE_WORK = register("gas_turbine.work");
+    public static final DeferredHolder<SoundEvent, SoundEvent> RESONANCE_CORE_HUM = register("resonance_core.hum");
     /** Not a machine: the Muffler leaves it alone (see CyberFarmClient). */
     public static final DeferredHolder<SoundEvent, SoundEvent> GEIGER_CLICK = register("geiger.click");
     public static final DeferredHolder<SoundEvent, SoundEvent> GENERATOR_CRACKLE = register("combustion_generator.crackle");

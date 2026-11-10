@@ -23,10 +23,10 @@ you switch them off or get out.
 
 | Module | Mount | Comes out | What it does |
 | --- | --- | --- | --- |
-| <ItemLink id="mech_jet_module" /> | Back | Two wings unfold segment by segment, two nozzles light up | **Flight**: hold jump in the air to climb, sneak to dive, neither to glide. 60 FE/t in the air |
-| <ItemLink id="mech_drill_module" /> | Right arm | The **R** key slides a drill out under the hand; it turns while on | Digs twice as fast, **3x3**, and gets the drops of any tier. 20 FE per extra block |
-| <ItemLink id="mech_blade_module" /> | Left arm | The **G** key slides a glowing blade out of the forearm | **18** extra damage a blow and **8** to everything near the target. 80 FE a blow |
-| <ItemLink id="mech_armor_module" /> | Trunk | Plates close onto the shoulders, chest and thighs | The mech takes **40%** less damage |
+| <ItemLink id="mech_jet_module" /> | Back | Two wings unfold segment by segment behind the back unit, and a nozzle comes out under each thruster | **Flight**: hold jump in the air to climb, sneak to dive, neither to glide. 120 FE/t in the air |
+| <ItemLink id="mech_drill_module" /> | Right arm | The **R** key slides a drill out under the fist; it turns while on | Digs twice as fast, **3x3**, and gets the drops of any tier. 40 FE per extra block |
+| <ItemLink id="mech_blade_module" /> | Left arm | The **G** key slides a glowing blade down the outside of the cuff | **18** extra damage a blow and **8** to everything near the target. 160 FE a blow |
+| <ItemLink id="mech_armor_module" /> | Trunk | Steel plates slide onto the shoulders, the chest and the hips | The mech takes **40%** less damage |
 
 The keys are in the controls under *CyberFarm Mech*. The cockpit display lists every fitted
 module with its state: the jet READY or THRUST, the drill and blade ON or OFF with their keys,

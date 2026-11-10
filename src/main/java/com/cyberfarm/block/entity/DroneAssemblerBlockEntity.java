@@ -54,9 +54,8 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     public static final int CAPACITY = 20_000;
     public static final int MAX_INPUT = 500;
     public static final int ASSEMBLY_TIME = 100;
-    public static final int ENERGY_PER_TICK = 20;
+    public static final int ENERGY_PER_TICK = 40;
 
-    private int progress;
     private boolean assembling;
 
     public DroneAssemblerBlockEntity(BlockPos pos, BlockState state) {
@@ -182,7 +181,12 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
 
     @Override
     protected float progress() {
-        return progress / (float) ASSEMBLY_TIME;
+        return progress / (float) workTime(ASSEMBLY_TIME);
+    }
+
+    @Override
+    public boolean takesAddons() {
+        return true;
     }
 
     @Override
@@ -195,9 +199,9 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             setChanged();
             return;
         }
-        if (energy.consume(ENERGY_PER_TICK)) {
+        if (energy.consume(energyPerTick(ENERGY_PER_TICK))) {
             progress++;
-            if (progress >= ASSEMBLY_TIME) {
+            if (progress >= workTime(ASSEMBLY_TIME)) {
                 finishAssembly(level, pos);
             }
             setChanged();
@@ -306,7 +310,7 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     protected int getExtraData(int id) {
         return switch (id) {
             case 0 -> progress;
-            case 1 -> ASSEMBLY_TIME;
+            case 1 -> workTime(ASSEMBLY_TIME);
             case 2 -> assembling ? 1 : 0;
             default -> 0;
         };
@@ -320,14 +324,12 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("progress", progress);
         output.putBoolean("assembling", assembling);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        progress = input.getIntOr("progress", 0);
         assembling = input.getBooleanOr("assembling", false);
     }
 

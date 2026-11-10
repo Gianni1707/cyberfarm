@@ -1,5 +1,7 @@
 package com.cyberfarm.block;
 
+import com.cyberfarm.client.renderer.FrameDroneRenderer;
+import com.cyberfarm.multiblock.Blueprint;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.registry.ModBlockEntities;
@@ -8,7 +10,6 @@ import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
@@ -89,6 +90,18 @@ public class MethaneExtractorBlock extends MachineBlock {
         }
     }
 
+    /** Until it is complete, a click sends out the drones that show what it lacks, instead of opening the GUI. */
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
+        if (state.getValue(FORMED)) {
+            return super.useWithoutItem(state, level, pos, player, hitResult);
+        }
+        if (level.isClientSide()) {
+            FrameDroneRenderer.clickedStructure(level, pos, state, Blueprint.METHANE_CHAMBER);
+        }
+        return InteractionResult.SUCCESS;
+    }
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MethaneExtractorBlockEntity(pos, state);
@@ -98,8 +111,4 @@ public class MethaneExtractorBlock extends MachineBlock {
     public <T extends BlockEntity> @Nullable BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return machineTicker(level, type, ModBlockEntities.METHANE_EXTRACTOR.get());
     }
-
-    /** Nothing extra: the chamber already fumes and smokes round the mob being dissolved. */
-    @Override
-    protected void ambient(BlockState state, Level level, BlockPos pos, RandomSource random) {}
 }

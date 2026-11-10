@@ -25,14 +25,9 @@ public class PyrolysisOvenMenu extends MachineMenu {
 
     public PyrolysisOvenMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
         super(ModMenus.PYROLYSIS_OVEN.get(), containerId, data, access, ModBlocks.PYROLYSIS_OVEN.get());
-        addMachineSlot(items, PyrolysisOvenBlockEntity.STRING, 62, 35);
-        addMachineSlot(items, PyrolysisOvenBlockEntity.OUTPUT, 124, 35);
+        addMachineSlot(items, PyrolysisOvenBlockEntity.STRING, 74, 35);
+        addMachineSlot(items, PyrolysisOvenBlockEntity.OUTPUT, 128, 35);
         addPlayerInventory(inventory, 84);
-    }
-
-    public float getProgress() {
-        int total = extra(1);
-        return total <= 0 ? 0.0F : (float) extra(0) / total;
     }
 
     public int getMethaneAmount() {
@@ -41,5 +36,10 @@ public class PyrolysisOvenMenu extends MachineMenu {
 
     public int getMethaneFluid() {
         return extra(3);
+    }
+
+    @Override
+    public boolean hasAddons() {
+        return true;
     }
 }

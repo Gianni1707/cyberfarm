@@ -19,9 +19,9 @@ all round (a sphere 33 blocks across, as wide as the largest drone work area), t
 
 - **8 damage a shot, one shot a second**: a zombie lasts three shots.
 - A shot costs **200 FE** from its 20,000 FE buffer: **10 FE/t** while it fights, none while nothing
-  is in sight, so one [Combustion Generator](combustion_generator.md) keeps four turrets firing.
-- Every CyberFarm laser costs **25 FE per point of damage**, the turret and the
-  [Guard Module](modules.md) alike.
+  is in sight, so one [Combustion Generator](combustion_generator.md) keeps six turrets firing.
+- The turret's laser costs **25 FE per point of damage**; the
+  [Guard Module](modules.md)'s, fired in flight, costs twice that.
 - It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.
 - It shoots **hostile mobs only**. Players, animals, villagers and golems are safe, and so are
   **named mobs**, mobs **riding** something (a minecart, a boat) and **neutral mobs** (endermen,

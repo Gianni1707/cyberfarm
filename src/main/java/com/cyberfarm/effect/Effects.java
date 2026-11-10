@@ -18,8 +18,18 @@ public final class Effects {
     public static final int BEAM = 2;
     /** A laser shot: a red beam from a Guard drone (the source) or a Laser Turret (at {@code to}) to the mob at {@code from}. */
     public static final int LASER = 3;
+    /** A Planter drone sprays its tank's seed mix on a block: green drops from the pump under the hull. */
+    public static final int SPRAY_SEEDS = 4;
+    /** A Fertilizer drone sprays its canister's contents on a plant: white drops from the pump under the hull. */
+    public static final int SPRAY_FERTILIZER = 5;
+    /** A Breeder drone drops feed on an animal: golden drops from the hay rack under the hull. */
+    public static final int SPRAY_FEED = 6;
 
     private Effects() {}
+
+    public static void spray(ServerLevel level, Entity drone, int kind, BlockPos target) {
+        PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(target), new EffectPayload(kind, target, target, drone.getId()));
+    }
 
     public static void print(ServerLevel level, BlockPos pos) {
         PacketDistributor.sendToPlayersTrackingChunk(level, ChunkPos.containing(pos), new EffectPayload(PRINT, pos, pos, -1));

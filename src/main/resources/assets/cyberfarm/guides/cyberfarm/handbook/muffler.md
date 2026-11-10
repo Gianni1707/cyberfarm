@@ -16,6 +16,8 @@ A busy farm is a noisy farm: humming drones, bubbling extraction chambers, crack
 and the mobs locked inside them. Place a **Muffler** and the sounds you choose go quiet within
 **10 blocks**.
 
+A weight bobs on its coil as it works: the more kinds of sound you silence, the faster it goes, and it rests when it silences none.
+
 <br clear="all" />
 
 ## Choosing what it silences
