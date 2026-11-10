@@ -489,6 +489,10 @@
           ],
           "texture": "#light"
         }
+      },
+      "forge_data": {
+        "block_light": 15,
+        "sky_light": 15
       }
     },
     {
@@ -761,10 +765,6 @@
           ],
           "texture": "#radiation_mark"
         }
-      },
-      "forge_data": {
-        "block_light": 15,
-        "sky_light": 15
       }
     },
     {
