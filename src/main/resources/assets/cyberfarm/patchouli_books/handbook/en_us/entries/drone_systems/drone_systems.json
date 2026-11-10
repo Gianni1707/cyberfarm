@@ -6,15 +6,15 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Drones are the heart of CyberFarm: modular flying workers that harvest, plant, dig, chop trees, carry items and even give you a ride, then fly home to unload and recharge.$(br)$(li)$(l:drone_systems/drone_assembler)Drone Assembler$(/l)$(br)$(li)$(l:drone_systems/drone_frames)Basic Drone Frame$(/l)$(br)$(li)$(l:drone_systems/modules)Harvester Module$(/l)$(br)$(li)$(l:drone_systems/addons)Speed Addon$(/l)"
+      "text": "Drones are the heart of CyberFarm: modular flying workers that harvest, plant, dig, chop trees, tend animals, fish, guard, build, drain liquids, carry items and even give you a ride, then fly home to unload and recharge.$(br)$(li)$(l:drone_systems/drone_assembler)Drone Assembler$(/l)$(br)$(li)$(l:drone_systems/drone_frames)Basic Drone Frame$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:drone_systems/drone_dock)Drone Dock$(/l)$(br)$(li)$(l:drone_systems/drones)Drone$(/l)$(br)$(li)$(l:drone_systems/hologram_table)Hologram Table$(/l)"
+      "text": "$(li)$(l:drone_systems/modules)Harvester Module$(/l)$(br)$(li)$(l:drone_systems/addons)Speed Addon$(/l)$(br)$(li)$(l:drone_systems/drone_dock)Drone Dock$(/l)$(br)$(li)$(l:drone_systems/drones)Drone$(/l)$(br)$(li)$(l:drone_systems/hologram_table)Hologram Table$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pick a $(l)frame$() in $(l:drone_systems/drone_frames)Drone Frames$(/l): it decides battery, speed and how many modules and addons fit.$(br)$(li)Choose its jobs with $(l:drone_systems/modules)Function Modules$(/l).$(br)$(li)Tune it with $(l:drone_systems/addons)Addons$(/l): speed, bigger loads, battery, efficiency, Fortune or Silk Touch.",
+      "text": "$(li)Pick a $(l)frame$() in $(l:drone_systems/drone_frames)Drone Frames$(/l): it decides battery, speed and how many modules and addons fit.$(br)$(li)Choose its jobs with $(l:drone_systems/modules)Function Modules$(/l).$(br)$(li)Tune it with $(l:drone_systems/addons)Addons$(/l): speed, bigger loads, battery, efficiency, Fortune, Silk Touch or chunk loading.",
       "title": "From parts to a working drone"
     },
     {

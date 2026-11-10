@@ -2,7 +2,7 @@
   "name": "Multiblock Projector",
   "icon": "cyberfarm:multiblock_projector",
   "category": "cyberfarm:basics",
-  "sortnum": 5,
+  "sortnum": 6,
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -11,7 +11,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click$() to open the list of structures and see the blocks each one takes: the $(l:nuclear/fission_reactor)Fission Reactor$(/l) and the $(l:nuclear/steam_turbine)Steam Turbine$(/l) in all three sizes, the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber, the four tiers of the $(l:energy_storage/resonance_core)Resonance Core$(/l), the $(l:mech/mech_hangar)Mech Hangar$(/l) and the $(l:mech/mech_core)Crystallizer$(/l) chamber."
+      "text": "$(li)$(l)Right-click$() to open the list of structures and see the blocks each one takes: the $(l:nuclear/fission_reactor)Fission Reactor$(/l) and the $(l:nuclear/steam_turbine)Steam Turbine$(/l) in all three sizes, the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber, tiers 2 to 4 of the $(l:energy_storage/resonance_core)Resonance Core$(/l) (tier 1 is the core alone), the $(l:mech/mech_hangar)Mech Hangar$(/l) and the $(l:mech/mech_core)Crystallizer$(/l) chamber."
     },
     {
       "type": "patchouli:text",

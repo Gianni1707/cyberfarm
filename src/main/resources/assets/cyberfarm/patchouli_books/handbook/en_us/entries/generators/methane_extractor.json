@@ -2,7 +2,7 @@
   "name": "Methane Extractor",
   "icon": "cyberfarm:methane_extractor",
   "category": "cyberfarm:generators",
-  "sortnum": 5,
+  "sortnum": 6,
   "pages": [
     {
       "type": "patchouli:text",

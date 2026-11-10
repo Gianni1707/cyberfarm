@@ -37,5 +37,10 @@
       "type": "patchouli:text",
       "text": "A typical setup: a Bio-Digester and the Methane Outlet of an extraction chamber push their gas into $(l:cables/gas_pipe)Gas Pipes$(/l), which carry it to a $(l:generators/gas_turbine)Gas Turbine$(/l) or a $(l:generators/steam_engine)Steam Engine$(/l); they push FE into $(l:cables/energy_conduit)Energy Conduits$(/l) that power your drones' docks."
     }
-  ]
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:biogas_bucket": 0,
+    "cyberfarm:methane_bucket": 0,
+    "cyberfarm:steam_bucket": 0
+  }
 }

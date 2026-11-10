@@ -23,15 +23,19 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Fill them with the matching $(l:cables/cables)pipe$(/l): a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. A Liquid Tank also takes and gives $(l)buckets$(): just right-click it with one.$(br2)Tanks are $(l)passive$(): they never push"
+      "text": "Fill them with the matching $(l:cables/cables)pipe$(/l): a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. Both tanks also take and give $(l)buckets$() (gas buckets for the Gas Tank): just right-click it with one."
     },
     {
       "type": "patchouli:text",
-      "text": "anything out. To empty one into a machine, right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank (a lit band round its end shows it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you see into the tank, right through to the"
+      "text": "Tanks are $(l)passive$(): they never push anything out. To empty one into a machine, right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank (a lit band round its end shows it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you"
     },
     {
       "type": "patchouli:text",
-      "text": "other side, and the fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount.$(br2)$(l)Look at a tank$() to see a panel over it with what is inside and how full it is, one panel for a whole joined tank."
+      "text": "see into the tank, right through to the other side, and the fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Look at a tank$() to see a panel over it with what is inside and how full it is, one panel for a whole joined tank."
     },
     {
       "type": "patchouli:text",
@@ -48,7 +52,7 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:liquid_tank": 9,
+    "cyberfarm:liquid_tank": 10,
     "cyberfarm:gas_tank": 1
   }
 }

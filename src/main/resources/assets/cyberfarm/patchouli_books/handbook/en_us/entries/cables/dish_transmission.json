@@ -14,25 +14,33 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It is a small multiblock: place it with $(l)three Cyber Frames$(), to its right, behind it and in the corner between, and the dish unfolds on its turret over a 2x2 base.$(br)$(li)Feed it FE with $(l:cables/energy_conduit)Energy Conduits$(/l) on the dish block.",
+      "text": "$(li)It is a small multiblock: place it with $(l)three Cyber Frames$(), on its right as you face it, behind it and in the corner between, and the dish unfolds on its turret over a 2x2 base. Alone, a right click sends out drones that show where they go.",
       "title": "Transmitter Dish"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Each Transmitter Dish has $(l)one network$(). In its GUI you give it a $(l)name$() and a $(l)colour$(), which lights the indicator on both dishes.$(br)$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver."
+      "text": "$(li)Feed it FE with $(l:cables/energy_conduit)Energy Conduits$(/l) on the dish block. It takes in as much FE per tick as its module lets it send, and stores ten times that.$(br)$(li)Each Transmitter Dish has $(l)one network$(). In its GUI you give it a $(l)name$() and a $(l)colour$(), which lights the indicator on both dishes."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It serves up to $(l)4 receivers in turn$(): it turns to one, sends, then moves to the next. The signal passes through blocks, but the receiver's chunk must be loaded.$(br)$(li)A tenth of the FE is $(l)lost on the way$()."
+      "text": "$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A small multiblock two blocks tall: put $(l)a Cyber Frame on top$() of it and its dish unfolds.$(br)$(li)Its GUI lists the networks it can reach, with their colour, distance (or dimension) and seats taken, for example \"2/4\". Click one to link; a full network is greyed out.",
+      "text": "$(li)It serves up to $(l)4 receivers in turn$(): it turns to one (1 second), sends for 4 seconds, then moves to the next. The signal passes through blocks, but the chunks of both dishes must be loaded.$(br)$(li)A tenth of the FE is $(l)lost on the way$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A small multiblock two blocks tall: put $(l)a Cyber Frame on top$() of it and its dish unfolds.",
       "title": "Receiver Dish"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It gives the FE it receives to the blocks and conduits around it."
+      "text": "$(li)Its GUI lists the networks it can reach, with their colour, distance (or dimension) and seats taken, for example \"2/4\". Click one to link; a full network is greyed out. $(l)Disconnect$() leaves it. The GUI also shows the FE/t arriving."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It stores up to 2,000,000 FE and gives what it receives to the blocks and conduits around it."
     },
     {
       "type": "patchouli:text",
@@ -60,11 +68,11 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:transmitter_dish": 9,
-    "cyberfarm:receiver_dish": 9,
-    "cyberfarm:range_module_i": 10,
-    "cyberfarm:range_module_ii": 10,
-    "cyberfarm:range_module_iii": 11,
-    "cyberfarm:infinity_range_module": 11
+    "cyberfarm:transmitter_dish": 11,
+    "cyberfarm:receiver_dish": 11,
+    "cyberfarm:range_module_i": 12,
+    "cyberfarm:range_module_ii": 12,
+    "cyberfarm:range_module_iii": 13,
+    "cyberfarm:infinity_range_module": 13
   }
 }

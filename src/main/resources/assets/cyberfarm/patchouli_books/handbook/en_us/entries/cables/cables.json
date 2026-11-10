@@ -47,7 +47,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Upgrading$(): 8 cables around gold and redstone make 8 Advanced ones; 8 Advanced around diamonds and a uranium ingot make 8 Elite ones.$(br2)Where a cable can't go, $(l:cables/dish_transmission)Dish Transmission$(/l) sends FE through the air."
+      "text": "$(l)Upgrading$(): 8 cables around two gold ingots and an Advanced Circuit make 8 Advanced ones; 8 Advanced around two diamonds and an Elite Circuit make 8 Elite ones.$(br2)Where a cable can't go, $(l:cables/dish_transmission)Dish Transmission$(/l) sends FE through the air."
     }
   ],
   "priority": true

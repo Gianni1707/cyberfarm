@@ -20,7 +20,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It returns to the dock when its $(l)cargo is full$() (9 slots), its battery drops $(l)below 10%$(), or there is nothing left to do. With several modules, the next trip starts from the next module.$(br)$(li)It unloads into the dock, charges and starts again."
+      "text": "$(li)It returns to the dock when its $(l)cargo is full$() (9 slots) or its $(l:drone_systems/modules)Tank Module$(/l) is, its battery drops $(l)below 10%$(), or there is nothing left to do. With several modules, the next trip starts from the next module.$(br)$(li)It unloads into the dock, charges and starts again."
     },
     {
       "type": "patchouli:text",
@@ -45,12 +45,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Put the drone back in the $(l)output slot$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) with the other slots empty: the button becomes $(l)Disassemble$(). Press it and the frame, modules and addons go back into their slots, ready to be changed and assembled again. The drone's charge moves into the assembler",
+      "text": "Put the drone back in the $(l)output slot$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) with the other slots empty: the button becomes $(l)Disassemble$(). Press it and the frame, modules and addons go back into their slots, ready to be changed and assembled again. The drone's charge moves into the assembler, as",
       "title": "Changing a drone"
     },
     {
       "type": "patchouli:text",
-      "text": "(up to its 20,000 FE buffer)."
+      "text": "much as its buffer holds (20,000 FE, more with Battery Addons)."
     },
     {
       "type": "patchouli:text",

@@ -32,15 +32,19 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Two $(l)side tabs$() on the left open a panel next to the screen; click a tab again to close it. The screen remembers which one you left open."
+      "text": "$(li)$(l)Area$(): shows in the world what the dock is set up for (see $(l)The Survey Tool$() below).$(br)$(li)With a $(l)Dock Tank$() beside the dock (see below), a bar for its liquid under the cargo."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Drone Status$() (the \"i\" tab, coloured like the drone's state): its state, the modules it carries, the work area (not for Transport and Taxi drones, which never use it) and, for Transport and Taxi drones, whether a route or a destination is set."
+      "text": "$(l)Side tabs$() on the left open a panel next to the screen; click a tab again to close it. The screen remembers which one you left open."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Battery$() (the battery tab, showing the charge): the charge level, the FE stored and whether the drone is charging or flying."
+      "text": "$(li)$(l)Drone Status$() (the \"i\" tab, coloured like the drone's state): its state, the modules it carries, the work area (not for Transport, Taxi and Builder drones, which never use it), whether a route, a taxi destination or a build is set, and the layer a Quarry has reached."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Battery$() (the battery tab, showing the charge): the charge level, the FE stored and whether the drone is charging or flying.$(br)$(li)$(l)Build$() (only with a Builder drone or a linked build): the layer being built and the blocks it still needs; the ones the dock has none of are marked in red."
     },
     {
       "type": "patchouli:text",
@@ -65,7 +69,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "drone off the dock.$(br2)Clicking the linked dock again only repeats what the tool is asking for. To set up another dock, $(l)right-click it$() (while the tool asks for a route, $(l)sneak + right-click$() it, as a plain click would use it as a container)."
+      "text": "drone off the dock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Clicking the linked dock again only repeats what the tool is asking for. To set up another dock, $(l)right-click it$() (while the tool asks for a route or a landing spot, or for the second corner, $(l)sneak + right-click$() it, as a plain click would use it as a container, the landing block or the corner)."
     },
     {
       "type": "patchouli:text",
@@ -166,8 +174,8 @@
   ],
   "extra_recipe_mappings": {
     "cyberfarm:drone_dock": 3,
-    "cyberfarm:survey_tool": 31,
-    "cyberfarm:dock_tank": 25,
-    "cyberfarm:swarm_dock": 32
+    "cyberfarm:survey_tool": 33,
+    "cyberfarm:dock_tank": 27,
+    "cyberfarm:swarm_dock": 34
   }
 }

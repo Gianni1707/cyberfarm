@@ -2,7 +2,7 @@
   "name": "Steam Engine",
   "icon": "cyberfarm:steam_engine",
   "category": "cyberfarm:generators",
-  "sortnum": 8,
+  "sortnum": 9,
   "pages": [
     {
       "type": "patchouli:text",
@@ -48,12 +48,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Pipe Biogas or Methane into the boiler. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 9, 405 FE/t$(br)$(li)$(l)Methane$(): 15, 675 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
+      "text": "Pipe Biogas or Methane into the boiler, which holds 16,000 mB. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 9, 405 FE/t$(br)$(li)$(l)Methane$(): 15, 675 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
       "title": "Fuel and power"
     },
     {
       "type": "patchouli:text",
-      "text": "The engine needs about $(l)5 seconds$() to reach full speed and slows down when the fuel runs out. It stops burning fuel when its buffer (200,000 FE) is full."
+      "text": "The engine needs about $(l)5 seconds$() to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out. It stops burning fuel when its buffer (200,000 FE) is full."
     },
     {
       "type": "patchouli:text",

@@ -10,15 +10,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**1$()**: $(l:materials/aluminum)Aluminum$(/l), $(l:materials/circuits)Basic Circuits$(/l), Electrolyzer, a crafting table or the Fabricator, Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer"
+      "text": "$(li)$(l)**1$()**: $(l:materials/aluminum)Aluminum$(/l), $(l:materials/circuits)Basic Circuits$(/l), Electrolyzer, a crafting table or the Fabricator, Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer, Pyrolysis Oven, Water Pump"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**2$()**: $(l:materials/carbon_fiber)Carbon Fiber$(/l), Advanced Circuits, Pyrolysis Oven (methane), Fabricator (acid), Advanced Frames, Steam Engine, Water Pump, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar"
+      "text": "$(li)$(l)**2$()**: $(l:materials/carbon_fiber)Carbon Fiber$(/l), Advanced Circuits, Pyrolysis Oven (methane), Fabricator (acid), Advanced Frames, Steam Engine, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar, Laser Turret, the dishes"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**3$()**: Elite Circuits, Fabricator (acid, uranium), Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer and the mech"
+      "text": "$(li)$(l)**3$()**: Elite Circuits, Fabricator (acid, uranium), Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer, Range Module III and the mech"
     },
     {
       "type": "patchouli:text",

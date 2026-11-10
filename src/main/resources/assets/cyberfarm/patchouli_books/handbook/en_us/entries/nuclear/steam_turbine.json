@@ -56,28 +56,32 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at a Medium one's ports and $(l)Elite$() ones (128,000 FE/t) at a Large one's.$(br)Complete, the blocks disappear into one"
+      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at a Medium one's ports and $(l)Elite$() ones (128,000 FE/t) at a Large one's. A Large one also takes more steam"
     },
     {
       "type": "patchouli:text",
-      "text": "faceted $(l)enamel and mint octagonal hull$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group"
+      "text": "$(li)than a basic $(l:cables/gas_pipe)Gas Pipe$(/l) carries (1,000 mB/t): use an $(l)Advanced$() one.$(br)Complete, the blocks disappear into one faceted $(l)enamel and mint octagonal hull$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of"
     },
     {
       "type": "patchouli:text",
-      "text": "of the blocks still to place; an amber X marks a block in the way. A second click calls them back. They start from the size you have built the most of; click again for the next size."
+      "text": "any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. They start from the size you have built the most of (the Small one if none); each further click shows the next size, and after the Large"
     },
     {
       "type": "patchouli:text",
-      "text": "The rotor does not start at full speed: it $(l)spins up$() as long as there is steam, faster for small turbines (5 seconds) than for big ones (10 seconds), and $(l)spins down$() the same way when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. The rotor also stops when the",
+      "text": "one they come back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The rotor does not start at full speed: it $(l)spins up$() as long as there is steam, faster for small turbines than for big ones (5, 7 or 10 seconds by size), and $(l)spins down$() the same way when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. The rotor also stops when the",
       "title": "Spinning up"
     },
     {
       "type": "patchouli:text",
-      "text": "energy has nowhere to go, so no steam is wasted.$(br2)The GUI shows the steam tank (32,000 mB), the output and the rotor speed; hover the readout for the size's ratings. Right- click any block of the formed hall to open it."
+      "text": "energy has nowhere to go, so no steam is wasted.$(br2)The GUI shows the steam tank (32,000 mB), the output, the rotor speed and the stored energy; hover the readout for the size's ratings. Right- click any block of the formed hall to open it."
     },
     {
       "type": "patchouli:text",
-      "text": "A reactor makes 1 mB of steam for each unit of heat: a Medium tower with 4 rods at 300% makes 600 mB/t, just what a Medium turbine uses. If the turbines cannot keep up, the reactor's steam tank fills up and its core overheats.",
+      "text": "A reactor makes 1 mB of steam for each unit of heat: a Medium tower with 4 rods at 300%, cooled with Coolant, makes 600 mB/t, just what a Medium turbine uses. If the turbines cannot keep up, the reactor's steam tank fills up and its core overheats.",
       "title": "How many turbines?"
     },
     {
@@ -95,8 +99,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:turbine_controller": 13,
-    "cyberfarm:turbine_casing": 12,
-    "cyberfarm:turbine_port": 12
+    "cyberfarm:turbine_controller": 14,
+    "cyberfarm:turbine_casing": 13,
+    "cyberfarm:turbine_port": 13
   }
 }

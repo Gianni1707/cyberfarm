@@ -29,7 +29,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)W A S D$(): Walk; turn by looking around$(br)$(li)$(l)Space$(): Jump about four blocks high$(br)$(li)$(l)Left click (empty hand)$(): Punch: 10 extra damage, 100 FE$(br)$(li)$(l)Left click a block$(): Dig like an iron pickaxe, with the right drops",
+      "text": "$(li)$(l)W A S D$(): Walk; turn by looking around$(br)$(li)$(l)Space$(): Jump about five blocks high$(br)$(li)$(l)Left click (empty hand)$(): Punch: 10 extra damage, 100 FE$(br)$(li)$(l)Left click a block$(): Dig like an iron pickaxe, with the right drops",
       "title": "Piloting"
     },
     {
@@ -50,7 +50,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The battery holds $(l)1,000,000 FE$(). Walking uses about $(l)200 FE per block$() and the systems a little more while you sit inside; with an empty battery the mech cannot move (you can still get out).",
+      "text": "The battery holds $(l)1,000,000 FE$(). Walking uses about $(l)200 FE per block$() and the systems $(l)2 FE/t$() while you sit inside; with an empty battery the mech cannot move (you can still get out).",
       "title": "Battery and integrity"
     },
     {

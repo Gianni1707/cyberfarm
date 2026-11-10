@@ -19,7 +19,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pipe the fluid in (water from a $(l:basics/water_pump)Water Pump$(/l), or Coolant to upgrade it), put the items in the slot by hand or with a hopper. Pipes and hoppers connect to the machine's half of the bench only, on its left side, front or back."
+      "text": "$(li)Pipe the fluid in (water from a $(l:basics/water_pump)Water Pump$(/l), or Coolant to upgrade it), put the items in the slot by hand or with a hopper. Pipes and hoppers connect to the machine's half of the bench only, on its left side, front, back or top."
     },
     {
       "type": "patchouli:text",
@@ -40,8 +40,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The coolant fills the reactor's $(l)primary loop$() and decides how much heat can leave the core each tick: 200 with plain water, $(l)500$() with Coolant, $(l)1,200$() with Cryo Coolant. It is not used up like the water, but wears out slowly: 1 mB for every 400 heat it moves.",
+      "text": "The coolant fills the reactor's $(l)primary loop$() and decides how much heat can leave the core each tick: plain water moves the tower's base amount (150, 250 or 400 by size), Coolant $(l)2.5 times$() as much, Cryo Coolant $(l)6 times$() (up to $(l)2,400$() in a Large tower). It is not used up like the water, but wears out slowly: 1 mB",
       "title": "Why better coolant"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "for every 400 heat it moves."
     },
     {
       "type": "patchouli:crafting",
@@ -49,6 +53,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:coolant_mixer": 9
+    "cyberfarm:coolant_mixer": 10,
+    "cyberfarm:coolant_bucket": 0,
+    "cyberfarm:cryo_coolant_bucket": 0
   }
 }

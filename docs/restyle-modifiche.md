@@ -172,6 +172,7 @@ Non solo estetica, da tenere presenti per i mondi esistenti:
 - **Biogas Shed del villaggio:** ha blocchi nuovi, quindi quello già costruito risulta non finito.
 - **Ribilanciamento dell'energia (9 novembre 2026):** i generatori producono di più (Combustion 60, Gas Turbine 100/240, Steam Engine 405/675, turbine 2.000/9.600/40.000 FE/t) e le macchine consumano di più (circa il doppio, Crystallizer 4.000 FE/t). Droni e mech consumano il doppio con batterie doppie. Macchine, droni e mech già esistenti prendono i nuovi valori da soli: la batteria massima di un drone si calcola dal telaio, quindi raddoppia anche per quelli già costruiti, che ripartono con la carica che avevano.
 - **Trasmissione a parabole:** due blocchi nuovi, Transmitter Dish (piccolo multiblocco 2x2 con tre Cyber Frame) e Receiver Dish (alto 2, con un Cyber Frame sopra), con reti private o pubbliche e quattro Range Module. Modelli e GUI come approvati (vedi le scelte di design).
+- **Water Pump:** la ricetta vuole un Basic Circuit invece dell'Advanced, così nel tier 1 l'acqua per l'Acid Synthesizer non arriva solo a secchi.
 - **Addon nelle macchine:** 10 macchine hanno 3 slot addon su una linguetta a destra della GUI (Speed, Efficiency, Battery). Nuovo oggetto: Efficiency Addon.
 
 ## Commit, dal più vecchio

@@ -31,7 +31,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Making FE: the $(l:generators/combustion_generator)Combustion Generator$(/l), then $(l:generators/gas_power)Gas Power$(/l) with the $(l:generators/bio_digester)Bio-Digester$(/l), the $(l:generators/methane_extractor)Methane Extractor$(/l) and the $(l:generators/gas_turbine)Gas Turbine$(/l), $(l:generators/acid_synthesizer)Sulfur and Acid$(/l) and the $(l:generators/steam_engine)Steam Engine$(/l). The Generators page compares them all.$(br2)$(l:nuclear/nuclear)Nuclear$(/l)"
+      "text": "Making FE: the $(l:generators/combustion_generator)Combustion Generator$(/l), then $(l:generators/gas_power)Gas Power$(/l) with the $(l:generators/biomass_press)Biomass Press$(/l), the $(l:generators/bio_digester)Bio-Digester$(/l), the $(l:generators/methane_extractor)Methane Extractor$(/l) and the $(l:generators/gas_turbine)Gas Turbine$(/l), $(l:generators/acid_synthesizer)Sulfur and Acid$(/l) and the $(l:generators/steam_engine)Steam Engine$(/l). The Generators page compares them all.$(br2)$(l:nuclear/nuclear)Nuclear$(/l)"
     },
     {
       "type": "patchouli:text",
@@ -43,11 +43,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Moving power and fluids: the $(l:cables/energy_conduit)Energy Conduit$(/l), the $(l:cables/gas_pipe)Gas Pipe$(/l) and the $(l:cables/liquid_pipe)Liquid Pipe$(/l), plus $(l:cables/fluid_tanks)Liquid and Gas Tanks$(/l) to store fluids.$(br2)$(l:drone_systems/drone_systems)Drones$(/l)$(br2)Building and running drones: the $(l:drone_systems/drone_assembler)Drone Assembler$(/l), $(l:drone_systems/drone_frames)Drone Frames$(/l), $(l:drone_systems/modules)Function Modules$(/l), $(l:drone_systems/addons)Addons$(/l), the $(l:drone_systems/drone_dock)Drone Dock$(/l) and $(l:drone_systems/drones)Using Drones$(/l)."
+      "text": "Moving power and fluids: the $(l:cables/energy_conduit)Energy Conduit$(/l), the $(l:cables/gas_pipe)Gas Pipe$(/l) and the $(l:cables/liquid_pipe)Liquid Pipe$(/l), plus $(l:cables/fluid_tanks)Liquid and Gas Tanks$(/l) to store fluids and $(l:cables/dish_transmission)Dish Transmission$(/l) to send power through the air.$(br2)$(l:drone_systems/drone_systems)Drones$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l:mech/mech)Mech$(/l)"
+      "text": "Building and running drones: the $(l:drone_systems/drone_assembler)Drone Assembler$(/l), $(l:drone_systems/drone_frames)Drone Frames$(/l), $(l:drone_systems/modules)Function Modules$(/l), $(l:drone_systems/addons)Addons$(/l), the $(l:drone_systems/drone_dock)Drone Dock$(/l) and $(l:drone_systems/drones)Using Drones$(/l); then the $(l:drone_systems/hologram_table)Hologram Table$(/l), $(l:drone_systems/supply_terminal)Supply Contracts$(/l) and the $(l:drone_systems/tech_village)Tech Village$(/l).$(br2)$(l:mech/mech)Mech$(/l)"
     },
     {
       "type": "patchouli:text",

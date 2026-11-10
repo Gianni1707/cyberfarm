@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8$(br)$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()$(br)$(li)$(item)Efficiency Addon$()"
+      "text": "$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8$(br)$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(l)Mini Drone Frame$(): 2$(br)$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()$(br)$(li)$(item)Efficiency Addon$()"
     },
     {
       "type": "patchouli:text",

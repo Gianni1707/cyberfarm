@@ -2,7 +2,7 @@
   "name": "Gas Turbine",
   "icon": "cyberfarm:gas_turbine",
   "category": "cyberfarm:generators",
-  "sortnum": 7,
+  "sortnum": 8,
   "pages": [
     {
       "type": "patchouli:spotlight",

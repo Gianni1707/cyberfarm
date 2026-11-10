@@ -24,7 +24,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows every tier, pylons included: sneak + right-click to pick it, then click the pedestal."
+      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows tiers 2 to 4, pylons included: sneak + right-click to pick it, then click the pedestal."
     },
     {
       "type": "patchouli:text",

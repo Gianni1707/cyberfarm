@@ -2,7 +2,7 @@
   "name": "Bio-Digester",
   "icon": "cyberfarm:bio_digester",
   "category": "cyberfarm:generators",
-  "sortnum": 4,
+  "sortnum": 5,
   "pages": [
     {
       "type": "patchouli:spotlight",

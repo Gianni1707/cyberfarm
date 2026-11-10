@@ -36,7 +36,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Some contracts pay a $(l)bonus$() besides their emeralds, shown on the row: battery cells, circuits, addons, carbon fiber, even an Anchor Addon or an Elite Circuit from a master mechanist."
+      "text": "Some contracts pay a $(l)bonus$() besides their emeralds, shown on the row: battery cells, circuits, addons, carbon fiber, even an Anchor Addon from an expert mechanist or an Elite Circuit from a master."
     },
     {
       "type": "patchouli:text",

@@ -6,8 +6,11 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:drone_assembler",
-      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)4,000 FE$() and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
+      "item": "cyberfarm:drone_assembler"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)4,000 FE$() and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI, which change those numbers and its 20,000 FE buffer."
     },
     {
       "type": "patchouli:text",
@@ -24,7 +27,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A drone needs $(l)at least one module$(), and the same module cannot be installed twice."
+      "text": "A drone needs $(l)at least one module$(), and the same module cannot be installed twice. The Builder and Bomb Modules fit only a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l), which takes no other module, and Fortune and Silk Touch Addons cannot go together."
     },
     {
       "type": "patchouli:text",
@@ -40,6 +43,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:drone_assembler": 7
+    "cyberfarm:drone_assembler": 8
   }
 }

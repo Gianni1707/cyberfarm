@@ -28,15 +28,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A zombie chamber is the big step: about $(l)300 FE/t$() in a Gas Turbine, as much as ten Bio-Digesters. A Steam Engine burns the methane of about two chambers into 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest reactor at full power.$(br2)Start with a"
+      "text": "A zombie chamber is the big step: about $(l)300 FE/t$() in Gas Turbines (one burns 20 mB/t, so it takes two), as much as ten Bio-Digesters. A Steam Engine burns the methane of about two chambers into 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest reactor at full power."
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Combustion Generator$() and coal. When you want power that does not need you to shovel fuel, move on to $(l:generators/gas_power)Gas Power$(/l): a $(l:generators/bio_digester)Bio-Digester$(/l) turns farm waste into Biogas and a $(l:generators/methane_extractor)Methane Extractor$(/l) draws Methane from a captured mob dissolving in $(l:generators/acid_synthesizer)Acid$(/l), both burned by the Gas Turbine. For more power from the same"
+      "text": "Start with a $(l)Combustion Generator$() and coal. When you want power that does not need you to shovel fuel, move on to $(l:generators/gas_power)Gas Power$(/l): a $(l:generators/bio_digester)Bio-Digester$(/l) turns farm waste into Biogas and a $(l:generators/methane_extractor)Methane Extractor$(/l) draws Methane from a captured mob dissolving in $(l:generators/acid_synthesizer)Acid$(/l), both burned by the Gas Turbine. For more"
     },
     {
       "type": "patchouli:text",
-      "text": "gases, build a $(l:generators/steam_engine)Steam Engine$(/l)."
+      "text": "power from the same gases, build a $(l:generators/steam_engine)Steam Engine$(/l)."
     },
     {
       "type": "patchouli:text",

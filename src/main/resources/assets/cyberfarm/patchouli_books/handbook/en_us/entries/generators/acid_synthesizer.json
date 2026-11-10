@@ -2,11 +2,11 @@
   "name": "Sulfur and Acid",
   "icon": "cyberfarm:acid_synthesizer",
   "category": "cyberfarm:generators",
-  "sortnum": 6,
+  "sortnum": 7,
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The $(l:generators/methane_extractor)Methane Extractor$(/l) needs $(l)Acid$() to dissolve the mob in its chamber. Acid is made from $(l)Sulfur$() and water."
+      "text": "The $(l:generators/methane_extractor)Methane Extractor$(/l) needs $(l)Acid$() to dissolve the mob in its chamber, and the $(l:materials/circuits)Fabricator$(/l) etches the Advanced and Elite Circuits with it. Acid is made from $(l)Sulfur$() and water."
     },
     {
       "type": "patchouli:spotlight",
@@ -30,11 +30,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The gauges on its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front and behind."
+      "text": "The gauges on its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front, behind or below."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l)) and put sulfur in the slot, by hand or with a hopper.$(br)$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber.$(br)$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
+      "text": "$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l), or from a $(l:cables/fluid_tanks)Liquid Tank$(/l) filled with water buckets) and put sulfur in the slot, by hand or with a hopper.$(br)$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
     },
     {
       "type": "patchouli:crafting",

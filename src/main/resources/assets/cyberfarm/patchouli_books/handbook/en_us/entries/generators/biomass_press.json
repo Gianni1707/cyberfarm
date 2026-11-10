@@ -2,7 +2,7 @@
   "name": "Biomass Press",
   "icon": "cyberfarm:biomass_press",
   "category": "cyberfarm:generators",
-  "sortnum": 3,
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:spotlight",

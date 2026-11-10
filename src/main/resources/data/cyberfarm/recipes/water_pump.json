@@ -15,7 +15,7 @@
       "item": "minecraft:piston"
     },
     "D": {
-      "item": "cyberfarm:advanced_circuit"
+      "item": "cyberfarm:basic_circuit"
     }
   },
   "pattern": [
