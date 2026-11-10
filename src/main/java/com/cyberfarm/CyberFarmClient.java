@@ -18,6 +18,7 @@ import com.cyberfarm.client.renderer.AcidSynthesizerRenderer;
 import com.cyberfarm.client.renderer.AssemblerRenderer;
 import com.cyberfarm.client.renderer.CrystallizerRenderer;
 import com.cyberfarm.client.renderer.DockRenderer;
+import com.cyberfarm.client.renderer.FabricatorRenderer;
 import com.cyberfarm.client.renderer.HangarRenderer;
 import com.cyberfarm.client.renderer.MethaneChamberRenderer;
 import com.cyberfarm.client.renderer.CoolingTowerRenderer;
@@ -232,6 +233,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.LASER_TURRET.get(), context -> new LaserTurretRenderer());
         blockEntity(event, ModBlockEntities.HOLOGRAM_TABLE.get(), context -> new HologramRenderer(context.getFont()));
         blockEntity(event, ModBlockEntities.DRONE_ASSEMBLER.get(), AssemblerRenderer::new);
+        blockEntity(event, ModBlockEntities.FABRICATOR.get(), context -> new FabricatorRenderer());
         blockEntity(event, ModBlockEntities.DRONE_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new MovingPartsRenderer<>(MovingPartsRenderer.Part.FAN));
