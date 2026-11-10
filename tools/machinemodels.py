@@ -537,6 +537,99 @@ def pyrolysis_oven():
             ((11.8, 11.5, 14.9), (13.1, 12.7, 15.2), "trim", "unlit")]
 
 
+def coolant_mixer_parts():
+    """A 2x1 bench: (the body, the opened parts), authored in x 0..32 and shifted so the machine block is x 0..16 and its
+    Cyber Frame x -16..0. CoolantMixerRenderer draws the same boxes moving, and the hood and carriage always."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+
+    def shifted(parts):
+        return [((a[0] - 16, a[1], a[2]), (b[0] - 16, b[1], b[2]), *rest) for a, b, *rest in parts]
+
+    def tank(x0):
+        x1 = x0 + 9
+        return [*octagon(x0, 7.5, 2.5, x1, 15.5, 11.5, 2.25, dark),
+                ((x0 + 1, 15.5, 3.5), (x1 - 1, 16, 10.5), cap),
+                ((x0 + 0.6, 7.55, 3.1), (x1 - 0.6, 8.3, 11.75), "trim"),   # base ring, steel, like the cap
+                ((x0 + 1.5, 8.3, 11.5), (x0 + 2, 15.5, 12.25), "trim"),    # two rails, not a bezel
+                ((x1 - 2, 8.3, 11.5), (x1 - 1.5, 15.5, 12.25), "trim"),
+                ((x0 + 2, 9.4, 11.5), (x1 - 2, 15, 12.1), "slot"),         # sight glass, 5 x 5.6 px
+                ((x0 + 1, 3, 3.5), (x0 + 8, 7.6, 10.5), "body")]           # saddle, its foot under the deck
+
+    body = [((0, 0, 0), (32, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(1, 1, 1, 31, 5, 15, 2, dark),
+            *octagon(0.6, 2, 0.6, 31.4, 2.75, 15.4, 2, "copper"),
+            ((11.5, 5, 5), (20.5, 5.2, 13.5), "slot"),                     # the bath, dry: the hood's front closes on it
+            ((11, 5, 13.5), (21, 5.7, 14.5), "trim"),                      # its lip
+            ((11.4, 5, 2.9), (20.6, 5.2, 5), "lid"),                       # sill under the rail wall
+            ((14.5, 3, 15), (17.5, 4.2, 15.2), "light")]
+    opened = [*tank(21), *tank(2),
+              ((11.5, 5.1, 3), (20.5, 9.9, 4.9), {"up": "lid", "south": "beam", "east": "beam", "north": "body"}),   # rail wall
+              ((12, 7.6, 4.9), (20, 8.4, 4.95), "slot")]
+    return shifted(body), shifted(opened)
+
+
+def coolant_mixer_loose():
+    """The starting block and the item: half a bench, its water tank standing where it will stand, a flange open
+    towards the frame (x 0 here, the right side as the player sees the front). Its lamp stays off: it doesn't work yet."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            ((1, 1, 1), (13, 5, 15), dark),                            # body, chamfered at the left end only
+            ((1, 1 + LAYER, 3), (15, 5 - LAYER, 13), dark),
+            ((1.5, 2, 0.6), (13.4, 2.75, 15.4), "copper"),
+            ((1.5, 2 + LAYER, 2.6), (15.4, 2.75 - LAYER, 13.4), "copper"),
+            ((2.5, 3, 15), (5.5, 4.2, 15.2), "light_off"),
+            ((0.5, 1.1, 1.1), (1.5, 4.9, 14.9), "trim"),               # the flange: a recessed plate, a mint ring, a dark socket
+            ((0, 1.9, 4), (0.5, 4.6, 5), "copper"),
+            ((0, 1.9, 11), (0.5, 4.6, 12), "copper"),
+            ((0, 1.9, 5), (0.5, 2.6, 11), "copper"),
+            ((0, 3.9, 5), (0.5, 4.6, 11), "copper"),
+            ((0.2, 2.6, 5), (0.5, 3.9, 11), "slot"),
+            *octagon(5, 5, 2.5, 14, 15.5, 11.5, 2.25, dark),           # the water tank, with a dry window
+            ((6, 15.5, 3.5), (13, 16, 10.5), cap),
+            ((5.6, 5, 3.1), (13.4, 5.8, 11.75), "trim"),
+            ((6.5, 5.8, 11.5), (7, 15.5, 12.25), "trim"),
+            ((12, 5.8, 11.5), (12.5, 15.5, 12.25), "trim"),
+            ((7, 8.5, 11.5), (12, 14.5, 12.1), "slot"),
+            ((1.5, 5, 4), (4.5, 6.6, 12), "body"),                     # a shelf between flange and tank
+            ((1.2, 6.6, 3.6), (4.8, 7.1, 12.4), "trim")]
+
+
+def coolant_mixer_port():
+    """low_port() on a post that starts above the foot band."""
+    return [((6, 2.8, 15), (10, 5, 16), "body"), *low_port()[1:]]
+
+
+def coolant_mixer_blockstate():
+    """Its own small model until assembled; the body while it opens or folds, drawn over by the renderer; then the open bench.
+    A port wherever a pipe plugs in, but never on the frame's side."""
+    parts = []
+    for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        turn = {"y": y} if y else {}
+        parts.append({"when": {"facing": facing, "stage": "0"}, "apply": {"model": "cyberfarm:block/coolant_mixer", **turn}})
+        for lit, suffix in (("false", ""), ("true", "_on")):
+            parts.append({"when": {"facing": facing, "stage": "1|3", "lit": lit},
+                          "apply": {"model": f"cyberfarm:block/coolant_mixer_body{suffix}", **turn}})
+            parts.append({"when": {"facing": facing, "stage": "2", "lit": lit},
+                          "apply": {"model": f"cyberfarm:block/coolant_mixer_open{suffix}", **turn}})
+    sides = (("north", 0), ("east", 90), ("south", 180), ("west", 270))
+    for facing, frame_side in (("north", "west"), ("east", "north"), ("south", "east"), ("west", "south")):
+        for side, y in sides:
+            if side != frame_side:
+                parts.append({"when": {"facing": facing, side: "true"},
+                              "apply": {"model": "cyberfarm:block/coolant_mixer_port", **({"y": y} if y else {})}})
+    (ASSETS / "blockstates/coolant_mixer.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
+
+
+def hidden_frame():
+    """Never drawn (HiddenFrameBlock), but its breaking particles need a model."""
+    (ASSETS / "models/block/hidden_frame.json").write_text(
+        json.dumps({"textures": {"particle": "cyberfarm:block/cyber_frame"}, "elements": []}, indent=2) + "\n")
+    (ASSETS / "blockstates/hidden_frame.json").write_text(
+        json.dumps({"variants": {"": {"model": "cyberfarm:block/hidden_frame"}}}, indent=2) + "\n")
+
+
 def water_pump():
     """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
     in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
@@ -639,7 +732,7 @@ def bake_face(mat, face, frm, to):
                 u, v = x0 + fi * w, z0 + fj * h
             else:
                 u, v = x0 + fi * w, 16 - (z1 - fj * h)
-            key = src[min(15, max(0, int(v)))][min(15, max(0, int(u)))]
+            key = src[math.floor(v) % 16 if face in ("up", "down") else min(15, max(0, int(v)))][math.floor(u) % 16]
             r, g, b, a = rgba(key)
             f = 1.0
             if key not in UNSHADED:
@@ -747,8 +840,9 @@ def build(name, parts, lit_variant, translucent=False):
                     s = 16 / size
                     face_json = {"uv": [num(x * s), num(y * s), num((x + len(img[0])) * s), num((y + len(img)) * s)],
                                  "texture": "#atlas"}
-                edge = {"down": frm[1] == 0, "up": to[1] == 16, "north": frm[2] == 0, "south": to[2] == 16,
-                        "west": frm[0] == 0, "east": to[0] == 16}[face]
+                inside = all(0 <= c <= 16 for c in (*frm, *to))
+                edge = inside and {"down": frm[1] == 0, "up": to[1] == 16, "north": frm[2] == 0, "south": to[2] == 16,
+                                   "west": frm[0] == 0, "east": to[0] == 16}[face]
                 if edge:
                     face_json["cullface"] = face
                 faces[face] = face_json
@@ -868,7 +962,9 @@ if __name__ == "__main__":
             ("acid_synthesizer", acid_synthesizer(), True, False),
             ("water_pump", water_pump(), True, False),
             ("electrolyzer", electrolyzer(), True, False),
-            ("pyrolysis_oven", pyrolysis_oven(), True, False)):
+            ("pyrolysis_oven", pyrolysis_oven(), True, False),
+            ("coolant_mixer_body", coolant_mixer_parts()[0], True, False),
+            ("coolant_mixer_open", sum(coolant_mixer_parts(), []), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -886,6 +982,8 @@ if __name__ == "__main__":
     build("water_pump_intake", water_pump_intake(), False)
     build("electrolyzer_port", low_port(), False)
     build("pyrolysis_oven_port", low_port(), False)
+    build("coolant_mixer", coolant_mixer_loose(), False)
+    build("coolant_mixer_port", coolant_mixer_port(), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
@@ -896,3 +994,5 @@ if __name__ == "__main__":
     blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")
     blockstate("electrolyzer", True, set())
     blockstate("pyrolysis_oven", True, set())
+    coolant_mixer_blockstate()
+    hidden_frame()

@@ -25,6 +25,7 @@
     "cyberfarm:turbine_casing",
     "cyberfarm:turbine_port",
     "cyberfarm:water_pump",
+    "cyberfarm:hidden_frame",
     "cyberfarm:coolant_mixer",
     "cyberfarm:waste_reprocessor",
     "cyberfarm:vitrified_waste",
