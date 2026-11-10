@@ -610,18 +610,6 @@ def vitrified_waste():
     return c
 
 
-def waste_reprocessor_front():
-    c = panel(71)
-    c.rect(3, 3, 12, 9, "K")
-    c.rect(4, 4, 11, 8, "#1d3322")
-    c.rect(5, 6, 10, 7, "4")
-    c.rect(6, 6, 9, 6, "5")
-    for x in range(3, 13):
-        c.set(x, 11, "y" if (x // 2) % 2 == 0 else "K")
-        c.set(x, 12, "K" if (x // 2) % 2 == 0 else "y")
-    return c
-
-
 def hazmat_item(piece):
     """Inventory icons of the yellow Hazmat Suit."""
     c = Canvas()
@@ -3438,7 +3426,6 @@ def build_all():
         "item/cryo_coolant_bucket": bucket("#8fd8f5", gas=False),
         "entity/cooling_tower": cooling_tower(False),
         "block/vitrified_waste": vitrified_waste(),
-        **lit_front("waste_reprocessor", waste_reprocessor_front),
         "item/hazmat_helmet": hazmat_item("helmet"),
         "item/hazmat_suit": hazmat_item("suit"),
         "item/hazmat_pants": hazmat_item("pants"),

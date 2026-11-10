@@ -33,6 +33,7 @@ import com.cyberfarm.client.renderer.ResonanceCoreRenderer;
 import com.cyberfarm.client.renderer.SteamEngineRenderer;
 import com.cyberfarm.client.renderer.PyrolysisOvenRenderer;
 import com.cyberfarm.client.renderer.TurbineRenderer;
+import com.cyberfarm.client.renderer.WasteReprocessorRenderer;
 import com.cyberfarm.client.renderer.WaterPumpRenderer;
 import com.cyberfarm.client.screen.AcidSynthesizerScreen;
 import com.cyberfarm.client.screen.ElectrolyzerScreen;
@@ -243,6 +244,7 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.SWARM_DOCK.get(), context -> new DockRenderer<>());
         blockEntity(event, ModBlockEntities.GAS_TURBINE.get(), context -> new GasTurbineRenderer());
         blockEntity(event, ModBlockEntities.WATER_PUMP.get(), context -> new WaterPumpRenderer());
+        blockEntity(event, ModBlockEntities.WASTE_REPROCESSOR.get(), context -> new WasteReprocessorRenderer());
         blockEntity(event, ModBlockEntities.ELECTROLYZER.get(), context -> new ElectrolyzerRenderer());
         blockEntity(event, ModBlockEntities.PYROLYSIS_OVEN.get(), context -> new PyrolysisOvenRenderer());
         blockEntity(event, ModBlockEntities.COOLANT_MIXER.get(), context -> new CoolantMixerRenderer());

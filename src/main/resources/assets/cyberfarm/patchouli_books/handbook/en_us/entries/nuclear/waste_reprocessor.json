@@ -18,7 +18,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Vitrified Waste$() is inert glass: store it anywhere, or build with it."
+      "text": "$(li)$(l)Vitrified Waste$() is inert glass: store it anywhere, or build with it.$(br)While it works its disc turns a quarter at each quarter of the batch: the rod waits on the left, melts at the top, leaves as glass on the right and the pocket comes round empty at the bottom. The plaque on its roof marks it as a machine that handles"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "radioactive material, and stands a little above the block: leave the space over it free to see it. $(l:cables/energy_conduit)Energy Conduits$(/l) plug in on its front, sides or back."
     },
     {
       "type": "patchouli:crafting",
@@ -26,7 +30,7 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:waste_reprocessor": 4,
+    "cyberfarm:waste_reprocessor": 5,
     "cyberfarm:vitrified_waste": 0,
     "cyberfarm:isotope_shard": 0
   }
