@@ -275,13 +275,21 @@ def light(lit):
     return t
 
 
+def strainer():
+    """Steel slats with dark slits, to read through water. Upright: below y 0 bake_face() only varies a material by column."""
+    t = Tex("b")
+    for x in range(1, N, 3):
+        t.rect(x, 0, x, N - 1, "4")
+    return t
+
+
 MATERIALS = {"body": body(), "plinth": plinth(), "trim": trim(), "lid": lid(), "grille": grille(), "pipe": pipe(),
              "pad": pad(), "swarm_pad": swarm_pad(), "print_bed": print_bed(), "bed": bed(), "card": card(), "tray_front": tray_front(), "chip_pins": chip_pins(),
              "chip_top": chip_top(), "drum": drum(), "slot": slot(), "rotor": rotor(), "liquid": liquid(),
-             "copper": plate("A", "B", "C", "D")}
+             "strainer": strainer(), "beam": plate("c", "1", "2", "3"), "copper": plate("A", "B", "C", "D")}
 EMISSIVE = {"fire": "machine_fire", "light": "machine_light"}   # material -> texture name (+ "_off")
 STILL_LIGHTS = {"light_off": "machine_light"}   # a lamp left off in both models: a block entity renderer lights it
-PIPES = {"gas_pipe_up": "gas_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
+PIPES = {"gas_pipe_up": "gas_pipe", "liquid_pipe_up": "liquid_pipe"}   # vertical stubs drawn with the real pipe texture, like the pipe blocks
 
 
 # --------------------------------------------------------------------------- models, front facing +z (south)
@@ -477,6 +485,55 @@ def acid_synthesizer():
     return parts
 
 
+def water_pump():
+    """A pumpjack on a low body. The boxes tagged "unlit" are its moving parts at rest, the pose WaterPumpRenderer settles
+    in (crank angle 0: beam level, connecting rod upright, counterweight down); that renderer draws them while it works."""
+    dark = {"up": "lid", "south": "body", "east": "body"}
+    cap = {"up": "lid", "south": "trim", "east": "trim"}
+    rest = [((4.75, 11, 6.9), (14.25, 12.5, 9.1), "beam"),
+            ((2.75, 10.15, 6.6), (5.25, 13.35, 9.4), "copper"),     # horse head
+            ((2.3, 10.7, 6.65), (2.75, 12.8, 9.35), "copper"),
+            ((13.25, 10.95, 6.95), (14.75, 12.55, 14.05), "beam"),  # tail, carrying the connecting rod's pin
+            ((2.5, 7.56, 7.5), (3.5, 11.75, 8.5), "trim"),          # polished rod and its clamp
+            ((2, 9.55, 7.25), (4, 9.95, 8.75), "trim"),
+            ((13.5, 5.5, 13.4), (14.5, 11.75, 14), "trim"),         # connecting rod
+            ((11, 4.75, 12.3), (14.4, 6.25, 13.3), "trim"),         # crank arm and counterweight
+            ((10.75, 2, 12.3), (13.25, 4.75, 13.3), "copper")]
+    # the plinth material's grey line (row 14) would show on this deck: its top and underside are plain lid
+    return [((0, 0, 0), (16, 1, 16), {"up": "lid", "down": "lid", "south": "plinth", "east": "plinth"}),
+            *octagon(1.5, 1, 1.5, 14.5, 5, 11.6, 2, dark),                     # body
+            *octagon(1.1, 2.5, 1.1, 14.9, 3.25, 12, 2, "copper"),              # foot band, below the ports
+            ((5, 1.5, 1.35), (11, 4.75, 1.5), {"up": "lid", "south": "grille", "east": "grille", "north": "grille"}),  # back vent
+            ((3.6, 3.45, 11.6), (5.2, 5, 11.7), "plinth"),                     # status lamp, clear of a front pipe, on a dark
+            ((3.85, 3.7, 11.7), (4.95, 4.7, 11.85), "light"),                  # plate so it outshines the body's pale top edge
+            ((5, 5, 5), (11, 6.5, 11), dark),                                  # samson post, its pedestal
+            ((6.75, 6.5, 5.5), (9.25, 13.5, 6.4), dark),                       # fork: the beam rocks between its cheeks
+            ((6.75, 6.5, 9.6), (9.25, 13.5, 10.5), dark),
+            *zdisc(8, 11.75, 5.25, 5.5, 1, "copper"),                          # pivot bosses, outside the cheeks
+            *zdisc(8, 11.75, 10.5, 10.75, 1, "copper"),
+            *round_tank(1.25, 5, 6.25, 4.75, 6.75, 9.75, dark),                # wellhead
+            *round_tank(1.5, 6.75, 6.5, 4.5, 7.5, 9.5, cap),                   # stuffing box
+            ((10.25, 1, 11), (13.75, 7.25, 12.05), dark),                      # crank pillow block
+            *zdisc(12, 5.5, 12.05, 12.2, 1.25, "trim"),                        # crank hub
+            *[(f, t, m, "unlit") for f, t, m in rest]]
+
+
+def water_pump_intake():
+    """Hangs below the block, into the water it pumps: flange, a real Liquid Pipe, a strainer between two rings.
+    No face at y 0, so on solid ground it is simply hidden, with nothing to flicker."""
+    return [*octagon(5, -1, 5, 11, 0.25, 11, 1, "copper"),
+            ((6, -5.5, 6), (10, -0.75, 10), "liquid_pipe_up"),
+            *round_tank(4.75, -5.75, 4.75, 11.25, -5, 11.25, "copper"),
+            *round_tank(5, -9, 5, 11, -5.75, 11, {"up": "lid", "south": "strainer", "east": "strainer"}),
+            *round_tank(4.75, -9.75, 4.75, 11.25, -9, 11.25, "copper")]
+
+
+def water_pump_port_up():
+    """The fork carries the collar over the beam."""
+    return [((6.75, 13.5, 5.5), (9.25, 15.25, 6.4), "body"), ((6.75, 13.5, 9.6), (9.25, 15.25, 10.5), "body"),
+            ((5, 15.25, 5), (11, 16, 11), "copper")]
+
+
 # --------------------------------------------------------------------------- baking
 FACES = ("down", "up", "north", "south", "west", "east")
 
@@ -655,7 +712,8 @@ def build(name, parts, lit_variant, translucent=False):
             if any(spec == mat for _, _, spec, _ in elements):
                 textures[mat] = f"cyberfarm:block/{tex}_off"
         for mat, tex in PIPES.items():
-            textures[mat] = f"cyberfarm:block/{tex}"
+            if any(spec == mat for _, _, spec, _ in elements):
+                textures[mat] = f"cyberfarm:block/{tex}"
         data = {"parent": "minecraft:block/block",
                 "render_type": "minecraft:translucent" if translucent else "minecraft:cutout",
                 "textures": textures, "elements": out}
@@ -708,9 +766,10 @@ def top_port(bottom):
     return [((5.5, bottom, 5.5), (10.5, 15.25, 10.5), "body"), ((5, 15.25, 5), (11, 16, 11), "copper")]
 
 
-def blockstate(name, lit, ports, port_of=None):
+def blockstate(name, lit, ports, port_of=None, top_turns=False, below=None):
     """Multipart: the machine for each facing (and lit state), plus a port wherever a pipe is plugged in
-    (port_of: reuse another machine's port models)."""
+    (port_of: reuse another machine's port models; top_turns: a top port that isn't square, so it follows the facing;
+    below: a model shown unless a pipe is plugged in underneath)."""
     port_of = port_of or name
     parts = []
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
@@ -729,8 +788,16 @@ def blockstate(name, lit, ports, port_of=None):
         if y:
             apply["y"] = y
         parts.append({"when": {side: "true"}, "apply": apply})
-    if "up" in ports:
+    if "up" in ports and top_turns:
+        for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+            apply = {"model": f"cyberfarm:block/{port_of}_port_up"}
+            if y:
+                apply["y"] = y
+            parts.append({"when": {"up": "true", "facing": facing}, "apply": apply})
+    elif "up" in ports:
         parts.append({"when": {"up": "true"}, "apply": {"model": f"cyberfarm:block/{port_of}_port_up"}})
+    if below:
+        parts.append({"when": {"down": "false"}, "apply": {"model": f"cyberfarm:block/{below}"}})
     (ASSETS / f"blockstates/{name}.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
@@ -746,7 +813,8 @@ if __name__ == "__main__":
             ("swarm_dock", drone_dock("swarm_pad"), False, False),
             ("drone_assembler", drone_assembler(), True, False),
             ("fabricator", fabricator(), True, False),
-            ("acid_synthesizer", acid_synthesizer(), True, False)):
+            ("acid_synthesizer", acid_synthesizer(), True, False),
+            ("water_pump", water_pump(), True, False)):
         size = build(name, parts, lit_variant, translucent)
         print(f"{name}: {len(parts)} boxes, atlas {size}x{size}")
     card_texture()
@@ -759,6 +827,9 @@ if __name__ == "__main__":
     build("fabricator_port", side_port(2), False)
     build("fabricator_port_up", top_port(12.75), False)
     build("acid_synthesizer_port", side_port(2, y0=3.5), False)
+    build("water_pump_port", low_port(), False)
+    build("water_pump_port_up", water_pump_port_up(), False)
+    build("water_pump_intake", water_pump_intake(), False)
     blockstate("combustion_generator", True, {"up"})
     blockstate("bio_digester", True, set())
     blockstate("drone_dock", False, set())
@@ -766,3 +837,4 @@ if __name__ == "__main__":
     blockstate("drone_assembler", True, set())
     blockstate("fabricator", True, {"up"})
     blockstate("acid_synthesizer", True, set())
+    blockstate("water_pump", True, {"up"}, top_turns=True, below="water_pump_intake")

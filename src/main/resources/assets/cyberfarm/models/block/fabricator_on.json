@@ -6,8 +6,7 @@
     "atlas": "cyberfarm:block/models/fabricator",
     "fire": "cyberfarm:block/machine_fire",
     "light": "cyberfarm:block/machine_light",
-    "light_off": "cyberfarm:block/machine_light_off",
-    "gas_pipe_up": "cyberfarm:block/gas_pipe"
+    "light_off": "cyberfarm:block/machine_light_off"
   },
   "elements": [
     {

@@ -5,8 +5,7 @@
     "particle": "cyberfarm:block/models/drone_assembler_port",
     "atlas": "cyberfarm:block/models/drone_assembler_port",
     "fire": "cyberfarm:block/machine_fire",
-    "light": "cyberfarm:block/machine_light",
-    "gas_pipe_up": "cyberfarm:block/gas_pipe"
+    "light": "cyberfarm:block/machine_light"
   },
   "elements": [
     {

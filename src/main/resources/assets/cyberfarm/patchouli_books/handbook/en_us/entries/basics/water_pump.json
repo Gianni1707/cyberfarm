@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:water_pump",
-      "text": "An endless supply of water for reactors and the Coolant Mixer. Place it touching $(l)at least 2 water source blocks$() (the same rule as an infinite water source) and give it power."
+      "text": "An endless supply of water for reactors and the Coolant Mixer. A small pumpjack: stand it $(l)directly above a water source block$(), with its intake hanging into the water, and give it power."
     },
     {
       "type": "patchouli:text",
@@ -15,7 +15,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It has no GUI: $(l)right-click$() it to see what it is doing."
+      "text": "$(li)It has no GUI: $(l)right-click$() it to see what it is doing. While it pumps the crank turns, the beam rocks and the rod goes up and down; it runs on for a few seconds after it last pumped."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Only the block below counts: water beside it does nothing. A pump that stopped after an update, because it only had water at its sides, has to be moved over the water."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Water can't be clicked: place the pump against a temporary block beside the spot, then remove that block. Keep it above the surface, as it won't keep water out of its own block.$(br)$(li)A pipe can plug in on any side, and from below it replaces the intake."
     },
     {
       "type": "patchouli:crafting",
@@ -23,6 +31,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:water_pump": 3
+    "cyberfarm:water_pump": 5
   }
 }

@@ -187,7 +187,7 @@ public class ModBlocks {
     public static final DeferredBlock<CyberFrameBlock> HANGAR_PAD = BLOCKS.registerBlock("hangar_pad",
             CyberFrameBlock::new, p -> machine(p).lightLevel(state -> state.getValue(CyberFrameBlock.FORMED) ? 8 : 0));
     public static final DeferredBlock<WaterPumpBlock> WATER_PUMP = BLOCKS.registerBlock("water_pump",
-            WaterPumpBlock::new, ModBlocks::litMachine);
+            WaterPumpBlock::new, p -> litMachine(p).noOcclusion());
     public static final DeferredBlock<LaserTurretBlock> LASER_TURRET = BLOCKS.registerBlock("laser_turret",
             LaserTurretBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 4));
     public static final DeferredBlock<FluidTankBlock> LIQUID_TANK = BLOCKS.registerBlock("liquid_tank",
