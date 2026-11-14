@@ -19,9 +19,21 @@ Presses **organic waste** into **Biomass**, the solid mash a [Bio-Digester](bio_
 
 - Accepts **anything a composter takes** (seeds, crops, leaves, saplings, flowers...) and **rotten flesh**. A hopper feeds it through the funnel on top, or from the sides of its lower block.
 - The mash in its chamber rises with what is inside, up to a full stack.
-- [Energy Conduits](energy_conduit.md) connect to the machine block. Without power it waits and keeps its progress.
-- Each item takes 2 seconds and gives a <ItemLink id="biomass" /> with the chance a composter would take it: a cake always gives one,
-  a seed only sometimes, and rotten flesh 4 times out of 5.
+- [Energy Conduits](energy_conduit.md) connect to the machine block or to any of its frames. Without power it waits and keeps its progress.
+- Each item takes 2 seconds. **Richer waste gives more** <ItemLink id="biomass" />: twice the chance a composter would take it, on average.
+
+| What goes in | Biomass per item, on average |
+| --- | --- |
+| Seeds, leaves, saplings, grass | 0.6 |
+| Cactus, vines, melon slices, sugar cane | 1 |
+| Wheat, carrots, potatoes, apples, flowers, pumpkins | 1.3 |
+| Hay bales, baked potatoes, bread | 1.7 |
+| Rotten flesh | 1.6 |
+| Cake, pumpkin pie | 2 |
+
+The recipe viewer (JEI or REI) lists every item with its yield. A press fed with wheat keeps about one and a half
+[Bio-Digesters](bio_digester.md) busy.
+
 - The **nozzle on its right**, as you face its open front, pushes the Biomass into the container there: a hopper, a chest or a Bio-Digester.
   A hopper under the press or a [Transport](modules.md) drone can take it too; they take only the Biomass, never the waste still to press.
 

@@ -38,11 +38,11 @@ standard, generators from other mods work just as well.
 
 | Machine | Makes | Effort |
 | --- | --- | --- |
-| [Bio-Digester](bio_digester.md) | about 6 mB/t of Biogas from compostables and rotten flesh | a farm to feed it |
-| [Methane Extractor](methane_extractor.md) | 25 mB/t of Methane from a zombie (12 other monsters, 4 animals) | a 3x3x4 chamber, acid, a steady supply of mobs |
+| [Bio-Digester](bio_digester.md) | 10 mB/t of Biogas from compostables and rotten flesh | a farm to feed it |
+| [Methane Extractor](methane_extractor.md) | 30 mB/t of Methane from a zombie (15 other monsters, 5 animals) | a 3x3x4 chamber, acid, a steady supply of mobs |
 
-A zombie chamber is the big step: about **300 FE/t** in Gas Turbines (one burns 20 mB/t, so it takes two), as much as ten
-Bio-Digesters. A Steam Engine burns the methane of about two chambers into
+A zombie chamber is the big step: about **360 FE/t** in Gas Turbines (one burns 20 mB/t, so it takes two), as much as seven
+Bio-Digesters. A Steam Engine burns the methane of one and a half chambers into
 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest
 reactor at full power.
 
@@ -56,6 +56,24 @@ The most powerful option is in the [Nuclear](nuclear.md) section: a [Fission Rea
 burning uranium [Fuel Rods](uranium.md) makes steam for [Steam Turbines](steam_turbine.md), cooled
 with the help of the [Coolant Mixer](coolant_mixer.md). Its waste must be treated in a
 [Waste Reprocessor](waste_reprocessor.md), or the area turns [radioactive](radiation.md).
+
+## How long fuels last
+
+| Fuel | Burned in | Lasts | Gives |
+| --- | --- | --- | --- |
+| Coal or charcoal | [Combustion Generator](combustion_generator.md), 60 FE/t | 40 seconds | 48,000 FE |
+| Block of coal | Combustion Generator | 400 seconds | 480,000 FE |
+| A log or planks | Combustion Generator | 7.5 seconds | 9,000 FE |
+| Blaze rod | Combustion Generator | 60 seconds | 72,000 FE |
+| Lava bucket | Combustion Generator | 500 seconds | 600,000 FE |
+| Biomass | [Bio-Digester](bio_digester.md), 2.5 seconds each | becomes 500 mB of Biogas | 2,500 FE in a Gas Turbine, 4,500 in a Steam Engine |
+| 1,000 mB of Biogas | [Gas Turbine](gas_turbine.md), 100 FE/t | 2.5 seconds | 5,000 FE |
+| 1,000 mB of Methane | Gas Turbine, 240 FE/t | 2.5 seconds | 12,000 FE |
+| 1,000 mB of Biogas | [Steam Engine](steam_engine.md), 405 FE/t | 1.1 seconds | 9,000 FE |
+| 1,000 mB of Methane | Steam Engine, 675 FE/t | 1.1 seconds | 15,000 FE |
+
+The Combustion Generator burns any furnace fuel for half as long as a furnace would. Gases burn fast, so
+a gas plant is sized by its **flow**: a Gas Turbine needs 20 mB/t (two Bio-Digesters), a Steam Engine 45 mB/t.
 
 Generators push their FE into adjacent machines by themselves; to reach machines further away,
 use [Energy Conduits](energy_conduit.md).

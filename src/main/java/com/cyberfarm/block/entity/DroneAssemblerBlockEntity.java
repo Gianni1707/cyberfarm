@@ -23,6 +23,9 @@ import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.registry.ModSounds;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
@@ -57,6 +60,10 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     public static final int ENERGY_PER_TICK = 40;
 
     private boolean assembling;
+    /** Charge of disassembled drones that did not fit in the buffer: it goes into the next drone built here. */
+    private int heldCharge;
+    /** Name of the last disassembled drone, given back to the drone rebuilt from its frame. */
+    private @Nullable Component heldName;
 
     public DroneAssemblerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.DRONE_ASSEMBLER.get(), pos, state, SLOT_COUNT, CAPACITY, MAX_INPUT, 0);
@@ -140,14 +147,17 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
 
     /**
      * Puts the parts of the drone in the output slot back into the frame, module and addon slots,
-     * so it can be changed and assembled again. Its charge moves into the assembler's buffer.
+     * so it can be changed and assembled again. Its charge moves into the assembler's buffer, and
+     * what does not fit is kept for the next drone, together with its name.
      */
     public void disassemble(ServerLevel level) {
         if (assembling || !canDisassemble(this::getStack)) {
             return;
         }
         ItemStack drone = getStack(OUTPUT_SLOT);
-        energy.generate(DroneItem.getEnergy(drone));
+        int charge = DroneItem.getEnergy(drone);
+        heldCharge += charge - energy.generate(charge);
+        heldName = drone.get(DataComponents.CUSTOM_NAME);
         setStack(OUTPUT_SLOT, ItemStack.EMPTY);
 
         int moduleSlot = FIRST_MODULE_SLOT;
@@ -191,6 +201,11 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        if (heldName != null && getStack(FRAME_SLOT).isEmpty() && getStack(OUTPUT_SLOT).isEmpty()) {
+            // The frame was taken away: the next drone built here is a different one
+            heldName = null;
+            setChanged();
+        }
         if (!assembling) {
             return;
         }
@@ -226,8 +241,13 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
             setStack(i, ItemStack.EMPTY);
         }
         ItemStack drone = new ItemStack(ModItems.DRONE.get());
-        drone.set(ModDataComponents.DRONE_MODULES.get(), new DroneModules(parts));
-        drone.set(ModDataComponents.ENERGY.get(), 0);
+        DroneModules modules = new DroneModules(parts);
+        int charge = Math.min(heldCharge, modules.energyCapacity());
+        heldCharge -= charge;
+        drone.set(ModDataComponents.DRONE_MODULES.get(), modules);
+        drone.set(ModDataComponents.ENERGY.get(), charge);
+        drone.set(DataComponents.CUSTOM_NAME, heldName);
+        heldName = null;
         setStack(OUTPUT_SLOT, drone);
 
         resetAssembly();
@@ -325,12 +345,16 @@ public class DroneAssemblerBlockEntity extends MachineBlockEntity {
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
         output.putBoolean("assembling", assembling);
+        output.putInt("held_charge", heldCharge);
+        output.storeNullable("held_name", ComponentSerialization.CODEC, heldName);
     }
 
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         assembling = input.getBooleanOr("assembling", false);
+        heldCharge = input.getIntOr("held_charge", 0);
+        heldName = input.read("held_name", ComponentSerialization.CODEC).orElse(null);
     }
 
     @Override

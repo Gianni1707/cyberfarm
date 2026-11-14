@@ -124,7 +124,7 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
         }
         BlockPos top = entity.getBlockPos();
         BlockPos floor = top.below(3);
-        state.time = level.getGameTime() + partialTick;
+        state.time = ModelParts.time(level, partialTick);
         state.light = LightCoordsUtil.getLightCoords(level, top.above());
         state.filling = entity.isFilling();
         state.acid = entity.shownAcid(state.time);

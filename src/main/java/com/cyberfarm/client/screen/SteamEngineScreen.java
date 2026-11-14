@@ -1,6 +1,7 @@
 package com.cyberfarm.client.screen;
 
 import com.cyberfarm.block.entity.SteamEngineBlockEntity;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.menu.SteamEngineMenu;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -47,7 +48,7 @@ public class SteamEngineScreen extends MachineScreen<SteamEngineMenu> {
         int y = topPos;
         int n = menu.getCylinders();
         float speed = menu.getSpeedPercent() / 100.0F;
-        float time = minecraft != null && minecraft.level != null ? minecraft.level.getGameTime() + partialTick : 0;
+        float time = minecraft != null && minecraft.level != null ? ModelParts.time(minecraft.level, partialTick) : 0;
         if (lastTime >= 0) {
             angle += Math.max(0.0F, time - lastTime) * speed * SteamEngineBlockEntity.TURN_PER_TICK;
         }

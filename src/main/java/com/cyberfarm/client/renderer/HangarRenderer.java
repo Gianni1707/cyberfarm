@@ -90,10 +90,10 @@ public class HangarRenderer implements BlockEntityRenderer<MechHangarBlockEntity
         state.acrossZ = across.getStepZ();
         state.inX = in.getStepX();
         state.inZ = in.getStepZ();
-        float time = entity.getLevel().getGameTime() + partialTick;
+        float time = ModelParts.time(entity.getLevel(), partialTick);
         state.clamp = entity.clampAmount(time);
         state.fitModule = entity.fitModule();
-        state.fit = entity.fitProgress(time);
+        state.fit = entity.fitProgress(ModelParts.since(entity.getLevel(), entity.fitStart(), partialTick));
         state.fitInstall = entity.fitInstall();
         state.light = LightCoordsUtil.getLightCoords(entity.getLevel(), entity.getBlockPos().above());
     }

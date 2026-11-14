@@ -31,7 +31,8 @@ change waits for its frames, with its gas kept; move any pipe that sits where a 
 - Like the [Combustion Generator](combustion_generator.md), it **pushes power** into adjacent
   machines and [Energy Conduits](energy_conduit.md), up to 400 FE/t per side.
 - Feed it with [Gas Pipes](gas_pipe.md) or any other mod's fluid pipes. Pipes and conduits connect at the three mint
-  sockets of the machine block, on either side or on top, whichever you prefer.
+  sockets of the machine block, on either side or on top, whichever you prefer. A conduit on one of its frames
+  can pull the power with its arm (see [Energy Conduit](energy_conduit.md)).
 - The rotor turns as fast as it makes power, so methane spins it faster than biogas. The slits on its flanks show
   the gas left. Breaking a frame folds it back and stops it; put the frame back and it opens again.
 

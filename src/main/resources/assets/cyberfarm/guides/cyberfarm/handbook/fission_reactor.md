@@ -167,7 +167,8 @@ A new reactor starts **Off**: insert rods, connect water, then raise the power.
 
 ## Ports
 
-Reactor Ports are where the outside world connects:
+Reactor Ports are where the outside world connects. A port in a wall shared by two towers works
+for the one that took it first:
 
 | In | Out |
 | --- | --- |

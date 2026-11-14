@@ -75,7 +75,7 @@ public class WasteReprocessorRenderer implements BlockEntityRenderer<WasteReproc
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
         state.lit = entity.getBlockState().getValue(LitMachineBlock.LIT);
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         int stage = entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
         state.t = entity.shownOpening(stage, time);
         state.lift = stage == SmallMultiblockBlock.LOOSE ? 0.0F : ModelParts.smooth(state.t, 28.0F, 42.0F);
@@ -89,7 +89,7 @@ public class WasteReprocessorRenderer implements BlockEntityRenderer<WasteReproc
         float elapsed = entity.motionTime == 0.0F ? 0.0F : Mth.clamp(time - entity.motionTime, 0.0F, 5.0F);
         entity.motionTime = time;
         float target = state.lit
-                ? recipeAngle(ModelParts.progress(entity, time, WasteReprocessorBlockEntity.PROCESS_TIME))
+                ? recipeAngle(ModelParts.progress(entity, partialTick, WasteReprocessorBlockEntity.PROCESS_TIME))
                 : Mth.ceil(entity.motionPhase / QUARTER - 0.001F) * QUARTER;
         entity.motionPhase = turnedTowards(entity.motionPhase, target, elapsed * MAX_TURN_PER_TICK);
         state.angle = entity.motionPhase;

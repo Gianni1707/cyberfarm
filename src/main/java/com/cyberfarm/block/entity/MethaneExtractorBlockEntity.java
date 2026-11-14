@@ -71,9 +71,9 @@ import org.jspecify.annotations.Nullable;
  */
 public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
-    public static final int ZOMBIE_RATE = 25;
-    public static final int MONSTER_RATE = 12;
-    public static final int ANIMAL_RATE = 4;
+    public static final int ZOMBIE_RATE = 30;
+    public static final int MONSTER_RATE = 15;
+    public static final int ANIMAL_RATE = 5;
     private static final int OUTPUT_PER_SIDE = 200;
     private static final int CHECK_INTERVAL = 20;
     private static final int WORK_SOUND_INTERVAL = 50;
@@ -116,6 +116,11 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     private int mobCount;
     private int rate;
     private int checkCooldown;
+    /**
+     * Ticks of extraction since the last point of health. Counted, not read off the clock: with a tank
+     * kept just under full the extractor can be stopped on every tick the clock would pick.
+     */
+    private int dissolveTicks;
 
     public MethaneExtractorBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.METHANE_EXTRACTOR.get(), pos, state, 0, 0, 0, 0);
@@ -291,7 +296,8 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
             if (tank.fill(ModFluids.METHANE.get(), rate) > 0 && level.getGameTime() % WORK_SOUND_INTERVAL == 0) {
                 level.playSound(null, pos.below(2), ModSounds.EXTRACTOR_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            if (level.getGameTime() % DISSOLVE_INTERVAL == 0) {
+            if (++dissolveTicks >= DISSOLVE_INTERVAL) {
+                dissolveTicks = 0;
                 dissolve(level);
             }
             if (level.getGameTime() % DECAY_INTERVAL == 0) {

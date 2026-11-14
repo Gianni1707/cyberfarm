@@ -92,7 +92,7 @@ public class SteamEngineRenderer implements BlockEntityRenderer<SteamEngineBlock
         if (level == null) {
             return;
         }
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.seconds = entity.shownOpening(state.stage, time) / 20.0F;
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;

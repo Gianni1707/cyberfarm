@@ -67,10 +67,12 @@ public class GasTurbineBlockEntity extends SmallMultiblockBlockEntity {
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
-        int perTick = open ? BURN_PER_TICK * energyPerMb(tank.getResource(0)) : 0;
+        // The last few mB burn too, or they would sit in the tank and keep another gas out
+        int burn = Math.min(BURN_PER_TICK, tank.amount());
+        int perTick = open ? burn * energyPerMb(tank.getResource(0)) : 0;
         // Only burn when the energy has somewhere to go, so no fuel is wasted
-        if (perTick > 0 && tank.amount() >= BURN_PER_TICK && energy.getCapacity() - energy.getEnergy() >= perTick) {
-            tank.drain(BURN_PER_TICK);
+        if (perTick > 0 && energy.getCapacity() - energy.getEnergy() >= perTick) {
+            tank.drain(burn);
             energy.generate(perTick);
             generating = perTick;
             if (level.getGameTime() % ROAR_TICKS == 0) {
