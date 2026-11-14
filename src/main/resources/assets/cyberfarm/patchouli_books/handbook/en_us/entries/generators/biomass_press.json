@@ -18,7 +18,16 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/energy_conduit)Energy Conduits$(/l) connect to the machine block. Without power it waits and keeps its progress.$(br)$(li)Each item takes 2 seconds and gives a $(item)Biomass$() with the chance a composter would take it: a cake always gives one, a seed only sometimes, and rotten flesh 4 times out of 5."
+      "text": "$(li)$(l:cables/energy_conduit)Energy Conduits$(/l) connect to the machine block or to any of its frames. Without power it waits and keeps its progress.$(br)$(li)Each item takes 2 seconds. $(l)Richer waste gives more$() $(item)Biomass$(): twice the chance a composter would take it, on average."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "Biomass per item",
+      "text": "$(li)$(l)Seeds, leaves, saplings, grass$(): 0.6$(br)$(li)$(l)Cactus, vines, melon slices, sugar cane$(): 1$(br)$(li)$(l)Wheat, carrots, potatoes, apples, flowers, pumpkins$(): 1.3$(br)$(li)$(l)Hay bales, baked potatoes, bread$(): 1.7$(br)$(li)$(l)Rotten flesh$(): 1.6$(br)$(li)$(l)Cake, pumpkin pie$(): 2"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The recipe viewer (JEI or REI) lists every item with its yield. A press fed with wheat keeps about one and a half $(l:generators/bio_digester)Bio-Digesters$(/l) busy."
     },
     {
       "type": "patchouli:text",
@@ -34,7 +43,7 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:biomass_press": 6,
+    "cyberfarm:biomass_press": 8,
     "cyberfarm:biomass": 0
   }
 }

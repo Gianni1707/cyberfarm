@@ -93,10 +93,11 @@ public class SteamEngineBlockEntity extends SmallMultiblockBlockEntity {
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
-        int burn = CYLINDERS * FUEL_PER_CYLINDER;
+        // The last few mB burn too, or they would sit in the tank and keep another gas out
+        int burn = Math.min(CYLINDERS * FUEL_PER_CYLINDER, tank.amount());
         boolean wasRunning = running;
         // A full buffer stops it: it never burns fuel for power nobody takes
-        running = open && tank.amount() >= burn && !energy.isFull();
+        running = open && burn > 0 && !energy.isFull();
         output = 0;
         if (running) {
             speed = Math.min(1.0F, speed + SPIN_UP);

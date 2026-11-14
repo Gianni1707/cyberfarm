@@ -36,7 +36,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The drone looks for $(l)fully grown crops$() in its work area and harvests them, bringing crops and seeds to the dock. It also harvests $(l)melons and pumpkins$(), and $(l)picks$() ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place."
+      "text": "The drone looks for $(l)fully grown crops$() in its work area and harvests them, bringing crops and seeds to the dock. It also harvests $(l)melons, pumpkins and ripe cocoa pods$(), and $(l)picks$() ripe plants that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place. Plants a click does nothing to, like bamboo or kelp, are left alone."
     },
     {
       "type": "patchouli:text",

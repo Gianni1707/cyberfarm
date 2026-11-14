@@ -20,6 +20,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -42,6 +43,8 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     private static final int CAPACITY = 4_000;
     private static final int MAX_INPUT = 100;
     private static final float ROTTEN_FLESH_CHANCE = 0.8F;
+    /** Biomass per point of composter chance. */
+    private static final float YIELD_PER_CHANCE = 2.0F;
     /** Ticks between Biomass going out of the nozzle, a hopper's pace. */
     private static final int PUSH_INTERVAL = 8;
     private static final int OPEN_TICKS = 50;
@@ -54,12 +57,17 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
         super(ModBlockEntities.BIOMASS_PRESS.get(), pos, state, 2, CAPACITY, MAX_INPUT, 0);
     }
 
-    /** The chance an item gives a Biomass, as in a composter; 0 if it is not organic. */
+    /** The chance a composter would take the item; 0 if it is not organic. */
     public static float biomassChance(ItemStack stack) {
         if (stack.is(Items.ROTTEN_FLESH)) {
             return ROTTEN_FLESH_CHANCE;
         }
         return ComposterBlock.COMPOSTABLES.getFloat(stack.getItem());
+    }
+
+    /** Biomass the item gives on average: richer waste gives more, from 0.6 for a seed or a leaf to 2 for a cake. */
+    public static float biomassYield(ItemStack stack) {
+        return biomassChance(stack) * YIELD_PER_CHANCE;
     }
 
     /** How much is inside, waste and Biomass, which the mash in the chamber shows. */
@@ -86,11 +94,16 @@ public class BiomassPressBlockEntity extends SmallMultiblockBlockEntity {
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
         ItemStack input = getStack(INPUT);
-        float chance = biomassChance(input);
-        boolean canRun = open && chance > 0.0F && hasRoomFor(OUTPUT, ModItems.BIOMASS.get());
+        float yield = biomassYield(input);
+        ItemStack output = getStack(OUTPUT);
+        // Room for the most this item can give
+        boolean room = output.isEmpty() || output.is(ModItems.BIOMASS.get()) && output.getCount() + Mth.ceil(yield) <= output.getMaxStackSize();
+        boolean canRun = open && yield > 0.0F && room;
         if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
             take(INPUT, 1);
-            if (level.getRandom().nextFloat() < chance) {
+            // The whole part always, the fraction as a chance: 1.3 gives 1, or 2 three times in ten
+            int made = (int) yield + (level.getRandom().nextFloat() < yield - (int) yield ? 1 : 0);
+            for (int i = 0; i < made; i++) {
                 addOne(OUTPUT, ModItems.BIOMASS.get());
             }
             level.playSound(null, pos, ModSounds.BIOMASS_PRESS_WORK.get(), SoundSource.BLOCKS, 1.0F, 1.0F);

@@ -4,7 +4,9 @@ import net.minecraft.world.InteractionHand;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.effect.Effects;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.CocoaBlock;
 import net.minecraft.world.level.block.CropBlock;
 import net.minecraft.world.level.block.StemBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,8 +61,18 @@ public class HarvestJob extends DroneJob {
         if (state.getBlock() instanceof CropBlock crop) {
             return crop.isMaxAge(state);
         }
+        if (state.getBlock() instanceof CocoaBlock) {
+            // Cut like a crop: a click does nothing to a ripe pod
+            return state.getValue(CocoaBlock.AGE) == CocoaBlock.MAX_AGE;
+        }
         return state.is(Blocks.MELON) || state.is(Blocks.PUMPKIN) || isRipePlant(state);
     }
+
+    /**
+     * Plants whose last age a click does nothing to (bamboo, kelp, vines...), learned the first time a drone tries.
+     * shortcut: in memory, so after a restart a drone flies once more to each kind; save it if that shows.
+     */
+    private static final Set<Block> UNPICKABLE = new HashSet<>();
 
     /**
      * A plant that isn't a crop but ripens, at its last age: a berry bush, or a mod's bush or fruit. It is picked, never broken.
@@ -67,6 +80,7 @@ public class HarvestJob extends DroneJob {
      */
     private static boolean isRipePlant(BlockState state) {
         return state.getBlock() instanceof BonemealableBlock && !(state.getBlock() instanceof CropBlock) && !(state.getBlock() instanceof StemBlock)
+                && !(state.getBlock() instanceof CocoaBlock) && !UNPICKABLE.contains(state.getBlock())
                 && state.getBlock().getStateDefinition().getProperty("age") instanceof IntegerProperty age
                 && state.getValue(age) == Collections.max(age.getPossibleValues());
     }
@@ -106,7 +120,8 @@ public class HarvestJob extends DroneJob {
         player.setPos(Vec3.atCenterOf(target));
         InteractionResult result = state.use(level, player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(target), Direction.UP, target, false));
         if (!result.consumesAction() || level.getBlockState(target) == state) {
-            drone.markUnreachable(target);
+            // Without this the drone would fly back to it after every trip home
+            UNPICKABLE.add(state.getBlock());
             return;
         }
         List<ItemStack> picked = new ArrayList<>();

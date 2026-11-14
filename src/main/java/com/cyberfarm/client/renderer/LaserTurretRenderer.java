@@ -58,7 +58,7 @@ public class LaserTurretRenderer extends BlockEntityRenderer<LaserTurretBlockEnt
             return;
         }
         state.light = LightCoordsUtil.getLightCoords(level, turret.getBlockPos().above());
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         float elapsed = turret.headTime == 0.0F ? 0.0F : Mth.clamp(time - turret.headTime, 0.0F, 5.0F);
         turret.headTime = time;
         Entity target = turret.getTargetId() >= 0 ? level.getEntity(turret.getTargetId()) : null;

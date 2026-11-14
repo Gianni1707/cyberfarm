@@ -42,6 +42,16 @@ public class ReactorPortBlockEntity extends PortBlockEntity {
         }
     }
 
+    public boolean isHeldBy(BlockPos controller) {
+        return controller.equals(this.controller);
+    }
+
+    /** Free, already this controller's, or held by one that is gone or no longer formed. */
+    public boolean isFreeFor(BlockPos controller) {
+        // An owner in an unloaded chunk keeps it, and looking would load that chunk
+        return this.controller == null || isHeldBy(controller) || level != null && level.isLoaded(this.controller) && owner() == null;
+    }
+
     private @Nullable PortOwner owner() {
         return controller != null && level != null && level.getBlockEntity(controller) instanceof PortOwner owner && owner.isFormed()
                 ? owner : null;

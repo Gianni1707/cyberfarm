@@ -100,7 +100,7 @@ public class ResonanceCoreRenderer extends BlockEntityRenderer<ResonanceCoreBloc
         state.radius = entity.radius();
         state.status = entity.status();
         state.fill = entity.fillPercent() / 100.0F;
-        state.time = entity.getLevel() != null ? entity.getLevel().getGameTime() + partialTick : 0.0F;
+        state.time = entity.getLevel() != null ? ModelParts.time(entity.getLevel(), partialTick) : 0.0F;
         boolean first = Float.isNaN(entity.droneTime);
         float dt = first ? 0.0F : Mth.clamp(state.time - entity.droneTime, 0.0F, 5.0F);
         entity.droneTime = state.time;

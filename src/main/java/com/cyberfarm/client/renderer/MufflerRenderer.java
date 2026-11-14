@@ -53,7 +53,7 @@ public class MufflerRenderer extends BlockEntityRenderer<MufflerBlockEntity, Muf
         for (MufflerBlockEntity.Category category : MufflerBlockEntity.Category.values()) {
             on += entity.isMuting(category) ? 1 : 0;
         }
-        float phase = ModelParts.advance(entity, level.getGameTime() + partialTick, on / (float) MufflerBlockEntity.Category.values().length, SPIN_UP);
+        float phase = ModelParts.advance(entity, ModelParts.time(level, partialTick), on / (float) MufflerBlockEntity.Category.values().length, SPIN_UP);
         state.weight = REST + TRAVEL * entity.motionSpeed * Mth.sin(phase * Mth.TWO_PI / PERIOD);
     }
 

@@ -23,12 +23,12 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:generators/bio_digester)Bio-Digester$(/l): about 6 mB/t of Biogas from compostables and rotten flesh, a farm to feed it$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l): 25 mB/t of Methane from a zombie (12 other monsters, 4 animals), a 3x3x4 chamber, acid, a steady supply of mobs",
+      "text": "$(li)$(l:generators/bio_digester)Bio-Digester$(/l): 10 mB/t of Biogas from compostables and rotten flesh, a farm to feed it$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l): 30 mB/t of Methane from a zombie (15 other monsters, 5 animals), a 3x3x4 chamber, acid, a steady supply of mobs",
       "title": "Where the gas comes from"
     },
     {
       "type": "patchouli:text",
-      "text": "A zombie chamber is the big step: about $(l)300 FE/t$() in Gas Turbines (one burns 20 mB/t, so it takes two), as much as ten Bio-Digesters. A Steam Engine burns the methane of about two chambers into 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest reactor at full power."
+      "text": "A zombie chamber is the big step: about $(l)360 FE/t$() in Gas Turbines (one burns 20 mB/t, so it takes two), as much as seven Bio-Digesters. A Steam Engine burns the methane of one and a half chambers into 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest reactor at full power."
     },
     {
       "type": "patchouli:text",
@@ -41,6 +41,23 @@
     {
       "type": "patchouli:text",
       "text": "The most powerful option is in the $(l:nuclear/nuclear)Nuclear$(/l) section: a $(l:nuclear/fission_reactor)Fission Reactor$(/l) burning uranium $(l:nuclear/uranium)Fuel Rods$(/l) makes steam for $(l:nuclear/steam_turbine)Steam Turbines$(/l), cooled with the help of the $(l:nuclear/coolant_mixer)Coolant Mixer$(/l). Its waste must be treated in a $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l), or the area turns $(l:nuclear/radiation)radioactive$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "title": "How long fuels last",
+      "text": "In a $(l:generators/combustion_generator)Combustion Generator$(/l), at 60 FE/t:$(br)$(li)$(l)Coal or charcoal$(): 40 seconds, 48,000 FE$(br)$(li)$(l)Block of coal$(): 400 seconds, 480,000 FE$(br)$(li)$(l)A log or planks$(): 7.5 seconds, 9,000 FE$(br)$(li)$(l)Blaze rod$(): 60 seconds, 72,000 FE$(br)$(li)$(l)Lava bucket$(): 500 seconds, 600,000 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Biomass$(): in a $(l:generators/bio_digester)Bio-Digester$(/l), 2.5 seconds each, becomes 500 mB of Biogas: 2,500 FE in a Gas Turbine, 4,500 in a Steam Engine$(br)$(li)$(l)1,000 mB of Biogas$(): $(l:generators/gas_turbine)Gas Turbine$(/l), 100 FE/t, 2.5 seconds, 5,000 FE$(br)$(li)$(l)1,000 mB of Methane$(): Gas Turbine, 240 FE/t, 2.5 seconds, 12,000 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)1,000 mB of Biogas$(): $(l:generators/steam_engine)Steam Engine$(/l), 405 FE/t, 1.1 seconds, 9,000 FE$(br)$(li)$(l)1,000 mB of Methane$(): Steam Engine, 675 FE/t, 1.1 seconds, 15,000 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Combustion Generator burns any furnace fuel for half as long as a furnace would. Gases burn fast, so a gas plant is sized by its $(l)flow$(): a Gas Turbine needs 20 mB/t (two Bio-Digesters), a Steam Engine 45 mB/t."
     },
     {
       "type": "patchouli:text",

@@ -72,7 +72,7 @@ public class DockRenderer<T extends DroneDockBlockEntity> extends BlockEntityRen
         if (level == null) {
             return;
         }
-        state.time = level.getGameTime() + partialTick;
+        state.time = ModelParts.time(level, partialTick);
         BlockPos pos = entity.getBlockPos();
         AABB pad = new AABB(pos).expandTowards(0.0, 1.5, 0.0);
         for (DroneEntity drone : level.getEntitiesOfClass(DroneEntity.class, new AABB(pos).inflate(HOMING_RANGE))) {

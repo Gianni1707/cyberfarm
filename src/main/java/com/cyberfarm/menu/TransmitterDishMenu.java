@@ -10,6 +10,7 @@ import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -90,6 +91,10 @@ public class TransmitterDishMenu extends MachineMenu {
                 return false;
             }
             DishNetworks.Network network = dish.network(server);
+            if (!network.canEdit(server)) {
+                server.displayClientMessage(Component.translatable("message.cyberfarm.transmitter_dish.not_owner"), true);
+                return false;
+            }
             if (id == BUTTON_PUBLIC) {
                 network.isPublic = !network.isPublic;
             } else {
@@ -108,6 +113,10 @@ public class TransmitterDishMenu extends MachineMenu {
         }
         access.execute((level, pos) -> {
             if (level.getBlockEntity(pos) instanceof TransmitterDishBlockEntity dish) {
+                if (!dish.network(player).canEdit(player)) {
+                    player.displayClientMessage(Component.translatable("message.cyberfarm.transmitter_dish.not_owner"), true);
+                    return;
+                }
                 dish.network(player).name = trimmed;
                 DishNetworks.get(player.level().getServer()).changed();
                 name = trimmed;

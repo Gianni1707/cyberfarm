@@ -31,7 +31,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 4,000 FE.$(br2)Hover an empty slot to see what goes there."
+      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 4,000 FE. The drone's charge goes into the Assembler's buffer; what does not fit is kept and goes back into the next drone built there, and so does its $(l)name$(), as long as you build it from the same frame."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Hover an empty slot to see what goes there."
     },
     {
       "type": "patchouli:text",
@@ -43,6 +47,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:drone_assembler": 8
+    "cyberfarm:drone_assembler": 9
   }
 }

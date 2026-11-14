@@ -97,11 +97,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 25 mB/t, 300 FE/t"
+      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 30 mB/t, 360 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Other monsters$(): 12 mB/t, 144 FE/t$(br)$(li)$(l)Animals$(): 4 mB/t, 48 FE/t$(br)A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
+      "text": "$(li)$(l)Other monsters$(): 15 mB/t, 180 FE/t$(br)$(li)$(l)Animals$(): 5 mB/t, 60 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The acid takes one point of health every 15 seconds: a zombie (20 health) lasts about 5 minutes and gives about 180,000 mB of methane in all, 2,160,000 FE in Gas Turbines. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
     },
     {
       "type": "patchouli:crafting",
@@ -124,12 +128,12 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:methane_extractor": 15,
-    "cyberfarm:cyber_frame": 15,
-    "cyberfarm:mob_capsule": 16,
-    "cyberfarm:containment_glass": 16,
-    "cyberfarm:acid_inlet": 17,
-    "cyberfarm:methane_outlet": 17,
-    "cyberfarm:intake_gate": 18
+    "cyberfarm:methane_extractor": 16,
+    "cyberfarm:cyber_frame": 16,
+    "cyberfarm:mob_capsule": 17,
+    "cyberfarm:containment_glass": 17,
+    "cyberfarm:acid_inlet": 18,
+    "cyberfarm:methane_outlet": 18,
+    "cyberfarm:intake_gate": 19
   }
 }

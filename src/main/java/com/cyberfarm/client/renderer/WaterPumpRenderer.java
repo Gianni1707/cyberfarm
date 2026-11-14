@@ -72,7 +72,7 @@ public class WaterPumpRenderer extends BlockEntityRenderer<WaterPumpBlockEntity,
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.crank = phase(entity, time) / TURN * Mth.TWO_PI;
         state.pinX = CX + PIN_R * Mth.cos(state.crank);
         state.pinY = CY + PIN_R * Mth.sin(state.crank);

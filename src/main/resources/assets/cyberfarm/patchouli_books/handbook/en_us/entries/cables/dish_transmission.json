@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver."
+      "text": "$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver. Only you and your team can change its name, colour and visibility.$(br)$(li)A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on the network after 30 seconds, so swapping a module is safe."
     },
     {
       "type": "patchouli:text",

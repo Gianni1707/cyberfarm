@@ -225,7 +225,7 @@ public class TransmitterDishRenderer extends BlockEntityRenderer<TransmitterDish
         if (level == null) {
             return;
         }
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         float t = entity.shownOpening(state.stage, time);
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;

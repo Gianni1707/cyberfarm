@@ -3,6 +3,7 @@ package com.cyberfarm.client.screen;
 import java.util.Random;
 
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.menu.MethaneExtractorMenu;
 
 import com.cyberfarm.port.client.GuiGraphicsExtractor;
@@ -69,7 +70,7 @@ public class MethaneExtractorScreen extends MachineScreen<MethaneExtractorMenu> 
         super.extractBackground(graphics, mouseX, mouseY, partialTick);
         int x = leftPos;
         int y = topPos;
-        float time = minecraft != null && minecraft.level != null ? minecraft.level.getGameTime() + partialTick : 0;
+        float time = minecraft != null && minecraft.level != null ? ModelParts.time(minecraft.level, partialTick) : 0;
         LivingEntity mob = menu.isFormed() ? mob() : null;
         boolean dissolving = mob != null && menu.getAcidAmount() >= MethaneExtractorBlockEntity.ACID_PER_TICK && menu.getRate() > 0;
 

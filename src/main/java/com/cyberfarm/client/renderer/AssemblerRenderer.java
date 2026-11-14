@@ -68,13 +68,13 @@ public class AssemblerRenderer extends BlockEntityRenderer<DroneAssemblerBlockEn
             return;
         }
         MachineStatus status = entity.status;
-        float time = entity.getLevel().getGameTime() + partialTick;
+        float time = ModelParts.time(entity.getLevel(), partialTick);
         state.time = time;
         if (!status.working() || status.progress() < 0) {
             return;
         }
         // The status comes once a second: carried on at the assembly's pace in between
-        float since = Math.max(0.0F, time - entity.statusTime);
+        float since = Math.max(0.0F, ModelParts.since(entity.getLevel(), entity.statusTime, partialTick));
         state.progress = Mth.clamp(status.progress() + since / DroneAssemblerBlockEntity.ASSEMBLY_TIME, 0.0F, 1.0F);
         DroneRenderState drone = state.drone;
         drone.ageInTicks = time;

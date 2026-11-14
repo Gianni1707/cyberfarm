@@ -2,7 +2,9 @@ package com.cyberfarm.block.entity;
 
 import java.util.Locale;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -53,6 +55,10 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
     private @Nullable GlobalPos aim;
     private int colour = -1;
     private boolean transmitting;
+    /** Seconds each receiver has been out of range: after {@link #OUT_OF_RANGE_SECONDS} it loses its place on the network. */
+    private final Map<GlobalPos, Integer> outOfRange = new HashMap<>();
+    /** Long enough to swap the range module without losing the far receivers. */
+    private static final int OUT_OF_RANGE_SECONDS = 30;
 
     public TransmitterDishBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.TRANSMITTER_DISH.get(), pos, state, 1, BASE_CAPACITY, RangeModuleItem.power(0), 0);
@@ -119,6 +125,9 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         boolean open = advanceStage(level, pos, state);
         applyTier();
         DishNetworks.Network network = DishNetworks.get(level.getServer()).get(networkId);
+        if (network != null && level.getGameTime() % 20 == 0) {
+            dropOutOfRange(level, network);
+        }
         GlobalPos target = null;
         boolean sending = false;
         if (open && network != null) {
@@ -154,6 +163,19 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
             colour = nowColour;
             setChanged();
             level.sendBlockUpdated(pos, state, state, Block.UPDATE_CLIENTS);
+        }
+    }
+
+    /** A receiver this dish no longer reaches (a weaker module, or the dish moved) would keep one of the places for nothing. */
+    private void dropOutOfRange(ServerLevel level, DishNetworks.Network network) {
+        outOfRange.keySet().retainAll(network.receivers);
+        for (GlobalPos receiver : List.copyOf(network.receivers)) {
+            if (reaches(receiver)) {
+                outOfRange.remove(receiver);
+            } else if (outOfRange.merge(receiver, 1, Integer::sum) >= OUT_OF_RANGE_SECONDS) {
+                outOfRange.remove(receiver);
+                DishNetworks.get(level.getServer()).unlink(receiver);
+            }
         }
     }
 

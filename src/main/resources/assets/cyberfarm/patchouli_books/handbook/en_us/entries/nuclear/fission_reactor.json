@@ -120,7 +120,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Reactor Ports are where the outside world connects:$(br)$(li)$(l)Fuel Rods (hoppers, pipes of other mods)$(): Depleted Fuel Rods$(br)$(li)Water and coolant ($(l:cables/liquid_pipe)Liquid Pipes$(/l)): Steam, pushed out by itself ($(l:cables/gas_pipe)Gas Pipes$(/l))",
+      "text": "Reactor Ports are where the outside world connects. A port in a wall shared by two towers works for the one that took it first:$(br)$(li)$(l)Fuel Rods (hoppers, pipes of other mods)$(): Depleted Fuel Rods$(br)$(li)Water and coolant ($(l:cables/liquid_pipe)Liquid Pipes$(/l)): Steam, pushed out by itself ($(l:cables/gas_pipe)Gas Pipes$(/l))",
       "title": "Ports"
     },
     {

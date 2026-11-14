@@ -19,6 +19,10 @@
     },
     {
       "type": "patchouli:text",
+      "text": "$(li)On machines assembled with Cyber Frames (Bio-Digester, Biomass Press, Gas Turbine, Electrolyzer and the others) a conduit also plugs into $(l)any of the frames$(), not only the machine block. A generator pushes only from its own block: on one of its frames, right-click the conduit's arm to make it pull."
+    },
+    {
+      "type": "patchouli:text",
       "text": "$(li)All tiers join into one network.$(br)$(li)Networks can be up to 1,024 conduits long."
     },
     {
@@ -50,8 +54,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:energy_conduit": 5,
-    "cyberfarm:advanced_energy_conduit": 5,
-    "cyberfarm:elite_energy_conduit": 6
+    "cyberfarm:energy_conduit": 6,
+    "cyberfarm:advanced_energy_conduit": 6,
+    "cyberfarm:elite_energy_conduit": 7
   }
 }

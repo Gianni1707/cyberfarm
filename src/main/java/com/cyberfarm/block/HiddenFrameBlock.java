@@ -44,12 +44,12 @@ public class HiddenFrameBlock extends PortBlock implements EntityBlock {
     }
 
     /**
-     * On Forge 1.20.1 only block entities expose capabilities: a frame over its machine (a Biomass Press's funnel) carries
-     * one, so a hopper on it reaches the machine below.
+     * On Forge 1.20.1 only block entities expose capabilities: every frame carries one, so conduits plug into it and
+     * a hopper on a Biomass Press's funnel reaches the machine below.
      */
     @Override
-    public @Nullable BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        return state.getValue(TO_MACHINE) == Direction.DOWN ? new CapabilityPortBlockEntity(pos, state) : null;
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new CapabilityPortBlockEntity(pos, state);
     }
 
     @Override

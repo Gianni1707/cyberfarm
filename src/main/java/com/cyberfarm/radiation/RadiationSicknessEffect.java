@@ -27,13 +27,13 @@ public class RadiationSicknessEffect extends MobEffect {
 
     @Override
     public boolean isDurationEffectTick(int duration, int amplifier) {
-        int interval = Math.max(15, 60 >> amplifier);
-        return duration % interval == 0;
+        // Timed off the entity below: exposure renews the effect every 2 s, which restarts its duration
+        return true;
     }
 
     @Override
     public void applyEffectTick(LivingEntity entity, int amplifier) {
-        if (entity.level().isClientSide()) {
+        if (entity.level().isClientSide() || entity.tickCount % Math.max(15, 60 >> amplifier) != 0) {
             return;
         }
         entity.hurt(new DamageSource(entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(DAMAGE)), 1.0F);

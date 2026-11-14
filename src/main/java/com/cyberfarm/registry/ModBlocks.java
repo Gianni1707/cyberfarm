@@ -172,7 +172,7 @@ public class ModBlocks {
 
     // Walls of the Methane Extractor's chamber: see-through, tinted, framed
     public static final DeferredBlock<ContainmentGlassBlock> CONTAINMENT_GLASS = BLOCKS.registerBlock("containment_glass",
-            ContainmentGlassBlock::new, p -> p.mapColor(MapColor.NONE).strength(1.5F, 6.0F).sound(SoundType.GLASS).noOcclusion()
+            ContainmentGlassBlock::new, p -> p.mapColor(MapColor.NONE).strength(1.5F, 6.0F).sound(SoundType.GLASS).noOcclusion().pushReaction(PushReaction.BLOCK)
                     .isValidSpawn((s, l, q, e) -> false).isRedstoneConductor((s, l, q) -> false).isSuffocating((s, l, q) -> false)
                     .isViewBlocking((s, l, q) -> false));
 
@@ -245,7 +245,9 @@ public class ModBlocks {
                 .mapColor(MapColor.METAL)
                 .strength(3.5F, 6.0F)
                 .sound(SoundType.METAL)
-                .requiresCorrectToolForDrops();
+                .requiresCorrectToolForDrops()
+                // A piston must not carry a multiblock's hidden parts away from their structure
+                .pushReaction(PushReaction.BLOCK);
     }
 
     private static BlockBehaviour.Properties chamberPart(BlockBehaviour.Properties properties) {

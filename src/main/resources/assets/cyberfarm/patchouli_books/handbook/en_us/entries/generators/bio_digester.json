@@ -7,7 +7,7 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:bio_digester",
-      "text": "Digests $(l)Biomass$() into $(l)Biogas$(). It runs on $(l)8 FE/t$(): feed it from a $(l:generators/biomass_press)Biomass Press$(/l) and connect an $(l:cables/energy_conduit)Energy Conduit$(/l) to the machine block. It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
+      "text": "Digests $(l)Biomass$() into $(l)Biogas$(). It runs on $(l)8 FE/t$(): feed it from a $(l:generators/biomass_press)Biomass Press$(/l) and connect an $(l:cables/energy_conduit)Energy Conduit$(/l) to the machine block or to one of its frames. It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
     },
     {
       "type": "patchouli:text",
@@ -15,7 +15,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Accepts only $(l:generators/biomass_press)Biomass$(/l).$(br)$(li)Each Biomass takes 2 seconds and gives $(l)250 mB$() of Biogas.$(br)$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l). Pipes connect to the machine block, on its free sides."
+      "text": "$(li)Accepts only $(l:generators/biomass_press)Biomass$(/l).$(br)$(li)Each Biomass takes $(l)2.5 seconds$() and gives $(l)500 mB$() of Biogas: $(l)10 mB/t$() while it has Biomass.$(br)$(li)That is $(l)2,500 FE$() per Biomass in a $(l:generators/gas_turbine)Gas Turbine$(/l) (50 FE/t from one digester) and 4,500 FE in a $(l:generators/steam_engine)Steam Engine$(/l). Two digesters keep one Gas Turbine running at full power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Holds $(l)8,000 mB$() and pushes the gas into adjacent $(l:cables/gas_pipe)Gas Pipes$(/l), tanks or a $(l:generators/gas_turbine)Gas Turbine$(/l). Pipes connect to the machine block, on its free sides."
     },
     {
       "type": "patchouli:text",
@@ -27,6 +31,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:bio_digester": 4
+    "cyberfarm:bio_digester": 5
   }
 }

@@ -146,21 +146,21 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
 
     /** Organic items grouped by the biogas they make, one page per amount. */
     private static void bioDigester(List<MachineExample> all) {
-        // The press's waste, by the chance each has of giving a Biomass
-        Map<Integer, List<ItemStack>> byChance = new TreeMap<>();
+        // The press's waste, by the Biomass each gives on average, in tenths
+        Map<Integer, List<ItemStack>> byYield = new TreeMap<>();
         for (Item item : BuiltInRegistries.ITEM) {
             ItemStack stack = new ItemStack(item);
-            int chance = Math.round(BiomassPressBlockEntity.biomassChance(stack) * 100.0F);
-            if (chance > 0) {
-                byChance.computeIfAbsent(chance, key -> new ArrayList<>()).add(stack);
+            int tenths = Math.round(BiomassPressBlockEntity.biomassYield(stack) * 10.0F);
+            if (tenths > 0) {
+                byYield.computeIfAbsent(tenths, key -> new ArrayList<>()).add(stack);
             }
         }
         ItemStack biomass = new ItemStack(ModItems.BIOMASS.get());
-        byChance.forEach((chance, items) -> all.add(new MachineExample(Machine.BIOMASS_PRESS, List.of(items), List.of(), List.of(biomass), List.of(),
-                List.of(note("chance_percent", biomass.getHoverName(), chance), note("time_energy", BiomassPressBlockEntity.PROCESS_TIME / 20, BiomassPressBlockEntity.ENERGY_PER_TICK)))));
+        byYield.forEach((tenths, items) -> all.add(new MachineExample(Machine.BIOMASS_PRESS, List.of(items), List.of(), List.of(biomass), List.of(),
+                List.of(note("yield", biomass.getHoverName(), tenths / 10.0F), note("time_energy", BiomassPressBlockEntity.PROCESS_TIME / 20, BiomassPressBlockEntity.ENERGY_PER_TICK)))));
         all.add(new MachineExample(Machine.BIO_DIGESTER, List.of(List.of(biomass)), List.of(), List.of(),
                 List.of(new FluidAmount(ModFluids.BIOGAS.get(), BioDigesterBlockEntity.MB_PER_BIOMASS)),
-                List.of(note("time_energy", BioDigesterBlockEntity.PROCESS_TIME / 20, BioDigesterBlockEntity.ENERGY_PER_TICK))));
+                List.of(note("time_energy", BioDigesterBlockEntity.PROCESS_TIME / 20.0F, BioDigesterBlockEntity.ENERGY_PER_TICK))));
     }
 
     /**

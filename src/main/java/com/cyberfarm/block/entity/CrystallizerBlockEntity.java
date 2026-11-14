@@ -188,9 +188,14 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
         }
     }
 
-    /** Also on clients: how far the crystal has grown at {@code time}, 0 to 1, running on smoothly between updates. */
-    public float growth(float time) {
-        return progress <= 0 ? 0.0F : Math.min(1.0F, (progress + Math.max(0.0F, time - syncedAt)) / workTime(PROCESS_TIME));
+    /** Also on clients: how far the crystal has grown, {@code sinceSync} ticks after the last update, 0 to 1, running on smoothly between updates. */
+    public float growth(float sinceSync) {
+        return progress <= 0 ? 0.0F : Math.min(1.0F, (progress + Math.max(0.0F, sinceSync)) / workTime(PROCESS_TIME));
+    }
+
+    /** Game time of the last update the clients had. */
+    public long syncedAt() {
+        return syncedAt;
     }
 
     /** Also on clients: how full the acid tank is, 0 to 1. */

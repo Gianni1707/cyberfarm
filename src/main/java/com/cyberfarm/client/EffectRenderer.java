@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.client.renderer.DockRenderer;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.effect.Effects;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.cyberfarm.port.client.VertexConsumer;
@@ -96,12 +97,11 @@ public final class EffectRenderer {
         if (effects.isEmpty()) {
             return;
         }
-        float time = event.getLevel().getGameTime() + Minecraft.getInstance().getPartialTick();
         List<Frame> now = new ArrayList<>();
         // A level change or a long pause can leave effects from another time: those go too
         float partialTick = Minecraft.getInstance().getPartialTick();
         effects.removeIf(effect -> {
-            float t = (time - effect.start()) / switch (effect.kind()) {
+            float t = ModelParts.since(event.getLevel(), effect.start(), partialTick) / switch (effect.kind()) {
                 case Effects.PRINT -> PRINT_TICKS;
                 case Effects.BEAM -> BEAM_TICKS;
                 case Effects.LASER -> LASER_TICKS;

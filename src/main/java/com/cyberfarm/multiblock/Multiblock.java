@@ -128,18 +128,23 @@ public final class Multiblock {
         }
     }
 
-    /** Tells the old ports they are free and the new ones which controller they belong to. */
+    /**
+     * Tells the old ports they are free and the new ones which controller they belong to. A port in a wall shared
+     * by two structures stays with the one that took it first; the ports this controller holds are returned.
+     */
     public static List<BlockPos> rebindPorts(Level level, BlockPos controller, List<BlockPos> oldPorts, List<BlockPos> newPorts) {
         for (BlockPos port : oldPorts) {
-            if (!newPorts.contains(port) && level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) {
+            if (!newPorts.contains(port) && level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity && entity.isHeldBy(controller)) {
                 entity.setController(null);
             }
         }
+        List<BlockPos> held = new ArrayList<>();
         for (BlockPos port : newPorts) {
-            if (level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) {
+            if (level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity && entity.isFreeFor(controller)) {
                 entity.setController(controller);
+                held.add(port);
             }
         }
-        return newPorts;
+        return held;
     }
 }

@@ -23,7 +23,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect at the three mint sockets of the machine block, on either side or on top, whichever you prefer."
+      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect at the three mint sockets of the machine block, on either side or on top, whichever you prefer. A conduit on one of its frames can pull the power with its arm (see $(l:cables/energy_conduit)Energy Conduit$(/l))."
     },
     {
       "type": "patchouli:text",
