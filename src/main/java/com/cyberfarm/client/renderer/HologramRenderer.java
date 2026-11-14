@@ -173,7 +173,7 @@ public class HologramRenderer implements BlockEntityRenderer<HologramTableBlockE
             return;
         }
         long now = level.getGameTime();
-        float time = now + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.time = time;
         BlockPos centre = entity.getBlockPos();
         // Rises while a player is near, folds away when they leave

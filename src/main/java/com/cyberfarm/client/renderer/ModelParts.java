@@ -42,6 +42,26 @@ public final class ModelParts {
     private static final float PIXEL = 1.0F / 16.0F;
     private static final float CARRY = 25.0F;
 
+    private static @Nullable Level clockLevel;
+    private static long clockBase;
+
+    /**
+     * Animation time in ticks, counted from when this client entered the level. A float holding the raw game time
+     * loses the partial tick after a day or so of world time, and old worlds animate in jumps.
+     */
+    public static float time(Level level, float partialTick) {
+        if (level != clockLevel) {
+            clockLevel = level;
+            clockBase = level.getGameTime();
+        }
+        return (level.getGameTime() - clockBase) + partialTick;
+    }
+
+    /** Ticks since a game time the server sent (statusTime and the like), exact however old the world. */
+    public static float since(Level level, long stamp, float partialTick) {
+        return (level.getGameTime() - stamp) + partialTick;
+    }
+
     private ModelParts() {
     }
 
@@ -111,8 +131,9 @@ public final class ModelParts {
     }
 
     /** The recipe's progress now, 0 to 1. It comes every 20 ticks and is carried on for no longer, so a stalled machine stops its parts. */
-    static float progress(MachineBlockEntity entity, float time, int recipeTicks) {
-        float carried = entity.status.working() ? Math.min(time - entity.statusTime, CARRY) / recipeTicks : 0.0F;
+    static float progress(MachineBlockEntity entity, float partialTick, int recipeTicks) {
+        float carried = entity.status.working() && entity.getLevel() != null
+                ? Math.min(since(entity.getLevel(), entity.statusTime, partialTick), CARRY) / recipeTicks : 0.0F;
         return Mth.clamp(entity.status.progress() + carried, 0.0F, 1.0F);
     }
 

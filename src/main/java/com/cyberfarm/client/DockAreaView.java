@@ -7,6 +7,7 @@ import java.util.Set;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.client.renderer.FrameDroneRenderer;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.drone.DroneTask;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -145,18 +146,19 @@ public final class DockAreaView {
             switchedOn = null;
         }
         long now = level.getGameTime();
+        float clock = ModelParts.time(level, 0.0F);
         Set<Plan> wanted = new HashSet<>();
         if (switchedOn != null && level.getBlockEntity(switchedOn) instanceof DroneDockBlockEntity dock) {
             Plan plan = plan(dock);
             if (!plan.spots().isEmpty()) {
                 wanted.add(plan);
                 if (VIEWS.stream().noneMatch(view -> view.leaveAt < 0.0F && view.plan.equals(plan))) {
-                    VIEWS.add(new View(level, switchedOn, plan, now));
+                    VIEWS.add(new View(level, switchedOn, plan, clock));
                 }
             }
         }
         for (View view : VIEWS) {
-            float t = now - view.start;
+            float t = clock - view.start;
             if (view.leaveAt < 0.0F && !wanted.contains(view.plan)) {
                 view.leaveAt = Math.max(t, view.allArrived());
             }
@@ -165,7 +167,7 @@ public final class DockAreaView {
                 view.lit = readLit(view);
             }
         }
-        VIEWS.removeIf(view -> view.gone(now - view.start));
+        VIEWS.removeIf(view -> view.gone(clock - view.start));
     }
 
     private static Plan plan(DroneDockBlockEntity dock) {
@@ -244,14 +246,14 @@ public final class DockAreaView {
         if (VIEWS.isEmpty() || level == null) {
             return;
         }
-        float now = level.getGameTime() + minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        float clock = ModelParts.time(level, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false));
         Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
         PoseStack poseStack = event.getPoseStack();
         SubmitNodeCollector collector = event.getSubmitNodeCollector();
         poseStack.pushPose();
         poseStack.translate(-camera.x, -camera.y, -camera.z);
         for (View view : VIEWS) {
-            float t = now - view.start;
+            float t = clock - view.start;
             float fade = view.leaveAt >= 0.0F ? 1.0F - (t - view.leaveAt) / FADE : 1.0F;
             for (int i = 0; i < view.heights.length; i++) {
                 drone(poseStack, collector, level, view, i, t, fade);

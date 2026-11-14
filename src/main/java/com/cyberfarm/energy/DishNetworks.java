@@ -71,7 +71,12 @@ public class DishNetworks extends SavedData {
 
         /** Public networks for everyone; private ones for their owner and the players on the owner's team. */
         public boolean visibleTo(ServerPlayer player) {
-            if (isPublic || player.getUUID().equals(owner)) {
+            return isPublic || canEdit(player);
+        }
+
+        /** Name, colour and visibility: only for the owner and the players on the owner's team, public or not. */
+        public boolean canEdit(ServerPlayer player) {
+            if (player.getUUID().equals(owner)) {
                 return true;
             }
             PlayerTeam team = player.level().getScoreboard().getPlayersTeam(ownerName);

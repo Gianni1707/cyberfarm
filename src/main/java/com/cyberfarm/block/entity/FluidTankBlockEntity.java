@@ -196,6 +196,12 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
         return (float) shownAmount / (blocks() * CAPACITY);
     }
 
+    /** Passive and without FE: a 16x16x16 tank would otherwise send 4,096 "idle" packets every 5 s. */
+    @Override
+    protected boolean sendsStatus() {
+        return false;
+    }
+
     /** Only the block running the tank does anything: pipes and buckets do the moving. */
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {

@@ -75,7 +75,7 @@ public class GasTurbineRenderer implements BlockEntityRenderer<GasTurbineBlockEn
         if (level == null) {
             return;
         }
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.t = entity.shownOpening(state.stage, time);
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;

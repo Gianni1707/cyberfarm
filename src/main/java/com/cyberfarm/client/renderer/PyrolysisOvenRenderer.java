@@ -66,7 +66,7 @@ public class PyrolysisOvenRenderer implements BlockEntityRenderer<PyrolysisOvenB
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.stage = entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.t = entity.shownOpening(state.stage, time);
         if (state.stage == SmallMultiblockBlock.OPENING || state.stage == SmallMultiblockBlock.CLOSING
                 || state.stage == SmallMultiblockBlock.OPEN && entity.shownHolding(state.stage, time)) {
@@ -79,7 +79,7 @@ public class PyrolysisOvenRenderer implements BlockEntityRenderer<PyrolysisOvenB
             return;
         }
         state.light = LevelRenderer.getLightCoords(level, entity.getBlockPos());
-        float f = ModelParts.progress(entity, level.getGameTime() + partialTick, PyrolysisOvenBlockEntity.PROCESS_TIME);
+        float f = ModelParts.progress(entity, partialTick, PyrolysisOvenBlockEntity.PROCESS_TIME);
         float pass = f < PASS ? f / PASS : (1.0F + Mth.cos((f - PASS) / (1.0F - PASS) * Mth.PI)) / 2.0F;
         state.x = Mth.lerp(pass, X_REST, X_END);
     }

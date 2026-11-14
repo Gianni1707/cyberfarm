@@ -58,8 +58,9 @@ Every module makes the drone use more power in flight, and some jobs cost energy
 <ItemImage id="cyberfarm:harvester_module" scale="2" float="left" />
 
 The drone looks for **fully grown crops** in its work area and harvests them, bringing crops and
-seeds to the dock. It also harvests **melons and pumpkins**, and **picks** ripe plants that give their
-fruit to a right-click, like sweet berry bushes, leaving the plant in place.
+seeds to the dock. It also harvests **melons, pumpkins and ripe cocoa pods**, and **picks** ripe plants
+that give their fruit to a right-click, like sweet berry bushes, leaving the plant in place. Plants
+a click does nothing to, like bamboo or kelp, are left alone.
 
 It **does not replant**: the field stays bare. For a farm that runs by itself add a
 [Planter Module](modules.md), on a frame with room for both or on a second drone sharing the seeds.

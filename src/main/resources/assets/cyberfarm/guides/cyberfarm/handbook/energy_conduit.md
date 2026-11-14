@@ -26,6 +26,9 @@ You can tell them by the cyan lights on their sleeves, and while energy flows a 
 - From each generator or battery pushing into it, up to **2,000 FE/t** enters the network
   through a basic conduit, **16,000** through an Advanced one and **128,000** through an Elite one.
   A Medium Steam Turbine needs Advanced conduits at its ports, a Large one Elite conduits.
+- On machines assembled with Cyber Frames (Bio-Digester, Biomass Press, Gas Turbine, Electrolyzer and the
+  others) a conduit also plugs into **any of the frames**, not only the machine block. A generator pushes only from
+  its own block: on one of its frames, right-click the conduit's arm to make it pull.
 - All tiers join into one network.
 - Networks can be up to 1,024 conduits long.
 

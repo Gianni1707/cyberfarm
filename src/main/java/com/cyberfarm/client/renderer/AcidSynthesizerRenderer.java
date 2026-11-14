@@ -91,7 +91,7 @@ public class AcidSynthesizerRenderer implements BlockEntityRenderer<AcidSynthesi
         if (level == null) {
             return;
         }
-        state.time = level.getGameTime() + partialTick;
+        state.time = ModelParts.time(level, partialTick);
         state.t = entity.shownOpening(state.stage, state.time);
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;

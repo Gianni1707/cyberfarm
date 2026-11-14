@@ -12,6 +12,7 @@ import com.cyberfarm.block.entity.MachineStatusPayload;
 import com.cyberfarm.block.entity.MechHangarBlockEntity;
 import com.cyberfarm.block.entity.MethaneExtractorBlockEntity;
 import com.cyberfarm.block.entity.ResonanceCoreBlockEntity;
+import com.cyberfarm.block.entity.SmallMultiblockBlockEntity;
 import com.cyberfarm.effect.EffectPayload;
 import com.cyberfarm.energy.ForwardingEnergyHandler;
 import com.cyberfarm.entity.DroneEntity;
@@ -137,6 +138,11 @@ public class CyberFarm {
             BlockPos below = pos.below();
             return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
                     ? level.getCapability(Capabilities.Item.BLOCK, below, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
+        // Any frame of a small machine takes cables too, so they need not all crowd onto the machine block
+        event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
+            BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
+            return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity small ? small.getEnergy() : null;
         }, ModBlocks.HIDDEN_FRAME.get());
         // The extraction chamber takes acid in and gives methane out only through its ports
         event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {

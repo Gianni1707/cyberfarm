@@ -111,11 +111,12 @@ The chamber holds one mob.
 
 | Mob | Methane | In Gas Turbines |
 | --- | --- | --- |
-| Zombies (any kind) | 25 mB/t | 300 FE/t |
-| Other monsters | 12 mB/t | 144 FE/t |
-| Animals | 4 mB/t | 48 FE/t |
+| Zombies (any kind) | 30 mB/t | 360 FE/t |
+| Other monsters | 15 mB/t | 180 FE/t |
+| Animals | 5 mB/t | 60 FE/t |
 
-A zombie lasts about 5 minutes and gives about 150,000 mB of methane in all. The chamber is a lot
+The acid takes one point of health every 15 seconds: a zombie (20 health) lasts about 5 minutes and gives about
+180,000 mB of methane in all, 2,160,000 FE in Gas Turbines. The chamber is a lot
 of work (acid, mobs, the structure), so it pays back far more than a
 [Bio-Digester](bio_digester.md).
 

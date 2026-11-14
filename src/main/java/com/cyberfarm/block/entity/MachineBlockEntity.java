@@ -276,10 +276,15 @@ public abstract class MachineBlockEntity extends BlockEntity implements MenuProv
         return -1.0F;
     }
 
+    /** False for blocks that never work or hold FE, such as each block of a Fluid Tank: they would only resend "idle". */
+    protected boolean sendsStatus() {
+        return true;
+    }
+
     /** Measures what the machine did over the last second and tells the players near it, if it changed. */
     public final void tickStatus(ServerLevel level, BlockPos pos) {
         long time = level.getGameTime();
-        if (time % STATUS_INTERVAL != 0) {
+        if (time % STATUS_INTERVAL != 0 || !sendsStatus()) {
             return;
         }
         float made = energy.takeGenerated() / (float) STATUS_INTERVAL;

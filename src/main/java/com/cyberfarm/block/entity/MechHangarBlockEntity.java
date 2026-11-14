@@ -139,8 +139,13 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         return fitModule;
     }
 
-    public float fitProgress(float time) {
-        return Mth.clamp((time - fitStart) / FIT_TIME, 0.0F, 1.0F);
+    /** How far the arm's run is, {@code sinceStart} ticks after the fit began (see {@link #fitStart()}). */
+    public float fitProgress(float sinceStart) {
+        return Mth.clamp(sinceStart / FIT_TIME, 0.0F, 1.0F);
+    }
+
+    public long fitStart() {
+        return fitStart;
     }
 
     public boolean fitInstall() {

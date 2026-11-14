@@ -109,7 +109,7 @@ public class ReceiverDishRenderer implements BlockEntityRenderer<ReceiverDishBlo
         if (level == null) {
             return;
         }
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         // Called every frame, so it sees each change of stage; the dish is never in a static model, so nothing to hold
         float t = entity.shownOpening(state.stage, time);
         if (state.stage == SmallMultiblockBlock.LOOSE) {
