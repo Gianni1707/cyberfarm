@@ -45,3 +45,9 @@ graphify-out/
 /CLAUDE.md
 /.claude/
 /DESIGN.md
+
+# dev / local-only: the trailer set builder (showcases stay out of the repo)
+tools/trailer.py
+tools/citypreview.py
+tools/citycheck.py
+tools/trailer_edit.py

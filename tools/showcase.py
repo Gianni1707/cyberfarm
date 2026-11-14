@@ -482,4 +482,5 @@ def main():
     write(world)
 
 
-main()
+if __name__ == "__main__":  # tools/trailer.py imports the building blocks
+    main()
