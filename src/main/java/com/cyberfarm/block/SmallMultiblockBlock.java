@@ -3,6 +3,8 @@ package com.cyberfarm.block;
 import com.cyberfarm.client.renderer.FrameDroneRenderer;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -46,6 +48,11 @@ public abstract class SmallMultiblockBlock extends LitMachineBlock {
             }
         }
         return cells;
+    }
+
+    /** The shape of one of its hidden frames, at {@code frame}: the whole cell, unless the machine is open there. */
+    public VoxelShape frameShape(BlockState state, BlockPos machine, BlockPos frame) {
+        return Shapes.block();
     }
 
     /** What a click tells a player whose machine is still alone. */

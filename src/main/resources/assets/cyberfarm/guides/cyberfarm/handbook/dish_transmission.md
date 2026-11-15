@@ -74,6 +74,12 @@ With a receiver in another dimension, both dishes point **straight up at the sky
 
 <RecipeFor id="range_module_i" />
 
+A Transmitter Dish also charges your **Energy Sphere** from afar: while you are in its reach and can see its
+network, it tops up the sphere on your [Utility Belt](trinkets.md), at the module's power, losing 10% on the way.
+The players it charges take their turn with the receivers, so now and then the dish turns to follow you. In its GUI,
+the **Manage** tab (on the left of the network panel) switches this charging on or off (owner only); the
+**Network** tab holds the network's name, colour and Public / Private.
+
 <RecipeFor id="range_module_ii" />
 
 <RecipeFor id="range_module_iii" />

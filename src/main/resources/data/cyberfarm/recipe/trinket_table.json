@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:ingots/aluminum",
+    "D": "cyberfarm:advanced_circuit",
+    "G": "minecraft:glass",
+    "T": "minecraft:crafting_table",
+    "B": "cyberfarm:battery_cell"
+  },
+  "pattern": [
+    "ADA",
+    "GTG",
+    "ABA"
+  ],
+  "result": {
+    "id": "cyberfarm:trinket_table"
+  }
+}

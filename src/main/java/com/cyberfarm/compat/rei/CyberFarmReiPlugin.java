@@ -31,6 +31,11 @@ public class CyberFarmReiPlugin implements REIClientPlugin {
         zones.register(DroneDockScreen.class, (DroneDockScreen screen) -> screen.sideAreas().stream()
                 .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
                 .toList());
+        zones.register(net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.class,
+                (net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen screen) -> com.cyberfarm.client.TrinketClient.creativeTabArea(screen).stream()
+                        .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight())).toList());
+        zones.register(com.cyberfarm.client.screen.TransmitterDishScreen.class, (com.cyberfarm.client.screen.TransmitterDishScreen screen) -> screen.sideAreas().stream()
+                .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight())).toList());
         zones.register(MachineScreen.class, (MachineScreen<?> screen) -> screen.addonArea().stream()
                 .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
                 .toList());

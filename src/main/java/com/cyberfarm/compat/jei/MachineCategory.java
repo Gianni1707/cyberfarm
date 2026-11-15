@@ -32,40 +32,44 @@ public class MachineCategory extends AbstractRecipeCategory<MachineExample> {
     }
 
     public MachineCategory(IGuiHelper guiHelper, MachineExample.Machine machine) {
-        super(type(machine), machine.title(), guiHelper.createDrawableItemLike(machine.block()), MachineExample.WIDTH, MachineExample.HEIGHT);
+        super(type(machine), machine.title(), guiHelper.createDrawableItemLike(machine.block()), MachineExample.WIDTH, MachineExample.height(machine));
         this.arrow = guiHelper.getRecipeArrow();
     }
 
     @Override
     public void setRecipe(IRecipeLayoutBuilder builder, MachineExample recipe, IFocusGroup focuses) {
+        MachineExample.Machine machine = recipe.machine();
         int input = 0;
         for (var stacks : recipe.itemInputs()) {
-            IRecipeSlotBuilder slot = slot(builder, RecipeIngredientRole.INPUT, MachineExample.inputX(input++));
+            IRecipeSlotBuilder slot = slot(builder, RecipeIngredientRole.INPUT, MachineExample.inputX(machine, input),
+                    MachineExample.inputY(machine, input++));
             stacks.forEach(slot::add);
         }
         for (MachineExample.FluidAmount fluid : recipe.fluidInputs()) {
-            slot(builder, RecipeIngredientRole.INPUT, MachineExample.inputX(input++)).add(fluid.fluid(), fluid.amount());
+            slot(builder, RecipeIngredientRole.INPUT, MachineExample.inputX(machine, input), MachineExample.inputY(machine, input++))
+                    .add(fluid.fluid(), fluid.amount());
         }
-        int output = 0;
+        int output = 0, y = MachineExample.outputY(machine);
         for (var stack : recipe.itemOutputs()) {
-            slot(builder, RecipeIngredientRole.OUTPUT, MachineExample.outputX(output++)).add(stack);
+            slot(builder, RecipeIngredientRole.OUTPUT, MachineExample.outputX(machine, output++), y).add(stack);
         }
         for (MachineExample.FluidAmount fluid : recipe.fluidOutputs()) {
-            slot(builder, RecipeIngredientRole.OUTPUT, MachineExample.outputX(output++)).add(fluid.fluid(), fluid.amount());
+            slot(builder, RecipeIngredientRole.OUTPUT, MachineExample.outputX(machine, output++), y).add(fluid.fluid(), fluid.amount());
         }
     }
 
-    private static IRecipeSlotBuilder slot(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x) {
-        return builder.addSlot(role).setPosition(x + 1, 1).setStandardSlotBackground();
+    private static IRecipeSlotBuilder slot(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y) {
+        return builder.addSlot(role).setPosition(x + 1, y + 1).setStandardSlotBackground();
     }
 
     @Override
     public void draw(MachineExample recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor graphics, double mouseX, double mouseY) {
-        arrow.draw(graphics, MachineExample.ARROW_X, 1);
+        MachineExample.Machine machine = recipe.machine();
+        arrow.draw(graphics, MachineExample.arrowX(machine), MachineExample.outputY(machine) + 1);
         var font = Minecraft.getInstance().font;
         List<Component> notes = recipe.notes();
         for (int i = 0; i < notes.size(); i++) {
-            graphics.text(font, notes.get(i), 0, MachineExample.NOTES_Y + i * MachineExample.LINE, TEXT_COLOR, false);
+            graphics.text(font, notes.get(i), 0, MachineExample.notesY(machine) + i * MachineExample.LINE, TEXT_COLOR, false);
         }
     }
 }

@@ -21,6 +21,13 @@ import com.cyberfarm.item.DroneModuleItem;
 import com.cyberfarm.item.FluidBucketItem;
 import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.item.GeigerCounterItem;
+import com.cyberfarm.trinket.ChipProgram;
+import com.cyberfarm.trinket.GravityBootsItem;
+import com.cyberfarm.trinket.NeuralChipItem;
+import com.cyberfarm.trinket.EnergySphereItem;
+import com.cyberfarm.trinket.PocketDroneItem;
+import com.cyberfarm.trinket.ProgramItem;
+import com.cyberfarm.trinket.UtilityBeltItem;
 import com.cyberfarm.item.HazmatSuitItem;
 import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.item.BiomassItem;
@@ -87,6 +94,28 @@ public class ModItems {
     public static final DeferredItem<HazmatSuitItem> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", p -> new HazmatSuitItem(p, ArmorType.LEGGINGS));
     public static final DeferredItem<HazmatSuitItem> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", p -> new HazmatSuitItem(p, ArmorType.BOOTS));
     public static final DeferredItem<GeigerCounterItem> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", GeigerCounterItem::new);
+
+    // Trinkets: worn in their own slots, powered by the Power Belt, made at the Trinket Table
+    public static final DeferredItem<GravityBootsItem> GRAVITY_BOOTS = ITEMS.registerItem("gravity_boots", GravityBootsItem::new);
+    public static final DeferredItem<NeuralChipItem> NEURAL_CHIP = ITEMS.registerItem("neural_chip", NeuralChipItem::new);
+    public static final DeferredItem<UtilityBeltItem> UTILITY_BELT = ITEMS.registerItem("utility_belt", UtilityBeltItem::new);
+    public static final DeferredItem<EnergySphereItem> ENERGY_SPHERE = ITEMS.registerItem("energy_sphere",
+            p -> new EnergySphereItem(p, 1, EnergySphereItem.CAPACITY, EnergySphereItem.MAX_INPUT));
+    public static final DeferredItem<EnergySphereItem> ADVANCED_ENERGY_SPHERE = ITEMS.registerItem("advanced_energy_sphere",
+            p -> new EnergySphereItem(p, 2, EnergySphereItem.ADVANCED_CAPACITY, EnergySphereItem.ADVANCED_INPUT));
+    public static final DeferredItem<EnergySphereItem> ELITE_ENERGY_SPHERE = ITEMS.registerItem("elite_energy_sphere",
+            p -> new EnergySphereItem(p.rarity(Rarity.RARE), 3, EnergySphereItem.ELITE_CAPACITY, EnergySphereItem.ELITE_INPUT));
+    public static final DeferredItem<PocketDroneItem> POCKET_DRONE = ITEMS.registerItem("pocket_drone", PocketDroneItem::new);
+    public static final DeferredItem<ProgramItem> ZOOM_PROGRAM = program(ChipProgram.ZOOM);
+    public static final DeferredItem<ProgramItem> NIGHT_VISION_PROGRAM = program(ChipProgram.NIGHT_VISION);
+    public static final DeferredItem<ProgramItem> MACHINE_LINK_PROGRAM = program(ChipProgram.MACHINE_LINK);
+    public static final DeferredItem<ProgramItem> GEIGER_HUD_PROGRAM = program(ChipProgram.GEIGER_HUD);
+    public static final DeferredItem<ProgramItem> TAXI_CALL_PROGRAM = program(ChipProgram.TAXI_CALL);
+    public static final DeferredItem<ProgramItem> AUTO_FEEDER_PROGRAM = program(ChipProgram.AUTO_FEEDER);
+
+    private static DeferredItem<ProgramItem> program(ChipProgram program) {
+        return ITEMS.registerItem(program.getName() + "_program", p -> new ProgramItem(p, program));
+    }
     public static final DeferredItem<BlockItem> COOLANT_MIXER = ITEMS.registerSimpleBlockItem(ModBlocks.COOLANT_MIXER);
     public static final DeferredItem<BlockItem> BIOMASS_PRESS = ITEMS.registerSimpleBlockItem(ModBlocks.BIOMASS_PRESS);
     public static final DeferredItem<BlockItem> WATER_PUMP = ITEMS.registerSimpleBlockItem(ModBlocks.WATER_PUMP);
@@ -209,6 +238,9 @@ public class ModItems {
     // Drone and tools
     public static final DeferredItem<DroneItem> DRONE = ITEMS.registerItem("drone", DroneItem::new);
     public static final DeferredItem<BlockItem> CRYSTALLIZER = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER);
+    public static final DeferredItem<BlockItem> TRINKET_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.TRINKET_TABLE);
+    public static final DeferredItem<BlockItem> HUMAN_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.HUMAN_DOCK);
+    public static final DeferredItem<BlockItem> BATTERY_BANK = ITEMS.registerSimpleBlockItem(ModBlocks.BATTERY_BANK);
     public static final DeferredItem<BlockItem> CRYSTALLIZER_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER_PORT,
             p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.crystallizer_port", ChatFormatting.LIGHT_PURPLE)));
     public static final DeferredItem<Item> FUSION_CRYSTAL = ITEMS.registerSimpleItem("fusion_crystal", p -> p.rarity(Rarity.RARE));

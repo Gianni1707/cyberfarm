@@ -28,6 +28,8 @@ FLAT_ITEMS = [
     "sulfur", "biomass", "acid_bucket", "mech_frame", "isotope_shard", "fusion_crystal", "mech_core",
     "mech_jet_module", "mech_drill_module", "mech_blade_module", "mech_armor_module",
     "range_module_i", "range_module_ii", "range_module_iii", "infinity_range_module",
+    "gravity_boots", "neural_chip", "utility_belt", "energy_sphere", "advanced_energy_sphere", "elite_energy_sphere", "pocket_drone",
+    "zoom_program", "night_vision_program", "machine_link_program", "geiger_hud_program", "taxi_call_program", "auto_feeder_program",
 ]
 
 
@@ -422,6 +424,9 @@ def blocks():
             variants = {f"{key},open={o}": model for key, model in variants.items() for o in ("false", "true")}
         write(ASSETS / f"blockstates/{part}.json", {"variants": variants})
 
+    # The Trinket Table's models and blockstate are in machinemodels.py
+    # The Human Dock's and the Battery Bank's models are in machinemodels.py
+
     # Soft block, not a machine: no pickaxe needed
     facing_blockstate("muffler")
     write(ASSETS / "items/muffler.json", {"model": {"type": "minecraft:model", "model": f"{NS}:block/muffler_item"}})
@@ -438,7 +443,7 @@ def blocks():
              "waste_reprocessor", "vitrified_waste", "liquid_tank", "gas_tank", "resonance_core", "resonance_cell", "stabilizer_pylon",
              "acid_synthesizer", "containment_glass", "acid_inlet", "methane_outlet", "intake_gate", "steam_engine",
              "mech_hangar", "hangar_frame", "hangar_pad", "crystallizer", "crystallizer_port", "electrolyzer", "pyrolysis_oven", "fabricator",
-             "supply_terminal", "laser_turret", "transmitter_dish", "receiver_dish"]
+             "supply_terminal", "laser_turret", "transmitter_dish", "receiver_dish", "trinket_table", "human_dock", "battery_bank"]
     for name in names:
         if not name.endswith(("_conduit", "_pipe")):
             model = f"{name}_inventory" if name == "laser_turret" else name
@@ -774,6 +779,9 @@ def recipes():
     # By hand a circuit is slow and dear; the Fabricator makes two from the same
     shaped("basic_circuit", [" R ", "CNC", " R "], {"R": redstone, "C": copper, "N": "minecraft:gold_nugget"})
     shaped("electrolyzer", ["ICI", "GXG", "IBI"], {"I": iron, "C": circuit, "G": "minecraft:glass", "X": "minecraft:cauldron", "B": cell})
+    shaped("human_dock", ["CPC", "ABA"], {"C": advanced_circuit, "P": "minecraft:heavy_weighted_pressure_plate", "A": aluminum, "B": cell})
+    shaped("battery_bank", ["ABA", "BCB", "ABA"], {"A": aluminum, "B": cell, "C": circuit})
+    shaped("trinket_table", ["ADA", "GTG", "ABA"], {"A": aluminum, "D": advanced_circuit, "G": "minecraft:glass", "T": "minecraft:crafting_table", "B": cell})
     shaped("fabricator", ["IPI", "CTC", "IBI"], {"I": iron, "P": "minecraft:piston", "C": circuit, "T": "minecraft:crafting_table", "B": cell})
     shaped("supply_terminal", ["GGG", "CXC", "IBI"], {"G": "minecraft:glass_pane", "C": circuit, "X": "minecraft:emerald",
                                                       "I": iron, "B": "minecraft:barrel"})
@@ -832,8 +840,8 @@ def recipes():
     shaped("liquid_pipe", ["III", "GGG", "III"], {"I": iron, "G": "minecraft:glass"}, count=8)
     # Higher tiers: 8 pipes around an upgrade core
     for kind in ("energy_conduit", "gas_pipe", "liquid_pipe"):
-        shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": advanced_circuit}, count=8)
-        shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": elite_circuit}, count=8)
+        shaped(f"advanced_{kind}", ["PPP", "GRG", "PPP"], {"P": f"{NS}:{kind}", "G": "minecraft:gold_ingot", "R": circuit}, count=8)
+        shaped(f"elite_{kind}", ["PPP", "DUD", "PPP"], {"P": f"{NS}:advanced_{kind}", "D": "minecraft:diamond", "U": advanced_circuit}, count=8)
     shaped("cyber_frame", ["ICI", "C C", "ICI"], {"I": iron, "C": copper}, count=8)
     shaped("biomass_press", ["IPI", "CXC", "IUI"], {"I": iron, "P": "minecraft:piston", "C": copper, "X": "minecraft:composter", "U": circuit})
     shaped("bio_digester", ["IUI", "GXG", "ICI"], {"I": iron, "U": circuit, "C": copper, "G": "minecraft:glass", "X": "minecraft:composter"})

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "cyberfarm:item/taxi_call_program"
+  }
+}

@@ -37,6 +37,8 @@ public final class ModelParts {
     /** Solid parts: this texture's white texel, tinted by the vertex colours. */
     static final RenderType SOLID = RenderTypes.entityCutout(CyberFarm.id("textures/entity/fabricator_card.png"));
     static final float WHITE_UV = 15.5F / 16.0F;
+    /** Like {@link #SOLID} but see-through: the colour's alpha counts. Glass, fields of light. */
+    static final RenderType SEE_THROUGH = RenderTypes.entityTranslucent(CyberFarm.id("textures/entity/fabricator_card.png"));
     /** Fluids in sight glasses. */
     static final RenderType FLUID = RenderTypes.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
     private static final float PIXEL = 1.0F / 16.0F;
