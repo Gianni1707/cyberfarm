@@ -64,7 +64,7 @@ public class ElectrolyzerRenderer implements BlockEntityRenderer<ElectrolyzerBlo
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         int stage = entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.t = entity.shownOpening(stage, time);
         if (stage == SmallMultiblockBlock.OPENING || stage == SmallMultiblockBlock.CLOSING || stage == SmallMultiblockBlock.OPEN && entity.shownHolding(stage, time)) {
             state.parts = new MovingBlockRenderState[MachinePartBlock.ELEC_BUS - MachinePartBlock.ELEC_BASE + 1];
@@ -76,7 +76,7 @@ public class ElectrolyzerRenderer implements BlockEntityRenderer<ElectrolyzerBlo
             return;
         }
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
-        state.stroke = Mth.frac(ModelParts.progress(entity, level.getGameTime() + partialTick, ElectrolyzerBlockEntity.PROCESS_TIME) * STROKES);
+        state.stroke = Mth.frac(ModelParts.progress(entity, partialTick, ElectrolyzerBlockEntity.PROCESS_TIME) * STROKES);
     }
 
     /** Down fast, a moment on the bath, back up, then at rest for the second half. */

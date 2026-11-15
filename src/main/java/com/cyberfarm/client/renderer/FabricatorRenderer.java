@@ -99,7 +99,7 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().above());
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.stage = entity.getBlockState().getValue(SmallMultiblockBlock.STAGE);
         state.t = entity.shownOpening(state.stage, time);
         state.parts = null;
@@ -110,14 +110,14 @@ public class FabricatorRenderer implements BlockEntityRenderer<FabricatorBlockEn
                 state.parts[i] = ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.FAB_BASE + i, state.facing);
             }
         }
-        state.sinceDone = entity.cards > 0 ? time - entity.doneTime : Float.MAX_VALUE;
+        state.sinceDone = entity.cards > 0 ? ModelParts.since(level, entity.doneTime, partialTick) : Float.MAX_VALUE;
         // A player who arrives mid-recipe doesn't know how long it takes: an empty bed until the next one starts
         if (!entity.status.working() || entity.shownTime == 0 || entity.doneTime > entity.startTime) {
             return;
         }
         boolean fresh = entity.statusTime > entity.startTime && entity.status.progress() >= 0.0F;
         float base = fresh ? entity.status.progress() : 0.0F;
-        float since = time - (fresh ? entity.statusTime : entity.startTime);
+        float since = ModelParts.since(level, fresh ? entity.statusTime : entity.startTime, partialTick);
         float p = Mth.clamp(base + Math.min(since, CARRY) / entity.shownTime, 0.0F, 1.0F);
         state.idle = false;
         state.progress = p;

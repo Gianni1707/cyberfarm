@@ -59,7 +59,7 @@ public class SupplyTerminalRenderer implements BlockEntityRenderer<SupplyTermina
         }
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().relative(state.facing));
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.header = entity.boardHasMechanist();
         state.blink = time % (2.0F * BLINK_TICKS) < BLINK_TICKS;
         for (int i = 0; i < SupplyTerminalBlockEntity.CONTRACTS; i++) {

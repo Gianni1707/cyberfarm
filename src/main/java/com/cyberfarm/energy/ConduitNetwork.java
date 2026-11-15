@@ -32,9 +32,12 @@ public final class ConduitNetwork {
      */
     public record Endpoint(BlockPos pos, Direction side, boolean source) {}
 
-    /** What a walk from one pipe finds: the machine sides it reaches, and its pipes. */
-    public record Network(List<Endpoint> endpoints, Set<BlockPos> pipes) {
-        private static final Network EMPTY = new Network(List.of(), Set.of());
+    /**
+     * What a walk from one pipe finds: the machine sides it reaches, and its pipes. {@code partial}: it stopped at an
+     * unloaded chunk, so it must be walked again later, as loading a chunk changes no block next to a pipe.
+     */
+    public record Network(List<Endpoint> endpoints, Set<BlockPos> pipes, boolean partial) {
+        private static final Network EMPTY = new Network(List.of(), Set.of(), false);
     }
 
     public static int version() {
@@ -55,6 +58,7 @@ public final class ConduitNetwork {
         ArrayDeque<BlockPos> queue = new ArrayDeque<>();
         queue.add(start);
         visited.add(start);
+        boolean partial = false;
 
         while (!queue.isEmpty() && visited.size() <= MAX_CONDUITS) {
             BlockPos pos = queue.poll();
@@ -68,6 +72,7 @@ public final class ConduitNetwork {
                 }
                 BlockPos neighbor = pos.relative(direction);
                 if (!level.isLoaded(neighbor)) {
+                    partial = true;
                     continue;
                 }
                 if (pipe.sameKind(level.getBlockState(neighbor))) {
@@ -79,6 +84,6 @@ public final class ConduitNetwork {
                 }
             }
         }
-        return new Network(endpoints, visited);
+        return new Network(endpoints, visited, partial);
     }
 }

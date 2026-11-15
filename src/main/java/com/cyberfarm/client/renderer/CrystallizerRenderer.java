@@ -151,8 +151,8 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
         state.centreX = 0.5F - facing.getStepX();
         state.centreZ = 0.5F - facing.getStepZ();
         state.consoleAngle = (float) Math.atan2(facing.getStepZ(), facing.getStepX());
-        state.time = level.getGameTime() + partialTick;
-        state.growth = entity.growth(state.time);
+        state.time = ModelParts.time(level, partialTick);
+        state.growth = entity.growth(ModelParts.since(level, entity.syncedAt(), partialTick));
         state.done = entity.hasCrystal();
         state.acid = entity.acidFill();
         BlockPos centre = entity.centre();

@@ -41,8 +41,11 @@ public abstract class NetworkPipeBlockEntity extends BlockEntity implements Netw
      */
     private static final int HOLD_TICKS = 40;
 
-    private ConduitNetwork.Network network = new ConduitNetwork.Network(List.of(), java.util.Set.of());
+    private ConduitNetwork.Network network = new ConduitNetwork.Network(List.of(), java.util.Set.of(), false);
     private int cachedVersion = -1;
+    /** When the network was last walked; one that ran into unloaded chunks is walked again this often. */
+    private long foundAt;
+    private static final int PARTIAL_RECHECK = 100;
     private int nextEndpoint;
     private @Nullable Object shown;
     private long shownSince = Long.MIN_VALUE / 2;
@@ -59,9 +62,10 @@ public abstract class NetworkPipeBlockEntity extends BlockEntity implements Netw
     }
 
     protected ConduitNetwork.Network network() {
-        if (cachedVersion != ConduitNetwork.version()) {
+        if (cachedVersion != ConduitNetwork.version() || network.partial() && level.getGameTime() - foundAt >= PARTIAL_RECHECK) {
             network = ConduitNetwork.find(level, worldPosition);
             cachedVersion = ConduitNetwork.version();
+            foundAt = level.getGameTime();
         }
         return network;
     }

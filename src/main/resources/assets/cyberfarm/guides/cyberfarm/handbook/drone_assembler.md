@@ -36,7 +36,9 @@ Fortune and Silk Touch Addons cannot go together.
 
 To **change a finished drone**, put it back in the output slot with the other slots empty and
 press **Disassemble**: its parts return to their slots. Disassembling is free; assembling again
-costs the usual 4,000 FE.
+costs the usual 4,000 FE. The drone's charge goes into the Assembler's buffer; what does not fit
+is kept and goes back into the next drone built there, and so does its **name**, as long as you
+build it from the same frame.
 
 Hover an empty slot to see what goes there.
 

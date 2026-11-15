@@ -4,7 +4,7 @@
   "key": {
     "P": "cyberfarm:advanced_energy_conduit",
     "D": "minecraft:diamond",
-    "U": "cyberfarm:elite_circuit"
+    "U": "cyberfarm:advanced_circuit"
   },
   "pattern": [
     "PPP",

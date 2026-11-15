@@ -86,7 +86,7 @@ public class BiomassPressRenderer implements BlockEntityRenderer<BiomassPressBlo
         if (contents > 0) {
             state.mash = ModelParts.movingPart(level, entity.getBlockPos(), MachinePartBlock.PRESS_MASH, state.facing);
         }
-        float time = level.getGameTime() + partialTick;
+        float time = ModelParts.time(level, partialTick);
         state.t = entity.shownOpening(state.stage, time);
         if (state.stage == SmallMultiblockBlock.LOOSE) {
             return;

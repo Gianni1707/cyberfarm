@@ -26,11 +26,12 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
  */
 public class BioDigesterBlockEntity extends SmallMultiblockBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
-    public static final int PROCESS_TIME = 40;
+    // Each Biomass digests for 2.5 s into 500 mB: 10 mB/t, so two digesters keep a Gas Turbine running
+    public static final int PROCESS_TIME = 50;
     public static final int ENERGY_PER_TICK = 8;
     private static final int CAPACITY = 4_000;
     private static final int MAX_INPUT = 100;
-    public static final int MB_PER_BIOMASS = 250;
+    public static final int MB_PER_BIOMASS = 500;
     private static final int OUTPUT_PER_SIDE = 200;
     private static final int OPEN_TICKS = 60;
     private static final int SYNC_INTERVAL = 5;

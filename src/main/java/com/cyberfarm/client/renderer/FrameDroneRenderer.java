@@ -181,7 +181,7 @@ public final class FrameDroneRenderer {
 
     /** A click on a lone small multiblock: a drone goes out for each frame it lacks. */
     public static void clicked(Level level, BlockPos machine, BlockState state, SmallMultiblockBlock block) {
-        float now = level.getGameTime();
+        float now = ModelParts.time(level, 0.0F);
         if (recalled(level, machine, now)) {
             return;
         }
@@ -205,7 +205,7 @@ public final class FrameDroneRenderer {
      * each further click shows the next size, and after the largest they come home.
      */
     public static void clickedStructure(Level level, BlockPos controller, BlockState state, Blueprint... sizes) {
-        float now = level.getGameTime();
+        float now = ModelParts.time(level, 0.0F);
         int shown = -1;
         for (Hint hint : HINTS) {
             if (hint.level == level && hint.machine.equals(controller) && !hint.closing) {
@@ -261,7 +261,7 @@ public final class FrameDroneRenderer {
      * for a group of them, and more follow for blocks that go missing later. They go home when it stops being pinned there.
      */
     public static void project(Level level, BlockPos player, Structure structure, BlockPos controller, Direction facing, List<Structure.Ghost> missing) {
-        float now = level.getGameTime();
+        float now = ModelParts.time(level, 0.0F);
         Job job = new Job(structure, controller, facing);
         Hint hint = null;
         for (Hint other : HINTS) {
@@ -342,7 +342,7 @@ public final class FrameDroneRenderer {
         if (HINTS.isEmpty() || level == null || minecraft.player == null) {
             return;
         }
-        float now = level.getGameTime() + minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
+        float now = ModelParts.time(level, minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false));
         Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
         PoseStack poseStack = event.getPoseStack();
         SubmitNodeCollector collector = event.getSubmitNodeCollector();

@@ -37,7 +37,10 @@ Dishes send **FE through the air**, where a conduit can't go. There is no beam: 
 - Each Transmitter Dish has **one network**. In its GUI you give it a **name** and a **colour**, which
   lights the indicator on both dishes.
 - A new network is **Private**: only you and the players on your team can see it. Switch it to
-  **Public** and anyone can link a receiver.
+  **Public** and anyone can link a receiver. Only you and your team can change its name, colour
+  and visibility.
+- A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on
+  the network after 30 seconds, so swapping a module is safe.
 - It serves up to **4 receivers in turn**: it turns to one (1 second), sends for 4 seconds, then moves to the next. The signal
   passes through blocks, but the chunks of both dishes must be loaded.
 - A tenth of the FE is **lost on the way**.

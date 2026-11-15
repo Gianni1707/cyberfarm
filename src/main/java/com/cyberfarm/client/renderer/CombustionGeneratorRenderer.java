@@ -50,7 +50,7 @@ public class CombustionGeneratorRenderer implements BlockEntityRenderer<Combusti
         state.facing = entity.getBlockState().getValue(MachineBlock.FACING);
         state.light = LightCoordsUtil.getLightCoords(level, entity.getBlockPos().above());
         float target = entity.getBlockState().getValue(LitMachineBlock.LIT) ? 1.0F : 0.0F;
-        state.angle = ModelParts.advance(entity, level.getGameTime() + partialTick, target, SPIN_UP) * DEGREES_PER_TICK;
+        state.angle = ModelParts.advance(entity, ModelParts.time(level, partialTick), target, SPIN_UP) * DEGREES_PER_TICK;
     }
 
     @Override

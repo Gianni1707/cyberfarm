@@ -27,12 +27,15 @@ public class RadiationSicknessEffect extends MobEffect {
 
     @Override
     public boolean shouldApplyEffectTickThisTick(int duration, int amplifier) {
-        int interval = Math.max(15, 60 >> amplifier);
-        return duration % interval == 0;
+        // Timed off the entity below: exposure renews the effect every 2 s, which restarts its duration
+        return true;
     }
 
     @Override
     public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int amplifier) {
+        if (entity.tickCount % Math.max(15, 60 >> amplifier) != 0) {
+            return true;
+        }
         entity.hurtServer(level, new DamageSource(level.registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).getOrThrow(DAMAGE)), 1.0F);
         if (entity instanceof Player player) {
             player.causeFoodExhaustion(1.0F + amplifier);
