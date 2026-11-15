@@ -38,6 +38,11 @@ public abstract class DroneJob {
 
     public abstract Result tick(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock);
 
+    /** A job's working time shortened by the drone's frame and Speed Addons, at least 1 tick. */
+    protected static int workTicks(DroneEntity drone, int ticks) {
+        return Math.max(1, (int) Math.ceil(ticks / drone.workSpeed()));
+    }
+
     /** Called when the job is abandoned before it finished. */
     public void stop(DroneEntity drone, ServerLevel level) {}
 

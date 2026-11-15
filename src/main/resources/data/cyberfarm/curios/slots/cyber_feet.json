@@ -1,0 +1,5 @@
+{
+  "order": 402,
+  "icon": "cyberfarm:slot/trinket_feet",
+  "validators": ["curios:tag"]
+}

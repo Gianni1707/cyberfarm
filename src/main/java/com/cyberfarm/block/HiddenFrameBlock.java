@@ -14,6 +14,9 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * A Cyber Frame taken into a small multiblock, and clicking it is clicking the machine. Usually invisible, as the machine's model
@@ -39,6 +42,14 @@ public class HiddenFrameBlock extends Block {
     @Override
     protected RenderShape getRenderShape(BlockState state) {
         return state.getValue(PIECE) == NOTHING ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
+
+    /** Its machine decides: most fill the cell, an open one (the Trinket Table) only where it has something there. */
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        BlockPos machine = machine(level, pos, state);
+        BlockState at = level.getBlockState(machine);
+        return at.getBlock() instanceof SmallMultiblockBlock block ? block.frameShape(at, machine, pos) : Shapes.block();
     }
 
     @Override

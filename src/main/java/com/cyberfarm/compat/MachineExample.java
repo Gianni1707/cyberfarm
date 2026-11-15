@@ -12,6 +12,9 @@ import com.cyberfarm.block.entity.BiomassPressBlockEntity;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
 import com.cyberfarm.block.entity.FabricatorBlockEntity;
+import com.cyberfarm.trinket.ChipProgram;
+import com.cyberfarm.trinket.NeuralChipItem;
+import com.cyberfarm.trinket.TrinketRecipes;
 import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.CoolantMixerBlockEntity;
@@ -64,7 +67,8 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         CRYSTALLIZER("crystallizer", ModItems.CRYSTALLIZER),
         ELECTROLYZER("electrolyzer", ModItems.ELECTROLYZER),
         PYROLYSIS_OVEN("pyrolysis_oven", ModItems.PYROLYSIS_OVEN),
-        FABRICATOR("fabricator", ModItems.FABRICATOR);
+        FABRICATOR("fabricator", ModItems.FABRICATOR),
+        TRINKET_TABLE("trinket_table", ModItems.TRINKET_TABLE);
 
         private final String id;
         private final Supplier<? extends ItemLike> block;
@@ -94,13 +98,41 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
     public static final int LINE = 10;
     public static final int MAX_NOTES = 3;
     public static final int HEIGHT = NOTES_Y + MAX_NOTES * LINE;
+    /** A crafting page (the Trinket Table): a 3x3 grid, the arrow level with its middle row, then the result. */
+    private static final int GRID_ARROW_X = 62, GRID_OUTPUT_X = 96, GRID_ROW = 18, GRID_NOTES_Y = 60;
 
-    public static int inputX(int index) {
-        return index * 18;
+    /** Whether the machine's page is a crafting grid rather than a row of inputs. */
+    public static boolean grid(Machine machine) {
+        return machine == Machine.TRINKET_TABLE;
     }
 
-    public static int outputX(int index) {
-        return 88 + index * 18;
+    public static int inputX(Machine machine, int index) {
+        return grid(machine) ? index % 3 * 18 : index * 18;
+    }
+
+    public static int inputY(Machine machine, int index) {
+        return grid(machine) ? index / 3 * 18 : 0;
+    }
+
+    public static int arrowX(Machine machine) {
+        return grid(machine) ? GRID_ARROW_X : ARROW_X;
+    }
+
+    /** The arrow's and the outputs' row. */
+    public static int outputY(Machine machine) {
+        return grid(machine) ? GRID_ROW : 0;
+    }
+
+    public static int outputX(Machine machine, int index) {
+        return (grid(machine) ? GRID_OUTPUT_X : 88) + index * 18;
+    }
+
+    public static int notesY(Machine machine) {
+        return grid(machine) ? GRID_NOTES_Y : NOTES_Y;
+    }
+
+    public static int height(Machine machine) {
+        return notesY(machine) + MAX_NOTES * LINE;
     }
 
     public static List<MachineExample> all() {
@@ -130,6 +162,15 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
                     List.of(recipe.output()), List.of(),
                     List.of(note("time_energy", recipe.time() / 20, FabricatorBlockEntity.ENERGY_PER_TICK))));
         }
+        // The Trinket Table's grid: one item per slot, in any order
+        for (TrinketRecipes.Recipe recipe : TrinketRecipes.RECIPES) {
+            all.add(new MachineExample(Machine.TRINKET_TABLE, recipe.slots().stream().map(List::of).toList(), List.of(),
+                    List.of(recipe.output()), List.of(), List.of(note("shapeless"))));
+        }
+        // Installing programs: the chip and cartridges together in the grid
+        ItemStack chip = new ItemStack(ModItems.NEURAL_CHIP.get());
+        all.add(new MachineExample(Machine.TRINKET_TABLE, List.of(List.of(chip), List.of(new ItemStack(ModItems.ZOOM_PROGRAM.get()))), List.of(),
+                List.of(NeuralChipItem.install(chip, ChipProgram.ZOOM)), List.of(), List.of(note("install"))));
         fissionReactor(all);
         steamTurbine(all);
         all.add(new MachineExample(Machine.WASTE_REPROCESSOR, List.of(List.of(new ItemStack(ModItems.DEPLETED_FUEL_ROD.get()))), List.of(),

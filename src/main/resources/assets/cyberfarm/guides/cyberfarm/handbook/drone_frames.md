@@ -40,7 +40,7 @@ only on a [Builder Swarm Dock](drone_dock.md), which takes up to four, each on i
 The Basic and Mini frames are made of [aluminum](aluminum.md); the Advanced and Elite frames of
 [carbon fiber](carbon_fiber.md), with [Advanced and Elite Circuits](circuits.md).
 
-Speed Addons add 10% each on top of the frame speed. The flight cost is the frame's share of
+Speed Addons add 10% each on top of the frame speed. Above 100%, the same speed also shortens the work itself: digging, clearing a site, cutting trees, soaking up fluid and waiting for a catch. Guard and Bomb drones fire and dive at their own pace. The flight cost is the frame's share of
 the drone's [power use](drones.md). Higher tiers are crafted from the tier
 below, so you never lose your progress.
 

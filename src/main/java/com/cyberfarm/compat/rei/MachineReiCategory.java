@@ -45,7 +45,7 @@ public class MachineReiCategory implements DisplayCategory<MachineDisplay> {
 
     @Override
     public int getDisplayHeight() {
-        return MachineExample.HEIGHT + PADDING * 2;
+        return MachineExample.height(machine) + PADDING * 2;
     }
 
     @Override
@@ -61,16 +61,18 @@ public class MachineReiCategory implements DisplayCategory<MachineDisplay> {
         widgets.add(Widgets.createRecipeBase(bounds));
         List<EntryIngredient> inputs = display.getInputEntries();
         for (int i = 0; i < inputs.size(); i++) {
-            widgets.add(Widgets.createSlot(new Point(x + MachineExample.inputX(i) + 1, y + 1)).entries(inputs.get(i)).markInput());
+            widgets.add(Widgets.createSlot(new Point(x + MachineExample.inputX(machine, i) + 1, y + MachineExample.inputY(machine, i) + 1))
+                    .entries(inputs.get(i)).markInput());
         }
-        widgets.add(Widgets.createArrow(new Point(x + MachineExample.ARROW_X, y + 1)));
+        int row = y + MachineExample.outputY(machine);
+        widgets.add(Widgets.createArrow(new Point(x + MachineExample.arrowX(machine), row + 1)));
         List<EntryIngredient> outputs = display.getOutputEntries();
         for (int i = 0; i < outputs.size(); i++) {
-            widgets.add(Widgets.createSlot(new Point(x + MachineExample.outputX(i) + 1, y + 1)).entries(outputs.get(i)).markOutput());
+            widgets.add(Widgets.createSlot(new Point(x + MachineExample.outputX(machine, i) + 1, row + 1)).entries(outputs.get(i)).markOutput());
         }
         List<Component> notes = display.getExample().notes();
         for (int i = 0; i < notes.size(); i++) {
-            Label label = Widgets.createLabel(new Point(x, y + MachineExample.NOTES_Y + i * MachineExample.LINE), notes.get(i));
+            Label label = Widgets.createLabel(new Point(x, y + MachineExample.notesY(machine) + i * MachineExample.LINE), notes.get(i));
             label.setHorizontalAlignment(Label.LEFT_ALIGNED);
             label.setShadow(false);
             label.setColor(TEXT_COLOR);

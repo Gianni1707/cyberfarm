@@ -462,6 +462,17 @@ public final class FrameDroneRenderer {
 
     /** The mini drone at its feet's height: chassis, visor, band, antenna on its stem, a projector in three steps, then four arms with spinning blades. */
     public static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light) {
+        drone(poseStack, collector, time, lens, light, 1.0F);
+    }
+
+    /** How far the arms swing down when folded, hinged at the body's edge. */
+    private static final float FOLDED_ARM = 80.0F;
+
+    /**
+     * A mini drone with its arms {@code unfold} open: 0 folded down against its sides with the rotors still, 1 spread
+     * flat and spinning (the Pocket Drone opening off the belt).
+     */
+    public static void drone(PoseStack poseStack, SubmitNodeCollector collector, float time, int lens, int light, float unfold) {
         float k = SCALE;
         int full = LightCoordsUtil.FULL_BRIGHT;
         collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
@@ -477,12 +488,17 @@ public final class FrameDroneRenderer {
         for (int i = 0; i < 4; i++) {
             poseStack.pushPose();
             poseStack.mulPose(Axis.YP.rotationDegrees(45.0F + 90.0F * i));
+            if (unfold < 1.0F) {
+                poseStack.translate(2.5F * k, 7.0F * k, 0.0F);
+                poseStack.mulPose(Axis.ZP.rotationDegrees(-FOLDED_ARM * (1.0F - unfold)));
+                poseStack.translate(-2.5F * k, -7.0F * k, 0.0F);
+            }
             collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) -> {
                 ModelParts.box(pose, buffer, 2.5F * k, 6.5F * k, -0.5F * k, 6.5F * k, 7.5F * k, 0.5F * k, STEEL, STEEL, light);
                 ModelParts.box(pose, buffer, 5.5F * k, 7.0F * k, -1.0F * k, 7.5F * k, 9.0F * k, 1.0F * k, DARK, DARK, light);
             });
             poseStack.translate(6.5F * k, 9.2F * k, 0.0F);
-            poseStack.mulPose(Axis.YP.rotation(time * 2.0F));
+            poseStack.mulPose(Axis.YP.rotation(time * 2.0F * unfold * unfold));
             collector.submitCustomGeometry(poseStack, ModelParts.SOLID, (pose, buffer) ->
                     ModelParts.box(pose, buffer, -3.0F * k, 0.0F, -0.5F * k, 3.0F * k, 0.2F, 0.5F * k, STEEL_LIGHT, STEEL_LIGHT, light));
             poseStack.popPose();

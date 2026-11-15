@@ -3,7 +3,10 @@ package com.cyberfarm.registry;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.drone.DroneModules;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.GlobalPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -25,6 +28,24 @@ public class ModDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<DroneModules>> DRONE_MODULES = COMPONENTS.registerComponentType("drone_modules",
             builder -> builder.persistent(DroneModules.CODEC).networkSynchronized(DroneModules.STREAM_CODEC));
+
+    /** Gravity Boots: the hover height chosen with its key, by {@code GravityBootsItem.HEIGHTS} index (0 = off). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> HOVER_HEIGHT = COMPONENTS.registerComponentType("hover_height",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    /** Neural Chip: its programs, as a bit mask of ChipProgram#bit(). */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CHIP_PROGRAMS = COMPONENTS.registerComponentType("chip_programs",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    /** Neural Chip: the programs switched on with their key (Night Vision), same bits. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CHIP_ACTIVE = COMPONENTS.registerComponentType("chip_active",
+            builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+
+    /** Neural Chip: the Drone Dock its Taxi Call calls, set by right-clicking the dock with the chip. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GlobalPos>> CHIP_DOCK = COMPONENTS.registerComponentType("chip_dock",
+            builder -> builder.persistent(GlobalPos.CODEC).networkSynchronized(GlobalPos.STREAM_CODEC));
+
+    /** Pocket Drone: out flying around the player (true) or folded on the belt. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> DRONE_ACTIVE = COMPONENTS.registerComponentType("drone_active",
+            builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
     /** Mob Capsule: the saved data of the captured mob. */
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> CAPTURED_MOB = COMPONENTS.registerComponentType("captured_mob",

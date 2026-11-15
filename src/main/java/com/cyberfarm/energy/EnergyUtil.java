@@ -16,11 +16,14 @@ public final class EnergyUtil {
             if (source.getAmountAsLong() <= 0) {
                 return;
             }
-            EnergyHandler target = level.getCapability(Capabilities.Energy.BLOCK, pos.relative(direction), direction.getOpposite());
-            if (target != null) {
-                EnergyHandlerUtil.move(source, target, maxPerSide, null);
-            }
+            pushTo(level, pos.relative(direction), direction.getOpposite(), source, maxPerSide);
         }
+    }
+
+    /** Pushes up to {@code max} FE into the block at {@code target}, reached from its {@code side}, if it accepts FE. Returns what moved. */
+    public static int pushTo(Level level, BlockPos target, Direction side, EnergyHandler source, int max) {
+        EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, target, side);
+        return handler != null ? EnergyHandlerUtil.move(source, handler, max, null) : 0;
     }
 
     // Container data slots are synced as shorts, so ints travel as two 16-bit halves.

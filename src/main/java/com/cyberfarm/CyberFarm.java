@@ -1,5 +1,6 @@
 package com.cyberfarm;
 
+import java.util.List;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.FluidTankBlock;
@@ -40,6 +41,11 @@ import com.cyberfarm.registry.ModVillagers;
 import com.cyberfarm.village.MechanistChoicePayload;
 import com.cyberfarm.village.MechanistDialogue;
 import com.cyberfarm.village.MechanistDialoguePayload;
+import com.cyberfarm.trinket.EnergySphereItem;
+import com.cyberfarm.trinket.PocketDroneItem;
+import com.cyberfarm.trinket.TrinketKeyPayload;
+import com.cyberfarm.trinket.TrinketTicker;
+import com.cyberfarm.trinket.Trinkets;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.MapCodec;
 
@@ -58,6 +64,7 @@ import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.transfer.energy.ItemAccessEnergyHandler;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 @Mod(CyberFarm.MODID)
@@ -89,11 +96,16 @@ public class CyberFarm {
         ModVillagers.PROFESSIONS.register(modEventBus);
         ModVillagers.ATTACHMENT_TYPES.register(modEventBus);
         CONDITIONS.register(modEventBus);
+        Trinkets.register(modEventBus);
+        TrinketTicker.register();
 
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
         modEventBus.addListener(CyberFarm::registerPayloads);
         modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(DroneDockBlockEntity.ANCHOR_TICKETS));
+        modEventBus.addListener((RegisterTicketControllersEvent event) -> event.register(com.cyberfarm.drone.DroneWarp.TICKETS));
+        NeoForge.EVENT_BUS.addListener(com.cyberfarm.drone.DroneWarp::onServerTick);
+        NeoForge.EVENT_BUS.addListener(com.cyberfarm.trinket.TaxiCall::onServerTick);
         NeoForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         NeoForge.EVENT_BUS.addListener(MethaneExtractorBlock::onRightClickBlock);
         NeoForge.EVENT_BUS.addListener(FluidTankBlock::onRightClickBlock);
@@ -118,6 +130,14 @@ public class CyberFarm {
 
     // Exposes FE and items to other mods' cables, pipes and hoppers.
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        // The Energy Sphere and the Pocket Drone charge in any charger; they never give their FE back out
+        for (var sphere : List.of(ModItems.ENERGY_SPHERE, ModItems.ADVANCED_ENERGY_SPHERE, ModItems.ELITE_ENERGY_SPHERE)) {
+            EnergySphereItem item = sphere.get();
+            event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> new ItemAccessEnergyHandler(access, ModDataComponents.ENERGY.get(),
+                    item.capacity(), item.maxInput(), 0), item);
+        }
+        event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> new ItemAccessEnergyHandler(access, ModDataComponents.ENERGY.get(),
+                PocketDroneItem.CAPACITY, EnergySphereItem.MAX_INPUT, 0), ModItems.POCKET_DRONE.get());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.COMBUSTION_GENERATOR.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.DRONE_ASSEMBLER.get(), (be, side) -> be.getEnergy());
@@ -188,6 +208,11 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.PYROLYSIS_OVEN.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
+        // Nothing plugs into the Human Dock's front, the way onto its pad
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.HUMAN_DOCK.get(),
+                (be, side) -> side != null && side == be.getBlockState().getValue(MachineBlock.FACING) ? null : be.getEnergy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.sideHandler(side));
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
@@ -240,12 +265,14 @@ public class CyberFarm {
         event.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
                 .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
+                .playToServer(TrinketKeyPayload.TYPE, TrinketKeyPayload.STREAM_CODEC, TrinketKeyPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
                 .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
                 .playToServer(com.cyberfarm.energy.DishRenamePayload.TYPE, com.cyberfarm.energy.DishRenamePayload.STREAM_CODEC, com.cyberfarm.energy.DishRenamePayload::handle)
                 .playToClient(MechanistDialoguePayload.TYPE, MechanistDialoguePayload.STREAM_CODEC, MechanistDialoguePayload::handle)
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)
+                .playToClient(com.cyberfarm.trinket.WarpPayload.TYPE, com.cyberfarm.trinket.WarpPayload.STREAM_CODEC, com.cyberfarm.trinket.WarpPayload::handle)
                 .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle);
     }
 }

@@ -456,6 +456,16 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         return droneIds().isEmpty() ? 0 : droneModules;
     }
 
+    /** The first of this dock's drones that is loaded, or null (out of the loaded world, or none). */
+    public @Nullable DroneEntity loadedDrone(ServerLevel level) {
+        for (UUID id : droneIds()) {
+            if (level.getEntity(id) instanceof DroneEntity drone) {
+                return drone;
+            }
+        }
+        return null;
+    }
+
     /** The drones that live on this dock. */
     protected List<UUID> droneIds() {
         return droneId != null ? List.of(droneId) : List.of();
