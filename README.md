@@ -14,6 +14,27 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 
 ## What's new
 
+**1.2: the trinket update**
+- **Trinkets** in a tab of their own next to the inventory (or Curios slots), with no durability,
+  all powered by an **Energy Sphere** on your belt (500k, 2M or 8M FE):
+  - **Gravity Boots** hover 0.5, 1 or 2 blocks above ground and water, with no fall damage.
+  - The **Neural Chip** runs six programs: Zoom, Night Vision, Machine Link, Geiger HUD, Taxi Call
+    and Auto-Feeder.
+  - The **Utility Belt** carries the sphere, brings the Multiblock Projector and Survey Tool to hand,
+    and holds a **Pocket Drone** that fetches drops for you.
+- **Taxi Call**: your Taxi drone comes to you from anywhere in the dimension, warping on long trips.
+- Three new blocks: the **Trinket Table**, a bench with two robotic arms where trinkets are made; the
+  **Human Dock**, which charges everything you carry; and the **Battery Bank**, which merges up to
+  3x3x3 behind one display.
+- Transmitter Dishes charge the spheres of players in range. Methane Extractors give more gas, and
+  better drone frames and Speed Addons now make the work faster, not just the flight.
+
+<details>
+<summary>Earlier versions</summary>
+
+**1.1: balance and fixes**
+- A biogas rebalance, cheaper Advanced and Elite cables and pipes, and a round of fixes.
+
 **1.0: the restyle**
 - **A new look for everything**: a dark teal, mint and steel palette, a smaller farm drone whose tools
   move as they work, and every machine redrawn as an animated 3D model.
@@ -32,9 +53,6 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 - A **mech** rebuilt as a super-robot, redrawn icons and ores, new machine screens and an energy
   rebalance: generators make more, machines use more.
 - **1.0.1**: drones cost far less to render, even forty of them in view.
-
-<details>
-<summary>Earlier versions</summary>
 
 **0.9.2: polish**
 - Builder docks **take each layer's blocks from the chests next to them** and put back what that
@@ -209,9 +227,21 @@ out of a battery, tank or machine. **Liquid Tanks** and **Gas Tanks** store 32 b
 with the tanks next to them into one big vessel, its fluid seen through the glass. A **Water Pump**
 standing on a water source gives an endless supply.
 
+## Trinkets
+
+Trinkets are worn in a **Trinkets** tab next to the inventory, or in Curios slots when Curios is
+installed. They have no durability and all run on the **Energy Sphere** on your **Utility Belt**:
+- **Gravity Boots** let you hover.
+- The **Neural Chip** runs programs made at the **Trinket Table**.
+- A **Pocket Drone** picks up your drops.
+
+Charge everything at once on a **Human Dock**, from a nearby **Battery Bank**, or from afar with a
+Transmitter Dish.
+
 ## Compatibility
 
 - **JEI** and **REI**: recipe pages for every machine, drone assembly and info pages.
+- **Curios**: trinkets go in Curios slots when it is installed.
 - Fluids, items and energy use the standard NeoForge capabilities and common `c:` tags (aluminum is
   `c:ingots/aluminum`), so pipes, tanks and machines of other mods work with CyberFarm's and the
   other way round.
@@ -240,6 +270,7 @@ a lot.
 | Java | 25 | 25 | 17 |
 | In-game handbook (optional) | [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | [GuideME](https://www.curseforge.com/minecraft/mc-mods/guideme) | [Patchouli](https://www.curseforge.com/minecraft/mc-mods/patchouli) |
 | Recipe pages (optional) | JEI or REI | JEI or REI | JEI or REI |
+| Trinket slots (optional) | Curios 16.0.0+26.2 | Curios 15.0.0+26.1.2 | Curios 5.9.1 |
 | Source branch | `master` | `mc/26.1.2` | `mc/1.20.1` |
 
 ## Installation
