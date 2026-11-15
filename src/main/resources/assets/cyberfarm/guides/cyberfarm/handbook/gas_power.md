@@ -26,7 +26,7 @@ extraction chamber give off **Methane**, and a **Gas Turbine** burns both into F
 | Gas | Made by | Gas Turbine | Steam Engine |
 | --- | --- | --- | --- |
 | Biogas | [Bio-Digester](bio_digester.md), 10 mB/t | 5 FE per mB | 9 FE per mB |
-| Methane | [Methane Extractor](methane_extractor.md), up to 30 mB/t | 12 FE per mB | 15 FE per mB |
+| Methane | [Methane Extractor](methane_extractor.md), up to 50 mB/t | 12 FE per mB | 15 FE per mB |
 
 How long the gas lasts and what it gives (a bucket is 1,000 mB):
 
@@ -35,10 +35,10 @@ How long the gas lasts and what it gives (a bucket is 1,000 mB):
 | 1,000 mB of Biogas | 5,000 FE, 2.5 seconds at 100 FE/t | 9,000 FE, about 1.1 seconds at 405 FE/t |
 | 1,000 mB of Methane | 12,000 FE, 2.5 seconds at 240 FE/t | 15,000 FE, about 1.1 seconds at 675 FE/t |
 | One Biomass (500 mB of Biogas) | 2,500 FE | 4,500 FE |
-| One zombie in the chamber (180,000 mB) | 2,160,000 FE | 2,700,000 FE |
+| One zombie in the chamber (300,000 mB) | 3,600,000 FE | 4,500,000 FE |
 
 Gas is made slowly and burned fast: what counts is the flow. One Gas Turbine at full power needs 20 mB/t,
-that is **two Bio-Digesters** or two thirds of a zombie chamber; a Steam Engine needs 45 mB/t.
+that is **two Bio-Digesters** or two fifths of a zombie chamber; a Steam Engine needs 45 mB/t, a little less than one zombie chamber.
 
 The Gas Turbine is small and cheap; the [Steam Engine](steam_engine.md) is a bigger build that gets
 more out of every mB.

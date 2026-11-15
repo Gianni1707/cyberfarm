@@ -47,7 +47,7 @@ public class ClearJob extends DroneJob {
     private Result cut(DroneEntity drone, ServerLevel level) {
         BlockState state = level.getBlockState(target);
         float hardness = state.getDestroySpeed(level, target);
-        int needed = Mth.clamp((int) (5 + hardness * 6), 5, 80);
+        int needed = workTicks(drone, Mth.clamp((int) (5 + hardness * 6), 5, 80));
         if (++progress % 6 == 1) {
             Effects.beam(level, drone, target);
         }

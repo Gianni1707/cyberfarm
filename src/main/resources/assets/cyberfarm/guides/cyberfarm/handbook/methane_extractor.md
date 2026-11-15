@@ -111,12 +111,14 @@ The chamber holds one mob.
 
 | Mob | Methane | In Gas Turbines |
 | --- | --- | --- |
-| Zombies (any kind) | 30 mB/t | 360 FE/t |
-| Other monsters | 15 mB/t | 180 FE/t |
-| Animals | 5 mB/t | 60 FE/t |
+| Zombies (any kind) | 50 mB/t | 600 FE/t |
+| Other monsters | 25 mB/t | 300 FE/t |
+| Animals | 8 mB/t | 96 FE/t |
+
+One zombie chamber keeps a [Steam Engine](steam_engine.md) (45 mB/t) running at full power, with a little to spare.
 
 The acid takes one point of health every 15 seconds: a zombie (20 health) lasts about 5 minutes and gives about
-180,000 mB of methane in all, 2,160,000 FE in Gas Turbines. The chamber is a lot
+300,000 mB of methane in all, 3,600,000 FE in Gas Turbines. The chamber is a lot
 of work (acid, mobs, the structure), so it pays back far more than a
 [Bio-Digester](bio_digester.md).
 

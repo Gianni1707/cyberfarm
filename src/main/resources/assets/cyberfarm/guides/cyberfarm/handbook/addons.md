@@ -40,7 +40,7 @@ How many addons fit depends on the [frame](drone_frames.md):
 
 | Addon | Effect | Limit | Power use |
 | --- | --- | --- | --- |
-| Speed Addon | +10% flight speed each | frame limit only | +10% flight cost |
+| Speed Addon | +10% flight and work speed each | frame limit only | +10% flight cost |
 | Stack Addon | +1 stack (64 items) per [Transport](modules.md) trip each | up to 9 stacks per trip | +5% flight cost |
 | Battery Addon | +25% of the frame's battery capacity each | frame limit only | +5% flight cost |
 | Fortune Addon | +1 Fortune level for Quarry and Harvester drops | max 3 | +25% energy per job |
