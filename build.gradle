@@ -108,6 +108,12 @@ neoForge {
             sourceSet(sourceSets.main)
         }
     }
+
+    // JUnit tests run with Minecraft and the mod loaded, so they can use registries and fluids
+    unitTest {
+        enable()
+        testedMod = mods."${mod_id}"
+    }
 }
 
 // Sets up a dependency configuration called 'localRuntime'.
@@ -134,6 +140,12 @@ dependencies {
     } else {
         localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     }
+
+    testImplementation platform('org.junit:junit-bom:5.11.4')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    // EphemeralTestServerProvider: a throwaway server for tests that need bound registries (fluids, items)
+    testImplementation "net.neoforged:testframework:${neo_version}"
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
     // Example mod dependency using a mod jar from ./libs with a flat dir repository
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
@@ -186,6 +198,10 @@ publishing {
             url "file://${project.projectDir}/repo"
         }
     }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
 }
 
 tasks.withType(JavaCompile).configureEach {
