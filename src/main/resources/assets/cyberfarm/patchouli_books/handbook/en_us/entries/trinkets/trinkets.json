@@ -1,0 +1,180 @@
+{
+  "name": "Trinkets",
+  "icon": "cyberfarm:gravity_boots",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 0,
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "Small pieces of tech you wear to make life easier: hover over the ground, see in the dark, zoom in, read your machines from afar, call your Taxi drone, have your drops picked up for you.$(br)$(li)$(item)Gravity Boots$()$(br)$(li)$(item)Neural Chip$()$(br)$(li)$(item)Utility Belt$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Energy Sphere$()$(br)$(li)$(item)Pocket Drone$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Open your inventory and click the $(l)Trinkets$() tab above it (on the creative inventory, down its right side). It has three slots of their own: $(l)Neck$(), $(l)Belt$() and $(l)Feet$(). They are not armor slots, so you keep your armor; trinkets give no armor and never wear out. Shift-click a trinket to put it on.",
+      "title": "Where you wear them"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "What you wear shows on your character.$(br2)With $(l)Curios$() installed, the trinkets go in three Curios slots of their own instead (CyberFarm's Neck, Belt and Feet), never in the other mods' slots.$(br2)Trinkets are kept with keepInventory and dropped on death otherwise."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:utility_belt",
+      "title": "Utility Belt",
+      "text": "A leather belt with a mint enamel stripe, for the Belt slot. Press its key ($(l)B$()) to open its four holders (with the sphere's and the drone's charge under them), and everything in them hangs on your belt:"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)the $(l)Energy Sphere$(), the battery of all your trinkets;$(br)$(li)the $(l:basics/multiblock_projector)Multiblock Projector$(/l): $(l)Y$() takes it in hand, and puts it back;$(br)$(li)the $(l:drone_systems/drone_dock)Survey Tool$(/l): $(l)U$() takes it in hand, and puts it back;$(br)$(li)the $(l)Pocket Drone$(): $(l)K$() sends it out and calls it back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If your hand is full, what you hold moves to a free slot of your inventory.$(br2)$(l)Energy Sphere$()$(br2)An orb of plasma holding $(l)500,000 FE$(). Every trinket runs on it; with no sphere, or an empty one, they rest. Charge it on a $(l)Human Dock$() (below), in a Battery Bank's slot, in another mod's"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "charger, or $(l)from afar$(): a $(l:cables/dish_transmission)Transmitter Dish$(/l) tops up the sphere of every player in its reach who can see its network (yours, your team's, or a public one), at the module's power, losing 10% on the way."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Two more tiers, made at the Trinket Table from the tier below, which keeps its charge:$(br)$(li)$(l)Energy Sphere$(): 500,000 FE, 4,000 FE/t$(br)$(li)$(l)Advanced Energy Sphere$(): 2,000,000 FE, 16,000 FE/t$(br)$(li)$(l)Elite Energy Sphere$(): 8,000,000 FE, 64,000 FE/t"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Its plasma shows the tier on your belt: mint, emerald, violet.$(br)$(li)$(l)Gravity Boots$(): 12 FE/t while you hover$(br)$(li)$(l)Night Vision Program$(): 2 FE/t while it is on$(br)$(li)$(l)Machine Link Program$(): 1 FE/t$(br)$(li)$(l)Geiger HUD Program$(): 1 FE/t while it shows radiation"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Auto-Feeder Program$(): 50 FE per meal$(br)A full sphere keeps the Gravity Boots up for about 40 minutes.$(br2)$(l)Pocket Drone$()$(br2)Rides folded on your belt. Sent out, it opens its arms on the belt and flies up to wait over your shoulder, a small cousin of the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Builder's mini drones. When something lies on the ground within $(l)8 blocks$(), it flies over, picks it up and brings it back into your inventory, one drop at a time. Items you threw away yourself are left alone for 5 seconds, and anything you have no room for stays where it is. Call it back mid-errand and what it holds"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "comes straight to you. It has a small battery of its own, using 1 FE/t in flight, which the sphere keeps topped up whether it flies or not."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:gravity_boots",
+      "title": "Gravity Boots",
+      "text": "You hover over the ground, following the terrain like a hovercraft: steps and slabs disappear, and you glide over water and lava without touching them. Press the $(l)Gravity Boots height$() key (H) to pick $(l)0.5, 1 or$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)2 blocks$(), or off. Walking, sprinting and jumping work as on foot, with a touch of drift, as on a little ice, when you stop or turn; $(l)sneak to land$(). Rings of light leave your soles and sink to the ground under you. While they work you take $(l)no fall damage$(): off a cliff, the field slows you down and catches you at your height above"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "the ground below."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:neural_chip",
+      "title": "Neural Chip",
+      "text": "An implant on the back of your neck that runs $(l)all six programs$() if you give it them. Make a program at the Trinket Table, then put the chip and the programs in its grid together to install them."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Zoom Program$()$(br)$(li)$(item)Night Vision Program$()$(br)$(li)$(item)Machine Link Program$()$(br)$(li)$(item)Geiger HUD Program$()$(br)$(li)$(item)Taxi Call Program$()$(br)$(li)$(item)Auto-Feeder Program$()$(br)$(li)$(l)Zoom$(): Hold the key to zoom; the mouse wheel sets 2x to 8x, and the mouse slows down as with a spyglass. Optics only: no FE needed, Z"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Night Vision$(): See in the dark, on and off, with no flicker, N$(br)$(li)$(l)Machine Link$(): Look at a CyberFarm machine from up to 24 blocks away to read its status,$(br)$(li)$(l)Geiger HUD$(): The radiation level above the hotbar wherever there is any, no $(l:nuclear/hazmat_suit)Geiger Counter$(/l) in hand,"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Taxi Call$(): Calls a $(l:drone_systems/modules)Taxi drone$(/l): right-click it to ride to its dock's destination, or home to its dock if it has none. Untaken for 30 seconds, it flies home alone, J"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Auto-Feeder$(): Eats from your inventory when you are hungry, the food that fills you most without waste; never food with side effects, nor stews,$(br)$(l)Taxi Call and your dock.$() Right-click a Drone Dock with a Neural Chip that has the Taxi Call program, and the chip remembers it (without"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "the program the dock just opens): the Taxi Call then calls that dock's drone, however far. From more than $(l)128 blocks$() away it $(l)warps$() to a little way off and flies the rest; trips and the way home that long fly a little, then warp too, with a loading screen while you hang from the hook. Without a remembered dock, the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "call goes to the nearest Taxi drone within 128 blocks. If none can come, the message says why.$(br2)All the keys can be changed in Controls, under CyberFarm Trinkets."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:human_dock",
+      "title": "Human Dock",
+      "text": "The $(l:drone_systems/drone_dock)Drone Dock$(/l)'s sibling, for you. Place it with a $(l)Cyber Frame on top$(): the frame hides and the arch rises behind the pad like a tripod's legs, a clamp snapping shut at each joint; a display slides out of its top showing the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "dock's charge. Then $(l)step onto the pad$() and it charges everything at once, up to $(l)4,000 FE/t$(): the Energy Sphere and the Pocket Drone on your belt, and every item in your inventory that holds FE, from any mod. It takes power from cables, or from a Battery Bank beside it (with that side of the bank set to Out). It"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "has no screen: its lights show it working."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:human_dock"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:battery_bank",
+      "title": "Battery Bank",
+      "text": "A small FE store: $(l)150,000 FE$() a block. Blocks that fill a box, up to $(l)3x3x3$(), join into one bank that fills and empties as one, up to 4,050,000 FE (a $(l:energy_storage/resonance_core)Resonance Core$(/l) holds far more). Its $(l)display$() shows at a glance the bank's"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "charge and the FE/t coming in and going out, and a gauge on each side fills as it charges. Joined blocks share $(l)one display$() across the whole front, and a bigger one spells the numbers out and adds what the bank stores; the side gauges run its full height. Its GUI shows the whole bank's charge and the FE/t flowing in"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "and out, and has a slot that charges an item. Each side of the bank is set with the $(l:drone_systems/drone_dock)Survey Tool$(/l): hold it to see every side framed in its mode's colour, and right-click a side to switch it:$(br)$(li)$(l)In$() (green, the default): the side takes FE from cables and machines;"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Out$() (amber): the side gives FE to what touches it, such as a Human Dock, or to a cable;$(br)$(li)$(l)Off$() (grey): nothing connects there.$(br)Set the side facing your Human Dock to $(l)Out$()."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:battery_bank"
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:trinket_table",
+      "title": "Trinket Table",
+      "text": "A $(l)2x2$() workstation standing upright: place the table, then $(l)Cyber Frames$() on its right (seen from the front), above it and above that one. It opens, and its two robotic arms build what you ask. It works like a $(l)crafting$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)table$(), with no power: put one item in each slot of its 3x3 grid, in any order, and take what it makes; its arms go to work for a moment. Trinkets and programs are made only here. Put a Neural Chip and the programs it lacks in the grid together to install them."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:trinket_table"
+    }
+  ],
+  "priority": true,
+  "extra_recipe_mappings": {
+    "cyberfarm:trinket_table": 32,
+    "cyberfarm:gravity_boots": 13,
+    "cyberfarm:neural_chip": 16,
+    "cyberfarm:utility_belt": 4,
+    "cyberfarm:energy_sphere": 0,
+    "cyberfarm:advanced_energy_sphere": 0,
+    "cyberfarm:elite_energy_sphere": 0,
+    "cyberfarm:pocket_drone": 0,
+    "cyberfarm:zoom_program": 0,
+    "cyberfarm:night_vision_program": 0,
+    "cyberfarm:machine_link_program": 0,
+    "cyberfarm:geiger_hud_program": 0,
+    "cyberfarm:taxi_call_program": 0,
+    "cyberfarm:auto_feeder_program": 0,
+    "cyberfarm:human_dock": 23,
+    "cyberfarm:battery_bank": 27
+  }
+}

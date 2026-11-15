@@ -4,6 +4,7 @@ import net.minecraft.world.entity.MoverType;
 
 import net.minecraft.nbt.CompoundTag;
 
+import com.cyberfarm.drone.DroneWarp;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -21,6 +22,7 @@ import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.drone.job.DroneJob;
 import com.cyberfarm.drone.job.TaxiJob;
+import com.cyberfarm.drone.job.TaxiPickupJob;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.registry.ModDataComponents;
 import com.cyberfarm.registry.ModEntities;
@@ -139,6 +141,10 @@ public class DroneEntity extends PathfinderMob {
     private DroneModules modules = DroneModules.EMPTY;
     private int energy;
     private @Nullable BlockPos dockPos;
+    /** Ticks flown home on this return, for DroneWarp's "fly a little first". */
+    private int returnTicks;
+    /** How high over its dock a drone warping home comes out. */
+    private static final double WARP_HEIGHT = 10.0;
     private @Nullable DroneJob job;
     private @Nullable DroneTask jobTask;
     /** Round robin over the modules, so one busy module does not starve the others. */
@@ -417,6 +423,11 @@ public class DroneEntity extends PathfinderMob {
         useEnergy((int) Math.ceil(baseAmount * modules.jobCostMultiplier()));
     }
 
+    /** FE per tick in flight, with its modules and addons. */
+    public int flightCost() {
+        return modules.flightCost();
+    }
+
     public void useEnergy(int amount) {
         energy = Math.max(0, energy - amount);
     }
@@ -623,11 +634,16 @@ public class DroneEntity extends PathfinderMob {
         if (!level.isLoaded(dockPos)) {
             // A Taxi trip can outrun the dock's chunk: it goes on to the drop-off (the job never asks the dock anything),
             // and there the drone waits for the dock to load again
-            if (job instanceof TaxiJob) {
+            // So can a called Taxi drone fetching its caller far from home (both jobs never ask the dock anything)
+            if (job instanceof TaxiJob || job instanceof TaxiPickupJob) {
                 useEnergy(modules.flightCost());
                 if (energy < capacity() / 10 || job.tick(this, level, null) != DroneJob.Result.CONTINUE) {
                     startReturn(level);
                 }
+            } else if (getStatus() == STATUS_RETURNING) {
+                // Home is far and not loaded: warp back (its chunk is loaded first), then fly the last stretch
+                Vec3 home = dockHover();
+                DroneWarp.tryWarp(this, level, home, home.y + WARP_HEIGHT);
             }
             return;
         }
@@ -727,13 +743,53 @@ public class DroneEntity extends PathfinderMob {
         return modules.tasks().contains(DroneTask.TAXI) && !dock.isPaused() && dock.getTaxiDestination() != null && energy >= departureCharge();
     }
 
+    /**
+     * Why a Taxi Call would not bring this drone: "none" without a Taxi Module, else "undocked", "paused", "busy" or
+     * "low_energy"; null if it would come. A taxi destination is not needed: without one it takes the caller home to
+     * its dock.
+     */
+    public @Nullable String taxiCallRefusal() {
+        if (!modules.tasks().contains(DroneTask.TAXI)) {
+            return "none";
+        }
+        if (!(level() instanceof ServerLevel level) || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock)) {
+            return "undocked";
+        }
+        if (dock.isPaused()) {
+            return "paused";
+        }
+        if (job != null || isVehicle() || getStatus() != STATUS_IDLE && getStatus() != STATUS_CHARGING) {
+            return "busy";
+        }
+        return energy < departureCharge() ? "low_energy" : null;
+    }
+
+    /**
+     * Neural Chip's Taxi Call: a parked Taxi drone that could take a passenger flies to {@code player} and waits there.
+     * Returns whether it set off.
+     */
+    public boolean callTaxi(Player player) {
+        if (!(level() instanceof ServerLevel level) || taxiCallRefusal() != null) {
+            return false;
+        }
+        job = new TaxiPickupJob(player.getUUID());
+        jobTask = DroneTask.TAXI;
+        setStatus(STATUS_WORKING);
+        level.playSound(null, blockPosition(), SoundEvents.CHAIN_PLACE, SoundSource.NEUTRAL, 1.0F, 1.2F);
+        return true;
+    }
+
     /** A player right-clicked the waiting Taxi drone: check the trip, then let them grab the hook. */
     private void startTaxi(ServerLevel level, Player player) {
-        if (job != null || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) || dock.isPaused()) {
+        // A drone called with the Taxi Call waits for the caller; any other job means it is busy
+        boolean called = job instanceof TaxiPickupJob pickup && pickup.caller().equals(player.getUUID());
+        if ((job != null && !called) || isVehicle() || dockPos == null || !(level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) || dock.isPaused()) {
             player.displayClientMessage(Component.translatable("message.cyberfarm.taxi.busy"), true);
             return;
         }
-        TaxiJob taxi = TaxiJob.plan(this, level, player, dock.getTaxiDestination(), energy, modules.flightCost());
+        // Called with the Taxi Call to a dock with no taxi destination: it takes the caller home to the dock
+        BlockPos destination = dock.getTaxiDestination() != null || !called ? dock.getTaxiDestination() : dockPos;
+        TaxiJob taxi = TaxiJob.plan(this, level, player, destination, energy, modules.flightCost());
         if (taxi != null && player.startRiding(this)) {
             job = taxi;
             jobTask = DroneTask.TAXI;
@@ -761,6 +817,12 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void tickReturning() {
+        // Too far to fly home: a little flight, then a warp to near the dock
+        Vec3 home = dockHover();
+        if (home.distanceTo(position()) > DroneWarp.DISTANCE && ++returnTicks > DroneWarp.FLY_FIRST && level() instanceof ServerLevel server
+                && DroneWarp.tryWarp(this, server, home, home.y + WARP_HEIGHT)) {
+            returnTicks = 0;
+        }
         if (flyHome()) {
             unreachable.clear();
             scanCooldown = SCAN_INTERVAL;
@@ -775,6 +837,7 @@ public class DroneEntity extends PathfinderMob {
     }
 
     private void startReturn(ServerLevel level) {
+        returnTicks = 0;
         stopJob(level);
         job = null;
         jobTask = null;

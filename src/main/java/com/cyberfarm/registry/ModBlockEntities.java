@@ -5,6 +5,9 @@ import com.cyberfarm.port.PortTypes;
 
 import java.util.Set;
 
+import com.cyberfarm.block.entity.BatteryBankBlockEntity;
+import com.cyberfarm.block.entity.HumanDockBlockEntity;
+import com.cyberfarm.block.entity.TrinketTableBlockEntity;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.entity.AcidSynthesizerBlockEntity;
 import com.cyberfarm.block.entity.ElectrolyzerBlockEntity;
@@ -114,6 +117,15 @@ public class ModBlockEntities {
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CrystallizerBlockEntity>> CRYSTALLIZER = BLOCK_ENTITIES.register("crystallizer",
             () -> PortTypes.blockEntity(CrystallizerBlockEntity::new, Set.of(ModBlocks.CRYSTALLIZER.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TrinketTableBlockEntity>> TRINKET_TABLE = BLOCK_ENTITIES.register("trinket_table",
+            () -> PortTypes.blockEntity(TrinketTableBlockEntity::new, Set.of(ModBlocks.TRINKET_TABLE.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HumanDockBlockEntity>> HUMAN_DOCK = BLOCK_ENTITIES.register("human_dock",
+            () -> PortTypes.blockEntity(HumanDockBlockEntity::new, Set.of(ModBlocks.HUMAN_DOCK.get())));
+
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BatteryBankBlockEntity>> BATTERY_BANK = BLOCK_ENTITIES.register("battery_bank",
+            () -> PortTypes.blockEntity(BatteryBankBlockEntity::new, Set.of(ModBlocks.BATTERY_BANK.get())));
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<WasteReprocessorBlockEntity>> WASTE_REPROCESSOR = BLOCK_ENTITIES.register("waste_reprocessor",
             () -> PortTypes.blockEntity(WasteReprocessorBlockEntity::new, Set.of(ModBlocks.WASTE_REPROCESSOR.get())));

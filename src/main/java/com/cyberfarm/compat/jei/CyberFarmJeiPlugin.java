@@ -48,6 +48,21 @@ public class CyberFarmJeiPlugin implements IModPlugin {
                 return screen.sideAreas();
             }
         });
+        // The Network / Manage tabs beside the Transmitter Dish's panel
+        registration.addGuiContainerHandler(com.cyberfarm.client.screen.TransmitterDishScreen.class,
+                new IGuiContainerHandler<com.cyberfarm.client.screen.TransmitterDishScreen>() {
+                    @Override
+                    public List<Rect2i> getGuiExtraAreas(com.cyberfarm.client.screen.TransmitterDishScreen screen) {
+                        return screen.sideAreas();
+                    }
+                });
+        // The Inventory / Trinkets tabs down the creative inventory's right side
+        registration.addGlobalGuiHandler(new mezz.jei.api.gui.handlers.IGlobalGuiHandler() {
+            @Override
+            public java.util.Collection<Rect2i> getGuiExtraAreas() {
+                return com.cyberfarm.client.TrinketClient.creativeTabArea(net.minecraft.client.Minecraft.getInstance().screen);
+            }
+        });
         // The addon tab outside the right edge of the machines that take addons
         @SuppressWarnings({"unchecked", "rawtypes"})
         Class<MachineScreen<?>> machineScreens = (Class) MachineScreen.class;

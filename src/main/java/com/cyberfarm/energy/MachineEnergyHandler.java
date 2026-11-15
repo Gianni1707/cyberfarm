@@ -38,7 +38,8 @@ public class MachineEnergyHandler extends EnergyStorage {
         return extracted;
     }
 
-    private void set(int amount) {
+    /** Sets the buffer outright, as the Battery Bank evening out its blocks. */
+    public void set(int amount) {
         energy = amount;
         onChanged.run();
     }

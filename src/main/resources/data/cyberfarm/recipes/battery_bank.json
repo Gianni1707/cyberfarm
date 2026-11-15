@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "cyberfarm:battery_bank"
+  }
+}

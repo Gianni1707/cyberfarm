@@ -1,5 +1,9 @@
 package com.cyberfarm;
 
+import com.cyberfarm.client.screen.BatteryBankScreen;
+import com.cyberfarm.client.screen.TrinketTableScreen;
+import com.cyberfarm.client.screen.TrinketsScreen;
+import com.cyberfarm.client.screen.UtilityBeltScreen;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneDownwash;
 import com.cyberfarm.client.DroneSoundInstance;
@@ -9,9 +13,14 @@ import com.cyberfarm.client.StatusPanel;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.TrinketClient;
 import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
+import com.cyberfarm.client.renderer.BatteryBankRenderer;
+import com.cyberfarm.client.renderer.HumanDockRenderer;
 import com.cyberfarm.client.renderer.MechRenderer;
+import com.cyberfarm.client.renderer.TrinketTableRenderer;
+import com.cyberfarm.client.renderer.TrinketLayer;
 import com.cyberfarm.client.renderer.BioDigesterRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.renderer.FrameDroneRenderer;
@@ -88,6 +97,7 @@ import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -116,8 +126,24 @@ public final class CyberFarmClient {
         modEventBus.addListener(com.cyberfarm.client.model.PipeFluidModel::wrap);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
+        // The trinkets on every player model, whatever the skin
+        modEventBus.addListener((EntityRenderersEvent.AddLayers event) -> event.getSkins().forEach(skin -> {
+            PlayerRenderer renderer = event.getSkin(skin);
+            if (renderer != null) {
+                renderer.addLayer(new TrinketLayer(renderer));
+            }
+        }));
         modEventBus.addListener(MechClient::registerKeys);
+        modEventBus.addListener(TrinketClient::registerKeys);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::tick);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::hover);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::slide);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomFov);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomTurn);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomWheel);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::addInventoryTabs);
         modEventBus.addListener(MechClient::registerHud);
+        modEventBus.addListener(com.cyberfarm.client.WarpOverlay::register);
         modEventBus.addListener(StatusPanel::register);
         MinecraftForge.EVENT_BUS.addListener(MechClient::tick);
         MinecraftForge.EVENT_BUS.addListener(VillageRange::tick);
@@ -133,7 +159,8 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::muffleSounds);
         MinecraftForge.EVENT_BUS.addListener(CyberFarmClient::scrollSurveyMode);
         MinecraftForge.EVENT_BUS.addListener(LevelRenderEvents.extract(ProjectionRenderer::extract, EffectRenderer::extract)
-                .submit(DockAreaView::submit, ProjectionRenderer::submit, FrameDroneRenderer::submit, EffectRenderer::submit)::onRender);
+                .submit(DockAreaView::submit, ProjectionRenderer::submit, FrameDroneRenderer::submit, com.cyberfarm.client.PocketDroneView::submit,
+                        EffectRenderer::submit)::onRender);
         MinecraftForge.EVENT_BUS.addListener(DroneDownwash::tick);
     }
 
@@ -241,6 +268,10 @@ public final class CyberFarmClient {
         MenuScreens.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
         MenuScreens.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
         MenuScreens.register(ModMenus.RESONANCE_CORE.get(), ResonanceCoreScreen::new);
+        MenuScreens.register(ModMenus.TRINKET_TABLE.get(), TrinketTableScreen::new);
+        MenuScreens.register(ModMenus.TRINKETS.get(), TrinketsScreen::new);
+        MenuScreens.register(ModMenus.UTILITY_BELT.get(), UtilityBeltScreen::new);
+        MenuScreens.register(ModMenus.BATTERY_BANK.get(), BatteryBankScreen::new);
     }
 
     private static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -275,6 +306,9 @@ public final class CyberFarmClient {
         blockEntity(event, ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
         blockEntity(event, ModBlockEntities.CRYSTALLIZER.get(), context -> new CrystallizerRenderer());
         blockEntity(event, ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
+        blockEntity(event, ModBlockEntities.HUMAN_DOCK.get(), context -> new HumanDockRenderer());
+        blockEntity(event, ModBlockEntities.TRINKET_TABLE.get(), context -> new TrinketTableRenderer());
+        blockEntity(event, ModBlockEntities.BATTERY_BANK.get(), context -> new BatteryBankRenderer(context.getFont()));
     }
 
     /** Registers a renderer, and its render box with the block entity type, which is what 1.20.1 culls by. */

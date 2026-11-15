@@ -11,6 +11,9 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraftforge.client.ForgeHooksClient;
 import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
  * The 26.x submit calls, drawn at once into the 1.20.1 buffer source. One per renderer, reused
@@ -53,6 +56,11 @@ public final class SubmitNodeCollector {
             ForgeHooksClient.renderPistonMovedBlocks(state.blockPos, state.blockState, poseStack, buffers, minecraft.level, false,
                     OverlayTexture.NO_OVERLAY, minecraft.getBlockRenderer());
         }
+    }
+
+    /** An item as the game draws one in the world (26.x: an ItemStackRenderState submitted). */
+    public void submitItem(PoseStack poseStack, ItemStack stack, ItemDisplayContext context, int light, @Nullable Level level) {
+        Minecraft.getInstance().getItemRenderer().renderStatic(stack, context, light, OverlayTexture.NO_OVERLAY, poseStack, buffers, level, 0);
     }
 
     public void submitText(PoseStack poseStack, float x, float y, FormattedCharSequence text, boolean shadow, Font.DisplayMode mode,

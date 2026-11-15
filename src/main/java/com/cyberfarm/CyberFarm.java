@@ -43,6 +43,9 @@ import com.cyberfarm.village.MechanistDialoguePayload;
 import com.cyberfarm.village.Blueprints;
 import com.cyberfarm.village.BlueprintsPayload;
 import com.cyberfarm.village.MechanistTrades;
+import com.cyberfarm.trinket.TrinketKeyPayload;
+import com.cyberfarm.trinket.TrinketTicker;
+import com.cyberfarm.trinket.Trinkets;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 
@@ -94,11 +97,16 @@ public class CyberFarm {
         ModVillagers.POI_TYPES.register(modEventBus);
         ModVillagers.PROFESSIONS.register(modEventBus);
         BIOME_MODIFIERS.register(modEventBus);
+        Trinkets.register(modEventBus);
+        TrinketTicker.register();
 
         registerPayloads();
         modEventBus.addListener(CyberFarm::registerCapabilities);
         modEventBus.addListener(CyberFarm::registerAttributes);
-                DroneDockBlockEntity.ANCHOR_TICKETS.register();
+        // Also the Taxi drones' warp tickets (DroneWarp.TICKETS): Forge keeps one callback per mod
+        DroneDockBlockEntity.ANCHOR_TICKETS.register();
+        MinecraftForge.EVENT_BUS.addListener(com.cyberfarm.drone.DroneWarp::onServerTick);
+        MinecraftForge.EVENT_BUS.addListener(com.cyberfarm.trinket.TaxiCall::onServerTick);
         MinecraftForge.EVENT_BUS.addListener(HandbookGifting::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(Blueprints::onPlayerLogin);
         MinecraftForge.EVENT_BUS.addListener(MechanistTrades::onVillagerTrades);
@@ -199,6 +207,11 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getFluids());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.automationItems());
+        // Nothing plugs into the Human Dock's front, the way onto its pad
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.HUMAN_DOCK.get(),
+                (be, side) -> side != null && side == be.getBlockState().getValue(MachineBlock.FACING) ? null : be.getEnergy());
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.sideHandler(side));
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
@@ -250,6 +263,7 @@ public class CyberFarm {
         PortNetwork.registrar("1").playToServer(SurveyModePayload.TYPE, SurveyModePayload.STREAM_CODEC, SurveyModePayload::handle)
                 .playToServer(ProjectorSelectPayload.TYPE, ProjectorSelectPayload.STREAM_CODEC, ProjectorSelectPayload::handle)
                 .playToServer(MechExitPayload.TYPE, MechExitPayload.STREAM_CODEC, MechExitPayload::handle)
+                .playToServer(TrinketKeyPayload.TYPE, TrinketKeyPayload.STREAM_CODEC, TrinketKeyPayload::handle)
                 .playToServer(MechTogglePayload.TYPE, MechTogglePayload.STREAM_CODEC, MechTogglePayload::handle)
                 .playToServer(MechanistChoicePayload.TYPE, MechanistChoicePayload.STREAM_CODEC, MechanistChoicePayload::handle)
                 .playToServer(com.cyberfarm.energy.DishRenamePayload.TYPE, com.cyberfarm.energy.DishRenamePayload.STREAM_CODEC, com.cyberfarm.energy.DishRenamePayload::handle)
@@ -257,7 +271,9 @@ public class CyberFarm {
                 .playToClient(SchematicsPayload.TYPE, SchematicsPayload.STREAM_CODEC, SchematicsPayload::handle)
                 .playToClient(MachineStatusPayload.TYPE, MachineStatusPayload.STREAM_CODEC, MachineStatusPayload::handle)
                 .playToClient(EffectPayload.TYPE, EffectPayload.STREAM_CODEC, EffectPayload::handle)
-                .playToClient(BlueprintsPayload.TYPE, BlueprintsPayload.STREAM_CODEC, BlueprintsPayload::handle);
+                .playToClient(BlueprintsPayload.TYPE, BlueprintsPayload.STREAM_CODEC, BlueprintsPayload::handle)
+                .playToClient(com.cyberfarm.trinket.WarpPayload.TYPE, com.cyberfarm.trinket.WarpPayload.STREAM_CODEC, com.cyberfarm.trinket.WarpPayload::handle)
+                .playToClient(Trinkets.SyncPayload.TYPE, Trinkets.SyncPayload.STREAM_CODEC, Trinkets.SyncPayload::handle);
         PortNetwork.register();
     }
 }

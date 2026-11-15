@@ -52,6 +52,14 @@
     {
       "type": "patchouli:text",
       "text": "A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump and punch, with the cockpit display showing its energy and integrity. End game: it is built around a $(l:mech/mech_core)Mech Core$(/l) grown from reactor waste. The $(l:mech/mech_hangar)Mech Hangar$(/l) charges and repairs it and fits its $(l:mech/mech_modules)modules$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:trinkets/trinkets)Trinkets$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Wearable tech in a Trinkets tab of its own: $(l:trinkets/trinkets)Gravity Boots$(/l) to hover over the ground, a $(l:trinkets/trinkets)Neural Chip$(/l) with programs (zoom, night vision, Taxi Call...) and a leather $(l:trinkets/trinkets)Utility Belt$(/l) carrying the Energy Sphere, your tools and a Pocket Drone; charged on the $(l:trinkets/trinkets)Human Dock$(/l), stored in a $(l:trinkets/trinkets)Battery Bank$(/l), made at the Trinket Table."
     }
   ],
   "priority": true

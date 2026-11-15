@@ -36,7 +36,11 @@ public class GeigerCounterItem extends Item {
         if (!(entity instanceof Player player) || (player.getMainHandItem() != stack && player.getOffhandItem() != stack)) {
             return;
         }
-        float radiation = Radiation.level(level, player.blockPosition());
+        report(player, level, Radiation.level(level, player.blockPosition()));
+    }
+
+    /** Clicks and the level above the hotbar; also what the Neural Chip's Geiger HUD does, with no counter in hand. */
+    public static void report(Player player, ServerLevel level, float radiation) {
         // A faint background tick everywhere, a crackle in contaminated land
         float chance = Math.min(0.85F, 0.01F + radiation / 150.0F);
         if (level.getRandom().nextFloat() < chance) {

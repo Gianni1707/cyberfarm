@@ -3,7 +3,11 @@ package com.cyberfarm.registry;
 import com.cyberfarm.drone.DroneModules;
 import com.cyberfarm.port.DataComponentType;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.core.BlockPos;
+
+import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
@@ -15,6 +19,19 @@ public class ModDataComponents {
     public static final DataComponentType<Integer> MECH_MODULES = DataComponentType.ofInt("mech_modules");
 
     public static final DataComponentType<DroneModules> DRONE_MODULES = DataComponentType.of("drone_modules", DroneModules.CODEC);
+
+    /** Gravity Boots: the hover height chosen with its key, by {@code GravityBootsItem.HEIGHTS} index (0 = off). */
+    public static final DataComponentType<Integer> HOVER_HEIGHT = DataComponentType.ofInt("hover_height");
+    /** Neural Chip: its programs, as a bit mask of ChipProgram#bit(). */
+    public static final DataComponentType<Integer> CHIP_PROGRAMS = DataComponentType.ofInt("chip_programs");
+    /** Neural Chip: the programs switched on with their key (Night Vision), same bits. */
+    public static final DataComponentType<Integer> CHIP_ACTIVE = DataComponentType.ofInt("chip_active");
+
+    /** Neural Chip: the Drone Dock its Taxi Call calls, set by right-clicking the dock with the chip. */
+    public static final DataComponentType<GlobalPos> CHIP_DOCK = DataComponentType.of("chip_dock", GlobalPos.CODEC);
+
+    /** Pocket Drone: out flying around the player (true) or folded on the belt. */
+    public static final DataComponentType<Boolean> DRONE_ACTIVE = DataComponentType.of("drone_active", Codec.BOOL);
 
     /** Mob Capsule: the saved data of the captured mob. */
     public static final DataComponentType<CompoundTag> CAPTURED_MOB = DataComponentType.of("captured_mob", CompoundTag.CODEC);

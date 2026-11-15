@@ -1,0 +1,5 @@
+{
+  "order": 400,
+  "icon": "cyberfarm:slot/trinket_neck",
+  "validators": ["curios:tag"]
+}

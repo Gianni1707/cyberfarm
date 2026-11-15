@@ -1,6 +1,9 @@
 package com.cyberfarm.registry;
 
 import com.cyberfarm.block.FormedFrameBlock;
+import com.cyberfarm.block.BatteryBankBlock;
+import com.cyberfarm.block.HumanDockBlock;
+import com.cyberfarm.block.TrinketTableBlock;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.block.AcidSynthesizerBlock;
@@ -119,7 +122,7 @@ public class ModBlocks {
     public static final DeferredBlock<MachinePartBlock> MACHINE_PART = BLOCKS.registerBlock("machine_part",
             MachinePartBlock::new, p -> machine(p).noOcclusion());
     public static final DeferredBlock<HiddenFrameBlock> HIDDEN_FRAME = BLOCKS.registerBlock("hidden_frame",
-            HiddenFrameBlock::new, p -> machine(p).noOcclusion());
+            HiddenFrameBlock::new, p -> machine(p).noOcclusion().dynamicShape());
     public static final DeferredBlock<CapabilityPortBlock> ACID_INLET = BLOCKS.registerBlock("acid_inlet",
             CapabilityPortBlock::new, ModBlocks::chamberPart);
     public static final DeferredBlock<CapabilityPortBlock> METHANE_OUTLET = BLOCKS.registerBlock("methane_outlet",
@@ -186,6 +189,15 @@ public class ModBlocks {
     // Crystallizer: grows the Fusion Crystal at the heart of a mech's core
     public static final DeferredBlock<CrystallizerBlock> CRYSTALLIZER = BLOCKS.registerBlock("crystallizer",
             CrystallizerBlock::new, p -> machine(p).noOcclusion().lightLevel(state -> 6));
+    // Trinket Table: makes the trinkets and the chip programs
+    public static final DeferredBlock<TrinketTableBlock> TRINKET_TABLE = BLOCKS.registerBlock("trinket_table",
+            TrinketTableBlock::new, p -> machine(p).noOcclusion());
+    // Human Dock: the player steps on it and everything they carry charges
+    public static final DeferredBlock<HumanDockBlock> HUMAN_DOCK = BLOCKS.registerBlock("human_dock",
+            HumanDockBlock::new, p -> machine(p).noOcclusion());
+    // Battery Bank: an FE store whose blocks merge like the fluid tanks
+    public static final DeferredBlock<BatteryBankBlock> BATTERY_BANK = BLOCKS.registerBlock("battery_bank",
+            BatteryBankBlock::new, p -> machine(p));
     /** Takes the place of any Cyber Frame of the chamber: acid, power and items in, the crystal out. Stays visible when formed. */
     public static final DeferredBlock<CapabilityPortBlock> CRYSTALLIZER_PORT = BLOCKS.registerBlock("crystallizer_port",
             CapabilityPortBlock::new, ModBlocks::chamberPart);

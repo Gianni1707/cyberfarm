@@ -1,5 +1,6 @@
 package com.cyberfarm.drone.job;
 
+import com.cyberfarm.drone.DroneWarp;
 import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
@@ -30,6 +31,8 @@ public class TaxiJob extends DroneJob {
     private final BlockPos destination;
     private final UUID passenger;
     private final double cruiseY;
+    /** Ticks cruised since the last warp. */
+    private int cruising;
     private Phase phase = Phase.CLIMB;
 
     public TaxiJob(BlockPos destination, UUID passenger, double cruiseY) {
@@ -55,8 +58,9 @@ public class TaxiJob extends DroneJob {
         }
         Vec3 dropOff = dropOffPoint(destination);
         double cruiseY = DroneFlight.cruiseAltitude(level, drone.position(), dropOff);
-        // Up, across and down, there and back again
-        double route = (cruiseY - drone.getY()) + dropOff.subtract(drone.position()).horizontalDistance() + (cruiseY - dropOff.y);
+        // Up, across and down, there and back again; past a warp's reach the way costs a share (it is warped, not flown)
+        double across = DroneWarp.costDistance(dropOff.subtract(drone.position()).horizontalDistance());
+        double route = (cruiseY - drone.getY()) + across + (cruiseY - dropOff.y);
         int needed = (int) Math.ceil(2 * route / (drone.cruiseSpeed() * 0.9) * flightCost) + TRIP_COST;
         if (energy < needed) {
             player.displayClientMessage(Component.translatable("message.cyberfarm.taxi.low_energy", String.format("%,d", needed)), true);
@@ -85,7 +89,13 @@ public class TaxiJob extends DroneJob {
                 }
             }
             case CRUISE -> {
-                drone.flyTowards(new Vec3(dropOff.x, cruiseY, dropOff.z));
+                // A long trip: a little flight, then a warp (with the passenger) to near the drop-off
+                Vec3 over = new Vec3(dropOff.x, cruiseY, dropOff.z);
+                if (over.distanceTo(drone.position()) > DroneWarp.DISTANCE && ++cruising > DroneWarp.FLY_FIRST
+                        && DroneWarp.tryWarp(drone, level, over, cruiseY)) {
+                    cruising = 0;
+                }
+                drone.flyTowards(over);
                 if (new Vec3(dropOff.x, drone.getY(), dropOff.z).distanceTo(drone.position()) < 0.3) {
                     phase = Phase.DESCEND;
                 }

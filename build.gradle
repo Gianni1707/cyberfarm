@@ -33,6 +33,8 @@ repositories {
     // REI and its dependencies (Architectury, Cloth Config)
     maven { url = "https://maven.shedaniel.me" }
     maven { url = "https://maven.architectury.dev" }
+    // Curios, optional: with it the trinkets go in Curios slots of their own
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 base {
@@ -133,6 +135,11 @@ dependencies {
     // REI's Point and Rectangle come from Cloth's math, bundled in Cloth Config
     modCompileOnly "me.shedaniel.cloth:cloth-config-forge:11.0.99"
     modCompileOnly "dev.architectury:architectury-forge:9.0.7"
+    modCompileOnly "top.theillusivec4.curios:curios-forge:${curios_version}:api"
+    // ./gradlew runClient -Pcurios tries the trinkets with Curios
+    if (project.hasProperty('curios')) {
+        modRuntimeOnly "top.theillusivec4.curios:curios-forge:${curios_version}"
+    }
     if (project.recipe_viewer == "rei") {
         modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-forge:${rei_version}"
     } else {

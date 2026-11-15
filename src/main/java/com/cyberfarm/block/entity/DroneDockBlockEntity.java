@@ -112,9 +112,15 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
      * restart; those of a dock that is gone are dropped as the world loads.
      */
     public static final TicketController ANCHOR_TICKETS = new TicketController(CyberFarm.id("drone_anchor"), (level, tickets) -> {
-        for (BlockPos owner : List.copyOf(tickets.getBlockTickets().keySet())) {
+        for (var entry : List.copyOf(tickets.getBlockTickets().entrySet())) {
+            BlockPos owner = entry.getKey();
             if (!(level.getBlockState(owner).getBlock() instanceof DroneDockBlock)) {
                 tickets.removeAllTickets(owner);
+                continue;
+            }
+            // Ticking tickets are DroneWarp's (they share this controller): a warp never outlives the session
+            for (long chunk : entry.getValue().getSecond().toLongArray()) {
+                tickets.removeTicket(owner, chunk, true);
             }
         }
     });
@@ -444,6 +450,16 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** What the drones on this dock do, as a mask of {@code DroneTask.bit()}; 0 with none on it. */
     public int droneTasks() {
         return droneIds().isEmpty() ? 0 : droneModules;
+    }
+
+    /** The first of this dock's drones that is loaded, or null (out of the loaded world, or none). */
+    public @Nullable DroneEntity loadedDrone(ServerLevel level) {
+        for (UUID id : droneIds()) {
+            if (level.getEntity(id) instanceof DroneEntity drone) {
+                return drone;
+            }
+        }
+        return null;
     }
 
     /** The drones that live on this dock. */

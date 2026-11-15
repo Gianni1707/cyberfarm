@@ -12,6 +12,7 @@ import com.cyberfarm.CyberFarm;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraftforge.network.NetworkDirection;
@@ -107,6 +108,10 @@ public final class PortNetwork {
 
     static void sendToPlayer(ServerPlayer player, CustomPacketPayload payload) {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), wrap(payload));
+    }
+
+    static void sendToPlayersTrackingEntityAndSelf(Entity entity, CustomPacketPayload payload) {
+        CHANNEL.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> entity), wrap(payload));
     }
 
     static void sendToPlayersTrackingChunk(ServerLevel level, ChunkPos chunk, CustomPacketPayload payload) {

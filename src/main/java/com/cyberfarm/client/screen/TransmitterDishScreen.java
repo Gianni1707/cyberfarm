@@ -12,6 +12,7 @@ import com.cyberfarm.port.client.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import com.cyberfarm.port.client.KeyEvent;
 import com.cyberfarm.port.client.MouseButtonEvent;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -31,6 +32,14 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
     private static final int PANEL_Y = 94;
     private static final int NAME_X = 37, NAME_Y = 98, NAME_W = 74;
     private static final int PUBLIC_X = 117, PUBLIC_Y = 96, PUBLIC_W = 50;
+    /** The Manage tab: the power line on top, the orbs' switch under it. */
+    private static final int POWER_Y = 99, ORBS_X = 117, ORBS_Y = 111, ORBS_W = 50, ORBS_H = 12;
+    /**
+     * The network panel's two tabs, down the GUI's left side beside it (the user's split): Network to set the network
+     * up (name, Public, colour), Manage to run it (power, orbs). The open one is remembered while the game runs.
+     */
+    private static final int TAB_NETWORK = 0, TAB_MANAGE = 1, TAB_SIZE = 22, TAB_GAP = 2, TAB_TOP = PANEL_Y - 6;
+    private static int tab = TAB_NETWORK;
     private static final int SWATCH_X = 43, SWATCH_Y = 110, SWATCH_STEP = 12, SWATCH_SIZE = 10;
     private static final int OTHER_DIMENSION = -1;
     private static final int RING_DIM = 0xFF2E4B47;
@@ -53,7 +62,40 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
         name.setMaxLength(DishNetworks.MAX_NAME);
         name.setTextColor(TEXT);
         name.setValue(menu.name());
+        name.visible = tab == TAB_NETWORK;
         addRenderableWidget(name);
+    }
+
+    private int tabX() {
+        return leftPos - TAB_SIZE;
+    }
+
+    private int tabY(int index) {
+        return topPos + TAB_TOP + index * (TAB_SIZE + TAB_GAP);
+    }
+
+    private int tabAt(double mouseX, double mouseY) {
+        for (int i = 0; i < 2; i++) {
+            if (mouseX >= tabX() && mouseX < leftPos && mouseY >= tabY(i) && mouseY < tabY(i) + TAB_SIZE) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /** Where the tabs stand outside the GUI, for JEI and REI to keep clear of. */
+    public List<Rect2i> sideAreas() {
+        return List.of(new Rect2i(tabX(), tabY(0), TAB_SIZE, 2 * TAB_SIZE + TAB_GAP));
+    }
+
+    private void openTab(int index) {
+        if (index == tab) {
+            return;
+        }
+        sendName();
+        name.setFocused(false);
+        tab = index;
+        name.visible = tab == TAB_NETWORK;
     }
 
     /** Sends the typed name when the player leaves the field or the GUI. */
@@ -87,6 +129,12 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        int clickedTab = event.button() == 0 ? tabAt(event.x(), event.y()) : -1;
+        if (clickedTab >= 0) {
+            openTab(clickedTab);
+            minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            return true;
+        }
         int button = event.button() == 0 ? buttonAt(event.x(), event.y()) : -1;
         if (button >= 0) {
             minecraft.gameMode.handleInventoryButtonClick(menu.containerId, button);
@@ -102,6 +150,9 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
     }
 
     private int buttonAt(double mouseX, double mouseY) {
+        if (tab == TAB_MANAGE) {
+            return isHovering(ORBS_X, ORBS_Y, ORBS_W, ORBS_H, mouseX, mouseY) ? TransmitterDishMenu.BUTTON_ORBS : -1;
+        }
         for (int i = 0; i < DishNetworks.COLOURS.length; i++) {
             if (isHovering(SWATCH_X + i * SWATCH_STEP, SWATCH_Y, SWATCH_SIZE, SWATCH_SIZE, mouseX, mouseY)) {
                 return i;
@@ -126,8 +177,16 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
             graphics.fill(sx, y + LADDER_Y + 11 - h, sx + 13, y + LADDER_Y + 11, PANEL_DARK);
             graphics.fill(sx + 1, y + LADDER_Y + 12 - h, sx + 12, y + LADDER_Y + 11, i <= tier ? lit : RING_DIM);
         }
-        // Network panel
+        // Network panel, with its two tabs beside it
         drawWell(graphics, x + 7, y + PANEL_Y, 162, 35);
+        drawTab(graphics, TAB_NETWORK);
+        drawTab(graphics, TAB_MANAGE);
+        if (tab == TAB_MANAGE) {
+            drawButton(graphics, x + ORBS_X, y + ORBS_Y, ORBS_W, ORBS_H,
+                    Component.translatable(menu.chargesOrbs() ? "gui.cyberfarm.dish.orbs_on" : "gui.cyberfarm.dish.orbs_off"),
+                    menu.chargesOrbs() ? ACCENT_DIM : PANEL_LIGHT, TEXT);
+            return;
+        }
         graphics.fill(x + NAME_X, y + NAME_Y - 1, x + NAME_X + NAME_W, y + NAME_Y + 10, SLOT_BORDER);
         graphics.fill(x + NAME_X + 1, y + NAME_Y, x + NAME_X + NAME_W - 1, y + NAME_Y + 9, SLOT_BG);
         drawButton(graphics, x + PUBLIC_X, y + PUBLIC_Y, PUBLIC_W, 12,
@@ -137,6 +196,27 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
             int sx = x + SWATCH_X + i * SWATCH_STEP, sy = y + SWATCH_Y;
             graphics.fill(sx - 1, sy - 1, sx + SWATCH_SIZE + 1, sy + SWATCH_SIZE + 1, i == menu.colour() ? GLOW : SLOT_BORDER);
             graphics.fill(sx, sy, sx + SWATCH_SIZE, sy + SWATCH_SIZE, 0xFF000000 | DishNetworks.COLOURS[i]);
+        }
+    }
+
+    /** A tab as the Drone Dock's: outlined on three sides, joined to the GUI when open. Network shows the network's colour, Manage a sphere. */
+    private void drawTab(GuiGraphicsExtractor graphics, int index) {
+        int x = tabX(), y = tabY(index);
+        boolean open = tab == index;
+        graphics.fill(x, y, leftPos + 1, y + TAB_SIZE, OUTLINE);
+        graphics.fill(open ? x : x + 1, y + 1, leftPos + 1, y + TAB_SIZE - 1, open ? PANEL : PANEL_DARK);
+        graphics.fill(open ? x : x + 1, y + 1, leftPos, y + 2, PANEL_LIGHT);
+        int cx = x + TAB_SIZE / 2, cy = y + TAB_SIZE / 2;
+        if (index == TAB_NETWORK) {
+            // Three linked dots in the network's colour: a network
+            int colour = 0xFF000000 | (menu.colour() >= 0 && menu.colour() < DishNetworks.COLOURS.length ? DishNetworks.COLOURS[menu.colour()] : 0x5EC2B8);
+            graphics.fill(cx - 5, cy + 2, cx + 6, cy + 3, TEXT_DIM);
+            graphics.fill(cx, cy - 4, cx + 1, cy + 2, TEXT_DIM);
+            graphics.fill(cx - 2, cy - 6, cx + 3, cy - 1, colour);
+            graphics.fill(cx - 7, cy, cx - 2, cy + 5, colour);
+            graphics.fill(cx + 3, cy, cx + 8, cy + 5, colour);
+        } else {
+            graphics.item(new ItemStack(ModItems.ENERGY_SPHERE.get()), cx - 8, cy - 8);
         }
     }
 
@@ -236,19 +316,33 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
             Component row = i < receivers.size() ? Component.literal(receivers.get(i)) : Component.translatable("gui.cyberfarm.dish.free");
             graphics.text(font, row, LIST_X + 9, rowY, i < receivers.size() ? (served ? GLOW : TEXT) : TEXT_DIM, false);
         }
-        graphics.text(font, Component.translatable("gui.cyberfarm.dish.name"), 10, NAME_Y + 1, TEXT_DIM, false);
-        graphics.text(font, Component.translatable("gui.cyberfarm.dish.colour"), 10, SWATCH_Y + 1, TEXT_DIM, false);
+        if (tab == TAB_NETWORK) {
+            graphics.text(font, Component.translatable("gui.cyberfarm.dish.name"), 10, NAME_Y + 1, TEXT_DIM, false);
+            graphics.text(font, Component.translatable("gui.cyberfarm.dish.colour"), 10, SWATCH_Y + 1, TEXT_DIM, false);
+            return;
+        }
+        // Manage: what it sends, then the orbs in reach
         int power = RangeModuleItem.power(menu.tier());
         Component flow = Component.translatable("gui.cyberfarm.dish.flow",
                 power < 0 ? Component.translatable("gui.cyberfarm.dish.unlimited") : Component.literal(String.format("%,d", power)));
-        graphics.text(font, flow, 10, PANEL_Y + 27, TEXT_DIM, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.dish.power"), 10, POWER_Y, TEXT_DIM, false);
+        graphics.text(font, flow, 52, POWER_Y, TEXT, false);
+        graphics.text(font, Component.translatable("gui.cyberfarm.dish.orbs"), 10, ORBS_Y + 2, TEXT_DIM, false);
     }
 
     @Override
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
-        if (isHovering(PUBLIC_X, PUBLIC_Y, PUBLIC_W, 12, mouseX, mouseY)) {
+        int hoveredTab = tabAt(mouseX, mouseY);
+        if (hoveredTab >= 0) {
+            graphics.setTooltipForNextFrame(font, Component.translatable(hoveredTab == TAB_NETWORK ? "gui.cyberfarm.dish.tab.network"
+                    : "gui.cyberfarm.dish.tab.manage"), mouseX, mouseY);
+        }
+        if (tab == TAB_NETWORK && isHovering(PUBLIC_X, PUBLIC_Y, PUBLIC_W, 12, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable(menu.isPublic() ? "gui.cyberfarm.dish.public.tip" : "gui.cyberfarm.dish.private.tip"), mouseX, mouseY);
+        }
+        if (tab == TAB_MANAGE && isHovering(ORBS_X, ORBS_Y, ORBS_W, ORBS_H, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dish.orbs.tip"), mouseX, mouseY);
         }
     }
 }

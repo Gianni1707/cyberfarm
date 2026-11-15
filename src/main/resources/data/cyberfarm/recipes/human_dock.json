@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "cyberfarm:advanced_circuit"
+    },
+    "P": {
+      "item": "minecraft:heavy_weighted_pressure_plate"
+    },
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "ABA"
+  ],
+  "result": {
+    "item": "cyberfarm:human_dock"
+  }
+}

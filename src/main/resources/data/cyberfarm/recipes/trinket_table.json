@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "D": {
+      "item": "cyberfarm:advanced_circuit"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    },
+    "B": {
+      "item": "cyberfarm:battery_cell"
+    }
+  },
+  "pattern": [
+    "ADA",
+    "GTG",
+    "ABA"
+  ],
+  "result": {
+    "item": "cyberfarm:trinket_table"
+  }
+}

@@ -318,6 +318,46 @@ def assembler(g):
     block(g, 132, 15, 152, 20)
 
 
+def belt_gui(g):
+    """The Utility Belt's panel (the user's "tecno-enamel" pick): a bus of LEDs over the holders, the brown strap with
+    its mint stripe and studs behind them, a buckle at the left, and the charge channels UtilityBeltScreen fills."""
+    g.fill(2, 15, 174, 31, 0x0D1C1C)
+    g.fill(2, 31, 174, 32, 0x488D91)
+    # bus line with one LED pad per holder and the two end modules
+    g.fill(30, 17, 150, 19, 0x2F6468)
+    for h in range(4):
+        x = 44 + h * 26 + 8
+        g.fill(x - 3, 16, x + 3, 20, 0x132423)
+        g.fill(x - 2, 17, x + 2, 19, 0x5EC2B8)
+        g.fill(x - 1, 17, x + 1, 19, 0xD1FEE7)
+    g.fill(6, 16, 26, 29, 0x132423)
+    g.fill(8, 18, 12, 22, 0x5EC2B8)
+    g.fill(8, 24, 24, 26, 0x2F6468)
+    g.fill(152, 16, 172, 29, 0x132423)
+    g.fill(154, 18, 158, 22, 0x00B894)
+    g.fill(154, 24, 170, 26, 0x2F6468)
+    # the belt behind the holders: brown strap, lit top edge, dark bottom edge, mint stripe, studs
+    g.fill(2, 33, 174, 53, 0x7A5230)
+    g.fill(2, 33, 174, 35, 0x9C6B42)
+    g.fill(2, 51, 174, 53, 0x5A3A20)
+    g.fill(2, 41, 174, 45, 0x2F6468)
+    g.fill(2, 42, 174, 44, 0x5EC2B8)
+    for x in range(30, 160, 8):
+        g.fill(x, 36, x + 2, 38, 0xE4EAEA)
+        g.fill(x, 48, x + 2, 50, 0xE4EAEA)
+    # buckle at the left end
+    g.fill(5, 34, 25, 52, 0x071314)
+    g.fill(6, 35, 24, 51, 0xBDC6C5)
+    g.fill(6, 35, 24, 36, 0xE4EAEA)
+    g.fill(9, 38, 21, 48, 0x132423)
+    g.fill(11, 42, 19, 44, 0xD1FEE7)
+    # bar channels under holders 0 and 3 (the Java fills 16x2 at y 54), a dark housing so the bar reads
+    for h in range(4):
+        x = 44 + h * 26
+        g.fill(x - 1, 54 - 1, x + 17, 54 + 3, 0x071314)
+        g.fill(x, 54, x + 16, 54 + 2, 0x0D1C1C)
+
+
 # name: (height, upper part's height, bolt, drawing, slots, arrow, text panels)
 OTHERS = {
     "combustion_generator": (166, 72, True, generator, ((74, 35),), (96, 150), ()),
@@ -332,6 +372,11 @@ OTHERS = {
     "supply_terminal": (194, 100, False, None, ((151, 25), (151, 61)), None, ((6, 15, 146, 98),)),
     "resonance_core": (134, 134, True, None, (), None, ((6, 17, 152, 128),)),
     "muffler": (146, 146, False, None, (), None, ((5, 16, 171, 142),)),
+    # The Utility Belt's four holders in a row, a panel under them for the sphere's and the drone's charge
+    # The Battery Bank: the slot that charges an item, a panel for the bank's gauge and total
+    "battery_bank": (166, 72, True, None, ((12, 28),), None, ((6, 48, 154, 69),)),
+    # The Human Dock: no slots, a panel for who is charging and how fast
+    "utility_belt": (166, 72, False, belt_gui, ((44, 35), (70, 35), (96, 35), (122, 35)), None, ((8, 56, 168, 68),)),
 }
 
 
@@ -353,11 +398,101 @@ def draw_other(name):
     return g
 
 
+
+
+TABLE_CHIP = (3, 30, 15, 42)        # the chip on the left: x, y, x2, y2 (TrinketTableScreen lights its LEDs)
+TABLE_PIPE = (154, 14, 160, 72)     # the pipe down the right side (TrinketTableScreen runs a pulse along it)
+
+
+def trinket_table_gui():
+    """The Trinket Table's grid in the machines' own enamel, unlike the crafting table it works like: the 3x3 grid, the
+    engraved arrow and the result; on the left a chip on its board with traces running into the grid, on the right a
+    steel pipe with mint couplings, a branch into the result's side. No power gauge: it takes none."""
+    g = Gui(WIDTH, HEIGHT)
+    surface(g)
+    header(g, bolt=False)
+    # The board under the chip and its traces into the grid's edge
+    x0, y0, x1, y1 = TABLE_CHIP
+    g.fill(2, 18, 27, 69, LO)
+    g.fill(2, 18, 27, 19, 0x488D91)
+    for i, y in enumerate((22, 26, 47, 52, 57, 62)):
+        g.fill(5 if i % 2 else 8, y, 27, y + 1, DEEP_MINT)
+        g.fill(26, y - 1, 28, y + 2, MINT)
+    for x in (6, 9, 12):
+        g.fill(x, 22, x + 1, y0, DEEP_MINT)
+        g.fill(x, y1, x + 1, 47, DEEP_MINT)
+    # The chip: a dark body with steel pins down both sides and a mint die mark
+    g.fill(x0 - 1, y0 - 1, x1 + 1, y1 + 1, OUT)
+    g.fill(x0, y0, x1, y1, 0x132423)
+    for y in range(y0 + 1, y1 - 1, 2):
+        g.fill(x0 - 2, y, x0, y + 1, S[1])
+        g.fill(x1, y, x1 + 2, y + 1, S[1])
+    g.fill(x0 + 2, y0 + 2, x0 + 4, y0 + 4, MINT)
+    # The pipe down the right side, its couplings, and a branch into the result
+    px0, py0, px1, py1 = TABLE_PIPE
+    steel_v(g, px0, py0, px1, py1)
+    for y in (20, 40, 62):
+        g.fill(px0 - 2, y, px1 + 2, y + 3, OUT)
+        g.fill(px0 - 1, y + 1, px1 + 1, y + 2, MINT)
+    steel_h(g, 145, 41, px0, 45)
+    g.fill(144, 40, 146, 46, OUT)
+    g.fill(145, 41, 146, 45, DEEP_MINT)
+    wells(g, tuple((30 + c * 18, 17 + r * 18) for r in range(3) for c in range(3)) + ((124, 35),))
+    arrow(g, 92, 118, 38)
+    tray(g)
+    return g
+
+
+def vanilla_trinkets():
+    """The inventory's Trinkets tab, drawn like the game's own inventory (the user wants no jump in style between the
+    two tabs): the light grey panel with its white and dark bevels, the trinket slots in the armor's column, the black
+    window the player stands in, and the inventory under them."""
+    g = Gui(WIDTH, HEIGHT)
+    grey, light, shade, black = 0xC6C6C6, 0xFFFFFF, 0x555555, 0x000000
+    g.fill(2, 0, WIDTH - 3, 1, black)
+    g.fill(0, 2, 1, HEIGHT - 3, black)
+    g.fill(2, HEIGHT - 1, WIDTH - 3, HEIGHT, black)
+    g.fill(WIDTH - 1, 3, WIDTH, HEIGHT - 2, black)
+    for x, y in ((1, 1), (WIDTH - 3, 1), (WIDTH - 2, 2), (1, HEIGHT - 3), (2, HEIGHT - 2), (WIDTH - 2, HEIGHT - 3), (WIDTH - 3, HEIGHT - 2)):
+        g.fill(x, y, x + 1, y + 1, black)
+    g.fill(1, 2, WIDTH - 1, HEIGHT - 2, grey)
+    g.fill(2, 1, WIDTH - 3, HEIGHT - 1, grey)
+    g.fill(2, 1, WIDTH - 4, 3, light)
+    g.fill(1, 2, 3, HEIGHT - 4, light)
+    g.fill(4, HEIGHT - 3, WIDTH - 2, HEIGHT - 1, shade)
+    g.fill(WIDTH - 3, 4, WIDTH - 1, HEIGHT - 2, shade)
+    g.fill(WIDTH - 3, 3, WIDTH - 2, 4, grey)
+    g.fill(3, HEIGHT - 3, 4, HEIGHT - 2, grey)
+
+    def slot(x, y):
+        g.fill(x - 1, y - 1, x + 17, y + 17, 0x8B8B8B)
+        g.fill(x - 1, y - 1, x + 16, y, 0x373737)
+        g.fill(x - 1, y - 1, x, y + 16, 0x373737)
+        g.fill(x, y + 16, x + 17, y + 17, light)
+        g.fill(x + 16, y, x + 17, y + 17, light)
+
+    for i in range(3):
+        slot(8, 8 + i * 18)
+    # The player's window, framed like a slot
+    g.fill(25, 7, 77, 79, 0x373737)
+    g.fill(26, 78, 77, 79, light)
+    g.fill(76, 8, 77, 79, light)
+    g.fill(26, 8, 76, 78, black)
+    for row in range(3):
+        for col in range(9):
+            slot(8 + col * 18, 84 + row * 18)
+    for col in range(9):
+        slot(8 + col * 18, 142)
+    return g
+
+
 def main():
     for name in MACHINES:
         draw(name).save(TEXTURES / f"gui/{name}.png")
     for name in OTHERS:
         draw_other(name).save(TEXTURES / f"gui/{name}.png")
+    vanilla_trinkets().save(TEXTURES / "gui/trinkets.png")
+    trinket_table_gui().save(TEXTURES / "gui/trinket_table.png")
 
 
 if __name__ == "__main__":

@@ -1,5 +1,9 @@
 package com.cyberfarm.registry;
 
+import com.cyberfarm.menu.BatteryBankMenu;
+import com.cyberfarm.menu.TrinketTableMenu;
+import com.cyberfarm.menu.TrinketsMenu;
+import com.cyberfarm.menu.UtilityBeltMenu;
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.menu.AcidSynthesizerMenu;
 import com.cyberfarm.menu.BiomassPressMenu;
@@ -86,6 +90,19 @@ public class ModMenus {
 
     public static final DeferredHolder<MenuType<?>, MenuType<CrystallizerMenu>> CRYSTALLIZER = MENUS.register("crystallizer",
             () -> IForgeMenuType.create((id, inventory, buf) -> new CrystallizerMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<TrinketTableMenu>> TRINKET_TABLE = MENUS.register("trinket_table",
+            () -> IForgeMenuType.create((id, inventory, buf) -> new TrinketTableMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<TrinketsMenu>> TRINKETS = MENUS.register("trinkets",
+            () -> IForgeMenuType.create((id, inventory, buf) -> new TrinketsMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<UtilityBeltMenu>> UTILITY_BELT = MENUS.register("utility_belt",
+            () -> IForgeMenuType.create((id, inventory, buf) -> new UtilityBeltMenu(id, inventory)));
+
+    public static final DeferredHolder<MenuType<?>, MenuType<BatteryBankMenu>> BATTERY_BANK = MENUS.register("battery_bank",
+            () -> IForgeMenuType.create((id, inventory, buf) -> new BatteryBankMenu(id, inventory)));
+
 
     public static final DeferredHolder<MenuType<?>, MenuType<ResonanceCoreMenu>> RESONANCE_CORE = MENUS.register("resonance_core",
             () -> IForgeMenuType.create((id, inventory, buf) -> new ResonanceCoreMenu(id, inventory)));

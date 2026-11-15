@@ -16,11 +16,14 @@ public final class EnergyUtil {
             if (source.getEnergyStored() <= 0) {
                 return;
             }
-            IEnergyStorage target = Caps.energy(level, pos.relative(direction), direction.getOpposite());
-            if (target != null) {
-                move(source, target, maxPerSide);
-            }
+            pushTo(level, pos.relative(direction), direction.getOpposite(), source, maxPerSide);
         }
+    }
+
+    /** Pushes up to {@code max} FE into the block at {@code target}, reached from its {@code side}, if it accepts FE. Returns what moved. */
+    public static int pushTo(Level level, BlockPos target, Direction side, IEnergyStorage source, int max) {
+        IEnergyStorage handler = Caps.energy(level, target, side);
+        return handler != null ? move(source, handler, max) : 0;
     }
 
     /** Moves up to {@code max} FE from {@code source} to {@code target}. Returns the amount moved. */
