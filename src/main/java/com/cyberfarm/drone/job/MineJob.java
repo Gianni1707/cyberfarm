@@ -195,7 +195,7 @@ public class MineJob extends DroneJob {
     private Result dig(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         BlockState state = level.getBlockState(target);
         float hardness = state.getDestroySpeed(level, target);
-        int needed = miningTicks(hardness);
+        int needed = workTicks(drone, miningTicks(hardness));
         progress++;
         // A steady cutting beam while it digs: each lasts a little longer than the gap to the next
         if (progress % 6 == 1) {

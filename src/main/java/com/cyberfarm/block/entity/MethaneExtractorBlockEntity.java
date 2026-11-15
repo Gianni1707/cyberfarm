@@ -77,9 +77,10 @@ import org.jspecify.annotations.Nullable;
  */
 public class MethaneExtractorBlockEntity extends MachineBlockEntity {
     public static final int TANK_CAPACITY = 8_000;
-    public static final int ZOMBIE_RATE = 30;
-    public static final int MONSTER_RATE = 15;
-    public static final int ANIMAL_RATE = 5;
+    // A zombie chamber runs a Steam Engine (45 mB/t) with a little to spare
+    public static final int ZOMBIE_RATE = 50;
+    public static final int MONSTER_RATE = 25;
+    public static final int ANIMAL_RATE = 8;
     private static final int OUTPUT_PER_SIDE = 200;
     private static final int CHECK_INTERVAL = 20;
     private static final int WORK_SOUND_INTERVAL = 50;

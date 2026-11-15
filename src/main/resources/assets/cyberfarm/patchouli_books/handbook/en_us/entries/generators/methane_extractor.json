@@ -97,15 +97,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 30 mB/t, 360 FE/t"
+      "text": "$(li)never despawn.$(br)$(li)$(l)Mob Capsule$(): right-click a mob with a $(item)Mob Capsule$() to capture it, then $(l)right-click the Methane Extractor$() with the full capsule. Works for animals too.$(br)The chamber holds one mob.$(br)$(li)$(l)Zombies (any kind)$(): 50 mB/t, 600 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Other monsters$(): 15 mB/t, 180 FE/t$(br)$(li)$(l)Animals$(): 5 mB/t, 60 FE/t"
+      "text": "$(li)$(l)Other monsters$(): 25 mB/t, 300 FE/t$(br)$(li)$(l)Animals$(): 8 mB/t, 96 FE/t$(br)One zombie chamber keeps a $(l:generators/steam_engine)Steam Engine$(/l) (45 mB/t) running at full power, with a little to spare."
     },
     {
       "type": "patchouli:text",
-      "text": "The acid takes one point of health every 15 seconds: a zombie (20 health) lasts about 5 minutes and gives about 180,000 mB of methane in all, 2,160,000 FE in Gas Turbines. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
+      "text": "The acid takes one point of health every 15 seconds: a zombie (20 health) lasts about 5 minutes and gives about 300,000 mB of methane in all, 3,600,000 FE in Gas Turbines. The chamber is a lot of work (acid, mobs, the structure), so it pays back far more than a $(l:generators/bio_digester)Bio-Digester$(/l)."
     },
     {
       "type": "patchouli:crafting",

@@ -10,7 +10,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), 10 mB/t, 5 FE per mB, 9 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 30 mB/t, 12 FE per mB, 15 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
+      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), 10 mB/t, 5 FE per mB, 9 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 50 mB/t, 12 FE per mB, 15 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
     },
     {
       "type": "patchouli:text",
@@ -19,11 +19,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)One Biomass$() (500 mB of Biogas): 2,500 FE in a Gas Turbine, 4,500 FE in a Steam Engine$(br)$(li)$(l)One zombie in the chamber$() (180,000 mB): 2,160,000 FE in a Gas Turbine, 2,700,000 FE in a Steam Engine"
+      "text": "$(li)$(l)One Biomass$() (500 mB of Biogas): 2,500 FE in a Gas Turbine, 4,500 FE in a Steam Engine$(br)$(li)$(l)One zombie in the chamber$() (300,000 mB): 3,600,000 FE in a Gas Turbine, 4,500,000 FE in a Steam Engine"
     },
     {
       "type": "patchouli:text",
-      "text": "Gas is made slowly and burned fast: what counts is the flow. One Gas Turbine at full power needs 20 mB/t, that is $(l)two Bio-Digesters$() or two thirds of a zombie chamber; a Steam Engine needs 45 mB/t."
+      "text": "Gas is made slowly and burned fast: what counts is the flow. One Gas Turbine at full power needs 20 mB/t, that is $(l)two Bio-Digesters$() or two fifths of a zombie chamber; a Steam Engine needs 45 mB/t, a little less than one zombie chamber."
     },
     {
       "type": "patchouli:text",

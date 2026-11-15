@@ -95,7 +95,7 @@ public class SpongeJob extends DroneJob {
     private Result suck(DroneEntity drone, ServerLevel level) {
         ticks++;
         rise(drone, level);
-        if (ticks < SUCK_TICKS) {
+        if (ticks < workTicks(drone, SUCK_TICKS)) {
             return Result.CONTINUE;
         }
         for (BlockPos pos : BlockPos.betweenClosed(target.offset(-RADIUS, 0, -RADIUS), target.offset(RADIUS, 0, RADIUS))) {

@@ -76,7 +76,7 @@ public class FishJob extends DroneJob {
 
     private Result fish(DroneEntity drone, ServerLevel level) {
         if (waitTicks < 0) {
-            waitTicks = MIN_WAIT + level.getRandom().nextInt(MAX_WAIT - MIN_WAIT + 1);
+            waitTicks = workTicks(drone, MIN_WAIT + level.getRandom().nextInt(MAX_WAIT - MIN_WAIT + 1));
             level.playSound(null, water, SoundEvents.FISHING_BOBBER_THROW, SoundSource.NEUTRAL, 0.5F, 1.0F);
         }
         if (--waitTicks > 0) {

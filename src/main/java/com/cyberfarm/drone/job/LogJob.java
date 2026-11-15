@@ -87,7 +87,7 @@ public class LogJob extends DroneJob {
         if (--cooldown > 0) {
             return Result.CONTINUE;
         }
-        cooldown = TICKS_PER_BLOCK;
+        cooldown = workTicks(drone, TICKS_PER_BLOCK);
         while (!remaining.isEmpty()) {
             BlockPos pos = remaining.remove(0);
             BlockState state = level.getBlockState(pos);

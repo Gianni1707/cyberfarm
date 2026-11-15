@@ -26,11 +26,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The Basic and Mini frames are made of $(l:materials/aluminum)aluminum$(/l); the Advanced and Elite frames of $(l:materials/carbon_fiber)carbon fiber$(/l), with $(l:materials/circuits)Advanced and Elite Circuits$(/l)."
+      "text": "The Basic and Mini frames are made of $(l:materials/aluminum)aluminum$(/l); the Advanced and Elite frames of $(l:materials/carbon_fiber)carbon fiber$(/l), with $(l:materials/circuits)Advanced and Elite Circuits$(/l).$(br2)Speed Addons add 10% each on top of the frame speed. Above 100%, the same speed also shortens the work itself: digging, clearing a site, cutting trees,"
     },
     {
       "type": "patchouli:text",
-      "text": "Speed Addons add 10% each on top of the frame speed. The flight cost is the frame's share of the drone's $(l:drone_systems/drones)power use$(/l). Higher tiers are crafted from the tier below, so you never lose your progress."
+      "text": "soaking up fluid and waiting for a catch. Guard and Bomb drones fire and dive at their own pace. The flight cost is the frame's share of the drone's $(l:drone_systems/drones)power use$(/l). Higher tiers are crafted from the tier below, so you never lose your progress."
     },
     {
       "type": "patchouli:crafting",

@@ -14,7 +14,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Speed Addon$(): +10% flight speed each, frame limit only, +10% flight cost$(br)$(li)$(l)Stack Addon$(): +1 stack (64 items) per $(l:drone_systems/modules)Transport$(/l) trip each, up to 9 stacks per trip, +5% flight cost$(br)$(li)$(l)Battery Addon$(): +25% of the frame's battery capacity each, frame limit only, +5% flight cost"
+      "text": "$(li)$(l)Speed Addon$(): +10% flight and work speed each, frame limit only, +10% flight cost$(br)$(li)$(l)Stack Addon$(): +1 stack (64 items) per $(l:drone_systems/modules)Transport$(/l) trip each, up to 9 stacks per trip, +5% flight cost$(br)$(li)$(l)Battery Addon$(): +25% of the frame's battery capacity each, frame limit only, +5% flight cost"
     },
     {
       "type": "patchouli:text",
