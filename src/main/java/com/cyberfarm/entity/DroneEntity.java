@@ -512,6 +512,11 @@ public class DroneEntity extends PathfinderMob {
         return modules.addonCount(AddonType.ANCHOR) > 0;
     }
 
+    /** How fast it works: the frame tier and Speed Addons, never below 1 so a slow frame does not work slower. */
+    public double workSpeed() {
+        return Math.max(1.0, modules.speed());
+    }
+
     /** Items carried per Transport trip, from the Stack Addons. */
     public int transportCapacity() {
         return modules.transportCapacity();

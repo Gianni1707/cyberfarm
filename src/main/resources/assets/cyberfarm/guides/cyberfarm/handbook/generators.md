@@ -39,10 +39,10 @@ standard, generators from other mods work just as well.
 | Machine | Makes | Effort |
 | --- | --- | --- |
 | [Bio-Digester](bio_digester.md) | 10 mB/t of Biogas from compostables and rotten flesh | a farm to feed it |
-| [Methane Extractor](methane_extractor.md) | 30 mB/t of Methane from a zombie (15 other monsters, 5 animals) | a 3x3x4 chamber, acid, a steady supply of mobs |
+| [Methane Extractor](methane_extractor.md) | 50 mB/t of Methane from a zombie (25 other monsters, 8 animals) | a 3x3x4 chamber, acid, a steady supply of mobs |
 
-A zombie chamber is the big step: about **360 FE/t** in Gas Turbines (one burns 20 mB/t, so it takes two), as much as seven
-Bio-Digesters. A Steam Engine burns the methane of one and a half chambers into
+A zombie chamber is the big step: about **600 FE/t** in Gas Turbines (one burns 20 mB/t, so it takes two and a half), as much as twelve
+Bio-Digesters. One chamber keeps a Steam Engine running, which turns its methane into
 675 FE/t, more than a whole row of Combustion Generators, but still less than the smallest
 reactor at full power.
 
