@@ -615,6 +615,154 @@ def pyrolysis_oven():
             ((11.8, 11.5, 14.9), (13.1, 12.7, 15.2), "trim", "unlit")]
 
 
+# --------------------------------------------------------------------------- Human Dock (the arch, a pad with a frame above)
+
+HUMAN_DOCK_STAGE = 6.0   # each of the arch's two telescopic sections slides this far out of the one below (px)
+
+
+
+# --------------------------------------------------------------------------- Trinket Table (V1: an open bench, arms hung from a gantry)
+# Boxes as the sketch draws them (tools in the scratchpad's table_polish3/tp3.py): front to -z, x from left to right as
+# the player sees the front, the table's cell 0..16 and the frames' cell 16..32. from_sketch(mirror=True) turns them into
+# this file's frame, the frames' cell landing at x -16..0 (the table's right, seen from the front).
+TABLE_BASE, TABLE_CX, TABLE_CR = 11.0, 14.0, 16.9
+
+
+def trinket_table_bench(width):
+    base, ledge = TABLE_BASE, 15.0
+    boxes = [((0, 0, 0), (width, 1, 16), "slot"), ((0, 1, 0), (width, 3.6, 16), "lid"), ((0, 3.6, 0), (width, 4, 16), "steel_dark")]
+    for x0, x1 in ((1.5, 6.5), (9.5, 14.5)):         # the I/O hatches on the plinth's front
+        boxes += [((x0, 1, -.4), (x1, 3.2, 0), "copper"), ((x0 + .7, 1.5, -.6), (x1 - .7, 2.8, -.4), "slot"),
+                  (((x0 + x1) / 2 - 1, 3.25, -.3), ((x0 + x1) / 2 + 1, 3.55, 0), "slot")]
+    boxes += [((0, 4, 2), (width, 9, 13), "body"), ((0, 4, 13), (width, 9, 16), "lid")]
+    for x0 in (0, width - 3):
+        boxes += [((x0, 4, 0), (x0 + 3, 9, 2), "body")]
+    boxes += [((0, 9, 0), (width, 10.2, 16), "body"), ((0, 10.2, 0), (width, base, 16), "trim"), ((.5, 9.3, -.15), (width - .5, 9.8, 0), "copper")]
+    boxes += [((2, base, .8), (9, 13.2, 3.4), "body")]  # the tool rack, front left
+    for i in range(3):
+        boxes += [((3 + i * 2.2, 13.2, 1.4), (4 + i * 2.2, 15 - i * .6, 2.4), "trim" if i == 1 else "copper")]
+    if width > 16:
+        # The readout's frame on the drawer (TrinketTableRenderer lights its 12 segments), the vents and strip at the back
+        boxes += [((9, 4.8, 1.55), (23, 8.2, 2), "steel_dark"), ((9.5, 5.2, 1.4), (22.5, 7.8, 1.55), "slot")]
+        boxes += [((8 + i * 3.2, 5, 16), (9.8 + i * 3.2, 8.1, 16.15), "slot") for i in range(5)]   # under the strip, not into it
+        boxes += [((3.5, 8.3, 16), (28.5, 8.8, 16.15), "copper")]
+        # The parts bin: an open box, its dark floor sunk between four walls (a lid flush with its top flickered)
+        boxes += [((24, base, .8), (30, 11.8, 4.6), "body"), ((24.6, 11.8, 1.4), (29.4, 12.2, 4), "slot"),
+                  ((24, 11.8, .8), (24.6, 12.6, 4.6), "body"), ((29.4, 11.8, .8), (30, 12.6, 4.6), "body"),
+                  ((24.6, 11.8, .8), (29.4, 12.6, 1.4), "body"), ((24.6, 11.8, 4), (29.4, 12.6, 4.6), "body")]
+        cx = TABLE_CX
+        boxes += [((8, base, 13.6), (24, base + .6, 14.8), "slot"),                         # work light (lit by the renderer)
+                  ((cx - 3, base, 5), (cx + 3, 15, 11), "body"), ((cx - 3.5, 15, 4), (cx + 3.5, 16.5, 12), "trim"),
+                  ((cx - 3.5, 16.5, 5.5), (cx + 3.5, TABLE_CR, 10.5), "slot"),           # the cradle's pad
+                  ((17.4, base, 7), (21.6, ledge - .8, 10), "body"), ((17.0, ledge - .8, 6.5), (22.0, ledge, 10.5), "steel_dark")]   # tray
+        for x0 in (0, 29.5):                             # the gantry's fixed lower posts
+            boxes += [((x0, base, 12), (x0 + 2.5, 22.5, 16), "body")]
+    return boxes
+
+
+def trinket_table_beam():
+    """The gantry's moving half at its top (TrinketTableRenderer sinks it 4 px while it opens): the telescopic upper posts,
+    the beam with its cap, edge and work light, and the two arms' brackets with their shoulder hubs."""
+    top = 30.0
+    boxes = []
+    for x0 in (0, 29.5):
+        boxes += [((x0 + .3, 22.5, 12.4), (x0 + 2.2, top, 15.6), "trim")]
+    boxes += [((0, top - .5, 3), (32, top + 1.5, 13), "body"), ((0, top + 1.5, 3), (32, top + 2, 13), "trim"),
+              ((0, top - .5, 2.6), (32, top + 1.5, 3), "steel_dark"), ((6, top - 1.0, 5.5), (26, top - .5, 7.0), "slot")]
+    # The hubs stand 0.35 px clear of the upper arm's faces (TrinketTableRenderer's z bands), or they flicker together
+    for xb, za, zb, hub, up0, up1 in ((2, 3.6, 9, 5, 4.4, 6.3), (26.4, 7, 11.9, 27, 9.7, 11.6)):
+        boxes += [((xb, 23, za), (xb + 3.6, top - .5, zb), "steel_dark"),
+                  ((hub - 1.5, 24.5, up0 - .35), (hub + 1.5, 27.5, up1 + .35), "steel_dark")]
+    return boxes
+
+
+def trinket_table_static():
+    return trinket_table_bench(32)
+
+
+def trinket_table_lone():
+    """Alone: the bench's own cell, a pad where the cradle goes, the stump of the left post, mint joints toward the frames."""
+    base = TABLE_BASE
+    return [*trinket_table_bench(16),
+            ((3, base, 3), (13, base + .6, 13), "body"), ((4.5, base + .6, 4.5), (11.5, base + .9, 11.5), "slot"),
+            ((0, base, 12), (2.5, 17, 16), "body"), ((.6, 17, 12.6), (1.9, 19, 15.4), "trim"),
+            ((15.4, 9.3, 1), (16.15, 10.8, 15), "copper"), ((2.5, base, 15.4), (14, base + .7, 16), "copper")]
+
+
+def human_dock_static():
+    """The pad on its plinth and octagon, two footprints (lit by HumanDockRenderer), a lip at the front, and the arch's
+    stumps behind the player (z 0.4..3.4, the back), each with its collar and a light strip."""
+    body = {"up": "body", "south": "body", "east": "body"}
+    lid = {"up": "lid", "south": "body", "east": "body"}
+    pad = {"up": "pad", "south": "trim", "east": "trim"}
+    return [
+        ((0, 0, 0), (16, 1, 16), "plinth"),
+        *octagon(1, 1, 1, 15, 3, 15, 3, body),
+        *octagon(2, 3, 2, 14, 3.6, 14, 2, pad),
+        ((4.5, 3.6, 6.5), (7.5, 3.75, 11.5), "slot"), ((8.5, 3.6, 6.5), (11.5, 3.75, 11.5), "slot"),
+        ((5, 3.6, 13.2), (11, 3.75, 14.2), "copper"),
+        ((0.6, 3, 0.2), (4.4, 4.5, 3.8), "copper"), ((11.6, 3, 0.2), (15.4, 4.5, 3.8), "copper"),
+        ((1, 4.5, 0.4), (4, 11.6, 3.4), lid), ((12, 4.5, 0.4), (15, 11.6, 3.4), lid),
+        ((1, 11.6, 0.4), (4, 12, 3.4), "trim"), ((12, 11.6, 0.4), (15, 12, 3.4), "trim"),
+        ((4, 6.5, 1.2), (4.2, 11.5, 2.6), "slot"), ((11.8, 6.5, 1.2), (12, 11.5, 2.6), "slot"),
+    ]
+
+
+def _sunk(boxes, sink):
+    return [((x0, y0 - sink, z0), (x1, y1 - sink, z1), mat) for (x0, y0, z0), (x1, y1, z1), mat in boxes]
+
+
+def human_dock_mid(sink=0.0):
+    """The arch's middle section, a tripod leg's sleeve: posts a little narrower than the stumps (y 12..18 raised) with a
+    collar at the top and a light strip. Folded (sink HUMAN_DOCK_STAGE) it hides inside the stumps."""
+    lid = {"up": "lid", "south": "body", "east": "body"}
+    return _sunk([
+        ((1.1, 12, 0.5), (3.9, 18, 3.3), lid), ((12.1, 12, 0.5), (14.9, 18, 3.3), lid),
+        ((1.0, 17.4, 0.4), (4.0, 18, 3.4), "trim"), ((12.0, 17.4, 0.4), (15.0, 18, 3.4), "trim"),
+        ((3.9, 13, 1.2), (4.1, 17, 2.6), "slot"), ((11.9, 13, 1.2), (12.1, 17, 2.6), "slot"),
+    ], sink)
+
+
+def human_dock_arch(sink=0.0):
+    """The arch's top section: the narrowest posts (y 18..24 raised), the lintel with its cap and emitter, the two
+    windows. Raised it tops out at 27.9 px, in the frame's cell; folded (sink twice HUMAN_DOCK_STAGE) its posts hide in
+    the stumps and the lintel rests on them."""
+    body = {"up": "body", "south": "body", "east": "body"}
+    lid = {"up": "lid", "south": "body", "east": "body"}
+    return _sunk([
+        ((1.2, 18, 0.6), (3.8, 24, 3.2), lid), ((12.2, 18, 0.6), (14.8, 24, 3.2), lid),
+        ((3.8, 19, 1.2), (4.0, 23, 2.6), "slot"), ((12.0, 19, 1.2), (12.2, 23, 2.6), "slot"),
+        ((0.6, 24, 0.2), (15.4, 27.5, 3.8), body),
+        ((1.2, 27.5, 0.5), (14.8, 27.9, 3.5), "trim"),
+        ((4.4, 23.2, 0.8), (11.6, 24, 3.2), "copper"),
+        ((1.2, 25.4, 3.8), (4.0, 27, 3.95), "slot"), ((12, 25.4, 3.8), (14.8, 27, 3.95), "slot"),
+    ], sink)
+
+
+
+# --------------------------------------------------------------------------- Battery Bank (a plain cell; BatteryBankRenderer draws its display and gauges)
+
+def battery_bank():
+    """A plain full cell on a low plinth: the display and the side gauges are drawn only on the bank's outer faces by
+    BatteryBankRenderer, so that merged blocks meet flush."""
+    return [((0, 0, 0), (16, 1.5, 16), "plinth"),
+            ((0, 1.5, 0), (16, 16, 16), {"up": "lid", "down": "lid", "south": "body", "east": "body"})]
+
+
+def flush_port():
+    """A full block's socket: just a copper collar standing proud of the face round the conduit's arm."""
+    return [((5, 5, 16), (11, 11, 16.5), "copper")]
+
+
+def flush_port_up():
+    return [((5, 16, 5), (11, 16.5, 11), "copper")]
+
+
+def human_dock_lone():
+    """Alone: both sections folded down into the stumps, the lintel resting on them, all inside the pad's cell."""
+    return [*human_dock_static(), *human_dock_mid(HUMAN_DOCK_STAGE), *human_dock_arch(2 * HUMAN_DOCK_STAGE)]
+
+
 def bio_digester_lone():
     """Alone, the machine as it was, with a plate where the upper drum docks and one on the side the tank goes; no gas stub, as a frame goes up there."""
     return [*[box for box in bio_digester() if box[2] != "gas_pipe_up"],
@@ -937,7 +1085,10 @@ def machine_parts():
               *zip(("elec_base", "elec_bath", "elec_anode", "elec_bus"), electrolyzer_moving()),
               *zip(("repro_top", "repro_disc", "repro_magazine"), waste_reprocessor_moving()),
               ("press_tower", biomass_press_tower()), ("press_head", biomass_press_head()),
-              ("press_mash", [((3.7, 5.2, 3.4), (12.3, 13, 13.6), "mash")])]
+              ("press_mash", [((3.7, 5.2, 3.4), (12.3, 13, 13.6), "mash")]),
+              ("dock_arch", human_dock_arch()),
+              ("table_beam", from_sketch(trinket_table_beam(), mirror=True)),
+              ("dock_arch_mid", human_dock_mid())]
     variants = {}
     for part, (name, parts) in enumerate(groups):
         build(f"part_{name}", parts, False)
@@ -1942,6 +2093,10 @@ if __name__ == "__main__":
             ("water_pump", water_pump(), True, False),
             ("dock_tank", dock_tank(), False, False),
             ("biomass_press_body", biomass_press_body(), True, False),
+            ("human_dock_body", human_dock_static(), True, False),
+            ("trinket_table_body", from_sketch(trinket_table_static(), mirror=True), True, False),
+            ("trinket_table_open", from_sketch([*trinket_table_static(), *trinket_table_beam()], mirror=True), True, False),
+            ("human_dock_open", [*human_dock_static(), *human_dock_mid(), *human_dock_arch()], True, False),
             ("biomass_press_open", [*biomass_press_body(), *biomass_press_tower(), *biomass_press_head()], True, False),
             ("electrolyzer_body", electrolyzer(), True, False),
             ("electrolyzer_open", electrolyzer_open(), True, False),
@@ -1966,6 +2121,13 @@ if __name__ == "__main__":
     build("combustion_generator_port_up", top_port(10), False)
     build("bio_digester", bio_digester_lone(), False)
     build("biomass_press", biomass_press_lone(), False)
+    build("human_dock", human_dock_lone(), False)
+    build("battery_bank", battery_bank(), False)
+    build("trinket_table", from_sketch(trinket_table_lone(), mirror=True), False)
+    build("battery_bank_port", flush_port(), False)
+    build("battery_bank_port_up", flush_port_up(), False)
+    # The same open socket as the Drone Dock: a saddle under the conduit, keeping the pad in view
+    build("human_dock_port", low_port(), False)
     build("bio_digester_port", side_port(2.25), False)
     build("drone_dock_port", side_port(2.5, y0=1), False)
     build("drone_assembler_port", low_port(), False)
@@ -2012,6 +2174,12 @@ if __name__ == "__main__":
     build("gas_turbine_port_up", top_port(12), False)
     blockstate("combustion_generator", True, {"up"})
     small_multiblock_blockstate("biomass_press", {})
+    blockstate("battery_bank", False, {"up"})
+    # A workbench: no power, no pipes, so no sockets on any side
+    every_side = {"north", "east", "south", "west"}
+    small_multiblock_blockstate("trinket_table", {"north": every_side, "east": every_side, "south": every_side, "west": every_side})
+    # Never a socket in front: a conduit there would cut across the way onto the pad
+    small_multiblock_blockstate("human_dock", {"north": {"north"}, "east": {"east"}, "south": {"south"}, "west": {"west"}})
     small_multiblock_blockstate("bio_digester", {"north": {"east"}, "east": {"south"}, "south": {"west"}, "west": {"north"}})
     blockstate("drone_dock", False, set())
     blockstate("swarm_dock", False, set(), port_of="drone_dock")

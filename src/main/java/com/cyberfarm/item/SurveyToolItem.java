@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Consumer;
 
+import com.cyberfarm.block.entity.BatteryBankBlockEntity;
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.drone.DroneTask;
 import com.cyberfarm.registry.ModDataComponents;
@@ -185,6 +186,14 @@ public class SurveyToolItem extends Item {
         }
         Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
+        // On a Battery Bank it sets the clicked side: In, Out, Off in turn (holding it shows every side's mode)
+        if (level.getBlockEntity(pos) instanceof BatteryBankBlockEntity bank) {
+            bank.cycle(context.getClickedFace());
+            message(player, Component.translatable("message.cyberfarm.battery_bank.side",
+                    Component.translatable("gui.cyberfarm.battery_bank.mode." + bank.mode(context.getClickedFace()).name().toLowerCase(Locale.ROOT))));
+            level.playSound(null, pos, SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.BLOCKS, 0.3F, 1.4F);
+            return InteractionResult.SUCCESS;
+        }
         boolean clickedDock = level.getBlockEntity(pos) instanceof DroneDockBlockEntity;
         BlockPos lastClicked = DOCK_CLICKED.remove(player);
         if (stack.has(ModDataComponents.LINKED_DOCK.get()) && linkedDock(level, stack) == null) {

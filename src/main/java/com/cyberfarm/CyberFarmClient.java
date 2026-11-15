@@ -1,5 +1,9 @@
 package com.cyberfarm;
 
+import com.cyberfarm.client.screen.BatteryBankScreen;
+import com.cyberfarm.client.screen.TrinketTableScreen;
+import com.cyberfarm.client.screen.TrinketsScreen;
+import com.cyberfarm.client.screen.UtilityBeltScreen;
 import com.cyberfarm.block.entity.MufflerBlockEntity;
 import com.cyberfarm.client.DroneDownwash;
 import com.cyberfarm.client.DroneSoundInstance;
@@ -10,9 +14,14 @@ import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.TrinketClient;
 import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
+import com.cyberfarm.client.renderer.BatteryBankRenderer;
+import com.cyberfarm.client.renderer.HumanDockRenderer;
 import com.cyberfarm.client.renderer.MechRenderer;
+import com.cyberfarm.client.renderer.TrinketTableRenderer;
+import com.cyberfarm.client.renderer.TrinketLayer;
 import com.cyberfarm.client.renderer.BioDigesterRenderer;
 import com.cyberfarm.client.ProjectionRenderer;
 import com.cyberfarm.client.renderer.FrameDroneRenderer;
@@ -76,19 +85,22 @@ import com.cyberfarm.registry.ModFluids;
 import com.cyberfarm.registry.ModMenus;
 
 import com.google.common.reflect.TypeToken;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Avatar;
 import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -97,6 +109,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.sound.PlaySoundEvent;
@@ -106,7 +119,6 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.client.renderstate.AvatarRenderStateModifier;
 import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
-import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import org.jspecify.annotations.Nullable;
@@ -125,8 +137,24 @@ public class CyberFarmClient {
         modEventBus.addListener(com.cyberfarm.client.model.PipeFluidModel::wrap);
         modEventBus.addListener(CyberFarmClient::registerLayers);
         modEventBus.addListener(DissolvingMobRenderer::addLayers);
+        // The trinkets on every player model, whatever the skin
+        modEventBus.addListener((EntityRenderersEvent.AddLayers event) -> event.getSkins().forEach(skin -> {
+            AvatarRenderer<AbstractClientPlayer> renderer = event.getPlayerRenderer(skin);
+            if (renderer != null) {
+                renderer.addLayer(new TrinketLayer(renderer));
+            }
+        }));
         modEventBus.addListener(MechClient::registerKeys);
+        modEventBus.addListener(TrinketClient::registerKeys);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::tick);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::hover);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::slide);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::zoomFov);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::zoomTurn);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::zoomWheel);
+        NeoForge.EVENT_BUS.addListener(TrinketClient::addInventoryTabs);
         modEventBus.addListener(MechClient::registerHud);
+        modEventBus.addListener(com.cyberfarm.client.WarpOverlay::register);
         NeoForge.EVENT_BUS.addListener(MechClient::tick);
         modEventBus.addListener(StatusPanel::register);
         NeoForge.EVENT_BUS.addListener(VillageRange::tick);
@@ -143,6 +171,7 @@ public class CyberFarmClient {
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::extract);
         NeoForge.EVENT_BUS.addListener(ProjectionRenderer::submit);
         NeoForge.EVENT_BUS.addListener(FrameDroneRenderer::submit);
+        NeoForge.EVENT_BUS.addListener(com.cyberfarm.client.PocketDroneView::submit);
         NeoForge.EVENT_BUS.addListener(EffectRenderer::extract);
         NeoForge.EVENT_BUS.addListener(EffectRenderer::submit);
         NeoForge.EVENT_BUS.addListener(DroneDownwash::tick);
@@ -223,6 +252,10 @@ public class CyberFarmClient {
         event.register(ModMenus.FABRICATOR.get(), FabricatorScreen::new);
         event.register(ModMenus.SUPPLY_TERMINAL.get(), SupplyTerminalScreen::new);
         event.register(ModMenus.CRYSTALLIZER.get(), CrystallizerScreen::new);
+        event.register(ModMenus.TRINKET_TABLE.get(), TrinketTableScreen::new);
+        event.register(ModMenus.TRINKETS.get(), TrinketsScreen::new);
+        event.register(ModMenus.UTILITY_BELT.get(), UtilityBeltScreen::new);
+        event.register(ModMenus.BATTERY_BANK.get(), BatteryBankScreen::new);
         event.register(ModMenus.STEAM_ENGINE.get(), SteamEngineScreen::new);
         event.register(ModMenus.MECH_HANGAR.get(), MechHangarScreen::new);
         event.register(ModMenus.WASTE_REPROCESSOR.get(), WasteReprocessorScreen::new);
@@ -261,6 +294,9 @@ public class CyberFarmClient {
         event.registerBlockEntityRenderer(ModBlockEntities.ACID_SYNTHESIZER.get(), context -> new AcidSynthesizerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.CRYSTALLIZER.get(), context -> new CrystallizerRenderer());
         event.registerBlockEntityRenderer(ModBlockEntities.MECH_HANGAR.get(), context -> new HangarRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.HUMAN_DOCK.get(), context -> new HumanDockRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.TRINKET_TABLE.get(), context -> new TrinketTableRenderer());
+        event.registerBlockEntityRenderer(ModBlockEntities.BATTERY_BANK.get(), context -> new BatteryBankRenderer(context.font()));
     }
 
     /** Players carried by a Taxi drone hang from its hook: arm raised, legs straight. */
@@ -280,6 +316,9 @@ public class CyberFarmClient {
                     state.isPassenger = false;
                 }
                 MechClient.hidePilot(avatar, state);
+                if (avatar instanceof Player player) {
+                    state.setRenderData(TrinketLayer.LOOK, TrinketLayer.look(player));
+                }
             }
         });
     }

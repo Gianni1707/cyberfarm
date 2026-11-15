@@ -68,3 +68,9 @@ A pilotable mech, three and a half blocks tall: back into its trunk, walk, jump 
 the cockpit display showing its energy and integrity. End game: it is built around a
 [Mech Core](mech_core.md) grown from reactor waste. The [Mech Hangar](mech_hangar.md) charges and
 repairs it and fits its [modules](mech_modules.md).
+
+### [Trinkets](trinkets.md)
+Wearable tech in a Trinkets tab of its own: [Gravity Boots](trinkets.md) to hover over the ground, a
+[Neural Chip](trinkets.md) with programs (zoom, night vision, Taxi Call...) and a leather
+[Utility Belt](trinkets.md) carrying the Energy Sphere, your tools and a Pocket Drone; charged on the
+[Human Dock](trinkets.md), stored in a [Battery Bank](trinkets.md), made at the Trinket Table.

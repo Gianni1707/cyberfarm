@@ -34,6 +34,8 @@ repositories {
     // REI and its dependencies (Architectury, Cloth Config)
     maven { url = "https://maven.shedaniel.me" }
     maven { url = "https://maven.architectury.dev" }
+    // Curios, optional: with it the trinkets go in Curios slots of their own
+    maven { url = "https://maven.theillusivec4.top/" }
 }
 
 base {
@@ -139,6 +141,12 @@ dependencies {
         localRuntime "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
     } else {
         localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    }
+
+    compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}:api"
+    // ./gradlew runClient -Pcurios tries the trinkets with Curios
+    if (project.hasProperty('curios')) {
+        localRuntime "top.theillusivec4.curios:curios-neoforge:${curios_version}"
     }
 
     testImplementation platform('org.junit:junit-bom:5.11.4')

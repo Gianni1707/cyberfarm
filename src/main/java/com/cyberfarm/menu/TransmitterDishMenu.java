@@ -22,7 +22,7 @@ import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 /** The Transmitter Dish's GUI: its network's name, colour and visibility, the range module and the receivers it serves. */
 public class TransmitterDishMenu extends MachineMenu {
-    public static final int BUTTON_PUBLIC = DishNetworks.COLOURS.length;
+    public static final int BUTTON_PUBLIC = DishNetworks.COLOURS.length, BUTTON_ORBS = BUTTON_PUBLIC + 1;
     public static final int MODULE_X = 97, MODULE_Y = 17;
 
     private final List<String> receivers;
@@ -34,7 +34,7 @@ public class TransmitterDishMenu extends MachineMenu {
             public boolean isValid(int index, ItemResource resource) {
                 return resource.getItem() instanceof RangeModuleItem;
             }
-        }, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 6), ContainerLevelAccess.NULL, buf.readUtf(), buf.readList(b -> b.readUtf()));
+        }, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 7), ContainerLevelAccess.NULL, buf.readUtf(), buf.readList(b -> b.readUtf()));
     }
 
     public TransmitterDishMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access,
@@ -80,10 +80,15 @@ public class TransmitterDishMenu extends MachineMenu {
         return extra(5) != 0;
     }
 
-    /** Buttons 0-7 pick a colour, {@link #BUTTON_PUBLIC} switches between private and public. */
+    /** Whether it charges the Energy Spheres of the players in reach. */
+    public boolean chargesOrbs() {
+        return extra(6) != 0;
+    }
+
+    /** Buttons 0-7 pick a colour, {@link #BUTTON_PUBLIC} switches between private and public, {@link #BUTTON_ORBS} the charging of orbs. */
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (!(player instanceof ServerPlayer server) || id < 0 || id > BUTTON_PUBLIC) {
+        if (!(player instanceof ServerPlayer server) || id < 0 || id > BUTTON_ORBS) {
             return false;
         }
         return access.evaluate((level, pos) -> {
@@ -94,6 +99,10 @@ public class TransmitterDishMenu extends MachineMenu {
             if (!network.canEdit(server)) {
                 server.sendOverlayMessage(Component.translatable("message.cyberfarm.transmitter_dish.not_owner"));
                 return false;
+            }
+            if (id == BUTTON_ORBS) {
+                dish.toggleOrbs();
+                return true;
             }
             if (id == BUTTON_PUBLIC) {
                 network.isPublic = !network.isPublic;

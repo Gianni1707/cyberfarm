@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Locale;
 
 import com.cyberfarm.CyberFarm;
+import com.cyberfarm.trinket.ChipProgram;
+import com.cyberfarm.trinket.NeuralChipItem;
 import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.entity.DockTankBlockEntity;
 import com.cyberfarm.block.entity.FluidTankBlockEntity;
@@ -51,6 +53,8 @@ public final class StatusPanel {
     private static final Identifier LAYER = CyberFarm.id("status_panel");
     private static final double GAP = 0.2;
     private static final double DRONE_REACH = 32.0;
+    /** How far the Neural Chip's Machine Link reads machines. */
+    public static final double LINK_REACH = 24.0;
     private static final int CARGO_ROWS = 4;
     private static final int LINE = 10;
     private static final int BAR = 4;
@@ -96,6 +100,11 @@ public final class StatusPanel {
             panel = new Panel(drone.getPosition(partialTick).add(0.0, drone.getBbHeight() + GAP, 0.0), droneRows(drone));
         } else if (!TOOLTIP_MOD && minecraft.hitResult instanceof BlockHitResult hit && hit.getType() == HitResult.Type.BLOCK) {
             panel = machinePanel(minecraft.level, hit.getBlockPos());
+        }
+        if (panel == null && NeuralChipItem.runs(minecraft.player, ChipProgram.MACHINE_LINK)
+                && minecraft.player.pick(LINK_REACH, partialTick, false) instanceof BlockHitResult far && far.getType() == HitResult.Type.BLOCK) {
+            // The Neural Chip's Machine Link reads machines from afar
+            panel = machinePanel(minecraft.level, far.getBlockPos());
         }
         if (panel != null) {
             draw(graphics, minecraft, panel);

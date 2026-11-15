@@ -1,5 +1,9 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraft.world.item.ItemStack;
+import com.cyberfarm.trinket.UtilityBeltItem;
+import com.cyberfarm.trinket.TrinketCharging;
+import com.cyberfarm.trinket.EnergySphereItem;
 import java.util.Locale;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +46,8 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
     public static final int HOLD_TICKS = 80;
     private static final int OPEN_TICKS = 40;
     private static final int BASE_CAPACITY = 20_000;
+    /** How often it tops up the spheres of the players in reach. */
+    private static final int CHARGE_INTERVAL = 10;
     private static final int INFINITE_CAPACITY = 1_000_000_000;
     /** The share that arrives: 9 FE of every 10 sent. */
     private static final int ARRIVE_TENTHS = 9;
@@ -53,6 +59,13 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
     private int holdTicks;
     /** Synced to clients: the receiver it points at, the network's colour and whether it is transmitting. */
     private @Nullable GlobalPos aim;
+    /** What it is turned to: a receiver's place or a player's id, so a walking player is followed, not turned to anew. */
+    private @Nullable Object servedKey;
+    /** Charges the spheres in reach (the GUI's button), and the players it charged lately, until when. */
+    private boolean chargeOrbs = true;
+    private final Map<UUID, Long> charging = new HashMap<>();
+    /** How far a followed player walks before the aim moves after them. */
+    private static final int FOLLOW_STEP = 3;
     private int colour = -1;
     private boolean transmitting;
     /** Seconds each receiver has been out of range: after {@link #OUT_OF_RANGE_SECONDS} it loses its place on the network. */
@@ -128,7 +141,11 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         if (network != null && level.getGameTime() % 20 == 0) {
             dropOutOfRange(level, network);
         }
-        GlobalPos target = null;
+        if (open && network != null && chargeOrbs && level.getGameTime() % CHARGE_INTERVAL == 0) {
+            chargePlayers(level, network);
+        }
+        charging.values().removeIf(until -> until < level.getGameTime());
+        GlobalPos target = aim;
         boolean sending = false;
         if (open && network != null) {
             List<ReceiverDishBlockEntity> ready = new ArrayList<>();
@@ -140,21 +157,43 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
                     where.add(receiver);
                 }
             }
-            if (!ready.isEmpty()) {
-                served %= ready.size();
-                target = where.get(served);
-                if (!target.equals(aim)) {
+            // The players it charges take their turn too, so now and then it points at them
+            List<ServerPlayer> players = new ArrayList<>();
+            for (UUID id : charging.keySet()) {
+                ServerPlayer player = level.getServer().getPlayerList().getPlayer(id);
+                if (player != null) {
+                    players.add(player);
+                }
+            }
+            int count = ready.size() + players.size();
+            if (count > 0) {
+                served %= count;
+                boolean receiver = served < ready.size();
+                ServerPlayer player = receiver ? null : players.get(served - ready.size());
+                Object key = receiver ? where.get(served) : player.getUUID();
+                GlobalPos now = receiver ? where.get(served) : GlobalPos.of(player.level().dimension(), player.blockPosition().above());
+                // A walking player moves the aim only a few blocks at a time, without turning from the start again
+                target = key.equals(servedKey) && aim != null && !receiver && aim.dimension() == now.dimension()
+                        && aim.pos().distSqr(now.pos()) < FOLLOW_STEP * FOLLOW_STEP ? aim : now;
+                if (!key.equals(servedKey)) {
+                    servedKey = key;
                     turnTicks = TURN_TICKS;
                     holdTicks = 0;
                 } else if (turnTicks > 0) {
                     turnTicks--;
                 } else {
-                    sending = send(level, ready.get(served));
-                    if (ready.size() > 1 && ++holdTicks >= HOLD_TICKS) {
-                        served = (served + 1) % ready.size();
+                    sending = receiver ? send(level, ready.get(served)) : true;
+                    if (count > 1 && ++holdTicks >= HOLD_TICKS) {
+                        served = (served + 1) % count;
                     }
                 }
+            } else {
+                target = null;
+                servedKey = null;
             }
+        } else {
+            target = null;
+            servedKey = null;
         }
         int nowColour = network != null ? network.rgb() : -1;
         if (!Objects.equals(target, aim) || sending != transmitting || nowColour != colour) {
@@ -175,6 +214,47 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
             } else if (outOfRange.merge(receiver, 1, Integer::sum) >= OUT_OF_RANGE_SECONDS) {
                 outOfRange.remove(receiver);
                 DishNetworks.get(level.getServer()).unlink(receiver);
+            }
+        }
+    }
+
+    /**
+     * The user's "recharge from afar": the Energy Sphere of every player in reach who may see this network (its owner,
+     * their team, anyone if it is public) is topped up, with the same 10% lost on the way as to a receiver, up to the
+     * module's power and the sphere's own intake.
+     */
+    /** Whether it charges the spheres in reach at all: the button in its GUI. */
+    public boolean chargesOrbs() {
+        return chargeOrbs;
+    }
+
+    public void toggleOrbs() {
+        chargeOrbs = !chargeOrbs;
+        charging.clear();
+        setChanged();
+    }
+
+    private void chargePlayers(ServerLevel level, DishNetworks.Network network) {
+        int power = RangeModuleItem.power(tier());
+        for (ServerPlayer player : level.getServer().getPlayerList().getPlayers()) {
+            int stock = energy.getEnergy();
+            if (stock <= 0) {
+                return;
+            }
+            ItemStack sphere = UtilityBeltItem.content(player, UtilityBeltItem.SPHERE);
+            if (!(sphere.getItem() instanceof EnergySphereItem item) || !network.visibleTo(player)
+                    || !reaches(GlobalPos.of(player.level().dimension(), player.blockPosition()))) {
+                continue;
+            }
+            long most = (long) item.maxInput() * CHARGE_INTERVAL;
+            if (power >= 0) {
+                most = Math.min(most, (long) power * CHARGE_INTERVAL);
+            }
+            int sent = (int) Math.min(stock, most);
+            int arrived = TrinketCharging.chargeSphere(player, (int) ((long) sent * ARRIVE_TENTHS / 10));
+            if (arrived > 0) {
+                energy.drain((int) Math.min(sent, ((long) arrived * 10 + ARRIVE_TENTHS - 1) / ARRIVE_TENTHS));
+                charging.put(player.getUUID(), level.getGameTime() + CHARGE_INTERVAL * 2L);
             }
         }
     }
@@ -263,13 +343,14 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
             case 3 -> servedIndex() + 1;
             case 4 -> network != null ? network.receivers.size() : 0;
             case 5 -> transmitting ? 1 : 0;
+            case 6 -> chargeOrbs ? 1 : 0;
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 6;
+        return 7;
     }
 
     @Override
@@ -280,6 +361,7 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         output.putInt("colour", colour);
         output.putBoolean("transmitting", transmitting);
         output.putInt("served", served);
+        output.putBoolean("charge_orbs", chargeOrbs);
     }
 
     @Override
@@ -290,6 +372,7 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         colour = input.getIntOr("colour", -1);
         transmitting = input.getBooleanOr("transmitting", false);
         served = input.getIntOr("served", 0);
+        chargeOrbs = input.getBooleanOr("charge_orbs", true);
     }
 
     @Override
