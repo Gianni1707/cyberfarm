@@ -8,6 +8,7 @@ import com.cyberfarm.port.PortEntityBlock;
 import java.util.Map;
 
 import com.cyberfarm.block.entity.NetworkPipeBlockEntity;
+import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
 import com.cyberfarm.energy.ConduitNetwork;
 
 import net.minecraft.core.BlockPos;
@@ -27,6 +28,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.BaseEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.PipeBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -55,6 +57,9 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
         }
     });
 
+    /** In front of a reactor port the cooling tower covers: the tower's sleeve takes its place, and it is not drawn. */
+    public static final BooleanProperty SLEEVED = BooleanProperty.create("sleeved");
+
     /** A pipe's block entity, which pulls from the blocks its arms are set to extract from. */
     public interface Puller {
         void pull(ServerLevel level, BlockPos pos, Direction side);
@@ -80,7 +85,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
         for (Direction side : Direction.values()) {
             state = state.setValue(CONNECTIONS.get(side), false).setValue(EXTRACT.get(side), false);
         }
-        registerDefaultState(state);
+        registerDefaultState(state.setValue(SLEEVED, false));
     }
 
     /** How much can enter the network through this pipe per tick (FE or mB). */
@@ -100,6 +105,23 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         CONNECTIONS.values().forEach(builder::add);
         EXTRACT.values().forEach(builder::add);
+        builder.add(SLEEVED);
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public RenderShape getRenderShape(BlockState state) {
+        return state.getValue(SLEEVED) ? RenderShape.INVISIBLE : RenderShape.MODEL;
+    }
+
+    /** Whether the pipe is plugged into a reactor port whose tower covers it (see {@link #SLEEVED}). */
+    private static boolean sleeved(BlockState state, LevelReader level, BlockPos pos) {
+        for (Direction side : Direction.values()) {
+            if (state.getValue(CONNECTIONS.get(side)) && ReactorControllerBlockEntity.coversPipe(level, pos.relative(side), side.getOpposite())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -108,7 +130,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
         for (Direction direction : Direction.values()) {
             state = state.setValue(CONNECTIONS.get(direction), connectsTo(context.getLevel(), context.getClickedPos(), direction));
         }
-        return state;
+        return state.setValue(SLEEVED, sleeved(state, context.getLevel(), context.getClickedPos()));
     }
 
     @Override
@@ -119,6 +141,7 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
             return state;
         }
         BlockState updated = state.setValue(CONNECTIONS.get(direction), connectsTo(realLevel, pos, direction));
+        updated = updated.setValue(SLEEVED, sleeved(updated, level, pos));
         // Pulling stops when the block is gone
         return isMachineSide(updated, level, pos, direction) ? updated : updated.setValue(EXTRACT.get(direction), false);
     }
@@ -177,13 +200,29 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     }
 
     private boolean connectsTo(Level level, BlockPos pos, Direction direction) {
+        // A pipe hidden in front of a reactor port runs straight out of it: nothing joins it from the sides
+        Direction port = coveredPort(level, pos);
+        if (port != null && direction.getAxis() != port.getAxis()) {
+            return false;
+        }
         BlockPos neighbor = pos.relative(direction);
         BlockState state = level.getBlockState(neighbor);
         // Another kind of pipe exposes the same capability, but a gas line never joins a liquid one
         if (state.getBlock() instanceof NetworkPipeBlock) {
-            return sameKind(state);
+            Direction theirs = coveredPort(level, neighbor);
+            return sameKind(state) && (theirs == null || theirs.getAxis() == direction.getAxis());
         }
         return canConnectToMachine(level, neighbor, direction.getOpposite());
+    }
+
+    /** The side of a reactor port whose tower covers this place, or null (see {@link #SLEEVED}). */
+    private static @Nullable Direction coveredPort(LevelReader level, BlockPos pos) {
+        for (Direction side : Direction.values()) {
+            if (ReactorControllerBlockEntity.coversPipe(level, pos.relative(side), side.getOpposite())) {
+                return side;
+            }
+        }
+        return null;
     }
 
     @Override

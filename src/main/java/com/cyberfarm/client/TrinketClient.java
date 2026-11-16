@@ -70,6 +70,8 @@ public final class TrinketClient {
 
     /** Below the lowest hover height, how far down the boots feel for ground before letting the player fall. */
     private static final double FIELD_REACH = 4.0;
+    /** Step assist: how high a step ahead the boots rise for, and how far ahead they feel for it (more when faster). */
+    private static final double STEP_UP = 1.05, LOOK_AHEAD = 0.35, LOOK_AHEAD_TICKS = 3.0;
     private static final double MIN_ZOOM = 2.0, MAX_ZOOM = 8.0;
     /** The zoom the wheel picked, and the one shown, easing towards it (1 = none). */
     private static double zoom = 4.0;
@@ -231,6 +233,15 @@ public final class TrinketClient {
         double height = player.isShiftKeyDown() ? 0.0 : GravityBootsItem.height(boots);
         double ground = groundBelow(player, GravityBootsItem.height(boots) + FIELD_REACH);
         Vec3 motion = player.getDeltaMovement();
+        // Smooth step assist: rise for a step up to a block high just ahead, so the player glides up it instead of bumping
+        double speed = Math.hypot(motion.x, motion.z);
+        if (!Double.isNaN(ground) && speed > 0.01 && height > 0) {
+            double look = Math.min(1.0, LOOK_AHEAD + speed * LOOK_AHEAD_TICKS) / speed;
+            double ahead = groundBelow(player, GravityBootsItem.height(boots) + FIELD_REACH, motion.x * look, motion.z * look, ground + STEP_UP);
+            if (ahead > ground) {
+                ground = ahead;
+            }
+        }
         double vy = motion.y;
         if (Double.isNaN(ground)) {
             // Nothing under the field: fall as usual
@@ -295,9 +306,13 @@ public final class TrinketClient {
      * Every block column the player stands over counts, so the field rides over a ledge until the player is off it.
      */
     static double groundBelow(Player player, double reach) {
+        return groundBelow(player, reach, 0.0, 0.0, player.getY() + 0.25);
+    }
+
+    /** The highest surface no higher than {@code top} under the player's box moved by (dx, dz), within {@code reach} below the feet. */
+    static double groundBelow(Player player, double reach, double dx, double dz, double top) {
         Level level = player.level();
-        AABB box = player.getBoundingBox();
-        double top = player.getY() + 0.25;
+        AABB box = player.getBoundingBox().move(dx, 0.0, dz);
         double best = Double.NaN;
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int x = Mth.floor(box.minX); x <= Mth.floor(box.maxX - 1.0E-7); x++) {

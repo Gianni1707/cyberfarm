@@ -6,24 +6,38 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:gas_pipe",
-      "text": "Pipes carry $(l)gas$() (biogas, methane, Steam, gases of other mods) from the machines that make it to the machines and tanks that use or store it. $(l)Liquids$() such as water and coolant need a $(l:cables/liquid_pipe)Liquid Pipe$(/l). Lines are easy"
+      "item": "cyberfarm:gas_pipe"
     },
     {
       "type": "patchouli:text",
-      "text": "to tell apart: a Gas Pipe has $(l)green lights on its sleeves$(), and while a gas flows you can see it, see-through with puffs drifting along; when the flow stops the pipe is empty again. Where a line branches, bends or ends the glass becomes a small framed cube."
+      "text": "Gas Pipes carry $(l)gas$() (biogas, methane, Steam and the gases of other mods) from the machines that make it to the machines and tanks that use or store it. $(l)Liquids$() such as water and coolant need a $(l:cables/liquid_pipe)Liquid Pipe$(/l) instead."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pipes $(l)connect by themselves$() to other Gas Pipes and to any block that holds fluids, from CyberFarm or from any other mod.$(br)$(li)They $(l)store nothing$(): what a machine pushes in goes straight to the blocks on the network, which take turns."
+      "text": "$(li)Pipes $(l)connect by themselves$() to other Gas Pipes and to any block that holds fluids, from CyberFarm or any other mod.$(br)$(li)All three tiers join into one network.$(br)$(li)A Gas Pipe never joins a Liquid Pipe, so a water line and a steam line can run side by side.",
+      "title": "Placing"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)From each machine pushing into it, up to $(l)1,000 mB/t$() enters the network through a basic pipe, $(l)4,000$() through an Advanced one and $(l)16,000$() through an Elite one. The steam of a Large reactor needs Advanced pipes."
+      "text": "$(li)To empty a $(l:cables/fluid_tanks)Gas Tank$(/l) into a machine, $(l)right-click the pipe's arm$() that touches the tank so it pulls (see $(l:cables/cables)Cables$(/l))."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)All tiers join into one network. A Gas Pipe never joins a Liquid Pipe, so a water line and a steam line can run side by side."
+      "text": "$(li)Pipes $(l)store nothing$(): what a machine pushes in goes straight to the blocks on the network, which take turns.$(br)$(li)The sleeves have $(l)green lights$().",
+      "title": "How it works"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)While a gas flows you can see it in the glass, see-through with puffs drifting along. When the flow stops, the pipe looks empty again.$(br)$(li)Where a line branches, bends or ends, the glass becomes a small framed cube."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The rate is how much gas can enter the network per tick from each machine pushing in, set by the pipe that touches it.$(br)$(li)$(l)Gas Pipe$(): grey, 1,000 mB/t$(br)$(li)$(l)Advanced Gas Pipe$(): gold, 4,000 mB/t$(br)$(li)$(l)Elite Gas Pipe$(): violet, 16,000 mB/t",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The steam of a Large reactor needs Advanced pipes. To upgrade a line already in place, use the $(l:cables/cable_swapper)Cable Swapper$(/l)."
     },
     {
       "type": "patchouli:crafting",
@@ -36,8 +50,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:gas_pipe": 5,
-    "cyberfarm:advanced_gas_pipe": 5,
-    "cyberfarm:elite_gas_pipe": 6
+    "cyberfarm:gas_pipe": 8,
+    "cyberfarm:advanced_gas_pipe": 8,
+    "cyberfarm:elite_gas_pipe": 9
   }
 }

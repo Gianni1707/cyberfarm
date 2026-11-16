@@ -2,20 +2,21 @@
   "name": "Hologram Table",
   "icon": "cyberfarm:hologram_table",
   "category": "cyberfarm:drone_systems",
-  "sortnum": 8,
+  "sortnum": 10,
   "pages": [
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:hologram_table",
-      "text": "A table that projects a $(l)3D map$() of the land around it, with your docks and drones on it. Put one next to your drone yard and watch the whole fleet at work at a glance.$(br2)It needs $(l)no power$() and no setup. Walk up"
+      "text": "A table that projects a $(l)3D map$() of the land around it, with your docks and drones on it. Put one next to your drone yard and watch the whole fleet at work at a glance."
     },
     {
       "type": "patchouli:text",
-      "text": "to it and it $(l)wakes$(): a beam of light reaches up from the table and the land rises from the middle outwards, like a wave. Step away and it folds back down. While it is on, a $(l)radar pulse$() sweeps out from the table every few seconds, lighting up the land and every drone it passes, and a $(l)scan line$() climbs through the relief inside a"
+      "text": "It needs $(l)no power$() and no setup. Walk up to it and it $(l)wakes$(): a beam of light reaches up from the table and the land rises from the middle outwards, like a wave. Step away and it folds back down. While it is on, a $(l)radar pulse$() sweeps out from the table every few seconds, lighting up the land and every drone it",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "frame of light, lighting up the land it crosses.$(br2)$(l)Right-click$() the table to change how far it shows: $(l)16$(), $(l)24$() or $(l)32$() blocks every way. The wider the range, the wider the projection grows, so the land stays as easy to read."
+      "text": "passes, and a $(l)scan line$() climbs through the relief inside a frame of light, lighting up the land it crosses.$(br2)$(l)Right-click$() the table to change how far it shows: $(l)16$(), $(l)24$() or $(l)32$() blocks every way. The wider the range, the wider the projection grows, so the land stays as easy to read."
     },
     {
       "type": "patchouli:text",
@@ -33,7 +34,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Every $(l)Drone Dock$() and $(l)Builder Swarm Dock$() as a pillar of emerald light.$(br)$(li)Every $(l)drone$() as a dot that moves $(l)live$(), with a short glowing trail behind it and a thin line down to the ground to show how high it flies."
+      "text": "$(li)Every $(l:drone_systems/drone_dock)Drone Dock$(/l) and $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l) as a pillar of emerald light.$(br)$(li)Every $(l)drone$() as a dot that moves $(l)live$(), with a short glowing trail behind it and a thin line down to the ground to show how high it flies."
     },
     {
       "type": "patchouli:text",

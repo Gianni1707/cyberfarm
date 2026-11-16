@@ -1,44 +1,58 @@
 {
-  "name": "Sulfur and Acid",
+  "name": "Acid Synthesizer",
   "icon": "cyberfarm:acid_synthesizer",
   "category": "cyberfarm:generators",
   "sortnum": 7,
   "pages": [
     {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:acid_synthesizer"
+    },
+    {
       "type": "patchouli:text",
-      "text": "The $(l:generators/methane_extractor)Methane Extractor$(/l) needs $(l)Acid$() to dissolve the mob in its chamber, and the $(l:materials/circuits)Fabricator$(/l) etches the Advanced and Elite Circuits with it. Acid is made from $(l)Sulfur$() and water."
+      "text": "The Acid Synthesizer makes $(l)Acid$() from $(l)Sulfur$() and $(l)water$(). The $(l:generators/methane_extractor)Methane Extractor$(/l) needs Acid to dissolve the mob in its chamber, and the $(l:materials/circuits)Fabricator$(/l) etches the Advanced and Elite Circuits with it. This page also covers where to find Sulfur and how to carry Acid in a bucket."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It takes $(l)5$() $(l:basics/cyber_frame)Cyber Frames$(/l): one on each side of it and three on top.$(br)$(li)The finished machine is 3 blocks wide and 2 tall, with the Acid Synthesizer at the bottom of the middle.$(br)$(li)$(l)Right-click$() it while it is alone and drones show where the frames go.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Once complete, the frames hide and the tanks and the tower rise out of its base.$(br)$(li)It doesn't work until then. Breaking a frame folds it back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pipe water in with a $(l:cables/liquid_pipe)Liquid Pipe$(/l): from a $(l:basics/water_pump)Water Pump$(/l), or from a $(l:cables/fluid_tanks)Liquid Tank$(/l) filled with water buckets.$(br)$(li)Put Sulfur in its slot, by hand or with a hopper.$(br)$(li)It pushes the Acid into adjacent pipes and tanks by itself. Pipe it to an $(l)Acid Inlet$() of the Methane Extractor's chamber.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pipes connect to the machine block: in front, behind or below.$(br)$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$() once it holds 1,000 mB.$(br)$(li)It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The gauges on its two tanks show how full they are: water on the left, acid on the right.$(br)$(li)While it works, the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)One batch$(): 1 Sulfur + 500 mB Water → 500 mB Acid$(br)$(li)$(l)Time per batch$(): 2 seconds$(br)$(li)$(l)Power$(): 40 FE/t$(br)$(li)$(l)Water tank$(): 8,000 mB$(br)$(li)$(l)Acid tank$(): 8,000 mB$(br)A Methane Extractor uses 1 mB of Acid per tick, so one batch lasts it 25 seconds.",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:nether_sulfur_ore",
+      "item": "cyberfarm:sulfur",
       "title": "Sulfur",
-      "text": "$(l)Nether Sulfur Ore$() is found in netherrack all over the Nether. Mine it with any pickaxe: it drops $(l)2-4 Sulfur$(), more with Fortune (Silk Touch gives the ore block)."
+      "text": "$(item)Nether Sulfur Ore$() is found in netherrack all over the Nether. Mine it with a pickaxe: it drops $(l)2-4 Sulfur$(), more with Fortune. Silk Touch gives the ore block."
     },
     {
       "type": "patchouli:text",
-      "text": "Sulfur is tagged forge:dusts/sulfur and the ore forge:ores/sulfur, so sulfur from other mods works in the Acid Synthesizer, and other mods' crushers and processors work on our ore."
-    },
-    {
-      "type": "patchouli:spotlight",
-      "item": "cyberfarm:acid_synthesizer",
-      "title": "Acid Synthesizer",
-      "text": "A machine that needs room: it takes $(l)5 Cyber Frames$(), one on each side and three on top, 3 blocks wide and 2 tall with the machine at the bottom of the middle. Right-click it alone and drones show where they go. Once"
+      "text": "Sulfur is tagged forge:dusts/sulfur and the ore forge:ores/sulfur. Sulfur from other mods works in the Acid Synthesizer, and other mods' crushers and processors work on this ore."
     },
     {
       "type": "patchouli:text",
-      "text": "complete, the frames hide and the tanks and the tower rise out of its base. It doesn't work until then; breaking a frame folds it back.$(br2)Uses $(l)40 FE/t$(). Each batch takes 2 seconds: $(l)1 Sulfur + 500 mB Water → 500 mB Acid$(). It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The gauges on its two tanks show how full they are: water on the left, acid on the right. While it works the collar turns round its tower, bubbles rise through the acid and white puffs leave the chimney. Pipes connect to the machine block, in front, behind or below."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)Pipe water in (from a $(l:basics/water_pump)Water Pump$(/l), or from a $(l:cables/fluid_tanks)Liquid Tank$(/l) filled with water buckets) and put sulfur in the slot, by hand or with a hopper.$(br)$(li)The acid is pushed into adjacent pipes and tanks by itself: pipe it to an $(l)Acid Inlet$() of the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)Right-click it with an empty bucket for an $(l)Acid Bucket$()."
+      "text": "An $(item)Acid Bucket$() holds 1,000 mB of Acid. Fill it by right-clicking the Acid Synthesizer with an empty bucket. Pour it into an Acid Inlet or any tank by right-clicking it. Acid cannot be poured into the world.",
+      "title": "Acid Bucket"
     },
     {
       "type": "patchouli:crafting",
@@ -46,9 +60,9 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:acid_synthesizer": 3,
-    "cyberfarm:nether_sulfur_ore": 1,
-    "cyberfarm:sulfur": 0,
+    "cyberfarm:acid_synthesizer": 11,
+    "cyberfarm:nether_sulfur_ore": 0,
+    "cyberfarm:sulfur": 8,
     "cyberfarm:acid_bucket": 0
   }
 }

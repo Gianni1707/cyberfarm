@@ -2,7 +2,7 @@
   "name": "Liquid and Gas Tanks",
   "icon": "cyberfarm:liquid_tank",
   "category": "cyberfarm:cables",
-  "sortnum": 5,
+  "sortnum": 6,
   "pages": [
     {
       "type": "patchouli:spotlight",
@@ -11,43 +11,60 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:gas_tank",
-      "text": "A tank block stores $(l)32,000 mB$() (32 buckets) of a single fluid:"
+      "text": "Tanks store fluids between the machines that make them and the machines that use them. A tank is a handy buffer: it keeps the flow going when production dips."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)the $(l)Liquid Tank$() (a steel line around the glass, waves on its lid) takes liquids: water, lava, Coolant, Cryo Coolant, Acid, liquids of other mods;$(br)$(li)the $(l)Gas Tank$() (a mint line around the glass, a cloud on its lid) takes gases: biogas, methane, Steam, gases of other mods."
+      "text": "There are two kinds. Each holds a single fluid:$(br)$(li)the $(l)Liquid Tank$() (a steel line around the glass, waves on its lid) takes liquids: water, lava, Coolant, Cryo Coolant, Acid and the liquids of other mods;"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Tanks grow.$() Blocks of the same kind that fill a box, of any size up to 16 on a side, join into one tank: a column, a row, a 2x2x2, a 3x3x3. Each block adds 32 buckets, and pipes and buckets see them as one. Tanks already holding different fluids don't join."
+      "text": "$(li)the $(l)Gas Tank$() (a mint line around the glass, a cloud on its lid) takes gases: biogas, methane, Steam and the gases of other mods."
     },
     {
       "type": "patchouli:text",
-      "text": "Fill them with the matching $(l:cables/cables)pipe$(/l): a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l), on any free face of any block, top and bottom too: a collar, steel on the Liquid Tank and mint on the Gas Tank, shows where one plugs in. Both tanks also take and give $(l)buckets$() (gas buckets for the Gas Tank): just right-click it with one."
+      "text": "$(l)Tanks grow.$() Blocks of the same kind that fill a box join into one tank: a column, a row, a 2x2x2, a 3x3x3, up to 16 blocks on a side. Each block adds $(l)32 buckets$(), and pipes and buckets see the whole box as one tank.$(br)$(li)Tanks already holding different fluids don't join.",
+      "title": "Building bigger tanks"
     },
     {
       "type": "patchouli:text",
-      "text": "Tanks are $(l)passive$(): they never push anything out. To empty one into a machine, right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank (a lit band round its end shows it). A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has. Through it you"
+      "text": "$(li)A joined tank has one frame around its outside and one pane of glass on each side, however many blocks it has."
     },
     {
       "type": "patchouli:text",
-      "text": "see into the tank, right through to the other side, and the fluid inside stands up to its level with its own colour (gases look hazy); shift + right-click a tank, with anything in hand, to read the exact amount."
+      "text": "$(li)$(l)Fill$() a tank with the matching pipe: a $(l:cables/liquid_pipe)Liquid Pipe$(/l) or a $(l:cables/gas_pipe)Gas Pipe$(/l). It plugs into any free face of any block, top and bottom too. A collar (steel on the Liquid Tank, mint on the Gas Tank) shows where a pipe plugs in.",
+      "title": "Filling and emptying"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Look at a tank$() to see a panel over it with what is inside and how full it is, one panel for a whole joined tank."
+      "text": "$(li)Tanks are $(l)passive$(): they never push anything out. To $(l)empty$() one into a machine, right-click the arm of the pipe that touches it, so the pipe $(l)pulls$() from the tank. A lit band round the pipe's end shows it (see $(l:cables/cables)Cables$(/l))."
     },
     {
       "type": "patchouli:text",
-      "text": "A tank is a handy buffer: put one between a Methane Extractor and the Gas Turbines, or between a Water Pump and a Fission Reactor, and it keeps the flow going when production dips."
+      "text": "$(li)$(l)Buckets$() work too: right-click a tank with a bucket to fill it or to take a bucket out. The Gas Tank takes gas buckets."
     },
     {
       "type": "patchouli:text",
-      "text": "Breaking a block $(l)loses what that block held$(); the rest stays in the other blocks, which join up again where they can."
+      "text": "$(li)Through the glass you see the fluid standing up to its level, in its own colour. Gases look hazy.$(br)$(li)$(l)Look at a tank$() to see a panel over it with what is inside and how full it is, one panel for a whole joined tank.",
+      "title": "Reading the level"
     },
     {
       "type": "patchouli:text",
-      "text": "A tank built across a chunk border gives and takes nothing while only a part of it is loaded (far from every player, at the edge of what a drone's Anchor Addon keeps loaded): it works again as soon as the rest is back."
+      "text": "$(li)$(l)Shift + right-click$() a tank, with anything in hand, to read the exact amount."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Per block$(): 32,000 mB (32 buckets)$(br)$(li)$(l)Largest side of a joined tank$(): 16 blocks",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put a tank between a $(l:generators/methane_extractor)Methane Extractor$(/l) and the Gas Turbines, or between a $(l:basics/water_pump)Water Pump$(/l) and a $(l:nuclear/fission_reactor)Fission Reactor$(/l).$(br)$(li)Breaking a block $(l)loses what that block held$(). The rest stays in the other blocks, which join up again where they can.",
+      "title": "Tips"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A tank built across a chunk border gives and takes nothing while only part of it is loaded (far from every player, or at the edge of what a drone's Anchor Addon keeps loaded). It works again as soon as the rest is loaded."
     },
     {
       "type": "patchouli:crafting",
@@ -56,7 +73,7 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:liquid_tank": 11,
+    "cyberfarm:liquid_tank": 14,
     "cyberfarm:gas_tank": 1
   }
 }

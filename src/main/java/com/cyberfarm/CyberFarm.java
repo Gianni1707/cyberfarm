@@ -3,7 +3,6 @@ package com.cyberfarm;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.FluidTankBlock;
-import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -67,7 +66,6 @@ import com.cyberfarm.port.net.PortNetwork;
 import com.cyberfarm.port.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 
 @Mod(CyberFarm.MODID)
 public class CyberFarm {
@@ -151,13 +149,17 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
-        // A press's frame has its funnel on top: a hopper there feeds the press (the frame carries a block entity for it, see HiddenFrameBlock)
+        // Any frame of a small machine takes cables, pipes and hoppers too, so they need not all crowd onto the machine block:
+        // it hands over what the machine itself offers on that side (a press's funnel frame feeds the press this way; the frame
+        // carries a block entity for it, see HiddenFrameBlock)
         Caps.registerBlock(Caps.ITEM, (level, pos, state, be, side) -> {
-            BlockPos below = pos.below();
-            return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
-                    ? Caps.items(level, below, side) : null;
+            BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
+            return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity ? Caps.items(level, machine, side) : null;
         }, ModBlocks.HIDDEN_FRAME.get());
-        // Any frame of a small machine takes cables too, so they need not all crowd onto the machine block
+        Caps.registerBlock(Caps.FLUID, (level, pos, state, be, side) -> {
+            BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
+            return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity ? Caps.fluids(level, machine, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
         Caps.registerBlock(Caps.ENERGY, (level, pos, state, be, side) -> {
             BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
             return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity small ? small.getEnergy() : null;
@@ -245,9 +247,9 @@ public class CyberFarm {
             return crystallizer != null ? crystallizer.portItems() : null;
         }, ModBlocks.CYBER_FRAME.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
-        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
-        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
-        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getEnergyHandler());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getItemHandler() : null);
+        Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getFluidHandler() : null);
+        Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getEnergyHandler() : null);
         Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.REACTOR_CONTROLLER.get(),
                 (be, side) -> be.isFormed() ? be.portItems() : null);
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.REACTOR_CONTROLLER.get(),

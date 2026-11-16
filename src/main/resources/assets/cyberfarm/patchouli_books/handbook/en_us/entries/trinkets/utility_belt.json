@@ -1,0 +1,43 @@
+{
+  "name": "Utility Belt",
+  "icon": "cyberfarm:utility_belt",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:utility_belt",
+      "text": "A leather belt with a mint enamel stripe, worn in the $(l)Belt$() slot. It carries the $(l:trinkets/energy_sphere)Energy Sphere$(/l) that powers all your $(l:trinkets/trinkets)trinkets$(/l), your building tools and the $(l:trinkets/pocket_drone)Pocket Drone$(/l). Everything in it hangs on your belt, where you can see it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Make it at the $(l:trinkets/trinket_table)Trinket Table$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Press $(l)B$() to open the belt. It has $(l)five holders$(), one for each of these items. Under them you see the charge of the sphere and of the drone.$(br)$(li)$(l:trinkets/energy_sphere)Energy Sphere$(/l): , Powers your trinkets, and charges the FE items you carry",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:basics/multiblock_projector)Multiblock Projector$(/l): Y, Takes it in hand, or puts it back$(br)$(li)$(l:drone_systems/survey_tool)Survey Tool$(/l): U, Takes it in hand, or puts it back$(br)$(li)$(l:trinkets/pocket_drone)Pocket Drone$(/l): K, Sends it out, or calls it back$(br)$(li)$(l:cables/cable_swapper)Cable Swapper$(/l): I, Takes it in hand, or puts it back"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When a tool comes to your hand, what you held moves to a free slot of your inventory. If there is no room for it, the tool stays on the belt.$(br2)To put a tool back, hold it and press its key again. This also works for a tool you hold that was never on the belt, as long as its holder is empty."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Once a second, the Energy Sphere on your belt charges $(l)every item you carry that holds FE$(), from any mod. See $(l:trinkets/energy_sphere)Energy Sphere$(/l) for the rates.",
+      "title": "Charging from the belt"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Without a belt, or without a sphere in it, your trinkets have no power. Only the Zoom program works without it.$(br)$(li)You can change every key in Controls, under $(l)CyberFarm Trinkets$().",
+      "title": "Tips"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:utility_belt": 0
+  }
+}

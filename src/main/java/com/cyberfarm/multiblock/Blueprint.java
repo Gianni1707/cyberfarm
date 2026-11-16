@@ -251,6 +251,8 @@ public enum Blueprint implements Structure {
                 ghosts.add(new Part(cell.pos(), controllerBlock, state -> state.is(controllerBlock)));
             } else if (cell.part() == Multiblock.Part.SHELL) {
                 ghosts.add(new Part(cell.pos(), casing, state -> state.is(casing) || state.is(port)));
+            } else if (cell.part() == Multiblock.Part.CASING) {
+                ghosts.add(new Part(cell.pos(), casing, state -> state.is(casing)));
             } else if (cell.part() == Multiblock.Part.EMPTY) {
                 ghosts.add(new Part(cell.pos(), null, BlockState::isAir));
             }

@@ -2,29 +2,30 @@
   "name": "Using Drones",
   "icon": "cyberfarm:drone",
   "category": "cyberfarm:drone_systems",
-  "sortnum": 7,
+  "sortnum": 9,
   "pages": [
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:drone",
-      "text": "An assembled drone shows its parts and battery in the tooltip. To put it to work, $(l)right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with it. It lands folded on the pad, facing the dock's front (the side that faced you when you placed it, the same"
+      "text": "A drone is a flying worker built in the $(l:drone_systems/drone_assembler)Drone Assembler$(/l). Put it on a dock and it does its $(l:drone_systems/modules)modules$(/l)' jobs by itself, flying home to unload and charge. Its tooltip shows its parts, its battery and its flight cost."
     },
     {
       "type": "patchouli:text",
-      "text": "way it parks whenever it comes home), opens its arms, spins its rotors up and lifts off for a moment, then gets to work (or settles back on the dock)."
+      "text": "$(l)Right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with the drone. Mini Drones go on a $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l) instead.",
+      "title": "Putting a drone to work"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It waits on the dock and $(l)charges$() until its battery is full (or until the dock runs out of power, as long as it has at least 30%).$(br)$(li)It asks its $(l:drone_systems/modules)modules$(/l) for a job (harvest, dig, carry) and does it, chaining jobs of the same kind without flying home in between.",
+      "text": "The drone lands folded on the pad, facing the dock's front (the side that faced you when you placed the dock). It opens its arms, spins its rotors up and lifts off for a moment, then gets to work, or settles back on the dock.$(br2)Tell it where to work with the $(l:drone_systems/survey_tool)Survey Tool$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It waits on the dock and $(l)charges$() until its battery is full, or until the dock runs out of power, as long as it has at least $(l)30%$().$(br)$(li)It asks its $(l:drone_systems/modules)modules$(/l) for a job (harvest, dig, carry) and does it, chaining jobs of the same kind without flying home in between.",
       "title": "What the drone does"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It returns to the dock when its $(l)cargo is full$() (9 slots) or its $(l:drone_systems/modules)Tank Module$(/l) is, its battery drops $(l)below 10%$(), or there is nothing left to do. With several modules, the next trip starts from the next module.$(br)$(li)It unloads into the dock, charges and starts again."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "While they work, drones hit their target with a short $(l)beam of light$() (a steady one while they dig), and flying low their rotors kick up $(l)dust$(), or spray over water."
+      "text": "$(li)It returns to the dock when:$(br)$(li)its $(l)cargo is full$() (9 slots), or its $(l:drone_systems/modules)Tank Module$(/l) is;$(br)$(li)its battery drops $(l)below 10%$();$(br)$(li)there is nothing left to do.$(br)$(li)It unloads into the dock, charges and starts again. With several modules, the next trip starts from the next module."
     },
     {
       "type": "patchouli:text",
@@ -32,34 +33,46 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The tooltip of a drone shows its $(l)flight cost$() in FE per tick. It is worked out like this:$(br2)$(l)flight cost = (frame + modules) x (1 + addon percentages)$(), rounded up.$(br)$(li)$(l:drone_systems/drone_frames)Frame$(/l): 4, 6 or 8 FE/t by tier.",
-      "title": "Power use"
+      "text": "While they work, drones hit their target with a short $(l)beam of light$() (a steady one while they dig). Flying low, their rotors kick up $(l)dust$(), or spray over water."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:drone_systems/modules)Modules$(/l): +2 FE/t each (+4 for the Quarry, Logger, Taxi, Builder, Guard and Sponge).$(br)$(li)$(l:drone_systems/addons)Addons$(/l): Speed +10%, Stack +5%, Battery +5%, Efficiency -10% each.$(br)Example: a Basic frame with a Harvester and 2 Speed Addons uses (4 + 2) x 1.2 = 7.2, so $(l)8 FE/t$()."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Jobs cost energy on top of flying (see each $(l:drone_systems/modules)module$(/l)); Fortune adds +25% per level, Silk Touch +50% and each Efficiency Addon -10% to that. $(l:drone_systems/addons)Battery Addons$(/l) make longer trips possible.$(br2)Drones cannot be hurt by mobs or by players."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Put the drone back in the $(l)output slot$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) with the other slots empty: the button becomes $(l)Disassemble$(). Press it and the frame, modules and addons go back into their slots, ready to be changed and assembled again. The drone's charge moves into the assembler, as",
-      "title": "Changing a drone"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "much as its buffer holds (20,000 FE, more with Battery Addons)."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Drones are $(l)indestructible$(): weapons, mobs, explosions, fire and lava cannot hurt them, and a left-click goes right through them, so you cannot knock one down by mistake.$(br2)$(l)Sneak + right-click$() the drone with an empty hand. It lands (on its dock if it is",
+      "text": "$(l)Sneak + right-click$() the drone with an empty hand.$(br)$(li)It lands on its dock if it is there, otherwise on the ground below.$(br)$(li)Its rotors spin down, it folds its arms and then jumps into your inventory with its charge.",
       "title": "Recovering a drone"
     },
     {
       "type": "patchouli:text",
-      "text": "there, otherwise on the ground below), its rotors spin down, it folds its arms and then jumps into your inventory with its charge; its cargo goes to the dock, or drops on the ground if the dock is full. If its dock is broken, the drone turns back into an item by itself."
+      "text": "$(li)Its cargo goes to the dock, or drops on the ground if the dock is full.$(br)If its dock is broken, the drone turns back into an item by itself."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Drones are $(l)indestructible$(): weapons, mobs, players, explosions, fire and lava cannot hurt them. A left-click goes right through them, so you cannot knock one down by mistake."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put the drone in the $(l)output slot$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) with the other slots empty: the button becomes $(l)Disassemble$(). Press it and the frame, modules and addons go back into their slots, ready to be changed and assembled again.",
+      "title": "Changing a drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The drone's charge moves into the assembler, as much as its buffer holds (20,000 FE, more with Battery Addons)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A drone uses power in two ways: a $(l)flight cost$() every tick it flies, and energy for each job.$(br2)The $(l)flight cost$() is shown in the tooltip, in FE per tick:$(br2)$(l)flight cost = (frame + modules) x (1 + addon percentages)$(), rounded up.",
+      "title": "Power use"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:drone_systems/drone_frames)Frame$(/l): 4, 6 or 8 FE/t by tier (2 FE/t for the Mini)$(br)$(li)Each $(l:drone_systems/modules)module$(/l): +2 FE/t (+4 for the Quarry, Logger, Taxi, Builder, Guard and Sponge)$(br)$(li)$(l)Each Speed Addon$(): +10%$(br)$(li)$(l)Each Stack Addon$(): +5%$(br)$(li)$(l)Each Battery Addon$(): +5%$(br)$(li)$(l)Each Efficiency Addon$(): -10%"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Example: a Basic frame with a Harvester and 2 Speed Addons uses (4 + 2) x 1.2 = 7.2, so $(l)8 FE/t$().$(br2)$(l)Jobs$() cost energy on top of flying: see each $(l:drone_systems/modules)module$(/l). These $(l:drone_systems/addons)addons$(/l) change the cost of every job:$(br)$(li)$(l)Fortune Addon$(): +25% per level$(br)$(li)$(l)Silk Touch Addon$(): +50%"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Efficiency Addon$(): -10% each$(br)$(l:drone_systems/addons)Battery Addons$(/l) make longer trips possible."
     }
   ],
   "extra_recipe_mappings": {

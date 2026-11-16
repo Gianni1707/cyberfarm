@@ -11,7 +11,8 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A weight bobs on its coil as it works: the more kinds of sound you silence, the faster it goes, and it rests when it silences none."
+      "text": "The Muffler needs $(l)no power$(). Place it near the noise. Use several to cover a large base.$(br2)A weight bobs on its coil as it works. The more kinds of sound you silence, the faster it goes, and it rests when it silences none.",
+      "title": "Placing it"
     },
     {
       "type": "patchouli:text",
@@ -32,7 +33,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "In $(l)Mods → CyberFarm → Config$() (or config/cyberfarm-client.toml):$(br)$(li)$(l)Range$(): distance in blocks every Muffler covers, 1 to 64 (default 10);",
+      "text": "In $(l)Mods → CyberFarm → Config$() (or config/cyberfarm-client.toml):$(br)$(li)$(l)Range$(): distance in blocks every Muffler covers, 1 to 64 (default 10). It applies to all Mufflers, and only for you;",
       "title": "Client config"
     },
     {
@@ -42,11 +43,6 @@
     {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:muffler"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The Muffler needs no power. Use several to cover a large base.",
-      "title": "Crafting"
     }
   ],
   "extra_recipe_mappings": {

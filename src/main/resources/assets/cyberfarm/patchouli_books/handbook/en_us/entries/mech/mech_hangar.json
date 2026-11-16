@@ -2,11 +2,11 @@
   "name": "Mech Hangar",
   "icon": "cyberfarm:mech_hangar",
   "category": "cyberfarm:mech",
-  "sortnum": 2,
+  "sortnum": 3,
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Where your $(l:mech/mech)mech$(/l) lives: a frame it parks in, on a pad that $(l)charges$() its battery, $(l)repairs$() it and lets you $(l)fit its modules$()."
+      "text": "The Mech Hangar is where your $(l:mech/mech)mech$(/l) lives. It is a rack the mech parks in, on a pad that $(l)charges$() its battery, $(l)repairs$() it and lets you $(l)fit its modules$(). A Mech Frame only unfolds on a hangar's pad, so you need one before your first mech."
     },
     {
       "type": "patchouli:multiblock",
@@ -81,15 +81,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)a $(l)post$() of Hangar Frames at the back end of each rail, 5 blocks up, a $(l)beam$() across their tops and two $(l)arms$(), two blocks long, reaching forward from the beam over the pad;$(br)$(li)a 3x3 $(item)Hangar Pad$() between the rails, with the space over it left free.$(br)Right-click the console while it is"
+      "text": "$(li)a $(l)post$() of Hangar Frames at the back end of each rail, 5 blocks up, a $(l)beam$() across their tops and two $(l)arms$(), two blocks long, reaching forward from the beam over the pad;$(br)$(li)a 3x3 $(item)Hangar Pad$() between the rails, with the space over it left free.$(br)Need help placing it? Right-click the"
     },
     {
       "type": "patchouli:text",
-      "text": "unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it too: sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes. When it is complete the frames give way to"
+      "text": "console while it is unfinished: bigger drones fly out, each projecting a group of the blocks still to place. An amber X marks a block in the way. A second click calls them back. The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it too: sneak + right-click to pick $(o)Mech Hangar$(), then look where the console goes."
     },
     {
       "type": "patchouli:text",
-      "text": "the rack itself: rails with treads and a pale green light line, posts with mint bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's shoulders and a $(l)gantry arm$() riding on the arms, which fits the modules."
+      "text": "When it is complete the frames give way to the rack itself: rails with treads and a pale green light line, posts with mint bands braced to the rails, the beam and its arms, hydraulic struts, two $(l)clamps$() that come down onto a parked mech's shoulders and a $(l)gantry arm$() riding on the arms, which fits the modules."
     },
     {
       "type": "patchouli:text",
@@ -98,11 +98,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "onto its shoulders. While it stands there, empty:$(br)$(li)it is $(l)charged$() at up to $(l)4,000 FE/t$() from the console's own battery (1,000,000 FE), which you fill with $(l:cables/energy_conduit)Energy Conduits$(/l) or any mod's cables (up to 8,192 FE/t);"
+      "text": "onto its shoulders. While it stands there, empty, it is $(l)charged$() and $(l)repaired$(). A mech that $(l)shut down$() comes back on once it is fully repaired.$(br2)The charge comes from the console's own battery. Fill it with $(l:cables/energy_conduit)Energy Conduits$(/l) or any mod's cables.$(br)$(li)$(l)Console battery$(): 1,000,000 FE"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)it is $(l)repaired$(), 1 point of integrity every half second for 400 FE. A mech that $(l)shut down$() comes back on once it is fully repaired.$(br)You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you in just as it does outside."
+      "text": "$(li)$(l)Console input$(): up to 8,192 FE/t$(br)$(li)$(l)Charging the mech$(): up to 4,000 FE/t$(br)$(li)$(l)Repair$(): 1 integrity every half second, 400 FE each$(br)$(li)$(l)Full repair from zero$(): 100 seconds, 80,000 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you in just as it does outside."
     },
     {
       "type": "patchouli:text",
@@ -115,15 +119,20 @@
     },
     {
       "type": "patchouli:text",
-      "text": "fit it, take it out to remove it, and the $(l)gantry arm$() does the work: the bridge rolls along the rack's arms, the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a flash, or comes away held in the gripper; then the arm goes home. The module is"
+      "text": "fit it. Take it out to remove it. The $(l)gantry arm$() does the work: the bridge rolls along the rack's arms, the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a flash, or comes away held in the gripper; then the arm goes home. The module is"
     },
     {
       "type": "patchouli:text",
-      "text": "on the mech (or off it) the moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech. With no mech on the pad, the slots are empty and take nothing.$(br2)The $(l)Fold$() button packs the parked mech back up: it crouches, folds its"
+      "text": "on the mech (or off it) the moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech."
     },
     {
       "type": "patchouli:text",
-      "text": "forearms across its belly, bows its head, draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the modules in it. It folds only at $(l)full integrity$(): a frame keeps no damage, so let the hangar finish the repairs first."
+      "text": "The $(l)Fold$() button packs the parked mech back up: it crouches, folds its forearms across its belly, bows its head, draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the modules in it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The mech folds only at $(l)full integrity$(): a frame keeps no damage, so let the hangar finish the repairs first.$(br)$(li)With no mech on the pad, the module slots are empty and take nothing.",
+      "title": "Tips"
     },
     {
       "type": "patchouli:crafting",
@@ -136,8 +145,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:mech_hangar": 16,
-    "cyberfarm:hangar_frame": 16,
-    "cyberfarm:hangar_pad": 17
+    "cyberfarm:mech_hangar": 18,
+    "cyberfarm:hangar_frame": 18,
+    "cyberfarm:hangar_pad": 19
   }
 }

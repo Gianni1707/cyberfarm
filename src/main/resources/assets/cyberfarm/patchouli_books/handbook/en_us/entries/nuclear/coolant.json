@@ -1,0 +1,55 @@
+{
+  "name": "Coolant and Cryo Coolant",
+  "icon": "cyberfarm:coolant_bucket",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:coolant_bucket"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Coolant$() and $(l)Cryo Coolant$() are freezing liquids for the $(l:nuclear/fission_reactor)Fission Reactor$(/l). They carry heat out of the core much faster than plain water, so the reactor can run at higher power without overheating. Both are made in the $(l:nuclear/coolant_mixer)Coolant Mixer$(/l).$(br)$(li)$(item)Coolant Bucket$()$(br)$(li)$(item)Cryo Coolant Bucket$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Pipe the coolant into a $(l)Reactor Port$(), or pour a bucket into it. It fills the reactor's coolant tank, its $(l)primary loop$(): the fluid that carries the core's heat to the water. With that tank empty, the reactor cools with plain water.$(br)$(li)$(l)Water$(): 1x, 150, 250, 400$(br)$(li)$(l)Coolant$(): $(l)2.5x$(), 375, 625, 1,000",
+      "title": "In the reactor"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Cryo Coolant$(): $(l)6x$(), 900, 1,500, 2,400$(br)Heat per tick each tower size can move.$(br2)The reactor's coolant tank holds $(l)one kind$() at a time. To switch, set the power to $(l)Off$() and click the $(l)Dump coolant$() button under the coolant tank: the tank is poured away and lost. Then pipe in the new one."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Coolant is not boiled away like the water, but it wears out: $(l)1 mB for every 400 heat$() it moves. At the safe power from the $(l:nuclear/fission_reactor)Fission Reactor$(/l) table:$(br)$(li)$(l)Small, Coolant$(): 600 mB, 26 min 40 s, 1.2 Lapis$(br)$(li)$(l)Small, Cryo$(): 600 mB, 26 min 40 s, 1.2 Lapis + 1.2 Blue Ice",
+      "title": "How fast it wears out"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Medium, Coolant$(): 1,800 mB, 8 min 53 s, 3.6 Lapis$(br)$(li)$(l)Medium, Cryo$(): 2,100 mB, 7 min 37 s, 4.2 Lapis + 4.2 Blue Ice$(br)$(li)$(l)Large, Coolant$(): 3,000 mB, 5 min 20 s, 6 Lapis$(br)$(li)$(l)Large, Cryo$(): 6,000 mB, 2 min 40 s, 12 Lapis + 12 Blue Ice"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Keep a Coolant Mixer piped in. When the coolant runs out, cooling falls back to the water level and a reactor running hard overheats."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Fill a bucket$(): right-click the Coolant Mixer, or any tank holding at least 1,000 mB of coolant, with an $(l)empty bucket$().",
+      "title": "Buckets and pools"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Empty it$(): right-click a Reactor Port, machine or tank to pour it in. Anywhere else it pours a $(l)pool$() of coolant, just like water. An empty bucket scoops it back up.$(br)$(l)Careful$(): coolant is thick and freezing cold. Wading through a pool slows you down, and the longer you stay, the more"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "frost covers the screen. Once fully frozen you take damage. $(l)Cryo Coolant$() slows you more and freezes you about $(l)four times faster$(). As in powder snow, $(l)leather armor$() or a $(l:nuclear/hazmat_suit)Hazmat Suit$(/l) keeps the cold out, but not the slowdown."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:coolant_bucket": 0,
+    "cyberfarm:cryo_coolant_bucket": 0
+  }
+}

@@ -6,15 +6,25 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Addons are chips that $(l)improve a drone$(). Put them in the four $(l)addon slots$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l): each slot holds a stack of the same addon.$(br2)How many addons fit depends on the $(l:drone_systems/drone_frames)frame$(/l):"
+      "text": "Addons are chips that $(l)improve a drone$(): more speed, bigger loads, a bigger battery, lower power use, Fortune or Silk Touch drops, or chunk loading. Three of them also speed up machines."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8$(br)$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(l)Mini Drone Frame$(): 2$(br)$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()$(br)$(li)$(item)Efficiency Addon$()"
+      "text": "Put them in the $(l)2x2 addon grid$() of the $(l:drone_systems/drone_assembler)Drone Assembler$(/l) when you build the drone. Each slot holds a stack of the same addon.$(br2)How many addons fit depends on the $(l:drone_systems/drone_frames)frame$(/l):$(br)$(li)$(l)Basic Drone Frame$(): 4$(br)$(li)$(l)Advanced Drone Frame$(): 8",
+      "title": "Putting addons in a drone"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Speed Addon$(): +10% flight and work speed each, frame limit only, +10% flight cost$(br)$(li)$(l)Stack Addon$(): +1 stack (64 items) per $(l:drone_systems/modules)Transport$(/l) trip each, up to 9 stacks per trip, +5% flight cost$(br)$(li)$(l)Battery Addon$(): +25% of the frame's battery capacity each, frame limit only, +5% flight cost"
+      "text": "$(li)$(l)Elite Drone Frame$(): 16$(br)$(li)$(l)Mini Drone Frame$(): 2"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Speed Addon$()$(br)$(li)$(item)Stack Addon$()$(br)$(li)$(item)Battery Addon$()$(br)$(li)$(item)Fortune Addon$()$(br)$(li)$(item)Silk Touch Addon$()$(br)$(li)$(item)Anchor Addon$()$(br)$(li)$(item)Efficiency Addon$()$(br)$(li)$(l)Speed Addon$(): +10% flight and work speed each, frame limit only, +10% flight cost",
+      "title": "What each addon does in a drone"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Stack Addon$(): +1 stack (64 items) per $(l:drone_systems/modules)Transport$(/l) trip each, up to 9 stacks per trip, +5% flight cost$(br)$(li)$(l)Battery Addon$(): +25% of the frame's battery capacity each, frame limit only, +5% flight cost"
     },
     {
       "type": "patchouli:text",
@@ -26,25 +36,25 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Fortune and Silk Touch cannot be combined$(), just like the enchantments.$(br2)Without Stack Addons a Transport drone carries only $(l)16 items$() per trip.$(br2)The percentages add up: see how the total is worked out on the $(l:drone_systems/drones)Using Drones$(/l) page."
+      "text": "$(li)$(l)Fortune and Silk Touch cannot be combined$(), just like the enchantments.$(br)$(li)Without Stack Addons a Transport drone carries only $(l)16 items$() per trip.$(br)$(li)The percentages add up: see how the total is worked out on the $(l:drone_systems/drones)Using Drones$(/l) page."
     },
     {
       "type": "patchouli:text",
-      "text": "A drone only works while its chunks are loaded: walk away from a far dock and it stops. With an $(l)Anchor Addon$() its $(l:drone_systems/drone_dock)Drone Dock$(/l) keeps loaded:$(br)$(li)the dock's own chunk;$(br)$(li)the chunks around the drone, following it as it flies;$(br)$(li)the two ends of its transport route;",
+      "text": "A drone only works while its chunks are loaded: walk away from a far dock and it stops. With an $(l)Anchor Addon$() on the drone, its $(l:drone_systems/drone_dock)Drone Dock$(/l) keeps loaded:$(br)$(li)the dock's own chunk;$(br)$(li)the chunks around the drone, following it as it flies;$(br)$(li)the two ends of its transport route;",
       "title": "Anchor Addon"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)its work area.$(br)That is up to $(l)25 chunks$() per dock. The dock pays $(l)4 FE/t for each chunk$() out of its battery: when the battery runs dry, or the dock is paused, it lets the chunks go. It also works on a Builder Swarm Dock, for its anchored Mini Drones. Server owners can change the cost and the"
+      "text": "$(li)its work area.$(br)That is up to $(l)25 chunks$() per dock. The dock pays $(l)4 FE/t for each chunk$() out of its battery. When the battery runs dry, or the dock is paused, it lets the chunks go.$(br2)It also works on a $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l), for its anchored Mini Drones."
     },
     {
       "type": "patchouli:text",
-      "text": "number of chunks, or switch anchoring off, in the drones section of the CyberFarm config."
+      "text": "Server owners can change the cost and the number of chunks, or switch anchoring off, in the drones section of the CyberFarm config."
     },
     {
       "type": "patchouli:text",
       "text": "The Speed, Efficiency and Battery Addons also fit ten machines: the $(l:generators/biomass_press)Biomass Press$(/l), $(l:generators/bio_digester)Bio-Digester$(/l), $(l:generators/acid_synthesizer)Acid Synthesizer$(/l), $(l:nuclear/coolant_mixer)Coolant Mixer$(/l), $(l:materials/aluminum)Electrolyzer$(/l), $(l:materials/carbon_fiber)Pyrolysis Oven$(/l), $(l:materials/circuits)Fabricator$(/l), $(l:mech/mech_core)Crystallizer$(/l), $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l) and $(l:drone_systems/drone_assembler)Drone Assembler$(/l). Each has $(l)3 addon slots$() on a tab on the right edge of its GUI.",
-      "title": "In machines"
+      "title": "Addons in machines"
     },
     {
       "type": "patchouli:text",
@@ -75,12 +85,12 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:speed_addon": 12,
-    "cyberfarm:stack_addon": 12,
-    "cyberfarm:battery_addon": 13,
-    "cyberfarm:fortune_addon": 14,
-    "cyberfarm:silk_touch_addon": 14,
-    "cyberfarm:anchor_addon": 15,
-    "cyberfarm:efficiency_addon": 13
+    "cyberfarm:speed_addon": 14,
+    "cyberfarm:stack_addon": 14,
+    "cyberfarm:battery_addon": 15,
+    "cyberfarm:fortune_addon": 16,
+    "cyberfarm:silk_touch_addon": 16,
+    "cyberfarm:anchor_addon": 17,
+    "cyberfarm:efficiency_addon": 15
   }
 }

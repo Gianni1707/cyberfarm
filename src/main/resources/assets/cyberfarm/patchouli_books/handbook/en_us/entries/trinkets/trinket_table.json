@@ -1,0 +1,56 @@
+{
+  "name": "Trinket Table",
+  "icon": "cyberfarm:trinket_table",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:trinket_table",
+      "text": "The workstation where every $(l:trinkets/trinkets)trinket$(/l) and every Neural Chip program is made. Trinkets and programs can be made $(l)only here$(). It needs no power."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The table is a $(l)2x2$() multiblock standing upright.$(br)$(li)Place the Trinket Table.$(br)$(li)Place a $(l:basics/cyber_frame)Cyber Frame Block$(/l) on its $(l)right$() (seen from the front).$(br)$(li)Place a Cyber Frame $(l)above the table$(), and one $(l)above that frame$().",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The table opens up, and its two robotic arms are ready to work."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:trinket_table"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works like a $(l)crafting table$(), but shapeless:$(br)$(li)Put $(l)one item in each slot$() of its 3x3 grid, in any order.$(br)$(li)Take what it makes. Its arms go to work for a moment.$(br)$(li)Ingredients needed twice take two slots.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:trinkets/utility_belt)Utility Belt$(/l): 4 Leather, 2 Aluminum Ingots, 2 String$(br)$(li)$(l:trinkets/energy_sphere)Energy Sphere$(/l): 4 Battery Cells, 1 Advanced Circuit, 2 Glass, 2 Aluminum Ingots$(br)$(li)$(l)Advanced Energy Sphere$(): 1 Energy Sphere, 2 Advanced Circuits, 4 Battery Cells, 2 Carbon Fiber",
+      "title": "What it makes"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Elite Energy Sphere$(): 1 Advanced Energy Sphere, 2 Elite Circuits, 2 Diamonds, 2 Carbon Fiber, 1 Eye of Ender$(br)$(li)$(l:trinkets/gravity_boots)Gravity Boots$(/l): 4 Carbon Fiber, 2 Rotors, 2 Phantom Membranes, 1 Advanced Circuit"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:trinkets/neural_chip)Neural Chip$(/l): 2 Advanced Circuits, 2 Gold Ingots, 1 Ender Pearl, 1 Carbon Fiber, 1 Diamond$(br)$(li)$(l:trinkets/pocket_drone)Pocket Drone$(/l): 1 Mini Frame, 1 Drone Core, 1 Hopper, 2 Basic Circuits$(br)$(li)$(l)Any program$(): 1 Basic Circuit, 2 Redstone Dust, plus the item below$(br)$(li)$(l)Zoom$(): 1 Spyglass"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Night Vision$(): 2 Golden Carrots$(br)$(li)$(l)Machine Link$(): 1 Comparator$(br)$(li)$(l)Geiger HUD$(): 1 Geiger Counter$(br)$(li)$(l)Taxi Call$(): 1 Bell$(br)$(li)$(l)Auto-Feeder$(): 1 Hay Bale$(br)Aluminum from any mod works. An upgraded Energy Sphere $(l)keeps the charge$() of the sphere you put in."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put a Neural Chip and the programs you want to add in the grid together, and nothing else. The chip comes out with them installed. See $(l:trinkets/neural_chip)Neural Chip$(/l).",
+      "title": "Installing programs"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:trinket_table": 3
+  }
+}

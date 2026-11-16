@@ -2,11 +2,15 @@
   "name": "Steam Turbine",
   "icon": "cyberfarm:turbine_controller",
   "category": "cyberfarm:nuclear",
-  "sortnum": 5,
+  "sortnum": 7,
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A horizontal hall that turns $(l)Steam$() into FE, in $(l)three sizes$(). Steam piped into its ports spins up a big rotor; the rotor drives the generator. The scene shows the Small turbine."
+      "text": "The Steam Turbine turns $(l)Steam$() into FE. It is how a $(l:nuclear/fission_reactor)Fission Reactor$(/l) makes power: steam piped in spins a big rotor, and the rotor drives the generator."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It is a horizontal hall in $(l)three sizes$(), built from $(item)Turbine Casing$()s, a few $(item)Turbine Port$()s and one $(item)Steam Turbine Controller$(). The scene shows the Small turbine."
     },
     {
       "type": "patchouli:multiblock",
@@ -43,50 +47,63 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Small$(): 3x3 x 4, 200 mB/t, 10, 2,000 FE/t$(br)$(li)$(l)Medium$(): 5x5 x 6, 600 mB/t, 16, 9,600 FE/t$(br)$(li)$(l)Large$(): 7x7 x 8, 1,600 mB/t, 25, 40,000 FE/t",
+      "text": "$(li)$(l)Small$(): 3x3 x 4$(br)$(li)$(l)Medium$(): 5x5 x 6$(br)$(li)$(l)Large$(): 7x7 x 8$(br)$(li)Build the $(l)front and back$() as full squares of $(item)Turbine Casing$()s.$(br)$(li)In between, build only the $(l)outer ring$(). The inside must be $(l)empty$(): the rotor spins there.",
       "title": "Building the hall"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The $(l)front and back$() are full squares; in between only the $(l)outer ring$() is shell, and the inside must be $(l)empty$(): that is where the rotor spins."
+      "text": "$(li)Put the $(item)Steam Turbine Controller$() $(l)in the middle of the front$(), facing out. The hall runs straight back from it.$(br)$(li)Swap shell blocks for $(item)Turbine Port$()s: steam goes in, FE comes out. One port for a steam pipe and one for an $(l:cables/energy_conduit)Energy Conduit$(/l) are enough. The controller itself"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Use $(item)Turbine Casing$()s for the shell and put the $(item)Steam Turbine Controller$() $(l)in the middle of the front$(), facing out. The hall runs straight back from it.$(br)$(li)Swap any shell blocks for $(item)Turbine Port$()s: steam goes in, FE comes out. One port for a steam pipe and one for an $(l:cables/energy_conduit)Energy$(/l)"
+      "text": "$(li)also gives power to cables touching it. On the outer ring, ports go only $(l)in the middle of each side$(): the hall is drawn with diagonal faces towards its edges, and a pipe could not reach a port there. On a 3x3 or 5x5 cross-section that is the centre block of each side, on 7x7 the centre"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:cables/energy_conduit)Conduit$(/l) is enough; the controller itself also gives power to cables touching it. Medium and Large turbines make more than a basic conduit carries: use $(l)Advanced$() conduits (16,000 FE/t) at a Medium one's ports and $(l)Elite$() ones (128,000 FE/t) at a Large one's. A Large one also takes more steam"
+      "text": "$(li)block and the one either side of it. A port nearer an edge leaves the turbine $(l)incomplete$(). Inside the end caps, ports go anywhere.$(br)Bigger turbines need bigger cables and pipes:$(br)$(li)Medium: $(l)Advanced$() conduits (16,000 FE/t)."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)than a basic $(l:cables/gas_pipe)Gas Pipe$(/l) carries (1,000 mB/t): use an $(l)Advanced$() one.$(br)Complete, the blocks disappear into one faceted $(l)enamel and mint octagonal hull$(): the controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). A $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows the layout of"
+      "text": "$(li)Large: $(l)Elite$() conduits (128,000 FE/t), and an $(l)Advanced$() $(l:cables/gas_pipe)Gas Pipe$(/l) for the steam (a basic one carries 1,000 mB/t).$(br)$(l)Help with the layout$(): a $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows any size in the world. You can also $(l)right-click the unfinished controller$(): drones fly out, each projecting a group"
     },
     {
       "type": "patchouli:text",
-      "text": "any size in the world. Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. They start from the size you have built the most of (the Small one if none); each further click shows the next size, and after the Large"
+      "text": "of the blocks still to place, and an amber X marks a block in the way. They start from the size you have built the most of (Small if none). Each further click shows the next size; after Large they come back to Small."
     },
     {
       "type": "patchouli:text",
-      "text": "one they come back."
+      "text": "Complete, the blocks become one faceted $(l)enamel and mint octagonal hull$(). The controller becomes a panel on the front, every port a glowing hatch, and at the back you can see the $(l)rotor$(). $(l)Right-click any block$() of the formed hall to open it."
     },
     {
       "type": "patchouli:text",
-      "text": "The rotor does not start at full speed: it $(l)spins up$() as long as there is steam, faster for small turbines than for big ones (5, 7 or 10 seconds by size), and $(l)spins down$() the same way when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. The rotor also stops when the",
-      "title": "Spinning up"
+      "text": "The GUI shows the steam tank (32,000 mB), the FE output, the rotor speed and the stored energy. Hover the readout for the size's ratings.",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "energy has nowhere to go, so no steam is wasted.$(br2)The GUI shows the steam tank (32,000 mB), the output, the rotor speed and the stored energy; hover the readout for the size's ratings. Right- click any block of the formed hall to open it."
+      "text": "The rotor does not start at full speed. It $(l)spins up$() while there is steam and $(l)spins down$() when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. It settles at the speed your steam supply can keep up."
     },
     {
       "type": "patchouli:text",
-      "text": "A reactor makes 1 mB of steam for each unit of heat: a Medium tower with 4 rods at 300%, cooled with Coolant, makes 600 mB/t, just what a Medium turbine uses. If the turbines cannot keep up, the reactor's steam tank fills up and its core overheats.",
+      "text": "The rotor also stops when its FE has nowhere to go, so no steam is wasted. Steam from other mods works too (fluids tagged forge:steam)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Small$(): 200 mB/t, 10, 2,000 FE/t, 5 s$(br)$(li)$(l)Medium$(): 600 mB/t, 16, 9,600 FE/t, 7 s$(br)$(li)$(l)Large$(): 1,600 mB/t, 25, 40,000 FE/t, 10 s$(br)Bigger turbines get more FE out of every mB of steam.",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A reactor makes 1 mB of steam for each unit of heat. Add turbines until together they take $(l)all$() of its steam. For example, a Medium tower with 4 rods at 300%, cooled with Coolant, makes 600 mB/t: one Medium turbine (9,600 FE/t) or three Small ones (6,000 FE/t).",
       "title": "How many turbines?"
     },
     {
       "type": "patchouli:text",
-      "text": "Steam from other mods works too (fluids tagged forge:steam)."
+      "text": "The $(l:nuclear/fission_reactor)Fission Reactor$(/l) page lists every tower's steam, with the turbines it needs and the FE/t they give."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "If the turbines cannot keep up, the reactor's steam tank fills up and its core $(l)overheats$(). The reactor's $(l)Dump excess steam$() toggle prevents that by venting the extra steam, but vented steam makes no FE."
     },
     {
       "type": "patchouli:crafting",
@@ -99,8 +116,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:turbine_controller": 14,
-    "cyberfarm:turbine_casing": 13,
-    "cyberfarm:turbine_port": 13
+    "cyberfarm:turbine_controller": 18,
+    "cyberfarm:turbine_casing": 17,
+    "cyberfarm:turbine_port": 17
   }
 }

@@ -1,0 +1,55 @@
+{
+  "name": "Fabricator",
+  "icon": "cyberfarm:fabricator",
+  "category": "cyberfarm:materials",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:fabricator",
+      "text": "The Fabricator makes $(l)circuits$(). It makes Basic Circuits two at a time, far cheaper than by hand, and it is the only way to make Advanced and Elite Circuits."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Fabricator is a small multiblock. It needs one $(l:basics/cyber_frame)Cyber Frame$(/l) $(l)behind$() it.$(br)$(li)Place the Fabricator.$(br)$(li)Right-click it: a drone shows where the frame goes.$(br)$(li)Place the Cyber Frame there. The line grows a block back, to a card magazine.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works only once assembled. Breaking the frame folds it back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put the ingredients in its $(l)three slots$(), in any order and any slot: it finds the recipe.$(br)$(li)Pipe $(l)Acid$() in for the Advanced and Elite Circuits. $(l:cables/liquid_pipe)Liquid Pipes$(/l) plug into its front and sides, or into the top, where they clamp onto its acid drum.$(br)$(li)Give it FE.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A hopper underneath takes out only the finished circuits, never the ingredients.$(br)$(li)The tab beside its GUI takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l).$(br)Feed it with hoppers, pipes or a $(l:drone_systems/modules)Transport drone$(/l), and keep your circuits stocked with the dock filter's $(l)limit$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "You can see it work: the card slides out from under the drum in short steps, like paper from a printer. The print head sweeps the drum's lip before each step, the rollers turn and the chip comes out between them. The light bar on the tray shows how far the circuit is. When it is done the card flashes away and the"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "next one starts."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It uses $(l)50 FE/t$() for every recipe.$(br)$(li)$(l)2 Basic Circuits$(): 1 Copper Ingot, 2 Redstone, 1 Gold Nugget, none, 3 s$(br)$(li)$(l)1 Advanced Circuit$(): 2 Basic Circuits, 1 Gold Ingot, 250 mB, 5 s$(br)$(li)$(l)1 Elite Circuit$(): 1 Advanced Circuit, 1 Diamond, 1 Uranium Ingot, 500 mB, 8 s$(br)$(li)$(l)Acid tank$(): 8,000 mB",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Energy buffer$(): 20,000 FE$(br)The Acid comes from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l), the uranium from $(l:nuclear/uranium)uranium ore$(/l). See $(l:materials/circuits)Circuits$(/l) for what each circuit is for."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:fabricator"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:fabricator": 9
+  }
+}

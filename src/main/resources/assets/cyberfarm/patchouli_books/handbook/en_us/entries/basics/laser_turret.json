@@ -6,27 +6,35 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:laser_turret"
+      "item": "cyberfarm:laser_turret",
+      "text": "Monsters at the door? A $(l)Laser Turret$() keeps them out. Give it power and it turns its head toward the nearest hostile mob it can see and burns it down."
     },
     {
       "type": "patchouli:text",
-      "text": "Monsters at the door? A $(l)Laser Turret$() keeps them out. Give it power and it watches $(l)16 blocks$() all round (a sphere 33 blocks across, as wide as the largest drone work area), turns its head toward the nearest hostile mob it can see and burns it down."
+      "text": "Place it where it can see the ground you want to guard. It watches $(l)16 blocks$() all round: a sphere 33 blocks across, as wide as the largest drone work area.$(br2)Power it with an $(l:cables/energy_conduit)Energy Conduit$(/l) or any other mod's cable, from any side.",
+      "title": "Placing and powering"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)8 damage a shot, one shot a second$(): a zombie lasts three shots.$(br)$(li)A shot costs $(l)200 FE$() from its 20,000 FE buffer: $(l)10 FE/t$() while it fights, none while nothing is in sight, so one $(l:generators/combustion_generator)Combustion Generator$(/l) keeps six turrets firing."
+      "text": "$(l)Right-click$() it to see what it is doing. The red lens on the barrel lights up while it aims."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The turret's laser costs $(l)25 FE per point of damage$(); the $(l:drone_systems/modules)Guard Module$(/l)'s, fired in flight, costs twice that.$(br)$(li)It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.$(br)$(li)It shoots $(l)hostile mobs only$(). Players, animals, villagers and golems are safe,"
+      "text": "$(li)$(l)Range$(): 16 blocks all round$(br)$(li)$(l)Damage$(): 8 a shot (a zombie lasts three shots)$(br)$(li)$(l)Fire rate$(): one shot a second$(br)$(li)$(l)Energy per shot$(): 200 FE (25 FE per point of damage)$(br)$(li)$(l)Power use$(): 10 FE/t while it fights, none while nothing is in sight",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)and so are $(l)named mobs$(), mobs $(l)riding$() something (a minecart, a boat) and $(l)neutral mobs$() (endermen, zombified piglins) until they get angry. Your mob farms are safe if you name the mobs you keep."
+      "text": "$(li)$(l)Energy buffer$(): 20,000 FE$(br)One $(l:generators/combustion_generator)Combustion Generator$(/l) keeps six turrets firing. The $(l:drone_systems/modules)Guard Module$(/l)'s laser, fired in flight, costs twice as much per point of damage."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click$() it to see what it is doing; the red lens on the barrel lights up while it aims.$(br)Power it with an $(l:cables/energy_conduit)Energy Conduit$(/l) or any other mod's cable, from any side."
+      "text": "It shoots $(l)hostile mobs only$(). These are safe:$(br)$(li)players, animals, villagers and golems;$(br)$(li)$(l)named mobs$(): your mob farms are safe if you name the mobs you keep;$(br)$(li)mobs $(l)riding$() something (a minecart, a boat);",
+      "title": "What it shoots"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)neutral mobs$() (endermen, zombified piglins) until they get angry.$(br)It needs a clear view: no block between its head and the mob's eyes. Glass stops it too."
     },
     {
       "type": "patchouli:text",
@@ -39,6 +47,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:laser_turret": 7
+    "cyberfarm:laser_turret": 8
   }
 }

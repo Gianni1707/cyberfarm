@@ -1,0 +1,47 @@
+{
+  "name": "Fuel Rod",
+  "icon": "cyberfarm:fuel_rod",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:fuel_rod",
+      "text": "A Fuel Rod is what the $(l:nuclear/fission_reactor)Fission Reactor$(/l) burns. Each burning rod heats the core, and that heat becomes the steam that drives the turbines."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "3 $(l:nuclear/uranium)Uranium$(/l) Ingots and 6 Iron Ingots.",
+      "title": "Crafting"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:fuel_rod"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put rods in the reactor's fuel slots, one per slot: by hand, or with a hopper or item pipe into a $(l)Reactor Port$().$(br)$(li)A Small tower burns 2 rods, a Medium one 4, a Large one 8. The slots a tower cannot burn are dimmed.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)All the rods in the tower burn together, and only while the reactor's power is above Off.$(br)$(li)The durability bar shows the fuel left; the tooltip shows it in minutes and seconds."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A spent rod becomes a $(l)Depleted Fuel Rod$() in the reactor's waste slots. That is nuclear waste: see $(l:nuclear/radiation)Waste and Radiation$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A rod lasts $(l)40 minutes at 100% power$(). Higher power burns it faster in the same proportion: at 200% it lasts half as long.$(br)$(li)$(l)50%$(): 80 min$(br)$(li)$(l)100%$(): 40 min$(br)$(li)$(l)150%$(): 26 min 40 s$(br)$(li)$(l)200%$(): 20 min$(br)$(li)$(l)250%$(): 16 min$(br)$(li)$(l)300%$(): 13 min 20 s$(br)$(li)$(l)350%$(): 11 min 26 s$(br)$(li)$(l)400%$(): 10 min",
+      "title": "How long a rod lasts"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)450%$(): 8 min 53 s$(br)$(li)$(l)500%$(): 8 min$(br)Every rod gives the $(l)same total steam$(), whatever the power: $(l)2,400,000 mB$(), as long as the reactor does not overheat. Higher power only gets it out faster. In $(l:nuclear/steam_turbine)Steam Turbines$(/l) that is 24, 38.4 or $(l)60 million FE$() per rod (Small, Medium or Large turbines)."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:fuel_rod": 2
+  }
+}

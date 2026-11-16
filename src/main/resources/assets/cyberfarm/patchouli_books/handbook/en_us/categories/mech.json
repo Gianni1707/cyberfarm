@@ -1,6 +1,6 @@
 {
   "name": "Mech",
-  "description": "A pilotable mech, about three and a half blocks tall, in teal armour with mint enamel and steel trim: a broad chest that comes to a prow, big angular shoulders, a steel V crest on its brow and two thrusters on its back. Its trunk is a bay you stand in, back against a harness, looking out through the visor of its head. You climb in, and it walks, jumps and punches for you.",
+  "description": "The mech is a suit of armour you pilot, about three and a half blocks tall. You climb into its trunk, and it walks, jumps, digs and punches for you while its armour takes the hits. It is end-game: its heart is a crystal grown from reactor waste.",
   "icon": "cyberfarm:mech_frame",
   "sortnum": 7
 }

@@ -13,6 +13,7 @@ import com.cyberfarm.client.StatusPanel;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.TowerClearance;
 import com.cyberfarm.client.TrinketClient;
 import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
@@ -142,6 +143,7 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomTurn);
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomWheel);
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::addInventoryTabs);
+        MinecraftForge.EVENT_BUS.addListener(TowerClearance::tick);
         modEventBus.addListener(MechClient::registerHud);
         modEventBus.addListener(com.cyberfarm.client.WarpOverlay::register);
         modEventBus.addListener(StatusPanel::register);

@@ -7,23 +7,28 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:drone_dock",
-      "text": "The home base of a drone. Each dock hosts $(l)one drone$() and:$(br)$(li)$(l)charges$() it (up to 1,000 FE/t) from its own 100,000 FE buffer;$(br)$(li)$(l)stores$() the harvest in 9 slots;"
+      "text": "The home base of a drone. A drone needs a dock to work: it charges there, unloads its harvest there and works the area the dock is set up for.$(br2)Each dock hosts $(l)one drone$(). It:"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)remembers the drone's $(l)work area$();$(br)$(li)holds an $(l)item filter$() for the Quarry and Transport modules."
+      "text": "$(li)$(l)charges$() the drone from its own battery;$(br)$(li)$(l)stores$() what the drone brings home in 9 slots;$(br)$(li)remembers the drone's $(l)work area$(), transport route or taxi destination;$(br)$(li)holds an $(l)item filter$() for the Quarry and Transport modules."
     },
     {
       "type": "patchouli:text",
-      "text": "A dock cannot see a drone that is far off in a part of the world that is not loaded, and lets you place another: when the first one comes home and finds no place left, it lands on the dock as an item."
+      "text": "A $(l)Dock Tank$() placed beside it stores the liquids a drone brings home (see below)."
     },
     {
       "type": "patchouli:text",
-      "text": "Power the dock with a $(l:generators/combustion_generator)Combustion Generator$(/l) placed next to it, or with cables from any mod. The harvest can be pulled out with hoppers or item pipes from any side."
+      "text": "Place the dock where the drone should live. The side that faces you is its $(l)front$(): a drone always parks facing it.",
+      "title": "Placing and powering"
     },
     {
       "type": "patchouli:text",
-      "text": "You can read a dock at a glance: lights $(l)chase round its landing ring$() while a drone flies home, and $(l)arcs of energy$() jump from its corner beacons to a drone charging on it. On a Builder Swarm Dock each of the four landing rings $(l)lights up$() while a Mini Drone stands on it."
+      "text": "Power it with a $(l:generators/combustion_generator)Combustion Generator$(/l) placed next to it, or with cables from any mod, from any side. Pull the harvest out with hoppers or item pipes, also from any side.$(br2)To put a drone on it, $(l)right-click the dock$() with the drone. See $(l:drone_systems/drones)Using Drones$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "To tell the drone where to work, use the $(l:drone_systems/survey_tool)Survey Tool$(/l). Without any setup the drone works a $(l)9x9$() area centred on the dock.$(br2)Mini Drones do not fit a Drone Dock: they live on a $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l)."
     },
     {
       "type": "patchouli:crafting",
@@ -40,96 +45,15 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Area$(): shows in the world what the dock is set up for (see $(l)The Survey Tool$() below).$(br)$(li)With a $(l)Dock Tank$() beside the dock (see below), a bar for its liquid under the cargo."
+      "text": "$(li)$(l)Area$(): shows in the world what the dock is set up for (see the $(l:drone_systems/survey_tool)Survey Tool$(/l)).$(br)$(li)With a $(l)Dock Tank$() beside the dock, a bar for its liquid under the cargo.$(br)$(l)Side tabs$() on the left open a panel next to the screen. Click a tab again to close it. The screen remembers which one you left open."
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Side tabs$() on the left open a panel next to the screen; click a tab again to close it. The screen remembers which one you left open."
+      "text": "$(li)$(l)**Drone Status$() (the \"i\" tab, coloured like the drone's state)**: its state, its modules, the work area (not for Transport, Taxi and Builder drones, which never use it), whether a route, a taxi destination or a build is set, and the layer a Quarry has reached"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Drone Status$() (the \"i\" tab, coloured like the drone's state): its state, the modules it carries, the work area (not for Transport, Taxi and Builder drones, which never use it), whether a route, a taxi destination or a build is set, and the layer a Quarry has reached."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)$(l)Battery$() (the battery tab, showing the charge): the charge level, the FE stored and whether the drone is charging or flying.$(br)$(li)$(l)Build$() (only with a Builder drone or a linked build): the layer being built and the blocks it still needs; the ones the dock has none of are marked in red."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The $(item)Survey Tool$() sets up a dock. $(l)Right-click a dock$() to link it: the tool reads what the drone on that dock does and $(l)asks for what it needs$(), above the hotbar, for as long as you hold it. The tool never opens the blocks you click, so chests and machines stay closed while you set things up.",
-      "title": "The Survey Tool"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)$(l)A module that works an area (Harvester, Quarry, Planter, Sponge...)$(): $(l)two opposite corners$(): the work area$(br)$(li)$(l)A$() Transport Module$(l)**:$() two containers**, source then destination: the route"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)$(l)A$() Taxi Module$(l)**:$() the block** where passengers land$(br)$(li)$(l)A$() Builder Module$(o)*$()*: nothing: link the structure with the $(l:basics/multiblock_projector)Multiblock Projector$(/l)"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "With no drone on the dock it asks you to put one on first. A drone with several modules can need more than one thing: the tool moves on by itself once one is set, and $(l)sneak + mouse wheel$() or a $(l)right-click in the air$() switches between them.$(br2)To see what a dock is set up for, press the"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(l)Area$() button in its screen: it sends out $(l)mini drones$(). Four take up the corners of the work area and light up its blocks, from the corners inwards; for a route or a landing spot, one hovers over each and lights that block. They stay out after you close the screen, and fly home when you click the button again or take the"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "drone off the dock."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Clicking the linked dock again only repeats what the tool is asking for. To set up another dock, $(l)right-click it$() (while the tool asks for a route or a landing spot, or for the second corner, $(l)sneak + right-click$() it, as a plain click would use it as a container, the landing block or the corner)."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Without any setup the drone works a $(l)9x9$() area centred on the dock. To change it:$(br)$(li)$(l)Right-click the dock$() with the tool.$(br)$(li)$(l)Right-click the first corner$() of your field.$(br)$(li)$(l)Right-click the opposite corner$(). The dock now uses that area.",
-      "title": "Choosing the work area"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The area can be up to $(l)33x33$() blocks, the two corners can be at most $(l)8 blocks$() apart in height, and everything must stay within 48 blocks of the dock."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The drone works its area $(l)block by block from one corner to the other$(), row after row like a Quarry, so a field is worked in order instead of here and there."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "For drones with a $(l:drone_systems/modules)Transport Module$(/l):$(br)$(li)$(l)Right-click the dock$() with the tool.$(br)$(li)$(l)Right-click the source container$() (chest, barrel, any modded inventory, or $(l)another drone's dock$()).",
-      "title": "Setting a transport route"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click the destination container$(). The route is saved on the dock."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "To carry things $(l)out of the drone's own dock$(), click that dock $(l)twice in a row$() as the source: one click only repeats what the tool is asking for. Both must be within $(l)48 blocks of the dock$(), and their chunks loaded: an $(l:drone_systems/addons)Anchor Addon$(/l) keeps them so."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Another drone's Drone Dock counts as a container: a Transport drone can empty the dock of a Harvester or a Quarry and bring the harvest to your storage."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "For drones with a $(l:drone_systems/modules)Taxi Module$(/l): with the tool linked to the dock, $(l)right-click the block$() where passengers should land. It can be up to 256 blocks away and needs two blocks of air above it.",
-      "title": "Setting a taxi destination"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Place a $(item)Dock Tank$() against a side of the dock: a bar for it appears in the dock's screen, under the cargo. It only $(l)stores$(): it holds $(l)64 buckets$() of one liquid at a time, and drones with a $(l:drone_systems/modules)Tank Module$(/l) empty into it when they come home. A drone without that module brings it nothing.",
-      "title": "Dock Tank"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "Watch the level and the float in its side windows, or right-click it to read what is in it. $(l)Pipes$() plug in behind it and on top, so you can drain it or use it as a plain tank."
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:dock_tank"
+      "text": "$(li)$(l)**Battery$() (shows the charge)**: the charge level, the FE stored and whether the drone is charging or flying$(br)$(li)$(l)**Build$() (only with a Builder drone or a linked build)**: the layer being built and the blocks it still needs; the ones the dock has none of are in red"
     },
     {
       "type": "patchouli:text",
@@ -138,52 +62,59 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)with a $(l:drone_systems/modules)Transport Module$(/l), the drone $(l)moves only the items that pass$().$(br)Click a slot with an item to add it as a sample (nothing is used up), click it empty-handed to clear it. The buttons switch between $(l)whitelist$() and $(l)blacklist$(), match items $(l)exactly$() (enchantments, damage, names) or"
+      "text": "$(li)with a $(l:drone_systems/modules)Transport Module$(/l), the drone $(l)moves only the items that pass$().$(br)To set it up:$(br)$(li)Click a slot with an item to add it as a sample. Nothing is used up.$(br)$(li)Click a slot empty-handed to clear it."
     },
     {
       "type": "patchouli:text",
-      "text": "not, match $(l)by mod$(), and pick a $(l)tag$() of the first sample (e.g. #forge:ores). An empty blacklist, the default, lets everything through.$(br2)The bottom row sets a $(l)limit$() for the Transport Module: $(l)Keep at destination: N$(). The drone then stops bringing an item once the destination holds"
+      "text": "$(li)The buttons switch between $(l)whitelist$() and $(l)blacklist$(), match items $(l)exactly$() (enchantments, damage, names) or not, match $(l)by mod$(), and pick a $(l)tag$() of the first sample (e.g. #forge:ores).$(br)An empty blacklist, the default, lets everything through."
     },
     {
       "type": "patchouli:text",
-      "text": "N of it, and carries only what is missing, so a chest stays stocked with 64 bread instead of filling up with 2,000. The arrows step through round numbers (8, 16, 32 and on up to 4,096); hold $(l)Shift$() to step by one. It counts each item separately."
+      "text": "The bottom row sets a $(l)limit$() for the Transport Module: $(l)Keep at destination: N$(). The drone stops bringing an item once the destination holds N of it, and carries only what is missing. So a chest stays stocked with 64 bread instead of filling up with 2,000. It counts each item separately."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sneak + right-click in the air$() clears a corner or route source you set by mistake.$(br)$(li)$(l)Sneak + right-click the linked dock$() resets it: default 9x9 area, no transport route, no taxi destination.",
-      "title": "Fixing mistakes"
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:survey_tool"
+      "text": "The arrows step through round numbers (8, 16, 32 and on up to 4,096). Hold $(l)Shift$() to step by one."
     },
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:swarm_dock",
-      "title": "Builder Swarm Dock",
-      "text": "A dock for up to $(l)four Mini Drones$() (drones built on a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l)). They share its work area, transport route, build and stock, and each parks on its own corner of the pad. Four $(l:drone_systems/modules)Builder$(/l) Mini Drones raise a"
+      "item": "cyberfarm:dock_tank",
+      "title": "Dock Tank",
+      "text": "The $(item)Dock Tank$() stores the liquid that drones bring home. Place it against a side of the dock: a bar for it appears in the dock's screen, under the cargo."
     },
     {
       "type": "patchouli:text",
-      "text": "structure together: link it to the swarm dock with the Multiblock Projector, and they split its blocks between them.$(br)$(li)Right-click the swarm dock with a Mini Drone to deploy it; it takes up to four. Bigger drones do not fit, and Mini Drones do not fit an ordinary Drone Dock."
+      "text": "It only $(l)stores$(): it holds $(l)64 buckets$() of one liquid at a time. Drones with a $(l:drone_systems/modules)Tank Module$(/l) empty into it when they come home. A drone without that module brings it nothing.$(br)$(li)Watch the level and the float in its side windows, or right-click it to read what is in it."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The screen shows the swarm as one: the busiest drone's job, their batteries added up, and how many drones are on the dock."
+      "text": "$(li)$(l)Pipes$() plug in behind it and on top, so you can drain it or use it as a plain tank."
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "cyberfarm:swarm_dock"
+      "recipe": "cyberfarm:dock_tank"
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l:drone_systems/hologram_table)Hologram Table$(/l) shows all your docks and drones on a 3D map."
+      "text": "$(li)$(l)Drones$(): 1$(br)$(li)$(l)Energy buffer$(): 100,000 FE$(br)$(li)$(l)Charging speed$(): up to 1,000 FE/t$(br)$(li)$(l)Cargo slots$(): 9$(br)$(li)$(l)Default work area$(): 9x9, centred on the dock$(br)$(li)$(l)Dock Tank$(): 64 buckets of one liquid",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)You can read a dock at a glance: lights $(l)chase round its landing ring$() while a drone flies home, and $(l)arcs of energy$() jump from its corner beacons to a drone charging on it.",
+      "title": "Good to know"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A dock cannot see a drone that is far off, in a part of the world that is not loaded, and lets you place another one. When the first drone comes home and finds no place left, it lands on the dock as an item.$(br)$(li)An $(l:drone_systems/addons)Anchor Addon$(/l) on the drone makes its dock keep the drone's chunks loaded."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l:drone_systems/hologram_table)Hologram Table$(/l) shows all your docks and drones on a 3D map."
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:drone_dock": 5,
-    "cyberfarm:survey_tool": 35,
-    "cyberfarm:dock_tank": 29,
-    "cyberfarm:swarm_dock": 36
+    "cyberfarm:drone_dock": 6,
+    "cyberfarm:dock_tank": 17
   }
 }

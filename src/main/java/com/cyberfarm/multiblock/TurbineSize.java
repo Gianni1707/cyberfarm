@@ -12,7 +12,7 @@ import net.minecraft.core.Direction;
  * The three Steam Turbines: horizontal halls with a square cross-section, the controller in the
  * middle of the front cap. Both caps are full; along the length only the outer ring is shell and
  * the inside, where the rotor spins, must be empty. Bigger turbines take more steam and get more FE
- * out of every mB.
+ * out of every mB. On the outer ring ports go only in the middle of the four sides, where the drawn hall has flat faces.
  */
 public enum TurbineSize implements Multiblock.Shape {
     SMALL(1, 4, 200, 10, 100),
@@ -78,7 +78,8 @@ public enum TurbineSize implements Multiblock.Shape {
             for (int right = -half; right <= half; right++) {
                 for (int up = -half; up <= half; up++) {
                     boolean ring = Math.max(Math.abs(right), Math.abs(up)) == half;
-                    Multiblock.Part part = cap || ring ? Multiblock.Part.SHELL : Multiblock.Part.EMPTY;
+                    Multiblock.Part part = ring && !Multiblock.onFlatSide(right, up) ? Multiblock.Part.CASING
+                            : cap || ring ? Multiblock.Part.SHELL : Multiblock.Part.EMPTY;
                     cells.add(new Multiblock.Cell(at(controller, facing, along, right, up), part));
                 }
             }

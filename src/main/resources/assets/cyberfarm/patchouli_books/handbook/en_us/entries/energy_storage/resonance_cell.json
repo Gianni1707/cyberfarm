@@ -7,20 +7,26 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:resonance_cell",
-      "text": "The blocks of a $(l:energy_storage/resonance_core)Resonance Core$(/l)'s $(l)shell$(): the more of them around the crystal, the higher the tier and the more it stores. They are crafted four at a time.$(br)$(li)$(l)2$(): 3x3x3, 26$(br)$(li)$(l)3$(): 5x5x5, 98"
+      "text": "Resonance Cells make the $(l)shell$() of a $(l:energy_storage/resonance_core)Resonance Core$(/l). The bigger the shell around the crystal, the higher the core's tier and the more it stores."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)4$(): 7x7x7, 218"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The shell is a hollow cube of $(item)Resonance Cell$()s $(l)right above the pedestal$(), centred on it: 3x3x3 for tier 2, 5x5x5 for tier 3, 7x7x7 for tier 4. Every block of the cube's surface must be a cell and its $(l)inside must stay empty$(). When the last cell goes in, the cells vanish and the crystal grows to fill",
+      "text": "$(li)The shell is a $(l)hollow cube$() of cells $(l)right above the pedestal$(), centred on it.$(br)$(li)Every block of the cube's surface must be a cell.$(br)$(li)Its $(l)inside must stay empty$().$(br)$(li)When the last cell goes in, the cells vanish and the crystal grows to fill the shell.",
       "title": "Building the shell"
     },
     {
       "type": "patchouli:text",
-      "text": "the shell. The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows every tier, pylons included: sneak + right-click to pick it, then click the pedestal.$(br)$(li)Breaking a cell of the shell drops the core back a tier, and $(l)the energy that no longer fits is lost$(): empty the core before rebuilding it."
+      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows every tier, pylons included: sneak + right-click to pick the tier, then click the pedestal. The core also needs its $(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l) columns to work."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)2$(): 3x3x3, 26$(br)$(li)$(l)3$(): 5x5x5, 98$(br)$(li)$(l)4$(): 7x7x7, 218$(br)One craft makes $(l)4 cells$().",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Right-clicking any cell of the shell, finished or not, opens the core's screen.$(br)$(li)Breaking a cell of the shell drops the core back a tier, and $(l)the energy that no longer fits is lost$(). Empty the core before you rebuild it.",
+      "title": "Tips"
     },
     {
       "type": "patchouli:crafting",
@@ -28,6 +34,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:resonance_cell": 4
+    "cyberfarm:resonance_cell": 5
   }
 }

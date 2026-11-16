@@ -2,7 +2,7 @@
   "name": "Dish Transmission",
   "icon": "cyberfarm:transmitter_dish",
   "category": "cyberfarm:cables",
-  "sortnum": 6,
+  "sortnum": 7,
   "pages": [
     {
       "type": "patchouli:text",
@@ -10,50 +10,72 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Dishes send $(l)FE through the air$(), where a conduit can't go. There is no beam: you can tell a $(l)Transmitter Dish$() is working because it turns to a receiver and $(l)holds still$() while it sends, and a $(l)Receiver Dish$() is getting power because the rings of its dish $(l)light up$() from the rim to the centre."
+      "text": "Dishes send $(l)FE through the air$(), to places a cable can't reach: across a valley, to an outpost, even into another dimension. A $(l)Transmitter Dish$() sends, a $(l)Receiver Dish$() receives, and a $(l)Range Module$() in the transmitter sets how far and how much."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It is a small multiblock: place it with $(l)three Cyber Frames$(), on its right as you face it, behind it and in the corner between, and the dish unfolds on its turret over a 2x2 base. Alone, a right click sends out drones that show where they go.",
+      "text": "There is no beam to see. A Transmitter Dish is working when it turns to a receiver and $(l)holds still$() while it sends. A Receiver Dish is getting power when the rings of its dish $(l)light up$() from the rim to the centre."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Building$()$(br)$(li)It is a small multiblock. Place it with $(l)three$() $(l:basics/cyber_frame)Cyber Frames$(/l): on its right as you face it, behind it, and in the corner between. The dish unfolds on its turret over a 2x2 base.",
       "title": "Transmitter Dish"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Feed it FE with $(l:cables/energy_conduit)Energy Conduits$(/l) on the dish block. It takes in as much FE per tick as its module lets it send, and stores ten times that.$(br)$(li)Each Transmitter Dish has $(l)one network$(). In its GUI you give it a $(l)name$() and a $(l)colour$(), which lights the indicator on both dishes."
+      "text": "$(li)Placed alone, a right-click sends out drones that show where the frames go.$(br)$(li)Feed it FE with $(l:cables/energy_conduit)Energy Conduits$(/l) on the dish block.$(br)$(l)Using it$()$(br2)Each Transmitter Dish runs $(l)one network$(). Its GUI has two tabs on the left of the network panel:"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A new network is $(l)Private$(): only you can link a receiver to it. Click the button to make it $(l)Team$() (you and the players on your team) or $(l)Public$() (anyone). A team is a vanilla /team, an FTB Teams team or an Open Parties and Claims party. Only you and your team can change its name, colour and"
+      "text": "$(li)$(l)Network$(): the network's $(l)name$(), its $(l)colour$() (which lights the indicator on both dishes) and its access.$(br)$(li)$(l)Manage$(): switches charging players' Energy Spheres on or off (owner only, see below).$(br)Access decides who may link a receiver:$(br)$(li)$(l)Private (new networks)$(): only you"
     },
     {
       "type": "patchouli:text",
-      "text": "access.$(br)$(li)A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on the network after 30 seconds, so swapping a module is safe."
+      "text": "$(li)$(l)Team$(): you and the players on your team$(br)$(li)$(l)Public$(): anyone$(br)A team is a vanilla /team, an FTB Teams team or an Open Parties and Claims party. Only you and your team can change the network's name, colour and access.$(br2)$(l)How it sends$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It serves up to $(l)4 receivers in turn$(): it turns to one (1 second), sends for 4 seconds, then moves to the next. The signal passes through blocks, but the chunks of both dishes must be loaded.$(br)$(li)A tenth of the FE is $(l)lost on the way$()."
+      "text": "$(li)It serves up to $(l)4 receivers in turn$(): it turns to one (1 second), sends for 4 seconds, then moves to the next.$(br)$(li)The signal passes through blocks, but the chunks of both dishes must be loaded.$(br)$(li)A tenth of the FE is $(l)lost on the way$()."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A small multiblock two blocks tall: put $(l)a Cyber Frame on top$() of it and its dish unfolds.",
+      "text": "$(li)With a receiver in another dimension, both dishes point $(l)straight up at the sky$().$(br)$(li)A receiver the transmitter no longer reaches (after a swap to a weaker Range Module, say) loses its seat on the network after $(l)30 seconds$(), so swapping a module is safe."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It is a small multiblock two blocks tall: put $(l)a Cyber Frame on top$() of it and its dish unfolds.",
       "title": "Receiver Dish"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Its GUI lists the networks it can reach, with their colour, distance (or dimension) and seats taken, for example \"2/4\". Click one to link; a full network is greyed out. $(l)Disconnect$() leaves it. The GUI also shows the FE/t arriving."
+      "text": "$(li)Its GUI lists the networks it can reach, with their colour, distance (or dimension) and seats taken, for example \"2/4\". $(l)Click$() one to link. A full network is greyed out. $(l)Disconnect$() leaves it.$(br)$(li)The GUI also shows the FE/t arriving."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It stores up to 2,000,000 FE and gives what it receives to the blocks and conduits around it."
+      "text": "$(li)It gives what it receives to the blocks and conduits around it."
     },
     {
       "type": "patchouli:text",
-      "text": "The Transmitter Dish has one module slot. The module sets how far it reaches and how much FE per tick it sends in all, shared among its receivers.$(br)$(li)$(l)None$(): 32 blocks, 2,000$(br)$(li)$(l)Range Module I$(): 128 blocks, 8,000$(br)$(li)$(l)Range Module II$(): 512 blocks, 32,000",
+      "text": "The Transmitter Dish has $(l)one module slot$(). The module sets how far it reaches and how much FE per tick it sends in all, shared among its receivers.$(br)$(li)$(l)None$(): 32 blocks, 2,000$(br)$(li)$(l)Range Module I$(): 128 blocks, 8,000$(br)$(li)$(l)Range Module II$(): 512 blocks, 32,000",
       "title": "Range Modules"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Range Module III$(): 2,048 blocks, 128,000$(br)$(li)$(l)Infinity Range Module$(): Unlimited, into other dimensions, Unlimited$(br)With a receiver in another dimension, both dishes point $(l)straight up at the sky$()."
+      "text": "$(li)$(l)Range Module III$(): 2,048 blocks, 128,000$(br)$(li)$(l)Infinity Range Module$(): Unlimited, into other dimensions, Unlimited"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Transmitter Dish also charges the $(l:trinkets/energy_sphere)Energy Sphere$(/l) on your $(l:trinkets/utility_belt)Utility Belt$(/l) from afar, for players in its reach:$(br)$(li)on a Private network, only its owner;$(br)$(li)on a Team network, the team too;$(br)$(li)on a Public network, everyone.",
+      "title": "Charging your Energy Sphere"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It sends up to the module's power, losing 10% on the way. The players it charges take their turn with the receivers, so now and then the dish turns to follow you. The owner can switch this off in the $(l)Manage$() tab."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Transmitter Dish$(): 10 times its module's FE/t (at least 20,000 FE; 1,000,000,000 FE with the Infinity Range Module)$(br)$(li)$(l)Receiver Dish$(): 2,000,000 FE$(br)The Transmitter Dish takes in as much FE per tick as its module lets it send.",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:crafting",
@@ -66,25 +88,17 @@
       "recipe2": "cyberfarm:range_module_ii"
     },
     {
-      "type": "patchouli:text",
-      "text": "A Transmitter Dish also charges the $(l)Energy Sphere$() on the $(l:trinkets/trinkets)Utility Belt$(/l) from afar, for the players in its reach: on a Private network only its owner's, on a Team one the team's too, on a Public one everyone's. It sends up to the module's power, losing 10% on the way. The players it charges take their turn with the"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "receivers, so now and then the dish turns to follow you. In its GUI, the $(l)Manage$() tab (on the left of the network panel) switches this charging on or off (owner only); the $(l)Network$() tab holds the network's name, colour and access (Private / Team / Public)."
-    },
-    {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:range_module_iii",
       "recipe2": "cyberfarm:infinity_range_module"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:transmitter_dish": 12,
-    "cyberfarm:receiver_dish": 12,
-    "cyberfarm:range_module_i": 13,
-    "cyberfarm:range_module_ii": 13,
-    "cyberfarm:range_module_iii": 16,
-    "cyberfarm:infinity_range_module": 16
+    "cyberfarm:transmitter_dish": 17,
+    "cyberfarm:receiver_dish": 17,
+    "cyberfarm:range_module_i": 18,
+    "cyberfarm:range_module_ii": 18,
+    "cyberfarm:range_module_iii": 19,
+    "cyberfarm:infinity_range_module": 19
   }
 }

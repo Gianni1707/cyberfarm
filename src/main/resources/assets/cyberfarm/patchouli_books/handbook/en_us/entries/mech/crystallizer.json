@@ -1,0 +1,118 @@
+{
+  "name": "Crystallizer",
+  "icon": "cyberfarm:crystallizer",
+  "category": "cyberfarm:mech",
+  "sortnum": 2,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:crystallizer",
+      "text": "The Crystallizer grows a $(l:mech/mech_core)Fusion Crystal$(/l) from an $(l:nuclear/isotope_shard)Isotope Shard$(/l), in Acid, with Amethyst Shards and a lot of power. The Fusion Crystal is the heart of a $(l:mech/mech_core)Mech Core$(/l), so you need a Crystallizer to build a $(l:mech/mech)mech$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The crystal grows in a $(l)chamber$() 3 blocks wide, 3 deep and 4 high:",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:multiblock",
+      "name": "Crystallizer",
+      "multiblock": {
+        "pattern": [
+          [
+            "AAA",
+            "AAA",
+            "AAA"
+          ],
+          [
+            "ABA",
+            "B B",
+            "ABA"
+          ],
+          [
+            "ABA",
+            "B B",
+            "ABA"
+          ],
+          [
+            "ACA",
+            "A0A",
+            "ADA"
+          ]
+        ],
+        "mapping": {
+          "A": "cyberfarm:cyber_frame",
+          "B": "cyberfarm:containment_glass",
+          "C": "cyberfarm:crystallizer[facing=north]",
+          "D": "cyberfarm:crystallizer_port",
+          "0": "cyberfarm:cyber_frame"
+        }
+      },
+      "enable_visualize": false
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Floor$(): $(l:basics/cyber_frame)Cyber Frame Block$(/l)s, with the $(item)Crystallizer$() in the middle of its front edge, facing out.$(br)$(li)$(l)Walls$(): Cyber Frames up the four corners, $(l:generators/methane_extractor)Containment Glass$(/l) between them. Leave the two blocks in the middle empty.$(br)$(li)$(l)Roof$(): Cyber Frames."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Any of the Cyber Frames, in the floor, the corners or the roof, can be a $(item)Crystallizer Port$() instead. The projector suggests one at the back of the floor."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Need help placing it? Right-click the Crystallizer while the chamber is unfinished: bigger drones fly out, each projecting a group of the blocks still to place. An amber X marks a block in the way. A second click calls them back. The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows it too: pick $(o)Crystallizer$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When the chamber is complete it turns into one machine: a stepped octagonal plinth with the acid in a basin sunk in its top, four pylons holding up a crown with an emitter in its hub, a violet energy field between them, and a console on the plinth's front under the radiation mark. Alone, the Crystallizer is a small"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "pedestal with a seed of the crystal in its basin."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put an $(l)Isotope Shard$() and $(l)4 Amethyst Shards$() in the Crystallizer.$(br)$(li)Pipe in $(l)2,000 mB of Acid$() from an $(l:generators/acid_synthesizer)Acid Synthesizer$(/l).$(br)$(li)Give it power: it uses $(l)4,000 FE/t$(). That much power wants a $(l:nuclear/fission_reactor)reactor$(/l) or several $(l:generators/steam_engine)Steam Engines$(/l) behind it.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)After $(l)30 seconds$() a Fusion Crystal is ready. Take it out.$(br)The tab beside its GUI takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "You can watch it grow: beams from the basin and the crown feed a violet speck in the middle of the field, arcs crackle to it from the pylons, motes of light spiral in, and it swells to full size while the console's bar fills. A finished crystal hangs there, turning slowly, until you take it out.$(br)$(li)$(l:nuclear/isotope_shard)Isotope Shard$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Amethyst Shard$()$(br)$(li)$(l:mech/mech_core)Fusion Crystal$(/l)"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Acid, power and items can go in through:$(br)$(li)the Crystallizer itself;$(br)$(li)any $(l)Crystallizer Port$() of the chamber;$(br)$(li)the formed chamber's $(l)plinth$(), at the middle of each side, and the $(l)middle of its roof$(), from outside.",
+      "title": "Ports and automation"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l:cables/liquid_pipe)Liquid Pipes$(/l), $(l:cables/energy_conduit)Energy Conduits$(/l) (or any mod's cables), hoppers and item pipes all connect to them. The Isotope Shards and Amethyst Shards find their own slots. Automation can take out only the $(l)Fusion Crystal$(): never the ingredients, never the acid."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Once the chamber is complete, each port becomes a node of your pipes set on the machine: a coupling like the pipes' own, with a violet window, in the plinth, against a pylon or under the crown. A port in the floor also shows a violet socket on the plinth. A pipe or cable you connect runs straight into it."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Recipe$(): 1 Isotope Shard + 4 Amethyst Shards + 2,000 mB Acid -> 1 Fusion Crystal$(br)$(li)$(l)Time$(): 30 seconds$(br)$(li)$(l)Power$(): 4,000 FE/t (2,400,000 FE per crystal)$(br)$(li)$(l)Acid tank$(): 8,000 mB$(br)$(li)$(l)Energy buffer$(): 1,000,000 FE",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:crystallizer",
+      "recipe2": "cyberfarm:crystallizer_port"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:crystallizer": 16,
+    "cyberfarm:crystallizer_port": 16
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "name": "Vitrified Waste",
+  "icon": "cyberfarm:vitrified_waste",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 10,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:vitrified_waste",
+      "text": "Vitrified Waste is nuclear waste made safe: inert green glass. It does $(l)not$() contaminate, so you can store it anywhere or build with it.$(br)$(li)$(l)Get it$(): the $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l) turns every Depleted Fuel Rod into one block."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Mine it$() with a pickaxe; it drops itself.$(br)$(li)It glows very faintly."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:vitrified_waste": 0
+  }
+}

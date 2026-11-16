@@ -1,0 +1,58 @@
+{
+  "name": "Energy Sphere",
+  "icon": "cyberfarm:energy_sphere",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 4,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:energy_sphere",
+      "text": "An orb of plasma that stores FE. In your $(l:trinkets/utility_belt)Utility Belt$(/l) it is the battery of every $(l:trinkets/trinkets)trinket$(/l): with no sphere, or an empty one, they stop. It also keeps the FE items you carry charged.$(br)$(li)$(item)Energy Sphere$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(item)Advanced Energy Sphere$()$(br)$(li)$(item)Elite Energy Sphere$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Make the Energy Sphere at the $(l:trinkets/trinket_table)Trinket Table$(/l). The two higher tiers are made there too, each from the tier below. The upgraded sphere $(l)keeps the charge$() of the old one.",
+      "title": "Getting one"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put the sphere in the sphere holder of your Utility Belt (press $(l)B$() to open it). Its plasma shows the tier on your belt: mint, emerald, violet."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Once a second, the sphere on your belt charges $(l)every item you carry that holds FE$(), from any mod: your main inventory, your armor and your offhand. In all it gives up to its tier's input rate (table below). Each item still takes no more than its own charging limit.",
+      "title": "Charging your items"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Spare Energy Spheres in your inventory are $(l)not$() charged by it.$(br)$(li)The FE comes out of the sphere. A big FE item can drain it, and then your trinkets stop."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Stand on a $(l:trinkets/human_dock)Human Dock$(/l). It also charges spare spheres in your inventory.$(br)$(li)Put it in a $(l:energy_storage/battery_bank)Battery Bank$(/l)'s slot, or in another mod's charger.",
+      "title": "Charging the sphere"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)From afar:$() a $(l:cables/dish_transmission)Transmitter Dish$(/l) tops up the sphere on the belt of the players in its reach, at the module's power, losing 10% on the way. Which players depends on the network: only the owner if it is Private, the team too if it is Team, everyone if it is Public."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Energy Sphere$(): 500,000 FE, 4,000 FE/t, about 35 minutes$(br)$(li)$(l)Advanced Energy Sphere$(): 2,000,000 FE, 16,000 FE/t, about 2 hours 20 minutes$(br)$(li)$(l)Elite Energy Sphere$(): 8,000,000 FE, 64,000 FE/t, about 9 hours 15 minutes",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "\"Charges at up to\" is both how fast a charger can fill the sphere and how fast the sphere charges the items you carry. \"Gravity Boots time\" is how long a full sphere keeps the $(l:trinkets/gravity_boots)Gravity Boots$(/l) hovering with nothing else running.$(br2)What each trinket uses is listed on the $(l:trinkets/trinkets)Trinkets$(/l) page."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:energy_sphere": 0,
+    "cyberfarm:advanced_energy_sphere": 0,
+    "cyberfarm:elite_energy_sphere": 0
+  }
+}

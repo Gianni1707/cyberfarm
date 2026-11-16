@@ -1,0 +1,39 @@
+{
+  "name": "Gravity Boots",
+  "icon": "cyberfarm:gravity_boots",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 6,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:gravity_boots",
+      "text": "Boots that make you $(l)hover over the ground$(), following the terrain like a hovercraft. Steps and slabs disappear under you, you glide over water and lava without touching them, and you take $(l)no fall damage$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Make them at the $(l:trinkets/trinket_table)Trinket Table$(/l) and wear them in the $(l)Feet$() slot. They run on the $(l:trinkets/energy_sphere)Energy Sphere$(/l) in your $(l:trinkets/utility_belt)Utility Belt$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Press $(l)H$() to pick the hover height: $(l)0.5$(), $(l)1$() or $(l)2 blocks$(), or off. Each press moves to the next.$(br)$(li)$(l)Sneak to land.$()$(br)$(li)$(l)Step assist$(): a step up to a full block high rises under you as you reach it, smoothly, at any hover height. You never bump into a single block.",
+      "title": "Using them"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Walking, sprinting and jumping work as on foot. You stop and turn with a touch of drift, as on a little ice.$(br)$(li)Rings of light leave your soles and sink to the ground under you.$(br)Off a cliff, the field slows you down and catches you at your height above the ground below."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Heights$(): 0.5, 1 or 2 blocks$(br)$(li)$(l)Speed while hovering$(): +40%$(br)$(li)$(l)Power$(): 12 FE/t while you hover$(br)$(li)$(l)Full Energy Sphere$(): about 35 minutes of hovering",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "They do not hover when:$(br)$(li)the Energy Sphere is empty, or missing from your belt;$(br)$(li)the height is set to off;$(br)$(li)you are flying in creative, gliding with an elytra, riding, sleeping or in spectator mode.",
+      "title": "Troubleshooting"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:gravity_boots": 0
+  }
+}
