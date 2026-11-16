@@ -33,6 +33,7 @@ import com.cyberfarm.item.MobCapsuleItem;
 import com.cyberfarm.item.BiomassItem;
 import com.cyberfarm.item.BlueprintDiscItem;
 import com.cyberfarm.item.ProjectorItem;
+import com.cyberfarm.item.CableSwapperItem;
 import com.cyberfarm.item.SurveyToolItem;
 
 import net.minecraft.world.item.BlockItem;
@@ -258,6 +259,7 @@ public class ModItems {
     public static final DeferredItem<MechModuleItem> MECH_ARMOR_MODULE = ITEMS.registerItem("mech_armor_module",
             p -> new MechModuleItem(p, MechModule.ARMOR), p -> p.stacksTo(1));
     public static final DeferredItem<SurveyToolItem> SURVEY_TOOL = ITEMS.registerItem("survey_tool", SurveyToolItem::new);
+    public static final DeferredItem<CableSwapperItem> CABLE_SWAPPER = ITEMS.registerItem("cable_swapper", CableSwapperItem::new);
     public static final DeferredItem<ProjectorItem> MULTIBLOCK_PROJECTOR = ITEMS.registerItem("multiblock_projector", ProjectorItem::new);
     public static final DeferredItem<BlueprintDiscItem> BLUEPRINT_DISC = ITEMS.registerItem("blueprint_disc", BlueprintDiscItem::new);
 

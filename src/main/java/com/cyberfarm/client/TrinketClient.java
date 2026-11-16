@@ -69,6 +69,7 @@ public final class TrinketClient {
     public static final KeyMapping DRONE = new KeyMapping("key.cyberfarm.pocket_drone", InputConstants.Type.KEYSYM, InputConstants.KEY_K, CATEGORY);
     public static final KeyMapping PROJECTOR = new KeyMapping("key.cyberfarm.belt_projector", InputConstants.Type.KEYSYM, InputConstants.KEY_Y, CATEGORY);
     public static final KeyMapping SURVEY_TOOL = new KeyMapping("key.cyberfarm.belt_survey_tool", InputConstants.Type.KEYSYM, InputConstants.KEY_U, CATEGORY);
+    public static final KeyMapping CABLE_SWAPPER = new KeyMapping("key.cyberfarm.belt_cable_swapper", InputConstants.Type.KEYSYM, InputConstants.KEY_I, CATEGORY);
 
     /** Below the lowest hover height, how far down the boots feel for ground before letting the player fall. */
     private static final double FIELD_REACH = 4.0;
@@ -92,6 +93,7 @@ public final class TrinketClient {
         event.register(DRONE);
         event.register(PROJECTOR);
         event.register(SURVEY_TOOL);
+        event.register(CABLE_SWAPPER);
     }
 
     public static void tick(ClientTickEvent.Post event) {
@@ -124,6 +126,9 @@ public final class TrinketClient {
         }
         while (SURVEY_TOOL.consumeClick()) {
             sendIfOnBelt(player, UtilityBeltItem.SURVEY_TOOL, TrinketKeyPayload.Action.SURVEY_TOOL);
+        }
+        while (CABLE_SWAPPER.consumeClick()) {
+            sendIfOnBelt(player, UtilityBeltItem.CABLE_SWAPPER, TrinketKeyPayload.Action.CABLE_SWAPPER);
         }
     }
 

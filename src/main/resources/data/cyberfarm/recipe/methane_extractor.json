@@ -2,11 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "H": "minecraft:hopper",
-    "C": "minecraft:copper_ingot",
+    "C": "#c:ingots/copper",
     "D": "cyberfarm:basic_circuit",
-    "G": "minecraft:glass"
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "IHI",

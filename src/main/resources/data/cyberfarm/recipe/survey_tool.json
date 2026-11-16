@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": "minecraft:glass_pane",
-    "I": "minecraft:iron_ingot",
-    "R": "minecraft:redstone"
+    "G": "#c:glass_panes",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     " G ",

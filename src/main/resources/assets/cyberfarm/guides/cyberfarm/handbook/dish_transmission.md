@@ -36,9 +36,10 @@ Dishes send **FE through the air**, where a conduit can't go. There is no beam: 
   module lets it send, and stores ten times that.
 - Each Transmitter Dish has **one network**. In its GUI you give it a **name** and a **colour**, which
   lights the indicator on both dishes.
-- A new network is **Private**: only you and the players on your team can see it. Switch it to
-  **Public** and anyone can link a receiver. Only you and your team can change its name, colour
-  and visibility.
+- A new network is **Private**: only you can link a receiver to it. Click the button to make it
+  **Team** (you and the players on your team) or **Public** (anyone). A team is a vanilla `/team`,
+  an FTB Teams team or an Open Parties and Claims party. Only you and your team can
+  change its name, colour and access.
 - A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on
   the network after 30 seconds, so swapping a module is safe.
 - It serves up to **4 receivers in turn**: it turns to one (1 second), sends for 4 seconds, then moves to the next. The signal
@@ -74,11 +75,13 @@ With a receiver in another dimension, both dishes point **straight up at the sky
 
 <RecipeFor id="range_module_i" />
 
-A Transmitter Dish also charges your **Energy Sphere** from afar: while you are in its reach and can see its
-network, it tops up the sphere on your [Utility Belt](trinkets.md), at the module's power, losing 10% on the way.
+A Transmitter Dish also charges the **Energy Sphere** on the [Utility Belt](trinkets.md) from afar, for the
+players in its reach: on a Private network only its owner's, on a Team one the team's too, on a Public one
+everyone's. It sends up to
+the module's power, losing 10% on the way.
 The players it charges take their turn with the receivers, so now and then the dish turns to follow you. In its GUI,
 the **Manage** tab (on the left of the network panel) switches this charging on or off (owner only); the
-**Network** tab holds the network's name, colour and Public / Private.
+**Network** tab holds the network's name, colour and access (Private / Team / Public).
 
 <RecipeFor id="range_module_ii" />
 

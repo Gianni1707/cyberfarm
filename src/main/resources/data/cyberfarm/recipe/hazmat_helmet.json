@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "W": "minecraft:yellow_wool",
-    "G": "minecraft:glass_pane"
+    "G": "#c:glass_panes"
   },
   "pattern": [
     "WWW",

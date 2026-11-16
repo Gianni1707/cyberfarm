@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
-    "R": "minecraft:redstone",
-    "G": "minecraft:gold_ingot"
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone",
+    "G": "#c:ingots/gold"
   },
   "pattern": [
     "IRI",

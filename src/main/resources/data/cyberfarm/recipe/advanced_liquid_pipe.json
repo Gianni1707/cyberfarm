@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": "cyberfarm:liquid_pipe",
-    "G": "minecraft:gold_ingot",
+    "G": "#c:ingots/gold",
     "R": "cyberfarm:basic_circuit"
   },
   "pattern": [

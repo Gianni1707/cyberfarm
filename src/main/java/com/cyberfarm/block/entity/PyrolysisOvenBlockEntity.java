@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
 import com.cyberfarm.menu.PyrolysisOvenMenu;
@@ -61,7 +62,7 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
         boolean open = advanceStage(level, pos, state);
-        boolean canRun = open && getStack(STRING).is(Items.STRING) && methane.amount() >= METHANE_PER_FIBER
+        boolean canRun = open && getStack(STRING).is(Tags.Items.STRINGS) && methane.amount() >= METHANE_PER_FIBER
                 && hasRoomFor(OUTPUT, ModItems.CARBON_FIBER.get());
         if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
             methane.drain(METHANE_PER_FIBER);
@@ -78,7 +79,7 @@ public class PyrolysisOvenBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
-        return index == STRING && resource.is(Items.STRING);
+        return index == STRING && resource.is(Tags.Items.STRINGS);
     }
 
     /** Automation takes out only what the machine made. */

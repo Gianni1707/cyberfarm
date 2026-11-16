@@ -111,6 +111,7 @@ public final class InfoPages {
                 page(ModItems.MECH_BLADE_MODULE.get()),
                 page(ModItems.MECH_ARMOR_MODULE.get()),
                 page(ModItems.SURVEY_TOOL.get()),
+                page(ModItems.CABLE_SWAPPER.get()),
                 page(ModItems.MULTIBLOCK_PROJECTOR.get()),
                 page(ModItems.HARVESTER_MODULE.get()),
                 page(ModItems.QUARRY_MODULE.get()),
