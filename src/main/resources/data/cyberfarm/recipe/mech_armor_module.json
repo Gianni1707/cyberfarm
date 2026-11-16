@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_block",
-    "O": "minecraft:obsidian",
+    "I": "#c:storage_blocks/iron",
+    "O": "#c:obsidians",
     "A": "cyberfarm:advanced_frame"
   },
   "pattern": [

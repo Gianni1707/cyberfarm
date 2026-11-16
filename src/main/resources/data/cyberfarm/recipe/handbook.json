@@ -9,7 +9,7 @@
   "category": "misc",
   "ingredients": [
     "minecraft:book",
-    "minecraft:copper_ingot"
+    "#c:ingots/copper"
   ],
   "result": {
     "id": "guideme:guide",

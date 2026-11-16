@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "F": "cyberfarm:cyber_frame",
     "P": "minecraft:piston",
     "D": "minecraft:iron_door"

@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": "minecraft:glass",
-    "C": "minecraft:copper_ingot",
+    "G": "#c:glass_blocks",
+    "C": "#c:ingots/copper",
     "B": "cyberfarm:battery_cell"
   },
   "pattern": [

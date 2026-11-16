@@ -1,5 +1,6 @@
 package com.cyberfarm.menu;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.block.entity.PyrolysisOvenBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
@@ -18,7 +19,7 @@ public class PyrolysisOvenMenu extends MachineMenu {
         this(containerId, inventory, new ItemStacksResourceHandler(2) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
-                return index == PyrolysisOvenBlockEntity.STRING && resource.is(Items.STRING);
+                return index == PyrolysisOvenBlockEntity.STRING && resource.is(Tags.Items.STRINGS);
             }
         }, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 4), ContainerLevelAccess.NULL);
     }

@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
-    "U": "cyberfarm:uranium_ingot",
-    "D": "minecraft:diamond",
+    "I": "#c:ingots/iron",
+    "U": "#c:ingots/uranium",
+    "D": "#c:gems/diamond",
     "X": "cyberfarm:reactor_casing",
     "R": "cyberfarm:elite_circuit"
   },

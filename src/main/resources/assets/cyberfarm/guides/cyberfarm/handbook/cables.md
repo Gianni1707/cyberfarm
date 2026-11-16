@@ -58,6 +58,19 @@ exit. Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md), or a battery 
 **Upgrading**: 6 cables around two gold ingots and a Basic Circuit make 8 Advanced ones; 6 Advanced
 around two diamonds and an Advanced Circuit make 8 Elite ones.
 
+## Cable Swapper
+
+<ItemImage id="cyberfarm:cable_swapper" scale="2" float="left" />
+
+Upgrade a whole line in one go: carry the next tier's cables and **right-click** any cable of the
+line with the **Cable Swapper**. Every cable of that kind joined to it becomes the next tier, as many
+as you carry, and the old ones come back to your inventory; which arms pull is kept. **Sneak** to
+swap only the one you click. It works on other mods' cables and pipes too, within their own mod: a
+Mekanism Basic Universal Cable becomes an Advanced Universal Cable. On a Battery Bank it sets the side
+you click to In, Out or Off.
+
+<RecipeFor id="cable_swapper" />
+
 Where a cable can't go, [Dish Transmission](dish_transmission.md) sends FE through the air.
 
 ## Pages

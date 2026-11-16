@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
-    "X": "minecraft:amethyst_shard",
-    "C": "minecraft:copper_ingot",
+    "I": "#c:ingots/iron",
+    "X": "#c:gems/amethyst",
+    "C": "#c:ingots/copper",
     "D": "cyberfarm:basic_circuit"
   },
   "pattern": [

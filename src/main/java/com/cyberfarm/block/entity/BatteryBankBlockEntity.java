@@ -177,7 +177,7 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         };
     }
 
-    /** The Survey Tool on one side of the bank: the next mode, and the cables around told to look again. */
+    /** The Cable Swapper on one side of the bank: the next mode, and the cables around told to look again. */
     public void cycle(Direction side) {
         BatteryBankBlockEntity runner = runner();
         runner.modes[side.get3DDataValue()] = runner.modes[side.get3DDataValue()].next();

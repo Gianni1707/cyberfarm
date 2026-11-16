@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
-    "G": "minecraft:glass"
+    "I": "#c:ingots/iron",
+    "G": "#c:glass_blocks"
   },
   "pattern": [
     "III",
