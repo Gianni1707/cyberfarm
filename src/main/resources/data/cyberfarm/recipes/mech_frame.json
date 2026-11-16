@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "minecraft:iron_block"
+      "tag": "forge:storage_blocks/iron"
     },
     "E": {
       "item": "minecraft:ender_eye"
@@ -15,7 +15,7 @@
       "item": "cyberfarm:mech_core"
     },
     "R": {
-      "item": "minecraft:redstone_block"
+      "tag": "forge:storage_blocks/redstone"
     }
   },
   "pattern": [

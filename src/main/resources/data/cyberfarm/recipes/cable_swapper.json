@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/aluminum"
+    },
+    "C": {
+      "item": "cyberfarm:basic_circuit"
+    },
+    "I": {
+      "tag": "forge:ingots/iron"
+    }
+  },
+  "pattern": [
+    "  A",
+    " C ",
+    "I  "
+  ],
+  "result": {
+    "item": "cyberfarm:cable_swapper"
+  }
+}

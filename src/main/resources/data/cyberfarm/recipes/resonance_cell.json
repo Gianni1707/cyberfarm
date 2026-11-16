@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     },
     "C": {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     },
     "B": {
       "item": "cyberfarm:battery_cell"

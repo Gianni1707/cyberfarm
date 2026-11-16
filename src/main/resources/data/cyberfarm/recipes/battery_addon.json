@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "N": {
-      "item": "minecraft:gold_nugget"
+      "tag": "forge:nuggets/gold"
     },
     "X": {
       "item": "cyberfarm:battery_cell"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "tag": "forge:dusts/redstone"
     },
     "C": {
       "item": "cyberfarm:basic_circuit"

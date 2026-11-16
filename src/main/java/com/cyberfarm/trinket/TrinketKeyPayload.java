@@ -19,7 +19,7 @@ import com.cyberfarm.port.net.IPayloadContext;
 
 /** A trinket key or button the player pressed; what it changes is saved on the worn trinket, server side. */
 public record TrinketKeyPayload(Action action) implements CustomPacketPayload {
-    public enum Action { HOVER_HEIGHT, NIGHT_VISION, TAXI_CALL, OPEN_TRINKETS, OPEN_BELT, DRONE, PROJECTOR, SURVEY_TOOL }
+    public enum Action { HOVER_HEIGHT, NIGHT_VISION, TAXI_CALL, OPEN_TRINKETS, OPEN_BELT, DRONE, PROJECTOR, SURVEY_TOOL, CABLE_SWAPPER }
 
     public static final Type<TrinketKeyPayload> TYPE = new Type<>(CyberFarm.id("trinket_key"));
     public static final StreamCodec<ByteBuf, TrinketKeyPayload> STREAM_CODEC = ByteBufCodecs.VAR_INT
@@ -66,6 +66,7 @@ public record TrinketKeyPayload(Action action) implements CustomPacketPayload {
             case DRONE -> toggleDrone(player);
             case PROJECTOR -> swapTool(player, UtilityBeltItem.PROJECTOR);
             case SURVEY_TOOL -> swapTool(player, UtilityBeltItem.SURVEY_TOOL);
+            case CABLE_SWAPPER -> swapTool(player, UtilityBeltItem.CABLE_SWAPPER);
         }
     }
 

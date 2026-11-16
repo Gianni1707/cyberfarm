@@ -21,9 +21,9 @@ import net.minecraft.world.item.ItemStack;
  */
 public class UtilityBeltMenu extends PortMenu {
     /** Where the four holders sit on the screen, left to right. */
-    public static final int SLOT_X = 44, SLOT_Y = 35, SLOT_PITCH = 26;
+    public static final int SLOT_X = 31, SLOT_Y = 35, SLOT_PITCH = 26;
     private static final int HOLDERS = UtilityBeltItem.SLOTS;
-    private static final String[] ICONS = {"belt_sphere", "belt_projector", "belt_survey_tool", "belt_drone"};
+    private static final String[] ICONS = {"belt_sphere", "belt_projector", "belt_survey_tool", "belt_drone", "belt_cable_swapper"};
 
     public UtilityBeltMenu(int containerId, Inventory inventory) {
         super(ModMenus.UTILITY_BELT.get(), containerId);

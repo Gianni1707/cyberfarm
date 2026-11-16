@@ -47,7 +47,25 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Upgrading$(): 6 cables around two gold ingots and a Basic Circuit make 8 Advanced ones; 6 Advanced around two diamonds and an Advanced Circuit make 8 Elite ones.$(br2)Where a cable can't go, $(l:cables/dish_transmission)Dish Transmission$(/l) sends FE through the air."
+      "text": "$(l)Upgrading$(): 6 cables around two gold ingots and a Basic Circuit make 8 Advanced ones; 6 Advanced around two diamonds and an Advanced Circuit make 8 Elite ones."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:cable_swapper",
+      "title": "Cable Swapper",
+      "text": "Upgrade a whole line in one go: carry the next tier's cables and $(l)right-click$() any cable of the line with the $(l)Cable Swapper$(). Every cable of that kind joined to it becomes the next tier, as many as you carry, and the old"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "ones come back to your inventory; which arms pull is kept. $(l)Sneak$() to swap only the one you click. It works on other mods' cables and pipes too, within their own mod: a Mekanism Basic Universal Cable becomes an Advanced Universal Cable. On a Battery Bank it sets the side you click to In, Out or Off."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:cable_swapper"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Where a cable can't go, $(l:cables/dish_transmission)Dish Transmission$(/l) sends FE through the air."
     }
   ],
   "priority": true

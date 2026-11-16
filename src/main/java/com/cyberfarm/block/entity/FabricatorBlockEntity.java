@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import net.minecraftforge.common.Tags;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -56,6 +57,11 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
         static Input of(Supplier<? extends Item> item, int count) {
             return new Input(stack -> stack.is(item.get()), count, () -> new ItemStack(item.get(), count));
         }
+
+        /** Any item of a common tag (other mods' copper, gold...), shown as the vanilla one. */
+        static Input of(TagKey<Item> tag, Item shown, int count) {
+            return new Input(stack -> stack.is(tag), count, () -> new ItemStack(shown, count));
+        }
     }
 
     public record Recipe(List<Input> inputs, int acid, Supplier<? extends Item> result, int count, int time) {
@@ -65,11 +71,12 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     public static final List<Recipe> RECIPES = List.of(
-            new Recipe(List.of(Input.of(Items.COPPER_INGOT, 1), Input.of(Items.REDSTONE, 2), Input.of(Items.GOLD_NUGGET, 1)),
+            new Recipe(List.of(Input.of(Tags.Items.INGOTS_COPPER, Items.COPPER_INGOT, 1), Input.of(Tags.Items.DUSTS_REDSTONE, Items.REDSTONE, 2),
+                    Input.of(Tags.Items.NUGGETS_GOLD, Items.GOLD_NUGGET, 1)),
                     0, ModItems.BASIC_CIRCUIT, 2, 60),
-            new Recipe(List.of(Input.of(ModItems.BASIC_CIRCUIT, 2), Input.of(Items.GOLD_INGOT, 1)),
+            new Recipe(List.of(Input.of(ModItems.BASIC_CIRCUIT, 2), Input.of(Tags.Items.INGOTS_GOLD, Items.GOLD_INGOT, 1)),
                     250, ModItems.ADVANCED_CIRCUIT, 1, 100),
-            new Recipe(List.of(Input.of(ModItems.ADVANCED_CIRCUIT, 1), Input.of(Items.DIAMOND, 1),
+            new Recipe(List.of(Input.of(ModItems.ADVANCED_CIRCUIT, 1), Input.of(Tags.Items.GEMS_DIAMOND, Items.DIAMOND, 1),
                     new Input(stack -> stack.is(URANIUM), 1, () -> new ItemStack(ModItems.URANIUM_INGOT.get()))),
                     500, ModItems.ELITE_CIRCUIT, 1, 160));
 

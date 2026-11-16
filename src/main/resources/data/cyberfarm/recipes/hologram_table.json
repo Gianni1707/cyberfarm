@@ -6,7 +6,7 @@
       "item": "minecraft:light_blue_stained_glass_pane"
     },
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "D": {
       "item": "cyberfarm:basic_circuit"

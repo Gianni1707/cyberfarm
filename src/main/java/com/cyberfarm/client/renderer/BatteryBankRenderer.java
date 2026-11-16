@@ -63,7 +63,7 @@ public class BatteryBankRenderer extends BlockEntityRenderer<BatteryBankBlockEnt
         int in;
         int out;
         int light;
-        /** Holding the Survey Tool: each outer side's mode, by direction (null where the side is inside the bank). */
+        /** Holding the Cable Swapper: each outer side's mode, by direction (null where the side is inside the bank). */
         final BatteryBankBlockEntity.@Nullable FaceMode[] sides = new BatteryBankBlockEntity.FaceMode[6];
         boolean showSides;
     }
@@ -97,7 +97,7 @@ public class BatteryBankRenderer extends BlockEntityRenderer<BatteryBankBlockEnt
         state.fill = state.capacity > 0 ? Mth.clamp((float) state.energy / state.capacity, 0.0F, 1.0F) : 0.0F;
         state.light = level == null ? LIGHT_FULL : LightCoordsUtil.getLightCoords(level, entity.getBlockPos());
         Player player = Minecraft.getInstance().player;
-        state.showSides = player != null && (player.getMainHandItem().is(ModItems.SURVEY_TOOL.get()) || player.getOffhandItem().is(ModItems.SURVEY_TOOL.get()));
+        state.showSides = player != null && (player.getMainHandItem().is(ModItems.CABLE_SWAPPER.get()) || player.getOffhandItem().is(ModItems.CABLE_SWAPPER.get()));
         for (Direction side : Direction.values()) {
             state.sides[side.get3DDataValue()] = state.showSides && !entity.joined(side) ? entity.mode(side) : null;
         }
@@ -157,11 +157,11 @@ public class BatteryBankRenderer extends BlockEntityRenderer<BatteryBankBlockEnt
         poseStack.popPose();
     }
 
-    /** In takes FE, Out gives it, Off is not connected: the Survey Tool's view of the sides, as the GUI's flows. */
+    /** In takes FE, Out gives it, Off is not connected: the Cable Swapper's view of the sides, as the GUI's flows. */
     private static final int[] MODE_COLOURS = {0xFF00B894, 0xFFFFB347, 0xFF7C8989};
 
     /**
-     * With the Survey Tool in hand, a frame round the edge of each outer side in its mode's colour. Model space: front
+     * With the Cable Swapper in hand, a frame round the edge of each outer side in its mode's colour. Model space: front
      * -z, the facing's clockwise side at x 16.
      */
     private static void sides(State state, PoseStack poseStack, SubmitNodeCollector collector) {

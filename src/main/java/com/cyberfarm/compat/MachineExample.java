@@ -163,7 +163,7 @@ public record MachineExample(Machine machine, List<List<ItemStack>> itemInputs, 
         }
         // The Trinket Table's grid: one item per slot, in any order
         for (TrinketRecipes.Recipe recipe : TrinketRecipes.RECIPES) {
-            all.add(new MachineExample(Machine.TRINKET_TABLE, recipe.slots().stream().map(List::of).toList(), List.of(),
+            all.add(new MachineExample(Machine.TRINKET_TABLE, recipe.slots(), List.of(),
                     List.of(recipe.output()), List.of(), List.of(note("shapeless"))));
         }
         // Installing programs: the chip and cartridges together in the grid

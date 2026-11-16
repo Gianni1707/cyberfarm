@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "forge:gems/diamond"
     },
     "A": {
       "item": "minecraft:amethyst_block"

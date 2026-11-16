@@ -86,8 +86,12 @@ def ingredient(value):
     return value
 
 
+# Common tags Forge 1.20.1 names otherwise than c: -> its names
+FORGE_TAGS = {'c:glass_blocks': 'forge:glass', 'c:obsidians': 'forge:obsidian', 'c:leathers': 'forge:leather', 'c:strings': 'forge:string'}
+
+
 def forge_tag(tag):
-    return 'forge:' + tag[2:] if tag.startswith('c:') else tag
+    return FORGE_TAGS.get(tag) or ('forge:' + tag[2:] if tag.startswith('c:') else tag)
 
 
 def port_recipe(path):

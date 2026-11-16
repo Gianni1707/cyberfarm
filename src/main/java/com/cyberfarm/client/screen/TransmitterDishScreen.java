@@ -3,6 +3,7 @@ package com.cyberfarm.client.screen;
 import java.util.List;
 
 import com.cyberfarm.energy.DishNetworks;
+import net.minecraft.util.Mth;
 import com.cyberfarm.energy.DishRenamePayload;
 import com.cyberfarm.item.RangeModuleItem;
 import com.cyberfarm.menu.TransmitterDishMenu;
@@ -42,6 +43,8 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
     private static int tab = TAB_NETWORK;
     private static final int SWATCH_X = 43, SWATCH_Y = 110, SWATCH_STEP = 12, SWATCH_SIZE = 10;
     private static final int OTHER_DIMENSION = -1;
+    /** The access button's words, by DishNetworks.Network.PRIVATE, TEAM, PUBLIC. */
+    private static final String[] ACCESS = {"private", "team", "public"};
     private static final int RING_DIM = 0xFF2E4B47;
 
     private EditBox name;
@@ -190,8 +193,8 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
         graphics.fill(x + NAME_X, y + NAME_Y - 1, x + NAME_X + NAME_W, y + NAME_Y + 10, SLOT_BORDER);
         graphics.fill(x + NAME_X + 1, y + NAME_Y, x + NAME_X + NAME_W - 1, y + NAME_Y + 9, SLOT_BG);
         drawButton(graphics, x + PUBLIC_X, y + PUBLIC_Y, PUBLIC_W, 12,
-                Component.translatable(menu.isPublic() ? "gui.cyberfarm.dish.public" : "gui.cyberfarm.dish.private"),
-                menu.isPublic() ? ACCENT_DIM : PANEL_LIGHT, TEXT);
+                Component.translatable("gui.cyberfarm.dish." + ACCESS[Mth.clamp(menu.access(), 0, 2)]),
+                menu.access() == DishNetworks.Network.PRIVATE ? PANEL_LIGHT : ACCENT_DIM, TEXT);
         for (int i = 0; i < DishNetworks.COLOURS.length; i++) {
             int sx = x + SWATCH_X + i * SWATCH_STEP, sy = y + SWATCH_Y;
             graphics.fill(sx - 1, sy - 1, sx + SWATCH_SIZE + 1, sy + SWATCH_SIZE + 1, i == menu.colour() ? GLOW : SLOT_BORDER);
@@ -339,7 +342,7 @@ public class TransmitterDishScreen extends MachineScreen<TransmitterDishMenu> {
                     : "gui.cyberfarm.dish.tab.manage"), mouseX, mouseY);
         }
         if (tab == TAB_NETWORK && isHovering(PUBLIC_X, PUBLIC_Y, PUBLIC_W, 12, mouseX, mouseY)) {
-            graphics.setTooltipForNextFrame(font, Component.translatable(menu.isPublic() ? "gui.cyberfarm.dish.public.tip" : "gui.cyberfarm.dish.private.tip"), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dish." + ACCESS[Mth.clamp(menu.access(), 0, 2)] + ".tip"), mouseX, mouseY);
         }
         if (tab == TAB_MANAGE && isHovering(ORBS_X, ORBS_Y, ORBS_W, ORBS_H, mouseX, mouseY)) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.dish.orbs.tip"), mouseX, mouseY);

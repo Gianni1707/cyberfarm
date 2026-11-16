@@ -33,31 +33,31 @@
     },
     {
       "type": "patchouli:text",
-      "text": "If your hand is full, what you hold moves to a free slot of your inventory.$(br2)$(l)Energy Sphere$()$(br2)An orb of plasma holding $(l)500,000 FE$(). Every trinket runs on it; with no sphere, or an empty one, they rest. Charge it on a $(l)Human Dock$() (below), in a Battery Bank's slot, in another mod's"
+      "text": "$(li)the $(l)Cable Swapper$() (see $(l:cables/cables)Cables$(/l)): $(l)I$() brings it to hand and puts it back.$(br)If your hand is full, what you hold moves to a free slot of your inventory.$(br2)$(l)Energy Sphere$()$(br2)An orb of plasma holding $(l)500,000 FE$(). Every trinket runs on it; with no sphere, or"
     },
     {
       "type": "patchouli:text",
-      "text": "charger, or $(l)from afar$(): a $(l:cables/dish_transmission)Transmitter Dish$(/l) tops up the sphere of every player in its reach who can see its network (yours, your team's, or a public one), at the module's power, losing 10% on the way."
+      "text": "an empty one, they rest. Charge it on a $(l)Human Dock$() (below), in a Battery Bank's slot, in another mod's charger, or $(l)from afar$(): a $(l:cables/dish_transmission)Transmitter Dish$(/l) tops up the sphere of the players in its reach: only the network owner's if it is Private, the team's too if it is Team, everyone's if it is Public, at the module's"
     },
     {
       "type": "patchouli:text",
-      "text": "Two more tiers, made at the Trinket Table from the tier below, which keeps its charge:$(br)$(li)$(l)Energy Sphere$(): 500,000 FE, 4,000 FE/t$(br)$(li)$(l)Advanced Energy Sphere$(): 2,000,000 FE, 16,000 FE/t$(br)$(li)$(l)Elite Energy Sphere$(): 8,000,000 FE, 64,000 FE/t"
+      "text": "power, losing 10% on the way.$(br2)Two more tiers, made at the Trinket Table from the tier below, which keeps its charge:$(br)$(li)$(l)Energy Sphere$(): 500,000 FE, 4,000 FE/t$(br)$(li)$(l)Advanced Energy Sphere$(): 2,000,000 FE, 16,000 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "Its plasma shows the tier on your belt: mint, emerald, violet.$(br)$(li)$(l)Gravity Boots$(): 12 FE/t while you hover$(br)$(li)$(l)Night Vision Program$(): 2 FE/t while it is on$(br)$(li)$(l)Machine Link Program$(): 1 FE/t$(br)$(li)$(l)Geiger HUD Program$(): 1 FE/t while it shows radiation"
+      "text": "$(li)$(l)Elite Energy Sphere$(): 8,000,000 FE, 64,000 FE/t$(br)Its plasma shows the tier on your belt: mint, emerald, violet.$(br)$(li)$(l)Gravity Boots$(): 12 FE/t while you hover$(br)$(li)$(l)Night Vision Program$(): 2 FE/t while it is on$(br)$(li)$(l)Machine Link Program$(): 1 FE/t"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Auto-Feeder Program$(): 50 FE per meal$(br)A full sphere keeps the Gravity Boots up for about 40 minutes.$(br2)$(l)Pocket Drone$()$(br2)Rides folded on your belt. Sent out, it opens its arms on the belt and flies up to wait over your shoulder, a small cousin of the"
+      "text": "$(li)$(l)Geiger HUD Program$(): 1 FE/t while it shows radiation$(br)$(li)$(l)Auto-Feeder Program$(): 50 FE per meal$(br)A full sphere keeps the Gravity Boots up for about 40 minutes.$(br2)$(l)Pocket Drone$()$(br2)Rides folded on your belt. Sent out, it opens its arms on the"
     },
     {
       "type": "patchouli:text",
-      "text": "Builder's mini drones. When something lies on the ground within $(l)8 blocks$(), it flies over, picks it up and brings it back into your inventory, one drop at a time. Items you threw away yourself are left alone for 5 seconds, and anything you have no room for stays where it is. Call it back mid-errand and what it holds"
+      "text": "belt and flies up to wait over your shoulder, a small cousin of the Builder's mini drones. When something lies on the ground within $(l)8 blocks$(), it flies over, picks it up and brings it back into your inventory, one drop at a time. Items you threw away yourself are left alone for 5 seconds, and anything you"
     },
     {
       "type": "patchouli:text",
-      "text": "comes straight to you. It has a small battery of its own, using 1 FE/t in flight, which the sphere keeps topped up whether it flies or not."
+      "text": "have no room for stays where it is. Call it back mid-errand and what it holds comes straight to you. It has a small battery of its own, using 1 FE/t in flight, which the sphere keeps topped up whether it flies or not."
     },
     {
       "type": "patchouli:spotlight",
@@ -67,11 +67,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)2 blocks$(), or off. Walking, sprinting and jumping work as on foot, with a touch of drift, as on a little ice, when you stop or turn; $(l)sneak to land$(). Rings of light leave your soles and sink to the ground under you. While they work you take $(l)no fall damage$(): off a cliff, the field slows you down and catches you at your height above"
+      "text": "$(l)2 blocks$(), or off. You move $(l)40% faster$() while hovering; walking, sprinting and jumping work as on foot, with a touch of drift, as on a little ice, when you stop or turn; $(l)sneak to land$(). Rings of light leave your soles and sink to the ground under you. While they work you take $(l)no fall damage$(): off a cliff, the field slows you"
     },
     {
       "type": "patchouli:text",
-      "text": "the ground below."
+      "text": "down and catches you at your height above the ground below."
     },
     {
       "type": "patchouli:spotlight",
@@ -133,7 +133,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "and out, and has a slot that charges an item. Each side of the bank is set with the $(l:drone_systems/drone_dock)Survey Tool$(/l): hold it to see every side framed in its mode's colour, and right-click a side to switch it:$(br)$(li)$(l)In$() (green, the default): the side takes FE from cables and machines;"
+      "text": "and out, and has a slot that charges an item. Each side of the bank is set with the $(l:cables/cables)Cable Swapper$(/l): hold it to see every side framed in its mode's colour, and right-click a side to switch it:$(br)$(li)$(l)In$() (green, the default): the side takes FE from cables and machines;"
     },
     {
       "type": "patchouli:text",
