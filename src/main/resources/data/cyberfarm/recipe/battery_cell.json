@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "N": "minecraft:iron_nugget",
-    "C": "minecraft:copper_ingot",
-    "R": "minecraft:redstone"
+    "N": "#c:nuggets/iron",
+    "C": "#c:ingots/copper",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     " N ",

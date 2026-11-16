@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "B": "minecraft:bucket",
-    "C": "minecraft:copper_ingot",
+    "C": "#c:ingots/copper",
     "P": "minecraft:piston",
     "D": "cyberfarm:basic_circuit"
   },

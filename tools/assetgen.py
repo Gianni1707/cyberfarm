@@ -21,7 +21,7 @@ FLAT_ITEMS = [
     "harvester_module", "quarry_module", "transport_module", "planter_module", "logger_module", "taxi_module", "rancher_module", "fertilizer_module", "builder_module", "fisher_module", "breeder_module", "guard_module", "bomb_module", "sponge_module", "tank_module",
     "speed_addon", "stack_addon", "battery_addon", "fortune_addon", "silk_touch_addon", "anchor_addon", "efficiency_addon",
     "raw_bauxite", "alumina", "aluminum_ingot", "carbon_fiber", "basic_circuit", "advanced_circuit", "elite_circuit",
-    "drone", "mini_drone", "survey_tool", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
+    "drone", "mini_drone", "survey_tool", "cable_swapper", "multiblock_projector", "blueprint_disc", "mob_capsule_filled",
     "raw_uranium", "uranium_ingot", "fuel_rod", "depleted_fuel_rod",
     "biogas_bucket", "methane_bucket", "steam_bucket", "coolant_bucket", "cryo_coolant_bucket",
     "hazmat_helmet", "hazmat_suit", "hazmat_pants", "hazmat_boots", "geiger_counter",
@@ -744,7 +744,21 @@ def items():
 
 # --------------------------------------------------------------------------- recipes
 
+# Materials other mods make too: a recipe takes any of them through the common tag, not only the vanilla item or ours
+COMMON_TAGS = {
+    "minecraft:iron_ingot": "#c:ingots/iron", "minecraft:copper_ingot": "#c:ingots/copper", "minecraft:gold_ingot": "#c:ingots/gold",
+    "minecraft:iron_nugget": "#c:nuggets/iron", "minecraft:gold_nugget": "#c:nuggets/gold",
+    "minecraft:iron_block": "#c:storage_blocks/iron", "minecraft:redstone_block": "#c:storage_blocks/redstone",
+    "minecraft:redstone": "#c:dusts/redstone", "minecraft:glowstone_dust": "#c:dusts/glowstone",
+    "minecraft:diamond": "#c:gems/diamond", "minecraft:emerald": "#c:gems/emerald", "minecraft:amethyst_shard": "#c:gems/amethyst",
+    "minecraft:glass": "#c:glass_blocks", "minecraft:glass_pane": "#c:glass_panes", "minecraft:obsidian": "#c:obsidians",
+    "minecraft:ender_pearl": "#c:ender_pearls", "minecraft:leather": "#c:leathers",
+    f"{NS}:uranium_ingot": "#c:ingots/uranium",
+}
+
+
 def shaped(name, pattern, key, count=1, category="misc"):
+    key = {k: COMMON_TAGS.get(v, v) for k, v in key.items()}
     result = {"id": f"{NS}:{name}"}
     if count > 1:
         result["count"] = count
@@ -922,12 +936,13 @@ def recipes():
     shaped("muffler", ["WIW", "INI", "WIW"], {"W": "#minecraft:wool", "I": iron, "N": "minecraft:note_block"})
     shaped("mob_capsule",["IGI", "GEG", "IGI"], {"I": "minecraft:iron_nugget", "G": "minecraft:glass", "E": "minecraft:ender_pearl"})
     shaped("survey_tool", [" G ", "IRI", " I "], {"G": "minecraft:glass_pane", "I": iron, "R": redstone}, category="equipment")
+    shaped("cable_swapper", ["  A", " C ", "I  "], {"A": aluminum, "C": circuit, "I": iron}, category="equipment")
 
     # The handbook is a GuideME guide: only craftable when GuideME is installed.
     write(DATA / "recipe/handbook.json", {
         "neoforge:conditions": [{"type": "neoforge:mod_loaded", "modid": "guideme"}],
         "type": "minecraft:crafting_shapeless", "category": "misc",
-        "ingredients": ["minecraft:book", copper],
+        "ingredients": ["minecraft:book", COMMON_TAGS.get(copper, copper)],
         "result": {"id": "guideme:guide", "components": {"guideme:guide_id": f"{NS}:handbook"}},
     })
 

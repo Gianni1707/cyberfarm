@@ -4,37 +4,52 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.StreamSupport;
 
 import com.cyberfarm.registry.ModItems;
 
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.common.Tags;
 
 /**
  * What the Trinket Table makes, like a crafting table: shapeless, one item from each filled slot of its 3x3 grid. A
  * Neural Chip with programs, and nothing else, comes out with the programs installed.
  */
 public final class TrinketRecipes {
-    /** One ingredient: what matches, in how many slots, and what a recipe viewer shows. */
-    public record Input(Predicate<ItemStack> test, int count, Supplier<ItemStack> shown) {
+    /** One ingredient: what matches, in how many slots, and what a recipe viewer cycles through. */
+    public record Input(Predicate<ItemStack> test, int count, Supplier<List<ItemStack>> shown) {
         static Input of(Supplier<? extends Item> item, int count) {
-            return new Input(stack -> stack.is(item.get()), count, () -> new ItemStack(item.get()));
+            return new Input(stack -> stack.is(item.get()), count, () -> List.of(new ItemStack(item.get())));
         }
 
         static Input of(Item item, int count) {
-            return new Input(stack -> stack.is(item), count, () -> new ItemStack(item));
+            return new Input(stack -> stack.is(item), count, () -> List.of(new ItemStack(item)));
+        }
+
+        /** Any item of a common tag, so another mod's aluminum, gold or leather works as well as the vanilla or ours. */
+        static Input of(TagKey<Item> tag, int count) {
+            return new Input(stack -> stack.is(tag), count,
+                    () -> StreamSupport.stream(BuiltInRegistries.ITEM.getTagOrEmpty(tag).spliterator(), false).map(ItemStack::new).toList());
         }
     }
+
+    /** Aluminum from any mod, as the mod's own crafting recipes take it. */
+    private static final TagKey<Item> ALUMINUM = ItemTags.create(Identifier.fromNamespaceAndPath("c", "ingots/aluminum"));
 
     public record Recipe(List<Input> inputs, Supplier<? extends Item> result) {
         public ItemStack output() {
             return new ItemStack(result.get());
         }
 
-        /** The ingredients one per slot, as a recipe viewer lays them out. */
-        public List<ItemStack> slots() {
-            List<ItemStack> slots = new ArrayList<>();
+        /** The ingredients one per slot, as a recipe viewer lays them out: each slot the items it takes. */
+        public List<List<ItemStack>> slots() {
+            List<List<ItemStack>> slots = new ArrayList<>();
             for (Input input : inputs) {
                 for (int i = 0; i < input.count(); i++) {
                     slots.add(input.shown().get());
@@ -45,17 +60,17 @@ public final class TrinketRecipes {
     }
 
     public static final List<Recipe> RECIPES = List.of(
-            new Recipe(List.of(Input.of(Items.LEATHER, 4), Input.of(ModItems.ALUMINUM_INGOT, 2), Input.of(Items.STRING, 2)), ModItems.UTILITY_BELT),
-            new Recipe(List.of(Input.of(ModItems.BATTERY_CELL, 4), Input.of(ModItems.ADVANCED_CIRCUIT, 1), Input.of(Items.GLASS, 2),
-                    Input.of(ModItems.ALUMINUM_INGOT, 2)), ModItems.ENERGY_SPHERE),
+            new Recipe(List.of(Input.of(Tags.Items.LEATHERS, 4), Input.of(ALUMINUM, 2), Input.of(Tags.Items.STRINGS, 2)), ModItems.UTILITY_BELT),
+            new Recipe(List.of(Input.of(ModItems.BATTERY_CELL, 4), Input.of(ModItems.ADVANCED_CIRCUIT, 1), Input.of(Tags.Items.GLASS_BLOCKS, 2),
+                    Input.of(ALUMINUM, 2)), ModItems.ENERGY_SPHERE),
             new Recipe(List.of(Input.of(ModItems.CARBON_FIBER, 4), Input.of(ModItems.ROTOR, 2), Input.of(Items.PHANTOM_MEMBRANE, 2),
                     Input.of(ModItems.ADVANCED_CIRCUIT, 1)), ModItems.GRAVITY_BOOTS),
-            new Recipe(List.of(Input.of(ModItems.ADVANCED_CIRCUIT, 2), Input.of(Items.GOLD_INGOT, 2), Input.of(Items.ENDER_PEARL, 1),
-                    Input.of(ModItems.CARBON_FIBER, 1), Input.of(Items.DIAMOND, 1)), ModItems.NEURAL_CHIP),
+            new Recipe(List.of(Input.of(ModItems.ADVANCED_CIRCUIT, 2), Input.of(Tags.Items.INGOTS_GOLD, 2), Input.of(Tags.Items.ENDER_PEARLS, 1),
+                    Input.of(ModItems.CARBON_FIBER, 1), Input.of(Tags.Items.GEMS_DIAMOND, 1)), ModItems.NEURAL_CHIP),
             // The sphere's tiers: the one below, with its charge kept, and the parts of its tier
             new Recipe(List.of(Input.of(ModItems.ENERGY_SPHERE, 1), Input.of(ModItems.ADVANCED_CIRCUIT, 2), Input.of(ModItems.BATTERY_CELL, 4),
                     Input.of(ModItems.CARBON_FIBER, 2)), ModItems.ADVANCED_ENERGY_SPHERE),
-            new Recipe(List.of(Input.of(ModItems.ADVANCED_ENERGY_SPHERE, 1), Input.of(ModItems.ELITE_CIRCUIT, 2), Input.of(Items.DIAMOND, 2),
+            new Recipe(List.of(Input.of(ModItems.ADVANCED_ENERGY_SPHERE, 1), Input.of(ModItems.ELITE_CIRCUIT, 2), Input.of(Tags.Items.GEMS_DIAMOND, 2),
                     Input.of(ModItems.CARBON_FIBER, 2), Input.of(Items.ENDER_EYE, 1)), ModItems.ELITE_ENERGY_SPHERE),
             new Recipe(List.of(Input.of(ModItems.MINI_FRAME, 1), Input.of(ModItems.DRONE_CORE, 1), Input.of(Items.HOPPER, 1),
                     Input.of(ModItems.BASIC_CIRCUIT, 2)), ModItems.POCKET_DRONE),
@@ -68,7 +83,7 @@ public final class TrinketRecipes {
 
     /** A program cartridge: a Basic Circuit, redstone and what the program is about. */
     private static Recipe program(Supplier<? extends Item> result, Input theme) {
-        return new Recipe(List.of(Input.of(ModItems.BASIC_CIRCUIT, 1), Input.of(Items.REDSTONE, 2), theme), result);
+        return new Recipe(List.of(Input.of(ModItems.BASIC_CIRCUIT, 1), Input.of(Tags.Items.DUSTS_REDSTONE, 2), theme), result);
     }
 
     private TrinketRecipes() {}

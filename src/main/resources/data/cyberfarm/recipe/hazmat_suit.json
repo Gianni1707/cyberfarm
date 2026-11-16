@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "W": "minecraft:yellow_wool",
-    "I": "minecraft:iron_ingot"
+    "I": "#c:ingots/iron"
   },
   "pattern": [
     "W W",

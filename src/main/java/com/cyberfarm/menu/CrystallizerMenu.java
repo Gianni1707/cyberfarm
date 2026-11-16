@@ -1,5 +1,6 @@
 package com.cyberfarm.menu;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
@@ -20,7 +21,7 @@ public class CrystallizerMenu extends MachineMenu {
             @Override
             public boolean isValid(int index, ItemResource resource) {
                 return index == CrystallizerBlockEntity.ISOTOPE ? resource.is(ModItems.ISOTOPE_SHARD.get())
-                        : index == CrystallizerBlockEntity.AMETHYST && resource.is(Items.AMETHYST_SHARD);
+                        : index == CrystallizerBlockEntity.AMETHYST && resource.is(Tags.Items.GEMS_AMETHYST);
             }
         }, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 5), ContainerLevelAccess.NULL);
     }

@@ -16,7 +16,7 @@ import net.minecraft.world.item.component.ItemContainerContents;
  * drawn on the player's belt, and the two tools come to hand with their keys.
  */
 public class UtilityBeltItem extends TrinketItem {
-    public static final int SPHERE = 0, PROJECTOR = 1, SURVEY_TOOL = 2, DRONE = 3, SLOTS = 4;
+    public static final int SPHERE = 0, PROJECTOR = 1, SURVEY_TOOL = 2, DRONE = 3, CABLE_SWAPPER = 4, SLOTS = 5;
 
     public UtilityBeltItem(Properties properties) {
         super(properties, TrinketType.BELT);
@@ -45,6 +45,7 @@ public class UtilityBeltItem extends TrinketItem {
             case PROJECTOR -> stack.is(ModItems.MULTIBLOCK_PROJECTOR.get());
             case SURVEY_TOOL -> stack.is(ModItems.SURVEY_TOOL.get());
             case DRONE -> stack.getItem() instanceof PocketDroneItem;
+            case CABLE_SWAPPER -> stack.is(ModItems.CABLE_SWAPPER.get());
             default -> false;
         };
     }

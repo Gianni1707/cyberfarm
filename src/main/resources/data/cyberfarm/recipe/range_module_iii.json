@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "X": "minecraft:ender_eye",
     "E": "cyberfarm:elite_circuit",
     "M": "cyberfarm:range_module_ii"

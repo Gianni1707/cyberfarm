@@ -8,7 +8,9 @@ import com.cyberfarm.client.screen.MachineScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
+import com.cyberfarm.menu.TrinketTableMenu;
 import com.cyberfarm.registry.ModItems;
+import com.cyberfarm.registry.ModMenus;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
@@ -18,7 +20,10 @@ import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
+import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.resources.Identifier;
 
 /**
@@ -65,6 +70,17 @@ public class CyberFarmJeiPlugin implements IModPlugin {
                 return screen.addonArea();
             }
         });
+    }
+
+    /**
+     * The "+" on a Trinket Table page: it fills the table's grid from the inventory. On a crafting table it lays the
+     * items in the grid too, with no result: only the Trinket Table makes trinkets (the user's choice).
+     */
+    @Override
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
+        var table = MachineCategory.type(MachineExample.Machine.TRINKET_TABLE);
+        registration.addRecipeTransferHandler(TrinketTableMenu.class, ModMenus.TRINKET_TABLE.get(), table, 1, 9, 10, 36);
+        registration.addRecipeTransferHandler(CraftingMenu.class, MenuType.CRAFTING, table, 1, 9, 10, 36);
     }
 
     @Override

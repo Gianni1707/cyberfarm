@@ -318,31 +318,31 @@ def assembler(g):
     block(g, 132, 15, 152, 20)
 
 
+BELT_X, BELT_PITCH, BELT_HOLDERS = 31, 26, 5   # as UtilityBeltMenu: SLOT_X, SLOT_PITCH, the holders
+
+
 def belt_gui(g):
-    """The Utility Belt's panel (the user's "tecno-enamel" pick): a bus of LEDs over the holders, the brown strap with
-    its mint stripe and studs behind them, a buckle at the left, and the charge channels UtilityBeltScreen fills."""
+    """The Utility Belt's panel (the user's "tecno-enamel" pick): a bus of LEDs over the five holders, the brown strap
+    with its mint stripe and studs behind them, a buckle at the left, and the charge channels UtilityBeltScreen fills."""
     g.fill(2, 15, 174, 31, 0x0D1C1C)
     g.fill(2, 31, 174, 32, 0x488D91)
-    # bus line with one LED pad per holder and the two end modules
-    g.fill(30, 17, 150, 19, 0x2F6468)
-    for h in range(4):
-        x = 44 + h * 26 + 8
+    # bus line with one LED pad per holder and the end module on the right
+    g.fill(26, 17, 156, 19, 0x2F6468)
+    for h in range(BELT_HOLDERS):
+        x = BELT_X + h * BELT_PITCH + 8
         g.fill(x - 3, 16, x + 3, 20, 0x132423)
         g.fill(x - 2, 17, x + 2, 19, 0x5EC2B8)
         g.fill(x - 1, 17, x + 1, 19, 0xD1FEE7)
-    g.fill(6, 16, 26, 29, 0x132423)
-    g.fill(8, 18, 12, 22, 0x5EC2B8)
-    g.fill(8, 24, 24, 26, 0x2F6468)
-    g.fill(152, 16, 172, 29, 0x132423)
-    g.fill(154, 18, 158, 22, 0x00B894)
-    g.fill(154, 24, 170, 26, 0x2F6468)
+    g.fill(156, 16, 172, 29, 0x132423)
+    g.fill(158, 18, 162, 22, 0x00B894)
+    g.fill(158, 24, 170, 26, 0x2F6468)
     # the belt behind the holders: brown strap, lit top edge, dark bottom edge, mint stripe, studs
     g.fill(2, 33, 174, 53, 0x7A5230)
     g.fill(2, 33, 174, 35, 0x9C6B42)
     g.fill(2, 51, 174, 53, 0x5A3A20)
     g.fill(2, 41, 174, 45, 0x2F6468)
     g.fill(2, 42, 174, 44, 0x5EC2B8)
-    for x in range(30, 160, 8):
+    for x in range(28, 172, 8):
         g.fill(x, 36, x + 2, 38, 0xE4EAEA)
         g.fill(x, 48, x + 2, 50, 0xE4EAEA)
     # buckle at the left end
@@ -351,9 +351,9 @@ def belt_gui(g):
     g.fill(6, 35, 24, 36, 0xE4EAEA)
     g.fill(9, 38, 21, 48, 0x132423)
     g.fill(11, 42, 19, 44, 0xD1FEE7)
-    # bar channels under holders 0 and 3 (the Java fills 16x2 at y 54), a dark housing so the bar reads
-    for h in range(4):
-        x = 44 + h * 26
+    # bar channels under the sphere's and the drone's holders (the Java fills them, 16x2 at y 54), a dark housing
+    for h in (0, 3):
+        x = BELT_X + h * BELT_PITCH
         g.fill(x - 1, 54 - 1, x + 17, 54 + 3, 0x071314)
         g.fill(x, 54, x + 16, 54 + 2, 0x0D1C1C)
 
@@ -376,7 +376,7 @@ OTHERS = {
     # The Battery Bank: the slot that charges an item, a panel for the bank's gauge and total
     "battery_bank": (166, 72, True, None, ((12, 28),), None, ((6, 48, 154, 69),)),
     # The Human Dock: no slots, a panel for who is charging and how fast
-    "utility_belt": (166, 72, False, belt_gui, ((44, 35), (70, 35), (96, 35), (122, 35)), None, ((8, 56, 168, 68),)),
+    "utility_belt": (166, 72, False, belt_gui, tuple((BELT_X + h * BELT_PITCH, 35) for h in range(BELT_HOLDERS)), None, ((8, 56, 168, 68),)),
 }
 
 
