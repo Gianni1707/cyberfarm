@@ -22,12 +22,14 @@ public class ReactorMenu extends MachineMenu {
     public static final int WASTE_Y = 62;
     public static final int BUTTON_BOOST_DOWN = 0;
     public static final int BUTTON_BOOST_UP = 1;
+    public static final int BUTTON_DUMP_COOLANT = 2;
+    public static final int BUTTON_DUMP_STEAM = 3;
 
     private final @Nullable ReactorControllerBlockEntity reactor;
 
     public ReactorMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, null, clientItems(),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 16), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 17), ContainerLevelAccess.NULL);
     }
 
     /** Client copy with the same slot rules, so shift-click predicts the server. */
@@ -61,10 +63,17 @@ public class ReactorMenu extends MachineMenu {
 
     @Override
     public boolean clickMenuButton(Player player, int id) {
-        if (reactor == null || (id != BUTTON_BOOST_DOWN && id != BUTTON_BOOST_UP)) {
+        if (reactor == null) {
             return false;
         }
-        reactor.changeBoost(id == BUTTON_BOOST_UP ? 1 : -1);
+        switch (id) {
+            case BUTTON_BOOST_DOWN, BUTTON_BOOST_UP -> reactor.changeBoost(id == BUTTON_BOOST_UP ? 1 : -1);
+            case BUTTON_DUMP_COOLANT -> reactor.dumpCoolant();
+            case BUTTON_DUMP_STEAM -> reactor.toggleDumpSteam();
+            default -> {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -133,6 +142,10 @@ public class ReactorMenu extends MachineMenu {
 
     public int getMaxBoost() {
         return extra(15);
+    }
+
+    public boolean isDumpingSteam() {
+        return extra(16) != 0;
     }
 
     /** It opens from any block of the structure, which can be far from the controller. */

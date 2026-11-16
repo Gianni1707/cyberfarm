@@ -2,36 +2,24 @@
   "name": "Carbon Fiber",
   "icon": "cyberfarm:carbon_fiber",
   "category": "cyberfarm:materials",
-  "sortnum": 4,
+  "sortnum": 6,
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "The Advanced and Elite Drone Frames are made of $(l)Carbon Fiber$(), as real racing drones are: light and stiff."
-    },
-    {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:pyrolysis_oven",
-      "text": "It takes a $(l)Cyber Frame$() on its left as you face it: right-click it alone and a drone shows where. Once complete, it opens into one long oven; it doesn't work until then, and breaking the frame folds it back."
+      "item": "cyberfarm:carbon_fiber",
+      "text": "$(l)Carbon Fiber$() is the tier 2 material. The Advanced and Elite Drone Frames are made of it, as real racing drones are: light and stiff."
     },
     {
       "type": "patchouli:text",
-      "text": "The $(l)Pyrolysis Oven$() splits $(l)Methane$() into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon onto $(l)String$(): $(l)250 mB of Methane + 1 String -> 1 Carbon Fiber$(), in 4 seconds at $(l)120 FE/t$(). The oven takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. Pipe the methane in from a $(l:generators/methane_extractor)Methane$(/l)"
+      "text": "Carbon Fiber is drawn out of $(l)Methane$(), a gas, onto plain $(l)String$():$(br)$(li)A $(l:generators/methane_extractor)Methane Extractor$(/l) makes Methane.$(br)$(li)A $(l:cables/gas_pipe)Gas Pipe$(/l) carries it to a $(l:materials/pyrolysis_oven)Pyrolysis Oven$(/l).",
+      "title": "Making it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l:generators/methane_extractor)Extractor$(/l) or a gas tank, on its front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber, drawing the fiber behind it; if the shuttle stops, so has the machine. A hopper underneath takes out only the Carbon Fiber, never the String."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "So the gas tier is more than power: its methane is the raw material of every advanced frame."
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:pyrolysis_oven"
+      "text": "$(li)The oven turns $(l)250 mB of Methane + 1 String$() into $(l)1 Carbon Fiber$(), in 4 seconds at 120 FE/t.$(br)So the gas tier is more than power: its methane is the raw material of every advanced frame."
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:carbon_fiber": 0,
-    "cyberfarm:pyrolysis_oven": 1
+    "cyberfarm:carbon_fiber": 0
   }
 }

@@ -1,0 +1,47 @@
+{
+  "name": "Human Dock",
+  "icon": "cyberfarm:human_dock",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:human_dock"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:drone_systems/drone_dock)Drone Dock$(/l)'s sibling, for you. Step onto its pad and it $(l)charges everything you carry at once$(): the $(l:trinkets/energy_sphere)Energy Sphere$(/l) and the $(l:trinkets/pocket_drone)Pocket Drone$(/l) on your belt, and every item in your inventory that holds FE, from any mod."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Place the Human Dock.$(br)$(li)Place a $(l:basics/cyber_frame)Cyber Frame Block$(/l) $(l)on top$() of it.$(br)The frame hides and the arch rises behind the pad like a tripod's legs, a clamp snapping shut at each joint. A display slides out of its top showing the dock's charge.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:human_dock"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It takes FE from cables, or from a $(l:energy_storage/battery_bank)Battery Bank$(/l) beside it (with that side of the bank set to Out).",
+      "title": "Powering it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Step onto the pad.$() It charges, in this order:$(br)$(li)the Energy Sphere on your belt;$(br)$(li)the Pocket Drone on your belt;$(br)$(li)every FE item in your inventory, armor and offhand, spare Energy Spheres included.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It has no screen: its lights show it working. Several players on the pad are each charged."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Charges each player at up to$(): 4,000 FE/t$(br)$(li)$(l)Stores$(): 500,000 FE$(br)$(li)$(l)Takes in up to$(): 8,000 FE/t",
+      "title": "Numbers"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:human_dock": 3
+  }
+}

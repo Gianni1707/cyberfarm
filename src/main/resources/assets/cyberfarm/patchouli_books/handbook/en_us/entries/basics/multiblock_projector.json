@@ -7,43 +7,61 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:multiblock_projector",
-      "text": "Shows a multiblock $(l)in the world$(): what to place and where, before you place a single block."
+      "text": "Shows a multiblock $(l)in the world$(): what to place and where, before you place a single block. Lock the projection in place to build it by hand, or let Builder drones build it for you."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click$() to open the list of structures and see the blocks each one takes: the $(l:nuclear/fission_reactor)Fission Reactor$(/l) and the $(l:nuclear/steam_turbine)Steam Turbine$(/l) in all three sizes, the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber, tiers 2 to 4 of the $(l:energy_storage/resonance_core)Resonance Core$(/l) (tier 1 is the core alone), the $(l:mech/mech_hangar)Mech Hangar$(/l) and the $(l:mech/mech_core)Crystallizer$(/l) chamber."
+      "text": "$(l)Right-click$() to open the list of structures and see the blocks each one takes:",
+      "title": "Picking a structure"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Below the multiblocks the list has $(l)schematics$(), marked in emerald: buildings saved with a $(l)Structure Block$(). Any data pack can add them: put the file in data/<namespace>/structure/schematic/. Its north side is its front, which turns towards you. Schematics up to 40 blocks a side are shown."
+      "text": "$(li)$(l)Multiblocks$(): the $(l:nuclear/fission_reactor)Fission Reactor$(/l) and the $(l:nuclear/steam_turbine)Steam Turbine$(/l) in all three sizes, the $(l:generators/methane_extractor)Methane Extractor$(/l) chamber, tiers 2 to 4 of the $(l:energy_storage/resonance_core)Resonance Core$(/l) (tier 1 is the core alone), the $(l:mech/mech_hangar)Mech Hangar$(/l) and the $(l:mech/mech_core)Crystallizer$(/l) chamber."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The $(l:drone_systems/tech_village)tech village$(/l)'s buildings join the list once you $(l)learn$() their $(l)Blueprint Disc$(). Pick an upgrade near its village and the projection locks itself over the building it upgrades, so it shows only what the upgrade adds."
+      "text": "$(li)$(l)Schematics$(), marked in emerald, below the multiblocks: buildings saved with a $(l)Structure Block$(). Schematics up to 40 blocks a side are shown.$(br)$(li)The $(l:drone_systems/tech_village)tech village$(/l)'s buildings, once you $(l)learn$() their $(l)Blueprint Disc$()."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)While you hold it, the projection $(l)follows the block you look at$(): the structure $(l)stands on$() the face you aim at, the controller on the side towards you, facing you, and the rest stretches away from you."
+      "text": "Small machines that assemble from Cyber Frames are not in the list: click one and its own drones show you where the frames go."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sneak + right-click a block$() to lock it there, and $(l)mini drones$() fly out to hold the projection, each over a group of blocks. Lock it on a controller you already placed and the projection lines up with it."
+      "text": "$(li)While you hold it, the projection $(l)follows the block you look at$(). The structure $(l)stands on$() the face you aim at, the controller on the side towards you, facing you, and the rest stretches away from you.",
+      "title": "Placing the projection"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Sneak + right-click the air$() to unlock it, and the drones fly home.$(br)$(li)$(l)Right-click a$() $(l:drone_systems/drone_dock)Drone Dock$(/l) with a locked projection and a drone with a $(l:drone_systems/modules)Builder Module$(/l) builds it for you."
+      "text": "$(li)$(l)Sneak + right-click a block$() to lock it there. $(l)Mini drones$() fly out to hold the projection, each over a group of blocks.$(br)$(li)Lock it on a controller you already placed and the projection lines up with it."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)In $(l)creative$() mode, right-clicking a block $(l)clears the site and builds$() the structure right away (where it is locked, or where it is projected), with plain casings; swap in the ports you need.$(br)While it follows your gaze, blocks still to place glow softly and $(l)red$() blocks are wrong, or in the way"
+      "text": "$(li)Pick a village upgrade near its village and the projection locks itself over the building it upgrades, so it shows only what the upgrade adds.$(br)$(li)$(l)Sneak + right-click the air$() to unlock it, and the drones fly home."
     },
     {
       "type": "patchouli:text",
-      "text": "of a space that must stay empty. Locked, the drones project the blocks in a cone of light and mark what is in the way with an $(l)amber X$(). Correct blocks are not drawn. Small machines that assemble from Cyber Frames are not in the list: click one and its own drones show you where the frames go. Above the hotbar the projector counts"
+      "text": "$(li)$(l)Soft glow (following your gaze)$(): a block still to place$(br)$(li)$(l)**Red$() block (following your gaze)**: a wrong block, or one in a space that must stay empty$(br)$(li)$(l)Blocks in a cone of light (locked)$(): blocks still to place",
+      "title": "Reading the projection"
     },
     {
       "type": "patchouli:text",
-      "text": "what is left, and says when the structure is complete. When any CyberFarm multiblock forms, a ring of light rises through it from the bottom to the top."
+      "text": "$(li)$(l)**Amber X$() (locked)**: something in the way$(br)$(li)$(l)Nothing drawn$(): the block is already correct$(br)Above the hotbar the projector counts what is left, and says when the structure is complete. When any CyberFarm multiblock forms, a ring of light rises through it from the bottom to the top."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Right-click a$() $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l) with a locked projection, and its Mini Drones with a $(l:drone_systems/modules)Builder Module$(/l) build it for you.",
+      "title": "Building it with drones"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "In creative, right-clicking a block $(l)clears the site and builds$() the structure right away (where it is locked, or where it is projected), with plain casings. Swap in the ports you need.",
+      "title": "Creative mode"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Any data pack can add schematics: put the Structure Block file in data/<namespace>/structure/schematic/. Its north side is its front, which turns towards you.",
+      "title": "Adding schematics"
     },
     {
       "type": "patchouli:crafting",
@@ -51,6 +69,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:multiblock_projector": 10
+    "cyberfarm:multiblock_projector": 13
   }
 }

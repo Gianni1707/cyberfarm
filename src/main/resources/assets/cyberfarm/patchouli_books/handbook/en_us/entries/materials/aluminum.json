@@ -6,31 +6,30 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "Aluminum is the light metal of the first drone frames. You cannot smelt it straight out of its ore: just as in real life, it takes electrolysis and a steady flow of power.$(br)$(li)$(item)Bauxite Ore$()$(br)$(li)$(item)Raw Bauxite$()$(br)$(li)$(item)Alumina$()$(br)$(li)$(item)Aluminum Ingot$()"
+      "text": "Aluminum is the light metal of the first drone frames. You cannot smelt it straight from its ore: just as in real life, it takes electrolysis and a steady flow of power.$(br)$(li)$(item)Bauxite Ore$()$(br)$(li)$(item)Raw Bauxite$()$(br)$(li)$(item)Alumina$()$(br)$(li)$(item)Aluminum Ingot$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Mine $(l)Bauxite Ore$(): rusty clumps in stone and deepslate, almost as common as iron, from y -32 to y 80 and most common around y 24. It drops $(l)Raw Bauxite$() (Fortune helps).$(br)$(li)Smelt or blast it (or the ore itself) into $(l)Alumina$(), a white powder.$(br)$(li)Put the Alumina in an $(l)Electrolyzer$(),"
+      "text": "$(li)$(l)Mine Bauxite Ore.$() It shows as rusty clumps in stone and deepslate. It drops $(l)Raw Bauxite$(), and Fortune helps.$(br)$(li)$(l)Smelt or blast$() the Raw Bauxite (or the ore itself) into $(l)Alumina$(), a white powder.",
+      "title": "From ore to ingot"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)which takes a $(l)Cyber Frame$() on its left as you face it (right-click it alone and a drone shows where), and only works once assembled: $(l)1 Aluminum Ingot every 5 seconds at 80 FE/t$(). Two $(l:generators/combustion_generator)Combustion Generators$(/l) keep it running. The Electrolyzer takes Speed, Efficiency"
+      "text": "$(li)$(l)Put the Alumina in an$() $(l:materials/electrolyzer)Electrolyzer$(/l)$(l).$() It makes 1 Aluminum Ingot every 5 seconds at 80 FE/t. Two $(l:generators/combustion_generator)Combustion Generators$(/l) keep it running."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. While it works, the feeder punch behind its window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine. Plug conduits into its free side, front or back: its top is full. A hopper underneath takes"
+      "text": "$(li)$(l)Found in$(): Stone and deepslate$(br)$(li)$(l)Heights$(): y -32 to y 80$(br)$(li)$(l)Most common$(): Around y 24$(br)$(li)$(l)How common$(): Almost as common as iron",
+      "title": "Where to find bauxite"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)out only the ingots, never the Alumina still waiting.$(br)Aluminum Ingots are tagged forge:ingots/aluminum, Alumina forge:dusts/alumina, the ore forge:ores/bauxite and forge:ores/aluminum, Raw Bauxite forge:raw_materials/aluminum: aluminum from other mods works in every"
+      "text": "Aluminum from other mods works in every CyberFarm recipe, and their crushers and furnaces can process our ore. The tags are:$(br)$(li)$(l)Aluminum Ingot$(): forge:ingots/aluminum$(br)$(li)$(l)Alumina$(): forge:dusts/alumina$(br)$(li)$(l)Bauxite Ore$(): forge:ores/bauxite, forge:ores/aluminum",
+      "title": "Other mods"
     },
     {
       "type": "patchouli:text",
-      "text": "recipe, and their crushers and furnaces can process our ore.$(br2)Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml and only theirs generates (new chunks only)."
-    },
-    {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:electrolyzer"
+      "text": "$(li)$(l)Raw Bauxite$(): forge:raw_materials/aluminum, forge:raw_materials/bauxite$(br)Already have an aluminum ore from another mod? Set bauxiteGeneration = false under [world] in cyberfarm-common.toml, and only theirs generates (in new chunks only)."
     }
   ],
   "extra_recipe_mappings": {
@@ -38,7 +37,6 @@
     "cyberfarm:deepslate_bauxite_ore": 0,
     "cyberfarm:raw_bauxite": 0,
     "cyberfarm:alumina": 0,
-    "cyberfarm:aluminum_ingot": 0,
-    "cyberfarm:electrolyzer": 6
+    "cyberfarm:aluminum_ingot": 0
   }
 }

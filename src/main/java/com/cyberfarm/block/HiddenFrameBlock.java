@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.DirectionalBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,7 +34,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 /**
  * A Cyber Frame taken into a small multiblock, and clicking it is clicking the machine. Usually invisible, as the machine's model
  * covers its cell; a cell too far for that model shows its own {@link #PIECE}. Breaking it gives the frame back; the machine gives
- * back the others when it folds or goes (see SmallMultiblockBlockEntity).
+ * back the others when it folds or goes (see SmallMultiblockBlockEntity). Pipes and cables plug into it as into the machine (it
+ * hands over the machine's capabilities), and it shows a socket where they do.
  */
 public class HiddenFrameBlock extends PortBlock implements EntityBlock {
     /** Towards the machine, along any frames in between, which may turn on the way. */
@@ -43,12 +45,16 @@ public class HiddenFrameBlock extends PortBlock implements EntityBlock {
 
     public HiddenFrameBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(TO_MACHINE, Direction.NORTH).setValue(PIECE, NOTHING));
+        BlockState state = defaultBlockState().setValue(TO_MACHINE, Direction.NORTH).setValue(PIECE, NOTHING);
+        for (BooleanProperty port : MachineBlock.PORTS.values()) {
+            state = state.setValue(port, false);
+        }
+        registerDefaultState(state);
     }
 
     /**
      * On Forge 1.20.1 only block entities expose capabilities: every frame carries one, so conduits plug into it and
-     * a hopper on a Biomass Press's funnel reaches the machine below.
+     * a hopper or pipe on any frame reaches the machine.
      */
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
@@ -58,12 +64,28 @@ public class HiddenFrameBlock extends PortBlock implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(TO_MACHINE, PIECE);
+        MachineBlock.PORTS.values().forEach(builder::add);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public RenderShape getRenderShape(BlockState state) {
-        return state.getValue(PIECE) == NOTHING ? RenderShape.INVISIBLE : RenderShape.MODEL;
+        if (state.getValue(PIECE) != NOTHING) {
+            return RenderShape.MODEL;
+        }
+        for (BooleanProperty port : MachineBlock.PORTS.values()) {
+            if (state.getValue(port)) {
+                return RenderShape.MODEL;
+            }
+        }
+        return RenderShape.INVISIBLE;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        BlockState updated = super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+        return updated.is(this) ? MachineBlock.plug(updated, direction, neighborState) : updated;
     }
 
     /** Its machine decides: most fill the cell, an open one (the Trinket Table) only where it has something there. */

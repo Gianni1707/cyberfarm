@@ -6,11 +6,16 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The frame is the base of every drone. Its $(l)tier$() decides how big the battery is, how fast the drone flies, how many function modules it can carry and how many $(l:drone_systems/addons)addons$(/l) fit in it.$(br)$(li)$(item)Basic Drone Frame$()$(br)$(li)$(item)Advanced Drone Frame$()$(br)$(li)$(item)Elite Drone Frame$()"
+      "text": "The frame is the base of every drone. Its $(l)tier$() decides how big the battery is, how fast the drone flies, how many $(l:drone_systems/modules)function modules$(/l) it carries and how many $(l:drone_systems/addons)addons$(/l) fit in it.$(br)$(li)$(item)Basic Drone Frame$()$(br)$(li)$(item)Advanced Drone Frame$()$(br)$(li)$(item)Elite Drone Frame$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Basic Drone Frame$(): 1, 40,000 FE, 80% (2.4 blocks/s), 1, 4, 4 FE/t$(br)$(li)$(l)Advanced Drone Frame$(): 2, 120,000 FE, 130% (3.9 blocks/s), 2, 8, 6 FE/t$(br)$(li)$(l)Elite Drone Frame$(): 3, 300,000 FE, 160% (4.8 blocks/s), 3, 16, 8 FE/t"
+      "text": "$(li)$(item)Mini Drone Frame$()"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Basic Drone Frame$(): 1, 40,000 FE, 80% (2.4 blocks/s), 1, 4, 4 FE/t$(br)$(li)$(l)Advanced Drone Frame$(): 2, 120,000 FE, 130% (3.9 blocks/s), 2, 8, 6 FE/t$(br)$(li)$(l)Elite Drone Frame$(): 3, 300,000 FE, 160% (4.8 blocks/s), 3, 16, 8 FE/t",
+      "title": "Comparing the frames"
     },
     {
       "type": "patchouli:text",
@@ -18,7 +23,21 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A drone built on the $(l)Mini Drone Frame$() is a $(l)Mini Drone$(): half the size of the others, made for two jobs only: the frame takes the $(l:drone_systems/modules)Builder Module$(/l) or the $(l:drone_systems/modules)Bomb Module$(/l) and nothing else. It lives only on a $(l:drone_systems/drone_dock)Builder Swarm Dock$(/l), which takes up to four, each on its own corner of the pad."
+      "text": "$(li)$(l)Speed$(): each Speed Addon adds 10% on top of the frame speed. Above 100%, the same speed also shortens the work itself: digging, clearing a site, cutting trees, soaking up fluid and waiting for a catch. Guard and Bomb drones fire and dive at their own pace."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Flight cost$(): the frame's share of the drone's $(l:drone_systems/drones)power use$(/l)."
+    },
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:mini_frame",
+      "title": "The Mini Drone Frame",
+      "text": "A drone built on the Mini Drone Frame is a $(l)Mini Drone$(): half the size of the others. It is made for two jobs only: it takes the $(l:drone_systems/modules)Builder Module$(/l) or the $(l:drone_systems/modules)Bomb Module$(/l) and nothing else."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Mini Drone lives only on a $(l:drone_systems/swarm_dock)Builder Swarm Dock$(/l), which takes up to four, each on its own corner of the pad."
     },
     {
       "type": "patchouli:crafting",
@@ -26,11 +45,8 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The Basic and Mini frames are made of $(l:materials/aluminum)aluminum$(/l); the Advanced and Elite frames of $(l:materials/carbon_fiber)carbon fiber$(/l), with $(l:materials/circuits)Advanced and Elite Circuits$(/l).$(br2)Speed Addons add 10% each on top of the frame speed. Above 100%, the same speed also shortens the work itself: digging, clearing a site, cutting trees,"
-    },
-    {
-      "type": "patchouli:text",
-      "text": "soaking up fluid and waiting for a catch. Guard and Bomb drones fire and dive at their own pace. The flight cost is the frame's share of the drone's $(l:drone_systems/drones)power use$(/l). Higher tiers are crafted from the tier below, so you never lose your progress."
+      "text": "The Basic and Mini frames are made of $(l:materials/aluminum)aluminum$(/l). The Advanced and Elite frames are made of $(l:materials/carbon_fiber)carbon fiber$(/l), with $(l:materials/circuits)Advanced and Elite Circuits$(/l).$(br2)Higher tiers are crafted from the tier below, so you never lose your progress.",
+      "title": "Recipes"
     },
     {
       "type": "patchouli:crafting",
@@ -43,9 +59,9 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:basic_frame": 7,
-    "cyberfarm:advanced_frame": 7,
-    "cyberfarm:elite_frame": 8,
-    "cyberfarm:mini_frame": 4
+    "cyberfarm:basic_frame": 10,
+    "cyberfarm:advanced_frame": 10,
+    "cyberfarm:elite_frame": 11,
+    "cyberfarm:mini_frame": 6
   }
 }

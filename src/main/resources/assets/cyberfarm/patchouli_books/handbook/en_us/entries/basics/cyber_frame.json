@@ -1,0 +1,63 @@
+{
+  "name": "Cyber Frame",
+  "icon": "cyberfarm:cyber_frame",
+  "category": "cyberfarm:basics",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:cyber_frame"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l)Cyber Frame Block$() is CyberFarm's structural block. Many machines need one or more Cyber Frames beside them before they work, and the big chambers are built out of them. Craft a stack early: you will use a lot of them."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "4 Iron Ingots and 4 Copper Ingots make $(l)8$() Cyber Frames. Iron and copper from other mods work too.",
+      "title": "Making it"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:cyber_frame"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Most CyberFarm machines are small multiblocks: the machine plus a few Cyber Frames next to it.$(br)$(li)Place the machine.$(br)$(li)Right-click it alone: drones fly out and show where each frame goes.",
+      "title": "Small machines"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Place the frames there. The machine assembles itself and takes the frames into its shape.$(br)A machine works only once assembled. Break one of its frames and it folds back. Break the machine and its frames stay behind as plain Cyber Frames."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:materials/electrolyzer)Electrolyzer$(/l): 1, On its left$(br)$(li)$(l:materials/pyrolysis_oven)Pyrolysis Oven$(/l): 1, On its left$(br)$(li)$(l:materials/fabricator)Fabricator$(/l): 1, Behind it$(br)$(li)$(l:nuclear/coolant_mixer)Coolant Mixer$(/l): 1, On its right$(br)$(li)$(l:generators/biomass_press)Biomass Press$(/l): 1, On top$(br)$(li)$(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l): 1, On top$(br)$(li)$(l:cables/dish_transmission)Receiver Dish$(/l): 1, On top$(br)$(li)$(l:trinkets/human_dock)Human Dock$(/l): 1, On top"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:generators/bio_digester)Bio-Digester$(/l): 2, On top, and on its left$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l): 2, In front, and behind$(br)$(li)$(l:cables/dish_transmission)Transmitter Dish$(/l): 3, On its right, behind it, and in the corner between$(br)$(li)$(l:trinkets/trinket_table)Trinket Table$(/l): 3, On its right, on top, and on top of the right one: a 2x2$(br)$(li)$(l:generators/steam_engine)Steam Engine$(/l): 4, In a row behind it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l:generators/acid_synthesizer)Acid Synthesizer$(/l): 5, One on each side, three on top"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Two machines sit in a $(l)3x3x4 chamber$() of Cyber Frames and $(l:generators/methane_extractor)Containment Glass$(/l). Each chamber takes $(l)25$() Cyber Frames: a floor, the four corners and a roof.$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l): Acid Inlet, Methane Outlet$(br)$(li)$(l:mech/crystallizer)Crystallizer$(/l): Crystallizer Port",
+      "title": "Big chambers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows both chambers in the world before you build them."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A Cyber Frame that is already part of a finished chamber does not count for a small machine.$(br)$(li)Once a small machine is built, its frames take cables, pipes and hoppers just like the machine block: connect wherever is handiest.",
+      "title": "Tips"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:cyber_frame": 3
+  }
+}

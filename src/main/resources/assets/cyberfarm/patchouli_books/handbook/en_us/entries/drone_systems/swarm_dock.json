@@ -1,0 +1,52 @@
+{
+  "name": "Builder Swarm Dock",
+  "icon": "cyberfarm:swarm_dock",
+  "category": "cyberfarm:drone_systems",
+  "sortnum": 8,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:swarm_dock",
+      "text": "A dock for up to $(l)four Mini Drones$(): drones built on a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l). Use it to raise a structure with a swarm of $(l:drone_systems/modules)Builder$(/l) drones, or to guard an area with $(l:drone_systems/modules)Bomb$(/l) drones."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works like a $(l:drone_systems/drone_dock)Drone Dock$(/l): power it with a generator or cables from any side, and it charges the drones, stores what they bring home in its 9 slots and holds their settings.",
+      "title": "Placing and powering"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click$() the swarm dock with a Mini Drone to deploy it. It takes up to four, each parked on its own corner of the pad.$(br)$(li)Bigger drones do not fit. Mini Drones do not fit an ordinary Drone Dock."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The four drones $(l)share$() its work area, transport route, build and stock.$(br)$(li)Set its work area with the $(l:drone_systems/survey_tool)Survey Tool$(/l), as for any dock."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:swarm_dock"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Pick a structure in the $(l:basics/multiblock_projector)Multiblock Projector$(/l) and lock it in place.$(br)$(li)$(l)Right-click the swarm dock$() with the projector to link the build.$(br)$(li)Put the blocks in the dock.",
+      "title": "Building with a swarm"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Four Builder Mini Drones then raise it together and split its blocks between them. See the $(l:drone_systems/modules)Builder Module$(/l) for what they clear and how they build."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The screen works like a Drone Dock's, and shows the swarm as one:$(br)$(li)the busiest drone's job;$(br)$(li)their batteries added up;$(br)$(li)how many drones are on the dock.",
+      "title": "The screen"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Each of the four landing rings $(l)lights up$() while a Mini Drone stands on it.$(br)$(li)An $(l:drone_systems/addons)Anchor Addon$(/l) works here too, for the anchored Mini Drones.$(br)$(li)The $(l:drone_systems/hologram_table)Hologram Table$(/l) shows the swarm dock as a pillar of light, like any dock.",
+      "title": "Good to know"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:swarm_dock": 4
+  }
+}

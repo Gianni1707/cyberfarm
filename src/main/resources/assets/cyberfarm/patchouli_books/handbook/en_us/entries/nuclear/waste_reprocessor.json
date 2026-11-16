@@ -2,32 +2,39 @@
   "name": "Waste Reprocessor",
   "icon": "cyberfarm:waste_reprocessor",
   "category": "cyberfarm:nuclear",
-  "sortnum": 7,
+  "sortnum": 9,
   "pages": [
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:waste_reprocessor",
-      "text": "It takes a $(l)Cyber Frame$() on top: right-click it alone and a drone shows where. Once complete, its plate grows up a block with the plaque on it. It doesn't work until then; breaking the frame folds it back."
+      "text": "The Waste Reprocessor makes nuclear waste safe. It turns each Depleted Fuel Rod into a harmless block of $(l:nuclear/vitrified_waste)Vitrified Waste$(/l), and sometimes recovers uranium and a rare $(l:nuclear/isotope_shard)Isotope Shard$(/l)."
     },
     {
       "type": "patchouli:text",
-      "text": "Makes nuclear waste safe. Each $(l)Depleted Fuel Rod$() takes 10 seconds and $(l)160 FE/t$() and becomes a block of $(l)Vitrified Waste$(); one time in three it also recovers an $(l)Uranium Ingot$(), and one time in four an $(l)Isotope Shard$(), the seed of the $(l:mech/mech_core)Mech Core$(/l)'s crystal. It takes Speed, Efficiency and"
+      "text": "It needs a $(l)Cyber Frame on top$(). Right-click the machine alone and a drone shows where. Once complete, its plate grows up a block with a plaque on it. It does not work until then; breaking the frame folds it back.",
+      "title": "Building it"
     },
     {
       "type": "patchouli:text",
-      "text": "Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI.$(br)$(li)$(l:nuclear/radiation)Depleted Fuel Rod$(/l)$(br)$(li)$(item)Vitrified Waste$()$(br)$(li)$(l:nuclear/uranium)Uranium Ingot$(/l)$(br)$(li)$(item)Isotope Shard$()$(br)$(li)Waste waiting inside the Reprocessor is $(l)shielded$(): it does not contaminate."
+      "text": "The plaque marks it as a machine that handles radioactive material. It stands a little above the block: leave the space over it free to see it."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Automate it: a hopper under a $(l)Reactor Port$() pulls Depleted Fuel Rods out of the reactor, and a hopper into the Reprocessor feeds them in. Hoppers below take the products out.$(br)$(li)$(l)Vitrified Waste$() is inert glass: store it anywhere, or build with it.$(br)While it works its disc"
+      "text": "$(li)$(l:nuclear/radiation)Depleted Fuel Rod$(/l)$(br)$(li)$(l:nuclear/vitrified_waste)Vitrified Waste$(/l)$(br)$(li)$(l:nuclear/uranium)Uranium Ingot$(/l)$(br)$(li)$(l:nuclear/isotope_shard)Isotope Shard$(/l)$(br)$(li)Put $(l:nuclear/radiation)Depleted Fuel Rods$(/l) in. Waste waiting inside the Reprocessor is $(l)shielded$(): it does not contaminate.",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "turns a quarter at each quarter of the batch: the rod waits on the left, melts at the top, leaves as glass on the right and the pocket comes round empty at the bottom. The plaque on its roof marks it as a machine that handles radioactive material, and stands a little above the block: leave the space over it free to see it."
+      "text": "$(li)$(l)Automate it$(): a hopper under a $(l)Reactor Port$() pulls Depleted Fuel Rods out of the reactor, and a hopper into the Reprocessor feeds them in. Hoppers below take the products out.$(br)$(li)$(l:cables/energy_conduit)Energy Conduits$(/l) plug in on its front, sides or back."
     },
     {
       "type": "patchouli:text",
-      "text": "$(l:cables/energy_conduit)Energy Conduits$(/l) plug in on its front, sides or back."
+      "text": "$(li)It takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI.$(br)While it works its disc turns a quarter at each quarter of the batch: the rod waits on the left, melts at the top, leaves as glass on the right, and the pocket comes round empty at the bottom."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Time$(): 10 seconds$(br)$(li)$(l)Energy$(): 160 FE/t$(br)$(li)$(l)Always$(): 1 $(l:nuclear/vitrified_waste)Vitrified Waste$(/l)$(br)$(li)$(l)1 time in 3$(): 1 Uranium Ingot$(br)$(li)$(l)1 time in 4$(): 1 $(l:nuclear/isotope_shard)Isotope Shard$(/l)",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:crafting",
@@ -35,8 +42,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:waste_reprocessor": 6,
-    "cyberfarm:vitrified_waste": 0,
-    "cyberfarm:isotope_shard": 0
+    "cyberfarm:waste_reprocessor": 7
   }
 }

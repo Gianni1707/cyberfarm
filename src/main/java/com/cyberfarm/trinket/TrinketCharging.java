@@ -10,19 +10,43 @@ import net.minecraftforge.energy.IEnergyStorage;
 public final class TrinketCharging {
     private TrinketCharging() {}
 
-    /** Charges with up to {@code budget} FE. Returns the FE used. */
-    public static int chargePlayer(Player player, int budget) {
+    /** Charges with up to {@code budget} FE, for {@code ticks} ticks of charging. Returns the FE used. */
+    public static int chargePlayer(Player player, int budget, int ticks) {
         int used = chargeHolder(player, UtilityBeltItem.SPHERE, budget);
         used += chargeHolder(player, UtilityBeltItem.DRONE, budget - used);
+        return used + chargeInventory(player, budget - used, ticks, false);
+    }
+
+    /**
+     * The belt's sphere feeding every FE item the player carries, any mod's, up to {@code budget} FE. Spare spheres are
+     * left alone: moving FE from one sphere to another would only spin it around. Returns the FE taken from the belt.
+     */
+    public static int chargeFromSphere(Player player, int budget, int ticks) {
+        int used = chargeInventory(player, Math.min(budget, UtilityBeltItem.energy(player)), ticks, true);
+        return UtilityBeltItem.use(player, used);
+    }
+
+    /**
+     * Every FE item in the inventory, armour and offhand included, up to {@code budget} FE. An item takes at most its own
+     * per-tick rate in one insert, so each gets one insert per tick of charging. Returns the FE used.
+     */
+    private static int chargeInventory(Player player, int budget, int ticks, boolean skipSpheres) {
+        int used = 0;
         Inventory inventory = player.getInventory();
         for (int slot = 0; slot < inventory.getContainerSize() && used < budget; slot++) {
             ItemStack stack = inventory.getItem(slot);
-            if (stack.isEmpty()) {
+            if (stack.isEmpty() || skipSpheres && stack.getItem() instanceof EnergySphereItem) {
                 continue;
             }
             IEnergyStorage handler = stack.getCapability(ForgeCapabilities.ENERGY).orElse(null);
             if (handler != null) {
-                used += handler.receiveEnergy(budget - used, false);
+                for (int tick = 0; tick < ticks && used < budget; tick++) {
+                    int added = handler.receiveEnergy(budget - used, false);
+                    if (added == 0) {
+                        break;
+                    }
+                    used += added;
+                }
             }
         }
         return used;

@@ -7,23 +7,20 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:energy_conduit",
-      "text": "Conduits carry $(l)FE$() from generators to machines, so they no longer need to touch each other. You can tell them by the cyan lights on their sleeves, and while energy flows a $(l)cyan arc$() runs through their glass."
+      "text": "Energy Conduits carry $(l)FE$() (power) from generators and batteries to the machines that use it. With them, a machine no longer has to touch its generator."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Conduits $(l)connect by themselves$() to other conduits and to any block that uses FE, from CyberFarm or from any other mod.$(br)$(li)They $(l)store nothing$(): whatever a generator pushes in goes straight to the machines on the network, which $(l)take turns$() so none is left without power.$(br)$(li)From each"
+      "text": "$(li)Conduits $(l)connect by themselves$() to other conduits and to any block that uses or stores FE, from CyberFarm or any other mod.$(br)$(li)All three tiers join into one network. A network can be up to $(l)1,024$() conduits long.",
+      "title": "Placing"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)generator or battery pushing into it, up to $(l)2,000 FE/t$() enters the network through a basic conduit, $(l)16,000$() through an Advanced one and $(l)128,000$() through an Elite one. A Medium Steam Turbine needs Advanced conduits at its ports, a Large one Elite conduits."
+      "text": "$(li)Machines built with $(l:basics/cyber_frame)Cyber Frames$(/l) (Bio-Digester, Biomass Press, Gas Turbine, Electrolyzer and the others) take a conduit on $(l)any of their frames$(), not only on the machine block. Pipes and hoppers too."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)On machines assembled with Cyber Frames (Bio-Digester, Biomass Press, Gas Turbine, Electrolyzer and the others) a conduit also plugs into $(l)any of the frames$(), not only the machine block. A generator pushes only from its own block: on one of its frames, right-click the conduit's arm to make it pull."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)All tiers join into one network.$(br)$(li)Networks can be up to 1,024 conduits long."
+      "text": "$(li)A generator pushes power only from its own block. If your conduit touches one of its frames instead, $(l)right-click the conduit's arm$() so it pulls (see $(l:cables/cables)Cables$(/l))."
     },
     {
       "type": "patchouli:multiblock",
@@ -44,6 +41,24 @@
       "enable_visualize": false
     },
     {
+      "type": "patchouli:text",
+      "text": "$(li)Conduits $(l)store nothing$(): what a generator pushes in goes straight to the machines on the network.$(br)$(li)The machines $(l)take turns$(), so none is left without power.",
+      "title": "How it works"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Most batteries don't push. To draw from one, $(l)right-click the arm$() of the conduit touching it so it pulls. A $(l:energy_storage/battery_bank)Battery Bank$(/l) side set to $(l)Out$() pushes by itself.$(br)$(li)The sleeves have $(l)cyan lights$(). While energy flows, a $(l)cyan arc$() runs through the glass."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The rate is how much FE can enter the network per tick from each generator or battery, set by the conduit that touches it.$(br)$(li)$(l)Energy Conduit$(): grey, 2,000 FE/t$(br)$(li)$(l)Advanced Energy Conduit$(): gold, 16,000 FE/t$(br)$(li)$(l)Elite Energy Conduit$(): violet, 128,000 FE/t",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A Medium Steam Turbine needs Advanced conduits at its ports, a Large one Elite conduits. To upgrade a line already in place, use the $(l:cables/cable_swapper)Cable Swapper$(/l)."
+    },
+    {
       "type": "patchouli:crafting",
       "recipe": "cyberfarm:energy_conduit",
       "recipe2": "cyberfarm:advanced_energy_conduit"
@@ -54,8 +69,8 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:energy_conduit": 6,
-    "cyberfarm:advanced_energy_conduit": 6,
-    "cyberfarm:elite_energy_conduit": 7
+    "cyberfarm:energy_conduit": 9,
+    "cyberfarm:advanced_energy_conduit": 9,
+    "cyberfarm:elite_energy_conduit": 10
   }
 }

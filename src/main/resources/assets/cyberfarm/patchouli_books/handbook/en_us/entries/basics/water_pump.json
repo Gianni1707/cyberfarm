@@ -7,23 +7,39 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:water_pump",
-      "text": "An endless supply of water for reactors and the Coolant Mixer. A small pumpjack: stand it $(l)directly above a water source block$(), with its intake hanging into the water, and give it power."
+      "text": "The Water Pump is a small pumpjack that gives an $(l)endless supply of water$(). Use it for a $(l:nuclear/fission_reactor)Fission Reactor$(/l), the $(l:nuclear/coolant_mixer)Coolant Mixer$(/l) or the $(l:generators/acid_synthesizer)Acid Synthesizer$(/l)."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Pumps $(l)500 mB/t$() with $(l)80 FE/t$() and pushes it into adjacent $(l:cables/liquid_pipe)Liquid Pipes$(/l) and machines (water is a liquid: a $(l:cables/gas_pipe)Gas Pipe$(/l) will not take it).$(br)$(li)One pump feeds 500 heat per tick: enough for a Small tower and a Medium one up to 250%. A Large tower at full power (2,000 heat) needs 4 pumps."
+      "text": "$(li)Stand it $(l)directly above a water source block$(), with its intake hanging into the water.$(br)$(li)Only the block below counts: water beside it does nothing.",
+      "title": "Placing it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)It has no GUI: $(l)right-click$() it to see what it is doing. While it pumps the crank turns, the beam rocks and the rod goes up and down; it runs on for a few seconds after it last pumped."
+      "text": "$(li)Water can't be clicked. Place the pump against a temporary block beside the spot, then remove that block.$(br)$(li)Keep it above the surface: it won't keep water out of its own block."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Only the block below counts: water beside it does nothing. A pump that stopped after an update, because it only had water at its sides, has to be moved over the water."
+      "text": "$(li)Give it power, for example with an $(l:cables/energy_conduit)Energy Conduit$(/l).$(br)$(li)It pushes the water into adjacent $(l:cables/liquid_pipe)Liquid Pipes$(/l) and machines.$(br)$(li)Water is a liquid: a $(l:cables/gas_pipe)Gas Pipe$(/l) will not take it.$(br)$(li)A pipe can plug in on any side. From below, it replaces the intake.",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Water can't be clicked: place the pump against a temporary block beside the spot, then remove that block. Keep it above the surface, as it won't keep water out of its own block.$(br)$(li)A pipe can plug in on any side, and from below it replaces the intake."
+      "text": "$(li)It has no GUI: $(l)right-click$() it to see what it is doing.$(br)$(li)While it pumps, the crank turns, the beam rocks and the rod goes up and down. It runs on for a few seconds after it last pumped."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Water$(): 500 mB/t$(br)$(li)$(l)Power$(): 80 FE/t$(br)In a Fission Reactor, each mB of water carries away one unit of heat. So one pump covers 500 heat per tick:$(br)$(li)$(l)Small, any power$(): 1$(br)$(li)$(l)Medium, up to 250%$(): 1$(br)$(li)$(l)Medium, above 250%$(): 2",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Large at full power (2,000 heat)$(): 4"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A pump that stopped after an update, because it only had water at its sides, has to be moved over the water.",
+      "title": "Troubleshooting"
     },
     {
       "type": "patchouli:crafting",
@@ -31,6 +47,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:water_pump": 5
+    "cyberfarm:water_pump": 8
   }
 }

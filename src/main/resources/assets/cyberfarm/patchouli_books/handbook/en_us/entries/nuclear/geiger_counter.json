@@ -1,0 +1,29 @@
+{
+  "name": "Geiger Counter",
+  "icon": "cyberfarm:geiger_counter",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 13,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:geiger_counter",
+      "text": "The Geiger Counter measures $(l:nuclear/radiation)radiation$(/l). Carry it to know when a place is safe and when to put on a $(l:nuclear/hazmat_suit)Hazmat Suit$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Hold it in $(l)either hand$().$(br)$(li)It $(l)clicks$() faster the more radiation there is.$(br)$(li)It shows the level in $(l)Rad$() above the hotbar.$(br)$(li)A $(l:basics/muffler)Muffler$(/l) never silences it.$(br)$(li)$(l)below 20 Rad$(): green, $(o)Safe$()$(br)$(li)$(l)20 Rad and more$(): orange, $(o)Radiation sickness$()",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)100 Rad and more$(): red, $(o)DANGER$()$(br)The Neural Chip's $(l)Geiger HUD$() program shows the same reading without a counter in hand: see $(l:trinkets/trinkets)Trinkets$(/l)."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:geiger_counter"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:geiger_counter": 3
+  }
+}

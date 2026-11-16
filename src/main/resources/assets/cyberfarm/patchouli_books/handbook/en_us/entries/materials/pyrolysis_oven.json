@@ -1,0 +1,43 @@
+{
+  "name": "Pyrolysis Oven",
+  "icon": "cyberfarm:pyrolysis_oven",
+  "category": "cyberfarm:materials",
+  "sortnum": 7,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:pyrolysis_oven",
+      "text": "The Pyrolysis Oven makes $(l)Carbon Fiber$(), the material of the Advanced and Elite Drone Frames. It splits $(l)Methane$() into carbon and hydrogen (CH4 -> C + 2H2) and draws the carbon onto $(l)String$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The oven is a small multiblock. It needs one $(l:basics/cyber_frame)Cyber Frame$(/l) on its $(l)left$(), as you face its front.$(br)$(li)Place the Pyrolysis Oven.$(br)$(li)Right-click it: a drone shows where the frame goes.$(br)$(li)Place the Cyber Frame there. The machine opens into one long oven.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works only once assembled. Breaking the frame folds it back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put $(l)String$() in its slot. Carbon Fiber comes out in the output slot.$(br)$(li)Pipe $(l)Methane$() in with a $(l:cables/gas_pipe)Gas Pipe$(/l), from a $(l:generators/methane_extractor)Methane Extractor$(/l) or a $(l:cables/fluid_tanks)gas tank$(/l). Pipes plug into its front, its back or its free side: its top is full.$(br)$(li)Give it FE through the same sides.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)A hopper underneath takes out only the Carbon Fiber, never the String.$(br)$(li)The tab beside its GUI takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l).$(br)You can see it work: a shuttle runs along the glowing slit once per fiber, drawing the fiber behind it. If the shuttle stops, so has the machine."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Recipe$(): 250 mB Methane + 1 String -> 1 Carbon Fiber$(br)$(li)$(l)Time$(): 4 seconds per fiber$(br)$(li)$(l)Power$(): 120 FE/t (9,600 FE per fiber)$(br)$(li)$(l)Methane tank$(): 8,000 mB$(br)$(li)$(l)Energy buffer$(): 20,000 FE$(br)See $(l:materials/carbon_fiber)Carbon Fiber$(/l) for where the fiber goes.",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:pyrolysis_oven"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:pyrolysis_oven": 6
+  }
+}

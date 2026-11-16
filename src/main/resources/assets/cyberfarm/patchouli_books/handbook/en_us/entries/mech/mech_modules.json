@@ -2,11 +2,16 @@
   "name": "Mech Modules",
   "icon": "cyberfarm:mech_jet_module",
   "category": "cyberfarm:mech",
-  "sortnum": 3,
+  "sortnum": 4,
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A mech has four mounts, one module each. Modules are fitted in a $(l:mech/mech_hangar)Mech Hangar$(/l)'s console while the mech is parked on the pad: the hangar's gantry arm carries each one to its mount. Every module is built around an Advanced Frame."
+      "text": "Modules give your $(l:mech/mech)mech$(/l) new abilities: flight, a drill, a blade and extra armour. A mech has four mounts, one module each."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Fit modules in a $(l:mech/mech_hangar)Mech Hangar$(/l)'s console while the mech is parked on the pad: the hangar's gantry arm carries each one to its mount. Every module is built around an Advanced Frame.",
+      "title": "Fitting them"
     },
     {
       "type": "patchouli:text",
@@ -14,7 +19,8 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(item)Mech Jet Module$(): Back, Two wings unfold segment by segment behind the back unit, and a nozzle comes out under each thruster, $(l)Flight$(): hold jump in the air to climb, sneak to dive, neither to glide. 120 FE/t in the air"
+      "text": "$(li)$(item)Mech Jet Module$(): Back, Two wings unfold segment by segment behind the back unit, and a nozzle comes out under each thruster, $(l)Flight$(): hold jump in the air to climb, sneak to dive, neither to glide. 120 FE/t in the air",
+      "title": "What they do"
     },
     {
       "type": "patchouli:text",
@@ -22,7 +28,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(item)Mech Blade Module$(): Left arm, The $(l)G$() key slides a glowing blade down the outside of the cuff, $(l)18$() extra damage a blow and $(l)8$() to everything near the target. 160 FE a blow"
+      "text": "$(li)$(item)Mech Blade Module$(): Left arm, The $(l)G$() key slides a glowing blade down the outside of the cuff, $(l)18$() extra damage a blow and $(l)8$() to everything within 2.5 blocks of the target. 160 FE a blow"
     },
     {
       "type": "patchouli:text",
@@ -30,7 +36,8 @@
     },
     {
       "type": "patchouli:text",
-      "text": "The keys are in the controls under $(o)CyberFarm Mech$(). The cockpit display lists every fitted module with its state: the jet READY or THRUST, the drill and blade ON or OFF with their keys, the armour's protection."
+      "text": "The keys are in the controls under $(o)CyberFarm Mech$(). The cockpit display lists every fitted module with its state: the jet READY or THRUST, the drill and blade ON or OFF with their keys, the armour's protection.",
+      "title": "Using them"
     },
     {
       "type": "patchouli:crafting",
@@ -44,9 +51,9 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:mech_jet_module": 7,
-    "cyberfarm:mech_drill_module": 7,
-    "cyberfarm:mech_blade_module": 8,
-    "cyberfarm:mech_armor_module": 8
+    "cyberfarm:mech_jet_module": 8,
+    "cyberfarm:mech_drill_module": 8,
+    "cyberfarm:mech_blade_module": 9,
+    "cyberfarm:mech_armor_module": 9
   }
 }

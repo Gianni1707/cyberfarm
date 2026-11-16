@@ -10,10 +10,13 @@ import com.cyberfarm.port.PortBlockEntity;
 
 import java.util.Objects;
 
+import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.multiblock.PortOwner;
+import com.cyberfarm.multiblock.TowerSize;
 import com.cyberfarm.registry.ModBlockEntities;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -42,6 +45,10 @@ public class ReactorPortBlockEntity extends PortBlockEntity {
         }
     }
 
+    public @Nullable BlockPos controller() {
+        return controller;
+    }
+
     public boolean isHeldBy(BlockPos controller) {
         return controller.equals(this.controller);
     }
@@ -55,6 +62,26 @@ public class ReactorPortBlockEntity extends PortBlockEntity {
     private @Nullable PortOwner owner() {
         return controller != null && level != null && level.getBlockEntity(controller) instanceof PortOwner owner && owner.isFormed()
                 ? owner : null;
+    }
+
+    /**
+     * Whether pipes, cables and hoppers reach it through {@code side}. A reactor's port opens only away from the tower, where its
+     * hatch is (a floor port only from below), so a pipe running past it above or below does not plug into the tower's side.
+     * A turbine's port opens on every side.
+     */
+    public boolean opensTo(@Nullable Direction side) {
+        if (side == null || controller == null || level == null
+                || !(level.getBlockEntity(controller) instanceof ReactorControllerBlockEntity reactor) || !reactor.isFormed()) {
+            return true;
+        }
+        BlockState state = reactor.getBlockState();
+        TowerSize size = MultiblockControllerBlockEntity.sizeOf(state, TowerSize.values());
+        if (size == null) {
+            return true;
+        }
+        BlockPos floor = size.floorCentre(controller, state.getValue(MachineBlock.FACING));
+        Direction out = TowerSize.outward(worldPosition.getX() - floor.getX(), worldPosition.getY() - floor.getY(), worldPosition.getZ() - floor.getZ());
+        return side == (out != null ? out : Direction.DOWN);
     }
 
     public @Nullable IItemHandler getItemHandler() {

@@ -6,11 +6,17 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:drone_assembler"
+      "item": "cyberfarm:drone_assembler",
+      "text": "The workshop where drones are built. Put in a frame, modules and addons, press $(l)Assemble$(), and take out a finished $(l:drone_systems/drones)Drone$(/l). It also takes drones apart, so you can change them."
     },
     {
       "type": "patchouli:text",
-      "text": "The workshop where drones are built. It needs power: each assembly costs $(l)4,000 FE$() and takes 5 seconds. The assembler itself takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI, which change those numbers and its 20,000 FE buffer."
+      "text": "The assembler needs power and accepts FE from any side. Place it next to a $(l:generators/combustion_generator)Combustion Generator$(/l) or connect it with cables.",
+      "title": "Placing and powering"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:drone_assembler"
     },
     {
       "type": "patchouli:text",
@@ -19,34 +25,38 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Optionally put $(l:drone_systems/addons)addons$(/l) in the $(l)2x2 addon grid$(). Each slot holds a stack of the same addon; the counter above the grid shows how many you used out of the frame's limit."
+      "text": "$(li)Optionally put $(l:drone_systems/addons)addons$(/l) in the $(l)2x2 addon grid$(). Each slot holds a stack of the same addon. The counter above the grid shows how many you used out of the frame's limit.$(br)$(li)Press $(l)Assemble$()."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Press $(l)Assemble$(). The drone takes shape as a $(l)hologram$() on the build plate, under the assembler's print head, unfolding as it is made. When the welding head reaches the end of its rail it flashes into the output slot: take the finished $(l:drone_systems/drones)Drone$(/l) from there."
+      "text": "$(li)The drone takes shape as a $(l)hologram$() on the build plate, under the print head, unfolding as it is made. When the welding head reaches the end of its rail, the drone flashes into the output slot. Take it from there.$(br)Hover an empty slot to see what goes there."
     },
     {
       "type": "patchouli:text",
-      "text": "A drone needs $(l)at least one module$(), and the same module cannot be installed twice. The Builder and Bomb Modules fit only a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l), which takes no other module, and Fortune and Silk Touch Addons cannot go together."
+      "text": "$(li)A drone needs $(l)at least one module$().$(br)$(li)The same module cannot be installed twice.$(br)$(li)The Builder and Bomb Modules fit only a $(l:drone_systems/drone_frames)Mini Drone Frame$(/l), and that frame takes no other module.$(br)$(li)Fortune and Silk Touch Addons cannot go together.",
+      "title": "What fits together"
     },
     {
       "type": "patchouli:text",
-      "text": "To $(l)change a finished drone$(), put it back in the output slot with the other slots empty and press $(l)Disassemble$(): its parts return to their slots. Disassembling is free; assembling again costs the usual 4,000 FE. The drone's charge goes into the Assembler's buffer; what does not fit is kept and goes back into the next drone built there, and so does its $(l)name$(), as long as you build it from the same frame."
+      "text": "$(li)Put the finished drone in the $(l)output slot$(), with the other slots empty.$(br)$(li)Press $(l)Disassemble$(): its parts return to their slots.$(br)$(li)Change what you want and press $(l)Assemble$() again.",
+      "title": "Changing a drone"
     },
     {
       "type": "patchouli:text",
-      "text": "Hover an empty slot to see what goes there."
+      "text": "Disassembling is free; assembling again costs the usual energy. The drone's charge goes into the assembler's buffer. What does not fit is kept and goes back into the next drone built there. So does its $(l)name$(), as long as you build it from the same frame."
     },
     {
       "type": "patchouli:text",
-      "text": "The assembler accepts FE from any side, so place it next to a $(l:generators/combustion_generator)Combustion Generator$(/l) or connect it with cables."
+      "text": "$(li)$(l)Energy per assembly$(): 4,000 FE$(br)$(li)$(l)Time per assembly$(): 5 seconds$(br)$(li)$(l)Energy buffer$(): 20,000 FE$(br)$(li)$(l)Disassembly$(): free",
+      "title": "Numbers"
     },
     {
-      "type": "patchouli:crafting",
-      "recipe": "cyberfarm:drone_assembler"
+      "type": "patchouli:text",
+      "text": "The assembler itself takes $(l)Speed$(), $(l)Efficiency$() and $(l)Battery$() $(l:drone_systems/addons)addons$(/l) on the tab beside its GUI. They change its speed, its energy per assembly and its buffer. See the $(l:drone_systems/addons)Addons$(/l) page for the numbers.",
+      "title": "Machine addons"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:drone_assembler": 9
+    "cyberfarm:drone_assembler": 2
   }
 }

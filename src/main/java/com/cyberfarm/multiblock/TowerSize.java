@@ -8,10 +8,14 @@ import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * The three Fission Reactor towers. Each layer of a tower is a square ring of shell blocks,
  * {@code rings[y]} blocks from the axis (layer 0 is the full floor); inside a ring it is empty,
- * outside it, up to the base, anything goes. The controller sits in the middle of one side of layer 1.
+ * outside it, up to the base, anything goes. The controller sits in the middle of one side of layer 1. Ports go only on the
+ * middle of the four sides: towards the corners the tower is drawn with diagonal faces, which pipes coming along a block's
+ * axis cannot meet.
  */
 public enum TowerSize implements Multiblock.Shape {
     SMALL(new int[] {2, 2, 2, 1, 1, 1, 2}, 2, 200, 150, 1.0F),
@@ -72,13 +76,42 @@ public enum TowerSize implements Multiblock.Shape {
             for (int dx = -base; dx <= base; dx++) {
                 for (int dz = -base; dz <= base; dz++) {
                     int ring = Math.max(Math.abs(dx), Math.abs(dz));
-                    Multiblock.Part part = y == 0 || ring == rings[y] ? Multiblock.Part.SHELL
+                    Multiblock.Part part = ring == rings[y] && !Multiblock.onFlatSide(dx, dz) ? Multiblock.Part.CASING
+                            : y == 0 || ring == rings[y] ? Multiblock.Part.SHELL
                             : ring < rings[y] ? Multiblock.Part.EMPTY : Multiblock.Part.ANY;
                     cells.add(new Multiblock.Cell(floor.offset(dx, y, dz), part));
                 }
             }
         }
         return cells;
+    }
+
+    /**
+     * The side a pipe reaches a port at (dx, dy, dz) from the floor centre from: away from the tower's axis, along the main
+     * horizontal axis of its offset. Null for ports in the middle of the floor, which are reached from below.
+     */
+    public static @Nullable Direction outward(int dx, int dy, int dz) {
+        if (dx == 0 && dz == 0 || dy == 0 && Math.max(Math.abs(dx), Math.abs(dz)) < 2) {
+            return null;
+        }
+        return Math.abs(dx) >= Math.abs(dz) ? (dx > 0 ? Direction.EAST : Direction.WEST) : (dz > 0 ? Direction.SOUTH : Direction.NORTH);
+    }
+
+    /**
+     * How far the drawn tower stands out of the outer face of a port at (dx, dy, dz) from the floor centre, so that a pipe in
+     * front of it would be inside the drawing; 0 where it does not.
+     */
+    public float buried(int dx, int dy, int dz) {
+        if (dy < 0 || dy >= height() || outward(dx, dy, dz) == null || Math.max(Math.abs(dx), Math.abs(dz)) != rings[dy]) {
+            return 0.0F;
+        }
+        float depth = (radius(dy) + radius(dy + 1.0F)) / 2.0F - (rings[dy] + 0.5F);
+        return depth > 0.02F ? depth : 0.0F;
+    }
+
+    /** How far layer {@code y}'s ring of shell blocks is from the axis, in blocks. */
+    public int ring(int y) {
+        return rings[y];
     }
 
     // Rendering: the smooth tower drawn over the shell follows a hyperbola fitted to the rings

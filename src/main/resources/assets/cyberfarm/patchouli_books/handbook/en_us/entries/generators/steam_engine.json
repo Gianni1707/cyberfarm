@@ -6,7 +6,11 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "A mid-game generator built in a row: an induction $(l)boiler$() burns Biogas or Methane into steam, $(l)three cylinders$() turn it into motion and a $(l)dynamo$() at the end turns the flywheel into FE."
+      "text": "The Steam Engine is a mid-game generator that burns $(l)Biogas$() or $(l)Methane$(). It gets more FE out of every mB than the $(l:generators/gas_turbine)Gas Turbine$(/l): on methane it makes as much as about eleven $(l:generators/combustion_generator)Combustion Generators$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It is built in a row. An induction $(l)boiler$() (the Steam Engine block) burns the gas into steam, $(l)three cylinders$() turn the steam into motion, and a $(l)dynamo$() at the end turns the flywheel into FE."
     },
     {
       "type": "patchouli:multiblock",
@@ -31,33 +35,35 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Place the $(l)Steam Engine$() (the boiler). Its front faces you. Alone, a right click sends out mini drones that project the frames where they go.$(br)$(li)Behind it, in a straight line on solid ground, place $(l)4 Cyber Frames$().",
+      "text": "$(li)Place the $(l)Steam Engine$(). Its front faces you.$(br)$(li)Behind it, in a straight line on solid ground, place $(l)4$() $(l:basics/cyber_frame)Cyber Frames$(/l).$(br)$(l)Right-click$() the engine while it is alone: mini drones fly out and project the frames where they go.",
       "title": "Building it"
     },
     {
       "type": "patchouli:text",
-      "text": "A drone over a cell projects the frame it wants. An amber X means a block is in the way; a steel outline means that frame already belongs to another machine. A second click calls the drones back.$(br2)The frames are taken in and the engine opens: rail plates run out from under the"
+      "text": "$(li)A drone over a cell projects the frame it wants.$(br)$(li)An amber X means a block is in the way.$(br)$(li)A steel outline means that frame already belongs to another machine.$(br)$(li)A second click calls the drones back."
     },
     {
       "type": "patchouli:text",
-      "text": "boiler one after another, and on them the three cylinders and the dynamo compose themselves. Then its pistons pump between steel posts, the steam line runs over them and the flywheel spins. The faster it runs, the brighter the boiler's coils glow. Breaking a frame folds it all back and gives the frames back."
+      "text": "When the row is complete the frames are taken in and the engine opens. Rail plates run out from under the boiler, and the three cylinders and the dynamo compose themselves on them. Breaking a frame folds it all back and gives the frames back."
     },
     {
       "type": "patchouli:text",
-      "text": "The GUI shows a live side view of the engine, the power made and the speed."
+      "text": "$(li)Pipe Biogas or Methane into the $(l)boiler$().$(br)$(li)Take the power from the boiler too, with $(l:cables/energy_conduit)Energy Conduits$(/l) or adjacent machines.$(br)$(li)Pipes and conduits connect on any side of the boiler but its back, where the row goes. A socket shows wherever one plugs in.",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "Pipe Biogas or Methane into the boiler, which holds 16,000 mB. It burns $(l)45 mB/t$():$(br)$(li)$(l)Biogas$(): 9, 405 FE/t$(br)$(li)$(l)Methane$(): 15, 675 FE/t$(br)On methane it makes as much as about eleven Combustion Generators; a $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more.",
-      "title": "Fuel and power"
+      "text": "$(li)The row itself takes no pipes or conduits.$(br)$(li)The GUI shows a live side view of the engine, the power made and the speed.$(br)$(li)While it runs, its pistons pump and the flywheel spins. The faster it runs, the brighter the boiler's coils glow."
     },
     {
       "type": "patchouli:text",
-      "text": "The engine needs about $(l)5 seconds$() to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out. With its buffer (200,000 FE) nearly full it burns only the gas for the power that still fits, and it stops when the buffer is full."
+      "text": "$(li)$(l)Biogas$(): 9, 405 FE/t$(br)$(li)$(l)Methane$(): 15, 675 FE/t$(br)$(li)$(l)Gas burned$(): 45 mB/t$(br)$(li)$(l)Gas tank$(): 16,000 mB$(br)$(li)$(l)Buffer$(): 200,000 FE$(br)$(li)$(l)Time to full speed$(): about 5 seconds$(br)One zombie in a $(l:generators/methane_extractor)Methane Extractor$(/l) chamber (50 mB/t) keeps it at full power.",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:text",
-      "text": "Both the gas and the power go through the $(l)boiler$(): connect pipes, $(l:cables/energy_conduit)Energy Conduits$(/l) or machines to it, on any side but its back, where the row goes. A socket shows wherever one plugs in. The row itself takes none."
+      "text": "$(li)While it speeds up, it burns the full 45 mB/t but makes less power. It slows down when the fuel runs out.$(br)$(li)With its buffer nearly full, it burns only the gas for the power that still fits. It stops when the buffer is full.$(br)$(li)A $(l:nuclear/fission_reactor)Fission Reactor$(/l) still makes more power.",
+      "title": "Tips"
     },
     {
       "type": "patchouli:crafting",
@@ -65,6 +71,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:steam_engine": 9
+    "cyberfarm:steam_engine": 10
   }
 }

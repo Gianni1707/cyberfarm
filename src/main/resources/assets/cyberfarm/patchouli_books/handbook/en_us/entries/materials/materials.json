@@ -6,31 +6,33 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "CyberFarm grows in $(l)three tiers$(). Each one is built out of what the tier before it makes, so you always know what to build next:"
+      "text": "CyberFarm grows in $(l)three tiers$(). Each tier is built from what the tier before it makes, so you always know what to build next. This section covers the materials and the machines that make them."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**1$()**: $(l:materials/aluminum)Aluminum$(/l), $(l:materials/circuits)Basic Circuits$(/l), Electrolyzer, a crafting table or the Fabricator, Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer, Pyrolysis Oven, Water Pump"
+      "text": "$(li)$(l)**1$()**: $(l:materials/aluminum)Aluminum$(/l), $(l:materials/circuits)Basic Circuits$(/l), $(l:materials/electrolyzer)Electrolyzer$(/l), a crafting table or the $(l:materials/fabricator)Fabricator$(/l), Basic and Mini Drone Frames, modules, addons, docks, the Assembler, Bio-Digester, Gas Turbine, Methane Extractor, Acid Synthesizer, Pyrolysis Oven, Water Pump",
+      "title": "The three tiers"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**2$()**: $(l:materials/carbon_fiber)Carbon Fiber$(/l), Advanced Circuits, Pyrolysis Oven (methane), Fabricator (acid), Advanced Frames, Steam Engine, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar, Laser Turret, the dishes"
+      "text": "$(li)$(l)**2$()**: $(l:materials/carbon_fiber)Carbon Fiber$(/l), $(l:materials/circuits)Advanced Circuits$(/l), $(l:materials/pyrolysis_oven)Pyrolysis Oven$(/l) (methane), Fabricator (acid), Advanced Frames, Steam Engine, Coolant Mixer, Waste Reprocessor, Advanced cables, Resonance Core, Mech Hangar, Laser Turret, the dishes"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**3$()**: Elite Circuits, Fabricator (acid, uranium), Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer, Range Module III and the mech"
+      "text": "$(li)$(l)**3$()**: $(l:materials/circuits)Elite Circuits$(/l), Fabricator (acid, uranium), Elite Frames, the Fission Reactor, the Steam Turbine, Elite cables, the Crystallizer, Range Module III and the mech"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)By hand$(): mine $(l)bauxite$(), smelt it into alumina, and run a Combustion Generator and an Electrolyzer for your first aluminum. Craft your first Basic Circuits at a crafting table."
+      "text": "$(li)$(l)By hand$(): mine $(l)bauxite$() and smelt it into alumina. Run a $(l:generators/combustion_generator)Combustion Generator$(/l) and an Electrolyzer for your first aluminum. Craft your first Basic Circuits at a crafting table.",
+      "title": "The path"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Gas$(): the Advanced Circuits are etched with $(l)Acid$(), made from Nether $(l)sulfur$(); the Carbon Fiber is drawn out of $(l)Methane$() from a Methane Extractor. Both need the gas tier.$(br)$(li)$(l)Nuclear$(): the Elite Circuits need $(l)uranium$(), the reactor needs Elite Circuits."
+      "text": "$(li)$(l)Gas$(): the Advanced Circuits are etched with $(l)Acid$(), made from Nether $(l)sulfur$(). The Carbon Fiber is drawn out of $(l)Methane$() from a $(l:generators/methane_extractor)Methane Extractor$(/l). Both need the gas tier of $(l:generators/generators)Generators$(/l).$(br)$(li)$(l)Nuclear$(): the Elite Circuits need $(l)uranium$(), and the $(l:nuclear/nuclear)reactor$(/l) needs Elite Circuits."
     },
     {
       "type": "patchouli:text",
-      "text": "Like real drones, the frames start in light $(l)aluminum$() and move on to $(l)carbon fiber$()."
+      "text": "Like real drones, the frames start in light $(l)aluminum$() and move on to $(l)carbon fiber$().$(br2)Most of these machines are small multiblocks: each needs one or more $(l:basics/cyber_frame)Cyber Frames$(/l) beside it before it works."
     }
   ],
   "priority": true

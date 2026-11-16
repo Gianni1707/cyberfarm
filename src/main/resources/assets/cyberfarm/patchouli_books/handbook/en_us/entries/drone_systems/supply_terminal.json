@@ -1,38 +1,48 @@
 {
-  "name": "Supply Contracts",
+  "name": "Supply Terminal",
   "icon": "cyberfarm:supply_terminal",
   "category": "cyberfarm:drone_systems",
-  "sortnum": 9,
+  "sortnum": 11,
   "pages": [
     {
-      "type": "patchouli:text",
-      "text": "Your farm can feed a village. Place a $(item)Supply Terminal$() in one, or find one in a $(l:drone_systems/tech_village)Drone Mechanist's Outpost$(/l), and the village starts asking you for food and materials, and paying for them."
-    },
-    {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:supply_terminal"
+      "item": "cyberfarm:supply_terminal",
+      "text": "The Supply Terminal lets your farm feed a village. The village posts $(l)contracts$() on it, asking for food and materials, and pays you in emeralds and parts."
     },
     {
       "type": "patchouli:text",
-      "text": "An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and becomes a $(l)Drone Mechanist$(): a villager in goggles and a white work coat. While he works it, the terminal shows his level and the village's contracts. Its board shows them from afar too: a lit card per",
+      "text": "Place one in a village, or find one in a $(l:drone_systems/tech_village)Drone Mechanist's Outpost$(/l). An unemployed villager takes it as his job site and runs the contracts."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and becomes a $(l)Drone Mechanist$(): a villager in goggles and a white work coat. While he works it, the terminal shows his level and the village's contracts.",
       "title": "The Drone Mechanist"
     },
     {
       "type": "patchouli:text",
-      "text": "open contract filling up as you deliver, the event's in steel, blinking in a raid. A finished contract's card drops behind the board and a new one rises. The header is lit while he works it.$(br2)$(l)Right-click$() him to talk: he has a plan for a $(l:drone_systems/tech_village)tech village$(/l). His trades are behind the $(l)Trade$() button at the end of each talk."
+      "text": "The board shows the contracts from afar too:$(br)$(li)a lit card for each open contract, filling up as you deliver;$(br)$(li)the event's card in steel, blinking in a raid;$(br)$(li)a finished contract's card drops behind the board and a new one rises;"
     },
     {
       "type": "patchouli:text",
-      "text": "The board holds $(l)three contracts$(); every two minutes the mechanist fills the free places. Each asks for a quantity of one item: bread, carrots, wool and wheat at first; leather, logs, pumpkins and beef as the mechanist levels up; then iron, glass and fish; and from the expert level on,",
+      "text": "$(li)the header is lit while the Mechanist works the terminal.$(br)$(l)Right-click$() him to talk: he has a plan for a $(l:drone_systems/tech_village)tech village$(/l). His trades are behind the $(l)Trade$() button at the end of each talk."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The board holds $(l)three contracts$(). Every $(l)two minutes$() the mechanist fills the free places. Each contract asks for a quantity of one item. As the mechanist levels up, new goods join the ones he already asks for:$(br)$(li)$(l)Novice$(): bread, carrots, potatoes, wheat, beetroot, apples, white wool",
       "title": "Contracts"
     },
     {
       "type": "patchouli:text",
-      "text": "aluminum, circuits and carbon fiber. The higher his level, the bigger the contracts and the better they pay, and no two are quite the same size."
+      "text": "$(li)$(l)Apprentice$(): cooked beef, leather, oak logs, eggs, pumpkins, melon slices$(br)$(li)$(l)Journeyman$(): iron ingots, cooked chicken, glass, cod, string$(br)$(li)$(l)Expert$(): aluminum ingots, Basic Circuits, gold ingots$(br)$(li)$(l)Master$(): carbon fiber, Advanced Circuits"
     },
     {
       "type": "patchouli:text",
-      "text": "Put the goods in the $(l)Deliver$() slot: by hand, with a hopper, or as the destination of a $(l:drone_systems/modules)Transport drone$(/l)'s route. The terminal only takes what is still wanted, so a drone brings exactly what the contracts need and nothing more."
+      "text": "The higher his level, the bigger the contracts and the better they pay. No two are quite the same size."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Put the goods in the $(l)Deliver$() slot: by hand, with a hopper, or as the destination of a $(l:drone_systems/modules)Transport drone$(/l)'s route. The terminal only takes what is still wanted, so a drone brings exactly what the contracts need and nothing more.",
+      "title": "Delivering"
     },
     {
       "type": "patchouli:text",
@@ -49,16 +59,16 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Every filled contract makes the village more $(l)prosperous$(): its emeralds count as points. Once you have founded the $(l:drone_systems/tech_village)tech village$(/l) with the Mechanist, the bar under the board shows its level and how far the next one is; the $(l)Range$() switch beside it outlines the village's bounds in the world. When the bar is",
+      "text": "Every filled contract makes the village more $(l)prosperous$(): its emeralds count as points.$(br2)Once you have founded the $(l:drone_systems/tech_village)tech village$(/l) with the Mechanist:$(br)$(li)the bar under the board shows the village's level and how far the next one is;",
       "title": "Prosperity"
     },
     {
       "type": "patchouli:text",
-      "text": "full and the last level's buildings stand, $(l)talk to the Mechanist$() to raise the village a level: it grows, a baby villager or an iron golem arriving, rings its bell, and makes you its hero: $(l)Hero of the Village$() for twenty minutes, stronger at each level, with big discounts and gifts from the villagers. At the top level, $(l)10$(),"
+      "text": "$(li)the $(l)Range$() switch beside it outlines the village's bounds in the world.$(br)When the bar is full and the last level's buildings stand, $(l)talk to the Mechanist$() to raise the village a level. The village grows, a baby villager or an iron golem arrives, and it rings its bell. It makes you its hero: $(l)Hero of the Village$() for"
     },
     {
       "type": "patchouli:text",
-      "text": "every contract pays half again."
+      "text": "twenty minutes, stronger at each level, with big discounts and gifts from the villagers.$(br2)At the top level, $(l)10$(), every contract pays half again. The levels are listed on $(l:drone_systems/tech_village)The Tech Village$(/l) page."
     },
     {
       "type": "patchouli:text",
@@ -84,6 +94,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:supply_terminal": 1
+    "cyberfarm:supply_terminal": 19
   }
 }

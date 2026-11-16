@@ -1,0 +1,38 @@
+{
+  "name": "Pocket Drone",
+  "icon": "cyberfarm:pocket_drone",
+  "category": "cyberfarm:trinkets",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:pocket_drone",
+      "text": "A tiny drone that rides folded on your $(l:trinkets/utility_belt)Utility Belt$(/l) and $(l)picks up the drops around you$(). It is a small cousin of the Builder's mini drones."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Make it at the $(l:trinkets/trinket_table)Trinket Table$(/l), then put it in the drone holder of your belt (press $(l)B$() to open it). It works only from the belt."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Press $(l)K$() to send it out. It opens its arms and flies up to wait over your shoulder. Press $(l)K$() again to call it back.$(br)$(li)When an item lies on the ground within $(l)8 blocks$(), it flies over, picks it up and brings it to your inventory, one drop at a time.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Items you threw away yourself are left alone for $(l)5 seconds$().$(br)$(li)Anything you have no room for stays on the ground.$(br)$(li)Call it back mid-errand, and what it holds comes straight to you."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The drone has a small battery of its own. The $(l:trinkets/energy_sphere)Energy Sphere$(/l) on your belt keeps it topped up, whether it flies or not.$(br)$(li)$(l)Battery$(): 20,000 FE$(br)$(li)$(l)Use in flight$(): 1 FE/t$(br)$(li)$(l)Refill from the sphere$(): up to 10 FE/t$(br)$(li)$(l)Pickup range$(): 8 blocks",
+      "title": "Power"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "When its battery runs out, it switches off and folds back on your belt. With an empty battery, $(l)K$() does not send it out. A $(l:trinkets/human_dock)Human Dock$(/l) charges it too."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:pocket_drone": 0
+  }
+}

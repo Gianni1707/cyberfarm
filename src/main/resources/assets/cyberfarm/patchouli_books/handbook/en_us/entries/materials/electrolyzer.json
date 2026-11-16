@@ -1,0 +1,47 @@
+{
+  "name": "Electrolyzer",
+  "icon": "cyberfarm:electrolyzer",
+  "category": "cyberfarm:materials",
+  "sortnum": 3,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:electrolyzer",
+      "text": "The Electrolyzer turns $(l)Alumina$() into $(l)Aluminum Ingots$() with electricity. You need it early: the first drone frames are made of aluminum, and aluminum cannot be smelted straight from its ore."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Electrolyzer is a small multiblock. It needs one $(l:basics/cyber_frame)Cyber Frame$(/l) on its $(l)left$(), as you face its front.$(br)$(li)Place the Electrolyzer.$(br)$(li)Right-click it: a drone shows where the frame goes.$(br)$(li)Place the Cyber Frame there. The machine assembles itself.",
+      "title": "Building it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works only once assembled. Breaking the frame folds it back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Put $(l)Alumina$() in the input slot. Ingots come out in the output slot.$(br)$(li)Give it FE. Plug $(l:cables/energy_conduit)Energy Conduits$(/l) into its free side, its front or its back: its top is full.$(br)$(li)A hopper underneath takes out only the ingots, never the Alumina still waiting.",
+      "title": "Using it"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The tab beside its GUI takes Speed, Efficiency and Battery $(l:drone_systems/addons)addons$(/l).$(br)You can see it work: the feeder punch behind its window strikes four times per ingot, and alumina grains drop into the bath. If the punch stops, so has the machine."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Recipe$(): 1 Alumina -> 1 Aluminum Ingot$(br)$(li)$(l)Time$(): 5 seconds per ingot$(br)$(li)$(l)Power$(): 80 FE/t (8,000 FE per ingot)$(br)$(li)$(l)Energy buffer$(): 20,000 FE$(br)A $(l:generators/combustion_generator)Combustion Generator$(/l) makes 60 FE/t, so $(l)two$() of them keep the Electrolyzer running. Alumina from other mods works too.",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "See $(l:materials/aluminum)Aluminum$(/l) for the whole chain, from bauxite ore to ingot."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:electrolyzer"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:electrolyzer": 7
+  }
+}

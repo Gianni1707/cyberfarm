@@ -6,23 +6,27 @@
   "pages": [
     {
       "type": "patchouli:spotlight",
-      "item": "cyberfarm:combustion_generator"
+      "item": "cyberfarm:combustion_generator",
+      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE. It needs no multiblock, so it is the way to power your first machines."
     },
     {
       "type": "patchouli:text",
-      "text": "The first power source of CyberFarm. It burns $(l)any furnace fuel$() (coal, charcoal, wood, blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.$(br)$(li)$(l)Generation$(): 60 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE"
+      "text": "$(li)Put fuel in its slot.$(br)$(li)It $(l)pushes power by itself$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods.",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)One coal$(): 48,000 FE"
+      "text": "$(li)While it burns, the vent on its chimney spins. It coasts to a stop when the fuel is gone."
     },
     {
       "type": "patchouli:text",
-      "text": "The generator $(l)pushes power automatically$() into every adjacent block that accepts FE: CyberFarm machines, $(l:cables/energy_conduit)Energy Conduits$(/l), and machines and cables from other mods. Its fire holds while its buffer is full and goes on when there is room again, so no fuel is wasted."
+      "text": "$(li)$(l)Generation$(): 60 FE/t while burning$(br)$(li)$(l)Buffer$(): 50,000 FE$(br)$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(li)$(l)Burn time$(): half of a furnace's$(br)$(li)$(l)One coal$(): 48,000 FE (40 seconds)$(br)See $(l:generators/generators)Generators$(/l) for how long each fuel lasts.",
+      "title": "Numbers"
     },
     {
       "type": "patchouli:text",
-      "text": "Lava buckets leave an empty bucket in the slot. Take it out to refuel."
+      "text": "$(li)When its buffer is full, the fire holds until there is room again. No fuel is wasted.$(br)$(li)A lava bucket leaves an empty bucket in the slot. Take it out to refuel.",
+      "title": "Tips"
     },
     {
       "type": "patchouli:crafting",

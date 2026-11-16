@@ -42,6 +42,9 @@ public final class TrinketTicker {
     public static final double HOVER_SPEED_BONUS = 0.4;
     private static final AttributeModifier HOVER_SPEED = new AttributeModifier(HOVER, CyberFarm.MODID + ":gravity_boots_speed", HOVER_SPEED_BONUS,
             AttributeModifier.Operation.MULTIPLY_BASE);
+    /** Step assist while hovering: from the usual 0.6 to 1.1 blocks, so a full block never stops the player (the client glides up it). */
+    private static final AttributeModifier HOVER_STEP = new AttributeModifier(HOVER, CyberFarm.MODID + ":gravity_boots_step", 0.5,
+            AttributeModifier.Operation.ADDITION);
 
     /**
      * At run time {@code ServerGamePacketListenerImpl.aboveGroundTickCount}: 1.20.1 kicks a player floating for 4 s
@@ -88,6 +91,10 @@ public final class TrinketTicker {
             int fed = NeuralChipItem.runs(player, ChipProgram.AUTO_FEEDER) && feed(player) ? FEED_COST : 0;
             UtilityBeltItem.use(player, cost * 20 + fed);
             topUpDrone(player, drone, flying);
+            ItemStack sphere = UtilityBeltItem.content(player, UtilityBeltItem.SPHERE);
+            if (sphere.getItem() instanceof EnergySphereItem tier) {
+                TrinketCharging.chargeFromSphere(player, tier.maxInput() * 20, 20);
+            }
         }
     }
 
@@ -135,6 +142,15 @@ public final class TrinketTicker {
                 speed.addTransientModifier(HOVER_SPEED);
             } else {
                 speed.removeModifier(HOVER);
+            }
+        }
+        // 1.20.1 has Forge's step height addition where 26.x has the vanilla attribute
+        AttributeInstance step = player.getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get());
+        if (step != null && active != (step.getModifier(HOVER) != null)) {
+            if (active) {
+                step.addTransientModifier(HOVER_STEP);
+            } else {
+                step.removeModifier(HOVER);
             }
         }
         if (active) {

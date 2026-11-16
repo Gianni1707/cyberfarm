@@ -7,27 +7,35 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:gas_turbine",
-      "text": "Burns $(l)Biogas$() or $(l)Methane$() into FE, 20 mB per tick.$(br2)It is a small multiblock: $(l)place a Cyber Frame in front of it and one behind$(). $(l)Right-click$() the machine and mini drones fly out and"
+      "text": "The Gas Turbine burns $(l)Biogas$() or $(l)Methane$() into FE. It is small and cheap, and it is the first generator that runs without you shovelling fuel. Methane gives more than twice the power of Biogas."
     },
     {
       "type": "patchouli:text",
-      "text": "project the frames where they go (hold sneak to place a frame against the machine itself). With both there it assembles: the duct and the nozzle slide out of the drum and the rotor blooms. It does not work until then, so a turbine placed before this change waits for its frames, with its gas kept; move any pipe"
+      "text": "$(li)It is a small multiblock: place a $(l:basics/cyber_frame)Cyber Frame$(/l) $(l)in front of it$() and one $(l)behind it$().$(br)$(li)$(l)Right-click$() the machine and mini drones fly out and project the frames where they go.$(br)$(li)Hold sneak to place a frame against the machine itself.",
+      "title": "Building it"
     },
     {
       "type": "patchouli:text",
-      "text": "that sits where a frame goes.$(br)$(li)$(l)Biogas$(): 5 FE per mB, 100 FE/t$(br)$(li)$(l)Methane$(): 12 FE per mB, 240 FE/t$(br)$(li)Holds $(l)16,000 mB$() of gas and $(l)50,000 FE$(). It only burns gas when its energy buffer has room, so no gas is wasted."
+      "text": "$(li)With both frames there it assembles: the duct and the nozzle slide out of the drum and the rotor blooms.$(br)$(li)It does not work until then. Breaking a frame folds it back and stops it; put the frame back and it opens again."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Like the $(l:generators/combustion_generator)Combustion Generator$(/l), it $(l)pushes power$() into adjacent machines and $(l:cables/energy_conduit)Energy Conduits$(/l), up to 400 FE/t per side."
+      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes.$(br)$(li)Pipes and conduits connect at the three mint sockets of the machine block: on either side or on top.$(br)$(li)It $(l)pushes power by itself$() into adjacent machines and $(l:cables/energy_conduit)Energy Conduits$(/l).",
+      "title": "Using it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Feed it with $(l:cables/gas_pipe)Gas Pipes$(/l) or any other mod's fluid pipes. Pipes and conduits connect at the three mint sockets of the machine block, on either side or on top, whichever you prefer. A conduit on one of its frames can pull the power with its arm (see $(l:cables/energy_conduit)Energy Conduit$(/l))."
+      "text": "$(li)A conduit on one of its frames can also pull the power with its arm (see $(l:cables/energy_conduit)Energy Conduit$(/l)).$(br)$(li)The rotor turns as fast as it makes power, so methane spins it faster than biogas.$(br)$(li)The slits on its flanks show how much gas is left."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The rotor turns as fast as it makes power, so methane spins it faster than biogas. The slits on its flanks show the gas left. Breaking a frame folds it back and stops it; put the frame back and it opens again."
+      "text": "$(li)$(l)Biogas$(): 5 FE per mB, 100 FE/t$(br)$(li)$(l)Methane$(): 12 FE per mB, 240 FE/t$(br)$(li)$(l)Gas burned$(): 20 mB/t$(br)$(li)$(l)Gas tank$(): 16,000 mB$(br)$(li)$(l)Buffer$(): 50,000 FE$(br)$(li)$(l)Output$(): up to 400 FE/t per side$(br)$(l)Two$() $(l:generators/bio_digester)Bio-Digesters$(/l) keep it at full power on Biogas.",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It only burns gas when its energy buffer has room, so no gas is wasted.$(br)$(li)A turbine from an older world waits for its frames, with its gas kept. Move any pipe that sits where a frame goes.$(br)$(li)For more FE out of every mB, build a $(l:generators/steam_engine)Steam Engine$(/l).",
+      "title": "Tips"
     },
     {
       "type": "patchouli:crafting",
@@ -35,6 +43,6 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:gas_turbine": 6
+    "cyberfarm:gas_turbine": 7
   }
 }

@@ -1,0 +1,20 @@
+{
+  "name": "Isotope Shard",
+  "icon": "cyberfarm:isotope_shard",
+  "category": "cyberfarm:nuclear",
+  "sortnum": 11,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:isotope_shard",
+      "text": "An Isotope Shard is a rare sliver of isotope recovered from spent fuel. It is the seed of the $(l)Fusion Crystal$() at the heart of every $(l:mech/mech_core)Mech Core$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Get it$(): the $(l:nuclear/waste_reprocessor)Waste Reprocessor$(/l) recovers one from $(l)1 Depleted Fuel Rod in 4$().$(br)$(li)$(l)Use it$(): the Crystallizer grows it into a Fusion Crystal. See $(l:mech/mech_core)Mech Core$(/l)."
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:isotope_shard": 0
+  }
+}

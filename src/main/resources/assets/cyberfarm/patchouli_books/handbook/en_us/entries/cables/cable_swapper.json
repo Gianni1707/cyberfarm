@@ -1,0 +1,66 @@
+{
+  "name": "Cable Swapper",
+  "icon": "cyberfarm:cable_swapper",
+  "category": "cyberfarm:cables",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:cable_swapper",
+      "text": "A hand tool that upgrades a whole line of $(l:cables/cables)cables$(/l) to the next tier in one click, so you don't have to break and replace them one by one. It also sets the sides of a $(l:energy_storage/battery_bank)Battery Bank$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Carry cables of the next tier: Advanced ones to upgrade Basic ones, Elite ones to upgrade Advanced ones.$(br)$(li)$(l)Right-click$() any cable of the line with the Cable Swapper.",
+      "title": "Upgrading a line"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Every cable of the same kind and tier joined to the one you click becomes the next tier. Each swap uses one new cable from your inventory and gives the old one back. If your inventory is full, the old cable drops on the ground.$(br)$(li)$(l)Sneak + right-click$() to swap only the cable you click."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Swapped cables keep their connections and which arms $(l)pull$().$(br)$(li)If you run out of new cables, the ones nearest the cable you clicked are swapped first.$(br)$(li)In Creative mode it needs no new cables and gives none back."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "It works on other mods' cables and pipes too, within their own mod: a Mekanism Basic Universal Cable becomes an Advanced Universal Cable.$(br)$(li)It counts as a cable any block whose id has the word cable, pipe, conduit, duct, tube, wire, transporter or conductor in it.",
+      "title": "Other mods' cables"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)It finds the next tier by the word in the id, in this order: basic, advanced, improved, reinforced, hardened, elite, ultimate.$(br)$(li)Tiers named another way (such as \"mk2\") are not recognised."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(l)Right-click$() a face of a $(l:energy_storage/battery_bank)Battery Bank$(/l) to switch that side of the bank: $(l)In$(), $(l)Out$(), $(l)Off$(), then In again. While you hold the swapper, every side of a bank is framed in its mode's colour.",
+      "title": "Battery Bank sides"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:trinkets/utility_belt)Utility Belt$(/l) has a holder for the Cable Swapper. Press $(l)I$() to bring it to your hand, and press it again to put it back.",
+      "title": "On the Utility Belt"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Cables swapped per click$(): up to $(l)1,024$()$(br)$(li)$(l)Stack size$(): 1",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)There is no higher tier of this cable$(): It is already the top tier (Elite for CyberFarm cables).$(br)$(li)$(l)You need ... in your inventory$(): Carry cables of the next tier.",
+      "title": "Troubleshooting"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Swapped ... of ... cables: you ran out$(): Only part of the line was swapped. Bring more cables and click again.$(br)$(li)$(l)The Cable Swapper works on cables and pipes$(): You clicked a block that is not a cable."
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:cable_swapper"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:cable_swapper": 11
+  }
+}

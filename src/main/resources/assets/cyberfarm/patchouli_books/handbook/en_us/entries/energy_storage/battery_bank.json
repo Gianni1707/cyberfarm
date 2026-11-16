@@ -1,0 +1,65 @@
+{
+  "name": "Battery Bank",
+  "icon": "cyberfarm:battery_bank",
+  "category": "cyberfarm:energy_storage",
+  "sortnum": 5,
+  "pages": [
+    {
+      "type": "patchouli:spotlight",
+      "item": "cyberfarm:battery_bank",
+      "text": "A small FE store for an early base: $(l)150,000 FE$() a block. Use it to keep power for later, or to feed a $(l:trinkets/human_dock)Human Dock$(/l) directly. For far more storage, build a $(l:energy_storage/resonance_core)Resonance Core$(/l)."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Blocks that fill a box join into $(l)one bank$(): a row, a column, a 2x2x2, up to $(l)3x3x3$().$(br)$(li)A bank fills and empties as one: its blocks always share the charge evenly.",
+      "title": "Building a bank"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)Joined blocks share $(l)one display$() across the whole front, and the side gauges run its full height."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Each side of the bank has a mode. Set it with the $(l:cables/cable_swapper)Cable Swapper$(/l): $(l)right-click$() a side to switch it. While you hold the swapper, every side is framed in its mode's colour.$(br)$(li)$(l)**In$() (default)**: green, Takes FE from cables and machines. Gives none.",
+      "title": "Sides: In, Out and Off"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)**Out$()**: amber, Pushes FE into the block or cable that touches it. Takes none.$(br)$(li)$(l)**Off$()**: grey, Nothing connects there.$(br)A mode belongs to a whole side of the bank: setting one block's north face sets the north side of every block in the bank."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Set the side facing your $(l:trinkets/human_dock)Human Dock$(/l) to $(l)Out$()."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)The $(l)display$() on the front shows the bank's charge and the FE/t coming in and going out. A gauge on each side fills as it charges.$(br)$(li)A bigger bank's display spells the numbers out and adds what the bank stores.",
+      "title": "Display and GUI"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Right-click$() the bank to open its GUI. It shows the whole bank's charge and the FE/t flowing in and out, and has a $(l)slot that charges an item$() from the bank."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Stored per block$(): 150,000 FE$(br)$(li)$(l)Full 3x3x3 bank (27 blocks)$(): 4,050,000 FE$(br)$(li)$(l)In or out, through each block's face$(): 4,000 FE/t$(br)$(li)$(l)Charging the item in the slot$(): 4,000 FE/t",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "A bigger bank has more outer faces, so cables on several blocks move more power at once."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)An $(l)Out$() side pushes by itself, so a cable there needs no pulling arm.$(br)$(li)A cable can't pull through an $(l)In$() side. Set the side to $(l)Out$() instead.",
+      "title": "Tips"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:battery_bank"
+    }
+  ],
+  "extra_recipe_mappings": {
+    "cyberfarm:battery_bank": 11
+  }
+}

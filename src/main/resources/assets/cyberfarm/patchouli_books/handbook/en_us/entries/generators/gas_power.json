@@ -6,49 +6,63 @@
   "pages": [
     {
       "type": "patchouli:text",
-      "text": "The second step of CyberFarm power: $(l)gases$(). Organic waste, pressed into Biomass, becomes $(l)Biogas$(), mobs shut in an extraction chamber give off $(l)Methane$(), and a $(l)Gas Turbine$() burns both into FE.$(br)$(li)$(l:generators/biomass_press)Biomass Press$(/l)$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)"
+      "text": "The second step of CyberFarm power is $(l)gas$(): fuel that your farm and your mob traps make for you. This page shows how the gas machines fit together, and how to carry gases in $(l)buckets$(): Biogas, Methane and Steam Buckets.$(br)$(li)$(item)Biogas Bucket$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)$(br)$(li)$(l)Biogas$(): $(l:generators/bio_digester)Bio-Digester$(/l), 10 mB/t, 5 FE per mB, 9 FE per mB$(br)$(li)$(l)Methane$(): $(l:generators/methane_extractor)Methane Extractor$(/l), up to 50 mB/t, 12 FE per mB, 15 FE per mB$(br)The Gas Turbine is small and cheap; the $(l:generators/steam_engine)Steam Engine$(/l) is a bigger build that gets more out of every mB."
+      "text": "$(li)$(item)Methane Bucket$()$(br)$(li)$(item)Steam Bucket$()"
     },
     {
       "type": "patchouli:text",
-      "title": "How long gas lasts",
-      "text": "A bucket is 1,000 mB. A Gas Turbine burns 20 mB/t, a Steam Engine 45 mB/t.$(br)$(li)$(l)1,000 mB of Biogas$(): Gas Turbine 5,000 FE, 2.5 seconds at 100 FE/t; Steam Engine 9,000 FE, about 1.1 seconds at 405 FE/t$(br)$(li)$(l)1,000 mB of Methane$(): Gas Turbine 12,000 FE, 2.5 seconds at 240 FE/t; Steam Engine 15,000 FE, about 1.1 seconds at 675 FE/t"
+      "text": "$(li)$(l)Biogas$(): a $(l:generators/biomass_press)Biomass Press$(/l) presses farm waste into Biomass, and a $(l:generators/bio_digester)Bio-Digester$(/l) turns it into Biogas.$(br)$(li)$(l)Methane$(): a mob shut in the chamber of a $(l:generators/methane_extractor)Methane Extractor$(/l) dissolves in Acid and gives off Methane.",
+      "title": "The two gases"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)One Biomass$() (500 mB of Biogas): 2,500 FE in a Gas Turbine, 4,500 FE in a Steam Engine$(br)$(li)$(l)One zombie in the chamber$() (300,000 mB): 3,600,000 FE in a Gas Turbine, 4,500,000 FE in a Steam Engine"
+      "text": "Two generators burn both gases: the $(l:generators/gas_turbine)Gas Turbine$(/l), small and cheap, and the $(l:generators/steam_engine)Steam Engine$(/l), a bigger build that gets more out of every mB.$(br)$(li)$(l:generators/biomass_press)Biomass Press$(/l)$(br)$(li)$(l:generators/bio_digester)Bio-Digester$(/l)$(br)$(li)$(l:generators/methane_extractor)Methane Extractor$(/l)$(br)$(li)$(l:generators/gas_turbine)Gas Turbine$(/l)$(br)$(li)$(l:generators/steam_engine)Steam Engine$(/l)$(br)$(li)$(l:cables/gas_pipe)Gas Pipe$(/l)"
     },
     {
       "type": "patchouli:text",
-      "text": "Gas is made slowly and burned fast: what counts is the flow. One Gas Turbine at full power needs 20 mB/t, that is $(l)two Bio-Digesters$() or two fifths of a zombie chamber; a Steam Engine needs 45 mB/t, a little less than one zombie chamber."
+      "text": "A typical setup: a Bio-Digester and the Methane Outlet of an extraction chamber push their gas into $(l:cables/gas_pipe)Gas Pipes$(/l). The pipes carry it to a Gas Turbine or a Steam Engine. The generator pushes FE into $(l:cables/energy_conduit)Energy Conduits$(/l) that power your drones' docks."
     },
     {
       "type": "patchouli:text",
-      "text": "Gases can be carried in buckets, held $(l)upside down$() since they are lighter than air:",
+      "text": "$(li)$(l)Biogas$(): Bio-Digester, 10 mB/t, 5 FE per mB, 9 FE per mB$(br)$(li)$(l)Methane$(): Methane Extractor, up to 50 mB/t, 12 FE per mB, 15 FE per mB$(br)How long the gas lasts and what it gives (a bucket is 1,000 mB):",
+      "title": "Numbers"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)1,000 mB of Biogas$(): 5,000 FE, 2.5 seconds at 100 FE/t, 9,000 FE, about 1.1 seconds at 405 FE/t$(br)$(li)$(l)1,000 mB of Methane$(): 12,000 FE, 2.5 seconds at 240 FE/t, 15,000 FE, about 1.1 seconds at 675 FE/t$(br)$(li)$(l)One Biomass (500 mB of Biogas)$(): 2,500 FE, 4,500 FE"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)One zombie in the chamber (300,000 mB of Methane)$(): 3,600,000 FE, 4,500,000 FE$(br)Gas is made slowly and burned fast, so what counts is the $(l)flow$():$(br)$(li)$(l)Gas Turbine$(): 20 mB/t, two Bio-Digesters, or two fifths of a zombie chamber"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)Steam Engine$(): 45 mB/t, a little less than one zombie chamber"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The Biomass Press and the Bio-Digester draw $(l)8 FE/t$() each, so the first power has to come from elsewhere, such as a $(l:generators/combustion_generator)Combustion Generator$(/l). At full speed a digester and one press cost 16 FE/t together. Their gas gives 50 FE/t in a Gas Turbine, or 90 FE/t in a Steam Engine."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "Gases can be carried in buckets. The buckets are held $(l)upside down$(), since gas is lighter than air.",
       "title": "Gas buckets"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Fill one$(): right-click a machine or tank holding at least 1,000 mB of gas with an $(l)empty bucket$() (a Bio-Digester for Biogas, a Methane Outlet of the extraction chamber for Methane, a reactor port or turbine for Steam)."
+      "text": "$(li)$(l)Fill one$(): right-click a machine or tank holding at least 1,000 mB of gas with an $(l)empty bucket$(). Biogas comes from a Bio-Digester, Methane from a Methane Outlet of the extraction chamber, Steam from a $(l:nuclear/fission_reactor)Fission Reactor$(/l) port or a $(l:nuclear/steam_turbine)Steam Turbine$(/l)."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Empty it$(): right-click a machine, a Reactor Port or a tank of any mod to pour the 1,000 mB in.$(br)$(li)A gas cannot be poured into the world: it would just float away.$(br)$(li)$(item)Biogas Bucket$()$(br)$(li)$(item)Methane Bucket$()$(br)$(li)$(item)Steam Bucket$()"
+      "text": "$(li)$(l)Empty it$(): right-click a machine, a Reactor Port or a tank of any mod to pour the 1,000 mB in.$(br)$(li)A gas cannot be poured into the world: it would just float away."
     },
     {
       "type": "patchouli:text",
-      "text": "Both gases are $(l)standard fluids$(): tanks, pipes and machines of other mods that handle fluids can store and move them too. They are tagged forge:gaseous, forge:biogas and forge:methane."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "The Biomass Press and the Bio-Digester draw 8 FE/t each, so the first power has to come from elsewhere, such as a $(l:generators/combustion_generator)Combustion Generator$(/l). At full speed a digester and one press cost 16 FE/t together, while their gas gives 50 FE/t in a Gas Turbine, or 90 in a Steam Engine."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "A typical setup: a Bio-Digester and the Methane Outlet of an extraction chamber push their gas into $(l:cables/gas_pipe)Gas Pipes$(/l), which carry it to a $(l:generators/gas_turbine)Gas Turbine$(/l) or a $(l:generators/steam_engine)Steam Engine$(/l); they push FE into $(l:cables/energy_conduit)Energy Conduits$(/l) that power your drones' docks."
+      "text": "$(li)Both gases are $(l)standard fluids$(). Tanks, pipes and machines of other mods that handle fluids can store and move them too.$(br)$(li)They are tagged forge:gaseous, forge:biogas and forge:methane.",
+      "title": "Tips"
     }
   ],
   "extra_recipe_mappings": {

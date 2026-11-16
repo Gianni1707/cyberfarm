@@ -1129,14 +1129,19 @@ def hidden_frame():
     shows its piece, turned as the machine is."""
     (ASSETS / "models/block/hidden_frame.json").write_text(
         json.dumps({"textures": {"particle": "cyberfarm:block/cyber_frame"}, "elements": []}, indent=2) + "\n")
-    variants = {}
+    parts = []
     for facing, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
-        for piece, model in enumerate(("hidden_frame", "steam_engine_cylinder", "steam_engine_dynamo")):
-            variants[f"facing={facing},piece={piece}"] = {"model": f"cyberfarm:block/{model}", **({"y": y} if y and piece else {})}
-    for facing in ("up", "down"):       # a frame stacked on another: never a piece
-        for piece in range(3):
-            variants[f"facing={facing},piece={piece}"] = {"model": "cyberfarm:block/hidden_frame"}
-    (ASSETS / "blockstates/hidden_frame.json").write_text(json.dumps({"variants": variants}, indent=2) + "\n")
+        for piece, model in enumerate(("steam_engine_cylinder", "steam_engine_dynamo"), start=1):
+            parts.append({"when": {"facing": facing, "piece": str(piece)},
+                          "apply": {"model": f"cyberfarm:block/{model}", **({"y": y} if y else {})}})
+    # A frame stacked on another (facing up or down) is never a piece; an empty one shows only its sockets
+    parts.append({"apply": {"model": "cyberfarm:block/hidden_frame"}})
+    # A socket wherever a pipe or cable is plugged into the frame, as on the machine block
+    for side, y in (("north", 0), ("east", 90), ("south", 180), ("west", 270)):
+        parts.append({"when": {side: "true"}, "apply": {"model": "cyberfarm:block/hidden_frame_port", **({"y": y} if y else {})}})
+    parts.append({"when": {"up": "true"}, "apply": {"model": "cyberfarm:block/hidden_frame_port_up"}})
+    parts.append({"when": {"down": "true"}, "apply": {"model": "cyberfarm:block/hidden_frame_port_down"}})
+    (ASSETS / "blockstates/hidden_frame.json").write_text(json.dumps({"multipart": parts}, indent=2) + "\n")
 
 
 def gas_turbine_parts():
@@ -1830,6 +1835,21 @@ def top_port(bottom):
     return [((5.5, bottom, 5.5), (10.5, 15.25, 10.5), "body"), ((5, 15.25, 5), (11, 16, 11), "copper")]
 
 
+def bottom_port(top):
+    return [((5.5, 0.75, 5.5), (10.5, top, 10.5), "body"), ((5, 0, 5), (11, 0.75, 11), "copper")]
+
+
+# A frame's socket: the machine's copper collar on the edge, with a housing half a block deep, so it reaches into the machine's
+# model whatever shape that has in the frame's cell
+FRAME_PORT_DEPTH = 8
+
+
+def frame_ports():
+    build("hidden_frame_port", side_port(FRAME_PORT_DEPTH), False)
+    build("hidden_frame_port_up", top_port(16 - FRAME_PORT_DEPTH), False)
+    build("hidden_frame_port_down", bottom_port(FRAME_PORT_DEPTH), False)
+
+
 def blockstate(name, lit, ports, port_of=None, top_turns=False, below=None):
     """Multipart: the machine for each facing (and lit state), plus a port wherever a pipe is plugged in
     (port_of: reuse another machine's port models; top_turns: a top port that isn't square, so it follows the facing;
@@ -2195,6 +2215,7 @@ if __name__ == "__main__":
     small_multiblock_blockstate("coolant_mixer", {"north": {"west"}, "east": {"north"}, "south": {"east"}, "west": {"south"}})
     small_multiblock_blockstate("gas_turbine", {"north": {"north", "south"}, "east": {"east", "west"},
                                                 "south": {"north", "south"}, "west": {"east", "west"}}, up=True)
+    frame_ports()
     hidden_frame()
     dish_assets()
     steam_engine_blockstate()
