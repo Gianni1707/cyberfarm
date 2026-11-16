@@ -2,7 +2,7 @@
 navigation:
   title: Mech Modules
   parent: mech.md
-  position: 2
+  position: 3
   icon: cyberfarm:mech_jet_module
 item_ids:
   - cyberfarm:mech_jet_module
@@ -13,20 +13,28 @@ item_ids:
 
 # Mech Modules
 
-A mech has four mounts, one module each. Modules are fitted in a [Mech Hangar](mech_hangar.md)'s
-console while the mech is parked on the pad: the hangar's gantry arm carries each one to its mount.
-Every module is built around an Advanced Frame.
+Modules give your [mech](mech.md) new abilities: flight, a drill, a blade and extra armour. A mech
+has four mounts, one module each.
+
+## Fitting them
+
+Fit modules in a [Mech Hangar](mech_hangar.md)'s console while the mech is parked on the pad: the
+hangar's gantry arm carries each one to its mount. Every module is built around an Advanced Frame.
 
 Their parts stay stowed while the mech stands empty. **When you climb in**, the jet's wings and
 the armour come out; the drill and the blade come out when you switch them on, and go back when
 you switch them off or get out.
 
+## What they do
+
 | Module | Mount | Comes out | What it does |
 | --- | --- | --- | --- |
 | <ItemLink id="mech_jet_module" /> | Back | Two wings unfold segment by segment behind the back unit, and a nozzle comes out under each thruster | **Flight**: hold jump in the air to climb, sneak to dive, neither to glide. 120 FE/t in the air |
 | <ItemLink id="mech_drill_module" /> | Right arm | The **R** key slides a drill out under the fist; it turns while on | Digs twice as fast, **3x3**, and gets the drops of any tier. 40 FE per extra block |
-| <ItemLink id="mech_blade_module" /> | Left arm | The **G** key slides a glowing blade down the outside of the cuff | **18** extra damage a blow and **8** to everything near the target. 160 FE a blow |
+| <ItemLink id="mech_blade_module" /> | Left arm | The **G** key slides a glowing blade down the outside of the cuff | **18** extra damage a blow and **8** to everything within 2.5 blocks of the target. 160 FE a blow |
 | <ItemLink id="mech_armor_module" /> | Trunk | Steel plates slide onto the shoulders, the chest and the hips | The mech takes **40%** less damage |
+
+## Using them
 
 The keys are in the controls under *CyberFarm Mech*. The cockpit display lists every fitted
 module with its state: the jet READY or THRUST, the drill and blade ON or OFF with their keys,

@@ -1,41 +1,58 @@
 ---
 navigation:
-  title: Supply Contracts
+  title: Supply Terminal
   parent: drone_systems.md
-  position: 8
+  position: 10
   icon: cyberfarm:supply_terminal
 item_ids:
   - cyberfarm:supply_terminal
 ---
 
-# Supply Contracts
-
-Your farm can feed a village. Place a <ItemLink id="supply_terminal" /> in one, or find one in a
-[Drone Mechanist's Outpost](tech_village.md), and the village starts asking you for food and
-materials, and paying for them.
+# Supply Terminal
 
 <BlockImage id="cyberfarm:supply_terminal" scale="4" float="left" />
+
+The Supply Terminal lets your farm feed a village. The village posts **contracts** on it, asking
+for food and materials, and pays you in emeralds and parts.
+
+Place one in a village, or find one in a [Drone Mechanist's Outpost](tech_village.md). An
+unemployed villager takes it as his job site and runs the contracts.
+
+<br clear="all" />
 
 ## The Drone Mechanist
 
 An unemployed villager takes the terminal as his job site, like a farmer takes a composter, and
 becomes a **Drone Mechanist**: a villager in goggles and a white work coat. While he works it, the
-terminal shows his level and the village's contracts. Its board shows them from afar too: a lit card
-per open contract filling up as you deliver, the event's in steel, blinking in a raid. A finished contract's
-card drops behind the board and a new one rises. The header is lit while he works it.
+terminal shows his level and the village's contracts.
+
+The board shows the contracts from afar too:
+
+- a lit card for each open contract, filling up as you deliver;
+- the event's card in steel, blinking in a raid;
+- a finished contract's card drops behind the board and a new one rises;
+- the header is lit while the Mechanist works the terminal.
 
 **Right-click** him to talk: he has a plan for a [tech village](tech_village.md). His trades are
 behind the **Trade** button at the end of each talk.
 
-<br clear="all" />
-
 ## Contracts
 
-The board holds **three contracts**; every two minutes the mechanist fills the free places. Each
-asks for a quantity of one item: bread, carrots, wool and wheat at first; leather, logs, pumpkins
-and beef as the mechanist levels up; then iron, glass and fish; and from the expert level on,
-aluminum, circuits and carbon fiber. The higher his level, the bigger the contracts and the better
-they pay, and no two are quite the same size.
+The board holds **three contracts**. Every **two minutes** the mechanist fills the free places.
+Each contract asks for a quantity of one item. As the mechanist levels up, new goods join the ones
+he already asks for:
+
+| Mechanist level | New goods |
+| --- | --- |
+| Novice | bread, carrots, potatoes, wheat, beetroot, apples, white wool |
+| Apprentice | cooked beef, leather, oak logs, eggs, pumpkins, melon slices |
+| Journeyman | iron ingots, cooked chicken, glass, cod, string |
+| Expert | aluminum ingots, Basic Circuits, gold ingots |
+| Master | carbon fiber, Advanced Circuits |
+
+The higher his level, the bigger the contracts and the better they pay. No two are quite the same size.
+
+## Delivering
 
 Put the goods in the **Deliver** slot: by hand, with a hopper, or as the destination of a
 [Transport drone](modules.md)'s route. The terminal only takes what is still wanted, so a drone
@@ -55,13 +72,20 @@ The fourth place on the board is for the village's events:
 
 ## Prosperity
 
-Every filled contract makes the village more **prosperous**: its emeralds count as points. Once
-you have founded the [tech village](tech_village.md) with the Mechanist, the bar under the board
-shows its level and how far the next one is; the **Range** switch beside it outlines the village's
-bounds in the world. When the bar is full and the last level's buildings stand, **talk to the
-Mechanist** to raise the village a level: it grows, a baby villager or an iron golem arriving, rings its bell, and
-makes you its hero: **Hero of the Village** for twenty minutes, stronger at each level, with big
-discounts and gifts from the villagers. At the top level, **10**, every contract pays half again.
+Every filled contract makes the village more **prosperous**: its emeralds count as points.
+
+Once you have founded the [tech village](tech_village.md) with the Mechanist:
+
+- the bar under the board shows the village's level and how far the next one is;
+- the **Range** switch beside it outlines the village's bounds in the world.
+
+When the bar is full and the last level's buildings stand, **talk to the Mechanist** to raise the
+village a level. The village grows, a baby villager or an iron golem arrives, and it rings its
+bell. It makes you its hero: **Hero of the Village** for twenty minutes, stronger at each level,
+with big discounts and gifts from the villagers.
+
+At the top level, **10**, every contract pays half again. The levels are listed on
+[The Tech Village](tech_village.md) page.
 
 ## Rewards
 

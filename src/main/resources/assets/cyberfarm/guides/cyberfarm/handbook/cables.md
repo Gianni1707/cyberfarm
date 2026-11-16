@@ -7,12 +7,8 @@ navigation:
 
 # Cables
 
-Cables carry power and fluids between your machines (to move items, use a drone with a
-[Transport Module](modules.md)). Every kind **connects by itself** to
-cables of the same kind and to any block that accepts what it carries, from CyberFarm or any other
-mod. Each kind comes in **three tiers**, told apart by the sleeve near each end: grey, **gold** and
-**violet**. All three are glass tubes whose sleeves are lit cyan for energy, blue for liquids and
-green for gases, so you can see when something goes through them.
+Cables carry power and fluids from one machine to another, so your machines no longer need to touch.
+To move items, use a drone with a [Transport Module](modules.md) instead.
 
 <ItemGrid>
   <ItemIcon id="energy_conduit" />
@@ -26,50 +22,70 @@ green for gases, so you can see when something goes through them.
   <ItemIcon id="elite_liquid_pipe" />
 </ItemGrid>
 
-| Cable | Carries | Basic | Advanced | Elite |
-| --- | --- | --- | --- | --- |
-| [Energy Conduit](energy_conduit.md) | FE | 2,000 FE/t | 16,000 FE/t | 128,000 FE/t |
-| [Gas Pipe](gas_pipe.md) | gases: biogas, methane, Steam | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
-| [Liquid Pipe](liquid_pipe.md) | liquids: water, lava, coolants, acid | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
+## Kinds and tiers
 
-The rate is how much can enter the network **from each source**: a generator or tank pushing in. It is set by the pipe the source touches, so
-tiers can be mixed in one network: put a better pipe right where a big producer connects.
+There are three kinds of cable. All are glass tubes, and the lit sleeves near their ends tell them apart:
 
-As a guide, the numbers sit between Immersive Engineering's wires and Mekanism's cables:
+| Cable | Carries | Sleeve lights |
+| --- | --- | --- |
+| [Energy Conduit](energy_conduit.md) | FE | cyan |
+| [Gas Pipe](gas_pipe.md) | gases: biogas, methane, Steam | green |
+| [Liquid Pipe](liquid_pipe.md) | liquids: water, lava, coolants, acid | blue |
 
-- **Basic** carries all the gas power and a Small Steam Turbine (2,000 FE/t).
-- **Advanced** carries a Medium Steam Turbine (9,600 FE/t) or the steam of a Large reactor (2,400 mB/t).
-- **Elite** carries a Large Steam Turbine (40,000 FE/t) and joins several turbines into one line.
+Each kind comes in **three tiers**: Basic, Advanced and Elite. The band on the sleeve shows the tier:
+grey, **gold** or **violet**. You can see when something goes through a cable.
 
-Cables **store nothing**: whatever comes in goes straight to the blocks on the other end. A
-network can be up to 1,024 cables long. Different kinds never connect to each other, so they can
-run side by side.
+## Placing cables
+
+- A cable **connects by itself** to cables of the same kind.
+- It also connects to any block that takes what it carries, from CyberFarm or any other mod.
+- Machines built with [Cyber Frames](cyber_frame.md) take cables, pipes and hoppers on **any of their frames**,
+  not only on the machine block.
+- Different kinds never connect to each other, so they can run side by side.
+- All tiers of one kind join into one network.
+- A network can be up to **1,024** cables long.
+- Cables **store nothing**: what comes in goes straight to the blocks at the other end.
 
 ## Pulling out of a block
 
 Generators and machines push what they make into the cables by themselves. Batteries, tanks and
-other storage do not: to take something **out** of them, **right-click the cable's arm** that
-touches the block. A lit band wraps that end and the cable **pulls** from that block every tick,
-up to its tier's rate. Right-click it again to stop.
+other storage do not.
 
-The network never sends anything back into a block it pulls from, so a pulling arm is a one-way
-exit. Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md), or a battery of another mod.
+To take something **out** of a storage block, **right-click the cable's arm** that touches it.
+A lit band wraps that end, and the cable now **pulls** from that block every tick, up to its tier's rate.
+Right-click the arm again to stop.
 
-**Upgrading**: 6 cables around two gold ingots and a Basic Circuit make 8 Advanced ones; 6 Advanced
-around two diamonds and an Advanced Circuit make 8 Elite ones.
+The network never sends anything back into a block it pulls from, so a pulling arm is a one-way exit.
+Use it to empty a [Liquid Tank or Gas Tank](fluid_tanks.md) or a
+battery of another mod.
 
-## Cable Swapper
+## Numbers
 
-<ItemImage id="cyberfarm:cable_swapper" scale="2" float="left" />
+The **rate** is the most that can enter the network per tick **from each source**: each generator or
+machine pushing in, or each block a cable pulls from. The cable touching the source sets it.
 
-Upgrade a whole line in one go: carry the next tier's cables and **right-click** any cable of the
-line with the **Cable Swapper**. Every cable of that kind joined to it becomes the next tier, as many
-as you carry, and the old ones come back to your inventory; which arms pull is kept. **Sneak** to
-swap only the one you click. It works on other mods' cables and pipes too, within their own mod: a
-Mekanism Basic Universal Cable becomes an Advanced Universal Cable. On a Battery Bank it sets the side
-you click to In, Out or Off.
+| Cable | Basic | Advanced | Elite |
+| --- | --- | --- | --- |
+| Energy Conduit | 2,000 FE/t | 16,000 FE/t | 128,000 FE/t |
+| Gas Pipe | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
+| Liquid Pipe | 1,000 mB/t | 4,000 mB/t | 16,000 mB/t |
 
-<RecipeFor id="cable_swapper" />
+Because the rate depends only on the cable at the source, you can mix tiers in one network: put a
+better cable right where a big producer connects. As a guide:
+
+- **Basic** carries all the gas power and a Small Steam Turbine (2,000 FE/t).
+- **Advanced** carries a Medium Steam Turbine (9,600 FE/t) or the steam of a Large reactor (up to 2,000 mB/t).
+- **Elite** carries a Large Steam Turbine (40,000 FE/t) and joins several turbines into one line.
+
+These numbers sit between Immersive Engineering's wires and Mekanism's cables.
+
+## Upgrading
+
+- 6 cables around two gold ingots and a Basic Circuit make **8 Advanced** cables.
+- 6 Advanced cables around two diamonds and an Advanced Circuit make **8 Elite** cables.
+
+To upgrade a line already in place, use the [Cable Swapper](cable_swapper.md): one right-click swaps
+the whole line for the next tier.
 
 Where a cable can't go, [Dish Transmission](dish_transmission.md) sends FE through the air.
 

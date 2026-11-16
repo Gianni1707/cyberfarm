@@ -2,32 +2,27 @@
 navigation:
   title: Carbon Fiber
   parent: materials.md
-  position: 3
+  position: 5
   icon: cyberfarm:carbon_fiber
 item_ids:
   - cyberfarm:carbon_fiber
-  - cyberfarm:pyrolysis_oven
 ---
 
 # Carbon Fiber
 
-The Advanced and Elite Drone Frames are made of **Carbon Fiber**, as real racing drones are: light
-and stiff.
+<ItemImage id="cyberfarm:carbon_fiber" scale="2" float="left" />
 
-<BlockImage id="cyberfarm:pyrolysis_oven" scale="4" float="left" />
-
-It takes a **Cyber Frame** on its left as you face it: right-click it alone and a drone shows where. Once complete, it opens into one long oven; it doesn't work until then, and breaking the frame folds it back.
-
-The **Pyrolysis Oven** splits **Methane** into carbon and hydrogen (CH4 -> C + 2H2) and draws the
-carbon onto **String**: **250 mB of Methane + 1 String -> 1 Carbon Fiber**, in 4 seconds at
-**120 FE/t**. The oven takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI. Pipe the methane in from a [Methane Extractor](methane_extractor.md) or a gas tank, on its
-front, back or free side: its top is full. While it works a shuttle runs along the glowing slit, once per fiber,
-drawing the fiber behind it; if the shuttle stops, so has the machine. A hopper underneath takes out only the Carbon Fiber, never the String.
+**Carbon Fiber** is the tier 2 material. The Advanced and Elite Drone Frames are made of it, as
+real racing drones are: light and stiff.
 
 <br clear="all" />
 
-So the gas tier is more than power: its methane is the raw material of every advanced frame.
+## Making it
 
-<Row>
-  <RecipeFor id="pyrolysis_oven" />
-</Row>
+Carbon Fiber is drawn out of **Methane**, a gas, onto plain **String**:
+
+1. A [Methane Extractor](methane_extractor.md) makes Methane.
+2. A [Gas Pipe](gas_pipe.md) carries it to a <ItemLink id="pyrolysis_oven" />.
+3. The oven turns **250 mB of Methane + 1 String** into **1 Carbon Fiber**, in 4 seconds at 120 FE/t.
+
+So the gas tier is more than power: its methane is the raw material of every advanced frame.

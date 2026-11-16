@@ -2,7 +2,7 @@
 navigation:
   title: Hologram Table
   parent: drone_systems.md
-  position: 7
+  position: 9
   icon: cyberfarm:hologram_table
 item_ids:
   - cyberfarm:hologram_table
@@ -15,6 +15,10 @@ item_ids:
 A table that projects a **3D map** of the land around it, with your docks and drones on it. Put
 one next to your drone yard and watch the whole fleet at work at a glance.
 
+<br clear="all" />
+
+## Using it
+
 It needs **no power** and no setup. Walk up to it and it **wakes**: a beam of light reaches up
 from the table and the land rises from the middle outwards, like a wave. Step away and it folds
 back down. While it is on, a **radar pulse** sweeps out from the table every few seconds,
@@ -23,8 +27,6 @@ inside a frame of light, lighting up the land it crosses.
 
 **Right-click** the table to change how far it shows: **16**, **24** or **32** blocks every way.
 The wider the range, the wider the projection grows, so the land stays as easy to read.
-
-<br clear="all" />
 
 ## Bigger tables
 
@@ -46,7 +48,7 @@ first module makes it, such as *Harvester Drone*.
 - The **land** around the table, in relief: hills, water, trees and buildings
   in the colours of a map. As on a vanilla map, slopes rising to the south are lighter and slopes
   falling away are darker, so the shape of the land reads at a glance.
-- Every **Drone Dock** and **Builder Swarm Dock** as a pillar of emerald light.
+- Every [Drone Dock](drone_dock.md) and [Builder Swarm Dock](swarm_dock.md) as a pillar of emerald light.
 - Every **drone** as a dot that moves **live**, with a short glowing trail behind it and a thin
   line down to the ground to show how high it flies.
 - **Players** as white arrows pointing the way they look, and **hostile mobs** as red dots: you see

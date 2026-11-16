@@ -14,6 +14,7 @@ import com.cyberfarm.client.MiniDroneProperty;
 import com.cyberfarm.client.VillageRange;
 import com.cyberfarm.client.DissolvingMobRenderer;
 import com.cyberfarm.client.MechClient;
+import com.cyberfarm.client.TowerClearance;
 import com.cyberfarm.client.TrinketClient;
 import com.cyberfarm.client.MechLoopSound;
 import com.cyberfarm.client.model.MechModel;
@@ -153,6 +154,7 @@ public class CyberFarmClient {
         NeoForge.EVENT_BUS.addListener(TrinketClient::zoomTurn);
         NeoForge.EVENT_BUS.addListener(TrinketClient::zoomWheel);
         NeoForge.EVENT_BUS.addListener(TrinketClient::addInventoryTabs);
+        NeoForge.EVENT_BUS.addListener(TowerClearance::tick);
         modEventBus.addListener(MechClient::registerHud);
         modEventBus.addListener(com.cyberfarm.client.WarpOverlay::register);
         NeoForge.EVENT_BUS.addListener(MechClient::tick);

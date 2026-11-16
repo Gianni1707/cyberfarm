@@ -60,7 +60,7 @@ public class HumanDockBlockEntity extends SmallMultiblockBlockEntity {
             if (budget <= 0) {
                 break;
             }
-            int used = TrinketCharging.chargePlayer(player, budget);
+            int used = TrinketCharging.chargePlayer(player, budget, INTERVAL);
             if (used > 0) {
                 energy.drain(used);
                 charging = true;

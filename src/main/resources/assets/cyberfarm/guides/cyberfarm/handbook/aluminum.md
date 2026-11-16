@@ -10,13 +10,12 @@ item_ids:
   - cyberfarm:raw_bauxite
   - cyberfarm:alumina
   - cyberfarm:aluminum_ingot
-  - cyberfarm:electrolyzer
 ---
 
 # Aluminum
 
-Aluminum is the light metal of the first drone frames. You cannot smelt it straight out of its
-ore: just as in real life, it takes electrolysis and a steady flow of power.
+Aluminum is the light metal of the first drone frames. You cannot smelt it straight from its ore:
+just as in real life, it takes electrolysis and a steady flow of power.
 
 <ItemGrid>
   <ItemIcon id="bauxite_ore" />
@@ -25,21 +24,34 @@ ore: just as in real life, it takes electrolysis and a steady flow of power.
   <ItemIcon id="aluminum_ingot" />
 </ItemGrid>
 
-1. Mine **Bauxite Ore**: rusty clumps in stone and deepslate, almost as common as iron, from y -32
-   to y 80 and most common around y 24. It drops **Raw Bauxite** (Fortune helps).
-2. Smelt or blast it (or the ore itself) into **Alumina**, a white powder.
-3. Put the Alumina in an **Electrolyzer**, which takes a **Cyber Frame** on its left as you face it (right-click it alone and a drone shows where), and only works once assembled: **1 Aluminum Ingot every 5 seconds at 80 FE/t**. Two
-   [Combustion Generators](combustion_generator.md) keep it running. The Electrolyzer takes Speed, Efficiency and Battery [addons](addons.md) on the tab beside its GUI. While it works, the feeder punch behind its
-   window strikes four times per ingot and alumina grains drop into the bath; if the punch stops, so has the machine.
-   Plug conduits into its free side, front or back: its top is full. A hopper underneath takes out only the ingots, never the Alumina still waiting.
+## From ore to ingot
 
-Aluminum Ingots are tagged `c:ingots/aluminum`, Alumina `c:dusts/alumina`, the ore
-`c:ores/bauxite` and `c:ores/aluminum`, Raw Bauxite `c:raw_materials/aluminum`: aluminum from other
-mods works in every recipe, and their crushers and furnaces can process our ore.
+1. **Mine Bauxite Ore.** It shows as rusty clumps in stone and deepslate. It drops **Raw Bauxite**,
+   and Fortune helps.
+2. **Smelt or blast** the Raw Bauxite (or the ore itself) into **Alumina**, a white powder.
+3. **Put the Alumina in an <ItemLink id="electrolyzer" />.** It makes 1 Aluminum Ingot every
+   5 seconds at 80 FE/t. Two [Combustion Generators](combustion_generator.md) keep it running.
+
+## Where to find bauxite
+
+| What | Value |
+| --- | --- |
+| Found in | Stone and deepslate |
+| Heights | y -32 to y 80 |
+| Most common | Around y 24 |
+| How common | Almost as common as iron |
+
+## Other mods
+
+Aluminum from other mods works in every CyberFarm recipe, and their crushers and furnaces can
+process our ore. The tags are:
+
+| Item | Tags |
+| --- | --- |
+| Aluminum Ingot | `c:ingots/aluminum` |
+| Alumina | `c:dusts/alumina` |
+| Bauxite Ore | `c:ores/bauxite`, `c:ores/aluminum` |
+| Raw Bauxite | `c:raw_materials/aluminum`, `c:raw_materials/bauxite` |
 
 Already have an aluminum ore from another mod? Set `bauxiteGeneration = false` under `[world]` in
-`cyberfarm-common.toml` and only theirs generates (new chunks only).
-
-<Row>
-  <RecipeFor id="electrolyzer" />
-</Row>
+`cyberfarm-common.toml`, and only theirs generates (in new chunks only).
