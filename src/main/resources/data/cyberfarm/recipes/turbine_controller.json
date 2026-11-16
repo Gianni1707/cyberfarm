@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "C": {
       "item": "cyberfarm:elite_circuit"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "tag": "forge:dusts/redstone"
     },
     "T": {
       "item": "cyberfarm:gas_turbine"

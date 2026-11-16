@@ -59,8 +59,9 @@ public class TransmitterDishMenu extends MachineMenu {
         return extra(0);
     }
 
-    public boolean isPublic() {
-        return extra(1) != 0;
+    /** DishNetworks.Network.PRIVATE, TEAM or PUBLIC. */
+    public int access() {
+        return extra(1);
     }
 
     public int tier() {
@@ -105,7 +106,8 @@ public class TransmitterDishMenu extends MachineMenu {
                 return true;
             }
             if (id == BUTTON_PUBLIC) {
-                network.isPublic = !network.isPublic;
+                // Private, then Team, then Public, then Private again
+                network.access = (network.access + 1) % 3;
             } else {
                 network.colour = id;
             }

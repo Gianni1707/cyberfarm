@@ -6,7 +6,7 @@
       "tag": "minecraft:wool"
     },
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "N": {
       "item": "minecraft:note_block"

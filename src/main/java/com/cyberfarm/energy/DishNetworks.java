@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.cyberfarm.CyberFarm;
@@ -14,10 +15,10 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.scores.PlayerTeam;
 import org.jspecify.annotations.Nullable;
 
 /**
@@ -31,33 +32,42 @@ public class DishNetworks extends SavedData {
     public static final int[] COLOURS = {0xFF9F2E, 0xC46BFF, 0x3FD0FF, 0xFF5A6E, 0x9BE15D, 0xFFD84A, 0x5A7CFF, 0xE8F0EE};
 
     public static final class Network {
+        /** Who a network is for: its owner only, the owner's team too, or everyone. */
+        public static final int PRIVATE = 0, TEAM = 1, PUBLIC = 2;
+
         static final Codec<Network> CODEC = RecordCodecBuilder.create(i -> i.group(
                 UUIDUtil.CODEC.fieldOf("id").forGetter(n -> n.id),
                 Codec.STRING.fieldOf("name").forGetter(n -> n.name),
                 Codec.INT.fieldOf("colour").forGetter(n -> n.colour),
                 UUIDUtil.CODEC.fieldOf("owner").forGetter(n -> n.owner),
                 Codec.STRING.fieldOf("owner_name").forGetter(n -> n.ownerName),
-                Codec.BOOL.fieldOf("public").forGetter(n -> n.isPublic),
+                // Saved before the Team mode: "public" alone, and a private network then meant the owner's team
+                Codec.BOOL.optionalFieldOf("public", false).forGetter(n -> n.access == PUBLIC),
+                Codec.INT.optionalFieldOf("access").forGetter(n -> Optional.of(n.access)),
                 GlobalPos.CODEC.fieldOf("transmitter").forGetter(n -> n.transmitter),
-                GlobalPos.CODEC.listOf().fieldOf("receivers").forGetter(n -> n.receivers)).apply(i, Network::new));
+                GlobalPos.CODEC.listOf().fieldOf("receivers").forGetter(n -> n.receivers)).apply(i,
+                (id, name, colour, owner, ownerName, isPublic, access, transmitter, receivers) -> new Network(id, name, colour, owner,
+                        ownerName, access.orElse(isPublic ? PUBLIC : TEAM), transmitter, receivers)));
 
         public final UUID id;
         public String name;
         /** Index into {@link #COLOURS}. */
         public int colour;
         public final UUID owner;
-        public final String ownerName;
-        public boolean isPublic;
+        /** The owner's name, for the scoreboard team: refreshed whenever the owner is online, so a rename catches up. */
+        public String ownerName;
+        /** {@link #PRIVATE}, {@link #TEAM} or {@link #PUBLIC}: who may link a receiver and charge a sphere from it. */
+        public int access;
         public final GlobalPos transmitter;
         public final List<GlobalPos> receivers;
 
-        Network(UUID id, String name, int colour, UUID owner, String ownerName, boolean isPublic, GlobalPos transmitter, List<GlobalPos> receivers) {
+        Network(UUID id, String name, int colour, UUID owner, String ownerName, int access, GlobalPos transmitter, List<GlobalPos> receivers) {
             this.id = id;
             this.name = name;
             this.colour = colour;
             this.owner = owner;
             this.ownerName = ownerName;
-            this.isPublic = isPublic;
+            this.access = Mth.clamp(access, PRIVATE, PUBLIC);
             this.transmitter = transmitter;
             this.receivers = new ArrayList<>(receivers);
         }
@@ -70,18 +80,23 @@ public class DishNetworks extends SavedData {
             return receivers.size() >= MAX_RECEIVERS;
         }
 
-        /** Public networks for everyone; private ones for their owner and the players on the owner's team. */
+        /** Who it is for, by its access: links a Receiver Dish to it and has an Energy Sphere charged by it. */
         public boolean visibleTo(ServerPlayer player) {
-            return isPublic || canEdit(player);
+            return access == PUBLIC || player.getUUID().equals(owner) || access == TEAM && sameTeam(player);
+        }
+
+        private boolean sameTeam(ServerPlayer player) {
+            ServerPlayer online = player.server.getPlayerList().getPlayer(owner);
+            if (online != null && !online.getScoreboardName().equals(ownerName)) {
+                ownerName = online.getScoreboardName();
+                DishNetworks.get(player.server).changed();
+            }
+            return Teams.sameTeam(player, owner, ownerName);
         }
 
         /** Name, colour and visibility: only for the owner and the players on the owner's team, public or not. */
         public boolean canEdit(ServerPlayer player) {
-            if (player.getUUID().equals(owner)) {
-                return true;
-            }
-            PlayerTeam team = player.level().getScoreboard().getPlayersTeam(ownerName);
-            return team != null && team == player.getTeam();
+            return player.getUUID().equals(owner) || sameTeam(player);
         }
     }
 
@@ -112,7 +127,7 @@ public class DishNetworks extends SavedData {
 
     public Network create(ServerPlayer owner, GlobalPos transmitter) {
         Network network = new Network(UUID.randomUUID(), owner.getGameProfile().getName() + "'s Network", 0, owner.getUUID(),
-                owner.getGameProfile().getName(), false, transmitter, List.of());
+                owner.getGameProfile().getName(), Network.PRIVATE, transmitter, List.of());
         networks.put(network.id, network);
         setDirty();
         return network;

@@ -6,7 +6,7 @@
       "item": "cyberfarm:liquid_pipe"
     },
     "G": {
-      "item": "minecraft:gold_ingot"
+      "tag": "forge:ingots/gold"
     },
     "R": {
       "item": "cyberfarm:basic_circuit"

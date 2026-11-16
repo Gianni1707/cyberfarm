@@ -32,8 +32,8 @@ import net.minecraft.world.item.ItemStack;
 public class TrinketLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
     /** What the layer needs of a player's trinkets, read once per frame from the player. */
     public record Look(double hover, boolean bootsLit, boolean chip, boolean chipLit, boolean belt, boolean sphere, float charge,
-            boolean projector, boolean surveyTool, boolean drone, boolean droneOut, int sphereTier) {
-        static final Look NONE = new Look(-1, false, false, false, false, false, 0, false, false, false, false, 0);
+            boolean projector, boolean surveyTool, boolean drone, boolean droneOut, int sphereTier, boolean cableSwapper) {
+        static final Look NONE = new Look(-1, false, false, false, false, false, 0, false, false, false, false, 0, false);
 
         boolean any() {
             return hover >= 0 || chip || belt;
@@ -46,6 +46,8 @@ public class TrinketLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<
     private static final int LIGHT_FULL = 0xF000F0;
     private static final int WHITE = 0xFFE4EAEA, CERAMIC = 0xFFBDC6C5, STEEL = 0xFF96A3A2, DARK_STEEL = 0xFF465353;
     private static final int MINT = 0xFF5EC2B8, PALE_MINT = 0xFFA5EAD4, GLOW = 0xFFD1FEE7, OFF = 0xFF055B57, TEAL = 0xFF2F6468;
+    /** The black of the Cable Swapper's die slot. */
+    private static final int SLOT_DARK = 0xFF132423;
     private static final int LEATHER = 0xFF7A5230, LEATHER_HI = 0xFF9C6B42, LEATHER_LO = 0xFF5A3A20;
 
     public TrinketLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
@@ -65,7 +67,7 @@ public class TrinketLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<
                 !belt.isEmpty(), !sphere.isEmpty(), EnergySphereItem.energy(sphere) / (float) Math.max(1, EnergySphereItem.capacity(sphere)),
                 !UtilityBeltItem.content(belt, UtilityBeltItem.PROJECTOR).isEmpty(), !UtilityBeltItem.content(belt, UtilityBeltItem.SURVEY_TOOL).isEmpty(),
                 !drone.isEmpty(), PocketDroneItem.isActive(drone) || com.cyberfarm.client.PocketDroneView.landing(player),
-                EnergySphereItem.tier(sphere));
+                EnergySphereItem.tier(sphere), !UtilityBeltItem.content(belt, UtilityBeltItem.CABLE_SWAPPER).isEmpty());
         return look.any() ? look : Look.NONE;
     }
 
@@ -232,7 +234,9 @@ public class TrinketLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<
             ModelParts.box(p, buffer, -4.38F, 9.65F, -1.25F, -4.3F, 10.45F, -0.75F, WHITE, CERAMIC, light);
             ModelParts.box(p, buffer, 4.3F, 9.65F, 0.75F, 4.38F, 10.45F, 1.25F, WHITE, CERAMIC, light);
             ModelParts.box(p, buffer, -4.38F, 9.65F, 0.75F, -4.3F, 10.45F, 1.25F, WHITE, CERAMIC, light);
-            ModelParts.box(p, buffer, -3.55F, 9.65F, 2.3F, -3.05F, 10.45F, 2.38F, WHITE, CERAMIC, light);
+            if (!look.cableSwapper()) {
+                ModelParts.box(p, buffer, -3.55F, 9.65F, 2.3F, -3.05F, 10.45F, 2.38F, WHITE, CERAMIC, light);
+            }
             ModelParts.box(p, buffer, 3.05F, 9.65F, 2.3F, 3.55F, 10.45F, 2.38F, WHITE, CERAMIC, light);
             ModelParts.box(p, buffer, 3.65F, 9.65F, -2.38F, 4.15F, 10.45F, -2.3F, WHITE, CERAMIC, light);
             // The buckle: a ceramic plate, a dark recess, the lit slit
@@ -273,6 +277,20 @@ public class TrinketLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<
                 ModelParts.box(p, buffer, -4.1F, 10.3F, -3.3F, -1.15F, 10.95F, -3.05F, LEATHER_HI, LEATHER, light);
                 ModelParts.box(p, buffer, -2.8F, 10.4F, -3.36F, -2.4F, 10.85F, -3.3F, CERAMIC, STEEL, light);
                 ModelParts.box(p, buffer, -2.65F, 10.55F, -3.4F, -2.55F, 10.7F, -3.36F, MINT, MINT, light);
+            }
+            if (look.cableSwapper()) {
+                // The Cable Swapper upright on the belt at the back right (the user's crop of the crimper): its steel die
+                // plate with the dark slot on the belt, the two mint handles hanging below with their grip ridges
+                ModelParts.box(p, buffer, -3.95F, 8.9F, 2.32F, -2.55F, 11.0F, 2.75F, CERAMIC, STEEL, light);
+                ModelParts.box(p, buffer, -3.6F, 9.4F, 2.75F, -2.9F, 10.2F, 2.8F, SLOT_DARK, SLOT_DARK, light);
+                // A leather loop round the plate, on the belt, under the slot, shut with a steel snap
+                ModelParts.box(p, buffer, -4.0F, 10.3F, 2.3F, -2.5F, 10.9F, 2.82F, LEATHER_HI, LEATHER, light);
+                ModelParts.box(p, buffer, -3.4F, 10.45F, 2.82F, -3.1F, 10.75F, 2.88F, CERAMIC, STEEL, light);
+                for (float x0 : new float[] {-3.9F, -3.15F}) {
+                    ModelParts.box(p, buffer, x0, 11.0F, 2.4F, x0 + 0.55F, 13.4F, 2.7F, MINT, MINT, light);
+                    ModelParts.box(p, buffer, x0, 11.8F, 2.7F, x0 + 0.55F, 11.95F, 2.74F, TEAL, TEAL, light);
+                    ModelParts.box(p, buffer, x0, 12.6F, 2.7F, x0 + 0.55F, 12.75F, 2.74F, TEAL, TEAL, light);
+                }
             }
             if (look.drone()) {
                 // The magnet plate in the middle of the back, mint bars at its sides; the drone sits on it folded flat

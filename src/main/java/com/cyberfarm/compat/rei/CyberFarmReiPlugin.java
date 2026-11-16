@@ -5,6 +5,7 @@ import com.cyberfarm.client.screen.MachineScreen;
 import com.cyberfarm.compat.AssemblyExample;
 import com.cyberfarm.compat.InfoPages;
 import com.cyberfarm.compat.MachineExample;
+import com.cyberfarm.menu.TrinketTableMenu;
 import com.cyberfarm.registry.ModItems;
 
 import me.shedaniel.math.Rectangle;
@@ -12,12 +13,15 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
 import me.shedaniel.rei.plugin.client.BuiltinClientPlugin;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.inventory.CraftingMenu;
 
 /**
  * REI integration, loaded by REI only when it is installed.
@@ -39,6 +43,14 @@ public class CyberFarmReiPlugin implements REIClientPlugin {
         zones.register(MachineScreen.class, (MachineScreen<?> screen) -> screen.addonArea().stream()
                 .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
                 .toList());
+    }
+
+    @Override
+    public void registerTransferHandlers(TransferHandlerRegistry registry) {
+        // The "+" on a Trinket Table page fills the table's grid; on a crafting table only the grid, no result (the user's choice)
+        var table = MachineDisplay.id(MachineExample.Machine.TRINKET_TABLE);
+        registry.register(SimpleTransferHandler.create(TrinketTableMenu.class, table, new SimpleTransferHandler.IntRange(1, 10)));
+        registry.register(SimpleTransferHandler.create(CraftingMenu.class, table, new SimpleTransferHandler.IntRange(1, 10)));
     }
 
     @Override

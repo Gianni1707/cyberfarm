@@ -14,6 +14,7 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.food.FoodProperties;
@@ -37,6 +38,10 @@ public final class TrinketTicker {
     public static final UUID HOVER = UUID.fromString("7d3c2a8e-5b1f-4c6a-9e2d-1f0b3a4c5d6e");
     private static final AttributeModifier NO_GRAVITY = new AttributeModifier(HOVER, CyberFarm.MODID + ":gravity_boots", -1.0,
             AttributeModifier.Operation.MULTIPLY_TOTAL);
+    /** +40% walking speed while hovering. */
+    public static final double HOVER_SPEED_BONUS = 0.4;
+    private static final AttributeModifier HOVER_SPEED = new AttributeModifier(HOVER, CyberFarm.MODID + ":gravity_boots_speed", HOVER_SPEED_BONUS,
+            AttributeModifier.Operation.MULTIPLY_BASE);
 
     /**
      * At run time {@code ServerGamePacketListenerImpl.aboveGroundTickCount}: 1.20.1 kicks a player floating for 4 s
@@ -121,6 +126,15 @@ public final class TrinketTicker {
                 gravity.addTransientModifier(NO_GRAVITY);
             } else {
                 gravity.removeModifier(HOVER);
+            }
+        }
+        // A little faster while hovering (the user's call: without it they only float)
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed != null && active != (speed.getModifier(HOVER) != null)) {
+            if (active) {
+                speed.addTransientModifier(HOVER_SPEED);
+            } else {
+                speed.removeModifier(HOVER);
             }
         }
         if (active) {

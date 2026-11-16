@@ -12,7 +12,7 @@
       "item": "minecraft:book"
     },
     {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     }
   ],
   "result": {

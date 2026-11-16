@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "X": {
       "item": "minecraft:dispenser"
     },
     "C": {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     },
     "D": {
       "item": "cyberfarm:basic_circuit"

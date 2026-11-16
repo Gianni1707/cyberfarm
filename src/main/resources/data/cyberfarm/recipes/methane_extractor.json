@@ -3,19 +3,19 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "H": {
       "item": "minecraft:hopper"
     },
     "C": {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     },
     "D": {
       "item": "cyberfarm:basic_circuit"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     }
   },
   "pattern": [

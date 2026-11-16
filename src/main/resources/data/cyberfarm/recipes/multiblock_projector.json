@@ -3,16 +3,16 @@
   "category": "equipment",
   "key": {
     "G": {
-      "item": "minecraft:glass_pane"
+      "tag": "forge:glass_panes"
     },
     "L": {
-      "item": "minecraft:glowstone_dust"
+      "tag": "forge:dusts/glowstone"
     },
     "I": {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     },
     "R": {
-      "item": "minecraft:redstone"
+      "tag": "forge:dusts/redstone"
     }
   },
   "pattern": [

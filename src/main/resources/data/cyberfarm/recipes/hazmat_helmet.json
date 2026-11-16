@@ -6,7 +6,7 @@
       "item": "minecraft:yellow_wool"
     },
     "G": {
-      "item": "minecraft:glass_pane"
+      "tag": "forge:glass_panes"
     }
   },
   "pattern": [

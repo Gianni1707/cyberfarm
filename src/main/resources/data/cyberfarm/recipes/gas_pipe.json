@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "C": {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     }
   },
   "pattern": [

@@ -6,7 +6,7 @@
       "item": "cyberfarm:advanced_gas_pipe"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "forge:gems/diamond"
     },
     "U": {
       "item": "cyberfarm:advanced_circuit"

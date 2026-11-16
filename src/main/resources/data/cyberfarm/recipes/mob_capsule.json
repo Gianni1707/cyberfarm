@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "I": {
-      "item": "minecraft:iron_nugget"
+      "tag": "forge:nuggets/iron"
     },
     "G": {
-      "item": "minecraft:glass"
+      "tag": "forge:glass"
     },
     "E": {
-      "item": "minecraft:ender_pearl"
+      "tag": "forge:ender_pearls"
     }
   },
   "pattern": [

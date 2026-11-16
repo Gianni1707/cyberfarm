@@ -6,7 +6,7 @@
       "item": "cyberfarm:carbon_fiber"
     },
     "D": {
-      "item": "minecraft:diamond"
+      "tag": "forge:gems/diamond"
     },
     "C": {
       "item": "cyberfarm:elite_circuit"

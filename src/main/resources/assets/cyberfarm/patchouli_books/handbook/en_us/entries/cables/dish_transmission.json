@@ -23,7 +23,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)A new network is $(l)Private$(): only you and the players on your team can see it. Switch it to $(l)Public$() and anyone can link a receiver. Only you and your team can change its name, colour and visibility.$(br)$(li)A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on the network after 30 seconds, so swapping a module is safe."
+      "text": "$(li)A new network is $(l)Private$(): only you can link a receiver to it. Click the button to make it $(l)Team$() (you and the players on your team) or $(l)Public$() (anyone). A team is a vanilla /team, an FTB Teams team or an Open Parties and Claims party. Only you and your team can change its name, colour and"
+    },
+    {
+      "type": "patchouli:text",
+      "text": "access.$(br)$(li)A receiver the transmitter no longer reaches (a weaker Range Module, say) loses its place on the network after 30 seconds, so swapping a module is safe."
     },
     {
       "type": "patchouli:text",
@@ -63,11 +67,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "A Transmitter Dish also charges your $(l)Energy Sphere$() from afar: while you are in its reach and can see its network, it tops up the sphere on your $(l:trinkets/trinkets)Utility Belt$(/l), at the module's power, losing 10% on the way. The players it charges take their turn with the receivers, so now and then the dish turns to follow you. In its GUI,"
+      "text": "A Transmitter Dish also charges the $(l)Energy Sphere$() on the $(l:trinkets/trinkets)Utility Belt$(/l) from afar, for the players in its reach: on a Private network only its owner's, on a Team one the team's too, on a Public one everyone's. It sends up to the module's power, losing 10% on the way. The players it charges take their turn with the"
     },
     {
       "type": "patchouli:text",
-      "text": "the $(l)Manage$() tab (on the left of the network panel) switches this charging on or off (owner only); the $(l)Network$() tab holds the network's name, colour and Public / Private."
+      "text": "receivers, so now and then the dish turns to follow you. In its GUI, the $(l)Manage$() tab (on the left of the network panel) switches this charging on or off (owner only); the $(l)Network$() tab holds the network's name, colour and access (Private / Team / Public)."
     },
     {
       "type": "patchouli:crafting",
@@ -76,11 +80,11 @@
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:transmitter_dish": 11,
-    "cyberfarm:receiver_dish": 11,
-    "cyberfarm:range_module_i": 12,
-    "cyberfarm:range_module_ii": 12,
-    "cyberfarm:range_module_iii": 15,
-    "cyberfarm:infinity_range_module": 15
+    "cyberfarm:transmitter_dish": 12,
+    "cyberfarm:receiver_dish": 12,
+    "cyberfarm:range_module_i": 13,
+    "cyberfarm:range_module_ii": 13,
+    "cyberfarm:range_module_iii": 16,
+    "cyberfarm:infinity_range_module": 16
   }
 }

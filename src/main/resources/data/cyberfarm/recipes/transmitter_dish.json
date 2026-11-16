@@ -12,7 +12,7 @@
       "item": "cyberfarm:advanced_circuit"
     },
     "C": {
-      "item": "minecraft:copper_ingot"
+      "tag": "forge:ingots/copper"
     }
   },
   "pattern": [
