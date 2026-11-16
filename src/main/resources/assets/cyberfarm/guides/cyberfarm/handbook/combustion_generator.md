@@ -13,21 +13,32 @@ item_ids:
 <BlockImage id="cyberfarm:combustion_generator" p:lit="true" scale="4" float="left" />
 
 The first power source of CyberFarm. It burns **any furnace fuel** (coal, charcoal, wood,
-blaze rods, lava buckets...) and turns it into FE. While it burns, the vent on its chimney spins, and it coasts to a stop when the fuel is gone.
+blaze rods, lava buckets...) and turns it into FE. It needs no multiblock, so it is the way to power your first machines.
 
 <br clear="all" />
+
+## Using it
+
+- Put fuel in its slot.
+- It **pushes power by itself** into every adjacent block that accepts FE: CyberFarm machines,
+  [Energy Conduits](energy_conduit.md), and machines and cables from other mods.
+- While it burns, the vent on its chimney spins. It coasts to a stop when the fuel is gone.
+
+## Numbers
 
 | Stat | Value |
 | --- | --- |
 | Generation | 60 FE/t while burning |
 | Buffer | 50,000 FE |
 | Output | up to 400 FE/t per side |
-| One coal | 48,000 FE |
+| Burn time | half of a furnace's |
+| One coal | 48,000 FE (40 seconds) |
 
-The generator **pushes power automatically** into every adjacent block that accepts FE:
-CyberFarm machines, [Energy Conduits](energy_conduit.md), and machines and cables from other mods. Its fire holds while its
-buffer is full and goes on when there is room again, so no fuel is wasted.
+See [Generators](generators.md) for how long each fuel lasts.
 
-Lava buckets leave an empty bucket in the slot. Take it out to refuel.
+## Tips
+
+- When its buffer is full, the fire holds until there is room again. No fuel is wasted.
+- A lava bucket leaves an empty bucket in the slot. Take it out to refuel.
 
 <RecipeFor id="combustion_generator" />

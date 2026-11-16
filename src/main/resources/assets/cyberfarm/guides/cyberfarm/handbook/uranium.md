@@ -1,6 +1,6 @@
 ---
 navigation:
-  title: Uranium and Fuel Rods
+  title: Uranium
   parent: nuclear.md
   position: 1
   icon: cyberfarm:uranium_ingot
@@ -9,18 +9,24 @@ item_ids:
   - cyberfarm:deepslate_uranium_ore
   - cyberfarm:raw_uranium
   - cyberfarm:uranium_ingot
-  - cyberfarm:fuel_rod
 ---
 
-# Uranium and Fuel Rods
+# Uranium
 
 <BlockImage id="cyberfarm:deepslate_uranium_ore" scale="3" float="left" />
 
-**Uranium Ore** is rare and found deep in the Overworld, from Y 16 down to the bottom of the world,
-most often around Y -24. Its yellow-green clumps glow faintly in the dark. You need at least an
-**iron pickaxe**; Fortune gives more Raw Uranium, Silk Touch the ore block itself.
+Uranium is the fuel of nuclear power. Its ingots go into [Fuel Rods](fuel_rod.md) for the
+[Fission Reactor](fission_reactor.md).
 
 <br clear="all" />
+
+## Finding it
+
+- **Uranium Ore** is rare and found deep in the Overworld, from **Y 16** down to the bottom of the
+  world. It is most common around **Y -24**.
+- Its yellow-green clumps glow faintly in the dark.
+- Mine it with at least an **iron pickaxe**. Fortune gives more Raw Uranium; Silk Touch gives the
+  ore block itself.
 
 ## From ore to fuel
 
@@ -28,23 +34,9 @@ most often around Y -24. Its yellow-green clumps glow faintly in the dark. You n
   <ItemIcon id="raw_uranium" />
   <ItemIcon id="uranium_ingot" />
   <ItemIcon id="fuel_rod" />
-  <ItemIcon id="depleted_fuel_rod" />
 </ItemGrid>
 
-- Smelt **Raw Uranium** (or the ore) in a furnace or blast furnace into an **Uranium Ingot**.
-- A **Fuel Rod** is 3 Uranium Ingots in an iron casing.
-
-<RecipeFor id="fuel_rod" />
-
-## Burning fuel
-
-A Fuel Rod lasts **40 minutes** in a [Fission Reactor](fission_reactor.md) at 100% power; its
-durability bar shows the fuel left. At higher power it burns proportionally faster. A spent rod
-becomes a **Depleted Fuel Rod** in the reactor's waste slots.
-
-Depleted Fuel Rods are **nuclear waste**: carried, stored or dropped they make the area
-[radioactive](radiation.md). Take them out of the reactor (by hand or with a hopper under a Reactor
-Port) and treat them in a [Waste Reprocessor](waste_reprocessor.md). If the reactor's waste slots
-fill up, it starts leaking radiation.
+1. Smelt **Raw Uranium** (or the ore) in a furnace or blast furnace into a **Uranium Ingot**.
+2. Craft 3 Uranium Ingots and 6 Iron Ingots into a [Fuel Rod](fuel_rod.md).
 
 Uranium uses the common `c:` tags, so ore processors and machines from other mods handle it too.

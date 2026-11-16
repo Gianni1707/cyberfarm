@@ -2,7 +2,7 @@
 navigation:
   title: Mech Hangar
   parent: mech.md
-  position: 1
+  position: 2
   icon: cyberfarm:mech_hangar
 item_ids:
   - cyberfarm:mech_hangar
@@ -12,8 +12,9 @@ item_ids:
 
 # Mech Hangar
 
-Where your [mech](mech.md) lives: a frame it parks in, on a pad that **charges** its battery,
-**repairs** it and lets you **fit its modules**.
+The Mech Hangar is where your [mech](mech.md) lives. It is a rack the mech parks in, on a pad
+that **charges** its battery, **repairs** it and lets you **fit its modules**. A Mech Frame only
+unfolds on a hangar's pad, so you need one before your first mech.
 
 <GameScene zoom={2} interactive={true}>
   <Block id="cyberfarm:mech_hangar" x="4" y="0" z="0" p:facing="north" />
@@ -67,8 +68,12 @@ on the sides so the mech walks in and out:
   tops and two **arms**, two blocks long, reaching forward from the beam over the pad;
 - a 3x3 <ItemLink id="hangar_pad" /> between the rails, with the space over it left free.
 
-Right-click the console while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. A second click calls them back. The [Multiblock Projector](multiblock_projector.md) shows it too: sneak + right-click to pick *Mech
-Hangar*, then look where the console goes. When it is complete the frames give way to the rack
+Need help placing it? Right-click the console while it is unfinished: bigger drones fly out, each
+projecting a group of the blocks still to place. An amber X marks a block in the way. A second
+click calls them back. The [Multiblock Projector](multiblock_projector.md) shows it too: sneak +
+right-click to pick *Mech Hangar*, then look where the console goes.
+
+When it is complete the frames give way to the rack
 itself: rails with treads and a pale green light line, posts with mint bands braced to the rails,
 the beam and its arms, hydraulic struts, two **clamps** that come down onto a parked mech's
 shoulders and a **gantry arm** riding on the arms, which fits the modules.
@@ -78,12 +83,19 @@ shoulders and a **gantry arm** riding on the arms, which fits the modules.
 A <ItemLink id="mech_frame" /> only unfolds here: right-click the pad and the mech unfolds in the
 middle of it, facing out of the hangar. Walk it back onto the pad and get out to park it: it
 straightens up on the stand by itself, gliding to the middle of the pad and turning to face out,
-and the clamps come down onto its shoulders. While it stands there, empty:
+and the clamps come down onto its shoulders. While it stands there, empty, it is **charged** and
+**repaired**. A mech that **shut down** comes back on once it is fully repaired.
 
-- it is **charged** at up to **4,000 FE/t** from the console's own battery (1,000,000 FE), which
-  you fill with [Energy Conduits](energy_conduit.md) or any mod's cables (up to 8,192 FE/t);
-- it is **repaired**, 1 point of integrity every half second for 400 FE. A mech that **shut down**
-  comes back on once it is fully repaired.
+The charge comes from the console's own battery. Fill it with [Energy Conduits](energy_conduit.md)
+or any mod's cables.
+
+| What | Value |
+| --- | --- |
+| Console battery | 1,000,000 FE |
+| Console input | up to 8,192 FE/t |
+| Charging the mech | up to 4,000 FE/t |
+| Repair | 1 integrity every half second, 400 FE each |
+| Full repair from zero | 100 seconds, 80,000 FE |
 
 You can climb in and walk out at any time: in the hangar the mech crouches and opens to let you
 in just as it does outside.
@@ -96,16 +108,21 @@ battery, the status (charging, repairing, restoring systems for a shut-down mech
 outline with its four **module slots** at their mounts (see [Modules](mech_modules.md)): the jet
 behind the shoulder, the armour on the trunk, the blade and the drill by the arms.
 
-The slots show the modules the parked mech carries. Put a module in its slot to fit it, take it
-out to remove it, and the **gantry arm** does the work: the bridge rolls along the rack's arms,
+The slots show the modules the parked mech carries. Put a module in its slot to fit it. Take it
+out to remove it. The **gantry arm** does the work: the bridge rolls along the rack's arms,
 the gripper comes down to the mount (behind the thrusters, beside a forearm or before the chest) and the module locks in with a
 flash, or comes away held in the gripper; then the arm goes home. The module is on the mech (or off it) the
 moment you move it in its slot, the arm's run is the hangar catching up, and the modules always travel with the mech.
-With no mech on the pad, the slots are empty and take nothing.
 
 The **Fold** button packs the parked mech back up: it crouches, folds its forearms across its belly, bows its head,
 draws its legs in and folds down into its frame, which drops on the pad with the battery's charge and the
-modules in it. It folds only at **full integrity**: a frame keeps no damage, so let the hangar finish the repairs first.
+modules in it.
+
+## Tips
+
+- The mech folds only at **full integrity**: a frame keeps no damage, so let the hangar finish the
+  repairs first.
+- With no mech on the pad, the module slots are empty and take nothing.
 
 <Row>
   <RecipeFor id="mech_hangar" />

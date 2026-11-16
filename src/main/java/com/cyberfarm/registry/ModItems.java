@@ -1,6 +1,11 @@
 package com.cyberfarm.registry;
 
 import java.util.List;
+import com.cyberfarm.block.entity.BatteryBankBlockEntity;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.ItemStack;
+import java.util.function.Consumer;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
@@ -241,7 +246,16 @@ public class ModItems {
     public static final DeferredItem<BlockItem> CRYSTALLIZER = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER);
     public static final DeferredItem<BlockItem> TRINKET_TABLE = ITEMS.registerSimpleBlockItem(ModBlocks.TRINKET_TABLE);
     public static final DeferredItem<BlockItem> HUMAN_DOCK = ITEMS.registerSimpleBlockItem(ModBlocks.HUMAN_DOCK);
-    public static final DeferredItem<BlockItem> BATTERY_BANK = ITEMS.registerSimpleBlockItem(ModBlocks.BATTERY_BANK);
+    /** Its tooltip says what it stores, so the recipe viewers show it next to the recipe. */
+    public static final DeferredItem<BlockItem> BATTERY_BANK = ITEMS.registerItem("battery_bank",
+            p -> new BlockItem(ModBlocks.BATTERY_BANK.get(), p.useBlockDescriptionPrefix()) {
+                @Override
+                public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> tooltip, TooltipFlag flag) {
+                    int cap = BatteryBankBlockEntity.CAPACITY;
+                    tooltip.accept(Component.translatable("tooltip.cyberfarm.battery_bank", String.format("%,d", cap),
+                            String.format("%,d", cap * 27), String.format("%,d", BatteryBankBlockEntity.TRANSFER)).withStyle(ChatFormatting.GRAY));
+                }
+            });
     public static final DeferredItem<BlockItem> CRYSTALLIZER_PORT = ITEMS.registerSimpleBlockItem(ModBlocks.CRYSTALLIZER_PORT,
             p -> p.component(DataComponents.LORE, lore("tooltip.cyberfarm.crystallizer_port", ChatFormatting.LIGHT_PURPLE)));
     public static final DeferredItem<Item> FUSION_CRYSTAL = ITEMS.registerSimpleItem("fusion_crystal", p -> p.rarity(Rarity.RARE));

@@ -59,7 +59,7 @@ public abstract class MachineBlock extends BaseEntityBlock {
     }
 
     /** A port is shown only where the pipe next door actually connects to this side. */
-    private static BlockState plug(BlockState state, Direction side, BlockState neighbor) {
+    static BlockState plug(BlockState state, Direction side, BlockState neighbor) {
         boolean plugged = neighbor.getBlock() instanceof NetworkPipeBlock
                 && neighbor.getValue(NetworkPipeBlock.CONNECTIONS.get(side.getOpposite()));
         return state.setValue(PORTS.get(side), plugged);

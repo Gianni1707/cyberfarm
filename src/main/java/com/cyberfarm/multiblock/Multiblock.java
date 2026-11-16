@@ -21,11 +21,18 @@ import org.jspecify.annotations.Nullable;
 
 /**
  * Shared checks of CyberFarm's big multiblocks (the Fission Reactor tower and the Steam Turbine):
- * a layout is a list of cells, each one a world position that must be a shell block, must be empty,
- * or can be anything.
+ * a layout is a list of cells, each one a world position that must be a shell block (a casing or a port), must be a casing,
+ * must be empty, or can be anything.
  */
 public final class Multiblock {
-    public enum Part { SHELL, EMPTY, ANY }
+    public enum Part {
+        SHELL, CASING, EMPTY, ANY;
+
+        /** Part of the structure's shell: a casing, or a port where ports may go. */
+        public boolean isShell() {
+            return this == SHELL || this == CASING;
+        }
+    }
 
     public record Cell(BlockPos pos, Part part) {}
 
@@ -58,6 +65,11 @@ public final class Multiblock {
                     }
                     if (port.test(state)) {
                         ports.add(cell.pos());
+                    }
+                }
+                case CASING -> {
+                    if (!shell.test(state) || port.test(state)) {
+                        return null;
                     }
                 }
                 case EMPTY -> {
@@ -104,9 +116,18 @@ public final class Multiblock {
         return InteractionResult.PASS;
     }
 
+    /**
+     * Whether a block of a square ring, (a, b) from its axis, faces one of the four flat sides of the octagon the reactor tower
+     * and the turbine hall are drawn as, rather than a diagonal one: within 22.5 degrees of the side's middle, as their
+     * renderers pick the face. Ports go only there, where a pipe coming along a block's axis meets a face.
+     */
+    public static boolean onFlatSide(int a, int b) {
+        return Math.min(Math.abs(a), Math.abs(b)) < Math.max(Math.abs(a), Math.abs(b)) * Math.tan(Math.PI / 8);
+    }
+
     public static boolean isShell(List<Cell> cells, BlockPos pos) {
         for (Cell cell : cells) {
-            if (cell.part() == Part.SHELL && cell.pos().equals(pos)) {
+            if (cell.part().isShell() && cell.pos().equals(pos)) {
                 return true;
             }
         }
@@ -116,7 +137,7 @@ public final class Multiblock {
     /** Lights up (or turns off) every shell block with a FORMED property: casings and ports. */
     public static void setFormed(Level level, List<Cell> cells, boolean formed) {
         for (Cell cell : cells) {
-            if (cell.part() != Part.SHELL) {
+            if (!cell.part().isShell()) {
                 continue;
             }
             BlockState state = level.getBlockState(cell.pos());

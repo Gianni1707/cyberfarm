@@ -2,26 +2,42 @@
 navigation:
   title: The Tech Village
   parent: drone_systems.md
-  position: 9
-  icon: cyberfarm:supply_terminal
+  position: 11
+  icon: cyberfarm:blueprint_disc
 item_ids:
   - cyberfarm:blueprint_disc
 ---
 
 # The Tech Village
 
-Somewhere in the grasslands and woods of the Overworld a lonely **Drone Mechanist** lives in his
+<ItemImage id="cyberfarm:blueprint_disc" scale="2" float="left" />
+
+A tech village is a village you build and grow together with the **Drone Mechanist**. Fill the
+contracts on its [Supply Terminal](supply_terminal.md) and it levels up. At each level the
+Mechanist gives you **Blueprint Discs**: plans for new buildings, which you raise by hand or with
+your drones.
+
+<br clear="all" />
+
+## Finding the Outpost
+
+Somewhere in the grasslands and woods of the Overworld a lonely Drone Mechanist lives in his
 **Outpost**: a white cabin with a dark roof, a porch, a radio mast and solar panels, a vegetable
 garden at its side and a <ItemLink id="supply_terminal" /> on its back wall. Outposts are rare,
-often a thousand blocks and more apart (never less than about 500), in plains, meadows, savannas, forests, taigas and snowy plains.
-The Mechanist keeps close to his terminal.
+often a thousand blocks and more apart (never less than about 500).
+
+They appear in plains, meadows, savannas, forests, taigas and snowy plains. The Mechanist keeps
+close to his terminal.
 
 ## Talking to the Mechanist
 
-**Right-click** him to talk. Click, or press **Space** or **Enter**, to read on. The first time, he
-tells you how he came to live alone, and asks whether you will build a **tech village** with him.
-You can say yes, not now, or ask about that drone incident; if you turn him down he asks again next
-time. At the end of every talk, **Trade** opens his trades and **Goodbye** closes the window.
+**Right-click** him to talk. Click, or press **Space** or **Enter**, to read on.
+
+The first time, he tells you how he came to live alone, and asks whether you will build a **tech
+village** with him. You can say yes, not now, or ask about that drone incident. If you turn him
+down he asks again next time.
+
+At the end of every talk, **Trade** opens his trades and **Goodbye** closes the window.
 
 The player who says yes **founds** the village: the village's goodwill from its contracts goes to
 them. In multiplayer the village is shared: everyone can talk to the Mechanist and raise it.
@@ -29,11 +45,18 @@ them. In multiplayer the village is shared: everyone can talk to the Mechanist a
 ## Village levels
 
 The village grows with its **prosperity**, the emeralds of every contract filled at the terminal
-(see [Supply Contracts](supply_terminal.md)), and with its **buildings**. The terminal shows the
-village's level and the way to the next under its board. Once there are enough points and the
-buildings of the last level stand, **talk to the Mechanist** and he raises the village a level: it
-grows, a baby villager or an iron golem arriving, rings its bell, and makes the founder its hero for
-twenty minutes. At level **10** the village is complete, and every contract pays half again.
+(see [Supply Terminal](supply_terminal.md)), and with its **buildings**. The terminal shows the
+village's level and the way to the next under its board.
+
+To raise the village a level:
+
+1. Collect enough prosperity points (see the table).
+2. Finish the buildings of the last level.
+3. **Talk to the Mechanist**.
+
+The village grows, a baby villager or an iron golem arrives, and it rings its bell. The founder
+becomes its hero for twenty minutes. At level **10** the village is complete, and every contract
+pays half again.
 
 | Level | Prosperity | Blueprints |
 | --- | --- | --- |
@@ -52,25 +75,26 @@ The Watch Tower is the village's defence. Its third tier has two Drone Docks on 
 put a drone with a [Guard Module](modules.md) on each, and add a few [Laser Turrets](laser_turret.md)
 along the palisade to keep raiders and monsters out.
 
-## Blueprint discs
+## Blueprint Discs
 
-<ItemImage id="cyberfarm:blueprint_disc" scale="2" float="left" />
+At each level the Mechanist hands you a <ItemLink id="blueprint_disc" /> for every new building.
 
-At each level the Mechanist hands you a **Blueprint Disc** for every new building. **Right-click**
-a disc to learn it: it is used up, and the building appears in your
-[Multiblock Projector](multiblock_projector.md)'s list. Every player gets their own discs: one who
-was away when the village rose gets theirs at their next talk.
-
-<br clear="all" />
+- **Right-click** a disc to learn it. The disc is used up, and the building appears in your
+  [Multiblock Projector](multiblock_projector.md)'s list.
+- Every player gets their own discs. One who was away when the village rose gets theirs at their
+  next talk.
 
 ## Building
 
 Project a building **inside the village's bounds** and **lock** the projection (sneak +
-right-click). From then on the village watches that spot: build it by hand, or link the projector
-to a [Drone Dock](drone_dock.md) for its Builder drones, who first clear the ground, rocks and trees
-from the site. Once every block of the projection is in
-place, the building is **complete**, and the Mechanist has a word for it at your next talk. Water
-and flower pots are not counted, and the farm's crops are left to you.
+right-click). From then on the village watches that spot.
+
+Build it by hand, or link the projector to a [Builder Swarm Dock](swarm_dock.md) for its Builder
+drones. They first clear the ground, rocks and trees from the site.
+
+Once every block of the projection is in place, the building is **complete**, and the Mechanist
+has a word for it at your next talk. Water and flower pots are not counted, and the farm's crops
+are left to you.
 
 Every building has **three tiers**, and each tier only **adds** blocks to the one before it, so an
 upgrade never takes anything of the building down. Pick an upgrade near its village and the projection

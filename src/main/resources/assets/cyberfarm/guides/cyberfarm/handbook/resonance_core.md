@@ -12,29 +12,27 @@ item_ids:
 
 <ItemImage id="cyberfarm:resonance_core" scale="4" float="left" />
 
-A buildable battery: a polyhedral crystal floats over the pedestal, columns of **Stabilizer
-Pylons** on its sides send out drones that circle it and hold it steady with waves, and a shell of **Resonance Cells** around
-the crystal makes it bigger, tier by tier.
+The Resonance Core is CyberFarm's big battery, from 1,000,000 FE up to 2,000,000,000 FE. It is a
+pedestal with a crystal floating over it, and you build it bigger tier by tier.
 
 <br clear="all" />
 
-## Tiers
+It has three parts:
 
-| Tier | Shell of cells | Stores | Pylon columns | Column height | Distance | Per pylon |
-| --- | --- | --- | --- | --- | --- | --- |
-| 1 | none | 1,000,000 FE | 1 | 2 | 3-8 | 16,000 FE/t |
-| 2 | 3x3x3 (26 cells) | 32,000,000 FE | 2 | 3 | 4-10 | 128,000 FE/t |
-| 3 | 5x5x5 (98 cells) | 256,000,000 FE | 3 | 4 | 5-12 | 512,000 FE/t |
-| 4 | 7x7x7 (218 cells) | 2,000,000,000 FE | 4 | 5 | 6-14 | 2,000,000 FE/t |
+- the **Resonance Core** itself: the pedestal, the battery and its screen;
+- a shell of [Resonance Cells](resonance_cell.md) around the crystal: a bigger shell is a higher tier;
+- columns of [Stabilizer Pylons](stabilizer_pylon.md) on its sides: each sends out a drone that circles
+  the crystal and holds it steady with waves. Power goes in and out **only through the pylons**.
 
 ## Building it
 
 1. Place the **Resonance Core** (the pedestal). Alone it is tier 1.
-2. Build a shell of [Resonance Cells](resonance_cell.md) around the space above it for tiers 2-4.
+2. For tiers 2 to 4, build a shell of [Resonance Cells](resonance_cell.md) in the space right above it.
 3. Put up the columns of [Stabilizer Pylons](stabilizer_pylon.md) the tier asks for, on its sides.
+4. Connect cables to the pylons to fill it and to draw from it (see [Stabilizer Pylon](stabilizer_pylon.md)).
 
 The [Multiblock Projector](multiblock_projector.md) shows tiers 2 to 4, pylons included: sneak +
-right-click to pick it, then click the pedestal.
+right-click to pick the tier, then click the pedestal.
 
 ## What each tier looks like
 
@@ -456,18 +454,32 @@ A 7x7x7 shell of 218 cells and four columns, five blocks tall, six blocks away.
 
 ## The screen
 
-Right-click **any part** of the core to open it: the pedestal, any cell of the shell (finished or
-not) or any block of a pylon column lined up with it. The screen shows:
+Right-click **any part** of the core to open its screen: the pedestal, any cell of the shell (finished
+or not) or any block of a pylon column lined up with it. The screen shows:
 
-- its **tier and shell**, and whether it is **Online** or **Unstable**;
+- its **tier and shell**, and whether it is **Online** (working) or **Unstable** (too few pylon columns,
+  so nothing goes in or out);
 - the pylon columns it has and needs (point at the line for what this tier asks for);
 - **what it found on each side**: a linked pylon, or why one does not count (no pylon, too close,
-  too far, too short, beam blocked); point at a side for the column's height and distance;
-- how much each pylon carries and the FE stored.
+  too far, too short, beam blocked). Point at a side for the column's height and distance;
+- how much each pylon carries, and the FE stored.
+
+## Numbers
+
+| Tier | Shell of cells | Stores | Pylon columns | Column height | Distance | Per pylon column |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | none | 1,000,000 FE | 1 | 2 | 3-8 | 16,000 FE/t |
+| 2 | 3x3x3 (26 cells) | 32,000,000 FE | 2 | 3 | 4-10 | 128,000 FE/t |
+| 3 | 5x5x5 (98 cells) | 256,000,000 FE | 3 | 4 | 5-12 | 512,000 FE/t |
+| 4 | 7x7x7 (218 cells) | 2,000,000,000 FE | 4 | 5 | 6-14 | 2,000,000 FE/t |
+
+Column height is the least a column needs. Distance is counted in blocks from the pedestal.
+
+## Tips
 
 - Breaking a cell of the shell drops the core back a tier, and **the energy that no longer fits is
-  lost**: empty the core before rebuilding it.
-- Breaking the pedestal leaves the shell's cells where they are, visible again, but **the energy
+  lost**. Empty the core before you rebuild it.
+- Breaking the pedestal leaves the shell's cells where they are, visible again, but **all the energy
   stored is lost**.
 
 <RecipeFor id="resonance_core" />
