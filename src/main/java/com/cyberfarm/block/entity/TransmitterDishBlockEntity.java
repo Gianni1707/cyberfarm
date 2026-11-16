@@ -219,8 +219,8 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
     }
 
     /**
-     * The user's "recharge from afar": the Energy Sphere of every player in reach who may see this network (its owner,
-     * their team, anyone if it is public) is topped up, with the same 10% lost on the way as to a receiver, up to the
+     * The user's "recharge from afar": a private network tops up only its owner's Energy Sphere, a team one the team's
+     * too, a public one every player's in reach, with the same 10% lost on the way as to a receiver, up to the
      * module's power and the sphere's own intake.
      */
     /** Whether it charges the spheres in reach at all: the button in its GUI. */
@@ -338,7 +338,7 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
         DishNetworks.Network network = DishNetworks.get(server.getServer()).get(networkId);
         return switch (id) {
             case 0 -> network != null ? network.colour : 0;
-            case 1 -> network != null && network.isPublic ? 1 : 0;
+            case 1 -> network != null ? network.access : DishNetworks.Network.PRIVATE;
             case 2 -> tier();
             case 3 -> servedIndex() + 1;
             case 4 -> network != null ? network.receivers.size() : 0;

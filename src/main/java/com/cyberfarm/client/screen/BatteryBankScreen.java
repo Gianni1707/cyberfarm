@@ -18,7 +18,7 @@ public class BatteryBankScreen extends MachineScreen<BatteryBankMenu> {
     @Override
     protected void extractMachineBackground(GuiGraphicsExtractor graphics, int x, int y) {
         graphics.text(font, Component.translatable("gui.cyberfarm.battery_bank.charge"), x + 6, y + 16, TEXT_DIM, false);
-        // How the sides are set: with the Survey Tool, on the bank itself
+        // How the sides are set: with the Cable Swapper, on the bank itself
         graphics.text(font, Component.translatable("gui.cyberfarm.battery_bank.sides_hint"), x + 36, y + 24, TEXT_DIM, false);
         graphics.text(font, Component.translatable("gui.cyberfarm.battery_bank.sides_hint2"), x + 36, y + 34, TEXT_DIM, false);
         // The bank's charge on one line, the flows on the next

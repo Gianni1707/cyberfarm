@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.block.CrystallizerBlock;
 import com.cyberfarm.block.CyberFrameBlock;
 import com.cyberfarm.block.MachineBlock;
@@ -156,7 +157,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
             }
         }
         boolean canRun = formed && getStack(ISOTOPE).is(ModItems.ISOTOPE_SHARD.get()) && getStack(AMETHYST).getCount() >= AMETHYST_PER_CRYSTAL
-                && getStack(AMETHYST).is(Items.AMETHYST_SHARD) && acid.amount() >= ACID_PER_CRYSTAL
+                && getStack(AMETHYST).is(Tags.Items.GEMS_AMETHYST) && acid.amount() >= ACID_PER_CRYSTAL
                 && hasRoomFor(OUTPUT, ModItems.FUSION_CRYSTAL.get());
         int before = progress;
         if (work(canRun, ENERGY_PER_TICK, PROCESS_TIME)) {
@@ -248,7 +249,7 @@ public class CrystallizerBlockEntity extends MachineBlockEntity {
     protected boolean isItemValid(int index, ItemResource resource) {
         return switch (index) {
             case ISOTOPE -> resource.is(ModItems.ISOTOPE_SHARD.get());
-            case AMETHYST -> resource.is(Items.AMETHYST_SHARD);
+            case AMETHYST -> resource.is(Tags.Items.GEMS_AMETHYST);
             default -> false;
         };
     }

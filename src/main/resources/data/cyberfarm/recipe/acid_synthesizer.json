@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
-    "C": "minecraft:copper_ingot",
-    "G": "minecraft:glass",
+    "I": "#c:ingots/iron",
+    "C": "#c:ingots/copper",
+    "G": "#c:glass_blocks",
     "X": "minecraft:cauldron",
     "D": "cyberfarm:basic_circuit"
   },

@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "C": "minecraft:light_gray_concrete",
-    "I": "minecraft:iron_ingot"
+    "I": "#c:ingots/iron"
   },
   "pattern": [
     "CIC",

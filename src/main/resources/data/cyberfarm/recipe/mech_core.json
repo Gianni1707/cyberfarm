@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "B": "cyberfarm:battery_cell",
     "E": "cyberfarm:elite_frame",
     "X": "cyberfarm:fusion_crystal"

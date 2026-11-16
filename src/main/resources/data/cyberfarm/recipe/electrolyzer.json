@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "C": "cyberfarm:basic_circuit",
-    "G": "minecraft:glass",
+    "G": "#c:glass_blocks",
     "X": "minecraft:cauldron",
     "B": "cyberfarm:battery_cell"
   },

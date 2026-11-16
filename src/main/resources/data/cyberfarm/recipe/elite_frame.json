@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "K": "cyberfarm:carbon_fiber",
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "C": "cyberfarm:elite_circuit",
     "F": "cyberfarm:advanced_frame",
     "E": "minecraft:ender_eye"

@@ -5,7 +5,7 @@
     "A": "#c:ingots/aluminum",
     "X": "minecraft:lightning_rod",
     "D": "cyberfarm:advanced_circuit",
-    "C": "minecraft:copper_ingot"
+    "C": "#c:ingots/copper"
   },
   "pattern": [
     "AXA",

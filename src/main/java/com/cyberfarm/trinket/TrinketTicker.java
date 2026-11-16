@@ -34,6 +34,9 @@ public final class TrinketTicker {
     /** The Gravity Boots' modifier: gravity times zero. The client holds the height (TrinketClient#hover). */
     public static final Identifier HOVER = CyberFarm.id("gravity_boots");
     private static final AttributeModifier NO_GRAVITY = new AttributeModifier(HOVER, -1.0, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    /** +40% walking speed while hovering. */
+    public static final double HOVER_SPEED_BONUS = 0.4;
+    private static final AttributeModifier HOVER_SPEED = new AttributeModifier(HOVER, HOVER_SPEED_BONUS, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
 
     public static final double POCKET_DRONE_RANGE = 8.0;
     public static final int FEED_COST = 50;
@@ -111,6 +114,15 @@ public final class TrinketTicker {
                 gravity.addTransientModifier(NO_GRAVITY);
             } else {
                 gravity.removeModifier(HOVER);
+            }
+        }
+        // A little faster while hovering (the user's call: without it they only float)
+        AttributeInstance speed = player.getAttribute(Attributes.MOVEMENT_SPEED);
+        if (speed != null && active != speed.hasModifier(HOVER)) {
+            if (active) {
+                speed.addTransientModifier(HOVER_SPEED);
+            } else {
+                speed.removeModifier(HOVER);
             }
         }
         if (active) {

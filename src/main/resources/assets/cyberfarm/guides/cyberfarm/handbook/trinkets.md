@@ -58,6 +58,7 @@ holders (with the sphere's and the drone's charge under them), and everything in
 - the [Multiblock Projector](multiblock_projector.md): **Y** takes it in hand, and puts it back;
 - the [Survey Tool](drone_dock.md): **U** takes it in hand, and puts it back;
 - the **Pocket Drone**: **K** sends it out and calls it back.
+- the **Cable Swapper** (see [Cables](cables.md)): **I** brings it to hand and puts it back.
 
 If your hand is full, what you hold moves to a free slot of your inventory.
 
@@ -65,8 +66,8 @@ If your hand is full, what you hold moves to a free slot of your inventory.
 
 An orb of plasma holding **500,000 FE**. Every trinket runs on it; with no sphere, or an empty one,
 they rest. Charge it on a **Human Dock** (below), in a Battery Bank's slot, in another mod's charger, or
-**from afar**: a [Transmitter Dish](dish_transmission.md) tops up the sphere of every player in its reach who can
-see its network (yours, your team's, or a public one), at the module's power, losing 10% on the way.
+**from afar**: a [Transmitter Dish](dish_transmission.md) tops up the sphere of the players in its reach: only the
+network owner's if it is Private, the team's too if it is Team, everyone's if it is Public, at the module's power, losing 10% on the way.
 
 Two more tiers, made at the Trinket Table from the tier below, which keeps its charge:
 
@@ -103,8 +104,8 @@ or not.
 
 You hover over the ground, following the terrain like a hovercraft: steps and slabs disappear, and
 you glide over water and lava without touching them. Press the **Gravity Boots height** key (H) to
-pick **0.5, 1 or 2 blocks**, or off. Walking, sprinting and jumping work as on foot, with a touch of
-drift, as on a little ice, when you stop or turn; **sneak to land**. Rings of light leave your soles
+pick **0.5, 1 or 2 blocks**, or off. You move **40% faster** while hovering; walking, sprinting and
+jumping work as on foot, with a touch of drift, as on a little ice, when you stop or turn; **sneak to land**. Rings of light leave your soles
 and sink to the ground under you.
 While they work you take **no fall damage**: off a cliff, the field slows you down and catches you
 at your height above the ground below.
@@ -166,7 +167,7 @@ that fills and empties as one, up to 4,050,000 FE (a [Resonance Core](resonance_
 more). Its **display** shows at a glance the bank's charge and the FE/t coming in and going out, and a
 gauge on each side fills as it charges. Joined blocks share **one display** across the whole front, and a
 bigger one spells the numbers out and adds what the bank stores; the side gauges run its full height. Its GUI shows the whole bank's charge and the FE/t flowing in and out, and has a slot that charges an
-item. Each side of the bank is set with the [Survey Tool](drone_dock.md): hold it to see every side
+item. Each side of the bank is set with the [Cable Swapper](cables.md): hold it to see every side
 framed in its mode's colour, and right-click a side to switch it:
 
 - **In** (green, the default): the side takes FE from cables and machines;

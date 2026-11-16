@@ -3,7 +3,7 @@
   "category": "equipment",
   "key": {
     "W": "minecraft:yellow_wool",
-    "L": "minecraft:leather"
+    "L": "#c:leathers"
   },
   "pattern": [
     "W W",

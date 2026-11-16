@@ -1,5 +1,6 @@
 package com.cyberfarm.menu;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
@@ -17,7 +18,7 @@ public class CoolantMixerMenu extends MachineMenu {
         this(containerId, inventory, new ItemStacksResourceHandler(1) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
-                return resource.is(Items.LAPIS_LAZULI) || resource.is(Items.BLUE_ICE);
+                return resource.is(Tags.Items.GEMS_LAPIS) || resource.is(Items.BLUE_ICE);
             }
         }, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 6), ContainerLevelAccess.NULL);
     }

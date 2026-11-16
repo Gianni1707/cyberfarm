@@ -1,5 +1,6 @@
 package com.cyberfarm.block.entity;
 
+import net.neoforged.neoforge.common.Tags;
 import com.cyberfarm.block.SmallMultiblockBlock;
 import com.cyberfarm.fluid.GasTank;
 import com.cyberfarm.fluid.TankGroup;
@@ -46,7 +47,7 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
     private record Recipe(Fluid input, Item item, Fluid output) {}
 
     private static @Nullable Recipe recipeFor(Fluid input, ItemStack item) {
-        if (input == Fluids.WATER && item.is(Items.LAPIS_LAZULI)) {
+        if (input == Fluids.WATER && item.is(Tags.Items.GEMS_LAPIS)) {
             return new Recipe(Fluids.WATER, Items.LAPIS_LAZULI, ModFluids.COOLANT.get());
         }
         if (input == ModFluids.COOLANT.get() && item.is(Items.BLUE_ICE)) {
@@ -121,7 +122,7 @@ public class CoolantMixerBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
-        return resource.is(Items.LAPIS_LAZULI) || resource.is(Items.BLUE_ICE);
+        return resource.is(Tags.Items.GEMS_LAPIS) || resource.is(Items.BLUE_ICE);
     }
 
     @Override

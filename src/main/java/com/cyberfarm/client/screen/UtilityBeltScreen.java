@@ -52,15 +52,15 @@ public class UtilityBeltScreen extends AbstractContainerScreen<UtilityBeltMenu> 
         graphics.text(font, title, titleLabelX, titleLabelY, MINT, false);
         graphics.text(font, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TEXT, false);
         // Each holder's name above it
-        for (int holder = 0; holder < 4; holder++) {
+        for (int holder = 0; holder < UtilityBeltItem.SLOTS; holder++) {
             Component name = Component.translatable("gui.cyberfarm.utility_belt.slot_" + holder);
             int centre = UtilityBeltMenu.SLOT_X + holder * UtilityBeltMenu.SLOT_PITCH + 8;
             graphics.text(font, name, centre - font.width(name) / 2, 22, GLOW, false);
         }
         // Under each tool its key, in the panel below the bars (the names above already say what it is)
         // shortcut: a key bound to a long name ("Left Shift") runs past its column, still inside the panel; truncate if it bothers
-        KeyMapping[] keys = {null, TrinketClient.PROJECTOR, TrinketClient.SURVEY_TOOL, TrinketClient.DRONE};
-        for (int holder = 1; holder < 4; holder++) {
+        KeyMapping[] keys = {null, TrinketClient.PROJECTOR, TrinketClient.SURVEY_TOOL, TrinketClient.DRONE, TrinketClient.CABLE_SWAPPER};
+        for (int holder = 1; holder < keys.length; holder++) {
             Component key = Component.translatable("gui.cyberfarm.utility_belt.key", keys[holder].getTranslatedKeyMessage());
             int centre = UtilityBeltMenu.SLOT_X + holder * UtilityBeltMenu.SLOT_PITCH + 8;
             graphics.text(font, key, centre - font.width(key) / 2, 59, TEXT, false);

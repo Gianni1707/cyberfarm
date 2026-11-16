@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "C": "cyberfarm:elite_circuit",
-    "R": "minecraft:redstone",
+    "R": "#c:dusts/redstone",
     "T": "cyberfarm:gas_turbine",
     "X": "cyberfarm:turbine_casing"
   },

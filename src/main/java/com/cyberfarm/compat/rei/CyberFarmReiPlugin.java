@@ -1,5 +1,7 @@
 package com.cyberfarm.compat.rei;
 
+import net.minecraft.world.inventory.CraftingMenu;
+import com.cyberfarm.menu.TrinketTableMenu;
 import com.cyberfarm.client.screen.DroneDockScreen;
 import com.cyberfarm.client.screen.MachineScreen;
 import com.cyberfarm.compat.AssemblyExample;
@@ -12,6 +14,8 @@ import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import me.shedaniel.rei.forge.REIPluginClient;
@@ -39,6 +43,14 @@ public class CyberFarmReiPlugin implements REIClientPlugin {
         zones.register(MachineScreen.class, (MachineScreen<?> screen) -> screen.addonArea().stream()
                 .map(area -> new Rectangle(area.getX(), area.getY(), area.getWidth(), area.getHeight()))
                 .toList());
+    }
+
+    @Override
+    public void registerTransferHandlers(TransferHandlerRegistry registry) {
+        // The "+" on a Trinket Table page fills the table's grid; on a crafting table only the grid, no result (the user's choice)
+        var table = MachineDisplay.id(MachineExample.Machine.TRINKET_TABLE);
+        registry.register(SimpleTransferHandler.create(TrinketTableMenu.class, table, new SimpleTransferHandler.IntRange(1, 10)));
+        registry.register(SimpleTransferHandler.create(CraftingMenu.class, table, new SimpleTransferHandler.IntRange(1, 10)));
     }
 
     @Override

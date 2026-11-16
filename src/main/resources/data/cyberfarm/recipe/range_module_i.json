@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "N": "minecraft:gold_nugget",
-    "X": "minecraft:amethyst_shard",
-    "R": "minecraft:redstone",
+    "N": "#c:nuggets/gold",
+    "X": "#c:gems/amethyst",
+    "R": "#c:dusts/redstone",
     "C": "cyberfarm:advanced_circuit"
   },
   "pattern": [

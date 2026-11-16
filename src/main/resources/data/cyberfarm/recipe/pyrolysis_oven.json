@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": "minecraft:iron_ingot",
+    "I": "#c:ingots/iron",
     "C": "cyberfarm:basic_circuit",
     "P": "cyberfarm:gas_pipe",
     "F": "minecraft:blast_furnace"

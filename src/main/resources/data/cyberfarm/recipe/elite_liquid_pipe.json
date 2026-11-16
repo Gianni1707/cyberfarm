@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": "cyberfarm:advanced_liquid_pipe",
-    "D": "minecraft:diamond",
+    "D": "#c:gems/diamond",
     "U": "cyberfarm:advanced_circuit"
   },
   "pattern": [
