@@ -4,7 +4,6 @@ import java.util.List;
 import org.slf4j.Logger;
 
 import com.cyberfarm.block.FluidTankBlock;
-import com.cyberfarm.block.HiddenFrameBlock;
 import com.cyberfarm.block.MethaneExtractorBlock;
 import com.cyberfarm.block.MachineBlock;
 import com.cyberfarm.block.entity.CrystallizerBlockEntity;
@@ -153,13 +152,16 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BIOMASS_PRESS.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.BIO_DIGESTER.get(), (be, side) -> be.getTank());
-        // A press's frame has its funnel on top: a hopper there feeds the press
+        // Any frame of a small machine takes cables, pipes and hoppers too, so they need not all crowd onto the machine block:
+        // it hands over what the machine itself offers on that side (a press's funnel frame feeds the press this way)
         event.registerBlock(Capabilities.Item.BLOCK, (level, pos, state, be, side) -> {
-            BlockPos below = pos.below();
-            return state.getValue(HiddenFrameBlock.TO_MACHINE) == Direction.DOWN && level.getBlockState(below).is(ModBlocks.BIOMASS_PRESS.get())
-                    ? level.getCapability(Capabilities.Item.BLOCK, below, side) : null;
+            BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
+            return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity ? level.getCapability(Capabilities.Item.BLOCK, machine, side) : null;
         }, ModBlocks.HIDDEN_FRAME.get());
-        // Any frame of a small machine takes cables too, so they need not all crowd onto the machine block
+        event.registerBlock(Capabilities.Fluid.BLOCK, (level, pos, state, be, side) -> {
+            BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
+            return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity ? level.getCapability(Capabilities.Fluid.BLOCK, machine, side) : null;
+        }, ModBlocks.HIDDEN_FRAME.get());
         event.registerBlock(Capabilities.Energy.BLOCK, (level, pos, state, be, side) -> {
             BlockPos machine = ModBlocks.HIDDEN_FRAME.get().machine(level, pos, state);
             return level.getBlockEntity(machine) instanceof SmallMultiblockBlockEntity small ? small.getEnergy() : null;
@@ -247,9 +249,9 @@ public class CyberFarm {
             return crystallizer != null ? crystallizer.portItems() : null;
         }, ModBlocks.CYBER_FRAME.get());
         // The reactor is reached through its ports (and the controller itself), only while the tower is formed
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getItemHandler());
-        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getFluidHandler());
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.getEnergyHandler());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getItemHandler() : null);
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getFluidHandler() : null);
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.REACTOR_PORT.get(), (be, side) -> be.opensTo(side) ? be.getEnergyHandler() : null);
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),
                 (be, side) -> be.isFormed() ? be.portItems() : null);
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.REACTOR_CONTROLLER.get(),

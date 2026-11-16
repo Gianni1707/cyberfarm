@@ -19,20 +19,26 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
     private static final int COOLANT_X = 28;
     private static final int STEAM_X = 152;
     private static final int TANK_Y = 18;
-    private static final int TANK_HEIGHT = 98;
+    private static final int TANK_HEIGHT = 88;
+    /** The small buttons under the coolant and steam tanks. */
+    private static final int VALVE_Y = 109;
+    private static final int VALVE_HEIGHT = 9;
     private static final int CORE_X = 125;
     private static final int CORE_Y = 20;
     private static final int TEMP_X = 50;
-    private static final int TEMP_Y = 86;
+    private static final int TEMP_Y = 85;
     private static final int TEMP_WIDTH = 96;
     private static final int BUTTON_Y = 106;
     private static final int BUTTON_SIZE = 11;
     private static final int MINUS_X = 50;
     private static final int PLUS_X = 135;
     private static final String[] SIZE_NAMES = {"", "small", "medium", "large"};
+    /** The colour of what each tank takes, on a cap over it: water, coolant, steam. */
+    private static final int WATER_CAP = 0xFF3F6FE4, COOLANT_CAP = 0xFF1FB8A8, STEAM_CAP = 0xFFE4EAEE;
 
     public ReactorScreen(ReactorMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 176, 218);
+        // The block's own name would run into the size label on the right
+        super(menu, inventory, Component.translatable("gui.cyberfarm.reactor.title"), 176, 218);
         flatBackground("reactor");
     }
 
@@ -42,6 +48,9 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         drawTank(graphics, x + WATER_X, y + TANK_Y, TANK_HEIGHT, menu.getWater(), cap, menu.getWaterFluid());
         drawTank(graphics, x + COOLANT_X, y + TANK_Y, TANK_HEIGHT, menu.getCoolant(), cap, menu.getCoolantFluid());
         drawTank(graphics, x + STEAM_X, y + TANK_Y, TANK_HEIGHT, menu.getSteam(), cap, menu.getSteamFluid());
+        graphics.fill(x + WATER_X, y + TANK_Y - 4, x + WATER_X + TANK_WIDTH, y + TANK_Y - 2, WATER_CAP);
+        graphics.fill(x + COOLANT_X, y + TANK_Y - 4, x + COOLANT_X + TANK_WIDTH, y + TANK_Y - 2, COOLANT_CAP);
+        graphics.fill(x + STEAM_X, y + TANK_Y - 4, x + STEAM_X + TANK_WIDTH, y + TANK_Y - 2, STEAM_CAP);
 
         // Fuel slots the tower does not burn
         int usable = menu.getSize() == 0 ? ReactorControllerBlockEntity.FUEL_SLOTS : menu.getUsableRods();
@@ -65,7 +74,11 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
             }
         }
 
-        graphics.text(font, Component.translatable("gui.cyberfarm.reactor.waste"), x + ReactorMenu.WASTE_X + 73, y + ReactorMenu.WASTE_Y + 4, TEXT_DIM, false);
+        // Waste slots framed in amber instead of a label squeezed against the steam tank
+        for (int i = 0; i < ReactorControllerBlockEntity.WASTE_SLOTS; i++) {
+            int sx = x + ReactorMenu.WASTE_X + i * 18, sy = y + ReactorMenu.WASTE_Y;
+            graphics.fill(sx - 1, sy + 16, sx + 17, sy + 17, WARM);
+        }
 
         // Temperature: green, then amber past half, red past the alarm threshold
         int temperature = menu.getTemperature();
@@ -96,7 +109,14 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         }
         // Its own dark strip, so red and amber stay readable on the enamel
         graphics.fill(x + TEMP_X - 1, y + 94, x + TEMP_X + TEMP_WIDTH + 1, y + 104, PANEL_DARK);
-        graphics.text(font, status, x + TEMP_X, y + 95, color, false);
+        // Centred, and never wider than its strip: a long line ran into the steam tank's frame
+        int statusX = x + TEMP_X + Math.max(0, (TEMP_WIDTH - font.width(status)) / 2);
+        graphics.text(font, status, statusX, y + 95, color, false);
+
+        // Valves: pour the coolant away (power Off only), vent the steam the turbines leave
+        boolean canDump = menu.getBoost() == 0 && menu.getCoolant() > 0;
+        drawValve(graphics, x + COOLANT_X, y + VALVE_Y, false, canDump ? WARM : STEEL_DIM);
+        drawValve(graphics, x + STEAM_X, y + VALVE_Y, true, menu.isDumpingSteam() ? ACCENT : STEEL_DIM);
 
         // Power controls: [-] 250% [+], with the tower's maximum
         drawButton(graphics, x + MINUS_X, y + BUTTON_Y, "-");
@@ -117,6 +137,14 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         }
     }
 
+    /** A tank's tooltip that says what goes in or comes out, not just what it holds. */
+    private void roleTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY, int tankX, String role, int amount, int capacity) {
+        if (isHovering(tankX - 1, TANK_Y - 5, TANK_WIDTH + 2, TANK_HEIGHT + 6, mouseX, mouseY)) {
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reactor.tank." + role,
+                    String.format("%,d", amount), String.format("%,d", capacity)), mouseX, mouseY);
+        }
+    }
+
     private void drawButton(GuiGraphicsExtractor graphics, int bx, int by, String label) {
         graphics.fill(bx - 1, by - 1, bx + BUTTON_SIZE + 1, by + BUTTON_SIZE + 1, SLOT_BORDER);
         graphics.fill(bx, by, bx + BUTTON_SIZE, by + BUTTON_SIZE, PANEL_LIGHT);
@@ -125,11 +153,26 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         graphics.text(font, Component.literal(label), bx + (BUTTON_SIZE - font.width(label)) / 2 + 1, by + 2, ACCENT, false);
     }
 
+    /** A tank-wide button with an arrow: down drains, up vents. */
+    private static void drawValve(GuiGraphicsExtractor graphics, int bx, int by, boolean up, int color) {
+        graphics.fill(bx - 1, by - 1, bx + TANK_WIDTH + 1, by + VALVE_HEIGHT + 1, SLOT_BORDER);
+        graphics.fill(bx, by, bx + TANK_WIDTH, by + VALVE_HEIGHT, PANEL_LIGHT);
+        graphics.fill(bx, by, bx + TANK_WIDTH, by + 1, STEEL_MID);
+        int mid = bx + TANK_WIDTH / 2;
+        for (int row = 0; row < 4; row++) {
+            int half = up ? row : 3 - row;
+            graphics.fill(mid - half - 1, by + 2 + row, mid + half + 1, by + 3 + row, color);
+        }
+        graphics.fill(mid - 1, up ? by + 6 : by + 1, mid + 1, up ? by + 8 : by + 2, color);
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (event.button() == 0) {
             int button = isHovering(MINUS_X, BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE, event.x(), event.y()) ? ReactorMenu.BUTTON_BOOST_DOWN
-                    : isHovering(PLUS_X, BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE, event.x(), event.y()) ? ReactorMenu.BUTTON_BOOST_UP : -1;
+                    : isHovering(PLUS_X, BUTTON_Y, BUTTON_SIZE, BUTTON_SIZE, event.x(), event.y()) ? ReactorMenu.BUTTON_BOOST_UP
+                    : isHovering(COOLANT_X, VALVE_Y, TANK_WIDTH, VALVE_HEIGHT, event.x(), event.y()) ? ReactorMenu.BUTTON_DUMP_COOLANT
+                    : isHovering(STEAM_X, VALVE_Y, TANK_WIDTH, VALVE_HEIGHT, event.x(), event.y()) ? ReactorMenu.BUTTON_DUMP_STEAM : -1;
             if (button >= 0) {
                 minecraft.gameMode.handleInventoryButtonClick(menu.containerId, button);
                 minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
@@ -143,9 +186,9 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
     protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         super.extractTooltip(graphics, mouseX, mouseY);
         int cap = ReactorControllerBlockEntity.TANK_CAPACITY;
-        tankTooltip(graphics, mouseX, mouseY, WATER_X, TANK_Y, TANK_HEIGHT, menu.getWater(), cap, menu.getWaterFluid());
-        tankTooltip(graphics, mouseX, mouseY, COOLANT_X, TANK_Y, TANK_HEIGHT, menu.getCoolant(), cap, menu.getCoolantFluid());
-        tankTooltip(graphics, mouseX, mouseY, STEAM_X, TANK_Y, TANK_HEIGHT, menu.getSteam(), cap, menu.getSteamFluid());
+        roleTooltip(graphics, mouseX, mouseY, WATER_X, "water", menu.getWater(), cap);
+        roleTooltip(graphics, mouseX, mouseY, COOLANT_X, menu.getCoolantFluid() == 7 ? "cryo" : "coolant", menu.getCoolant(), cap);
+        roleTooltip(graphics, mouseX, mouseY, STEAM_X, "steam", menu.getSteam(), cap);
         if (isHovering(TEMP_X - 1, TEMP_Y - 1, TEMP_WIDTH + 2, 8, mouseX, mouseY)) {
             int celsius = 25 + menu.getTemperature() * 1175 / 1000;
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reactor.temperature",
@@ -157,6 +200,14 @@ public class ReactorScreen extends MachineScreen<ReactorMenu> {
         }
         if (isHovering(MINUS_X, BUTTON_Y, PLUS_X + BUTTON_SIZE - MINUS_X, BUTTON_SIZE, mouseX, mouseY) && menu.getSize() > 0) {
             graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reactor.max_power", menu.getMaxBoost()), mouseX, mouseY);
+        }
+        if (isHovering(COOLANT_X, VALVE_Y, TANK_WIDTH, VALVE_HEIGHT, mouseX, mouseY)) {
+            String key = menu.getBoost() > 0 ? "dump_coolant.locked" : "dump_coolant";
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reactor." + key), mouseX, mouseY);
+        }
+        if (isHovering(STEAM_X, VALVE_Y, TANK_WIDTH, VALVE_HEIGHT, mouseX, mouseY)) {
+            String key = menu.isDumpingSteam() ? "dump_steam.on" : "dump_steam.off";
+            graphics.setTooltipForNextFrame(font, Component.translatable("gui.cyberfarm.reactor." + key), mouseX, mouseY);
         }
         if (hoveredSlot != null && !hoveredSlot.hasItem() && hoveredSlot.index < ReactorControllerBlockEntity.FUEL_SLOTS + ReactorControllerBlockEntity.WASTE_SLOTS) {
             boolean fuel = hoveredSlot.index < ReactorControllerBlockEntity.FUEL_SLOTS;
