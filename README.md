@@ -14,6 +14,20 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 
 ## What's new
 
+**1.3: the Cable Swapper**
+- The **Cable Swapper** upgrades a whole line of cables or pipes to the next tier in one click, from
+  the cables in your inventory; it works on other mods' cables too (a Mekanism Basic Universal Cable
+  becomes an Advanced one), sets the Battery Bank's sides, and rides on your Utility Belt.
+- **Recipes take any mod's materials**: aluminum, uranium, iron, copper, gold, glass and the rest through
+  the common tags, in crafting recipes, at the Trinket Table and in the machines.
+- **JEI and REI** fill the Trinket Table's grid with "+".
+- **Dish networks** are Private, Team or Public; a team can be a vanilla team, an FTB Teams team or an
+  Open Parties and Claims party.
+- **Gravity Boots** are 40% faster while hovering.
+
+<details>
+<summary>Earlier versions</summary>
+
 **1.2: the trinket update**
 - **Trinkets** in a tab of their own next to the inventory (or Curios slots), with no durability,
   all powered by an **Energy Sphere** on your belt (500k, 2M or 8M FE):
@@ -28,9 +42,6 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
   3x3x3 behind one display.
 - Transmitter Dishes charge the spheres of players in range. Methane Extractors give more gas, and
   better drone frames and Speed Addons now make the work faster, not just the flight.
-
-<details>
-<summary>Earlier versions</summary>
 
 **1.1: balance and fixes**
 - A biogas rebalance, cheaper Advanced and Elite cables and pipes, and a round of fixes.
@@ -225,7 +236,8 @@ grown in the **Crystallizer** from reactor waste.
 to blocks of any mod, and their glass shows what flows through them. Right-click a cable's arm to pull
 out of a battery, tank or machine. **Liquid Tanks** and **Gas Tanks** store 32 buckets each and merge
 with the tanks next to them into one big vessel, its fluid seen through the glass. A **Water Pump**
-standing on a water source gives an endless supply.
+standing on a water source gives an endless supply. The **Cable Swapper** upgrades a whole line to the next tier
+in one click.
 
 ## Trinkets
 
@@ -242,6 +254,8 @@ Transmitter Dish.
 
 - **JEI** and **REI**: recipe pages for every machine, drone assembly and info pages.
 - **Curios**: trinkets go in Curios slots when it is installed.
+- **FTB Teams** and **Open Parties and Claims**: their teams and parties count as a dish network's team.
+- The **Cable Swapper** upgrades other mods' cables and pipes, within their own mod.
 - Fluids, items and energy use the standard NeoForge capabilities and common `c:` tags (aluminum is
   `c:ingots/aluminum`), so pipes, tanks and machines of other mods work with CyberFarm's and the
   other way round.
