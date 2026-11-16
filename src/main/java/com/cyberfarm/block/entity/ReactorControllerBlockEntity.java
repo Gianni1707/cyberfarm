@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Inventory;
@@ -29,6 +30,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
@@ -76,6 +78,8 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
     private int heat;
     private int boost;
     private int coolantWear;
+    /** Vents the steam the turbines leave behind, so a full steam tank never stops the cooling. */
+    private boolean dumpSteam;
 
     public ReactorControllerBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntities.REACTOR_CONTROLLER.get(), pos, state, FUEL_SLOTS + WASTE_SLOTS, 0, 0, 0, TowerSize.values());
@@ -176,6 +180,14 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
         for (BlockPos port : ports) {
             steam.pushToNeighbors(level, port, PORT_OUTPUT);
         }
+        // Half the tank stays free: more room than the largest tower's cooling fills in a tick
+        int excess = steam.amount() - steam.capacity() / 2;
+        if (dumpSteam && excess > 0) {
+            steam.drain(excess);
+            if (level.getGameTime() % 40 == 0) {
+                level.playSound(null, pos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 0.6F);
+            }
+        }
     }
 
     /** Breaking a hot tower does not save it: the core melts down anyway. */
@@ -215,6 +227,20 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
         int max = size != null ? size.maxBoost() : TowerSize.SMALL.maxBoost();
         boost = Math.clamp(boost + steps * BOOST_STEP, 0, max);
         setChanged();
+    }
+
+    public void toggleDumpSteam() {
+        dumpSteam = !dumpSteam;
+        setChanged();
+    }
+
+    /** Pours the primary loop away, to switch Coolant and Cryo Coolant. Only with the power Off. */
+    public void dumpCoolant() {
+        if (boost == 0 && coolant.amount() > 0 && level != null) {
+            coolant.drain(coolant.amount());
+            coolantWear = 0;
+            level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.8F, 0.8F);
+        }
     }
 
     /** The core overheated: the rods melt and the core blows up (power and block damage from the common config). */
@@ -342,13 +368,14 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
             case 13 -> size() != null ? size().ordinal() + 1 : 0;
             case 14 -> size() != null ? size().rods() : 0;
             case 15 -> size() != null ? size().maxBoost() : 0;
+            case 16 -> dumpSteam ? 1 : 0;
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 16;
+        return 17;
     }
 
     @Override
@@ -360,6 +387,7 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
         output.putInt("burn_progress", burnProgress);
         output.putInt("heat", heat);
         output.putInt("boost", boost);
+        output.putBoolean("dump_steam", dumpSteam);
     }
 
     @Override
@@ -371,6 +399,26 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
         burnProgress = input.getIntOr("burn_progress", 0);
         heat = input.getIntOr("heat", 0);
         boost = input.getIntOr("boost", 0);
+        dumpSteam = input.getBooleanOr("dump_steam", false);
+    }
+
+    /**
+     * Whether a pipe on the {@code toPipe} side of this port sits inside the drawn tower: the reactor's sleeve then reaches past
+     * it and the pipe is not drawn.
+     */
+    public static boolean coversPipe(LevelReader level, BlockPos port, Direction toPipe) {
+        if (!(level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) || entity.controller() == null
+                || !(level.getBlockEntity(entity.controller()) instanceof ReactorControllerBlockEntity reactor) || !reactor.isFormed()) {
+            return false;
+        }
+        BlockState state = reactor.getBlockState();
+        TowerSize size = sizeOf(state, TowerSize.values());
+        if (size == null) {
+            return false;
+        }
+        BlockPos floor = size.floorCentre(reactor.getBlockPos(), state.getValue(MachineBlock.FACING));
+        int dx = port.getX() - floor.getX(), dy = port.getY() - floor.getY(), dz = port.getZ() - floor.getZ();
+        return toPipe == TowerSize.outward(dx, dy, dz) && size.buried(dx, dy, dz) > 0.0F;
     }
 
     @Override

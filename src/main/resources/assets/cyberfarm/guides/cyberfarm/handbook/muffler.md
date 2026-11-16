@@ -16,9 +16,14 @@ A busy farm is a noisy farm: humming drones, bubbling extraction chambers, crack
 and the mobs locked inside them. Place a **Muffler** and the sounds you choose go quiet within
 **10 blocks**.
 
-A weight bobs on its coil as it works: the more kinds of sound you silence, the faster it goes, and it rests when it silences none.
-
 <br clear="all" />
+
+## Placing it
+
+The Muffler needs **no power**. Place it near the noise. Use several to cover a large base.
+
+A weight bobs on its coil as it works. The more kinds of sound you silence, the faster it goes,
+and it rests when it silences none.
 
 ## Choosing what it silences
 
@@ -40,12 +45,11 @@ break, music and other players.
 
 In **Mods → CyberFarm → Config** (or `config/cyberfarm-client.toml`):
 
-- **Range**: distance in blocks every Muffler covers, 1 to 64 (default 10);
+- **Range**: distance in blocks every Muffler covers, 1 to 64 (default 10). It applies to all
+  Mufflers, and only for you;
 - **Extra Sounds to Mute**: what the **Other machines** row silences. Add a mod id (`mekanism`) for all of a
   mod's sounds, or a single sound id (`minecraft:block.furnace.fire_crackle`).
 
 ## Crafting
 
 <RecipeFor id="muffler" />
-
-The Muffler needs no power. Use several to cover a large base.

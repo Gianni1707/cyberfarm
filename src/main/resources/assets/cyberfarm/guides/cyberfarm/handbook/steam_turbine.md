@@ -2,7 +2,7 @@
 navigation:
   title: Steam Turbine
   parent: nuclear.md
-  position: 4
+  position: 6
   icon: cyberfarm:turbine_controller
 item_ids:
   - cyberfarm:turbine_controller
@@ -12,8 +12,12 @@ item_ids:
 
 # Steam Turbine
 
-A horizontal hall that turns **Steam** into FE, in **three sizes**. Steam piped into its ports spins
-up a big rotor; the rotor drives the generator. The scene shows the Small turbine.
+The Steam Turbine turns **Steam** into FE. It is how a [Fission Reactor](fission_reactor.md) makes
+power: steam piped in spins a big rotor, and the rotor drives the generator.
+
+It is a horizontal hall in **three sizes**, built from <ItemLink id="turbine_casing" />s, a few
+<ItemLink id="turbine_port" />s and one <ItemLink id="turbine_controller" />. The scene shows the
+Small turbine.
 
 <GameScene zoom={4} interactive={true}>
   <Block id="cyberfarm:turbine_casing" x="0" y="0" z="0" />
@@ -54,44 +58,74 @@ up a big rotor; the rotor drives the generator. The scene shows the Small turbin
 
 ## Building the hall
 
-| Size | Cross-section x length | Steam at full speed | FE per mB | Max output |
+| Size | Cross-section x length |
+| --- | --- |
+| Small | 3x3 x 4 |
+| Medium | 5x5 x 6 |
+| Large | 7x7 x 8 |
+
+1. Build the **front and back** as full squares of <ItemLink id="turbine_casing" />s.
+2. In between, build only the **outer ring**. The inside must be **empty**: the rotor spins there.
+3. Put the <ItemLink id="turbine_controller" /> **in the middle of the front**, facing out. The
+   hall runs straight back from it.
+4. Swap shell blocks for <ItemLink id="turbine_port" />s: steam goes in, FE comes out. One port for
+   a steam pipe and one for an [Energy Conduit](energy_conduit.md) are enough. The controller itself
+   also gives power to cables touching it.
+   On the outer ring, ports go only **in the middle of each side**: the hall is drawn with diagonal
+   faces towards its edges, and a pipe could not reach a port there. On a 3x3 or 5x5 cross-section that is
+   the centre block of each side, on 7x7 the centre block and the one either side of it. A port
+   nearer an edge leaves the turbine **incomplete**. Inside the end caps, ports go anywhere.
+
+Bigger turbines need bigger cables and pipes:
+
+- Medium: **Advanced** conduits (16,000 FE/t).
+- Large: **Elite** conduits (128,000 FE/t), and an **Advanced** [Gas Pipe](gas_pipe.md) for the
+  steam (a basic one carries 1,000 mB/t).
+
+**Help with the layout**: a [Multiblock Projector](multiblock_projector.md) shows any size in the
+world. You can also **right-click the unfinished controller**: drones fly out, each projecting a
+group of the blocks still to place, and an amber X marks a block in the way. They start from the
+size you have built the most of (Small if none). Each further click shows the next size; after
+Large they come back to Small.
+
+Complete, the blocks become one faceted **enamel and mint octagonal hull**. The controller becomes a
+panel on the front, every port a glowing hatch, and at the back you can see the **rotor**.
+**Right-click any block** of the formed hall to open it.
+
+## Using it
+
+The GUI shows the steam tank (32,000 mB), the FE output, the rotor speed and the stored energy.
+Hover the readout for the size's ratings.
+
+The rotor does not start at full speed. It **spins up** while there is steam and **spins down**
+when the steam runs out. The faster it turns, the more steam it uses and the more FE it makes. It
+settles at the speed your steam supply can keep up.
+
+The rotor also stops when its FE has nowhere to go, so no steam is wasted. Steam from other mods
+works too (fluids tagged `c:steam`).
+
+## Numbers
+
+| Size | Steam at full speed | FE per mB | Max output | Spin-up time |
 | --- | --- | --- | --- | --- |
-| Small | 3x3 x 4 | 200 mB/t | 10 | 2,000 FE/t |
-| Medium | 5x5 x 6 | 600 mB/t | 16 | 9,600 FE/t |
-| Large | 7x7 x 8 | 1,600 mB/t | 25 | 40,000 FE/t |
+| Small | 200 mB/t | 10 | 2,000 FE/t | 5 s |
+| Medium | 600 mB/t | 16 | 9,600 FE/t | 7 s |
+| Large | 1,600 mB/t | 25 | 40,000 FE/t | 10 s |
 
-- The **front and back** are full squares; in between only the **outer ring** is shell, and the
-  inside must be **empty**: that is where the rotor spins.
-- Use <ItemLink id="turbine_casing" />s for the shell and put the <ItemLink id="turbine_controller" />
-  **in the middle of the front**, facing out. The hall runs straight back from it.
-- Swap any shell blocks for <ItemLink id="turbine_port" />s: steam goes in, FE comes out. One port
-  for a steam pipe and one for an [Energy Conduit](energy_conduit.md) is enough; the controller
-  itself also gives power to cables touching it. Medium and Large turbines make more than a basic
-  conduit carries: use **Advanced** conduits (16,000 FE/t) at a Medium one's ports and **Elite** ones (128,000 FE/t) at a Large one's.
-  A Large one also takes more steam than a basic [Gas Pipe](gas_pipe.md) carries (1,000 mB/t): use an **Advanced** one.
-
-Complete, the blocks disappear into one faceted **enamel and mint octagonal hull**: the controller becomes a
-panel on the front, every port a glowing hatch, and at the back you can see the **rotor**. A
-[Multiblock Projector](multiblock_projector.md) shows the layout of any size in the world.
-Right-click the controller while it is unfinished and bigger drones fly out, each projecting a group of the blocks still to place; an amber X marks a block in the way. They start from the size you have built the most of (the Small one if none); each further click shows the next size, and after the Large one they come back.
-
-## Spinning up
-
-The rotor does not start at full speed: it **spins up** as long as there is steam, faster for small
-turbines than for big ones (5, 7 or 10 seconds by size), and **spins down** the same way when the steam
-runs out. The faster it turns, the more steam it uses and the more FE it makes. The rotor also stops
-when the energy has nowhere to go, so no steam is wasted.
-
-The GUI shows the steam tank (32,000 mB), the output, the rotor speed and the stored energy; hover the readout for the size's ratings. Right-
-click any block of the formed hall to open it.
+Bigger turbines get more FE out of every mB of steam.
 
 ## How many turbines?
 
-A reactor makes 1 mB of steam for each unit of heat: a Medium tower with 4 rods at 300%, cooled with
-Coolant, makes 600 mB/t, just what a Medium turbine uses. If the turbines cannot keep up, the reactor's steam tank
-fills up and its core overheats.
+A reactor makes 1 mB of steam for each unit of heat. Add turbines until together they take
+**all** of its steam. For example, a Medium tower with 4 rods at 300%, cooled with Coolant, makes
+600 mB/t: one Medium turbine (9,600 FE/t) or three Small ones (6,000 FE/t).
 
-Steam from other mods works too (fluids tagged `c:steam`).
+The [Fission Reactor](fission_reactor.md) page lists every tower's steam, with the turbines it needs
+and the FE/t they give.
+
+If the turbines cannot keep up, the reactor's steam tank fills up and its core **overheats**. The
+reactor's **Dump excess steam** toggle prevents that by venting the extra steam, but vented steam
+makes no FE.
 
 <RecipeFor id="turbine_casing" />
 

@@ -12,23 +12,44 @@ item_ids:
 
 <BlockImage id="cyberfarm:laser_turret" scale="4" float="left" />
 
-Monsters at the door? A **Laser Turret** keeps them out. Give it power and it watches **16 blocks**
-all round (a sphere 33 blocks across, as wide as the largest drone work area), turns its head toward the nearest hostile mob it can see and burns it down.
+Monsters at the door? A **Laser Turret** keeps them out. Give it power and it turns its head toward
+the nearest hostile mob it can see and burns it down.
 
 <br clear="all" />
 
-- **8 damage a shot, one shot a second**: a zombie lasts three shots.
-- A shot costs **200 FE** from its 20,000 FE buffer: **10 FE/t** while it fights, none while nothing
-  is in sight, so one [Combustion Generator](combustion_generator.md) keeps six turrets firing.
-- The turret's laser costs **25 FE per point of damage**; the
-  [Guard Module](modules.md)'s, fired in flight, costs twice that.
-- It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.
-- It shoots **hostile mobs only**. Players, animals, villagers and golems are safe, and so are
-  **named mobs**, mobs **riding** something (a minecart, a boat) and **neutral mobs** (endermen,
-  zombified piglins) until they get angry. Your mob farms are safe if you name the mobs you keep.
-- **Right-click** it to see what it is doing; the red lens on the barrel lights up while it aims.
+## Placing and powering
+
+Place it where it can see the ground you want to guard. It watches **16 blocks** all round: a
+sphere 33 blocks across, as wide as the largest drone work area.
 
 Power it with an [Energy Conduit](energy_conduit.md) or any other mod's cable, from any side.
+
+**Right-click** it to see what it is doing. The red lens on the barrel lights up while it aims.
+
+## Numbers
+
+| | Laser Turret |
+| --- | --- |
+| Range | 16 blocks all round |
+| Damage | 8 a shot (a zombie lasts three shots) |
+| Fire rate | one shot a second |
+| Energy per shot | 200 FE (25 FE per point of damage) |
+| Power use | 10 FE/t while it fights, none while nothing is in sight |
+| Energy buffer | 20,000 FE |
+
+One [Combustion Generator](combustion_generator.md) keeps six turrets firing. The
+[Guard Module](modules.md)'s laser, fired in flight, costs twice as much per point of damage.
+
+## What it shoots
+
+It shoots **hostile mobs only**. These are safe:
+
+- players, animals, villagers and golems;
+- **named mobs**: your mob farms are safe if you name the mobs you keep;
+- mobs **riding** something (a minecart, a boat);
+- **neutral mobs** (endermen, zombified piglins) until they get angry.
+
+It needs a clear view: no block between its head and the mob's eyes. Glass stops it too.
 
 ## Defence drones
 

@@ -10,8 +10,11 @@ item_ids:
 
 # Steam Engine
 
-A mid-game generator built in a row: an induction **boiler** burns Biogas or Methane into steam,
-**three cylinders** turn it into motion and a **dynamo** at the end turns the flywheel into FE.
+The Steam Engine is a mid-game generator that burns **Biogas** or **Methane**. It gets more FE out of every mB than the
+[Gas Turbine](gas_turbine.md): on methane it makes as much as about eleven [Combustion Generators](combustion_generator.md).
+
+It is built in a row. An induction **boiler** (the Steam Engine block) burns the gas into steam,
+**three cylinders** turn the steam into motion, and a **dynamo** at the end turns the flywheel into FE.
 
 <GameScene zoom={4} interactive={true}>
   <Block id="cyberfarm:steam_engine" x="0" y="0" z="0" p:facing="north" />
@@ -23,36 +26,48 @@ A mid-game generator built in a row: an induction **boiler** burns Biogas or Met
 
 ## Building it
 
-- Place the **Steam Engine** (the boiler). Its front faces you. Alone, a right click sends out mini drones that project the frames where they go.
-- Behind it, in a straight line on solid ground, place **4 Cyber Frames**.
+1. Place the **Steam Engine**. Its front faces you.
+2. Behind it, in a straight line on solid ground, place **4 [Cyber Frames](cyber_frame.md)**.
 
-A drone over a cell projects the frame it wants. An amber X means a block is in the way; a steel outline means that
-frame already belongs to another machine. A second click calls the drones back.
+**Right-click** the engine while it is alone: mini drones fly out and project the frames where they go.
 
-The frames are taken in and the engine opens: rail plates run out from under the boiler one after another,
-and on them the three cylinders and the dynamo compose themselves. Then its pistons pump between steel posts,
-the steam line runs over them and the flywheel spins. The faster it runs, the brighter the boiler's coils glow.
-Breaking a frame folds it all back and gives the frames back.
+- A drone over a cell projects the frame it wants.
+- An amber X means a block is in the way.
+- A steel outline means that frame already belongs to another machine.
+- A second click calls the drones back.
 
-The GUI shows a live side view of the engine, the power made and the speed.
+When the row is complete the frames are taken in and the engine opens. Rail plates run out from under the boiler,
+and the three cylinders and the dynamo compose themselves on them. Breaking a frame folds it all back and gives the frames back.
 
-## Fuel and power
+## Using it
 
-Pipe Biogas or Methane into the boiler, which holds 16,000 mB. It burns **45 mB/t**:
+- Pipe Biogas or Methane into the **boiler**.
+- Take the power from the boiler too, with [Energy Conduits](energy_conduit.md) or adjacent machines.
+- Pipes and conduits connect on any side of the boiler but its back, where the row goes. A socket shows wherever one plugs in.
+- The row itself takes no pipes or conduits.
+- The GUI shows a live side view of the engine, the power made and the speed.
+- While it runs, its pistons pump and the flywheel spins. The faster it runs, the brighter the boiler's coils glow.
+
+## Numbers
 
 | Fuel | FE per mB | Power |
 | --- | --- | --- |
 | Biogas | 9 | 405 FE/t |
 | Methane | 15 | 675 FE/t |
 
-On methane it makes as much as about eleven Combustion Generators; a [Fission Reactor](fission_reactor.md)
-still makes more.
+| Stat | Value |
+| --- | --- |
+| Gas burned | 45 mB/t |
+| Gas tank | 16,000 mB |
+| Buffer | 200,000 FE |
+| Time to full speed | about 5 seconds |
 
-The engine needs about **5 seconds** to reach full speed, burning the full 45 mB/t for less power meanwhile, and slows down when the fuel runs out.
-With its buffer (200,000 FE) nearly full it burns only the gas for the power that still fits, and it stops when the buffer is full.
+One zombie in a [Methane Extractor](methane_extractor.md) chamber (50 mB/t) keeps it at full power.
 
-Both the gas and the power go through the **boiler**: connect pipes, [Energy Conduits](energy_conduit.md) or
-machines to it, on any side but its back, where the row goes. A socket shows wherever one plugs in. The row
-itself takes none.
+## Tips
+
+- While it speeds up, it burns the full 45 mB/t but makes less power. It slows down when the fuel runs out.
+- With its buffer nearly full, it burns only the gas for the power that still fits. It stops when the buffer is full.
+- A [Fission Reactor](fission_reactor.md) still makes more power.
 
 <RecipeFor id="steam_engine" />

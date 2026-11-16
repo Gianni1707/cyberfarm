@@ -39,13 +39,13 @@ import org.jspecify.annotations.Nullable;
 public class BatteryBankBlockEntity extends MachineBlockEntity {
     public static final int CAPACITY = 150_000;
     public static final int TRANSFER = 4_000;
-    /** A bank's longest side: 27 blocks at most, 6.75 million FE. */
+    /** A bank's longest side: 27 blocks at most, 4.05 million FE. */
     public static final int MAX_SIDE = 3;
     private static final int GROW_INTERVAL = 40;
     public static final int CHARGE_SLOT = 0;
 
     /**
-     * What a face of the bank does, set in its GUI for each side of the whole bank: In takes FE and gives none, Out gives
+     * What a face of the bank does, set with the Cable Swapper for each side of the whole bank: In takes FE and gives none, Out gives
      * FE to the block there and takes none, Off shows nothing to cables (no socket either).
      */
     public enum FaceMode {

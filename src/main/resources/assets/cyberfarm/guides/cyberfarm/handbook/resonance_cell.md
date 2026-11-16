@@ -12,10 +12,23 @@ item_ids:
 
 <BlockImage id="cyberfarm:resonance_cell" scale="4" float="left" />
 
-The blocks of a [Resonance Core](resonance_core.md)'s **shell**: the more of them around the
-crystal, the higher the tier and the more it stores. They are crafted four at a time.
+Resonance Cells make the **shell** of a [Resonance Core](resonance_core.md). The bigger the shell around
+the crystal, the higher the core's tier and the more it stores.
 
 <br clear="all" />
+
+## Building the shell
+
+- The shell is a **hollow cube** of cells **right above the pedestal**, centred on it.
+- Every block of the cube's surface must be a cell.
+- Its **inside must stay empty**.
+- When the last cell goes in, the cells vanish and the crystal grows to fill the shell.
+
+The [Multiblock Projector](multiblock_projector.md) shows every tier, pylons included: sneak +
+right-click to pick the tier, then click the pedestal. The core also needs its
+[Stabilizer Pylon](stabilizer_pylon.md) columns to work.
+
+## Numbers
 
 | Tier | Shell | Cells |
 | --- | --- | --- |
@@ -23,15 +36,12 @@ crystal, the higher the tier and the more it stores. They are crafted four at a 
 | 3 | 5x5x5 | 98 |
 | 4 | 7x7x7 | 218 |
 
-## Building the shell
+One craft makes **4 cells**.
 
-The shell is a hollow cube of <ItemLink id="resonance_cell" />s **right above the pedestal**,
-centred on it: 3x3x3 for tier 2, 5x5x5 for tier 3, 7x7x7 for tier 4. Every block of the cube's
-surface must be a cell and its **inside must stay empty**. When the last cell goes in, the cells
-vanish and the crystal grows to fill the shell. The [Multiblock Projector](multiblock_projector.md)
-shows every tier, pylons included: sneak + right-click to pick it, then click the pedestal.
+## Tips
 
+- Right-clicking any cell of the shell, finished or not, opens the core's screen.
 - Breaking a cell of the shell drops the core back a tier, and **the energy that no longer fits is
-  lost**: empty the core before rebuilding it.
+  lost**. Empty the core before you rebuild it.
 
 <RecipeFor id="resonance_cell" />

@@ -1,20 +1,17 @@
 ---
 navigation:
-  title: Hazmat Suit and Geiger Counter
+  title: Hazmat Suit
   parent: nuclear.md
-  position: 7
+  position: 11
   icon: cyberfarm:hazmat_helmet
 item_ids:
   - cyberfarm:hazmat_helmet
   - cyberfarm:hazmat_suit
   - cyberfarm:hazmat_pants
   - cyberfarm:hazmat_boots
-  - cyberfarm:geiger_counter
 ---
 
-# Hazmat Suit and Geiger Counter
-
-## Hazmat Suit
+# Hazmat Suit
 
 <ItemGrid>
   <ItemIcon id="hazmat_helmet" />
@@ -23,23 +20,29 @@ item_ids:
   <ItemIcon id="hazmat_boots" />
 </ItemGrid>
 
-A bright yellow protective suit. Each piece keeps out **25%** of the [radiation](radiation.md); the
-**full suit** keeps out all of it. It gives little armor against everything else, and it also keeps
-the cold of [coolant pools](coolant_mixer.md) out.
+The Hazmat Suit is bright yellow protective armor against [radiation](radiation.md). Wear it near
+nuclear waste, a leaking reactor or a meltdown site.
+
+## Protection
+
+Each piece keeps out **25%** of the radiation; the **full suit** keeps out all of it.
+
+| Pieces worn | Radiation kept out | In a 100 Rad chunk you get |
+| --- | --- | --- |
+| 0 | 0% | 100 Rad |
+| 1 | 25% | 75 Rad |
+| 2 | 50% | 50 Rad |
+| 3 | 75% | 25 Rad |
+| 4 | **100%** | 0 Rad |
+
+- Against everything else it is weak armor: 1 (helmet), 3 (suit), 2 (pants) and 1 (boots) armor
+  points.
+- Any piece also keeps out the cold of [coolant pools](coolant.md) and powder snow.
+- A [Geiger Counter](geiger_counter.md) tells you how much radiation there is.
+
+## Crafting
 
 <RecipeFor id="hazmat_helmet" />
 <RecipeFor id="hazmat_suit" />
 <RecipeFor id="hazmat_pants" />
 <RecipeFor id="hazmat_boots" />
-
-## Geiger Counter
-
-<ItemImage id="cyberfarm:geiger_counter" scale="2" float="left" />
-
-Hold it in either hand: it **clicks** faster the more radiation there is, and shows the level in
-**Rad** above the hotbar, green when safe, orange from 20 Rad (sickness), red from 100 Rad.
-A Muffler never silences it.
-
-<br clear="all" />
-
-<RecipeFor id="geiger_counter" />

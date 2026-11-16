@@ -37,6 +37,8 @@ public final class TrinketTicker {
     /** +40% walking speed while hovering. */
     public static final double HOVER_SPEED_BONUS = 0.4;
     private static final AttributeModifier HOVER_SPEED = new AttributeModifier(HOVER, HOVER_SPEED_BONUS, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
+    /** Step assist while hovering: from the usual 0.6 to 1.1 blocks, so a full block never stops the player (the client glides up it). */
+    private static final AttributeModifier HOVER_STEP = new AttributeModifier(HOVER, 0.5, AttributeModifier.Operation.ADD_VALUE);
 
     public static final double POCKET_DRONE_RANGE = 8.0;
     public static final int FEED_COST = 50;
@@ -77,6 +79,10 @@ public final class TrinketTicker {
             int fed = NeuralChipItem.runs(player, ChipProgram.AUTO_FEEDER) && feed(player) ? FEED_COST : 0;
             UtilityBeltItem.use(player, cost * 20 + fed);
             topUpDrone(player, drone, flying);
+            ItemStack sphere = UtilityBeltItem.content(player, UtilityBeltItem.SPHERE);
+            if (sphere.getItem() instanceof EnergySphereItem tier) {
+                TrinketCharging.chargeFromSphere(player, tier.maxInput() * 20, 20);
+            }
         }
     }
 
@@ -123,6 +129,14 @@ public final class TrinketTicker {
                 speed.addTransientModifier(HOVER_SPEED);
             } else {
                 speed.removeModifier(HOVER);
+            }
+        }
+        AttributeInstance step = player.getAttribute(Attributes.STEP_HEIGHT);
+        if (step != null && active != step.hasModifier(HOVER)) {
+            if (active) {
+                step.addTransientModifier(HOVER_STEP);
+            } else {
+                step.removeModifier(HOVER);
             }
         }
         if (active) {

@@ -14,6 +14,22 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 
 ## What's new
 
+**1.3.1: polish and fixes**
+- The **Energy Sphere** on your Utility Belt now charges every FE item you carry, from any mod.
+- **Fission Reactor**: Dump coolant and Dump excess steam buttons, a clearer screen, and pipes plug into
+  the tower through a bolted flange fitting; you no longer walk into the tower.
+- Reactor and turbine **ports go in the middle of the sides** only, and a reactor port connects only
+  outwards (towers already built with ports near the corners need them moved).
+- **Small machines** take pipes, cables and hoppers on every block of the machine, with a socket where
+  they plug in.
+- **Gravity Boots**: a smooth step assist while hovering.
+- The **Battery Bank** shows what it stores in its tooltip, so in JEI and REI too.
+- The **handbook** has a page for every block (hold G on any CyberFarm item), a page per trinket, and
+  every page rewritten to be clearer.
+
+<details>
+<summary>Earlier versions</summary>
+
 **1.3: the Cable Swapper**
 - The **Cable Swapper** upgrades a whole line of cables or pipes to the next tier in one click, from
   the cables in your inventory; it works on other mods' cables too (a Mekanism Basic Universal Cable
@@ -24,9 +40,6 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 - **Dish networks** are Private, Team or Public; a team can be a vanilla team, an FTB Teams team or an
   Open Parties and Claims party.
 - **Gravity Boots** are 40% faster while hovering.
-
-<details>
-<summary>Earlier versions</summary>
 
 **1.2: the trinket update**
 - **Trinkets** in a tab of their own next to the inventory (or Curios slots), with no durability,
