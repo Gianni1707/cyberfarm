@@ -41,6 +41,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 import org.jspecify.annotations.Nullable;
 
@@ -79,6 +80,15 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         @Override
         public int getCapacity(int index, ItemResource resource) {
             return 1;
+        }
+
+        @Override
+        public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+            // The mech is what counts: another hangar holding it too may have taken this module off already
+            if (docked == null || !docked.hasModule(MechModule.values()[index])) {
+                return 0;
+            }
+            return super.extract(index, resource, amount, transaction);
         }
 
         @Override
@@ -272,6 +282,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             fitPending = false;
             docked = parked;
             mirror(parked);
+        } else if (docked != null && maskOf() != docked.getModules()) {
+            // Changed from another hangar the same mech stands in: the slots follow the mech, or a module would be in both
+            mirror(docked);
         }
         if (fitModule >= 0) {
             long elapsed = level.getGameTime() - fitStart;

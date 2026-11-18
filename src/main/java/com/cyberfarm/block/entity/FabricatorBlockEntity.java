@@ -206,7 +206,19 @@ public class FabricatorBlockEntity extends SmallMultiblockBlockEntity {
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
-        return index < INPUTS && isIngredient(resource.toStack());
+        ItemStack stack = resource.toStack();
+        if (index >= INPUTS || !isIngredient(stack)) {
+            return false;
+        }
+        // One slot per ingredient: inputs cannot be taken back out, so copper in two slots would jam every recipe
+        for (int i = 0; i < INPUTS; i++) {
+            ItemStack other = getStack(i);
+            if (i != index && !other.isEmpty() && RECIPES.stream().flatMap(recipe -> recipe.inputs().stream())
+                    .anyMatch(input -> input.test().test(stack) && input.test().test(other))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Automation takes out only what the machine made. */

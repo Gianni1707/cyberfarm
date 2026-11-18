@@ -1,6 +1,7 @@
 package com.cyberfarm.menu;
 
 import com.cyberfarm.block.entity.MachineBlockEntity;
+import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
@@ -12,7 +13,7 @@ import net.minecraft.world.inventory.SimpleContainerData;
 /** Steam Turbine multiblock: steam tank, rotor speed and output. */
 public class TurbineMenu extends MachineMenu {
     public TurbineMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 7), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 8), ContainerLevelAccess.NULL);
     }
 
     public TurbineMenu(int containerId, Inventory inventory, ContainerData data, ContainerLevelAccess access) {
@@ -38,8 +39,9 @@ public class TurbineMenu extends MachineMenu {
         return extra(3);
     }
 
+    /** In two halves: a Large turbine makes more than a data slot's 16 bits hold. */
     public int getGenerating() {
-        return extra(4);
+        return EnergyUtil.combine(extra(4), extra(7));
     }
 
     public int getMaxSteam() {

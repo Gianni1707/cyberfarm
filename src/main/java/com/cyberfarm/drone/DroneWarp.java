@@ -2,6 +2,7 @@ package com.cyberfarm.drone;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import com.cyberfarm.CyberFarm;
 import com.cyberfarm.entity.DroneEntity;
@@ -9,13 +10,11 @@ import com.cyberfarm.trinket.WarpPayload;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -44,8 +43,11 @@ public final class DroneWarp {
             tickets.removeAllTickets(owner);
         }
     });
-    /** The chunks this keeps loaded, by dimension, with the game time they are let go. */
-    private static final Map<ResourceKey<Level>, Map<Long, Long>> KEPT = new HashMap<>();
+    /**
+     * The chunks this keeps loaded, by level, with the game time they are let go. By the level object, not its
+     * dimension: a world reopened in the same game has new levels, and must not think the old session's chunks kept.
+     */
+    private static final Map<ServerLevel, Map<Long, Long>> KEPT = new WeakHashMap<>();
 
     private DroneWarp() {}
 
@@ -93,7 +95,7 @@ public final class DroneWarp {
     /** Keeps the chunk at {@code pos} loaded and ticking for a while (longer if asked again). */
     public static void keep(ServerLevel level, BlockPos pos) {
         long chunk = ChunkPos.pack(pos);
-        Map<Long, Long> kept = KEPT.computeIfAbsent(level.dimension(), key -> new HashMap<>());
+        Map<Long, Long> kept = KEPT.computeIfAbsent(level, key -> new HashMap<>());
         if (!kept.containsKey(chunk)) {
             TICKETS.forceChunk(level, owner(chunk), ChunkPos.getX(chunk), ChunkPos.getZ(chunk), true, true);
         }
@@ -103,7 +105,7 @@ public final class DroneWarp {
     /** Lets go of the chunks whose time is up. */
     public static void onServerTick(ServerTickEvent.Post event) {
         for (ServerLevel level : event.getServer().getAllLevels()) {
-            Map<Long, Long> kept = KEPT.get(level.dimension());
+            Map<Long, Long> kept = KEPT.get(level);
             if (kept == null) {
                 continue;
             }

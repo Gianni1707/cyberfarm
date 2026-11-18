@@ -92,4 +92,4 @@ When you are hungry, it eats from your inventory: the food that fills you the mo
 
 ## Tips
 
-- You can change every key in Controls, under **CyberFarm Trinkets**.
+- You can change every key in Controls, under **CyberFarm Trinkets**. A trinket's tooltip shows the key it is bound to now.

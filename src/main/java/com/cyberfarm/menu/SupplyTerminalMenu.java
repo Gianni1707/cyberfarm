@@ -2,6 +2,7 @@ package com.cyberfarm.menu;
 
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.block.entity.SupplyTerminalBlockEntity;
+import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
@@ -23,7 +24,7 @@ public class SupplyTerminalMenu extends MachineMenu {
 
     public SupplyTerminalMenu(int containerId, Inventory inventory) {
         this(containerId, inventory, new ItemStacksResourceHandler(2),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + GLOBAL + 7), ContainerLevelAccess.NULL);
+                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + GLOBAL + SupplyTerminalBlockEntity.GLOBAL_DATA), ContainerLevelAccess.NULL);
     }
 
     public SupplyTerminalMenu(int containerId, Inventory inventory, ItemStacksResourceHandler items, ContainerData data, ContainerLevelAccess access) {
@@ -37,39 +38,45 @@ public class SupplyTerminalMenu extends MachineMenu {
         return extra(contract * SupplyTerminalBlockEntity.CONTRACT_DATA + field);
     }
 
+    /** An int the terminal sent in two halves, from {@code index} on. */
+    private int combined(int index) {
+        return EnergyUtil.combine(extra(index), extra(index + 1));
+    }
+
+    /** {@code id} is the item's id + 1, 0 for none. */
     private static ItemStack stack(int id, int count) {
-        return id < 0 ? ItemStack.EMPTY : new ItemStack(BuiltInRegistries.ITEM.byId(id), Math.max(1, count));
+        return id <= 0 ? ItemStack.EMPTY : new ItemStack(BuiltInRegistries.ITEM.byId(id - 1), Math.max(1, count));
     }
 
     /** The item contract {@code index} asks for, or empty for a free place on the board. */
     public ItemStack contractItem(int index) {
-        return stack(field(index, 0), 1);
+        return stack(combined(index * SupplyTerminalBlockEntity.CONTRACT_DATA), 1);
     }
 
     public int contractRequired(int index) {
-        return field(index, 1);
-    }
-
-    public int contractDelivered(int index) {
         return field(index, 2);
     }
 
-    public int contractEmeralds(int index) {
+    public int contractDelivered(int index) {
         return field(index, 3);
+    }
+
+    public int contractEmeralds(int index) {
+        return field(index, 4);
     }
 
     /** The bonus item the contract pays besides its emeralds, or empty. */
     public ItemStack contractBonus(int index) {
-        return stack(field(index, 4), field(index, 5));
+        return stack(combined(index * SupplyTerminalBlockEntity.CONTRACT_DATA + 5), field(index, 7));
     }
 
     public SupplyTerminalBlockEntity.Kind contractKind(int index) {
-        return SupplyTerminalBlockEntity.Kind.values()[Math.clamp(field(index, 6), 0, SupplyTerminalBlockEntity.Kind.values().length - 1)];
+        return SupplyTerminalBlockEntity.Kind.values()[Math.clamp(field(index, 8), 0, SupplyTerminalBlockEntity.Kind.values().length - 1)];
     }
 
     /** Seconds until the contract closes, or -1 for none. */
     public int contractSecondsLeft(int index) {
-        return field(index, 7);
+        return field(index, 9);
     }
 
     /** The level of the Drone Mechanist working the terminal, 0 for none. */
@@ -78,16 +85,16 @@ public class SupplyTerminalMenu extends MachineMenu {
     }
 
     public int prosperity() {
-        return extra(GLOBAL + 2);
+        return combined(GLOBAL + 2);
     }
 
     /** The village's level, or -1 while nobody has founded it. */
     public int villageLevel() {
-        return extra(GLOBAL + 3);
+        return extra(GLOBAL + 4);
     }
 
     /** Where the terminal stands: the middle of the village. */
     public BlockPos terminalPos() {
-        return new BlockPos(extra(GLOBAL + 4), extra(GLOBAL + 5), extra(GLOBAL + 6));
+        return new BlockPos(combined(GLOBAL + 5), combined(GLOBAL + 7), combined(GLOBAL + 9));
     }
 }

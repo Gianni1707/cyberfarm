@@ -20,6 +20,7 @@ import com.cyberfarm.registry.ModBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
@@ -382,5 +383,13 @@ public class TransmitterDishBlockEntity extends SmallMultiblockBlockEntity {
             name = network(server).name;
         }
         return new TransmitterDishMenu(containerId, inventory, items, data, ContainerLevelAccess.create(level, worldPosition), name, receiverLabels());
+    }
+
+    /** Here rather than at the click: vanilla opens the menu for a spectator without asking the block. */
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buf) {
+        TransmitterDishMenu dish = (TransmitterDishMenu) menu;
+        buf.writeUtf(dish.name());
+        buf.writeCollection(dish.receivers(), (b, label) -> b.writeUtf(label));
     }
 }
