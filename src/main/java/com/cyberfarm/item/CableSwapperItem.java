@@ -110,6 +110,9 @@ public class CableSwapperItem extends Item {
         }
         Player player = context.getPlayer();
         if (level.getBlockEntity(clicked) instanceof BatteryBankBlockEntity battery) {
+            if (!player.mayBuild() || !level.mayInteract(player, clicked)) {
+                return InteractionResult.FAIL;
+            }
             Direction face = context.getClickedFace();
             battery.cycle(face);
             player.displayClientMessage(Component.translatable("message.cyberfarm.battery_bank.side",
@@ -130,6 +133,10 @@ public class CableSwapperItem extends Item {
     }
 
     private InteractionResult swapLine(ServerLevel level, Player player, BlockPos clicked) {
+        // Runs before vanilla's adventure-mode check, and swaps blocks far from the clicked one
+        if (!player.mayBuild()) {
+            return InteractionResult.FAIL;
+        }
         Block from = level.getBlockState(clicked).getBlock();
         ResourceLocation id = BuiltInRegistries.BLOCK.getKey(from);
         ResourceLocation nextId = nextTier(id, BuiltInRegistries.BLOCK::containsKey);
@@ -140,6 +147,9 @@ public class CableSwapperItem extends Item {
         List<BlockPos> line = player.isSecondaryUseActive() ? List.of(clicked) : line(level, clicked, from);
         int swapped = 0;
         for (BlockPos pos : line) {
+            if (!level.mayInteract(player, pos)) {
+                continue;
+            }
             if (!player.getAbilities().instabuild && !take(player, to.asItem())) {
                 break;
             }

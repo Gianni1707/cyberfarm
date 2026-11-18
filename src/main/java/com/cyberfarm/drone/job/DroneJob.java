@@ -111,7 +111,7 @@ public abstract class DroneJob {
     /**
      * The first block of the work area that passes the test, walking it block by block from one
      * corner to the other like the Quarry: rows along X, alternating direction, each column top
-     * down. Blocks the drone could not reach are skipped.
+     * down. Blocks the drone could not reach, and chunks not loaded, are skipped.
      */
     protected static @Nullable BlockPos first(DroneEntity drone, BoundingBox area, Predicate<BlockPos> test) {
         BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
@@ -119,6 +119,10 @@ public abstract class DroneJob {
         for (int row = 0; row < area.getZSpan(); row++) {
             for (int column = 0; column < width; column++) {
                 int x = row % 2 == 0 ? area.minX() + column : area.maxX() - column;
+                // A column whose chunk is not loaded is skipped: reading it would load the chunk
+                if (!drone.level().hasChunkAt(x, area.minZ() + row)) {
+                    continue;
+                }
                 for (int y = area.maxY(); y >= area.minY(); y--) {
                     pos.set(x, y, area.minZ() + row);
                     if (!drone.isUnreachable(pos) && test.test(pos)) {

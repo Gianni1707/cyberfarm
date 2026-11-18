@@ -2,6 +2,7 @@ package com.cyberfarm.client;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -10,6 +11,8 @@ import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.trinket.ChipProgram;
 import com.cyberfarm.trinket.GravityBootsItem;
 import com.cyberfarm.trinket.NeuralChipItem;
+import com.cyberfarm.trinket.PocketDroneItem;
+import com.cyberfarm.trinket.ProgramItem;
 import com.cyberfarm.trinket.TrinketKeyPayload;
 import com.cyberfarm.trinket.TrinketTicker;
 import com.cyberfarm.trinket.TrinketType;
@@ -31,7 +34,9 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -51,6 +56,8 @@ import net.minecraftforge.client.event.ViewportEvent;
 import com.cyberfarm.port.net.ClientPacketDistributor;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The client side of the trinkets: their keys, the Gravity Boots holding the hover height, the chip's zoom, and the
@@ -147,6 +154,50 @@ public final class TrinketClient {
         } else {
             player.displayClientMessage(Component.translatable("message.cyberfarm.trinket.missing", Component.translatable(program.translationKey())), true);
         }
+    }
+
+    // ---------------------------------------------------------------- key tooltips
+
+    /** "Bound: [key]" under what a key works: the Utility Belt, the boots, the Pocket Drone, the chip and its programs. Nothing while unbound. */
+    public static void keyTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        List<Component> keys = new ArrayList<>();
+        if (stack.getItem() instanceof NeuralChipItem) {
+            // Several keys on one chip: each says which program it works
+            for (ChipProgram program : NeuralChipItem.programs(stack)) {
+                KeyMapping key = key(program);
+                if (key != null && !key.isUnbound()) {
+                    keys.add(Component.translatable("tooltip.cyberfarm.key_for", key.getTranslatedKeyMessage(), Component.translatable(program.translationKey())));
+                }
+            }
+        } else {
+            KeyMapping key = null;
+            if (stack.getItem() instanceof UtilityBeltItem) {
+                key = BELT;
+            } else if (stack.getItem() instanceof GravityBootsItem) {
+                key = HOVER;
+            } else if (stack.getItem() instanceof PocketDroneItem) {
+                key = DRONE;
+            } else if (stack.getItem() instanceof ProgramItem program) {
+                key = key(program.program());
+            }
+            if (key != null && !key.isUnbound()) {
+                keys.add(key.getTranslatedKeyMessage());
+            }
+        }
+        if (!keys.isEmpty()) {
+            event.getToolTip().add(Component.translatable("tooltip.cyberfarm.key_bound", ComponentUtils.formatList(keys, Component.literal(", ")))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    private static @Nullable KeyMapping key(ChipProgram program) {
+        return switch (program) {
+            case ZOOM -> ZOOM;
+            case NIGHT_VISION -> NIGHT_VISION;
+            case TAXI_CALL -> TAXI_CALL;
+            default -> null;
+        };
     }
 
     // ---------------------------------------------------------------- zoom

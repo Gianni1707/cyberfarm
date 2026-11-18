@@ -15,6 +15,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import com.cyberfarm.block.MachineBlock;
+import com.cyberfarm.energy.EnergyUtil;
 import com.cyberfarm.menu.SupplyTerminalMenu;
 import com.cyberfarm.multiblock.BuildPlan;
 import com.cyberfarm.multiblock.Schematic;
@@ -97,8 +98,12 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
     /** What the board's cards show, as the clients hear it: for each place 2 bits of kind and 4 of fill, then whether a mechanist works it. */
     public static final int CARD_NORMAL = 1, CARD_MARKET = 2, CARD_DEFENSE = 3, FILL_STEPS = 8;
     private static final int PLACE_BITS = 6, MECHANIST_BIT = 1 << CONTRACTS * PLACE_BITS;
-    /** GUI data per contract: item, required, delivered, emeralds, bonus item, bonus count, kind, seconds left. */
-    public static final int CONTRACT_DATA = 8;
+    /**
+     * GUI data per contract: item, required, delivered, emeralds, bonus item, bonus count, kind, seconds left; the
+     * items' ids + 1 (0: none) in two halves, as the slots are synced as shorts. Then for the terminal: the mechanist's
+     * level, the cooldown, prosperity (two halves), the village level, and X, Y, Z (two halves each).
+     */
+    public static final int CONTRACT_DATA = 10, GLOBAL_DATA = 11;
     /** Ticks between refills of the free ordinary places on the board. */
     public static final int NEW_CONTRACT_INTERVAL = 2_400;
     /** Prosperity points (the emeralds of filled contracts) each village level needs, 1 to 10. */
@@ -791,33 +796,46 @@ public class SupplyTerminalBlockEntity extends MachineBlockEntity {
             Contract contract = contracts[id / CONTRACT_DATA];
             int field = id % CONTRACT_DATA;
             if (contract == null) {
-                return field == 0 || field == 4 ? -1 : 0;
+                return 0;
             }
+            int item = BuiltInRegistries.ITEM.getId(contract.item) + 1;
+            int bonus = contract.bonus.isEmpty() ? 0 : BuiltInRegistries.ITEM.getId(contract.bonus.getItem()) + 1;
             return switch (field) {
-                case 0 -> BuiltInRegistries.ITEM.getId(contract.item);
-                case 1 -> contract.required;
-                case 2 -> contract.delivered;
-                case 3 -> contract.emeralds;
-                case 4 -> contract.bonus.isEmpty() ? -1 : BuiltInRegistries.ITEM.getId(contract.bonus.getItem());
-                case 5 -> contract.bonus.getCount();
-                case 6 -> contract.kind.ordinal();
+                case 0 -> EnergyUtil.low(item);
+                case 1 -> EnergyUtil.high(item);
+                case 2 -> contract.required;
+                case 3 -> contract.delivered;
+                case 4 -> contract.emeralds;
+                case 5 -> EnergyUtil.low(bonus);
+                case 6 -> EnergyUtil.high(bonus);
+                case 7 -> contract.bonus.getCount();
+                case 8 -> contract.kind.ordinal();
                 default -> contract.deadline < 0 || level == null ? -1 : (int) Math.max(0, (contract.deadline - level.getGameTime()) / 20);
             };
         }
-        return switch (id - CONTRACTS * CONTRACT_DATA) {
+        int global = id - CONTRACTS * CONTRACT_DATA;
+        if (global >= 5) {
+            int coordinate = worldPosition.get(Direction.Axis.values()[(global - 5) / 2]);
+            return (global - 5) % 2 == 0 ? EnergyUtil.low(coordinate) : EnergyUtil.high(coordinate);
+        }
+        return switch (global) {
             case 0 -> mechanistLevel;
             case 1 -> Math.max(0, cooldown) / 20;
-            case 2 -> prosperity;
-            case 3 -> founded ? villageLevel : -1;
-            case 4 -> worldPosition.getX();
-            case 5 -> worldPosition.getY();
-            default -> worldPosition.getZ();
+            case 2 -> EnergyUtil.low(prosperity);
+            case 3 -> EnergyUtil.high(prosperity);
+            default -> founded ? villageLevel : -1;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return CONTRACTS * CONTRACT_DATA + 7;
+        return CONTRACTS * CONTRACT_DATA + GLOBAL_DATA;
+    }
+
+    /** Automation takes only the pay: a delivery taken before {@link #deliver} counts it would never be paid. */
+    @Override
+    protected boolean isOutput(int index) {
+        return index == PAYOUT;
     }
 
     @Override

@@ -115,8 +115,17 @@ public class TurbineRenderer extends BlockEntityRenderer<TurbineControllerBlockE
                 disc(pose, buffer, a0, a1, 0.0F, radius * CORNERS, front, -1.0F, CAP_COLOR, light);
                 // The back is open: a dark ring around a dark well, the rotor in front of it
                 disc(pose, buffer, a0, a1, radius * CORNERS * 0.85F, radius * CORNERS, end, 1.0F, CAP_COLOR, light);
-                disc(pose, buffer, a0, a1, 0.0F, radius * CORNERS * 0.85F, end - 0.4F, 1.0F, BACK_COLOR, light);
+                // Out to the hull, not only to the ring's opening: seen at a slant, the gap round a smaller well looked into the hull
+                disc(pose, buffer, a0, a1, 0.0F, radius * CORNERS, end - 0.4F, 1.0F, BACK_COLOR, light);
             }
+            // The open back shows the inside of the hull's floor, which lies on the top face of the ground under the turbine: a dark
+            // plate a hair above it in the recess, or the two flicker against each other
+            float floorHalf = radius * (float) Math.tan(Math.PI / SEGMENTS);
+            float floorY = -radius + 0.02F;
+            vertex(pose, buffer, -floorHalf, floorY, end - 0.4F, ShellTiles.WHITE_U, ShellTiles.WHITE_V, BACK_COLOR, light, 0.0F, 1.0F, 0.0F);
+            vertex(pose, buffer, floorHalf, floorY, end - 0.4F, ShellTiles.WHITE_U, ShellTiles.WHITE_V, BACK_COLOR, light, 0.0F, 1.0F, 0.0F);
+            vertex(pose, buffer, floorHalf, floorY, end, ShellTiles.WHITE_U, ShellTiles.WHITE_V, BACK_COLOR, light, 0.0F, 1.0F, 0.0F);
+            vertex(pose, buffer, -floorHalf, floorY, end, ShellTiles.WHITE_U, ShellTiles.WHITE_V, BACK_COLOR, light, 0.0F, 1.0F, 0.0F);
             frontCap(pose, buffer, size.half(), radius, front, light);
             rotor(pose, buffer, radius * 0.8F, end - 0.2F, state.rotation, light);
         });

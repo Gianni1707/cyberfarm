@@ -129,7 +129,7 @@ public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements 
         long now = level.getGameTime();
         long last = lastMoved;
         for (BlockPos pos : network().pipes()) {
-            if (level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe) {
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe) {
                 last = Math.max(last, pipe.lastMoved);
             }
         }
@@ -142,7 +142,7 @@ public abstract class NetworkPipeBlockEntity extends PortBlockEntity implements 
 
     private void showAll(@Nullable Object what, long now) {
         for (BlockPos pos : network().pipes()) {
-            if (level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe && pipe.shown != what) {
+            if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe && pipe.shown != what) {
                 pipe.shown = what;
                 pipe.shownSince = now;
                 level.sendBlockUpdated(pos, pipe.getBlockState(), pipe.getBlockState(), Block.UPDATE_CLIENTS);

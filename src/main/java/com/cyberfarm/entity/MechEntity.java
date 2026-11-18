@@ -289,11 +289,15 @@ public class MechEntity extends Mob {
         return getState() == State.IDLE && !isVehicle() && isAlive();
     }
 
-    /** Taking damage never kills it: whatever would, shuts it down and drops the pilot instead. */
+    /** Taking damage never kills it: whatever would, shuts it down and drops the pilot instead. Only /kill and the void do. */
     @Override
     public boolean hurt(DamageSource source, float amount) {
         if (!(level() instanceof ServerLevel level)) {
             return false;
+        }
+        if (source.is(net.minecraft.tags.DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+            // Else a mech shut down in the void would fall and tick there forever
+            return super.hurt(source, amount);
         }
         if (isInvulnerableTo(source) || isDisabled()) {
             return false;

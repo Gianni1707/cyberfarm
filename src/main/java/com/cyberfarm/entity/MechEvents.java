@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.Entity;
@@ -70,14 +71,17 @@ public final class MechEvents {
             event.setAmount(event.getAmount() + BLADE_DAMAGE);
             if (!sweeping && event.getEntity().level() instanceof ServerLevel level) {
                 sweeping = true;
-                LivingEntity target = event.getEntity();
-                for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(SWEEP_RANGE),
-                        e -> e != target && e != mech && e != attacker && e.isAlive())) {
-                    near.hurt(event.getSource(), SWEEP_DAMAGE);
+                try {
+                    LivingEntity target = event.getEntity();
+                    for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, target.getBoundingBox().inflate(SWEEP_RANGE),
+                            e -> e != target && e != mech && e != attacker && e.isAlive())) {
+                        near.hurt(event.getSource(), SWEEP_DAMAGE);
+                    }
+                    level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 3, 0.6, 0.2, 0.6, 0.0);
+                    level.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.MECH_SLASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
+                } finally {
+                    sweeping = false;
                 }
-                level.sendParticles(ParticleTypes.SWEEP_ATTACK, target.getX(), target.getY() + target.getBbHeight() / 2, target.getZ(), 3, 0.6, 0.2, 0.6, 0.0);
-                level.playSound(null, target.getX(), target.getY(), target.getZ(), ModSounds.MECH_SLASH.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
-                sweeping = false;
             }
         } else if (mech.consume(MechEntity.FE_PER_PUNCH)) {
             event.setAmount(event.getAmount() + PUNCH_DAMAGE);
@@ -97,10 +101,10 @@ public final class MechEvents {
     /** The drill digs 3x3: the blocks around the one dug, across the way the pilot looks. */
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         MechEntity mech = pilotedMech(event.getPlayer());
-        if (drilling || mech == null || !mech.isToolOn(MechModule.DRILL) || !(event.getLevel() instanceof ServerLevel level)) {
+        if (drilling || mech == null || !mech.isToolOn(MechModule.DRILL) || !(event.getLevel() instanceof ServerLevel level)
+                || !(event.getPlayer() instanceof ServerPlayer pilot)) {
             return;
         }
-        Player pilot = event.getPlayer();
         Direction facing = Direction.getNearest(pilot.getLookAngle().x, pilot.getLookAngle().y, pilot.getLookAngle().z);
         BlockPos centre = event.getPos();
         drilling = true;
@@ -117,10 +121,13 @@ public final class MechEvents {
                     };
                     BlockState state = level.getBlockState(pos);
                     float hardness = state.getDestroySpeed(level, pos);
-                    if (state.isAir() || hardness < 0 || hardness > 50 || !mech.consume(FE_PER_DRILLED)) {
+                    if (state.isAir() || hardness < 0 || hardness > 50 || mech.getEnergy() < FE_PER_DRILLED || !level.mayInteract(pilot, pos)) {
                         continue;
                     }
-                    level.destroyBlock(pos, true, pilot);
+                    // As the pilot, so the break event fires for each block and claims and protections apply
+                    if (pilot.gameMode.destroyBlock(pos)) {
+                        mech.consume(FE_PER_DRILLED);
+                    }
                 }
             }
         } finally {

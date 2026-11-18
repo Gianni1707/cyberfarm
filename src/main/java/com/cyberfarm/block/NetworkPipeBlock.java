@@ -126,11 +126,18 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        BlockState state = defaultBlockState();
+        return connected(defaultBlockState(), context.getLevel(), context.getClickedPos());
+    }
+
+    /** Every arm as its neighbours call for; an arm keeps pulling only while it still leads to a machine. */
+    private BlockState connected(BlockState state, Level level, BlockPos pos) {
         for (Direction direction : Direction.values()) {
-            state = state.setValue(CONNECTIONS.get(direction), connectsTo(context.getLevel(), context.getClickedPos(), direction));
+            state = state.setValue(CONNECTIONS.get(direction), connectsTo(level, pos, direction));
+            if (!isMachineSide(state, level, pos, direction)) {
+                state = state.setValue(EXTRACT.get(direction), false);
+            }
         }
-        return state.setValue(SLEEVED, sleeved(state, context.getLevel(), context.getClickedPos()));
+        return state.setValue(SLEEVED, sleeved(state, level, pos));
     }
 
     @Override
@@ -174,9 +181,13 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
         return InteractionResult.SUCCESS;
     }
 
-    /** Scheduled by a pipe that started showing a flow, to empty the glass once it stops. */
+    /** Scheduled by a pipe that started showing a flow, to empty the glass once it stops, and by {@link #onPlace}. */
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        BlockState connected = connected(state, level, pos);
+        if (connected != state) {
+            level.setBlock(pos, connected, Block.UPDATE_ALL);
+        }
         if (level.getBlockEntity(pos) instanceof NetworkPipeBlockEntity pipe) {
             pipe.checkFlow();
         }
@@ -229,6 +240,12 @@ public abstract class NetworkPipeBlock extends PortEntityBlock {
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         ConduitNetwork.invalidate();
+        // Set without a placement (schematics, Builder drones), its arms may not match its neighbours. A tick later rather than
+        // a setBlock here, which the block entity would miss (the chunk gives it this state after onPlace), and once a schematic
+        // is whole, so the pipe also reaches the machines placed after it
+        if (!oldState.is(this)) {
+            level.scheduleTick(pos, this, 1);
+        }
     }
 
     @Override

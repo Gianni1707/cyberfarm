@@ -90,8 +90,8 @@ public enum TowerSize implements Multiblock.Shape {
      * The side a pipe reaches a port at (dx, dy, dz) from the floor centre from: away from the tower's axis, along the main
      * horizontal axis of its offset. Null for ports in the middle of the floor, which are reached from below.
      */
-    public static @Nullable Direction outward(int dx, int dy, int dz) {
-        if (dx == 0 && dz == 0 || dy == 0 && Math.max(Math.abs(dx), Math.abs(dz)) < 2) {
+    public @Nullable Direction outward(int dx, int dy, int dz) {
+        if (dx == 0 && dz == 0 || dy == 0 && Math.max(Math.abs(dx), Math.abs(dz)) < base()) {
             return null;
         }
         return Math.abs(dx) >= Math.abs(dz) ? (dx > 0 ? Direction.EAST : Direction.WEST) : (dz > 0 ? Direction.SOUTH : Direction.NORTH);

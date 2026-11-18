@@ -74,7 +74,7 @@ public class FluidBucketItem extends BucketItem {
     public static void fillFromBlock(PlayerInteractEvent.RightClickBlock event) {
         ItemStack held = event.getItemStack();
         Level level = event.getLevel();
-        if (!held.is(Items.BUCKET) || !(level instanceof ServerLevel)) {
+        if (!held.is(Items.BUCKET) || !(level instanceof ServerLevel) || event.getEntity().isSpectator()) {
             return;
         }
         IFluidHandler source = Caps.fluids(level, event.getPos(), event.getFace());

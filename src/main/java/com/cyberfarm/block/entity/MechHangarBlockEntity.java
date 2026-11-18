@@ -82,6 +82,15 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
         }
 
         @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+            // The mech is what counts: another hangar holding it too may have taken this module off already
+            if (docked == null || !docked.hasModule(MechModule.values()[slot])) {
+                return ItemStack.EMPTY;
+            }
+            return super.extractItem(slot, amount, simulate);
+        }
+
+        @Override
         protected void onContentsChanged(int index, ItemStack previousContents) {
             if (!loading && docked != null && level != null) {
                 // The mech has it at once: the slots are not saved, so a change still waiting for the arm when the
@@ -272,6 +281,9 @@ public class MechHangarBlockEntity extends MachineBlockEntity {
             fitPending = false;
             docked = parked;
             mirror(parked);
+        } else if (docked != null && maskOf() != docked.getModules()) {
+            // Changed from another hangar the same mech stands in: the slots follow the mech, or a module would be in both
+            mirror(docked);
         }
         if (fitModule >= 0) {
             long elapsed = level.getGameTime() - fitStart;

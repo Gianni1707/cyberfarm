@@ -61,6 +61,10 @@ public class SpongeJob extends DroneJob {
         Fluid bestLiquid = null;
         for (int x = area.minX(); x <= area.maxX(); x++) {
             for (int z = area.minZ(); z <= area.maxZ(); z++) {
+                if (!level.hasChunkAt(x, z)) {
+                    // Reading it would load the chunk
+                    continue;
+                }
                 // Down each column to the first source it may take or the first thing that is solid and dry
                 for (int y = area.maxY(); y >= bottom && (best == null || y > best.getY()); y--) {
                     pos.set(x, y, z);

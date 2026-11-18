@@ -157,7 +157,10 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
 
     // ---------------------------------------------------------------- shell
 
-    /** The biggest complete shell: every block of the cube's surface a cell, its inside empty. */
+    /**
+     * The biggest complete shell: every block of the cube's surface a cell, its middle block empty for the crystal, the rest of
+     * its inside empty or cells, so a tier goes up by building the next shell round the last one (hidden in the crystal).
+     */
     private static int findShell(Level level, BlockPos core) {
         for (int r = MAX_TIER - 1; r > 0; r--) {
             if (isShell(level, core, r)) {
@@ -173,11 +176,16 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
             boolean surface = Math.max(Math.abs(pos.getX() - centre.getX()), Math.max(Math.abs(pos.getY() - centre.getY()),
                     Math.abs(pos.getZ() - centre.getZ()))) == r;
             BlockState state = level.getBlockState(pos);
-            if (surface ? !state.is(ModBlocks.RESONANCE_CELL.get()) : !state.isAir()) {
+            if (surface ? !state.is(ModBlocks.RESONANCE_CELL.get()) : !insideOk(state, pos.equals(centre))) {
                 return false;
             }
         }
         return true;
+    }
+
+    /** What may fill a block of a shell's inside: nothing in the middle, where the crystal is, elsewhere also a smaller shell's cells. */
+    public static boolean insideOk(BlockState state, boolean middle) {
+        return state.isAir() || !middle && state.is(ModBlocks.RESONANCE_CELL.get());
     }
 
     /** Hides the cells of a shell inside the crystal, or shows them again. */
@@ -201,7 +209,7 @@ public class ResonanceCoreBlockEntity extends MachineBlockEntity {
     public static InteractionResult openFromShell(Level level, BlockPos cell, Player player) {
         int r = MAX_TIER - 1;
         ResonanceCoreBlockEntity found = null;
-        for (BlockPos pos : BlockPos.betweenClosed(cell.offset(-r, -(1 + 2 * r), -r), cell.below())) {
+        for (BlockPos pos : BlockPos.betweenClosed(cell.offset(-r, -(1 + 2 * r), -r), cell.offset(r, -1, r))) {
             if (level.getBlockEntity(pos) instanceof ResonanceCoreBlockEntity core
                     && (found == null || pos.distSqr(cell) < found.getBlockPos().distSqr(cell))) {
                 found = core;

@@ -12,6 +12,7 @@ import com.cyberfarm.port.client.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.RenderType;
 import com.cyberfarm.port.client.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -21,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import com.cyberfarm.port.client.LightCoordsUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -140,15 +142,46 @@ public final class ProjectionRenderer {
         event.getSubmitNodeCollector().submitCustomGeometry(poseStack, ATLAS, (pose, buffer) -> {
             for (Ghost ghost : toDraw) {
                 BlockPos pos = ghost.pos();
-                // The block's particle texture, the one its model shows as a whole (the side of most blocks)
-                TextureAtlasSprite sprite = models.getParticleIcon(ghost.state());
-                float inset = ghost.wrong() ? -0.01F : 0.15F;
-                int color = ghost.wrong() ? RED : alpha | 0xFFFFFF;
-                cube(pose, buffer, sprite, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
+                if (ghost.wrong()) {
+                    TextureAtlasSprite sprite = models.getParticleIcon(ghost.state());
+                    cube(pose, buffer, sprite, pos.getX() - 0.01F, pos.getY() - 0.01F, pos.getZ() - 0.01F, 1.02F, RED);
+                } else {
+                    ghost(pose, buffer, models, ghost.state(), pos, 0.15F, alpha | 0xFFFFFF);
+                }
             }
         });
         poseStack.popPose();
     }
+
+    /**
+     * A block to place, as its own model shrunk by {@code inset} on every side. Not its particle texture on a cube: for the
+     * models drawn from a UV sheet (Resonance Cell, pylons, machines) that is the whole sheet and shows nothing recognisable.
+     */
+    public static void ghost(PoseStack.Pose pose, VertexConsumer buffer, BlockModelShaper models, BlockState state, BlockPos pos, float inset, int color) {
+        PoseStack stack = new PoseStack();
+        stack.last().pose().set(pose.pose());
+        stack.last().normal().set(pose.normal());
+        stack.translate(pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset);
+        stack.scale(1 - 2 * inset, 1 - 2 * inset, 1 - 2 * inset);
+        PoseStack.Pose at = stack.last();
+        RandomSource random = RandomSource.create();
+        boolean drawn = false;
+        for (Direction side : SIDES) {
+            random.setSeed(state.getSeed(pos));
+            for (BakedQuad quad : models.getBlockModel(state).getQuads(state, side, random)) {
+                buffer.putBakedQuad(at, quad, color, LightCoordsUtil.FULL_BRIGHT);
+                drawn = true;
+            }
+        }
+        if (!drawn) {
+            // Drawn only by its block entity renderer: the cube still says where it goes
+            TextureAtlasSprite sprite = models.getParticleIcon(state);
+            cube(pose, buffer, sprite, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
+        }
+    }
+
+    /** The six faces and the quads facing no side, as models list them. */
+    private static final Direction[] SIDES = {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null};
 
     public static void cube(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite sprite, float x, float y, float z, float size, int color) {
         float x1 = x + size;

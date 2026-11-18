@@ -89,8 +89,11 @@ public final class BuildPlan {
         return !state.isAir() && state.getFluidState().isEmpty() && !state.hasBlockEntity() && state.getDestroySpeed(level, pos) >= 0;
     }
 
-    /** Whether the block at {@code pos} must go before the structure is built. */
+    /** Whether the block at {@code pos} must go before the structure is built. Never in a chunk not loaded. */
     public boolean inTheWay(Level level, BlockPos pos) {
+        if (!level.hasChunkAt(pos)) {
+            return false;
+        }
         BlockState here = level.getBlockState(pos);
         if (!breakable(level, pos, here)) {
             return false;
@@ -117,15 +120,15 @@ public final class BuildPlan {
     }
 
     /**
-     * The next block for {@code claimant} to clear: among those in the way that nobody else is
-     * breaking and it can reach, in the highest layer, the nearest to {@code from}. Null when there
+     * The next block for {@code claimant} to clear: among those in the way ({@code toClear}, from {@link #toClear})
+     * that nobody else is breaking and it can reach, in the highest layer, the nearest to {@code from}. Null when there
      * is none.
      */
-    public @Nullable BlockPos claimClearing(ServerLevel level, UUID claimant, Vec3 from, Predicate<BlockPos> canReach) {
+    public @Nullable BlockPos claimClearing(ServerLevel level, List<BlockPos> toClear, UUID claimant, Vec3 from, Predicate<BlockPos> canReach) {
         long now = level.getGameTime();
         claims.values().removeIf(claim -> claim.until() < now || claim.drone().equals(claimant));
         BlockPos best = null;
-        for (BlockPos pos : toClear(level)) {
+        for (BlockPos pos : toClear) {
             if (best != null && pos.getY() < best.getY()) {
                 break;
             }
@@ -177,9 +180,13 @@ public final class BuildPlan {
     /**
      * Whether a drone could place this block now, given the items: it is missing, nothing solid is
      * there, its support is there (torches, plates, lanterns...) and the drone has room above it.
+     * Never in a chunk not loaded: the dock can tick while the site is not, and reading it would load it.
      */
     private boolean workable(Level level, Structure.Ghost ghost) {
         BlockPos pos = ghost.pos();
+        if (!level.hasChunkAt(pos)) {
+            return false;
+        }
         BlockState here = level.getBlockState(pos);
         return !ghost.ok().test(here) && here.canBeReplaced() && ghost.show().canSurvive(level, pos)
                 && level.getBlockState(pos.above()).getCollisionShape(level, pos.above()).isEmpty();
@@ -211,7 +218,7 @@ public final class BuildPlan {
     private Map<Item, Integer> missing(Level level, Predicate<Structure.Ghost> which) {
         Map<Item, Integer> missing = new LinkedHashMap<>();
         for (Structure.Ghost ghost : ghosts) {
-            if (which.test(ghost) && !ghost.ok().test(level.getBlockState(ghost.pos()))) {
+            if (which.test(ghost) && !placed(level, ghost)) {
                 missing.merge(cost(ghost.show()), 1, Integer::sum);
             }
         }
@@ -219,12 +226,20 @@ public final class BuildPlan {
     }
 
     public int remaining(Level level) {
-        return (int) ghosts.stream().filter(ghost -> !ghost.ok().test(level.getBlockState(ghost.pos()))).count();
+        return (int) ghosts.stream().filter(ghost -> !placed(level, ghost)).count();
+    }
+
+    /** Whether the block is in. One in a chunk not loaded is not read (that would load it) and counts as still missing. */
+    private static boolean placed(Level level, Structure.Ghost ghost) {
+        return level.hasChunkAt(ghost.pos()) && ghost.ok().test(level.getBlockState(ghost.pos()));
     }
 
     /** Wrong blocks the Builder cannot clear: they hold things, or are fluids or unbreakable. The player moves them. */
     public int obstacles(Level level) {
         return (int) layout.values().stream().filter(ghost -> {
+            if (!level.hasChunkAt(ghost.pos())) {
+                return false;
+            }
             BlockState here = level.getBlockState(ghost.pos());
             return !ghost.ok().test(here) && !here.canBeReplaced() && !inTheWay(level, ghost.pos());
         }).count();

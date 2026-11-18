@@ -408,6 +408,11 @@ public class FluidTankBlockEntity extends MachineBlockEntity {
         ResourceLocation fluid = ResourceLocation.tryParse(input.getStringOr("shown_fluid", "minecraft:empty"));
         shownFluid = fluid != null ? BuiltInRegistries.FLUID.get(fluid) : Fluids.EMPTY;
         shownAmount = input.getIntOr("shown_amount", 0);
+        // Data copied to another place (pick-block, /clone) still names the original tank: this block stands alone
+        if (!inBox(worldPosition)) {
+            boxMin = worldPosition;
+            boxMax = worldPosition;
+        }
         handler = null;
     }
 

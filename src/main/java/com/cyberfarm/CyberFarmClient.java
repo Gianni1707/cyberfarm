@@ -143,6 +143,7 @@ public final class CyberFarmClient {
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomTurn);
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::zoomWheel);
         MinecraftForge.EVENT_BUS.addListener(TrinketClient::addInventoryTabs);
+        MinecraftForge.EVENT_BUS.addListener(TrinketClient::keyTooltip);
         MinecraftForge.EVENT_BUS.addListener(TowerClearance::tick);
         modEventBus.addListener(MechClient::registerHud);
         modEventBus.addListener(com.cyberfarm.client.WarpOverlay::register);

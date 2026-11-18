@@ -1,7 +1,8 @@
 package com.cyberfarm.drone.job;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.UUID;
 
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.effect.Laser;
@@ -31,7 +32,8 @@ public class BombJob extends DroneJob {
     private static final int CLAIM_TICKS = 20;
 
     // shortcut: claims are per server, in memory; fine as jobs are not saved either
-    private static final Map<LivingEntity, BombJob> CLAIMS = new WeakHashMap<>();
+    // By UUID: a weak key would never go, the claim (its value) holding the mob; stale claims are pruned in find()
+    private static final Map<UUID, BombJob> CLAIMS = new HashMap<>();
 
     private final LivingEntity target;
     private long lastTick;
@@ -44,6 +46,8 @@ public class BombJob extends DroneJob {
 
     public static @Nullable DroneJob find(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         long now = level.getGameTime();
+        // Claims of drones that unloaded or died mid-attack
+        CLAIMS.values().removeIf(claim -> now - claim.lastTick > CLAIM_TICKS);
         LivingEntity best = null;
         double bestDistance = Double.MAX_VALUE;
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class, area(dock), Laser::isTarget)) {
@@ -58,12 +62,12 @@ public class BombJob extends DroneJob {
         }
         // One bomb per mob: the rest of the swarm picks other targets
         BombJob job = new BombJob(best, now);
-        CLAIMS.put(best, job);
+        CLAIMS.put(best.getUUID(), job);
         return job;
     }
 
     private static boolean isClaimed(LivingEntity entity, long now) {
-        BombJob claim = CLAIMS.get(entity);
+        BombJob claim = CLAIMS.get(entity.getUUID());
         return claim != null && now - claim.lastTick <= CLAIM_TICKS;
     }
 
@@ -75,7 +79,7 @@ public class BombJob extends DroneJob {
     public Result tick(DroneEntity drone, ServerLevel level, DroneDockBlockEntity dock) {
         lastTick = level.getGameTime();
         if (target.level() != level || !Laser.isTarget(target) || !area(dock).intersects(target.getBoundingBox())) {
-            CLAIMS.remove(target, this);
+            CLAIMS.remove(target.getUUID(), this);
             return Result.DONE;
         }
         if (!armed) {
@@ -84,12 +88,12 @@ public class BombJob extends DroneJob {
         }
         Vec3 aim = target.getBoundingBox().getCenter();
         if (drone.position().distanceTo(aim) <= FUSE_DISTANCE) {
-            CLAIMS.remove(target, this);
+            CLAIMS.remove(target.getUUID(), this);
             drone.detonate(level, target.position().add(0.0, BLAST_HEIGHT, 0.0), POWER);
             return Result.CONTINUE;
         }
         if (travelTo(drone, target.blockPosition(), aim) == Travel.FAILED) {
-            CLAIMS.remove(target, this);
+            CLAIMS.remove(target.getUUID(), this);
             return Result.DONE;
         }
         return Result.CONTINUE;
@@ -97,6 +101,6 @@ public class BombJob extends DroneJob {
 
     @Override
     public void stop(DroneEntity drone, ServerLevel level) {
-        CLAIMS.remove(target, this);
+        CLAIMS.remove(target.getUUID(), this);
     }
 }

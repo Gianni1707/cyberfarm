@@ -14,6 +14,9 @@ public class MachineEnergyHandler extends EnergyStorage {
     /** What the machine itself made and used since {@link #takeGenerated}/{@link #takeUsed} last read it. */
     private int generated;
     private int used;
+    /** What other blocks put in and took out (committed transfers only) since {@link #takeReceived}/{@link #takeSent} last read it. */
+    private int received;
+    private int sent;
 
     public MachineEnergyHandler(int capacity, int maxInsert, int maxExtract, Runnable onChanged) {
         super(capacity, maxInsert, maxExtract);
@@ -22,17 +25,19 @@ public class MachineEnergyHandler extends EnergyStorage {
 
     @Override
     public int receiveEnergy(int maxReceive, boolean simulate) {
-        int received = super.receiveEnergy(maxReceive, simulate);
-        if (received > 0 && !simulate) {
+        int accepted = super.receiveEnergy(maxReceive, simulate);
+        if (accepted > 0 && !simulate) {
+            received += accepted;
             onChanged.run();
         }
-        return received;
+        return accepted;
     }
 
     @Override
     public int extractEnergy(int maxExtract, boolean simulate) {
         int extracted = super.extractEnergy(maxExtract, simulate);
         if (extracted > 0 && !simulate) {
+            sent += extracted;
             onChanged.run();
         }
         return extracted;
@@ -109,6 +114,18 @@ public class MachineEnergyHandler extends EnergyStorage {
     public int takeUsed() {
         int value = used;
         used = 0;
+        return value;
+    }
+
+    public int takeReceived() {
+        int value = received;
+        received = 0;
+        return value;
+    }
+
+    public int takeSent() {
+        int value = sent;
+        sent = 0;
         return value;
     }
 

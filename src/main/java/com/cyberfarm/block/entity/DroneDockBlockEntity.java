@@ -134,6 +134,7 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** The blocks the current layer misses, for the dock screen; worked out once per tick for all the data slots that show them. */
     private List<Map.Entry<Item, Integer>> shownMissing = List.of();
     private long shownMissingTick = -1;
+    private int[] shownProgress = new int[3];
     /**
      * What pipes, hoppers and Transport drones see: with a build linked only the blocks it still
      * needs go in, so a Transport route from any storage brings exactly the missing materials.
@@ -368,6 +369,8 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
     /** Links the structure the Builder drones build; null unlinks it. */
     public void setBuildPlan(@Nullable BuildPlan plan) {
         buildPlan = plan;
+        // The console shows the new structure at once, not after the cache's second
+        shownMissingTick = -1;
         setChanged();
     }
 
@@ -397,11 +400,20 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
         if (buildPlan == null || level == null) {
             return List.of();
         }
-        if (level.getGameTime() != shownMissingTick) {
+        // Each of these is a pass over the whole site (up to 64,000 blocks): once a second, not every tick for every viewer
+        if (shownMissingTick < 0 || level.getGameTime() - shownMissingTick >= 20) {
             shownMissingTick = level.getGameTime();
             shownMissing = List.copyOf(buildPlan.missingInLayer(level).entrySet());
+            shownProgress = new int[] {Math.min(Short.MAX_VALUE, buildPlan.remaining(level)),
+                    Math.min(Short.MAX_VALUE, buildPlan.obstacles(level)), buildPlan.layerNumber(level)};
         }
         return shownMissing;
+    }
+
+    /** The build's blocks remaining (0), obstacles (1) and layer number (2), as {@link #shownMissing} last counted them. */
+    private int shownProgress(int which) {
+        shownMissing();
+        return buildPlan != null && level != null ? shownProgress[which] : 0;
     }
 
     public boolean hasLiveDrone(ServerLevel level) {
@@ -599,9 +611,9 @@ public class DroneDockBlockEntity extends MachineBlockEntity {
             case 19 -> paused ? 1 : 0;
             case 20 -> taxiDestination != null ? 1 : 0;
             case 21 -> buildPlan != null ? 1 : 0;
-            case 22 -> buildPlan != null && level != null ? Math.min(Short.MAX_VALUE, buildPlan.remaining(level)) : 0;
-            case 23 -> buildPlan != null && level != null ? Math.min(Short.MAX_VALUE, buildPlan.obstacles(level)) : 0;
-            case 24 -> buildPlan != null && level != null ? buildPlan.layerNumber(level) : 0;
+            case 22 -> shownProgress(0);
+            case 23 -> shownProgress(1);
+            case 24 -> shownProgress(2);
             case 25 -> buildPlan != null ? buildPlan.layerCount() : 0;
             case 26 -> Math.max(0, shownMissing().size() - BUILD_LIST);
             default -> 0;
