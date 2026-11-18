@@ -44,8 +44,8 @@ becomes an Advanced Universal Cable.
 
 ## Battery Bank sides
 
-**Right-click** a face of a [Battery Bank](battery_bank.md) to switch that side of the bank: **In**, **Out**,
-**Off**, then In again. While you hold the swapper, every side of a bank is framed in its mode's colour.
+**Right-click** a face of a [Battery Bank](battery_bank.md) to switch that face of that block: **In**, **Out**,
+**Off**, then In again. While you hold the swapper, every outer face of a bank is framed in its mode's colour.
 
 ## On the Utility Belt
 

@@ -14,6 +14,26 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 
 ## What's new
 
+**1.3.2: fixes from co-op play**
+- The **Fission Reactor** takes Fuel Rods only in the slots its tower burns, from pipes and other mods'
+  exporters too.
+- **Steam Turbine**: a Large turbine's FE/t shows correctly on servers, and a rotor spinning down no
+  longer wastes steam.
+- **Battery Bank**: In, Out or Off on every outer face of every block; the display counts cables pulling
+  power out, and its charge bar fills left to right.
+- **Resonance Core**: go up a tier by building the next shell round the old one; the shell's middle
+  stays empty, and any cell opens the core. Core, Cell and Pylon share one handbook page.
+- **Multiblock Projector**: the holograms show the real blocks, and long names scroll.
+- Trinkets show the key they are bound to in their tooltip.
+- No more flickering glass on the Crystallizer and the Methane Extractor, or at the back of the Steam
+  Turbine.
+- Many fixes: pipes in schematic buildings connect, no module dupe with two Mech Hangars, the Supply
+  Terminal keeps deliveries away from hoppers, drones keep their cargo on `/kill` and stay out of
+  portals, the mech drill and the Cable Swapper respect protected areas, and fewer chunk loads.
+
+<details>
+<summary>Earlier versions</summary>
+
 **1.3.1: polish and fixes**
 - The **Energy Sphere** on your Utility Belt now charges every FE item you carry, from any mod.
 - **Fission Reactor**: Dump coolant and Dump excess steam buttons, a clearer screen, and pipes plug into
@@ -26,9 +46,6 @@ first login, and the **CyberFarm advancement tab** (press **L**) shows where to 
 - The **Battery Bank** shows what it stores in its tooltip, so in JEI and REI too.
 - The **handbook** has a page for every block (hold G on any CyberFarm item), a page per trinket, and
   every page rewritten to be clearer.
-
-<details>
-<summary>Earlier versions</summary>
 
 **1.3: the Cable Swapper**
 - The **Cable Swapper** upgrades a whole line of cables or pipes to the next tier in one click, from

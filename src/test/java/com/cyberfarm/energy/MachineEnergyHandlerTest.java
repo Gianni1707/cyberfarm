@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
 
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+
 class MachineEnergyHandlerTest {
     private final MachineEnergyHandler energy = new MachineEnergyHandler(1000, 100, 100, () -> {});
 
@@ -35,6 +37,27 @@ class MachineEnergyHandlerTest {
         assertEquals(30, energy.drain(100));
         assertEquals(0, energy.drain(100));
         assertEquals(30, energy.takeUsed());
+    }
+
+    /** Committed transfers by other blocks are counted, the machine's own changes and aborted transfers are not. */
+    @Test
+    void countsOnlyWhatOthersMoved() {
+        energy.generate(500);
+        try (Transaction transaction = Transaction.openRoot()) {
+            energy.insert(80, transaction);
+            transaction.commit();
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            energy.extract(60, transaction);
+            transaction.commit();
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            energy.extract(90, transaction);
+        }
+        energy.set(100);
+        assertEquals(80, energy.takeReceived());
+        assertEquals(60, energy.takeSent());
+        assertEquals(0, energy.takeReceived());
     }
 
     @Test

@@ -137,10 +137,11 @@ public class DishNetworks extends SavedData {
 
     /** Links a receiver to the network, leaving any other first; false when it is full. */
     public boolean link(Network network, GlobalPos receiver) {
-        unlink(receiver);
-        if (network.isFull()) {
+        // Checked first, or a click on a full network would drop the link the receiver already has
+        if (network.isFull() && !network.receivers.contains(receiver)) {
             return false;
         }
+        unlink(receiver);
         network.receivers.add(receiver);
         setDirty();
         return true;

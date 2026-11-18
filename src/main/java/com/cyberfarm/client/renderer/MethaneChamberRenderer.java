@@ -264,7 +264,8 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
 
         float surface = DECK + 0.01F + state.depth;
         // Acid and glass in one render type, so its sorting draws them back to front: translucent quads write depth, and glass
-        // drawn first would hide the pool. The pool gives up the fluid's own texture for that. The glass shows from outside and within.
+        // drawn first would hide the pool. The pool gives up the fluid's own texture for that. One layer of glass: the render type
+        // draws both sides, and a second layer on the same surface flickered against the first.
         collector.submitCustomGeometry(poseStack, GLASS, (pose, buffer) -> {
             if (state.depth > 0.01F) {
                 pool(pose, buffer, surface);
@@ -276,10 +277,8 @@ public class MethaneChamberRenderer implements BlockEntityRenderer<MethaneExtrac
                 float[] step = BELL[s];
                 boolean[] doors = s == 0 ? state.doors : null;
                 bell(pose, buffer, step[2], step[0], step[1], false, doors, light);
-                bell(pose, buffer, step[2], step[0], step[1], true, doors, light);
                 if (s < BELL.length - 1) {
                     cap(pose, buffer, BELL[s + 1][2], step[2], step[1], true, GLASS_TINT, light);
-                    cap(pose, buffer, BELL[s + 1][2], step[2], step[1], false, GLASS_TINT, light);
                 }
             }
         });

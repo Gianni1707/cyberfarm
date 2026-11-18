@@ -214,9 +214,9 @@ public class CyberFarm {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.HUMAN_DOCK.get(),
                 (be, side) -> side != null && side == be.getBlockState().getValue(MachineBlock.FACING) ? null : be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.sideHandler(side));
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.runner().getItems());
         event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.FABRICATOR.get(), (be, side) -> be.automationItems());
-        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
+        event.registerBlockEntity(Capabilities.Item.BLOCK, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.automationItems());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Energy.BLOCK, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
         event.registerBlockEntity(Capabilities.Fluid.BLOCK, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());

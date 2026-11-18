@@ -66,7 +66,17 @@ public class PlantJob extends DroneJob {
         return switch (travelTo(drone, farmland)) {
             case MOVING -> Result.CONTINUE;
             case FAILED -> Result.DONE;
-            case ARRIVED -> plant(drone, level) ? Result.DONE : Result.RETURN;
+            case ARRIVED -> {
+                if (plant(drone, level)) {
+                    yield Result.DONE;
+                }
+                if (!drone.cargo().contains(PlantJob::isPlantable)) {
+                    yield Result.RETURN;
+                }
+                // Seeds left, but none grows here (dark farmland...): skip the tile, or the drone would come back forever
+                drone.markUnreachable(farmland);
+                yield Result.DONE;
+            }
         };
     }
 

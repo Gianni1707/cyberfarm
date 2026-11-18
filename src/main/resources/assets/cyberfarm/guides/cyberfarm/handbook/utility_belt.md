@@ -45,4 +45,4 @@ mod. See [Energy Sphere](energy_sphere.md) for the rates.
 ## Tips
 
 - Without a belt, or without a sphere in it, your trinkets have no power. Only the Zoom program works without it.
-- You can change every key in Controls, under **CyberFarm Trinkets**.
+- You can change every key in Controls, under **CyberFarm Trinkets**. A trinket's tooltip shows the key it is bound to now.

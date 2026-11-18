@@ -3,6 +3,7 @@ package com.cyberfarm.item;
 import java.util.function.Consumer;
 
 import com.cyberfarm.entity.DroneEntity;
+import com.cyberfarm.entity.MechEntity;
 import com.cyberfarm.registry.ModDataComponents;
 
 import net.minecraft.ChatFormatting;
@@ -49,7 +50,7 @@ public class MobCapsuleItem extends Item {
         if (hasMob(capsule)) {
             return InteractionResult.PASS;
         }
-        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target.getType().builtInRegistryHolder().is(Tags.EntityTypes.BOSSES)) {
+        if (!(target instanceof Mob mob) || target instanceof DroneEntity || target instanceof MechEntity || target.getType().builtInRegistryHolder().is(Tags.EntityTypes.BOSSES)) {
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.capsule.refused"));
             return InteractionResult.FAIL;
         }

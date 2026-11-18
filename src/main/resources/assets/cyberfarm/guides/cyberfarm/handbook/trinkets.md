@@ -52,7 +52,7 @@ your inventory. With Curios installed, Curios' own rules decide.
 | [Gravity Boots](gravity_boots.md) | Feet | Hover over the ground, no fall damage | H |
 | [Neural Chip](neural_chip.md) | Neck | Runs up to six programs: zoom, night vision and more | Z, N, J |
 
-You can change every key in Controls, under **CyberFarm Trinkets**.
+You can change every key in Controls, under **CyberFarm Trinkets**. A trinket's tooltip shows the key it is bound to now.
 
 ## Power use
 
