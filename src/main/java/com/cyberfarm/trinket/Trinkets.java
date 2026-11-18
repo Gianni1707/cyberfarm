@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.cyberfarm.CyberFarm;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -23,6 +24,7 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.attachment.AttachmentType;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
@@ -66,12 +68,19 @@ public final class Trinkets {
     /** The Pocket Drone's errand, seen by everyone near so they see it fly. */
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<DroneFetch>> FETCH = ATTACHMENTS.register("drone_fetch",
             () -> AttachmentType.builder(() -> DroneFetch.NONE).serialize(DroneFetch.CODEC).sync(DroneFetch.STREAM_CODEC).build());
+    /**
+     * Whether the Night Vision the player has is the chip's (TrinketTicker#nightVision). Kept apart from the effect: a
+     * potion drunk on top of it rewrites the effect's flags. Saved, not kept through death (the effects are not either).
+     */
+    public static final DeferredHolder<AttachmentType<?>, AttachmentType<Boolean>> CHIP_NIGHT_VISION = ATTACHMENTS.register("chip_night_vision",
+            () -> AttachmentType.builder(() -> false).serialize(Codec.BOOL.fieldOf("added")).build());
 
     private Trinkets() {}
 
     public static void register(IEventBus modBus) {
         ATTACHMENTS.register(modBus);
         NeoForge.EVENT_BUS.addListener(Trinkets::dropOnDeath);
+        NeoForge.EVENT_BUS.addListener(Trinkets::emptyOwnSlots);
     }
 
     /** Whether the trinkets live in our own slots: not when Curios brings slots of its own. */
@@ -113,6 +122,25 @@ public final class Trinkets {
             }
         }
         player.setData(WORN, Worn.EMPTY);
+    }
+
+    /**
+     * Curios added to a world where trinkets were worn in our own slots: those slots are gone, so what they held goes
+     * back to the inventory (at the player's feet when full), for the player to put in the Curios slots.
+     */
+    private static void emptyOwnSlots(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        if (ownSlots()) {
+            return;
+        }
+        List<ItemStack> stacks = player.getData(WORN).stacks();
+        if (stacks.stream().allMatch(ItemStack::isEmpty)) {
+            return;
+        }
+        player.setData(WORN, Worn.EMPTY);
+        for (ItemStack stack : stacks) {
+            player.getInventory().placeItemBackInInventory(stack.copy());
+        }
     }
 
     // The slots of the Trinkets screen (TrinketsMenu)

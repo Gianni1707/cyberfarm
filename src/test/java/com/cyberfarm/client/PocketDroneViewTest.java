@@ -17,16 +17,16 @@ class PocketDroneViewTest {
     @Test
     void theDroneFliesAContinuousArc() {
         DroneFetch out = new DroneFetch(DroneFetch.OUT, DROP, 7, 100, 10, ItemStack.EMPTY);
-        assertEquals(HOME, PocketDroneView.position(out, HOME, 100));
-        Vec3 over = PocketDroneView.position(out, HOME, 110);
+        assertEquals(HOME, PocketDroneView.position(out, HOME, 0));
+        Vec3 over = PocketDroneView.position(out, HOME, 10);
         assertEquals(4.0, over.x, 1.0E-6);
         assertEquals(0.45, over.y, 1.0E-6);
-        Vec3 middle = PocketDroneView.position(out, HOME, 105);
+        Vec3 middle = PocketDroneView.position(out, HOME, 5);
         assertTrue(middle.y > (HOME.y + over.y) / 2, "arcs above the straight line");
 
         DroneFetch back = new DroneFetch(DroneFetch.BACK, DROP, -1, 110, 10, ItemStack.EMPTY);
-        assertEquals(over, PocketDroneView.position(back, HOME, 110));
-        assertEquals(HOME.x, PocketDroneView.position(back, HOME, 125).x, 1.0E-6);
+        assertEquals(over, PocketDroneView.position(back, HOME, 0));
+        assertEquals(HOME.x, PocketDroneView.position(back, HOME, 15).x, 1.0E-6);
     }
 
     @Test
@@ -38,6 +38,6 @@ class PocketDroneViewTest {
 
     @Test
     void idleItWaitsAtHome() {
-        assertEquals(HOME, PocketDroneView.position(DroneFetch.NONE, HOME, 50));
+        assertEquals(HOME, PocketDroneView.position(DroneFetch.NONE, HOME, 0));
     }
 }

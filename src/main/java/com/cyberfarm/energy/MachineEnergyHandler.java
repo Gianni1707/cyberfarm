@@ -11,6 +11,10 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
     /** What the machine itself made and used since {@link #takeGenerated}/{@link #takeUsed} last read it. */
     private int generated;
     private int used;
+    /** What other blocks put in and took out (committed transfers only) since {@link #takeReceived}/{@link #takeSent} last read it. */
+    private int received;
+    private int sent;
+    private boolean own;
 
     public MachineEnergyHandler(int capacity, int maxInsert, int maxExtract, Runnable onChanged) {
         super(capacity, maxInsert, maxExtract);
@@ -19,7 +23,25 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
 
     @Override
     protected void onEnergyChanged(int previousAmount) {
+        if (!own) {
+            if (energy > previousAmount) {
+                received += energy - previousAmount;
+            } else {
+                sent += previousAmount - energy;
+            }
+        }
         onChanged.run();
+    }
+
+    /** The machine's own change, which {@link #takeReceived} and {@link #takeSent} leave out. */
+    @Override
+    public void set(int amount) {
+        own = true;
+        try {
+            super.set(amount);
+        } finally {
+            own = false;
+        }
     }
 
     public int getEnergy() {
@@ -87,6 +109,18 @@ public class MachineEnergyHandler extends SimpleEnergyHandler {
     public int takeUsed() {
         int value = used;
         used = 0;
+        return value;
+    }
+
+    public int takeReceived() {
+        int value = received;
+        received = 0;
+        return value;
+    }
+
+    public int takeSent() {
+        int value = sent;
+        sent = 0;
         return value;
     }
 }

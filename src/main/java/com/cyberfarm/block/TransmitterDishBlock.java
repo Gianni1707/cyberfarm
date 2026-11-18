@@ -83,12 +83,7 @@ public class TransmitterDishBlock extends SmallMultiblockBlock {
             return super.useWithoutItem(state, level, pos, player, hitResult);
         }
         if (player instanceof ServerPlayer server && level.getBlockEntity(pos) instanceof TransmitterDishBlockEntity dish) {
-            String name = dish.network(server).name;
-            List<String> receivers = dish.receiverLabels();
-            server.openMenu(dish, buf -> {
-                buf.writeUtf(name);
-                buf.writeCollection(receivers, (b, label) -> b.writeUtf(label));
-            });
+            server.openMenu(dish);
         }
         return InteractionResult.SUCCESS;
     }

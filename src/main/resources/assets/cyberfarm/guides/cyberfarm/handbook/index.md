@@ -54,8 +54,8 @@ The endgame power plant: [uranium](uranium.md) and [Fuel Rods](fuel_rod.md), the
 
 ### [Energy Storage](energy_storage.md)
 Keeping power for later: the small [Battery Bank](battery_bank.md), and the big
-[Resonance Core](resonance_core.md) with its [Resonance Cells](resonance_cell.md) and
-[Stabilizer Pylons](stabilizer_pylon.md).
+[Resonance Core](resonance_core.md) with its Resonance Cells and
+Stabilizer Pylons.
 
 ### [Cables](cables.md)
 Moving power and fluids: the [Energy Conduit](energy_conduit.md), [Gas Pipe](gas_pipe.md),

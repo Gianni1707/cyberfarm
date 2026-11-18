@@ -86,7 +86,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
         state.ports = state.formed ? entity.portsForRender().stream().map(port -> port.subtract(floor)).toList() : List.of();
         Set<BlockPos> sleeved = new HashSet<>();
         for (BlockPos port : state.ports) {
-            Direction out = outward(port);
+            Direction out = outward(state.size, port);
             if (out != null && entity.getLevel() != null) {
                 BlockState pipe = entity.getLevel().getBlockState(port.offset(floor).relative(out));
                 if (pipe.getBlock() instanceof NetworkPipeBlock && pipe.getValue(NetworkPipeBlock.SLEEVED)) {
@@ -132,7 +132,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
                 (pose, buffer) -> onFacet(pose, buffer, size, controller, 0.5F, light));
         collector.submitCustomGeometry(poseStack, HATCH, (pose, buffer) -> {
             for (BlockPos port : state.ports) {
-                if (outward(port) == null) {
+                if (outward(size, port) == null) {
                     continue;
                 }
                 onFacet(pose, buffer, size, port, 0.4F, light);
@@ -187,8 +187,8 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
      * The side a pipe or cable reaches a port from: away from the tower's axis, along the main
      * horizontal axis of the port's offset. Ports in the middle of the floor are only reached from below.
      */
-    private static Direction outward(BlockPos port) {
-        return TowerSize.outward(port.getX(), port.getY(), port.getZ());
+    private static Direction outward(TowerSize tower, BlockPos port) {
+        return tower.outward(port.getX(), port.getY(), port.getZ());
     }
 
     /**
@@ -219,7 +219,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
      * place), and never shorter than its two flanges; 0 for a port with no hatch on the walls.
      */
     private static float outletEnd(TowerSize tower, BlockPos port, Set<BlockPos> sleeved) {
-        if (outward(port) == null || Math.max(Math.abs(port.getX()), Math.abs(port.getZ())) != tower.ring(port.getY())) {
+        if (outward(tower, port) == null || Math.max(Math.abs(port.getX()), Math.abs(port.getZ())) != tower.ring(port.getY())) {
             return 0.0F;
         }
         float face = tower.ring(port.getY()) + 0.5F;
@@ -232,7 +232,7 @@ public class CoolingTowerRenderer implements BlockEntityRenderer<ReactorControll
 
     /** The flange stub from the hatch out to {@code end} from the axis, where the real pipe plugs into its end flange. */
     private static void outlet(PoseStack.Pose pose, VertexConsumer buffer, TowerSize tower, BlockPos port, float end, int light) {
-        Direction out = outward(port);
+        Direction out = outward(tower, port);
         float low = tower.radius(port.getY()), high = tower.radius(port.getY() + 1.0F);
         float flat = (low + high) / 2.0F;
         // The base flange sits on the hatch; on a steep layer it reaches back into the surface, so its rim never floats

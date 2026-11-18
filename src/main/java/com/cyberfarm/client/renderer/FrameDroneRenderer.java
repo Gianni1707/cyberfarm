@@ -437,8 +437,7 @@ public final class FrameDroneRenderer {
                 Target target = lacking.get(i);
                 if (cells.get(i) == Cell.FREE) {
                     BlockPos pos = target.pos();
-                    ProjectionRenderer.cube(pose, buffer, models.getParticleMaterial(target.show()).sprite(), pos.getX() + GHOST_INSET, pos.getY() + GHOST_INSET, pos.getZ() + GHOST_INSET,
-                            1.0F - 2.0F * GHOST_INSET, ghost);
+                    ProjectionRenderer.ghost(pose, buffer, models, target.show(), pos, GHOST_INSET, ghost);
                 }
             }
         });

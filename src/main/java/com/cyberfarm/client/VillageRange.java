@@ -7,6 +7,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -15,7 +16,7 @@ import org.jspecify.annotations.Nullable;
 /**
  * The village's bounds, switched on and off by the Supply Terminal's Range button: a line of pale green
  * light along the ground round the square the village covers, with taller posts at its corners.
- * Only the stretch near the player is drawn; it switches itself off once the player is far away.
+ * Only the stretch near the player is drawn; it switches itself off once the player is far away, the terminal is gone or the world changes.
  */
 public final class VillageRange {
     private static final DustParticleOptions LIGHT = new DustParticleOptions(0xD1FEE7, 1.5F);
@@ -23,6 +24,7 @@ public final class VillageRange {
     private static final double DRAWN = 48.0;
     private static final double FORGOTTEN = 256.0;
     private static @Nullable BlockPos shown;
+    private static @Nullable Level shownIn;
 
     private VillageRange() {}
 
@@ -32,6 +34,7 @@ public final class VillageRange {
 
     public static void toggle(BlockPos terminal) {
         shown = terminal.equals(shown) ? null : terminal.immutable();
+        shownIn = Minecraft.getInstance().level;
     }
 
     public static void tick(ClientTickEvent.Post event) {
@@ -41,7 +44,9 @@ public final class VillageRange {
         if (shown == null || level == null || player == null || minecraft.isPaused() || level.getGameTime() % EVERY != 0) {
             return;
         }
-        if (player.distanceToSqr(Vec3.atCenterOf(shown)) > FORGOTTEN * FORGOTTEN) {
+        // Off with the terminal broken (once the client has its chunk to tell), in another world, or far away
+        if (level != shownIn || (level.isLoaded(shown) && !(level.getBlockEntity(shown) instanceof SupplyTerminalBlockEntity))
+                || player.distanceToSqr(Vec3.atCenterOf(shown)) > FORGOTTEN * FORGOTTEN) {
             shown = null;
             return;
         }

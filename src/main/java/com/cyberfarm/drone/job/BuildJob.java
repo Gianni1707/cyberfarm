@@ -1,5 +1,7 @@
 package com.cyberfarm.drone.job;
 
+import java.util.List;
+
 import com.cyberfarm.block.entity.DroneDockBlockEntity;
 import com.cyberfarm.effect.Effects;
 import com.cyberfarm.entity.DroneEntity;
@@ -62,11 +64,12 @@ public class BuildJob extends DroneJob {
             return null;
         }
         // The site is cleared first; building waits while there is anything left the drone could clear
-        BlockPos clear = plan.claimClearing(level, drone.getUUID(), drone.position(), pos -> !drone.isUnreachable(pos));
+        List<BlockPos> toClear = plan.toClear(level);
+        BlockPos clear = plan.claimClearing(level, toClear, drone.getUUID(), drone.position(), pos -> !drone.isUnreachable(pos));
         if (clear != null) {
             return new ClearJob(plan, clear);
         }
-        if (plan.toClear(level).stream().anyMatch(pos -> !drone.isUnreachable(pos))) {
+        if (toClear.stream().anyMatch(pos -> !drone.isUnreachable(pos))) {
             return null;
         }
         // Away from the dock only blocks whose item is in the cargo; on the dock also what it stocks

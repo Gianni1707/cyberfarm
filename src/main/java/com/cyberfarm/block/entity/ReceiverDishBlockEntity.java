@@ -259,4 +259,10 @@ public class ReceiverDishBlockEntity extends SmallMultiblockBlockEntity {
         List<Choice> choices = player instanceof ServerPlayer server ? choices(server) : List.of();
         return new ReceiverDishMenu(containerId, inventory, this, choices, data, ContainerLevelAccess.create(level, worldPosition));
     }
+
+    /** Here rather than at the click: vanilla opens the menu for a spectator without asking the block. */
+    @Override
+    public void writeClientSideData(AbstractContainerMenu menu, RegistryFriendlyByteBuf buf) {
+        writeChoices(buf, ((ReceiverDishMenu) menu).choices());
+    }
 }

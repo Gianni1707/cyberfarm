@@ -63,8 +63,7 @@ public class ReceiverDishBlock extends SmallMultiblockBlock {
             return super.useWithoutItem(state, level, pos, player, hitResult);
         }
         if (player instanceof ServerPlayer server && level.getBlockEntity(pos) instanceof ReceiverDishBlockEntity dish) {
-            List<ReceiverDishBlockEntity.Choice> choices = dish.choices(server);
-            server.openMenu(dish, buf -> ReceiverDishBlockEntity.writeChoices(buf, choices));
+            server.openMenu(dish);
         }
         return InteractionResult.SUCCESS;
     }

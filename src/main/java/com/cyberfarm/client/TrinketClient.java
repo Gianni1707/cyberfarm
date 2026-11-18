@@ -2,6 +2,7 @@ package com.cyberfarm.client;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.Rect2i;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -10,6 +11,8 @@ import com.cyberfarm.registry.ModItems;
 import com.cyberfarm.trinket.ChipProgram;
 import com.cyberfarm.trinket.GravityBootsItem;
 import com.cyberfarm.trinket.NeuralChipItem;
+import com.cyberfarm.trinket.PocketDroneItem;
+import com.cyberfarm.trinket.ProgramItem;
 import com.cyberfarm.trinket.TrinketKeyPayload;
 import com.cyberfarm.trinket.TrinketTicker;
 import com.cyberfarm.trinket.TrinketType;
@@ -32,6 +35,8 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -53,7 +58,9 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The client side of the trinkets: their keys, the Gravity Boots holding the hover height, the chip's zoom, and the
@@ -151,6 +158,47 @@ public final class TrinketClient {
         } else {
             player.sendOverlayMessage(Component.translatable("message.cyberfarm.trinket.missing", Component.translatable(program.translationKey())));
         }
+    }
+
+    // ---------------------------------------------------------------- key tooltips
+
+    /** "Bound: [key]" under what a key works: the Utility Belt, the boots, the Pocket Drone, the chip and its programs. Nothing while unbound. */
+    public static void keyTooltip(ItemTooltipEvent event) {
+        ItemStack stack = event.getItemStack();
+        List<Component> keys = new ArrayList<>();
+        if (stack.getItem() instanceof NeuralChipItem) {
+            // Several keys on one chip: each says which program it works
+            for (ChipProgram program : NeuralChipItem.programs(stack)) {
+                KeyMapping key = key(program);
+                if (key != null && !key.isUnbound()) {
+                    keys.add(Component.translatable("tooltip.cyberfarm.key_for", key.getTranslatedKeyMessage(), Component.translatable(program.translationKey())));
+                }
+            }
+        } else {
+            KeyMapping key = switch (stack.getItem()) {
+                case UtilityBeltItem _ -> BELT;
+                case GravityBootsItem _ -> HOVER;
+                case PocketDroneItem _ -> DRONE;
+                case ProgramItem program -> key(program.program());
+                default -> null;
+            };
+            if (key != null && !key.isUnbound()) {
+                keys.add(key.getTranslatedKeyMessage());
+            }
+        }
+        if (!keys.isEmpty()) {
+            event.getToolTip().add(Component.translatable("tooltip.cyberfarm.key_bound", ComponentUtils.formatList(keys, Component.literal(", ")))
+                    .withStyle(ChatFormatting.GRAY));
+        }
+    }
+
+    private static @Nullable KeyMapping key(ChipProgram program) {
+        return switch (program) {
+            case ZOOM -> ZOOM;
+            case NIGHT_VISION -> NIGHT_VISION;
+            case TAXI_CALL -> TAXI_CALL;
+            default -> null;
+        };
     }
 
     // ---------------------------------------------------------------- zoom

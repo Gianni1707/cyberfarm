@@ -186,7 +186,7 @@ A port in a wall shared by two towers works for the tower that took it first.
 - **Left**: the **water** tank and the **coolant** tank (16,000 mB each). Under the coolant tank:
   the **Dump coolant** button.
 - **Title**: the size of the tower.
-- **Middle**: 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar
+- **Middle**: 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed and take no rods, by hand or by pipe), the core (one bar
   per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the
   **temperature** bar with its red alarm mark, and a status line.
 - **Bottom**: the **power** buttons, **-** and **+**.
