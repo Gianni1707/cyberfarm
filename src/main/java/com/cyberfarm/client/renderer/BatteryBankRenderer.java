@@ -122,7 +122,8 @@ public class BatteryBankRenderer implements BlockEntityRenderer<BatteryBankBlock
                 ModelParts.box(pose, buffer, 3.2F, 3.7F, -0.36F, w - 3.2F, h - 3.2F, -0.3F, SCREEN, SCREEN, LIGHT_FULL);
                 ModelParts.box(pose, buffer, 3.8F, 4.3F, -0.4F, w - 3.8F, barTop, -0.36F, WELL, WELL, LIGHT_FULL);
                 if (fill > 0) {
-                    ModelParts.box(pose, buffer, 3.8F, 4.3F, -0.44F, 3.8F + (w - 7.6F) * fill, barTop, -0.4F, MINT, MINT, LIGHT_FULL);
+                    // Model x grows towards the viewer's left, so the bar fills from the high end to read left to right
+                    ModelParts.box(pose, buffer, w - 3.8F - (w - 7.6F) * fill, 4.3F, -0.44F, w - 3.8F, barTop, -0.4F, MINT, MINT, LIGHT_FULL);
                 }
             }
             for (int side = 0; side < 2; side++) {

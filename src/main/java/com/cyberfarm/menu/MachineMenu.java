@@ -121,7 +121,7 @@ public abstract class MachineMenu extends AbstractContainerMenu {
             if (!moveItemStackTo(stack, machineSlotCount, slots.size(), true)) {
                 return ItemStack.EMPTY;
             }
-        } else if (player.level().isClientSide() || !moveItemStackTo(stack, 0, machineSlotCount, false)) {
+        } else if (player.level().isClientSide() || !moveIntoMachine(stack)) {
             // On the client, see clicked: only the server knows what goes in, and tells us
             return ItemStack.EMPTY;
         }
@@ -136,5 +136,22 @@ public abstract class MachineMenu extends AbstractContainerMenu {
         }
         slot.onTake(player, stack);
         return original;
+    }
+
+    /**
+     * moveItemStackTo tops up a matching stack without asking the slot, which would fill output slots: only the slots that take
+     * the item are offered it, those already holding some first.
+     */
+    private boolean moveIntoMachine(ItemStack stack) {
+        boolean moved = false;
+        for (int pass = 0; pass < 2; pass++) {
+            for (int i = 0; i < machineSlotCount && !stack.isEmpty(); i++) {
+                Slot target = slots.get(i);
+                if ((pass == 1 || target.hasItem()) && target.mayPlace(stack) && moveItemStackTo(stack, i, i + 1, false)) {
+                    moved = true;
+                }
+            }
+        }
+        return moved;
     }
 }

@@ -7,20 +7,24 @@ import com.cyberfarm.client.renderer.FrameDroneRenderer;
 import com.cyberfarm.item.ProjectorItem;
 import com.cyberfarm.multiblock.Structure;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.QuadInstance;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.block.BlockStateModelSet;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -140,15 +144,48 @@ public final class ProjectionRenderer {
         event.getSubmitNodeCollector().submitCustomGeometry(poseStack, ATLAS, (pose, buffer) -> {
             for (Ghost ghost : toDraw) {
                 BlockPos pos = ghost.pos();
-                // The block's particle texture, the one its model shows as a whole (the side of most blocks)
-                TextureAtlasSprite sprite = models.getParticleMaterial(ghost.state()).sprite();
-                float inset = ghost.wrong() ? -0.01F : 0.15F;
-                int color = ghost.wrong() ? RED : alpha | 0xFFFFFF;
-                cube(pose, buffer, sprite, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
+                if (ghost.wrong()) {
+                    TextureAtlasSprite sprite = models.getParticleMaterial(ghost.state()).sprite();
+                    cube(pose, buffer, sprite, pos.getX() - 0.01F, pos.getY() - 0.01F, pos.getZ() - 0.01F, 1.02F, RED);
+                } else {
+                    ghost(pose, buffer, models, ghost.state(), pos, 0.15F, alpha | 0xFFFFFF);
+                }
             }
         });
         poseStack.popPose();
     }
+
+    /**
+     * A block to place, as its own model shrunk by {@code inset} on every side. Not its particle texture on a cube: for the
+     * models drawn from a UV sheet (Resonance Cell, pylons, machines) that is the whole sheet and shows nothing recognisable.
+     */
+    public static void ghost(PoseStack.Pose pose, VertexConsumer buffer, BlockStateModelSet models, BlockState state, BlockPos pos, float inset, int color) {
+        List<BlockStateModelPart> parts = new ArrayList<>();
+        models.get(state).collectParts(RandomSource.create(state.getSeed(pos)), parts);
+        PoseStack.Pose at = pose.copy();
+        at.translate(pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset);
+        at.scale(1 - 2 * inset, 1 - 2 * inset, 1 - 2 * inset);
+        QuadInstance instance = new QuadInstance();
+        instance.setColor(color);
+        instance.setLightCoords(LightCoordsUtil.FULL_BRIGHT);
+        boolean drawn = false;
+        for (BlockStateModelPart part : parts) {
+            for (Direction side : SIDES) {
+                for (BakedQuad quad : part.getQuads(side)) {
+                    buffer.putBakedQuad(at, quad, instance);
+                    drawn = true;
+                }
+            }
+        }
+        if (!drawn) {
+            // Drawn only by its block entity renderer: the cube still says where it goes
+            TextureAtlasSprite sprite = models.getParticleMaterial(state).sprite();
+            cube(pose, buffer, sprite, pos.getX() + inset, pos.getY() + inset, pos.getZ() + inset, 1 - 2 * inset, color);
+        }
+    }
+
+    /** The six faces and the quads facing no side, as models list them. */
+    private static final Direction[] SIDES = {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST, null};
 
     public static void cube(PoseStack.Pose pose, VertexConsumer buffer, TextureAtlasSprite sprite, float x, float y, float z, float size, int color) {
         float x1 = x + size;

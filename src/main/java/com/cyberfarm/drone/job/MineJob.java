@@ -97,6 +97,11 @@ public class MineJob extends DroneJob {
             int column = index % width;
             int x = row % 2 == 0 ? area.minX() + column : area.maxX() - column;
             pos.set(x, y, area.minZ() + row);
+            if (!level.hasChunkAt(pos)) {
+                // Not read (that would load the chunk), and not passed over either: the layer waits for it
+                waiting = true;
+                continue;
+            }
             if (!canMine(level, dock, pos) || leftBehind(level, dock, area, pos)) {
                 continue;
             }

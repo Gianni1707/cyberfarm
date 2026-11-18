@@ -73,7 +73,7 @@ public class ReactorPortBlockEntity extends BlockEntity {
             return true;
         }
         BlockPos floor = size.floorCentre(controller, state.getValue(MachineBlock.FACING));
-        Direction out = TowerSize.outward(worldPosition.getX() - floor.getX(), worldPosition.getY() - floor.getY(), worldPosition.getZ() - floor.getZ());
+        Direction out = size.outward(worldPosition.getX() - floor.getX(), worldPosition.getY() - floor.getY(), worldPosition.getZ() - floor.getZ());
         return side == (out != null ? out : Direction.DOWN);
     }
 

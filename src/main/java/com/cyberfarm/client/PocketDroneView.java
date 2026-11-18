@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.cyberfarm.client.renderer.FrameDroneRenderer;
+import com.cyberfarm.client.renderer.ModelParts;
 import com.cyberfarm.trinket.DroneFetch;
 import com.cyberfarm.trinket.PocketDroneItem;
 import com.cyberfarm.trinket.Trinkets;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.SubmitCustomGeometryEvent;
+import org.jspecify.annotations.Nullable;
 
 /**
  * The Pocket Drones out in the world: a small one of the Builder mini drones (FrameDroneRenderer.drone), waiting over
@@ -43,6 +45,8 @@ public final class PocketDroneView {
     static final float LAUNCH = 16.0F, LAND = 14.0F;
     /** Each player's drone: out or not, and since when, as this client saw it change (no animation for one already out). */
     private static final Map<UUID, Seen> SEEN_STATE = new HashMap<>();
+    /** The level SEEN_STATE belongs to: its times are ModelParts.time of that level, and your own UUID is in the next world too. */
+    private static @Nullable Level seenLevel;
 
     private record Seen(boolean out, float since) {}
 
@@ -55,7 +59,11 @@ public final class PocketDroneView {
             return;
         }
         float partial = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
-        float now = level.getGameTime() + partial;
+        if (level != seenLevel) {
+            SEEN_STATE.clear();
+            seenLevel = level;
+        }
+        float now = ModelParts.time(level, partial);
         Vec3 camera = event.getLevelRenderState().cameraRenderState.pos;
         for (Player player : level.players()) {
             if (player.isInvisible() || player.distanceToSqr(minecraft.player) > SEEN * SEEN) {
@@ -69,7 +77,7 @@ public final class PocketDroneView {
             DroneFetch fetch = player.getData(Trinkets.FETCH);
             float yaw = Mth.rotLerp(partial, player.yBodyRotO, player.yBodyRot);
             Vec3 plate = plate(player, partial, yaw);
-            Vec3 flying = position(fetch, DroneFetch.anchor(player, partial, now), now);
+            Vec3 flying = position(fetch, DroneFetch.anchor(player, partial, now), ModelParts.since(level, fetch.since(), partial));
             // Launch: it opens on the belt plate, then flies up; landing: it flies down, then folds onto the plate
             float unfold = out ? smooth(age / (LAUNCH * 0.4F)) : 1.0F - smooth((age - LAND * 0.6F) / (LAND * 0.4F));
             float travel = out ? smooth((age - LAUNCH * 0.35F) / (LAUNCH * 0.65F)) : 1.0F - smooth(age / (LAND * 0.65F));
@@ -99,7 +107,7 @@ public final class PocketDroneView {
     public static boolean landing(Player player) {
         Seen seen = SEEN_STATE.get(player.getUUID());
         Level level = player.level();
-        return seen != null && !seen.out() && level.getGameTime() - seen.since() < LAND;
+        return seen != null && level == seenLevel && !seen.out() && ModelParts.time(level, 0.0F) - seen.since() < LAND;
     }
 
     /** The belt's magnet plate, in the world: in the middle of the back, at belt height. */
@@ -115,14 +123,14 @@ public final class PocketDroneView {
         return t * t * (3.0F - 2.0F * t);
     }
 
-    /** Where the drone is: home, or along an arc between home and the drop, eased at both ends. */
-    static Vec3 position(DroneFetch fetch, Vec3 home, float now) {
+    /** Where the drone is, {@code elapsed} ticks into the leg: home, or along an arc between home and the drop, eased at both ends. */
+    static Vec3 position(DroneFetch fetch, Vec3 home, float elapsed) {
         if (fetch.phase() == DroneFetch.IDLE) {
             return home;
         }
         // Over the drop, not on it
         Vec3 drop = fetch.target().add(0.0, 0.45, 0.0);
-        float u = fetch.progress(now);
+        float u = fetch.progress(elapsed);
         float eased = u * u * (3.0F - 2.0F * u);
         Vec3 from = fetch.phase() == DroneFetch.OUT ? home : drop, to = fetch.phase() == DroneFetch.OUT ? drop : home;
         return from.lerp(to, eased).add(0.0, ARC * Mth.sin(Mth.PI * u), 0.0);

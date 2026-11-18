@@ -2,7 +2,6 @@ package com.cyberfarm.menu;
 
 import com.cyberfarm.block.entity.MachineBlockEntity;
 import com.cyberfarm.block.entity.ReactorControllerBlockEntity;
-import com.cyberfarm.item.FuelRodItem;
 import com.cyberfarm.registry.ModBlocks;
 import com.cyberfarm.registry.ModMenus;
 
@@ -28,17 +27,22 @@ public class ReactorMenu extends MachineMenu {
     private final @Nullable ReactorControllerBlockEntity reactor;
 
     public ReactorMenu(int containerId, Inventory inventory) {
-        this(containerId, inventory, null, clientItems(),
-                new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 17), ContainerLevelAccess.NULL);
+        this(containerId, inventory, new SimpleContainerData(MachineBlockEntity.ENERGY_DATA_SLOTS + 17));
+    }
+
+    private ReactorMenu(int containerId, Inventory inventory, ContainerData data) {
+        this(containerId, inventory, null, clientItems(data), data, ContainerLevelAccess.NULL);
     }
 
     /** Client copy with the same slot rules, so shift-click predicts the server. */
-    private static ItemStacksResourceHandler clientItems() {
+    private static ItemStacksResourceHandler clientItems(ContainerData data) {
         return new ItemStacksResourceHandler(ReactorControllerBlockEntity.FUEL_SLOTS + ReactorControllerBlockEntity.WASTE_SLOTS) {
             @Override
             public boolean isValid(int index, ItemResource resource) {
-                return index < ReactorControllerBlockEntity.FUEL_SLOTS && resource.getItem() instanceof FuelRodItem
-                        && !FuelRodItem.isSpent(resource.toStack());
+                // Extra slots 13 and 14: the tower's size (0 while incomplete) and the rods it burns
+                boolean formed = data.get(MachineBlockEntity.ENERGY_DATA_SLOTS + 13) > 0;
+                int usable = formed ? data.get(MachineBlockEntity.ENERGY_DATA_SLOTS + 14) : ReactorControllerBlockEntity.FUEL_SLOTS;
+                return ReactorControllerBlockEntity.takesRod(index, resource, usable);
             }
 
             @Override

@@ -306,12 +306,12 @@ public class CrystallizerRenderer implements BlockEntityRenderer<CrystallizerBlo
             links(poseStack, collector, port, light);
         }
 
-        // The energy field, seen from outside and from within, brighter while it works
+        // The energy field, brighter while it works: one layer, as the render type draws both sides and a second on the same
+        // surface flickered against it
         int alpha = (int) ((growing ? 0x50 : 0x30) * (0.8F + 0.2F * Mth.sin(time * 0.15F)));
         int field = alpha << 24 | 0xB890FF;
         collector.submitCustomGeometry(poseStack, FIELD, (pose, buffer) -> {
             prism(pose, buffer, FIELD_RADIUS, DECK, HUB_LOW + 0.2F, false, field, light);
-            prism(pose, buffer, FIELD_RADIUS, DECK, HUB_LOW + 0.2F, true, field, light);
         });
         poseStack.popPose();
     }

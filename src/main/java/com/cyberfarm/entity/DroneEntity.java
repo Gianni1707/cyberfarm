@@ -41,6 +41,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
@@ -589,6 +591,10 @@ public class DroneEntity extends PathfinderMob {
     protected void customServerAiStep(ServerLevel level) {
         super.customServerAiStep(level);
         syncShown();
+        // A rider with no Taxi trip (a relog keeps the rider but not the job) would ride home into the dock
+        if (isVehicle() && !(job instanceof TaxiJob)) {
+            letPassengerGo();
+        }
         if (landingSpot != null || entityData.get(DATA_SHUTDOWN) != 0) {
             tickPickup(level);
             return;
@@ -655,7 +661,8 @@ public class DroneEntity extends PathfinderMob {
     /** Where it parks: the middle of the pad, or on a swarm dock the corner of the pad it was given. */
     private Vec3 dockHover() {
         Vec3 pad = new Vec3(dockPos.getX() + 0.5, dockPos.getY() + DOCK_HEIGHT, dockPos.getZ() + 0.5);
-        int corner = level().getBlockEntity(dockPos) instanceof SwarmDockBlockEntity swarm ? swarm.parkingSpot(getUUID()) : -1;
+        // Not looked up while the dock's chunk is not loaded (a warp home asks): that would load it
+        int corner = level().isLoaded(dockPos) && level().getBlockEntity(dockPos) instanceof SwarmDockBlockEntity swarm ? swarm.parkingSpot(getUUID()) : -1;
         return corner < 0 ? pad : pad.add((corner & 1) == 0 ? -CORNER_OFFSET : CORNER_OFFSET, 0.0, (corner & 2) == 0 ? -CORNER_OFFSET : CORNER_OFFSET);
     }
 
@@ -807,7 +814,16 @@ public class DroneEntity extends PathfinderMob {
         job = null;
         jobTask = null;
         navigation.stop();
+        letPassengerGo();
         setStatus(STATUS_RETURNING);
+    }
+
+    /** Lets a rider go gently, as an abandoned Taxi trip does. */
+    private void letPassengerGo() {
+        if (getFirstPassenger() instanceof Player rider) {
+            rider.stopRiding();
+            rider.addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING, 200));
+        }
     }
 
     // ---------------------------------------------------------------- pickup and lifecycle
@@ -844,11 +860,21 @@ public class DroneEntity extends PathfinderMob {
         return InteractionResult.SUCCESS;
     }
 
+    /** Not dropCustomDeathLoot: the mob-drops game rule skips that one, and /kill would delete the drone and its cargo. */
     @Override
-    protected void dropCustomDeathLoot(ServerLevel level, DamageSource source, boolean killedByPlayer) {
-        super.dropCustomDeathLoot(level, source, killedByPlayer);
+    protected void dropEquipment(ServerLevel level) {
+        super.dropEquipment(level);
+        if (dockPos != null && level.isLoaded(dockPos) && level.getBlockEntity(dockPos) instanceof DroneDockBlockEntity dock) {
+            dock.releaseDrone(getUUID());
+        }
         spawnAtLocation(level, toItem());
         cargo.dropAll(stack -> spawnAtLocation(level, stack));
+    }
+
+    /** A portal would take it away from its dock, where it can only drop as an item. */
+    @Override
+    public boolean canUsePortal(boolean ignorePassenger) {
+        return false;
     }
 
     @Override
@@ -863,7 +889,7 @@ public class DroneEntity extends PathfinderMob {
 
     /**
      * Nothing hurts a drone, creative players included (the vanilla invulnerable flag lets them
-     * through). Only /kill and the void do; it then drops as an item, so nothing is lost.
+     * through). Only /kill and the void do; it then drops as an item, whatever the mob-drops game rule says.
      */
     @Override
     public boolean isInvulnerableTo(ServerLevel level, DamageSource source) {

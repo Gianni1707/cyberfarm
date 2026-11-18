@@ -2,6 +2,7 @@ package com.cyberfarm.block;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.util.RandomSource;
@@ -67,6 +68,19 @@ public class HiddenFrameBlock extends Block {
             Direction direction, BlockPos neighborPos, BlockState neighborState, RandomSource random) {
         BlockState updated = super.updateShape(state, level, ticks, pos, direction, neighborPos, neighborState, random);
         return updated.is(this) ? MachineBlock.plug(updated, direction, neighborState) : updated;
+    }
+
+    // It hands out the machine's capabilities without a block entity of its own, so NeoForge never tells cached lookups it came or went
+    @Override
+    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        level.invalidateCapabilities(pos);
+    }
+
+    @Override
+    protected void affectNeighborsAfterRemoval(BlockState state, ServerLevel level, BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        level.invalidateCapabilities(pos);
     }
 
     /** Its machine decides: most fill the cell, an open one (the Trinket Table) only where it has something there. */

@@ -178,7 +178,10 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
             level.setBlock(pos, state.setValue(ReactorControllerBlock.LIT, running), Block.UPDATE_CLIENTS);
         }
         for (BlockPos port : ports) {
-            steam.pushToNeighbors(level, port, PORT_OUTPUT);
+            // Only out of the port's hatch, the one side a pipe plugs into
+            if (level.getBlockEntity(port) instanceof ReactorPortBlockEntity entity) {
+                steam.pushToNeighbors(level, port, PORT_OUTPUT, entity::opensTo);
+            }
         }
         // Half the tank stays free: more room than the largest tower's cooling fills in a tick
         int excess = steam.amount() - steam.capacity() / 2;
@@ -322,7 +325,13 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
 
     @Override
     protected boolean isItemValid(int index, ItemResource resource) {
-        return index < FUEL_SLOTS && resource.getItem() instanceof FuelRodItem && !FuelRodItem.isSpent(resource.toStack());
+        TowerSize size = size();
+        return takesRod(index, resource, size != null ? size.rods() : FUEL_SLOTS);
+    }
+
+    /** A fresh rod, only in the slots the tower burns ({@code usable}), so automation never fills the locked ones. */
+    public static boolean takesRod(int index, ItemResource resource, int usable) {
+        return index < Math.min(usable, FUEL_SLOTS) && resource.getItem() instanceof FuelRodItem && !FuelRodItem.isSpent(resource.toStack());
     }
 
     @Override
@@ -418,7 +427,7 @@ public class ReactorControllerBlockEntity extends MultiblockControllerBlockEntit
         }
         BlockPos floor = size.floorCentre(reactor.getBlockPos(), state.getValue(MachineBlock.FACING));
         int dx = port.getX() - floor.getX(), dy = port.getY() - floor.getY(), dz = port.getZ() - floor.getZ();
-        return toPipe == TowerSize.outward(dx, dy, dz) && size.buried(dx, dy, dz) > 0.0F;
+        return toPipe == size.outward(dx, dy, dz) && size.buried(dx, dy, dz) > 0.0F;
     }
 
     @Override
