@@ -15,10 +15,12 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import com.cyberfarm.port.ValueInput;
 import com.cyberfarm.port.ValueOutput;
@@ -44,8 +46,8 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
     public static final int CHARGE_SLOT = 0;
 
     /**
-     * What a face of the bank does, set with the Cable Swapper for each side of the whole bank: In takes FE and gives none, Out gives
-     * FE to the block there and takes none, Off shows nothing to cables (no socket either).
+     * What a face of the bank does, set with the Cable Swapper for each outer face of each block: In takes FE and gives none, Out
+     * gives FE to the block there and takes none, Off shows nothing to cables (no socket either).
      */
     public enum FaceMode {
         IN, OUT, OFF;
@@ -55,7 +57,7 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         }
     }
 
-    /** The faces' modes by direction; the runner's are the bank's. */
+    /** This block's faces' modes by direction. */
     private final FaceMode[] modes = {FaceMode.IN, FaceMode.IN, FaceMode.IN, FaceMode.IN, FaceMode.IN, FaceMode.IN};
     private final IEnergyStorage inOnly = limited(true);
     private final IEnergyStorage outOnly = limited(false);
@@ -63,10 +65,9 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
     private BlockPos boxMin;
     private BlockPos boxMax;
     private boolean growSoon = true;
-    /** FE this block pushed out since the runner last counted. */
-    private int pushed;
-    /** On the runner: the bank's total after its last tick, and the FE/t flowing in and out, smoothed. */
-    private long lastTotal = -1;
+    /** Saved when the runner's modes were the whole bank's: this block takes them over once. */
+    private boolean inheritFaces;
+    /** On the runner: the FE/t flowing in and out, smoothed. */
     private float inRate;
     private float outRate;
     /** On the runner, sent to the clients for the screen: charge and flows as last synced. */
@@ -119,10 +120,15 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
 
     @Override
     public void serverTick(ServerLevel level, BlockPos pos, BlockState state) {
+        if (inheritFaces && runner() != this) {
+            inheritFaces = false;
+            System.arraycopy(runner().modes, 0, modes, 0, modes.length);
+            faceChanged(level);
+        }
         // Every block gives power out of the faces set to Out
         for (Direction side : Direction.values()) {
             if (!joined(side) && energy.getEnergy() > 0 && mode(side) == FaceMode.OUT) {
-                pushed += EnergyUtil.pushTo(level, pos.relative(side), side.getOpposite(), energy, TRANSFER);
+                EnergyUtil.pushTo(level, pos.relative(side), side.getOpposite(), energy, TRANSFER);
             }
         }
         if (!pos.equals(boxMin)) {
@@ -134,20 +140,19 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         }
         List<BatteryBankBlockEntity> cells = cells();
         long total = 0;
-        int out = 0;
+        long in = 0;
+        long out = 0;
+        // What cables and machines put in and took out: the bank's own pushes and cables pulling from Out faces alike
         for (BatteryBankBlockEntity cell : cells) {
             total += cell.energy.getEnergy();
-            out += cell.pushed;
-            cell.pushed = 0;
+            in += cell.energy.takeReceived();
+            out += cell.energy.takeSent();
         }
         int charged = chargeItem(cells, total);
-        // What came in: the change since last tick, plus what went out meanwhile
-        long in = lastTotal < 0 ? 0 : Math.max(0, total - lastTotal + out);
         total -= charged;
         out += charged;
         inRate += (in - inRate) * 0.1F;
         outRate += (out - outRate) * 0.1F;
-        lastTotal = total;
         sync(level, pos, state, total, (long) cells.size() * CAPACITY);
         // Even shares, so the bank fills and empties as one
         int share = (int) (total / cells.size());
@@ -161,7 +166,7 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
     }
 
     public FaceMode mode(Direction side) {
-        return runner().modes[side.get3DDataValue()];
+        return modes[side.get3DDataValue()];
     }
 
     /** What a cable or a machine on {@code side} is handed: the face's mode decides; null for Off, so nothing connects. */
@@ -176,18 +181,21 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         };
     }
 
-    /** The Cable Swapper on one side of the bank: the next mode, and the cables around told to look again. */
+    /** The Cable Swapper on one face of this block: the next mode, and the cables around told to look again. */
     public void cycle(Direction side) {
-        BatteryBankBlockEntity runner = runner();
-        runner.modes[side.get3DDataValue()] = runner.modes[side.get3DDataValue()].next();
-        runner.setChanged();
+        modes[side.get3DDataValue()] = modes[side.get3DDataValue()].next();
         if (level instanceof ServerLevel server) {
-            for (BatteryBankBlockEntity cell : runner.cells()) {
-                Caps.invalidate(server, cell.worldPosition);
-                server.updateNeighborsAt(cell.worldPosition, cell.getBlockState().getBlock());
-            }
-            server.sendBlockUpdated(runner.worldPosition, runner.getBlockState(), runner.getBlockState(), 2);
+            faceChanged(server);
         }
+    }
+
+    private void faceChanged(ServerLevel level) {
+        setChanged();
+        Caps.invalidate(level, worldPosition);
+        // A shape update, not only a neighbour one: that is what makes a cable grow or drop its arm to this face
+        getBlockState().updateNeighbourShapes(level, worldPosition, Block.UPDATE_ALL);
+        level.updateNeighborsAt(worldPosition, getBlockState().getBlock());
+        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
     }
 
     /** The item in the slot takes what it can from the whole bank. Returns the FE given. */
@@ -335,6 +343,16 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
     private void adopt(ServerLevel level, BlockPos min, BlockPos max) {
         boxMin = min;
         boxMax = max;
+        // Only the runner's slot is the bank's: an item left in a block that stops running moves there, or drops
+        ItemStack held = getStack(CHARGE_SLOT);
+        if (!worldPosition.equals(min) && !held.isEmpty()) {
+            setStack(CHARGE_SLOT, ItemStack.EMPTY);
+            if (level.getBlockEntity(min) instanceof BatteryBankBlockEntity runner && runner.getStack(CHARGE_SLOT).isEmpty()) {
+                runner.setStack(CHARGE_SLOT, held);
+            } else {
+                Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, held);
+            }
+        }
         growSoon = true;
         setChanged();
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 3);
@@ -388,6 +406,7 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         output.putInt("shown_in", shownIn);
         output.putInt("shown_out", shownOut);
         output.tag().putIntArray("faces", java.util.Arrays.stream(modes).mapToInt(FaceMode::ordinal).toArray());
+        output.putBoolean("own_faces", !inheritFaces);
     }
 
     @Override
@@ -405,6 +424,11 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         super.loadAdditional(input);
         boxMin = input.read("box_min", BlockPos.CODEC).orElse(worldPosition);
         boxMax = input.read("box_max", BlockPos.CODEC).orElse(worldPosition);
+        if (!inBox(worldPosition)) {
+            // Copied with its data to another place (pick-block, /clone): not part of that far bank
+            boxMin = worldPosition;
+            boxMax = worldPosition;
+        }
         shownEnergy = input.getLongOr("shown_energy", 0);
         shownCapacity = input.getLongOr("shown_capacity", 0);
         shownIn = input.getIntOr("shown_in", 0);
@@ -413,6 +437,7 @@ public class BatteryBankBlockEntity extends MachineBlockEntity {
         for (int i = 0; i < Math.min(faces.length, modes.length); i++) {
             modes[i] = FaceMode.values()[Math.floorMod(faces[i], FaceMode.values().length)];
         }
+        inheritFaces = !input.getBooleanOr("own_faces", false);
     }
 
     /** Every block opens the bank's GUI, run by the low corner block, which holds the charging slot. */

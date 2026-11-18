@@ -132,20 +132,20 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Left$(): the $(l)water$() tank and the $(l)coolant$() tank (16,000 mB each). Under the coolant tank: the $(l)Dump coolant$() button.$(br)$(li)$(l)Title$(): the size of the tower.",
+      "text": "$(li)$(l)Left$(): the $(l)water$() tank and the $(l)coolant$() tank (16,000 mB each). Under the coolant tank: the $(l)Dump coolant$() button.$(br)$(li)$(l)Title$(): the size of the tower.$(br)$(li)$(l)Middle$(): 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed and take no rods, by hand or by",
       "title": "The reactor GUI"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Middle$(): 8 Fuel Rod slots (the ones a smaller tower cannot burn are dimmed), the core (one bar per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the $(l)temperature$() bar with its red alarm mark, and a status line."
+      "text": "$(li)pipe), the core (one bar per rod, emerald while it burns) and 4 waste slots for Depleted Fuel Rods. Below them, the $(l)temperature$() bar with its red alarm mark, and a status line.$(br)$(li)$(l)Bottom$(): the $(l)power$() buttons, $(l)-$() and $(l)+$()."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Bottom$(): the $(l)power$() buttons, $(l)-$() and $(l)+$().$(br)$(li)$(l)Right$(): the $(l)steam$() tank (16,000 mB). Under it: the $(l)Dump excess steam$() toggle.$(br)Hover the temperature bar to see the heat the core makes, how much it can cool and the steam it makes, all per tick. Hover the power buttons to see the tower's maximum."
+      "text": "$(li)$(l)Right$(): the $(l)steam$() tank (16,000 mB). Under it: the $(l)Dump excess steam$() toggle.$(br)Hover the temperature bar to see the heat the core makes, how much it can cool and the steam it makes, all per tick. Hover the power buttons to see the tower's maximum.$(br2)$(l)Power$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Power$()$(br2)Power goes from $(l)Off$() up to the tower's maximum, in $(l)steps of 50%$(). A new reactor starts $(l)Off$(): insert rods, connect water, then raise the power. Rods only burn while the power is above Off.$(br2)$(l)Dump coolant$()"
+      "text": "Power goes from $(l)Off$() up to the tower's maximum, in $(l)steps of 50%$(). A new reactor starts $(l)Off$(): insert rods, connect water, then raise the power. Rods only burn while the power is above Off.$(br2)$(l)Dump coolant$()"
     },
     {
       "type": "patchouli:text",

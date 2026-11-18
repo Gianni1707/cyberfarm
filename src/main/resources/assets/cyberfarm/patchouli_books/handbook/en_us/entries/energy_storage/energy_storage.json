@@ -25,11 +25,11 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:energy_storage/resonance_cell)Resonance Cell$(/l): the blocks of the shell around the crystal. A bigger shell is a higher tier that stores more."
+      "text": "$(li)$(l:energy_storage/resonance_core)Resonance Cell$(/l): the blocks of the shell around the crystal. A bigger shell is a higher tier that stores more."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l): columns of pylons that hold the crystal steady. They are its $(l)only way in and out$() for power, so it works with $(l:cables/energy_conduit)Energy Conduits$(/l) and with any other mod's cables.$(br)$(li)$(l:energy_storage/resonance_core)Resonance Core$(/l)$(br)$(li)$(l:energy_storage/resonance_cell)Resonance Cell$(/l)$(br)$(li)$(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l)$(br)$(li)$(l)1$(): none, 1,000,000 FE, 1, 16,000 FE/t"
+      "text": "$(li)$(l:energy_storage/resonance_core)Stabilizer Pylon$(/l): columns of pylons that hold the crystal steady. They are its $(l)only way in and out$() for power, so it works with $(l:cables/energy_conduit)Energy Conduits$(/l) and with any other mod's cables.$(br)$(li)$(l:energy_storage/resonance_core)Resonance Core$(/l)$(br)$(li)$(l:energy_storage/resonance_core)Resonance Cell$(/l)$(br)$(li)$(l:energy_storage/resonance_core)Stabilizer Pylon$(/l)$(br)$(li)$(l)1$(): none, 1,000,000 FE, 1, 16,000 FE/t"
     },
     {
       "type": "patchouli:text",

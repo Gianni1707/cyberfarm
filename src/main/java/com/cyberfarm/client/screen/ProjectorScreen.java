@@ -150,6 +150,21 @@ public class ProjectorScreen extends Screen {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
     }
 
+    /** A name too long for its row slides back and forth inside it, pausing at each end, instead of being cut. */
+    private void scrollingText(GuiGraphicsExtractor graphics, String text, int x, int y, int width, int color) {
+        int overflow = font.width(text) - width;
+        if (overflow <= 0) {
+            graphics.text(font, text, x, y, color, false);
+            return;
+        }
+        double seconds = Util.getMillis() / 1000.0;
+        double period = Math.max(overflow * 0.5, 3.0);
+        double phase = 0.5 - Math.sin(Math.PI / 2 * Math.cos(Math.PI * 2 * seconds / period)) / 2;
+        graphics.enableScissor(x, y - 1, x + width, y + font.lineHeight + 1);
+        graphics.text(font, text, x - (int) Math.round(phase * overflow), y, color, false);
+        graphics.disableScissor();
+    }
+
     private static float ease(float progress) {
         float t = Mth.clamp(progress, 0.0F, 1.0F);
         return 1.0F - (1.0F - t) * (1.0F - t) * (1.0F - t);
@@ -190,8 +205,7 @@ public class ProjectorScreen extends Screen {
             if (!(structure instanceof Blueprint)) {
                 graphics.fill(x + LIST_X + 1, rowY + 1, x + LIST_X + 3, rowY + ROW - 2, ACCENT);
             }
-            String name = font.plainSubstrByWidth(structure.displayName().getString(), rowWidth - 10);
-            graphics.text(font, name, x + LIST_X + 5, rowY + 3, on ? TEXT : TEXT_DIM, false);
+            scrollingText(graphics, structure.displayName().getString(), x + LIST_X + 5, rowY + 3, rowWidth - 10, on ? TEXT : TEXT_DIM);
         }
         if (scrolls) {
             int trackX = x + LIST_X + LIST_WIDTH - 3;

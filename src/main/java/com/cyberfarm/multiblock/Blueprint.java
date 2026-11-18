@@ -182,7 +182,7 @@ public enum Blueprint implements Structure {
     }
 
     /**
-     * A Resonance Core tier: the shell cube over the pedestal, empty inside, and the pylon columns
+     * A Resonance Core tier: the shell cube over the pedestal, its middle empty, and the pylon columns
      * it needs at their closest, east and west first. The core checks itself against the same rules.
      */
     private static List<Part> resonanceCore(BlockPos core, int radius) {
@@ -194,7 +194,8 @@ public enum Blueprint implements Structure {
         for (BlockPos pos : BlockPos.betweenClosed(centre.offset(-radius, -radius, -radius), centre.offset(radius, radius, radius))) {
             boolean surface = Math.max(Math.abs(pos.getX() - centre.getX()), Math.max(Math.abs(pos.getY() - centre.getY()),
                     Math.abs(pos.getZ() - centre.getZ()))) == radius;
-            ghosts.add(surface ? frame(pos.immutable(), cell) : new Part(pos.immutable(), null, BlockState::isAir));
+            boolean middle = pos.equals(centre);
+            ghosts.add(surface ? frame(pos.immutable(), cell) : new Part(pos.immutable(), null, state -> ResonanceCoreBlockEntity.insideOk(state, middle)));
         }
         int tier = radius + 1;
         Direction[] sides = {Direction.EAST, Direction.WEST, Direction.SOUTH, Direction.NORTH};

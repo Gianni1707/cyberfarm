@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -87,6 +88,13 @@ public class TransmitterDishBlock extends SmallMultiblockBlock {
             });
         }
         return InteractionResult.SUCCESS;
+    }
+
+    /** Vanilla opens a spectator's menu from this without the extra data the client's menu reads, so a spectator gets none. */
+    @Override
+    @SuppressWarnings("deprecation")
+    public @Nullable MenuProvider getMenuProvider(BlockState state, Level level, BlockPos pos) {
+        return null;
     }
 
     @Override

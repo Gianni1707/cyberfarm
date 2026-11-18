@@ -7,29 +7,33 @@
     {
       "type": "patchouli:spotlight",
       "item": "cyberfarm:resonance_core",
-      "text": "The Resonance Core is CyberFarm's big battery, from 1,000,000 FE up to 2,000,000,000 FE. It is a pedestal with a crystal floating over it, and you build it bigger tier by tier.$(br2)It has three parts:"
+      "text": "CyberFarm's big battery, from 1,000,000 FE up to 2,000,000,000 FE: a pedestal with a crystal floating over it, built bigger tier by tier from three blocks.$(br)$(li)$(item)Resonance Core$()$(br)$(li)$(item)Resonance Cell$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)the $(l)Resonance Core$() itself: the pedestal, the battery and its screen;$(br)$(li)a shell of $(l:energy_storage/resonance_cell)Resonance Cells$(/l) around the crystal: a bigger shell is a higher tier;"
+      "text": "$(li)$(item)Stabilizer Pylon$()"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)columns of $(l:energy_storage/stabilizer_pylon)Stabilizer Pylons$(/l) on its sides: each sends out a drone that circles the crystal and holds it steady with waves. Power goes in and out $(l)only through the pylons$()."
-    },
-    {
-      "type": "patchouli:text",
-      "text": "$(li)Place the $(l)Resonance Core$() (the pedestal). Alone it is tier 1.$(br)$(li)For tiers 2 to 4, build a shell of $(l:energy_storage/resonance_cell)Resonance Cells$(/l) in the space right above it.$(br)$(li)Put up the columns of $(l:energy_storage/stabilizer_pylon)Stabilizer Pylons$(/l) the tier asks for, on its sides.",
+      "text": "$(li)$(l)Core$(): place the $(item)Resonance Core$(), the pedestal. Alone it is tier 1.$(br)$(li)$(l)Shell$() (tiers 2 to 4): a $(l)hollow cube$() of $(item)Resonance Cell$()s right above the pedestal, centred on it. Every block of its surface is a cell and $(l)the middle block stays empty$(): the crystal grows there, so a",
       "title": "Building it"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Connect cables to the pylons to fill it and to draw from it (see $(l:energy_storage/stabilizer_pylon)Stabilizer Pylon$(/l)).$(br)The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows tiers 2 to 4, pylons included: sneak + right-click to pick the tier, then click the pedestal."
+      "text": "$(li)3x3x3 takes 26 cells and does not form with a 27th in the middle. To go up a tier, build the next shell round the old one: its cells can stay inside. When the last cell goes in, the cells vanish into the bigger crystal. One craft makes 4 cells.$(br)$(li)$(l)Pylon columns$(): stacks of $(item)Stabilizer Pylon$()s on the $(l)same$()"
     },
     {
       "type": "patchouli:text",
-      "text": "Every tier at its smallest, with the pylons at their closest. Drag to turn the scene.$(br2)$(l)Tier 1$()$(br2)The core alone: one pylon column, two blocks tall, at least three blocks away.",
-      "title": "What each tier looks like"
+      "text": "$(li)$(l)level$() as the pedestal, $(l)in line with it$() on its sides, one per side. A tier needs as many columns as its number, each at least one block taller than the tier, within the distance in the table, with nothing between it and the crystal. A linked column's drone flies up and circles the crystal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "The $(l:basics/multiblock_projector)Multiblock Projector$(/l) shows tiers 2 to 4, pylons included: sneak + right-click to pick the tier, then click the pedestal."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "At its smallest, with the pylons at their closest. Drag to turn the scene.$(br2)$(l)Tier 1$()$(br2)The core alone: one pylon column, two blocks tall, at least three blocks away.",
+      "title": "Every tier"
     },
     {
       "type": "patchouli:multiblock",
@@ -54,7 +58,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Tier 2$()$(br2)A 3x3x3 shell of 26 cells and two columns, three blocks tall, four blocks away."
+      "text": "$(l)Tier 2$()$(br2)A 3x3x3 shell of 26 cells (the middle stays empty) and two columns, three blocks tall, four blocks away."
     },
     {
       "type": "patchouli:multiblock",
@@ -317,37 +321,49 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Right-click $(l)any part$() of the core to open its screen: the pedestal, any cell of the shell (finished or not) or any block of a pylon column lined up with it. The screen shows:",
-      "title": "The screen"
+      "text": "$(li)With enough linked columns the core is $(l)Online$(): the crystal spins, shines white and its heart grows as it fills.$(br)$(li)With too few it is $(l)Unstable$(): the crystal flickers violet and $(l)nothing goes in or out$(), but what it stores is kept.",
+      "title": "Online, Unstable and the screen"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)its $(l)tier and shell$(), and whether it is $(l)Online$() (working) or $(l)Unstable$() (too few pylon columns, so nothing goes in or out);$(br)$(li)the pylon columns it has and needs (point at the line for what this tier asks for);"
+      "text": "Right-click $(l)any part$() to open the screen: the pedestal, any cell (finished shell or not) or any block of a lined-up column. It shows the tier, the columns it has and needs, what it found on each side (a linked pylon, or no pylon, too close, too far, too short, beam blocked) and the FE stored."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)what it found on each side$(): a linked pylon, or why one does not count (no pylon, too close, too far, too short, beam blocked). Point at a side for the column's height and distance;$(br)$(li)how much each pylon carries, and the FE stored."
+      "text": "Power goes in and out $(l)only through linked pylons$(): connect cables to $(l)any block$() of a column. An $(l:cables/energy_conduit)Energy Conduit$(/l) plugs into a socket on the pylon's side.$(br)$(li)$(l)To fill it$(): cables and generators push into a pylon, CyberFarm's or any other mod's.",
+      "title": "Power in and out"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)1$(): none, 1,000,000 FE, 1, 2, 3-8, 16,000 FE/t$(br)$(li)$(l)2$(): 3x3x3 (26 cells), 32,000,000 FE, 2, 3, 4-10, 128,000 FE/t$(br)$(li)$(l)3$(): 5x5x5 (98 cells), 256,000,000 FE, 3, 4, 5-12, 512,000 FE/t$(br)$(li)$(l)4$(): 7x7x7 (218 cells), 2,000,000,000 FE, 4, 5, 6-14, 2,000,000 FE/t",
+      "text": "$(li)$(l)To draw from it$(): the core never pushes by itself. $(l)Right-click the arm$() of the conduit that touches a pylon so it $(l)pulls$() (see $(l:cables/cables)Cables$(/l))."
+    },
+    {
+      "type": "patchouli:text",
+      "text": "$(li)$(l)1$(): none, 1,000,000 FE, 1, 2, 3-8, 16,000 FE/t$(br)$(li)$(l)2$(): 3x3x3 (26), 32,000,000 FE, 2, 3, 4-10, 128,000 FE/t$(br)$(li)$(l)3$(): 5x5x5 (98), 256,000,000 FE, 3, 4, 5-12, 512,000 FE/t$(br)$(li)$(l)4$(): 7x7x7 (218), 2,000,000,000 FE, 4, 5, 6-14, 2,000,000 FE/t",
       "title": "Numbers"
     },
     {
       "type": "patchouli:text",
-      "text": "Column height is the least a column needs. Distance is counted in blocks from the pedestal."
+      "text": "Column height is the least a column needs; distance is in blocks from the pedestal."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)Breaking a cell of the shell drops the core back a tier, and $(l)the energy that no longer fits is lost$(). Empty the core before you rebuild it.$(br)$(li)Breaking the pedestal leaves the shell's cells where they are, visible again, but $(l)all the energy stored is lost$().",
+      "text": "$(li)Breaking a cell drops the core back a tier, and $(l)the energy that no longer fits is lost$(). Empty the core before you rebuild it.$(br)$(li)Breaking the pedestal leaves the cells visible again, but $(l)all the energy stored is lost$().",
       "title": "Tips"
     },
     {
       "type": "patchouli:crafting",
-      "recipe": "cyberfarm:resonance_core"
+      "recipe": "cyberfarm:resonance_core",
+      "recipe2": "cyberfarm:resonance_cell"
+    },
+    {
+      "type": "patchouli:crafting",
+      "recipe": "cyberfarm:stabilizer_pylon"
     }
   ],
   "extra_recipe_mappings": {
-    "cyberfarm:resonance_core": 19
+    "cyberfarm:resonance_core": 21,
+    "cyberfarm:resonance_cell": 21,
+    "cyberfarm:stabilizer_pylon": 22
   }
 }

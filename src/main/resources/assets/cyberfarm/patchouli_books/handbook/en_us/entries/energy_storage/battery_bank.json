@@ -20,25 +20,25 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Each side of the bank has a mode. Set it with the $(l:cables/cable_swapper)Cable Swapper$(/l): $(l)right-click$() a side to switch it. While you hold the swapper, every side is framed in its mode's colour.$(br)$(li)$(l)**In$() (default)**: green, Takes FE from cables and machines. Gives none.",
+      "text": "Every outer face of every block has its own mode, in a single block and in a bigger bank alike. Set it with the $(l:cables/cable_swapper)Cable Swapper$(/l): $(l)right-click$() a face to switch it. While you hold the swapper, every face is framed in its mode's colour.",
       "title": "Sides: In, Out and Off"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)**Out$()**: amber, Pushes FE into the block or cable that touches it. Takes none.$(br)$(li)$(l)**Off$()**: grey, Nothing connects there.$(br)A mode belongs to a whole side of the bank: setting one block's north face sets the north side of every block in the bank."
+      "text": "$(li)$(l)**In$() (default)**: green, Takes FE from cables and machines. Gives none.$(br)$(li)$(l)**Out$()**: amber, Pushes FE into the block or cable that touches it. Takes none.$(br)$(li)$(l)**Off$()**: grey, Nothing connects there."
     },
     {
       "type": "patchouli:text",
-      "text": "Set the side facing your $(l:trinkets/human_dock)Human Dock$(/l) to $(l)Out$()."
+      "text": "So one side of a bank can take FE through one block and give it out through the next.$(br2)Set the side facing your $(l:trinkets/human_dock)Human Dock$(/l) to $(l)Out$()."
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)The $(l)display$() on the front shows the bank's charge and the FE/t coming in and going out. A gauge on each side fills as it charges.$(br)$(li)A bigger bank's display spells the numbers out and adds what the bank stores.",
+      "text": "$(li)The $(l)display$() on the front shows the bank's charge and the FE/t coming in and going out (a cable pulling from an $(l)Out$() face counts as going out). Its charge bar fills from left to right, and a gauge on each side fills as it charges.",
       "title": "Display and GUI"
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l)Right-click$() the bank to open its GUI. It shows the whole bank's charge and the FE/t flowing in and out, and has a $(l)slot that charges an item$() from the bank."
+      "text": "$(li)A bigger bank's display spells the numbers out and adds what the bank stores.$(br)$(li)$(l)Right-click$() the bank to open its GUI. It shows the whole bank's charge and the FE/t flowing in and out, and has a $(l)slot that charges an item$() from the bank."
     },
     {
       "type": "patchouli:text",
@@ -51,7 +51,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)An $(l)Out$() side pushes by itself, so a cable there needs no pulling arm.$(br)$(li)A cable can't pull through an $(l)In$() side. Set the side to $(l)Out$() instead.",
+      "text": "$(li)An $(l)Out$() face pushes by itself, so a cable there needs no pulling arm.$(br)$(li)A cable can't pull through an $(l)In$() face. Set the face to $(l)Out$() instead.",
       "title": "Tips"
     },
     {

@@ -59,6 +59,11 @@ public final class Trinkets {
     public static final class Worn implements ICapabilitySerializable<CompoundTag> {
         private final NonNullList<ItemStack> stacks = NonNullList.withSize(TrinketType.COUNT, ItemStack.EMPTY);
         private DroneFetch fetch = DroneFetch.NONE;
+        /**
+         * Whether the Night Vision the player has is the chip's (TrinketTicker#nightVision). Kept apart from the effect: a
+         * potion drunk on top of it rewrites the effect's flags. Saved, not kept through death (the effects are not either).
+         */
+        private boolean chipNightVision;
         private final LazyOptional<Worn> self = LazyOptional.of(() -> this);
 
         public ItemStack get(TrinketType type) {
@@ -82,6 +87,7 @@ public final class Trinkets {
                 list.add(stack.save(new CompoundTag()));
             }
             tag.put("stacks", list);
+            tag.putBoolean("chip_night_vision", chipNightVision);
             return tag;
         }
 
@@ -91,6 +97,7 @@ public final class Trinkets {
             for (int i = 0; i < TrinketType.COUNT; i++) {
                 stacks.set(i, i < list.size() ? ItemStack.of(list.getCompound(i)) : ItemStack.EMPTY);
             }
+            chipNightVision = tag.getBoolean("chip_night_vision");
         }
     }
 
@@ -129,6 +136,7 @@ public final class Trinkets {
         MinecraftForge.EVENT_BUS.addGenericListener(Entity.class, Trinkets::attach);
         MinecraftForge.EVENT_BUS.addListener(Trinkets::dropOnDeath);
         MinecraftForge.EVENT_BUS.addListener(Trinkets::copyOnDeath);
+        MinecraftForge.EVENT_BUS.addListener(Trinkets::emptyOwnSlots);
         MinecraftForge.EVENT_BUS.addListener((PlayerEvent.StartTracking event) -> {
             if (event.getTarget() instanceof Player seen && event.getEntity() instanceof ServerPlayer viewer) {
                 PacketDistributor.sendToPlayer(viewer, payload(seen));
@@ -154,6 +162,8 @@ public final class Trinkets {
             for (int i = 0; i < TrinketType.COUNT; i++) {
                 now.stacks.set(i, old.stacks.get(i));
             }
+            // Back from the End the effects come along, and so does whose Night Vision it is
+            now.chipNightVision = !event.isWasDeath() && old.chipNightVision;
         }
         event.getOriginal().invalidateCaps();
     }
@@ -202,6 +212,19 @@ public final class Trinkets {
         }
     }
 
+    /** Whether the player's Night Vision is the chip's. */
+    static boolean chipNightVision(Player player) {
+        Worn worn = data(player);
+        return worn != null && worn.chipNightVision;
+    }
+
+    static void setChipNightVision(Player player, boolean chip) {
+        Worn worn = data(player);
+        if (worn != null) {
+            worn.chipNightVision = chip;
+        }
+    }
+
     private static SyncPayload payload(Player player) {
         Worn worn = data(player);
         return worn == null ? new SyncPayload(player.getId(), List.of(), DroneFetch.NONE)
@@ -242,6 +265,26 @@ public final class Trinkets {
             }
         }
         sync(player);
+    }
+
+    /**
+     * Curios added to a world where trinkets were worn in our own slots: those slots are gone, so what they held goes
+     * back to the inventory (at the player's feet when full), for the player to put in the Curios slots.
+     */
+    private static void emptyOwnSlots(PlayerEvent.PlayerLoggedInEvent event) {
+        Player player = event.getEntity();
+        Worn worn = data(player);
+        if (ownSlots() || worn == null || worn.stacks.stream().allMatch(ItemStack::isEmpty)) {
+            return;
+        }
+        List<ItemStack> stacks = List.copyOf(worn.stacks);
+        for (int i = 0; i < TrinketType.COUNT; i++) {
+            worn.stacks.set(i, ItemStack.EMPTY);
+        }
+        sync(player);
+        for (ItemStack stack : stacks) {
+            player.getInventory().placeItemBackInInventory(stack.copy());
+        }
     }
 
     // The slots of the Trinkets screen (TrinketsMenu)

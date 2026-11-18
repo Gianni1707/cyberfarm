@@ -213,8 +213,8 @@ public class CyberFarm {
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.HUMAN_DOCK.get(),
                 (be, side) -> side != null && side == be.getBlockState().getValue(MachineBlock.FACING) ? null : be.getEnergy());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.sideHandler(side));
-        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.getItems());
-        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.getItems());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.BATTERY_BANK.get(), (be, side) -> be.runner().getItems());
+        Caps.registerBlockEntity(Caps.ITEM, ModBlockEntities.SUPPLY_TERMINAL.get(), (be, side) -> be.automationItems());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.WATER_PUMP.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.ENERGY, ModBlockEntities.LASER_TURRET.get(), (be, side) -> be.getEnergy());
         Caps.registerBlockEntity(Caps.FLUID, ModBlockEntities.CRYSTALLIZER.get(), (be, side) -> be.portFluids());

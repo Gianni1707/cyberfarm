@@ -46,7 +46,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "Keeping power for later: the small $(l:energy_storage/battery_bank)Battery Bank$(/l), and the big $(l:energy_storage/resonance_core)Resonance Core$(/l) with its $(l:energy_storage/resonance_cell)Resonance Cells$(/l) and $(l:energy_storage/stabilizer_pylon)Stabilizer Pylons$(/l).$(br2)$(l:cables/cables)Cables$(/l)"
+      "text": "Keeping power for later: the small $(l:energy_storage/battery_bank)Battery Bank$(/l), and the big $(l:energy_storage/resonance_core)Resonance Core$(/l) with its Resonance Cells and Stabilizer Pylons.$(br2)$(l:cables/cables)Cables$(/l)"
     },
     {
       "type": "patchouli:text",

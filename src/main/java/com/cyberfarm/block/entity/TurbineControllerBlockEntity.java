@@ -102,7 +102,9 @@ public class TurbineControllerBlockEntity extends MultiblockControllerBlockEntit
         speed = Mth.clamp(speed + Mth.clamp(target - speed, -step, step), 0.0F, 1.0F);
         generating = 0;
         if (size != null) {
-            int used = Math.min(steam.amount(), Math.round(size.maxSteam() * speed));
+            // A rotor still spinning down burns only the steam whose FE has room, or the rest would be lost
+            int room = (energy.getCapacity() - energy.getEnergy()) / size.fePerMb();
+            int used = Math.min(Math.min(steam.amount(), room), Math.round(size.maxSteam() * speed));
             if (used > 0) {
                 steam.drain(used);
                 generating = energy.generate(used * size.fePerMb());
@@ -168,16 +170,17 @@ public class TurbineControllerBlockEntity extends MultiblockControllerBlockEntit
             case 1 -> steam.amount();
             case 2 -> steam.fluidCode();
             case 3 -> Math.round(speed * 1000);
-            case 4 -> generating;
+            case 4 -> EnergyUtil.low(generating);
             case 5 -> size != null ? size.maxSteam() : 0;
             case 6 -> size != null ? size.fePerMb() : 0;
+            case 7 -> EnergyUtil.high(generating);
             default -> 0;
         };
     }
 
     @Override
     protected int getExtraDataCount() {
-        return 7;
+        return 8;
     }
 
     @Override

@@ -438,6 +438,10 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         super.preRemoveSideEffects(pos, state);
         if (level != null) {
             setFramesFormed(level, pos, false);
+            // The ports' pipes must look their capabilities up again
+            for (BlockPos part : chamberBlocks(pos)) {
+                Caps.invalidate(level, part.immutable());
+            }
         }
     }
 
@@ -446,6 +450,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         super.saveAdditional(output);
         tank.serialize(output.child("tank"));
         acid.serialize(output.child("acid"));
+        output.putInt("dissolve_ticks", dissolveTicks);
     }
 
     @Override
@@ -454,6 +459,7 @@ public class MethaneExtractorBlockEntity extends MachineBlockEntity {
         tank.deserialize(input.childOrEmpty("tank"));
         acid.deserialize(input.childOrEmpty("acid"));
         sampledAcid = acid.amount();
+        dissolveTicks = input.getIntOr("dissolve_ticks", 0);
         filling = input.getBooleanOr("filling", false);
     }
 

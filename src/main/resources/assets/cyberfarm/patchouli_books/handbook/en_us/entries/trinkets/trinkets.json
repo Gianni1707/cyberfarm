@@ -42,7 +42,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)$(l:trinkets/gravity_boots)Gravity Boots$(/l): Feet, Hover over the ground, no fall damage, H$(br)$(li)$(l:trinkets/neural_chip)Neural Chip$(/l): Neck, Runs up to six programs: zoom, night vision and more, Z, N, J$(br)You can change every key in Controls, under $(l)CyberFarm Trinkets$()."
+      "text": "$(li)$(l:trinkets/gravity_boots)Gravity Boots$(/l): Feet, Hover over the ground, no fall damage, H$(br)$(li)$(l:trinkets/neural_chip)Neural Chip$(/l): Neck, Runs up to six programs: zoom, night vision and more, Z, N, J$(br)You can change every key in Controls, under $(l)CyberFarm Trinkets$(). A trinket's tooltip shows the key it is bound to now."
     },
     {
       "type": "patchouli:text",

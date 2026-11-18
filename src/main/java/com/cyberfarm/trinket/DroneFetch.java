@@ -68,9 +68,9 @@ public record DroneFetch(int phase, Vec3 target, int item, long since, int durat
         return Mth.clamp(Mth.ceil(length / SPEED), MIN_TICKS, MAX_TICKS);
     }
 
-    /** How far through the leg, 0 to 1. */
-    public float progress(float now) {
-        return duration <= 0 ? 1.0F : Mth.clamp((now - since) / duration, 0.0F, 1.0F);
+    /** How far through the leg, 0 to 1, {@code elapsed} ticks after {@link #since}. */
+    public float progress(float elapsed) {
+        return duration <= 0 ? 1.0F : Mth.clamp(elapsed / duration, 0.0F, 1.0F);
     }
 
     /** One server tick of the errand; {@code flying} whether the drone is out and charged. */

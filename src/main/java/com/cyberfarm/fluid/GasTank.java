@@ -93,9 +93,17 @@ public class GasTank extends FluidTank {
 
     /** Pushes up to {@code maxPerSide} mB into every adjacent block that accepts it, from any mod. */
     public void pushToNeighbors(Level level, BlockPos pos, int maxPerSide) {
+        pushToNeighbors(level, pos, maxPerSide, side -> true);
+    }
+
+    /** Only through the sides {@code open} lets through. */
+    public void pushToNeighbors(Level level, BlockPos pos, int maxPerSide, Predicate<Direction> open) {
         for (Direction direction : Direction.values()) {
             if (amount() <= 0) {
                 return;
+            }
+            if (!open.test(direction)) {
+                continue;
             }
             IFluidHandler target = Caps.fluids(level, pos.relative(direction), direction.getOpposite());
             if (target != null) {

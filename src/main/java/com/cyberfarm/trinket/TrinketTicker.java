@@ -22,6 +22,7 @@ import net.minecraft.world.item.BowlFoodItem;
 import net.minecraft.world.item.ChorusFruitItem;
 import net.minecraft.world.item.HoneyBottleItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
@@ -64,6 +65,17 @@ public final class TrinketTicker {
 
     private static void onPlayerTick(TickEvent.PlayerTickEvent event) {
         if (event.phase != TickEvent.Phase.END || !(event.player instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)) {
+            return;
+        }
+        if (!player.isAlive()) {
+            // Dead: the inventory is already dropped (and the errand is not kept through death), so what the drone holds falls here
+            DroneFetch fetch = Trinkets.fetch(player);
+            if (fetch.phase() != DroneFetch.IDLE) {
+                if (!fetch.carried().isEmpty()) {
+                    level.addFreshEntity(new ItemEntity(level, player.getX(), player.getY(), player.getZ(), fetch.carried().copy()));
+                }
+                Trinkets.setFetch(player, DroneFetch.NONE);
+            }
             return;
         }
         boolean hovering = hover(player);
@@ -167,16 +179,21 @@ public final class TrinketTicker {
 
     /**
      * Night Vision for as long as the program is on, with no particles and no icon, so it never blinks out the way a
-     * running-out potion does. A potion's own Night Vision is left alone.
+     * running-out potion does. A potion's own Night Vision is left alone; the player remembers whether the effect is
+     * the chip's, as a potion drunk on top rewrites its flags.
      */
     private static void nightVision(ServerPlayer player, ItemStack chip) {
         boolean wanted = NeuralChipItem.isOn(chip, ChipProgram.NIGHT_VISION) && UtilityBeltItem.energy(player) > 0;
         MobEffectInstance current = player.getEffect(MobEffects.NIGHT_VISION);
-        boolean ours = current != null && current.isInfiniteDuration() && !current.isVisible() && !current.showIcon();
         if (wanted && current == null) {
             player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, MobEffectInstance.INFINITE_DURATION, 0, true, false, false));
-        } else if (!wanted && ours) {
-            player.removeEffect(MobEffects.NIGHT_VISION);
+            Trinkets.setChipNightVision(player, true);
+        } else if (!wanted && Trinkets.chipNightVision(player)) {
+            // Still infinite: still ours, whatever a potion did to it; finite is a potion's that replaced ours
+            if (current != null && current.isInfiniteDuration()) {
+                player.removeEffect(MobEffects.NIGHT_VISION);
+            }
+            Trinkets.setChipNightVision(player, false);
         }
     }
 

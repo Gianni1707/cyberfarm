@@ -33,7 +33,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(l)Right-click$() a face of a $(l:energy_storage/battery_bank)Battery Bank$(/l) to switch that side of the bank: $(l)In$(), $(l)Out$(), $(l)Off$(), then In again. While you hold the swapper, every side of a bank is framed in its mode's colour.",
+      "text": "$(l)Right-click$() a face of a $(l:energy_storage/battery_bank)Battery Bank$(/l) to switch that face of that block: $(l)In$(), $(l)Out$(), $(l)Off$(), then In again. While you hold the swapper, every outer face of a bank is framed in its mode's colour.",
       "title": "Battery Bank sides"
     },
     {

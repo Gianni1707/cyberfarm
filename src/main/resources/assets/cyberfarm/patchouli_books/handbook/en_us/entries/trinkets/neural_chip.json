@@ -64,7 +64,7 @@
     },
     {
       "type": "patchouli:text",
-      "text": "$(li)You can change every key in Controls, under $(l)CyberFarm Trinkets$().",
+      "text": "$(li)You can change every key in Controls, under $(l)CyberFarm Trinkets$(). A trinket's tooltip shows the key it is bound to now.",
       "title": "Tips"
     }
   ],
